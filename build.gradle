@@ -4,13 +4,16 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven() {
+            url "https://github.com/RoboBinding/RoboBinding-aspectj-plugin/raw/master/mavenRepo"
+            }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.13.2'
         classpath 'me.tatarka:gradle-retrolambda:2.4.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }
 }
-
 allprojects {
     repositories {
         jcenter()

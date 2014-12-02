@@ -16,6 +16,7 @@ public class DTApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Object prodModule = new ProdAppModule();
+        // Object utestModule = new UTestAppModule();
         objectGraph = ObjectGraph.create(prodModule);
         dataManager = new DataManager(this);
     }

@@ -20,7 +20,11 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     @Override
     protected void onResume() {
         super.onResume();
-        presentationModel.refreshTrips();
+        presentationModel.loadTrips();
+    }
 
+    @Override
+    public void tripsLoaded() {
+        //todo now nothing
     }
 }

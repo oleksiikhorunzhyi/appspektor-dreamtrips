@@ -17,6 +17,7 @@ import retrofit.client.Response;
 
 @PresentationModel
 public class MainActivityPresentation implements HasPresentationModelChangeSupport {
+    private static final String TRIPS = "trips";
     private PresentationModelChangeSupport changeSupport;
 
     private DataManager dataManager;
@@ -30,12 +31,13 @@ public class MainActivityPresentation implements HasPresentationModelChangeSuppo
         loadTrips();
     }
 
-    private void loadTrips() {
+    public void loadTrips() {
         dataManager.getTrips(new Callback<List<Trip>>() {
             @Override
             public void success(List<Trip> trips, Response response) {
-                MainActivityPresentation.this.trips = trips;
-                changeSupport.firePropertyChange("trips");
+                setTrips(trips);
+                changeSupport.firePropertyChange(TRIPS);
+                view.tripsLoaded();
             }
 
             @Override
@@ -45,10 +47,13 @@ public class MainActivityPresentation implements HasPresentationModelChangeSuppo
         });
     }
 
-
     @ItemPresentationModel(value = TripPresentation.class)
     public List<Trip> getTrips() {
         return trips;
+    }
+
+    public void setTrips(List<Trip> trips) {
+        this.trips = trips;
     }
 
     @Override
@@ -56,11 +61,7 @@ public class MainActivityPresentation implements HasPresentationModelChangeSuppo
         return changeSupport;
     }
 
-    public void refreshTrips() {
-        changeSupport.firePropertyChange("trips");
-    }
-
     public static interface View {
-        //now empty
+        void tripsLoaded();
     }
 }

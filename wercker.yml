@@ -1,11 +1,9 @@
-box: verno3632/android
+box: man4ik/android
 # Build definition
 build:
   # The steps that will be executed on build
 
    steps:
-    - android-sdk-update:
-        filter: 23.0.5
     - script:
         name: show base information
         code: |

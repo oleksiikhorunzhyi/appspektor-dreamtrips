@@ -8,7 +8,7 @@ build:
         name: show base information
         code: |
           gradle -v
-          java - version
+          java -version
           ls /usr/lib/jvm/
           echo $JAVA_HOME
           echo $JAVA8_HOME

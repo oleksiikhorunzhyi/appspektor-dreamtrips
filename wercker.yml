@@ -14,7 +14,7 @@ build:
     - android-sdk-update:
         filter: sys-img-armeabi-v7a-android-19
     - setup-android-emulator:
-        target: android-19
+        target: 1
     - script:
         name: run gradle connectedCheck
         code: |

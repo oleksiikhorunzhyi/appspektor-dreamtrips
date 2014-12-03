@@ -6,14 +6,15 @@ build:
     - script:
         name: show base information
         code: |
+          android list targets
           gradle -v
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
     - android-sdk-update:
-        filter: sysimg-18
+        filter: sys-img-armeabi-v7a-android-19
     - setup-android-emulator:
-        target: android-18
+        target: android-19
     - script:
         name: run gradle connectedCheck
         code: |

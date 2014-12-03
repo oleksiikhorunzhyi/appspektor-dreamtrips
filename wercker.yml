@@ -12,9 +12,9 @@ build:
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
     - android-sdk-update:
-        filter: sys-img-armeabi-v7a-android-21
+        filter: sysimg-21
     - setup-android-emulator:
-        target: 21
+        target: 1
     - script:
         name: run gradle connectedCheck
         code: |

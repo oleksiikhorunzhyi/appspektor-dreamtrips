@@ -7,12 +7,13 @@ build:
         name: show base information
         code: |
           android list targets
+          android list sdk --all --extended
           gradle -v
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
     - android-sdk-update:
-        filter: sysimg-21
+        filter: android-21
     - setup-android-emulator:
         target: 1
     - script:

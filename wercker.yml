@@ -2,22 +2,30 @@ box: man4ik/android
 # Build definition
 build:
   # The steps that will be executed on build
-
-   steps:
+  steps:
     - script:
         name: show base information
         code: |
           gradle -v
-          java -version
-          ls /usr/lib/jvm/
-          echo $JAVA_HOME
-          echo $JAVA8_HOME
           echo $ANDROID_HOME
-          echo $ANDROID_SDK_VERSION
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
-    # A step that executes `gradle build` command
+    - android-sdk-update:
+        filter: sysimg-18
+    - setup-android-emulator:
+        target: android-18
     - script:
-        name: run gradle
+        name: run gradle connectedCheck
         code: |
-          gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedCheck
+    - script:
+        name: run gradle build
+        code: |
+          gradle --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR build
+  after-steps:
+    # Use the build results
+    - script:
+        name: inspect build result
+        code: |
+          ls -la GettingStarted/build/apk/
+          cp GettingStarted/build/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR

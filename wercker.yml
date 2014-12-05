@@ -17,7 +17,7 @@ build:
     - script:
         name: run gradle connectedCheck
         code: |
-          gradle connectedCheck --stacktrace --info
+         gradle build connectedCheck --stacktrace --info --no-color -q
     - script:
         name: run gradle build
         code: |

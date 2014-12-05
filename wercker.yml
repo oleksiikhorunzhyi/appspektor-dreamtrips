@@ -27,5 +27,5 @@ build:
     - script:
         name: inspect build result
         code: |
-          ls -la app/build/apk/
+          ls -la .
           cp app/build/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR

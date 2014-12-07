@@ -17,6 +17,7 @@ public class LoginActivityTest extends BaseActivityTest<LoginActivity> {
 
     public void testLogin() throws Exception {
         solo.assertCurrentActivity("wrong activity", LoginActivity.class);
+        solo.waitForView(R.id.et_username);
         solo.enterText((EditText) solo.getView(R.id.et_username), "John");
         solo.enterText((EditText) solo.getView(R.id.et_password), "Password");
         solo.clickOnView(solo.getView(R.id.btn_login));

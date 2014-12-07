@@ -12,7 +12,7 @@ build:
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
-     - setup-android-emulator:
+    - setup-android-emulator:
         target: 1
     - script:
         name: run gradle connectedCheck

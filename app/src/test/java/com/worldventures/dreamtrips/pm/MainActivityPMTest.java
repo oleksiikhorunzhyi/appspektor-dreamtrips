@@ -25,7 +25,7 @@ public class MainActivityPMTest {
     }
 
     public void testTrips() throws Exception {
-        CountDownLatch signal = new CountDownLatch(1);
+        final CountDownLatch signal = new CountDownLatch(1);
         MainActivityPresentation map = new MainActivityPresentation(new MainActivityPresentation.View() {
             @Override
             public void tripsLoaded() {

@@ -36,10 +36,13 @@ public class LoginActivityPMTest {
     }
 
     public void testLogin() throws InterruptedException {
-        CountDownLatch signal = new CountDownLatch(1);
-        LoginActivityPresentation.View callback = () -> {
-            signal.countDown();
-            Assert.assertTrue("All is good", true);
+        final CountDownLatch signal = new CountDownLatch(1);
+        LoginActivityPresentation.View callback = new LoginActivityPresentation.View() {
+            @Override
+            public void openMainWindow() {
+                signal.countDown();
+                Assert.assertTrue("All is good", true);
+            }
         };
         LoginActivityPresentation lap = new LoginActivityPresentation(callback, dataManager);
         lap.setUsername("John");

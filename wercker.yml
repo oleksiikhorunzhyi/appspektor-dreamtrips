@@ -34,4 +34,4 @@ deploy:
     - script:
        name: hockeyapp
        code: |
-        curl -F status=2 -F notify=0 -F notes=Deploy to HockeyApp -F notes_type=0 -F ipa=$WERCKER_REPORT_ARTIFACTS_DIR/app-debug.apk -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26" https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload
+        curl -F status=2 -F notify=0 -F notes="Deploy to HockeyApp" -F notes_type=0 -F ipa=$WERCKER_REPORT_ARTIFACTS_DIR/app-debug.apk -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26" https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload

@@ -12,12 +12,12 @@ build:
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
-    - setup-android-emulator:
-        target: 1
+#    - setup-android-emulator:
+#        target: 1
     - script:
         name: run gradle connectedCheck
         code: |
-          gradle build connectedCheck --stacktrace --info --no-color -q
+          gradle test --stacktrace --info --no-color -q
     - script:
         name: run gradle build
         code: |
@@ -34,7 +34,10 @@ deploy:
     - script:
        name: upload to hockeyapp
        code: |
-         curl \
+        BRANCH=$(git branch | awk '/^\*/{print $2}')
+        echo $BRANCH
+        if [ "$BRANCH" == "master" ]
+        curl \
            -F "status=2" \
            -F "notify=0" \
            -F "notes="Deploy to HockeyApp" \
@@ -42,3 +45,4 @@ deploy:
            -F "ipa=$WERCKER_REPORT_ARTIFACTS_DIR/app-debug.apk" \
            -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26" \
            https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload
+        fi

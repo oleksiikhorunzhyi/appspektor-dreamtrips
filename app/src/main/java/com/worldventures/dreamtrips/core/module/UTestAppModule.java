@@ -1,26 +1,38 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.Trip;
 
-import javax.inject.Named;
+import org.json.JSONObject;
+
+import java.util.List;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.RestAdapter;
+import retrofit.Callback;
+import retrofit.http.Field;
 
-//@Module(injects = DataManager.class)
+@Module(
+        overrides = true,
+        library = true,
+        complete = false
+)
 public class UTestAppModule {
-   /* @Provides
+    @Provides
     @Singleton
-    @Named("utestService")
-    DreamTripsApi provideApi() {
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(DreamTripsApi.DEFAULT_URL)
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
-                .setRequestInterceptor(request -> request.addHeader("Content-Type", "multipart/form-data; boundary=----AdditionalContentApiAuthRequestBoundary"))
-                .build();
-        return adapter.create(DreamTripsApi.class);
-    }*/
+    DreamTripsApi provideMockClient() {
+        return new DreamTripsApi() {
+            @Override
+            public void token(@Field("username") String username, @Field("password") String password, Callback<JSONObject> callback) {
+
+            }
+
+            @Override
+            public void trips(Callback<List<Trip>> callback) {
+
+            }
+        };
+    }
 }

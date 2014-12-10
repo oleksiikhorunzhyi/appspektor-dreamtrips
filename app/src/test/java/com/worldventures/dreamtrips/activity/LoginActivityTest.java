@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 
@@ -22,6 +23,7 @@ import static org.robolectric.Robolectric.clickOn;
 import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk=18)
 public class LoginActivityTest {
 
     private LoginActivity activity;
@@ -40,7 +42,7 @@ public class LoginActivityTest {
     @Test
     public void shouldDoLogin() throws Exception {
         String appName = new LoginActivity().getResources().getString(R.string.app_name);
-        assertThat(appName, equalTo("LoginActivity"));
+        assertThat(appName, equalTo("DreamTrips"));
         clickOn(btnLogin);
 
         ShadowActivity shadowActivity = shadowOf(activity);

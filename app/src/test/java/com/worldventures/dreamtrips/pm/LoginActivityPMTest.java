@@ -6,13 +6,16 @@ import com.worldventures.dreamtrips.view.presentation.activity.LoginActivityPres
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.concurrent.CountDownLatch;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk = 18)
 public class LoginActivityPMTest {
 
     private DataManager dataManager;
@@ -23,6 +26,7 @@ public class LoginActivityPMTest {
         dataManager = new DataManager(app);
     }
 
+    @Test
     public void testInputFields() {
         LoginActivityPresentation lap = new LoginActivityPresentation(new LoginActivityPresentation.View() {
             @Override
@@ -35,6 +39,7 @@ public class LoginActivityPMTest {
         Assert.assertTrue(lap.getUserPassword() != null && !lap.getUserPassword().isEmpty());
     }
 
+    @Test
     public void testLogin() throws InterruptedException {
         final CountDownLatch signal = new CountDownLatch(1);
         LoginActivityPresentation.View callback = new LoginActivityPresentation.View() {

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.view.presentation.activity;
 
+import android.util.Log;
+
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.view.presentation.adapter.TripPresentation;
@@ -9,6 +11,7 @@ import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -21,7 +24,7 @@ public class MainActivityPresentation implements HasPresentationModelChangeSuppo
     private PresentationModelChangeSupport changeSupport;
 
     private DataManager dataManager;
-    private List<Trip> trips;
+    private List<Trip> trips = new ArrayList<>();
     private View view;
 
     public MainActivityPresentation(View view, DataManager dataManager) {
@@ -42,7 +45,7 @@ public class MainActivityPresentation implements HasPresentationModelChangeSuppo
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.e(MainActivityPresentation.class.getSimpleName(), "", error);
             }
         });
     }

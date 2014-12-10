@@ -35,8 +35,7 @@ deploy:
        name: hockeyapp
        code: |
         BRANCH=$(git branch | awk '/^\*/{print $2}')
-        echo $BRANCH
-#        if [ "$BRANCH" == "master" ]
+        echo $BRANCH #if [ "$BRANCH" == "master" ]
         curl \
            -F "status=2" \
            -F "notify=0" \

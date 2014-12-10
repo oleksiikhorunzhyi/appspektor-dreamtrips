@@ -17,11 +17,11 @@ build:
     - script:
         name: run gradle connectedCheck
         code: |
-          gradle test --stacktrace --info --no-color -q
+          gradle test --stacktrace --info
     - script:
         name: run gradle build
         code: |
-          gradle --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR build
+          gradle build --stacktrace --info --no-color -q
   after-steps:
     # Use the build results
     - script:
@@ -32,7 +32,7 @@ build:
 deploy:
   steps:
     - script:
-       name: upload to hockeyapp
+       name: hockeyapp
        code: |
         BRANCH=$(git branch | awk '/^\*/{print $2}')
         echo $BRANCH

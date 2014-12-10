@@ -27,8 +27,8 @@ build:
     - script:
         name: inspect build result
         code: |
-          ls -la GettingStarted/build/apk/
-          cp GettingStarted/build/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR
+          ls -la app/build/outputs/apk/
+          cp app/build/outputs/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR
 deploy:
   steps:
     - script:

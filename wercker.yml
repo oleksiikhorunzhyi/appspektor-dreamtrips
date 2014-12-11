@@ -38,5 +38,12 @@ deploy:
     - script:
        name: hockeyapp
        code: |
-        ls -la
-        curl -F status=2 -F notify=0 -F notes="Deploy to HockeyApp" -F notes_type=0 -F ipa=@app/build/outputs/apk/app-debug.apk -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26" https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload
+       ls -la
+       RESULT =$(curl -F status=2 -F notify=0 -F notes="Deploy to HockeyApp" -F notes_type=0 -F ipa=@app/build/outputs/apk/app-debug.apk -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26" https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload)
+       echo $RESULT
+       if [[ $RESULT == *"appsize"* ]]
+       then
+         echo "Apk file has been successfully uploaded";
+       else
+         exit 1
+       fi

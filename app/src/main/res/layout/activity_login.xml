@@ -9,7 +9,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.worldventures.dreamtrips.view.activity.LoginActivity">
+    tools:context="com.worldventures.dreamtrips.view.activity.LoginActivity"
+    tools:ignore="MissingPrefix">
 
 
     <EditText
@@ -33,4 +34,9 @@
         android:text="Login"
         bind:onClick="loginAction" />
 
+    <View
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="left"
+        bind:onClick="fillDataAction" />
 </LinearLayout>

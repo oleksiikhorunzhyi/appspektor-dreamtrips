@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.worldventures.dreamtrips.DTApplication;
 import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.DreamTripsApi;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;

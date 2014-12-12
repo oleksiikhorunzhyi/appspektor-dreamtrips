@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.worldventures.dreamtrips.core.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Trip;
 
 import org.json.JSONObject;
@@ -25,7 +25,7 @@ public class UTestAppModule {
     DreamTripsApi provideMockClient() {
         return new DreamTripsApi() {
             @Override
-            public void token(@Field("username") String username, @Field("password") String password, Callback<JSONObject> callback) {
+            public void sessions(@Field("username") String username, @Field("password") String password, Callback callback) {
 
             }
 

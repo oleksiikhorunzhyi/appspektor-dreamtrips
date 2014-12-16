@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.pm;
 
 import com.worldventures.dreamtrips.DTApplication;
 import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.view.presentation.activity.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class MainActivityPMTest {
             public void tripsLoaded() {
                 signal.countDown();
             }
-        }, dataManager);
+        }, null);
         signal.await(10, TimeUnit.SECONDS);
         Assert.assertTrue("Trips not exist", map.getTrips().isEmpty());
     }

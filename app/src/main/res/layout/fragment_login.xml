@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http: "
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    tools:context="com.worldventures.dreamtrips.view.activity.LoginActivity"
+    tools:ignore="MissingPrefix">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logo"
+        bind:onClick="fillDataAction" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_login"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_ready_for_your_experience" />
+
+        <com.worldventures.dreamtrips.view.custom.DTEditText
+            android:id="@+id/et_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:hint="User Id"
+            android:minEms="10"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:baseColor="@android:color/white"
+            app:floatingLabel="normal"
+            app:hintColor="@android:color/white"
+            app:primaryColor="@android:color/white"
+            bind:text="${username}" />
+
+        <com.worldventures.dreamtrips.view.custom.DTEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:hint="Password"
+            android:minEms="10"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:baseColor="@android:color/white"
+            app:floatingLabel="normal"
+            app:hintColor="@android:color/white"
+
+            app:primaryColor="@android:color/white"
+            bind:text="${userPassword}" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/theme_main"
+        android:text="Log In"
+        android:textColor="@android:color/white"
+        bind:onClick="loginAction" />
+
+
+</LinearLayout>

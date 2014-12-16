@@ -1,9 +1,8 @@
-package com.worldventures.dreamtrips.view.presentation.activity;
+package com.worldventures.dreamtrips.view.presentation;
 
-import android.util.Log;
-
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.presentation.BasePresentation;
 import com.worldventures.dreamtrips.view.presentation.adapter.TripPresentation;
 
 import org.robobinding.annotation.ItemPresentationModel;
@@ -14,39 +13,27 @@ import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
 @PresentationModel
-public class MainActivityPresentation implements HasPresentationModelChangeSupport {
+public class MainActivityPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
     private static final String TRIPS = "trips";
     private PresentationModelChangeSupport changeSupport;
 
-    private DataManager dataManager;
     private List<Trip> trips = new ArrayList<>();
     private View view;
 
-    public MainActivityPresentation(View view, DataManager dataManager) {
-        this.view = view;
-        this.dataManager = dataManager;
+
+    public MainActivityPresentation(View view, Injector graf) {
+        super(graf);
         this.changeSupport = new PresentationModelChangeSupport(this);
+        this.view = view;
         loadTrips();
     }
 
     public void loadTrips() {
-        dataManager.getTrips(new Callback<List<Trip>>() {
-            @Override
-            public void success(List<Trip> trips, Response response) {
-                setTrips(trips);
-                changeSupport.firePropertyChange(TRIPS);
-                view.tripsLoaded();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(MainActivityPresentation.class.getSimpleName(), "", error);
-            }
+        dataManager.getTrips((trips, e) -> {
+            setTrips(trips);
+            changeSupport.firePropertyChange(TRIPS);
+            view.tripsLoaded();
         });
     }
 

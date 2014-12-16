@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.pm;
 
 import com.worldventures.dreamtrips.DTApplication;
 import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.view.presentation.activity.LoginActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class LoginActivityPMTest {
 
     @Test
     public void testInputFields() {
-        LoginActivityPresentation lap = new LoginActivityPresentation(new LoginActivityPresentation.View() {
+        LoginFragmentPresentation lap = new LoginFragmentPresentation(new LoginFragmentPresentation.View() {
             @Override
             public void openMainWindow() {
             }
@@ -42,14 +42,14 @@ public class LoginActivityPMTest {
     @Test
     public void testLogin() throws InterruptedException {
         final CountDownLatch signal = new CountDownLatch(1);
-        LoginActivityPresentation.View callback = new LoginActivityPresentation.View() {
+        LoginFragmentPresentation.View callback = new LoginFragmentPresentation.View() {
             @Override
             public void openMainWindow() {
                 signal.countDown();
                 Assert.assertTrue("All is good", true);
             }
         };
-        LoginActivityPresentation lap = new LoginActivityPresentation(callback, dataManager);
+        LoginFragmentPresentation lap = new LoginFragmentPresentation(callback, dataManager);
         lap.setUsername("John");
         lap.setUserPassword("Password");
         lap.loginAction();

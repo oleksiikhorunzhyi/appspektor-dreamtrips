@@ -7,12 +7,14 @@ buildscript {
         maven() {
             url "https://github.com/RoboBinding/RoboBinding-aspectj-plugin/raw/master/mavenRepo"
         }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+
     }
     dependencies {
         repositories {
             mavenCentral()
         }
-        classpath 'com.android.tools.build:gradle:1.0.0-rc4'
+        classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'me.tatarka:gradle-retrolambda:2.4.1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.0.2'

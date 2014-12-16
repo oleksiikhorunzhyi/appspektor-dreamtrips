@@ -1,31 +1,46 @@
 package com.worldventures.dreamtrips;
 
 import android.app.Application;
+import android.content.Context;
 
-import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.module.ProdAppModule;
+import com.worldventures.dreamtrips.core.module.DTModule;
+import com.worldventures.dreamtrips.utils.Logs;
+
+import java.util.Arrays;
+import java.util.List;
 
 import dagger.ObjectGraph;
 
 public class DTApplication extends Application {
 
-    private DataManager dataManager;
+    public static final String DEFAULT_TAG = "DreamApp";
     private ObjectGraph objectGraph;
+
+    public static DTApplication get(Context context) {
+        return (DTApplication) context.getApplicationContext();
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Object prodModule = new ProdAppModule();
-        // Object utestModule = new UTestAppModule();
-        objectGraph = ObjectGraph.create(prodModule);
-        dataManager = new DataManager(this);
+        initGraph();
+        Logs.init(DEFAULT_TAG, BuildConfig.DEBUG);
+
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
+    private void initGraph() {
+        objectGraph = ObjectGraph.create(getModules().toArray());
+    }
+
+    private List<Object> getModules() {
+        return Arrays.<Object>asList(new DTModule(this));
     }
 
     public void inject(Object object) {
         objectGraph.inject(object);
+    }
+
+    public ObjectGraph plus(Object... obj) {
+        return objectGraph.plus(obj);
     }
 }

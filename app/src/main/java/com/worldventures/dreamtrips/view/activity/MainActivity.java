@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.view.activity;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.presentation.activity.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
 
 public class MainActivity extends BaseActivity implements MainActivityPresentation.View {
 
@@ -12,7 +12,7 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presentationModel = new MainActivityPresentation(this, getDataManager());
+        presentationModel = new MainActivityPresentation(this, this);
         initializeContentView(R.layout.activity_main, presentationModel);
     }
 

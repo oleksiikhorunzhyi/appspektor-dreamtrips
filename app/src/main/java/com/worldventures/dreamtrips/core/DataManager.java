@@ -9,9 +9,9 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import retrofit.Callback;
+import retrofit.RetrofitError;
 
 public class DataManager {
 
@@ -19,25 +19,44 @@ public class DataManager {
             "h.WebDataContract\",\"TraceToken\":\"307e2dbe-7a40-4feea248-59a9cd5e56af\",\"Password\":\"guestpassword\",\"UserNam\n" +
             "e\":\"mdl\"}";
     @Inject
-    @Named("realService")
     protected DreamTripsApi dreamTripsApi;
     @Inject
-    AuthApi authApi;
+    protected AuthApi authApi;
     @Inject
-    WorldVenturesApi worldVenturesApi;
+    protected WorldVenturesApi worldVenturesApi;
 
     public DataManager(DTApplication application) {
         application.inject(this);
     }
 
-    public void getTrips(Callback<List<Trip>> callback) {
-        dreamTripsApi.trips(callback);
+
+    public void getTrips(Result<List<Trip>> result) {
+        dreamTripsApi.trips(convert(result));
     }
 
-
-    public void login(String username, String password, Callback<Object> callback) {
+    public void login(String username, String password, Result<Object> result) {
+        Callback<Object> callback = convert(result);
         dreamTripsApi.sessions(username, password, callback);
         worldVenturesApi.token(username, password, callback);
-        authApi.authenticateByUserName(BODY, callback);
+      //  authApi.authenticateByUserName(BODY, callback);
     }
+
+    private <T> Callback<T> convert(Result<T> result) {
+        return new Callback<T>() {
+            @Override
+            public void success(T t, retrofit.client.Response r) {
+                result.response(t, null);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                result.response(null, error);
+            }
+        };
+    }
+
+    public interface Result<T> {
+        void response(T t, Exception e);
+    }
+
 }

@@ -5,19 +5,21 @@ import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
 
-@Module(injects = DataManager.class)
-public class ProdAppModule {
+@Module(injects = {DataManager.class})
+public class ApiModule {
+
+    public ApiModule() {
+
+    }
 
     @Provides
     @Singleton
-    @Named("realService")
     DreamTripsApi provideApi() {
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(DreamTripsApi.DEFAULT_URL)
@@ -46,4 +48,6 @@ public class ProdAppModule {
                 .build();
         return adapter.create(WorldVenturesApi.class);
     }
+
+
 }

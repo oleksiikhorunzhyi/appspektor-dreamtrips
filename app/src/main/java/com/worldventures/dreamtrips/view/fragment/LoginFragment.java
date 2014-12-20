@@ -28,10 +28,9 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LoginFragmentPresentation presentationModel = new LoginFragmentPresentation(this,getAbsActivity());
+        LoginFragmentPresentation presentationModel = new LoginFragmentPresentation(this, getAbsActivity());
         ViewBinder viewBinder = getAbsActivity().createViewBinder();
         return viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_login, presentationModel, container);
-
     }
 
     @Override

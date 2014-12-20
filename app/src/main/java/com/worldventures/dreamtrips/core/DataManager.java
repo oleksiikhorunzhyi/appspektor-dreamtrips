@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.core;
 
+import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.DTApplication;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
+import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -34,11 +38,15 @@ public class DataManager {
         dreamTripsApi.trips(convert(result));
     }
 
-    public void login(String username, String password, Result<Object> result) {
-        Callback<Object> callback = convert(result);
-        dreamTripsApi.sessions(username, password, callback);
-        worldVenturesApi.token(username, password, callback);
-      //  authApi.authenticateByUserName(BODY, callback);
+
+    public void getSession(String username, String password, Result<Session> result) {
+        Callback<Session> callback = convert(result);
+        dreamTripsApi.getSession(username, password, callback);
+    }
+
+    public void getToken(String username, String password, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        worldVenturesApi.getToken(username, password, callback);
     }
 
     private <T> Callback<T> convert(Result<T> result) {
@@ -55,7 +63,7 @@ public class DataManager {
         };
     }
 
-    public interface Result<T> {
+    public static interface Result<T> {
         void response(T t, Exception e);
     }
 

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.WebViewFragmentPresentation;
 
 import javax.inject.Singleton;
 
@@ -22,6 +23,7 @@ import dagger.Provides;
                 LaunchActivityPresentation.class,
                 LoginActivityPresentation.class,
                 LoginFragmentPresentation.class,
+                WebViewFragmentPresentation.class,
                 MainActivityPresentation.class},
         library = true
 )

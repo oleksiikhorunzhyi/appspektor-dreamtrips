@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.view.presentation;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
@@ -21,26 +20,35 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
         super(graf);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
-
     }
 
     public void loginAction() {
-        dataManager.login(getUsername(), getUserPassword(), new DataManager.Result<Object>() {
-            int successCount;
 
-            @Override
-            public void response(Object o, Exception e) {
-                if (o != null) {
-                    successCount++;
-                    Logs.i(LoginFragmentPresentation.class.getSimpleName(), o.toString());
-                } else if (e != null) {
-                    view.informUser(e.getMessage());
-                }
-                if (successCount == REQUEST_COUNT) {
-                    activityCompass.openMain();
-                }
+        String username = getUsername();
+        String userPassword = getUserPassword();
+        sessionManager.logoutUser();
+        dataManager.getSession(username, userPassword, (o, e) -> {
+            if (o != null) {
+                sessionManager.createUserLoginSession(o);
+                Logs.d("getSession", o.toString());
+                tryOpenMain();
             }
         });
+        dataManager.getToken(username, userPassword, (o, e) -> {
+            if (o != null) {
+                String token = o.get("result").getAsString();
+
+                sessionManager.createDreamToken(token);
+                Logs.d("getToken", o.toString());
+                tryOpenMain();
+            }
+        });
+    }
+
+    private void tryOpenMain() {
+        if (sessionManager.isUserLoggedIn()) {
+            activityCompass.openMain();
+        }
     }
 
     public String getUsername() {

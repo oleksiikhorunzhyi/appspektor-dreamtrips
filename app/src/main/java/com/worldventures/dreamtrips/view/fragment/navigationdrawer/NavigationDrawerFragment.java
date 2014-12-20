@@ -17,8 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.State;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
@@ -34,6 +34,17 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private boolean mFromSavedInstanceState;
     private int mCurrentSelectedPosition;
 
+    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(settingName, settingValue);
+        editor.apply();
+    }
+
+    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getString(settingName, defaultValue);
+    }
 
     @Nullable
     @Override
@@ -44,13 +55,20 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
-
-        final List<NavigationItem> navigationItems = getMenu();
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getMenu());
+        adapter.setHeader(getNavigationHeader());
         adapter.setNavigationDrawerCallbacks(this);
         mDrawerList.setAdapter(adapter);
-        selectItem(mCurrentSelectedPosition);
         return view;
+    }
+
+    private NavigationHeader getNavigationHeader() {
+        NavigationHeader navHeader = new NavigationHeader();
+        navHeader.setUserEmail("john@dreamtrip.com");
+        navHeader.setUserNome("John Doe");
+        navHeader.setUserCover(getResources().getDrawable(R.drawable.fake_cover));
+        navHeader.setUserPhoto(getResources().getDrawable(R.drawable.fake_avatar));
+        return navHeader;
     }
 
     @Override
@@ -116,6 +134,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         });
 
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+        selectItem(mCurrentSelectedPosition);
     }
 
     public void openDrawer() {
@@ -132,12 +151,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mCallbacks = null;
     }
 
-    public List<NavigationItem> getMenu() {
-        List<NavigationItem> items = new ArrayList<NavigationItem>();
-        items.add(new NavigationItem("item 1", getResources().getDrawable(R.drawable.ic_launcher)));
-        items.add(new NavigationItem("item 2", getResources().getDrawable(R.drawable.ic_launcher)));
-        items.add(new NavigationItem("item 3", getResources().getDrawable(R.drawable.ic_launcher)));
-        return items;
+    public List<State> getMenu() {
+        return State.getMenuItemsArray();
+
     }
 
     void selectItem(int position) {
@@ -178,17 +194,5 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public void setDrawerLayout(DrawerLayout drawerLayout) {
         mDrawerLayout = drawerLayout;
-    }
-
-    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(settingName, settingValue);
-        editor.apply();
-    }
-
-    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-        return sharedPref.getString(settingName, defaultValue);
     }
 }

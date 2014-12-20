@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.core.module;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -10,6 +13,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 @Module(injects = {DataManager.class})
 public class ApiModule {
@@ -25,8 +29,16 @@ public class ApiModule {
                 .setEndpoint(DreamTripsApi.DEFAULT_URL)
                 .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .setRequestInterceptor(request -> request.addHeader("Content-Type", "multipart/form-data; boundary=----AdditionalContentApiAuthRequestBoundary"))
+                .setConverter(new GsonConverter(getGson()))
                 .build();
         return adapter.create(DreamTripsApi.class);
+    }
+
+    private Gson getGson() {
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+        return gson;
     }
 
     @Provides

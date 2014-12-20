@@ -13,17 +13,18 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
 
     private Toolbar mToolbar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private MainActivityPresentation presentation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presentation = new MainActivityPresentation(this, this);
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
-
     }
 
     @Override
@@ -31,13 +32,15 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
         super.onResume();
     }
 
-    @Override
-    public void tripsLoaded() {
-        //todo now nothing
-    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        presentation.onNavigationClick(position);
+    }
 
+
+    @Override
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }

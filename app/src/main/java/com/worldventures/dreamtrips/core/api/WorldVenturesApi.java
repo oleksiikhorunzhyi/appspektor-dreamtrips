@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.api;
 
+import com.google.gson.JsonObject;
+
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -10,6 +12,6 @@ public interface WorldVenturesApi {
 
     @FormUrlEncoded
     @POST("/auth/token")
-    public void token(@Field("username") String username, @Field("password") String password, Callback<Object> callback);
+    public void getToken(@Field("username") String username, @Field("password") String password, Callback<JsonObject> callback);
 
 }

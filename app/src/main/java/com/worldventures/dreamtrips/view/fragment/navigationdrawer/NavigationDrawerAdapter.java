@@ -1,27 +1,33 @@
 package com.worldventures.dreamtrips.view.fragment.navigationdrawer;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.State;
 
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-    private List<NavigationItem> mData;
+    private static final int HEADER_SIZE = 1;
+    private List<State> mData;
     private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
+    private NavigationHeader navigationHeader;
 
-    public NavigationDrawerAdapter(List<NavigationItem> data) {
+    public NavigationDrawerAdapter(List<State> data) {
         mData = data;
     }
 
@@ -36,7 +42,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_item_navigation_drawer, viewGroup, false);
             return new ItemHolder(v);
         } else if (viewType == TYPE_HEADER) {
-            //inflate your layout and pass it to view holder
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_navigation_drawer, viewGroup, false);
             return new HeaderHolder(v);
         }
@@ -47,8 +52,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof ItemHolder) {
             ItemHolder holder = (ItemHolder) viewHolder;
-            NavigationItem item = getItem(i);
-            holder.title.setText(item.getText());
+            State item = getItem(i);
+            holder.itemName.setText(item.getTitle());
+            holder.sectionIcon.setImageResource(item.getDrawableId());
             holder.itemView.setOnTouchListener((v, event) -> {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
@@ -68,15 +74,23 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             );
             holder.itemView.setOnClickListener(v -> {
                 if (mNavigationDrawerCallbacks != null)
-                    mNavigationDrawerCallbacks.onNavigationDrawerItemSelected(i);
+                    mNavigationDrawerCallbacks.onNavigationDrawerItemSelected(i - HEADER_SIZE);
             });
             if (mSelectedPosition == i || mTouchedPosition == i) {
-                holder.itemView.setBackgroundColor(viewHolder.itemView.getContext().getResources().getColor(R.color.selected_gray));
+                holder.itemName.setSelected(true);
+                holder.sectionIcon.setSelected(true);
             } else {
-                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                holder.itemName.setSelected(false);
+                holder.sectionIcon.setSelected(false);
+
             }
 
         } else if (viewHolder instanceof HeaderHolder) {
+            HeaderHolder holder = (HeaderHolder) viewHolder;
+            holder.userCover.setImageDrawable(navigationHeader.getUserCover());
+            holder.userPhoto.setImageDrawable(navigationHeader.getUserPhoto());
+            holder.userNome.setText(navigationHeader.getUserNome());
+            holder.userEmail.setText(navigationHeader.getUserEmail());
         }
 
     }
@@ -91,6 +105,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void selectPosition(int position) {
+        position = position + HEADER_SIZE;
         int lastPosition = mSelectedPosition;
         mSelectedPosition = position;
         notifyItemChanged(lastPosition);
@@ -114,26 +129,44 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         return position == 0;
     }
 
-    private NavigationItem getItem(int position) {
+    public State getItem(int position) {
         return mData.get(position - 1);
+    }
+
+    public void setHeader(NavigationHeader navigationHeader) {
+        this.navigationHeader = navigationHeader;
     }
 
 
     public static class ItemHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        @InjectView(R.id.item_name)
+        TextView itemName;
+        @InjectView(R.id.section_icon)
+        ImageView sectionIcon;
 
         public ItemHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.item_name);
+            ButterKnife.inject(this, itemView);
         }
     }
 
     public static class HeaderHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+        @InjectView(R.id.user_cover)
+        ImageView userCover;
+        @InjectView(R.id.user_photo)
+        ImageView userPhoto;
+        @InjectView(R.id.user_photo_2)
+        ImageView userPhoto2;
+        @InjectView(R.id.user_photo_3)
+        ImageView userPhoto3;
+        @InjectView(R.id.user_nome)
+        TextView userNome;
+        @InjectView(R.id.user_email)
+        TextView userEmail;
 
         public HeaderHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.item_name);
+            ButterKnife.inject(this, itemView);
         }
     }
 }

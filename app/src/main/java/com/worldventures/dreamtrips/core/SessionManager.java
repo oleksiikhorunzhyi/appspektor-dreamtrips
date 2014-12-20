@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.worldventures.dreamtrips.core.model.Session;
+
 public class SessionManager {
 
-    public static final String KEY_NAME = "name";
-    public static final String KEY_EMAIL = "email";
+    public static final String KEY_CURRENT_USER = "KEY_CURRENT_USER";
+    public static final String KEY_DREAM_TOKEN = "KEY_DREAM_TOKEN";
     private static final String PREFER_NAME = "DreamTripsYo";
-    private static final String IS_USER_LOGIN = "IsUserLoggedIn";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context context;
@@ -20,12 +22,16 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createUserLoginSession(String name, String email) {
-        editor.putBoolean(IS_USER_LOGIN, true);
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_EMAIL, email);
+    public void createUserLoginSession(Session session) {
+        editor.putString(KEY_CURRENT_USER, new Gson().toJson(session));
         editor.commit();
     }
+
+    public void createDreamToken(String token) {
+        editor.putString(KEY_DREAM_TOKEN, token);
+        editor.commit();
+    }
+
 
     public void logoutUser() {
         editor.clear();
@@ -34,6 +40,6 @@ public class SessionManager {
 
 
     public boolean isUserLoggedIn() {
-        return pref.getBoolean(IS_USER_LOGIN, false);
+        return pref.contains(KEY_CURRENT_USER) && pref.contains(KEY_DREAM_TOKEN);
     }
 }

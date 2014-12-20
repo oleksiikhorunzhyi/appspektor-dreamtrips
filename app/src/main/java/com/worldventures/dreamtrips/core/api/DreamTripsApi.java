@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.core.api;
 
+import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -15,7 +18,7 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/sessions")
-    public void sessions(@Field("username") String username, @Field("password") String password, Callback<Object> callback);
+    public void getSession(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
 
     @GET("/trips")
     public void trips(Callback<List<Trip>> callback);

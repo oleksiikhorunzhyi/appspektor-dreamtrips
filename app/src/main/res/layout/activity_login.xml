@@ -1,17 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://robobinding.org/android"
     xmlns:tools="http: "
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
     android:orientation="vertical"
     tools:context="com.worldventures.dreamtrips.view.activity.LoginActivity"
     tools:ignore="MissingPrefix">
 
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/container"></FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 </LinearLayout>

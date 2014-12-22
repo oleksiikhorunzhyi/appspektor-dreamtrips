@@ -8,8 +8,6 @@ import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +45,11 @@ public class DataManager {
     public void getToken(String username, String password, Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         worldVenturesApi.getToken(username, password, callback);
+    }
+
+    public void getWebSiteDocumentsByCountry(Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        worldVenturesApi.getWebSiteDocumentsByCountry(callback);
     }
 
     private <T> Callback<T> convert(Result<T> result) {

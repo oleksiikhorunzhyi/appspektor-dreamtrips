@@ -22,6 +22,11 @@ public class SessionManager {
         editor = pref.edit();
     }
 
+    public Session getCurrentSession() {
+        String json = pref.getString(KEY_CURRENT_USER, "");
+        return new Gson().fromJson(json, Session.class);
+    }
+
     public void createUserLoginSession(Session session) {
         editor.putString(KEY_CURRENT_USER, new Gson().toJson(session));
         editor.commit();

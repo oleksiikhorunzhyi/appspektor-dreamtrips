@@ -37,7 +37,8 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.inject(this, view);
         MaterialRippleLayout.on(btnLogin)
-                .rippleColor(getResources().getColor(R.color.theme_main_darker))
+                .rippleColor(getResources().getColor(R.color.theme_main))
+                .rippleBackground(R.color.theme_main_darker)
                 .create();
     }
 

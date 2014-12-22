@@ -6,10 +6,12 @@ import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityCompass;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.WebViewFragmentPresentation;
 
 import javax.inject.Singleton;
@@ -24,6 +26,8 @@ import dagger.Provides;
                 LoginActivityPresentation.class,
                 LoginFragmentPresentation.class,
                 WebViewFragmentPresentation.class,
+                BaseActivityPresentation.class,
+                ProfileFragmentPresentation.class,
                 MainActivityPresentation.class},
         library = true
 )

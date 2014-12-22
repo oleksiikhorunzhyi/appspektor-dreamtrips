@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Config(emulateSdk = 18)
 public class MainActivityPMTest {
 
-    private DataManager dataManager;
+ /*   private DataManager dataManager;
 
     @Before
     public void setUp() throws Exception {
@@ -38,5 +38,5 @@ public class MainActivityPMTest {
         }, null);
         signal.await(10, TimeUnit.SECONDS);
         Assert.assertTrue("Trips not exist", map.getTrips().isEmpty());
-    }
+    }*/
 }

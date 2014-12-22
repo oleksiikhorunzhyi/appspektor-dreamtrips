@@ -43,6 +43,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new ItemHolder(v);
         } else if (viewType == TYPE_HEADER) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_navigation_drawer, viewGroup, false);
+            int dimensionPixelSize = viewGroup.getContext().getResources().getDimensionPixelSize(R.dimen.userSpace);
+            v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dimensionPixelSize));
             return new HeaderHolder(v);
         }
         return null;

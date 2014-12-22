@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 @Config(emulateSdk = 18)
 public class LoginActivityPMTest {
 
-    private DataManager dataManager;
+/*    private DataManager dataManager;
 
     @Before
     public void setUp() throws Exception {
@@ -54,5 +54,5 @@ public class LoginActivityPMTest {
         lap.setUserPassword("Password");
         lap.loginAction();
         signal.await();
-    }
+    }*/
 }

@@ -5,22 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar_actionbar"
-            layout="@layout/toolbar_default"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/abc_action_bar_default_height_material" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp" />
+
+    </RelativeLayout>
     <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
     <fragment
         android:id="@+id/fragment_drawer"
@@ -28,5 +35,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:layout="@layout/fragment_navigation_drawer"/>
+        app:layout="@layout/fragment_navigation_drawer" />
 </android.support.v4.widget.DrawerLayout>

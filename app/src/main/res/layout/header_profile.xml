@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://robobinding.org/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -16,12 +18,12 @@
 
     <ImageView
         android:id="@+id/user_photo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_above="@+id/gradient"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/photoMarginTop"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
         android:src="@drawable/fake_avatar" />
 
     <ImageView
@@ -45,7 +47,7 @@
     <LinearLayout
         android:id="@+id/gradient"
         android:layout_width="wrap_content"
-        android:layout_height="56dp"
+        android:layout_height="80dp"
         android:layout_alignBottom="@+id/user_cover"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
@@ -60,8 +62,9 @@
             android:layout_marginLeft="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            bind:text="{userNote}" />
 
         <TextView
             android:id="@+id/user_email"
@@ -70,7 +73,8 @@
             android:layout_marginLeft="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="16sp"
+            bind:text="{userEmail}" />
 
     </LinearLayout>
 

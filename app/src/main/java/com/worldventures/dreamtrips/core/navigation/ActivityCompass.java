@@ -6,8 +6,6 @@ import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 
-import javax.inject.Inject;
-
 public class ActivityCompass {
     BaseActivity baseActivity;//why not just context? because we will need to startActivityForResult
 
@@ -23,6 +21,10 @@ public class ActivityCompass {
     public void openLogin() {
         Intent intent = new Intent(baseActivity, LoginActivity.class);
         baseActivity.startActivity(intent);
+    }
+
+    public void finish() {
+        baseActivity.finish();
     }
 
 }

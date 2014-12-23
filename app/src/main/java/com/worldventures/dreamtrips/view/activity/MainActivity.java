@@ -15,11 +15,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class MainActivity extends BaseActivity implements MainActivityPresentation.View, NavigationDrawerCallbacks {
+
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     @InjectView(R.id.container)
     View container;
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    private NavigationDrawerFragment navigationDrawerFragment;
     private MainActivityPresentation presentation;
 
     @Override
@@ -30,8 +32,8 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
+        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
     }
 
     @Override
@@ -57,8 +59,8 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     }
 
 
-    public void makeActionBarTransparent(boolean is) {
-        if (is) {
+    public void makeActionBarTransparent(boolean isTransparent) {
+        if (isTransparent) {
             toolbar.getBackground().setAlpha(0);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, 0, 0, 0);
         } else {

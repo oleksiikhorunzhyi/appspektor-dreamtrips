@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.presentation;
 
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.view.activity.Injector;
@@ -12,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.inject.Inject;
+
 @PresentationModel
 public class ProfileFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
 
@@ -19,15 +22,20 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     public static final String LIVE_IN = "livesIn";
     public static final String DATE_OF_BIRTH = "dateOfBirth";
     public static final String USER_ID = "userId";
-    public static final String USER_NOTE = "userNote";
+    public static final String USER_NOTE = "userName";
     public static final String USER_EMAIL = "userEmail";
+
     private final PresentationModelChangeSupport changeSupport;
     private final Session currentSession;
+
+    @Inject
+    protected SessionManager sessionManager;
+
     String from;
     String livesIn;
     String dateOfBirth;
     String userId;
-    String userNote;
+    String userName;
     String userEmail;
 
     public ProfileFragmentPresentation(Injector objectGraph) {
@@ -35,10 +43,9 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         this.changeSupport = new PresentationModelChangeSupport(this);
         currentSession = sessionManager.getCurrentSession();
         User user = currentSession.getUser();
-        setUserNote(user.getLastName());
+        setUserName(user.getUsername());
         setUserEmail(user.getEmail());
         setUserId(user.getUsername());
-        //  setDateOfBirth(user.getBirthDate().toString());
         setLivesIn(user.getLocation());
         setFrom(user.getLocation());
         changeSupport.firePropertyChange(FROM);
@@ -57,12 +64,12 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         this.userEmail = userEmail;
     }
 
-    public String getUserNote() {
-        return userNote;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserNote(String userNote) {
-        this.userNote = userNote;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override
@@ -105,8 +112,8 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
     public void logout() {
         sessionManager.logoutUser();
-        activityCompass.openLogin();
-        activityCompass.finish();
+        activityRouter.openLogin();
+        activityRouter.finish();
     }
 
     public void onDataSet(int year, int month, int day) {

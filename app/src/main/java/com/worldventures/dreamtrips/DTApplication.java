@@ -5,13 +5,14 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.core.module.DTModule;
 import com.worldventures.dreamtrips.utils.Logs;
+import com.worldventures.dreamtrips.view.activity.Injector;
 
 import java.util.Arrays;
 import java.util.List;
 
 import dagger.ObjectGraph;
 
-public class DTApplication extends Application {
+public class DTApplication extends Application implements Injector {
 
     public static final String DEFAULT_TAG = "DreamApp";
     private ObjectGraph objectGraph;

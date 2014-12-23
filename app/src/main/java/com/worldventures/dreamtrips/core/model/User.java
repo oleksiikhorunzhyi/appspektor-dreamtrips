@@ -77,4 +77,8 @@ public class User extends BaseEntity {
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
 }

@@ -56,7 +56,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/user_nome"
+            android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -64,7 +64,7 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            bind:text="{userNote}" />
+            bind:text="{userName}" />
 
         <TextView
             android:id="@+id/user_email"

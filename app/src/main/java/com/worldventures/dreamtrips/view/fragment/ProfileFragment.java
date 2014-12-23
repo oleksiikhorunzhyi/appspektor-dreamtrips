@@ -13,22 +13,20 @@ import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
 
 import org.robobinding.ViewBinder;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class ProfileFragment extends BaseFragment<MainActivity> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener {
+
     @InjectView(R.id.user_cover)
     ImageView userCover;
     @InjectView(R.id.user_photo)
@@ -37,12 +35,13 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
     ImageView userPhoto2;
     @InjectView(R.id.user_photo_3)
     ImageView userPhoto3;
-    @InjectView(R.id.user_nome)
-    TextView userNome;
+    @InjectView(R.id.user_name)
+    TextView userName;
     @InjectView(R.id.user_email)
     TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
     DTEditText dateOfBirth;
+
     private ProfileFragmentPresentation presentationModel;
 
     @Override
@@ -71,13 +70,8 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle item selection
         switch (item.getItemId()) {
-            case R.id.item_feed:
-                informUser("TODO: will be implement");
-                return true;
             case R.id.item_logout:
-                // do s.th.
                 presentationModel.logout();
                 return true;
             default:
@@ -87,22 +81,20 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
 
     @OnClick(R.id.btn_save)
     public void onSaveClick() {
-        informUser("TODO: will be implement");
+        informUser("This feature is not implemented yet.");
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        Logs.d("datePicker: ", year + " " + month + " " + day);
-       presentationModel.onDataSet(year,month,day);
-
+        presentationModel.onDataSet(year, month, day);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(event.getAction()==MotionEvent.ACTION_UP){
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
-            datePickerDialog.setYearRange(1963, 2015);
+            datePickerDialog.setYearRange(1915, 2015);
             datePickerDialog.show(getAbsActivity().getSupportFragmentManager(), null);
         }
         return false;

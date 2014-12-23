@@ -27,8 +27,7 @@ public class ApiModule {
     DreamTripsApi provideApi() {
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(DreamTripsApi.DEFAULT_URL)
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
-                .setRequestInterceptor(request -> request.addHeader("Content-Type", "multipart/form-data; boundary=----AdditionalContentApiAuthRequestBoundary"))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(new GsonConverter(getGson()))
                 .build();
         return adapter.create(DreamTripsApi.class);

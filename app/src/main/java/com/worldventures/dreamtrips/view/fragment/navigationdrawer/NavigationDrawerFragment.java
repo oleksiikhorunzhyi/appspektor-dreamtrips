@@ -17,9 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.SessionManager;
+import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.view.activity.Injector;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
@@ -33,6 +38,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     private int mCurrentSelectedPosition;
+
+    @Inject
+    SessionManager sessionManager;
 
     public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -49,6 +57,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((Injector)getActivity()).inject(this);
+
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -64,8 +74,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     private NavigationHeader getNavigationHeader() {
         NavigationHeader navHeader = new NavigationHeader();
-        navHeader.setUserEmail("john@dreamtrip.com");
-        navHeader.setUserNome("John Doe");
+        User user = sessionManager.getCurrentSession().getUser();
+        navHeader.setUserEmail(user.getEmail());
+        navHeader.setUserNome(user.getUsername());
         navHeader.setUserCover(getResources().getDrawable(R.drawable.fake_cover));
         navHeader.setUserPhoto(getResources().getDrawable(R.drawable.fake_avatar));
         return navHeader;

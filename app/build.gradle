@@ -60,6 +60,6 @@ dependencies {
     testCompile 'org.robolectric:robolectric:2.4'
     compile 'com.getbase:floatingactionbutton:1.3.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:+'
-
-
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.squareup.picasso:picasso:2.4.0'
 }

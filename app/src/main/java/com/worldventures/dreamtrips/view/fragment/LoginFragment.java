@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.worldventures.dreamtrips.R;
@@ -22,8 +24,10 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
 
     @InjectView(R.id.btn_login)
     Button btnLogin;
+    private ProgressDialog progressDialog;
 
     public LoginFragment() {
+
     }
 
     @Override
@@ -36,10 +40,31 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.inject(this, view);
+
         MaterialRippleLayout.on(btnLogin)
                 .rippleColor(getResources().getColor(R.color.theme_main))
                 .rippleBackground(R.color.theme_main_darker)
                 .create();
     }
 
+    @Override
+    public void showProgressDialog() {
+        this.progressDialog = new ProgressDialog(getActivity());
+        this.progressDialog.setTitle("Loading...");
+        this.progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        this.progressDialog.show();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        this.progressDialog.dismiss();
+    }
+
+    @Override
+    public void showLoginErrorMessage() {
+        this.dismissProgressDialog();
+
+        Toast.makeText(getActivity(), "Invalid username or password", Toast.LENGTH_LONG).show();
+
+    }
 }

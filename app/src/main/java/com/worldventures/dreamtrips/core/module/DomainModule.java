@@ -3,9 +3,10 @@ package com.worldventures.dreamtrips.core.module;
 import com.worldventures.dreamtrips.DTApplication;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.SessionManager;
-import com.worldventures.dreamtrips.core.navigation.ActivityCompass;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
@@ -28,7 +29,9 @@ import dagger.Provides;
                 WebViewFragmentPresentation.class,
                 BaseActivityPresentation.class,
                 ProfileFragmentPresentation.class,
-                MainActivityPresentation.class},
+                MainActivityPresentation.class,
+                NavigationDrawerFragment.class
+        },
         library = true
 )
 public class DomainModule {
@@ -40,8 +43,8 @@ public class DomainModule {
     }
 
     @Provides
-    public ActivityCompass provideActivityCompass() {
-        return new ActivityCompass(baseActivity);
+    public ActivityRouter provideActivityCompass() {
+        return new ActivityRouter(baseActivity);
     }
 
     @Provides

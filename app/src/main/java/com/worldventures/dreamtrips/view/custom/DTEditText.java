@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 
 public class DTEditText extends MaterialEditText {
     public DTEditText(Context context) {

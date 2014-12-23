@@ -161,7 +161,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         ImageView userPhoto2;
         @InjectView(R.id.user_photo_3)
         ImageView userPhoto3;
-        @InjectView(R.id.user_nome)
+        @InjectView(R.id.user_name)
         TextView userNome;
         @InjectView(R.id.user_email)
         TextView userEmail;

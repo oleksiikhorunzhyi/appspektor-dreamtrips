@@ -1,54 +1,65 @@
 package com.worldventures.dreamtrips.view.presentation;
 
+import android.app.ProgressDialog;
+
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.utils.Logs;
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
+import javax.inject.Inject;
+
 @PresentationModel
 public class LoginFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
-    public static final int REQUEST_COUNT = 2;
     private final PresentationModelChangeSupport changeSupport;
+    private final View view;
+
+    @Inject
+    protected SessionManager sessionManager;
+
     private String username;
     private String userPassword;
-    private View view;
 
-    public LoginFragmentPresentation(View view, Injector graf) {
-        super(graf);
+    public LoginFragmentPresentation(View view, Injector injector) {
+        super(injector);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
     }
 
     public void loginAction() {
 
+        this.view.showProgressDialog();
+
         String username = getUsername();
         String userPassword = getUserPassword();
-        sessionManager.logoutUser();
+
+        if (username.length() == 0 && userPassword.length() == 0) {
+            this.view.showLoginErrorMessage();
+            return;
+        }
+
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
                 sessionManager.createUserLoginSession(o);
-                Logs.d("getSession", o.toString());
-                tryOpenMain();
+
+                dataManager.getToken(username, userPassword, (oi, ei) -> {
+                    if (oi != null) {
+                        String token = oi.get("result").getAsString();
+
+                        sessionManager.createDreamToken(token);
+
+                        activityRouter.openMain();
+                    } else {
+                        this.view.showLoginErrorMessage();
+                    }
+                });
+            } else {
+                this.view.showLoginErrorMessage();
             }
         });
-        dataManager.getToken(username, userPassword, (o, e) -> {
-            if (o != null) {
-                String token = o.get("result").getAsString();
-
-                sessionManager.createDreamToken(token);
-                Logs.d("getToken", o.toString());
-                tryOpenMain();
-            }
-        });
-    }
-
-    private void tryOpenMain() {
-        if (sessionManager.isUserLoggedIn()) {
-            activityCompass.openMain();
-        }
     }
 
     public String getUsername() {
@@ -82,5 +93,9 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
     }
 
     public static interface View extends IInformView {
+        void showProgressDialog();
+        void dismissProgressDialog();
+
+        void showLoginErrorMessage();
     }
 }

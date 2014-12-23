@@ -5,11 +5,12 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.activity.Injector;
 
 public class BaseFragment<T extends BaseActivity> extends Fragment {
 
-    protected static final String TAG = BaseFragment.class.getSimpleName();
     private T activity;
+    private Injector injector;
 
     @Override
     public void onAttach(Activity activity) {
@@ -23,5 +24,9 @@ public class BaseFragment<T extends BaseActivity> extends Fragment {
 
     public T getAbsActivity() {
         return activity;
+    }
+
+    public Injector getInjector() {
+        return injector;
     }
 }

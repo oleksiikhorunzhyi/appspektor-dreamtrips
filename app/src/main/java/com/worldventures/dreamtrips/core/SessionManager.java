@@ -11,6 +11,7 @@ public class SessionManager {
     public static final String KEY_CURRENT_USER = "KEY_CURRENT_USER";
     public static final String KEY_DREAM_TOKEN = "KEY_DREAM_TOKEN";
     private static final String PREFER_NAME = "DreamTripsYo";
+
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context context;

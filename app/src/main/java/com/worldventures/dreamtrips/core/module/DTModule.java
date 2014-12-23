@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(injects = {DTApplication.class,LaunchActivity.class, MainActivity.class, LoginActivity.class},
+@Module(injects = {DTApplication.class, LaunchActivity.class, MainActivity.class, LoginActivity.class},
         includes = {ApiModule.class},
         complete = false)
 public class DTModule {

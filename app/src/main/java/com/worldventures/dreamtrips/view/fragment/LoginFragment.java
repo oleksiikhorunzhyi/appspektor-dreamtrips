@@ -1,16 +1,14 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.balysv.materialripple.MaterialRippleLayout;
+import com.dd.CircularProgressButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
@@ -23,8 +21,7 @@ import butterknife.InjectView;
 public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFragmentPresentation.View {
 
     @InjectView(R.id.btn_login)
-    Button btnLogin;
-    private ProgressDialog progressDialog;
+    CircularProgressButton btnLogin;
 
     public LoginFragment() {
 
@@ -40,31 +37,35 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.inject(this, view);
-
-        MaterialRippleLayout.on(btnLogin)
+/*        MaterialRippleLayout.on(btnLogin)
                 .rippleColor(getResources().getColor(R.color.theme_main))
                 .rippleBackground(R.color.theme_main_darker)
-                .create();
+                .create();*/
     }
 
     @Override
     public void showProgressDialog() {
-        this.progressDialog = new ProgressDialog(getActivity());
-        this.progressDialog.setTitle("Loading...");
-        this.progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        this.progressDialog.show();
+        btnLogin.setIndeterminateProgressMode(true);
+        btnLogin.setProgress(50);
+        btnLogin.setClickable(false);
     }
 
     @Override
-    public void dismissProgressDialog() {
-        this.progressDialog.dismiss();
+    public void showLoginSuccess() {
+        dismissProgressDialog();
     }
 
     @Override
     public void showLoginErrorMessage() {
-        this.dismissProgressDialog();
+        dismissProgressDialog();
+        informUser("Invalid username or password");
+    }
 
-        Toast.makeText(getActivity(), "Invalid username or password", Toast.LENGTH_LONG).show();
-
+    private void dismissProgressDialog() {
+        //Handler for better visual effect
+        new Handler().postDelayed(() -> {
+            btnLogin.setProgress(0);
+            btnLogin.setClickable(true);
+        }, 50);
     }
 }

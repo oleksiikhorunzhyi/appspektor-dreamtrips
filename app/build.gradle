@@ -62,4 +62,7 @@ dependencies {
     compile 'com.github.flavienlaurent.datetimepicker:library:+'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.afollestad:material-dialogs:0.4.7'
+    compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
 }
+

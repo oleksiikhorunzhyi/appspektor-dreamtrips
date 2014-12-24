@@ -50,8 +50,9 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
                         String token = oi.get("result").getAsString();
 
                         sessionManager.createDreamToken(token);
-
                         activityRouter.openMain();
+                        activityRouter.finish();
+                        this.view.showLoginSuccess();
                     } else {
                         this.view.showLoginErrorMessage();
                     }
@@ -94,8 +95,7 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
 
     public static interface View extends IInformView {
         void showProgressDialog();
-        void dismissProgressDialog();
-
+        void showLoginSuccess();
         void showLoginErrorMessage();
     }
 }

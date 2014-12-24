@@ -88,14 +88,19 @@
                     android:autoText="false" />
             </LinearLayout>
 
-            <Button
+            <com.dd.CircularProgressButton
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/theme_main_darker"
-                android:text="Log In"
-                android:textColor="@android:color/white"
-                bind:onClick="loginAction" />
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cpb_textComplete="@string/login"
+                app:cpb_textError="@string/login"
+                bind:onClick="loginAction"
+                app:cpb_colorIndicatorBackground="@android:color/transparent"
+                app:cpb_colorProgress="@android:color/transparent"
+                app:cpb_selectorIdle="@drawable/login_button_selector"
+                app:cpb_textIdle="@string/login" />
 
         </LinearLayout>
 

@@ -19,14 +19,11 @@ public class DTEditText extends MaterialEditText {
 
     public DTEditText(Context context, AttributeSet attrs, int style) {
         super(context, attrs, style);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.ColorOptionsView, 0, 0);
-        int valueColor = a.getColor(R.styleable.ColorOptionsView_hintColor, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DTEditText);
+        int valueColor = a.getColor(R.styleable.DTEditText_hintColor, 0);
         a.recycle();
         if (valueColor > 0) {
             setHintTextColor(valueColor);
         }
     }
-
-
 }

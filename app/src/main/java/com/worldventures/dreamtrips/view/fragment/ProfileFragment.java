@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
@@ -72,11 +73,28 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_logout:
-                presentationModel.logout();
+                showLogoutDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showLogoutDialog() {
+        new MaterialDialog.Builder(getAbsActivity())
+                .title(getString(R.string.logout_dialog_title))
+                .content(getString(R.string.logout_dialog_message))
+                .positiveText(getString(R.string.logout_dialog_positive_btn))
+                .negativeText(getString(R.string.logout_dialog_negative_btn))
+                .positiveColorRes(R.color.theme_main_darker)
+                .negativeColorRes(R.color.theme_main_darker)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        presentationModel.logout();
+                    }
+                })
+                .show();
     }
 
     @OnClick(R.id.btn_save)

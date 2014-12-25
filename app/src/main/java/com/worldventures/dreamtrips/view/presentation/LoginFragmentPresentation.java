@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.view.presentation;
 
-import android.app.ProgressDialog;
-
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.SessionManager;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
 import org.robobinding.annotation.PresentationModel;
@@ -31,15 +30,17 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
 
     public void loginAction() {
 
-        this.view.showProgressDialog();
 
         String username = getUsername();
         String userPassword = getUserPassword();
 
-        if (username.length() == 0 && userPassword.length() == 0) {
-            this.view.showLoginErrorMessage();
+        ValidationUtils.VResult usernameValid = ValidationUtils.isUsernameValid(username);
+        ValidationUtils.VResult passwordValid = ValidationUtils.isPasswordValid(userPassword);
+        if (!usernameValid.isValid() || !passwordValid.isValid()) {
+            view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
             return;
         }
+        this.view.showProgressDialog();
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
                 sessionManager.createUserLoginSession(o);
@@ -94,7 +95,11 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
 
     public static interface View extends IInformView {
         void showProgressDialog();
+
         void showLoginSuccess();
+
         void showLoginErrorMessage();
+
+        public void showLocalErrors(String userNameError, String passwordError);
     }
 }

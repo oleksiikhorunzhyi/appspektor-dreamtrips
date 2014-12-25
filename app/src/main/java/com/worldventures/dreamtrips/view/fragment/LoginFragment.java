@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.dd.CircularProgressButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 
 import org.robobinding.ViewBinder;
@@ -22,6 +23,10 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
 
     @InjectView(R.id.btn_login)
     CircularProgressButton btnLogin;
+    @InjectView(R.id.et_username)
+    DTEditText etUsername;
+    @InjectView(R.id.et_password)
+    DTEditText etPassword;
 
     public LoginFragment() {
 
@@ -67,5 +72,11 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
             btnLogin.setProgress(0);
             btnLogin.setClickable(true);
         }, 50);
+    }
+
+
+    public void showLocalErrors(String userNameError, String passwordError) {
+        etUsername.setError(userNameError);
+        etPassword.setError(passwordError);
     }
 }

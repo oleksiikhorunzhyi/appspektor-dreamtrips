@@ -2,12 +2,16 @@ package com.worldventures.dreamtrips.view.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.worldventures.dreamtrips.R;
 
 public class DTEditText extends MaterialEditText {
+
+    public static final String NAMESPACE = "http://schemas.android.com/apk/res/android";
+
     public DTEditText(Context context) {
         this(context, null);
     }
@@ -20,14 +24,14 @@ public class DTEditText extends MaterialEditText {
     public DTEditText(Context context, AttributeSet attrs, int style) {
         super(context, attrs, style);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DTEditText);
-        int valueColor = a.getColor(R.styleable.DTEditText_hintColor, 0);
+        String valueColor = a.getString(R.styleable.DTEditText_hintColor);
         a.recycle();
-        if (valueColor > 0) {
-            setHintTextColor(valueColor);
+        if (valueColor != null && !valueColor.isEmpty()) {
+            setHintTextColor(Color.parseColor(valueColor));
         }
-        boolean b1 = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "focusableInTouchMode", true);
-        boolean focusable = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "focusable", true);
-        boolean clickable = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "clickable", true);
+        boolean b1 = attrs.getAttributeBooleanValue(NAMESPACE, "focusableInTouchMode", true);
+        boolean focusable = attrs.getAttributeBooleanValue(NAMESPACE, "focusable", true);
+        boolean clickable = attrs.getAttributeBooleanValue(NAMESPACE, "clickable", true);
 
         setFocusableInTouchMode(b1);
         setFocusable(focusable);

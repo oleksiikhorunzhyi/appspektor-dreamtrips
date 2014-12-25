@@ -53,7 +53,7 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
         ButterKnife.inject(this, view);
         userCover.setImageResource(R.drawable.fake_cover);
         userPhoto.setImageResource(R.drawable.fake_avatar);
-        dateOfBirth.setOnTouchListener(this);
+       // dateOfBirth.setOnTouchListener(this);
         return view;
     }
 

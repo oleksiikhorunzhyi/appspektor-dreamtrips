@@ -40,7 +40,6 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
             this.view.showLoginErrorMessage();
             return;
         }
-
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
                 sessionManager.createUserLoginSession(o);

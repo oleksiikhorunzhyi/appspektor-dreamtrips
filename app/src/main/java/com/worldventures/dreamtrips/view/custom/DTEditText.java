@@ -25,5 +25,12 @@ public class DTEditText extends MaterialEditText {
         if (valueColor > 0) {
             setHintTextColor(valueColor);
         }
+        boolean b1 = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "focusableInTouchMode", true);
+        boolean focusable = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "focusable", true);
+        boolean clickable = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/android", "clickable", true);
+
+        setFocusableInTouchMode(b1);
+        setFocusable(focusable);
+        setClickable(clickable);
     }
 }

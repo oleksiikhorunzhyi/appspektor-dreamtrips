@@ -6,8 +6,8 @@ public class Trip extends BaseEntity {
     String location;
     boolean isFeatured;
     boolean isRewarded;
-    long duruation;
-    boolean isPriceAvalible;
+    long duration;
+    boolean isPriceAvailable;
     long rewardsLimit;
 
     public String getName() {
@@ -50,20 +50,20 @@ public class Trip extends BaseEntity {
         this.isRewarded = isRewarded;
     }
 
-    public long getDuruation() {
-        return duruation;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setDuruation(long duruation) {
-        this.duruation = duruation;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
-    public boolean isPriceAvalible() {
-        return isPriceAvalible;
+    public boolean isPriceAvailable() {
+        return isPriceAvailable;
     }
 
-    public void setPriceAvalible(boolean isPriceAvalible) {
-        this.isPriceAvalible = isPriceAvalible;
+    public void setPriceAvailable(boolean isPriceAvalible) {
+        this.isPriceAvailable = isPriceAvalible;
     }
 
     public long getRewardsLimit() {

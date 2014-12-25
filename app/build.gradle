@@ -59,10 +59,11 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.robolectric:robolectric:2.4'
     compile 'com.getbase:floatingactionbutton:1.3.0'
-    compile 'com.github.flavienlaurent.datetimepicker:library:+'
+    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.afollestad:material-dialogs:0.4.7'
     compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
+    compile 'com.jpardogo.materialtabstrip:library:1.0.6'
 }
 

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public enum State {
     WEB_STATIC(WebViewFragment.class, "Web"),
 
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
-    TRIP_IMAGES(DreamTripsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
+    TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
     MEMBERSHIP(DreamTripsFragment.class, "Membership", 2, R.drawable.ic_membership),
     BUCKET_LIST(DreamTripsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),

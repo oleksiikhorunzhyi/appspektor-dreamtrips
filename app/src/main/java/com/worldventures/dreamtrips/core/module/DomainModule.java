@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.view.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.view.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.WebViewFragmentPresentation;
 
 import javax.inject.Singleton;
@@ -30,7 +32,9 @@ import dagger.Provides;
                 BaseActivityPresentation.class,
                 ProfileFragmentPresentation.class,
                 MainActivityPresentation.class,
-                NavigationDrawerFragment.class
+                NavigationDrawerFragment.class,
+                TripImagesTabsFragmentPresentation.class,
+                TripImagesListFragmentPresentation.class
         },
         library = true
 )

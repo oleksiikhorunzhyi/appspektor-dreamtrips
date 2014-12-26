@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.User;
 
 public class SessionManager {
 
-    public static final String KEY_CURRENT_USER = "KEY_CURRENT_USER";
+    public static final String KEY_TOKEN = "KEY_TOKEN";
     public static final String KEY_DREAM_TOKEN = "KEY_DREAM_TOKEN";
+    public static final String KEY_USER = "KEY_USER";
     private static final String PREFER_NAME = "DreamTripsYo";
-
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context context;
@@ -23,19 +23,31 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public Session getCurrentSession() {
-        String json = pref.getString(KEY_CURRENT_USER, "");
-        return new Gson().fromJson(json, Session.class);
+    public String getCurrentSession() {
+        return pref.getString(KEY_TOKEN, "");
     }
 
-    public void createUserLoginSession(Session session) {
-        editor.putString(KEY_CURRENT_USER, new Gson().toJson(session));
+    public void createUserLoginSession(String token) {
+        editor.putString(KEY_TOKEN, token);
         editor.commit();
+    }
+
+    public String getDreamToken() {
+        return pref.getString(KEY_DREAM_TOKEN, "");
     }
 
     public void createDreamToken(String token) {
         editor.putString(KEY_DREAM_TOKEN, token);
         editor.commit();
+    }
+
+    public void saveCurrentUser(User user) {
+        editor.putString(KEY_USER, new Gson().toJson(user));
+        editor.commit();
+    }
+
+    public User getCurrentUser() {
+        return new Gson().fromJson(pref.getString(KEY_USER, ""), User.class);
     }
 
 
@@ -46,6 +58,6 @@ public class SessionManager {
 
 
     public boolean isUserLoggedIn() {
-        return pref.contains(KEY_CURRENT_USER) && pref.contains(KEY_DREAM_TOKEN);
+        return pref.contains(KEY_TOKEN) && pref.contains(KEY_DREAM_TOKEN);
     }
 }

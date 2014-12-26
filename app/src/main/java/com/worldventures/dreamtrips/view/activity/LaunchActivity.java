@@ -11,7 +11,7 @@ public class LaunchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lp = new LaunchActivityPresentation(this);
+        lp = new LaunchActivityPresentation(this, this);
         lp.onCreate();
         finish();
     }

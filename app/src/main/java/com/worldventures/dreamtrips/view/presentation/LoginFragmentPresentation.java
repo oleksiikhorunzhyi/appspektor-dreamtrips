@@ -23,7 +23,7 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
     private String userPassword;
 
     public LoginFragmentPresentation(View view, Injector injector) {
-        super(injector);
+        super(view, injector);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
     }
@@ -43,8 +43,8 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
         this.view.showProgressDialog();
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
-                sessionManager.createUserLoginSession(o);
-
+                sessionManager.createUserLoginSession(o.getToken());
+                sessionManager.saveCurrentUser(o.getUser());
                 dataManager.getToken(username, userPassword, (oi, ei) -> {
                     if (oi != null) {
                         String token = oi.get("result").getAsString();

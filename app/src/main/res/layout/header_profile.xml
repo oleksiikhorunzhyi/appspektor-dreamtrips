@@ -16,7 +16,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/fake_cover" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_photo"
         android:layout_width="84dp"
         android:layout_height="84dp"

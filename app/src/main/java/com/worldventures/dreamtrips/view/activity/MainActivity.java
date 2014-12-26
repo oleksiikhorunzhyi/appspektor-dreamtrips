@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presentation = new MainActivityPresentation(this, this);
+        presentation.onCreate();
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
@@ -69,5 +70,11 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presentation.onPause();
     }
 }

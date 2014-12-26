@@ -12,7 +12,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation impleme
     private final View view;
 
     public TripImagesTabsFragmentPresentation(View view, Injector injector) {
-        super(injector);
+        super(view, injector);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
     }

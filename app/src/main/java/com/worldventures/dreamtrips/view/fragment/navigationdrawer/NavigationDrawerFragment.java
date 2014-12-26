@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -17,19 +18,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.SessionManager;
+import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREFERENCES_FILE = "my_app_settings"; //TODO: change this to your file
+    @Inject
+    DataManager dataManager;
+    @Inject
+    EventBus eventBus;
     private NavigationDrawerCallbacks mCallbacks;
     private RecyclerView mDrawerList;
     private View mFragmentContainerView;
@@ -38,9 +47,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     private int mCurrentSelectedPosition;
-
-    @Inject
-    SessionManager sessionManager;
+    private NavigationDrawerAdapter adapter;
 
     public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -57,7 +64,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((Injector)getActivity()).inject(this);
+        ((Injector) getActivity()).inject(this);
 
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
@@ -65,21 +72,30 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getMenu());
-        adapter.setHeader(getNavigationHeader());
+        adapter = new NavigationDrawerAdapter(getMenu(), (Injector) getActivity());
         adapter.setNavigationDrawerCallbacks(this);
+        updateHeader();
         mDrawerList.setAdapter(adapter);
         return view;
     }
 
     private NavigationHeader getNavigationHeader() {
         NavigationHeader navHeader = new NavigationHeader();
-        User user = sessionManager.getCurrentSession().getUser();
+        User user = dataManager.getCurrentUser();
         navHeader.setUserEmail(user.getEmail());
         navHeader.setUserNome(user.getUsername());
-        navHeader.setUserCover(getResources().getDrawable(R.drawable.fake_cover));
-        navHeader.setUserPhoto(getResources().getDrawable(R.drawable.fake_avatar));
+        navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));
+        navHeader.setUserPhoto(user.getAvatar().getMediumUri());
         return navHeader;
+    }
+
+    public void onEvent(UpdateUserInfoEvent event) {
+        updateHeader();
+    }
+
+    private void updateHeader() {
+        adapter.setHeader(getNavigationHeader());
+        adapter.notifyItemChanged(0);
     }
 
     @Override
@@ -137,15 +153,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         if (!mUserLearnedDrawer && !mFromSavedInstanceState)
             mDrawerLayout.openDrawer(mFragmentContainerView);
 
-        mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mActionBarDrawerToggle.syncState();
-            }
-        });
+        mDrawerLayout.post(() -> mActionBarDrawerToggle.syncState());
 
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         selectItem(mCurrentSelectedPosition);
+        eventBus.register(this);
     }
 
     public void openDrawer() {

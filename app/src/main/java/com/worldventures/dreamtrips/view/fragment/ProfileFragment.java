@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,19 +16,25 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
+import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
 
 import org.robobinding.ViewBinder;
 
 import java.util.Calendar;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ProfileFragment extends BaseFragment<MainActivity> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener {
+public class ProfileFragment extends BaseFragment<MainActivity>
+        implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfileFragmentPresentation.View {
 
     @InjectView(R.id.user_cover)
     ImageView userCover;
@@ -42,19 +50,66 @@ public class ProfileFragment extends BaseFragment<MainActivity> implements DateP
     TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
     DTEditText dateOfBirth;
-
+    @Inject
+    UniversalImageLoader universalImageLoader;
     private ProfileFragmentPresentation presentationModel;
+    private PickImageDialog pid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presentationModel = new ProfileFragmentPresentation(getAbsActivity());
+        presentationModel = new ProfileFragmentPresentation(this, getAbsActivity());
         ViewBinder viewBinder = getAbsActivity().createViewBinder();
         View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_profile, presentationModel, container);
         ButterKnife.inject(this, view);
-        userCover.setImageResource(R.drawable.fake_cover);
-        userPhoto.setImageResource(R.drawable.fake_avatar);
-       // dateOfBirth.setOnTouchListener(this);
+        getAbsActivity().inject(this);
+        //  userCover.setImageResource(R.drawable.fake_cover);
+        // userPhoto.setImageResource(R.drawable.fake_avatar);
+        presentationModel.onViewCreated();
+        ViewGroup.LayoutParams lp = userCover.getLayoutParams();
+        lp.height = ViewIUtils.getScreenWidth(getAbsActivity());//but by material style guide 3:2
+
         return view;
+    }
+
+    @OnClick(R.id.user_photo)
+    public void onPhotoClick(ImageView iv) {
+        pid = new PickImageDialog(getAbsActivity(), this);
+        pid.setTitle("Select avatar");
+        pid.setCallback(presentationModel.provideAvatarChooseCallback());
+        pid.show();
+    }
+
+    @Override
+    public void setAvatarImage(Uri uri) {
+        getAbsActivity().runOnUiThread(() -> {
+            if (uri != null) {
+                universalImageLoader.loadImage(uri, userPhoto, UniversalImageLoader.OP_AVATAR);
+            }
+        });
+    }
+
+    @Override
+    public void setCoverImage(Uri uri) {
+        getAbsActivity().runOnUiThread(() -> {
+            if (uri != null) {
+                universalImageLoader.loadImage(uri, userCover, UniversalImageLoader.OP_COVER);
+            }
+        });
+    }
+
+
+    @OnClick(R.id.user_cover)
+    public void onCoverClick(ImageView iv) {
+        pid = new PickImageDialog(getAbsActivity(), this);
+        pid.setTitle("Select cover");
+        pid.setCallback(presentationModel.provideCoverChooseCallback());
+        pid.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        pid.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

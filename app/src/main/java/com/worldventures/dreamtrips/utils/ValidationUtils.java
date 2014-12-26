@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class ValidationUtils {
 
     private static final String USERNAME_PATTERN = "^[a-z0-9._-]{2,25}$";
-    private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+    private static final String PASSWORD_PATTERN = "^[a-z0-9.#@%^&*-_]{6,25}$";
 
 
     public static VResult isUsernameValid(String username) {

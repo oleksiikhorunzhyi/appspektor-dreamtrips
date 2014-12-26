@@ -12,6 +12,18 @@ public class User extends BaseEntity {
     String location;
     Avatar avatar;
 
+    String coverPath;
+
+    public String getCoverPath() {
+        if (coverPath == null) {
+            coverPath = "";
+        }
+        return coverPath;
+    }
+
+    public void setCoverPath(String coverPath) {
+        this.coverPath = coverPath;
+    }
     // {id=1.0, username=888888,
     // email=wvoperations@gmail.com,
     // first_name=wvoperations@gmail.com,

@@ -3,6 +3,10 @@ package com.worldventures.dreamtrips;
 import android.app.Application;
 import android.content.Context;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.worldventures.dreamtrips.core.module.DTModule;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.Injector;
@@ -24,9 +28,28 @@ public class DTApplication extends Application implements Injector {
     @Override
     public void onCreate() {
         super.onCreate();
-        initGraph();
         Logs.init(DEFAULT_TAG, BuildConfig.DEBUG);
+        initGraph();
+        initImageLoader();
 
+
+    }
+
+    private void initImageLoader() {
+        DisplayImageOptions.Builder optionBuilder = new DisplayImageOptions.Builder();
+        optionBuilder.cacheOnDisk(true);
+        optionBuilder.cacheInMemory(true);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .threadPoolSize(3)
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .tasksProcessingOrder(QueueProcessingType.FIFO)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCacheSizePercentage(30)
+                .diskCacheSize(50 * 1024 * 1024)
+                .defaultDisplayImageOptions(optionBuilder.build())
+                .writeDebugLogs()
+                .build();
+        ImageLoader.getInstance().init(config);
     }
 
     private void initGraph() {
@@ -34,7 +57,7 @@ public class DTApplication extends Application implements Injector {
     }
 
     private List<Object> getModules() {
-        return Arrays.<Object>asList(new DTModule(this));
+        return Arrays.asList(new DTModule(this));
     }
 
     public void inject(Object object) {

@@ -24,7 +24,7 @@ public class WebViewFragment extends BaseFragment<MainActivity> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WebViewFragmentPresentation presentationModel = new WebViewFragmentPresentation(getAbsActivity());
+        WebViewFragmentPresentation presentationModel = new WebViewFragmentPresentation(this,getAbsActivity());
         return inflater.inflate(R.layout.fragment_webview, container, false);
     }
 

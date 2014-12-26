@@ -11,8 +11,8 @@ public class LaunchActivityPresentation extends BasePresentation {
     @Inject
     protected SessionManager sessionManager;
 
-    public LaunchActivityPresentation(Injector objectGraph) {
-        super(objectGraph);
+    public LaunchActivityPresentation(IInformView view, Injector objectGraph) {
+        super(view, objectGraph);
     }
 
     public void onCreate() {

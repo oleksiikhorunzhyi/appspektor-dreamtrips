@@ -1,19 +1,25 @@
 package com.worldventures.dreamtrips.view.presentation;
 
+import android.net.Uri;
+
 import com.worldventures.dreamtrips.core.SessionManager;
-import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 @PresentationModel
 public class ProfileFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
@@ -26,23 +32,44 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     public static final String USER_EMAIL = "userEmail";
 
     private final PresentationModelChangeSupport changeSupport;
-    private final Session currentSession;
+    protected View view;
+    protected String from;
+    protected String livesIn;
+    protected String dateOfBirth;
+    protected String userId;
+    protected String userName;
+    protected String userEmail;
 
+    @Inject
+    protected EventBus eventBus;
     @Inject
     protected SessionManager sessionManager;
 
-    String from;
-    String livesIn;
-    String dateOfBirth;
-    String userId;
-    String userName;
-    String userEmail;
+    private PickImageDialog.Callback avatarCallback = (image, error) -> {
+        dataManager.uploadAvatar(sessionManager,
+                new File(image.getFileThumbnail()),
+                (avatar, e) -> {
+                    if (e == null) {
+                        dataManager.getCurrentUser().setAvatar(avatar);
+                        eventBus.post(new UpdateUserInfoEvent());
+                    } else {
+                        handleError(e);
+                    }
+                });
+        view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
+    };
 
-    public ProfileFragmentPresentation(Injector objectGraph) {
-        super(objectGraph);
+    private PickImageDialog.Callback coverCallback = (image, error) -> {
+        view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
+        dataManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
+        eventBus.post(new UpdateUserInfoEvent());
+    };
+
+    public ProfileFragmentPresentation(View view, Injector injector) {
+        super(view, injector);
+        this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
-        currentSession = sessionManager.getCurrentSession();
-        User user = currentSession.getUser();
+        User user = dataManager.getCurrentUser();
         setUserName(user.getUsername());
         setUserEmail(user.getEmail());
         setUserId(user.getUsername());
@@ -54,6 +81,14 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         changeSupport.firePropertyChange(USER_ID);
         changeSupport.firePropertyChange(USER_NOTE);
         changeSupport.firePropertyChange(USER_EMAIL);
+    }
+
+
+    public void onViewCreated() {
+        User currentUser = dataManager.getCurrentUser();
+        view.setAvatarImage(currentUser.getAvatar().getMediumUri());
+        view.setCoverImage(Uri.fromFile(new File(currentUser.getCoverPath())));
+
     }
 
     public String getUserEmail() {
@@ -121,6 +156,20 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         Calendar calendar = new GregorianCalendar(year, month, day);
         setDateOfBirth(sdf.format(calendar.getTime()));
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
+    }
 
+    public PickImageDialog.Callback provideAvatarChooseCallback() {
+        return avatarCallback;
+    }
+
+    public PickImageDialog.Callback provideCoverChooseCallback() {
+        return coverCallback;
+    }
+
+
+    public static interface View extends IInformView {
+        public void setAvatarImage(Uri uri);
+
+        public void setCoverImage(Uri uri);
     }
 }

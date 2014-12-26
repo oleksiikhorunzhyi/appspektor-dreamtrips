@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.core.model;
 
+import android.net.Uri;
+
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+
 public class Avatar {
     String original;
     String medium;
@@ -27,5 +31,18 @@ public class Avatar {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    @Override
+    public String toString() {
+        return "Avatar{" +
+                "original='" + original + '\'' +
+                ", medium='" + medium + '\'' +
+                ", thumb='" + thumb + '\'' +
+                '}';
+    }
+
+    public Uri getMediumUri() {
+        return Uri.parse(DreamTripsApi.DEFAULT_URL + getMedium());
     }
 }

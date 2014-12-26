@@ -6,11 +6,11 @@ import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.presentation.IInformView;
 
-public class BaseFragment<T extends BaseActivity> extends Fragment {
+public class BaseFragment<T extends BaseActivity> extends Fragment implements IInformView {
 
     private T activity;
-    private Injector injector;
 
     @Override
     public void onAttach(Activity activity) {
@@ -24,9 +24,5 @@ public class BaseFragment<T extends BaseActivity> extends Fragment {
 
     public T getAbsActivity() {
         return activity;
-    }
-
-    public Injector getInjector() {
-        return injector;
     }
 }

@@ -1,28 +1,29 @@
 package com.worldventures.dreamtrips.view.fragment.navigationdrawer;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 public class NavigationHeader {
-    Drawable userCover;
-    Drawable userPhoto;
+    Uri userCover;
+    Uri userPhoto;
     Drawable userPhoto2;
     Drawable userPhoto3;
     String userNome;
     String userEmail;
 
-    public Drawable getUserCover() {
+    public Uri getUserCover() {
         return userCover;
     }
 
-    public void setUserCover(Drawable userCover) {
+    public void setUserCover(Uri userCover) {
         this.userCover = userCover;
     }
 
-    public Drawable getUserPhoto() {
+    public Uri getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(Drawable userPhoto) {
+    public void setUserPhoto(Uri userPhoto) {
         this.userPhoto = userPhoto;
     }
 

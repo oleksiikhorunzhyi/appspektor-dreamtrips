@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.module.DTModule;
 import com.worldventures.dreamtrips.core.module.DomainModule;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.IInformView;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import dagger.ObjectGraph;
 
-public abstract class BaseActivity extends ActionBarActivity implements Injector {
+public abstract class BaseActivity extends ActionBarActivity implements Injector, IInformView {
 
 
     private ObjectGraph activityGraph;
@@ -31,7 +32,7 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityGraph = ObjectGraph.create(getModules().toArray());
-        baseActivityPresentation = new BaseActivityPresentation(this);
+        baseActivityPresentation = new BaseActivityPresentation(this,this);
     }
 
     public void inject(Object ob) {
@@ -74,6 +75,10 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     public void informUser(String st) {
         Logs.d("InformUser", st);
         Snackbar.with(getApplicationContext()).text(st).show(this);
+    }
+
+    public void handleError(Exception e) {
+        baseActivityPresentation.handleError(e);
     }
 }
 

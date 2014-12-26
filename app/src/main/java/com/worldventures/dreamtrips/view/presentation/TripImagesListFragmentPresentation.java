@@ -9,11 +9,11 @@ public class TripImagesListFragmentPresentation extends BasePresentation {
     private View view;
 
     public TripImagesListFragmentPresentation(View view, Injector injector) {
-        super(injector);
+        super(view, injector);
         this.view = view;
     }
 
-    public static interface View {
+    public static interface View extends IInformView {
 
     }
 }

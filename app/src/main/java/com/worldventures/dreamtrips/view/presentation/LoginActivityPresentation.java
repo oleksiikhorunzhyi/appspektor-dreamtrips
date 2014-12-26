@@ -5,8 +5,8 @@ import com.worldventures.dreamtrips.view.activity.Injector;
 
 public class LoginActivityPresentation extends BasePresentation {
 
-    public LoginActivityPresentation(Injector objectGraph) {
-        super(objectGraph);
+    public LoginActivityPresentation(IInformView view, Injector objectGraph) {
+        super(view, objectGraph);
     }
 
     public void onCreate() {

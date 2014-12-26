@@ -10,24 +10,34 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.view.activity.Injector;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.utils.UniversalImageLoader.OP_AVATAR;
+import static com.worldventures.dreamtrips.utils.UniversalImageLoader.OP_COVER;
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int HEADER_SIZE = 1;
+    @Inject
+    UniversalImageLoader universalImageLoader;
     private List<State> mData;
     private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
     private NavigationHeader navigationHeader;
 
-    public NavigationDrawerAdapter(List<State> data) {
+    public NavigationDrawerAdapter(List<State> data, Injector injector) {
+        injector.inject(this);
         mData = data;
     }
 
@@ -89,8 +99,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         } else if (viewHolder instanceof HeaderHolder) {
             HeaderHolder holder = (HeaderHolder) viewHolder;
-            holder.userCover.setImageDrawable(navigationHeader.getUserCover());
-            holder.userPhoto.setImageDrawable(navigationHeader.getUserPhoto());
+            universalImageLoader.loadImage(navigationHeader.getUserPhoto(), holder.userPhoto, OP_AVATAR);
+            universalImageLoader.loadImage(navigationHeader.getUserCover(), holder.userCover, OP_COVER);
             holder.userNome.setText(navigationHeader.getUserNome());
             holder.userEmail.setText(navigationHeader.getUserEmail());
         }

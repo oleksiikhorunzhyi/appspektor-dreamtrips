@@ -2,19 +2,25 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
+import javax.inject.Inject;
+
 public class MainActivityPresentation extends BasePresentation implements FragmentCompass.OnTransactionListener {
 
     public static final String TERMS = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
     public static final String FAQ = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
+    @Inject
+    SessionManager sessionManager;
     private View view;
 
+
     public MainActivityPresentation(View view, Injector graf) {
-        super(graf);
+        super(view, graf);
         this.view = view;
         fragmentCompass.setOnTransactionListener(this);
     }
@@ -37,12 +43,22 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         }
     }
 
+
+    public void onCreate() {
+        dataManager.setCurrentUser(sessionManager.getCurrentUser());
+    }
+
+    public void onPause() {
+        sessionManager.saveCurrentUser(dataManager.getCurrentUser());
+    }
+
+
     @Override
     public void onTransactionDone(State state, FragmentCompass.Action action) {
         view.resetActionBar();
     }
 
-    public static interface View {
+    public static interface View extends IInformView {
         void setActionBarTitle(String title);
 
         void resetActionBar();

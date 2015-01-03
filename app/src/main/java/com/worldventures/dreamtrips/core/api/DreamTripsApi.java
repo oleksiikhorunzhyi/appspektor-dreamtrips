@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.Avatar;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
@@ -17,7 +18,7 @@ import retrofit.http.Part;
 import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
-    String DEFAULT_URL = "http://54.201.166.182:8000";
+    String DEFAULT_URL = BuildConfig.DreamTripsApi;
 
     @FormUrlEncoded
     @POST("/api/sessions")

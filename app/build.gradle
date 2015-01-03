@@ -25,11 +25,30 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        dev {
+            applicationId = "com.worldventures.dreamtrips.dev"
+            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
+            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+        }
+
+        prod {
+            applicationId "com.worldventures.dreamtrips"
+        }
+    }
+
+
     lintOptions {
         abortOnError false
     }

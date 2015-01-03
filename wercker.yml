@@ -12,16 +12,16 @@ build:
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
-#    - setup-android-emulator:
-#        target: 1
-    - script:
-        name: run gradle connectedCheck
-        code: |
-          gradle test --stacktrace --info --no-color -q
+#   - setup-android-emulator:
+#       target: 1
     - script:
         name: run gradle build
         code: |
           gradle build --stacktrace --info --no-color -q
+    - script:
+         name: run gradle connectedCheck
+         code: |
+           gradle test --stacktrace --info --no-color -q
   after-steps:
     # Use the build results
     - script:

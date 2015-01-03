@@ -2,27 +2,22 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.SessionManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
-import javax.inject.Inject;
-
 public class MainActivityPresentation extends BasePresentation implements FragmentCompass.OnTransactionListener {
 
-    public static final String TERMS = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
-    public static final String FAQ = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
-    @Inject
-    SessionManager sessionManager;
     private View view;
 
-
-    public MainActivityPresentation(View view, Injector graf) {
-        super(view, graf);
+    public MainActivityPresentation(View view, Injector injector) {
+        super(view, injector);
         this.view = view;
         fragmentCompass.setOnTransactionListener(this);
+        updateFaqAndTermLinks();
     }
 
     public void onNavigationClick(int position) {
@@ -30,10 +25,10 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         Bundle bundle = null;
         if (state == State.FAQ) {
             bundle = new Bundle();
-            bundle.putString(WebViewFragment.HTTP_URL, TERMS);
+            bundle.putString(WebViewFragment.HTTP_URL, sessionManager.getFaqUrl());
         } else if (state == State.TERMS_AND_CONDITIONS) {
             bundle = new Bundle();
-            bundle.putString(WebViewFragment.HTTP_URL, FAQ);
+            bundle.putString(WebViewFragment.HTTP_URL, sessionManager.getTermUrl());
         }
         fragmentCompass.switchBranch(state, bundle);
         if (state == State.MY_PROFILE) {
@@ -43,7 +38,6 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         }
     }
 
-
     public void onCreate() {
         dataManager.setCurrentUser(sessionManager.getCurrentUser());
     }
@@ -52,10 +46,26 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         sessionManager.saveCurrentUser(dataManager.getCurrentUser());
     }
 
-
     @Override
     public void onTransactionDone(State state, FragmentCompass.Action action) {
         view.resetActionBar();
+    }
+
+    private void updateFaqAndTermLinks() {
+        dataManager.getWebSiteDocumentsByCountry((jsonObject, e) -> {
+            if (jsonObject != null) {
+                for (JsonElement element : jsonObject.getAsJsonArray("Documents")) {
+                    JsonObject obj = element.getAsJsonObject();
+                    String name = obj.getAsJsonPrimitive("NameNative").getAsString();
+                    String url = obj.getAsJsonPrimitive("Url").getAsString();
+                    if (name.equals("FAQ")) {
+                        sessionManager.setFaqUrl(url);
+                    } else if (name.equals("Terms of Use")) {
+                        sessionManager.setTermsUrl(url);
+                    }
+                }
+            }
+        });
     }
 
     public static interface View extends IInformView {

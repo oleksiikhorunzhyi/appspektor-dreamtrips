@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 
 import javax.inject.Singleton;
@@ -58,6 +59,16 @@ public class ApiModule {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         return adapter.create(WorldVenturesApi.class);
+    }
+
+    @Provides
+    @Singleton
+    SharedServicesApi provideSharedServicesApi() {
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(SharedServicesApi.DEFAULT_URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+        return adapter.create(SharedServicesApi.class);
     }
 
 

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.model.Avatar;
 import com.worldventures.dreamtrips.core.model.Session;
@@ -33,6 +34,9 @@ public class DataManager {
 
     @Inject
     protected WorldVenturesApi worldVenturesApi;
+
+    @Inject
+    protected SharedServicesApi sharedServicesApi;
 
 
     private User currentUser;
@@ -80,7 +84,7 @@ public class DataManager {
 
     public void getWebSiteDocumentsByCountry(Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
-        worldVenturesApi.getWebSiteDocumentsByCountry(callback);
+        sharedServicesApi.getWebSiteDocumentsByCountry(callback);
     }
 
     private <T> Callback<T> convert(Result<T> result) {

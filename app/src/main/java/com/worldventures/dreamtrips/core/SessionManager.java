@@ -8,9 +8,14 @@ import com.worldventures.dreamtrips.core.model.User;
 
 public class SessionManager {
 
+
     public static final String KEY_TOKEN = "KEY_TOKEN";
     public static final String KEY_DREAM_TOKEN = "KEY_DREAM_TOKEN";
     public static final String KEY_USER = "KEY_USER";
+    public static final String KEY_URL_FAQ = "KEY_URL_FAQ";
+    public static final String KEY_URL_TERMS = "KEY_URL_TERMS";
+    private static final String TERMS = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
+    private static final String FAQ = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
     private static final String PREFER_NAME = "DreamTripsYo";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -50,7 +55,6 @@ public class SessionManager {
         return new Gson().fromJson(pref.getString(KEY_USER, ""), User.class);
     }
 
-
     public void logoutUser() {
         editor.clear();
         editor.commit();
@@ -60,4 +64,24 @@ public class SessionManager {
     public boolean isUserLoggedIn() {
         return pref.contains(KEY_TOKEN) && pref.contains(KEY_DREAM_TOKEN);
     }
+
+    public void setTermsUrl(String termsUrl) {
+        editor.putString(KEY_URL_TERMS, termsUrl);
+        editor.commit();
+    }
+
+    public String getTermUrl() {
+        return pref.getString(KEY_URL_TERMS, TERMS);
+    }
+
+    public String getFaqUrl() {
+        return pref.getString(KEY_URL_FAQ, FAQ);
+    }
+
+    public void setFaqUrl(String faqUrl) {
+        editor.putString(KEY_URL_FAQ, faqUrl);
+        editor.commit();
+    }
+
+
 }

@@ -25,9 +25,9 @@ public class BasePresentation {
     @Inject
     protected ActivityRouter activityRouter;
     @Inject
-    SessionManager sessionManager;
-    private IInformView view;
+    protected SessionManager sessionManager;
 
+    private IInformView view;
 
     public BasePresentation(IInformView view, Injector injector) {
         this.view = view;

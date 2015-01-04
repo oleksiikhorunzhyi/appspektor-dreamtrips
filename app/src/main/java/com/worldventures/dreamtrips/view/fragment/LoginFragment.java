@@ -7,9 +7,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.dd.CircularProgressButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
@@ -27,6 +29,8 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     DTEditText etUsername;
     @InjectView(R.id.et_password)
     DTEditText etPassword;
+    @InjectView(R.id.iv_bg)
+    ImageView ivBg;
 
     public LoginFragment() {
 
@@ -42,10 +46,9 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.inject(this, view);
-/*        MaterialRippleLayout.on(btnLogin)
-                .rippleColor(getResources().getColor(R.color.theme_main))
-                .rippleBackground(R.color.theme_main_darker)
-                .create();*/
+        int screenHeight = ViewIUtils.getScreenHeight(getAbsActivity());
+        int statusBarHeight = ViewIUtils.getStatusBarHeight(getAbsActivity());
+        ivBg.getLayoutParams().height= screenHeight- statusBarHeight;
     }
 
     @Override

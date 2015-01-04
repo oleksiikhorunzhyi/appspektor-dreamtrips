@@ -13,12 +13,12 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
+        android:background="?attr/colorPrimary"
         android:textColor="@android:color/white"
+        fab:pstsIndicatorColor="@color/theme_main_darker"
         fab:pstsTextSelectedStyle="normal"
         fab:pstsTextStyle="normal"
-        fab:pstsUnderlineColor="@color/theme_main_darker"
-        fab:pstsIndicatorColor="@color/theme_main_darker"
-        android:background="?attr/colorPrimary"/>
+        fab:pstsUnderlineColor="@color/theme_main_darker" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
@@ -45,13 +45,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/theme_main" />
+            fab:fab_colorPressed="@color/theme_main"
+            fab:fab_size="mini"
+            fab:fab_title="Action A" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/theme_main" />
+            fab:fab_colorPressed="@color/theme_main"
+            fab:fab_size="mini"
+            fab:fab_title="Action B" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/theme_main"
+            fab:fab_size="mini"
+            fab:fab_title="Take a photo" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

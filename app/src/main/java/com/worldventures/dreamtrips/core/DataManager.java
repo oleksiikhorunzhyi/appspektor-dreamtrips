@@ -5,10 +5,10 @@ import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
-import com.worldventures.dreamtrips.core.model.Avatar;
+import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
-import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,31 +44,27 @@ public class DataManager {
         injector.inject(this);
     }
 
-    static String convertStreamToString(java.io.InputStream in) throws IOException {
-        InputStreamReader is = new InputStreamReader(in);
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(is);
-            String read = br.readLine();
-
-            while (read != null) {
-                sb.append(read);
-                read = br.readLine();
-            }
-        } catch (Exception e) {
-            Logs.e(e);
-        }
-
-        return sb.toString();
-    }
-
-    public void uploadAvatar(SessionManager sessionManager, File image, Result<Avatar> result) {
-        String token = "Token token=" + sessionManager.getCurrentSession();
+    public void uploadAvatar(SessionManager sessionManager, File image, Result<Image> result) {
+        String token = getTokenForQuery(sessionManager);
         dreamTripsApi.uploadAvatar(token, new TypedFile("image/*", image), convert(result));
     }
 
-    public void getTrips(Result<List<Trip>> result) {
-        dreamTripsApi.trips(convert(result));
+    private String getTokenForQuery(SessionManager sessionManager) {
+        return "Token token=" + sessionManager.getCurrentSession();
+    }
+
+    public void getMemberPhotos(SessionManager sessionManager, Result<ListPhotoResponse> response) {
+        Callback<ListPhotoResponse> callback = convert(response);
+        dreamTripsApi.getUserPhotos(getTokenForQuery(sessionManager), callback);
+    }
+
+    public void getYouShouldBeHerePhotos(SessionManager sessionManager, Result<ListPhotoResponse> result) {
+        result.response(new ListPhotoResponse(), null);
+    }
+
+    public void getMyPhotos(SessionManager sessionManager, Result<ListPhotoResponse> response) {
+        Callback<ListPhotoResponse> callback = convert(response);
+        dreamTripsApi.getMyPhotos(getTokenForQuery(sessionManager), currentUser.getId(), callback);
     }
 
     public void getSession(String username, String password, Result<Session> result) {
@@ -85,6 +80,14 @@ public class DataManager {
     public void getWebSiteDocumentsByCountry(Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         sharedServicesApi.getWebSiteDocumentsByCountry(callback);
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     private <T> Callback<T> convert(Result<T> result) {
@@ -112,12 +115,22 @@ public class DataManager {
         };
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
+    private String convertStreamToString(java.io.InputStream in) throws IOException {
+        InputStreamReader is = new InputStreamReader(in);
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(is);
+            String read = br.readLine();
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+            while (read != null) {
+                sb.append(read);
+                read = br.readLine();
+            }
+        } catch (Exception e) {
+            Logs.e(e);
+        }
+
+        return sb.toString();
     }
 
     public static interface Result<T> {

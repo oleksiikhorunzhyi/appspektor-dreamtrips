@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 
-public class Avatar {
+public class Image {
     String original;
     String medium;
     String thumb;

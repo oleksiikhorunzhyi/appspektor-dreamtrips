@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.dd.CircularProgressButton;
@@ -24,7 +25,7 @@ import butterknife.InjectView;
 public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFragmentPresentation.View {
 
     @InjectView(R.id.btn_login)
-    CircularProgressButton btnLogin;
+    Button btnLogin;
     @InjectView(R.id.et_username)
     DTEditText etUsername;
     @InjectView(R.id.et_password)
@@ -53,8 +54,7 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
 
     @Override
     public void showProgressDialog() {
-        btnLogin.setIndeterminateProgressMode(true);
-        btnLogin.setProgress(50);
+        btnLogin.setVisibility(View.GONE);
         btnLogin.setClickable(false);
     }
 
@@ -72,7 +72,7 @@ public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFr
     private void dismissProgressDialog() {
         //Handler for better visual effect
         new Handler().postDelayed(() -> {
-            btnLogin.setProgress(0);
+            btnLogin.setVisibility(View.VISIBLE);
             btnLogin.setClickable(true);
         }, 50);
     }

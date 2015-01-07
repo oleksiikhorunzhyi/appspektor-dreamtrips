@@ -15,20 +15,20 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/iv_bg"
             android:background="@drawable/bg_login"
             android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="bottom"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -40,10 +40,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/black_gradient"
                 android:orientation="vertical"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:background="#3e000000"
-                >
+                android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -56,6 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:autoText="false"
+                    android:background="@android:color/background_dark"
                     android:hint="User Id"
                     android:minEms="10"
                     android:singleLine="true"
@@ -65,15 +66,15 @@
                     app:floatingLabel="normal"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
-                    bind:text="${username}"
-                    android:background="@android:color/background_dark"
-                    android:autoText="false" />
+                    bind:text="${username}" />
 
                 <com.worldventures.dreamtrips.view.custom.DTEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:autoText="false"
+                    android:background="@android:color/background_dark"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:minEms="10"
@@ -84,25 +85,31 @@
                     app:floatingLabel="normal"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
-                    bind:text="${userPassword}"
-                    android:background="@android:color/background_dark"
-                    android:autoText="false" />
+                    bind:text="${userPassword}" />
             </LinearLayout>
 
-            <com.dd.CircularProgressButton
-                android:id="@+id/btn_login"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cpb_textComplete="@string/login"
-                app:cpb_textError="@string/login"
-                bind:onClick="loginAction"
-                app:cpb_colorIndicatorBackground="@android:color/transparent"
-                app:cpb_colorProgress="@android:color/transparent"
-                app:cpb_selectorIdle="@drawable/login_button_selector"
-                app:cpb_textIdle="@string/login" />
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/login_button_selector">
 
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/login_button_selector"
+                    android:text="Log in"
+                    android:textColor="@android:color/white"
+                    bind:onClick="loginAction" />
+            </RelativeLayout>
         </LinearLayout>
 
 

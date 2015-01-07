@@ -41,6 +41,7 @@ public class DTApplication extends Application implements Injector {
         optionBuilder.cacheInMemory(true);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(3)
+                .writeDebugLogs()
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()

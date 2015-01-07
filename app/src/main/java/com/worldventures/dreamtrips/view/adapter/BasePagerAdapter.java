@@ -24,7 +24,7 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
     private T getFragment(int i) {
         try {
             T value = fragmentItems.get(i).aClass.newInstance();
-            setArgs(value);
+            setArgs(i, value);
             return value;
         } catch (Exception e) {
             Logs.e(e);
@@ -32,7 +32,7 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
         return null;
     }
 
-    public void setArgs(T fragment) {
+    public void setArgs(int position, T fragment) {
     }
 
     @Override

@@ -8,4 +8,5 @@
     <dimen name="userSpace">164dp</dimen>
     <dimen name="photoMarginTop">16dp</dimen>
     <dimen name="small_ic_size">24dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
 </resources>

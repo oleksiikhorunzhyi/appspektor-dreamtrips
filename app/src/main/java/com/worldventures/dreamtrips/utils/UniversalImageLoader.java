@@ -8,7 +8,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.worldventures.dreamtrips.R;
 
-public class UniversalImageLoader implements com.techery.spares.utils.ImageLoader {
+public class UniversalImageLoader  {
 
 
     public static final DisplayImageOptions OP_AVATAR = new DisplayImageOptions.Builder()
@@ -31,7 +31,8 @@ public class UniversalImageLoader implements com.techery.spares.utils.ImageLoade
     public UniversalImageLoader() {
     }
 
-    public void loadImage(String url, ImageView imageView) {
+    public void loadImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions) {
+        ImageLoader.getInstance().displayImage(url, imageView, displayImageOptions);
     }
 
     public void loadImage(Uri uri, ImageView imageView) {
@@ -43,7 +44,7 @@ public class UniversalImageLoader implements com.techery.spares.utils.ImageLoade
         if (uri != null) {
             uriS = uri.toString();
         }
-        ImageLoader.getInstance().displayImage(uriS, imageView, displayImageOptions);
+      loadImage(uriS, imageView, displayImageOptions);
     }
 
 }

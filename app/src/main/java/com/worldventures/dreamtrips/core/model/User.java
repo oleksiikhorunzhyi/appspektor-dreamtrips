@@ -10,7 +10,7 @@ public class User extends BaseEntity {
     String lastName;
     Date birthDate;
     String location;
-    Avatar avatar;
+    Image avatar;
 
     String coverPath;
 
@@ -82,11 +82,11 @@ public class User extends BaseEntity {
         this.location = location;
     }
 
-    public Avatar getAvatar() {
+    public Image getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Avatar avatar) {
+    public void setAvatar(Image avatar) {
         this.avatar = avatar;
     }
 

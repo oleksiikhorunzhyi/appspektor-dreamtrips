@@ -158,6 +158,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
     }
 
+    //don't use of getAvata...
     public PickImageDialog.Callback provideAvatarChooseCallback() {
         return avatarCallback;
     }

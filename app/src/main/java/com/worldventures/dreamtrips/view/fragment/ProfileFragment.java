@@ -62,8 +62,6 @@ public class ProfileFragment extends BaseFragment<MainActivity>
         View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_profile, presentationModel, container);
         ButterKnife.inject(this, view);
         getAbsActivity().inject(this);
-        //  userCover.setImageResource(R.drawable.fake_cover);
-        // userPhoto.setImageResource(R.drawable.fake_avatar);
         presentationModel.onViewCreated();
         ViewGroup.LayoutParams lp = userCover.getLayoutParams();
         lp.height = ViewIUtils.getScreenWidth(getAbsActivity());//but by material style guide 3:2

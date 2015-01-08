@@ -8,16 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 import com.worldventures.dreamtrips.view.presentation.TripImagesTabsFragmentPresentation;
 
 import org.robobinding.ViewBinder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
@@ -25,23 +28,31 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 public class TripImagesTabsFragment extends BaseFragment<MainActivity> implements TripImagesTabsFragmentPresentation.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
 
 
-    @InjectView(R.id.pager)
-    ViewPager pager;
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
-    @InjectView(R.id.multiple_actions_down)
-    FloatingActionsMenu actionsMenu;
+    @InjectView(R.id.pager)
+    ViewPager pager;
     @InjectView(R.id.v_bg_holder)
-    View bgHolder;
+    View vBgHolder;
+    @InjectView(R.id.multiple_actions_down)
+    FloatingActionsMenu multipleActionsDown;
+    @InjectView(R.id.fab_facebook)
+    FloatingActionButton fabFacebook;
+    @InjectView(R.id.fab_gallery)
+    FloatingActionButton fabGallery;
+    @InjectView(R.id.fab_photo)
+    FloatingActionButton fabPhoto;
 
-    TripImagesTabsFragmentPresentation presentationModel;
+
+    TripImagesTabsFragmentPresentation pm;
     BasePagerAdapter adapter;
+    PickImageDialog pid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presentationModel = new TripImagesTabsFragmentPresentation(this, getAbsActivity());
+        pm = new TripImagesTabsFragmentPresentation(this, getAbsActivity());
         ViewBinder viewBinder = getAbsActivity().createViewBinder();
-        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_trip_tabs_images, presentationModel, container);
+        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_trip_tabs_images, pm, container);
         ButterKnife.inject(this, view);
 
         adapter = new BasePagerAdapter(getChildFragmentManager()) {
@@ -58,17 +69,38 @@ public class TripImagesTabsFragment extends BaseFragment<MainActivity> implement
         adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
-        actionsMenu.setOnFloatingActionsMenuUpdateListener(this);
+        multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
         return view;
     }
 
     @Override
     public void onMenuExpanded() {
-        bgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+        vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
     @Override
     public void onMenuCollapsed() {
-        bgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
+
+    @OnClick(R.id.fab_facebook)
+    public void actionFacebook(View view) {
+        pm.onActionFacebookClick();
+    }
+
+    @OnClick(R.id.fab_gallery)
+    public void actionGallery(View view) {
+        pid = new PickImageDialog(getAbsActivity(), this);
+        pid.setTitle("Select avatar");
+        pid.setCallback(pm.providePhotoChooseCallback());
+        pid.show();
+      //
+      //  pm.onActionGalleryClick();
+    }
+
+    @OnClick(R.id.fab_photo)
+    public void actionPhoto(View view) {
+        pm.onActionPhotoClick();
+    }
+
 }

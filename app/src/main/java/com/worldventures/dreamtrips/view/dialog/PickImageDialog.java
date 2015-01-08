@@ -89,7 +89,6 @@ public class PickImageDialog implements ImageChooserListener {
                 reinitializeImageChooser();
             }
             imageChooserManager.submit(requestCode, data);
-        } else {
         }
     }
 

@@ -63,7 +63,7 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     app:baseColor="@android:color/white"
-                    app:floatingLabel="normal"
+                    app:floatingLabel="highlight"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
                     bind:text="${username}" />
@@ -82,7 +82,7 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     app:baseColor="@android:color/white"
-                    app:floatingLabel="normal"
+                    app:floatingLabel="highlight"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
                     bind:text="${userPassword}" />

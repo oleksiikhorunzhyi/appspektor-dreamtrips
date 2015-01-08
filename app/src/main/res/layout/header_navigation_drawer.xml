@@ -12,7 +12,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/fake_cover" />
+        android:src="@drawable/ic_cover_place_holder" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_photo"
@@ -22,7 +22,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="@dimen/photoMarginTop"
-        android:src="@drawable/fake_avatar" />
+        android:src="@drawable/ic_avatar_placeholder" />
 
     <ImageView
         android:id="@+id/user_photo_2"

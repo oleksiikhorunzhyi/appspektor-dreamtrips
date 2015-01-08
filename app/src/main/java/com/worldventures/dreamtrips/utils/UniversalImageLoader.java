@@ -14,17 +14,17 @@ public class UniversalImageLoader  {
     public static final DisplayImageOptions OP_AVATAR = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)
             .cacheInMemory(true)
-            .showImageForEmptyUri(R.drawable.fake_avatar)
-            .showImageOnFail(R.drawable.fake_avatar)
-            .showImageOnLoading(R.drawable.fake_avatar)
+            .showImageForEmptyUri(R.drawable.ic_avatar_placeholder)
+            .showImageOnFail(R.drawable.ic_avatar_placeholder)
+            .showImageOnLoading(R.drawable.ic_avatar_placeholder)
             .displayer(new FadeInBitmapDisplayer(300))
             .build();
     public static final DisplayImageOptions OP_COVER = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)
             .cacheInMemory(true)
-            .showImageForEmptyUri(R.drawable.fake_cover)
-            .showImageOnFail(R.drawable.fake_cover)
-            .showImageOnLoading(R.drawable.fake_cover)
+            .showImageForEmptyUri(R.drawable.ic_cover_place_holder)
+            .showImageOnFail(R.drawable.ic_cover_place_holder)
+            .showImageOnLoading(R.drawable.ic_cover_place_holder)
             .displayer(new FadeInBitmapDisplayer(300))
             .build();
 

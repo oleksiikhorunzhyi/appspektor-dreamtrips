@@ -18,9 +18,7 @@
             android:name=".view.activity.LoginActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".view.activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -35,9 +33,13 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.activity.FullScreenPhotoActivity"
+            android:label="@string/title_activity_full_screen_photo"/>
     </application>
 
 </manifest>

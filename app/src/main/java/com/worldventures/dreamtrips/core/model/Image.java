@@ -4,7 +4,9 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 
-public class Image {
+import java.io.Serializable;
+
+public class Image extends BaseEntity{
     String original;
     String medium;
     String thumb;

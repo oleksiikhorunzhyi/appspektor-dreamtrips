@@ -8,10 +8,13 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.FullScreenActivityPM;
+import com.worldventures.dreamtrips.view.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
@@ -41,6 +44,9 @@ import de.greenrobot.event.EventBus;
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
                 TripImagesListFragmentPresentation.class,
+                FullScreenActivityPM.class,
+                FullScreenPhotoFragmentPM.class,
+                FullScreenPhotoFragment.class,
                 ProfileFragment.class,
                 PhotoItem.class
         },

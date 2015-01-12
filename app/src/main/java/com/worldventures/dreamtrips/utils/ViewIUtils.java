@@ -15,6 +15,11 @@ public class ViewIUtils {
         return width;
     }
 
+
+    public static int getMinSideSize(Activity activity) {
+        return Math.min(getScreenHeight(activity), getScreenWidth(activity));
+    }
+
     public static int getScreenHeight(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();

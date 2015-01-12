@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
-import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -149,6 +148,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     public void logout() {
         sessionManager.logoutUser();
         activityRouter.finish();
+        activityRouter.openLogin();
     }
 
     public void onDataSet(int year, int month, int day) {

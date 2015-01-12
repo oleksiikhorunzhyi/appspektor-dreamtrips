@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
@@ -29,9 +28,9 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     @InjectView(R.id.lv_items)
-    EmptyRecyclerView lvItems;
+    RecyclerView lvItems;
     @InjectView(R.id.ll_empty_view)
-    LinearLayout llEmptyView;
+    ViewGroup llEmptyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
     Type type;
@@ -49,7 +48,6 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
         lvItems.setLayoutManager(layoutManager);
         adapter = new BaseRecycleAdapter();
         lvItems.setAdapter(adapter);
-        lvItems.setEmptyView(llEmptyView);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
@@ -76,6 +74,11 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
         adapter.addItems(PhotoItem.convert(getAbsActivity(), photos));
         adapter.notifyDataSetChanged();
         refreshLayout.setRefreshing(false);
+        if (photos == null || photos.isEmpty()) {
+            llEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            llEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

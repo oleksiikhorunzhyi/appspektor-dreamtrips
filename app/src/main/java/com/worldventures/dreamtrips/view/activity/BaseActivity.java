@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
-import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.nispok.snackbar.Snackbar;
 import com.worldventures.dreamtrips.DTApplication;
@@ -34,7 +33,7 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     private BaseActivityPresentation baseActivityPresentation;
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = (session, state, exception) -> {
-       // onSessionStateChange(session, state, exception);
+        // onSessionStateChange(session, state, exception);
     };
 
     @Override
@@ -42,9 +41,11 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
         super.onCreate(savedInstanceState);
         activityGraph = ObjectGraph.create(getModules().toArray());
         baseActivityPresentation = new BaseActivityPresentation(this, this);
+        baseActivityPresentation.onCreate();
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
     }
+
 
     @Override
     protected void onResume() {
@@ -57,6 +58,7 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     protected void onPause() {
         super.onPause();
         uiHelper.onPause();
+        baseActivityPresentation.onPause();
         AppEventsLogger.deactivateApp(this);
     }
 

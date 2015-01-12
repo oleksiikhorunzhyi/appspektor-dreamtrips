@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.view.presentation;
 import android.os.Handler;
 
 import com.worldventures.dreamtrips.core.DataManager;
+import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.view.activity.Injector;
 
 import org.apache.http.HttpStatus;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
 import javax.inject.Inject;
@@ -31,7 +33,7 @@ public class BasePresentation {
     @Inject
     protected SessionManager sessionManager;
 
-    private IInformView view;
+    protected IInformView view;
 
     public BasePresentation(IInformView view, Injector injector) {
         this.view = view;
@@ -40,12 +42,16 @@ public class BasePresentation {
 
     public void handleError(Exception ex) {
         Logs.e(ex);
-
-        if (ex instanceof RetrofitError) {
+        if (ex instanceof IllegalCuurentUserState) {
+            sessionManager.logoutUser();
+            activityRouter.finish();
+            activityRouter.openLogin();
+        }
+        if (ex instanceof ConnectException) {
+            noInternetConnectionErrorShow();
+        } else if (ex instanceof RetrofitError) {
             if (ex.getCause() instanceof SocketTimeoutException) {
-                new Handler().postDelayed(() -> {
-                    view.informUser("No internet connection");
-                }, 600);
+                noInternetConnectionErrorShow();
             }
             Response response = ((RetrofitError) ex).getResponse();
             if (response != null) {
@@ -58,9 +64,15 @@ public class BasePresentation {
                         activityRouter.openLogin();
                     }, 600);
                 } else if (status == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                  //  view.informUser("Internal server error");
+                    //  view.informUser("Internal server error");
                 }
             }
         }
+    }
+
+    private void noInternetConnectionErrorShow() {
+        new Handler().postDelayed(() -> {
+            view.informUser("No internet connection");
+        }, 600);
     }
 }

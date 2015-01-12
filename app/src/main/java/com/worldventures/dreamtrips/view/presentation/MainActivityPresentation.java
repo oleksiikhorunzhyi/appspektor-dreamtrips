@@ -38,13 +38,6 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         }
     }
 
-    public void onCreate() {
-        dataManager.setCurrentUser(sessionManager.getCurrentUser());
-    }
-
-    public void onPause() {
-        sessionManager.saveCurrentUser(dataManager.getCurrentUser());
-    }
 
     @Override
     public void onTransactionDone(State state, FragmentCompass.Action action) {

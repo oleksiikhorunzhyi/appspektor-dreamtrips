@@ -52,6 +52,8 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
                 }
                 sessionManager.createUserLoginSession(sessionToken);
                 sessionManager.saveCurrentUser(sessionUser);
+                dataManager.setCurrentUser(sessionUser);
+
                 dataManager.getToken(username, userPassword, (oi, ei) -> {
                     if (oi != null) {
                         String token = oi.get("result").getAsString();

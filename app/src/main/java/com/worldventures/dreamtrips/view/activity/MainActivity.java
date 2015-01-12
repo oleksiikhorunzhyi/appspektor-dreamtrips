@@ -28,12 +28,11 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presentation = new MainActivityPresentation(this, this);
-        presentation.onCreate();
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
     }
 
@@ -75,6 +74,5 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     @Override
     protected void onPause() {
         super.onPause();
-        presentation.onPause();
     }
 }

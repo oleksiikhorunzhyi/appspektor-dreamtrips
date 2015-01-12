@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.TripImagesTabsFragmentPresentation;
@@ -58,6 +59,7 @@ import de.greenrobot.event.EventBus;
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,
                 FacebookPhotoItem.class,
+                NavigationDrawerPM.class,
                 PhotoItem.class
         },
         library = true

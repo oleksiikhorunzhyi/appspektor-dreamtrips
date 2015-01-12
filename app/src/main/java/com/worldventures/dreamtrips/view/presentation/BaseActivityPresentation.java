@@ -14,4 +14,16 @@ public class BaseActivityPresentation extends BasePresentation {
     }
 
 
+    public void onCreate() {
+        try {
+            dataManager.setCurrentUser(sessionManager.getCurrentUser());
+        } catch (Exception e) {
+            handleError(e);
+        }
+    }
+
+    public void onPause() {
+        sessionManager.saveCurrentUser(dataManager.getCurrentUser());
+    }
+
 }

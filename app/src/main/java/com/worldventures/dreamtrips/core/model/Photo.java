@@ -68,4 +68,16 @@ public class Photo extends BaseEntity {
         this.url = url;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "title='" + title + '\'' +
+                ", userId=" + userId +
+                ", shotAt='" + shotAt + '\'' +
+                ", locationName='" + locationName + '\'' +
+                ", coordinates=" + coordinates +
+                ", tags=" + tags +
+                ", url=" + url +
+                '}';
+    }
 }

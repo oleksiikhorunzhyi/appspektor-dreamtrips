@@ -46,6 +46,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation impleme
             view.setPhotos(data);
         } else if (e != null) {
             view.setPhotos(null);
+
             handleError(e);
         }
     }

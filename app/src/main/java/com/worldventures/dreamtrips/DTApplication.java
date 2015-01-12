@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -39,13 +41,13 @@ public class DTApplication extends Application implements Injector {
         DisplayImageOptions.Builder optionBuilder = new DisplayImageOptions.Builder();
         optionBuilder.cacheOnDisk(true);
         optionBuilder.cacheInMemory(true);
+        optionBuilder.bitmapConfig(Bitmap.Config.RGB_565);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(3)
                 .writeDebugLogs()
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCacheSizePercentage(30)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
                 .diskCacheSize(50 * 1024 * 1024)
                 .defaultDisplayImageOptions(optionBuilder.build())
                 .writeDebugLogs()

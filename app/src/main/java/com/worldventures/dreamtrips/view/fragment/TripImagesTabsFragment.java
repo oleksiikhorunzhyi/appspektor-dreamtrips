@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -10,10 +11,12 @@ import android.view.ViewGroup;
 import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.kbeanie.imagechooser.api.ChooserType;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.view.dialog.PickImageFacebookDialog;
 import com.worldventures.dreamtrips.view.presentation.TripImagesTabsFragmentPresentation;
 
 import org.robobinding.ViewBinder;
@@ -42,7 +45,6 @@ public class TripImagesTabsFragment extends BaseFragment<MainActivity> implement
     FloatingActionButton fabGallery;
     @InjectView(R.id.fab_photo)
     FloatingActionButton fabPhoto;
-
 
     TripImagesTabsFragmentPresentation pm;
     BasePagerAdapter adapter;
@@ -85,7 +87,10 @@ public class TripImagesTabsFragment extends BaseFragment<MainActivity> implement
 
     @OnClick(R.id.fab_facebook)
     public void actionFacebook(View view) {
-        pm.onActionFacebookClick();
+        PickImageFacebookDialog dialog = new PickImageFacebookDialog(getAbsActivity(), getFragmentManager());
+        dialog.setCallback(pm.provideFbCallback());
+        dialog.show();
+        multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_gallery)
@@ -93,14 +98,25 @@ public class TripImagesTabsFragment extends BaseFragment<MainActivity> implement
         pid = new PickImageDialog(getAbsActivity(), this);
         pid.setTitle("Select avatar");
         pid.setCallback(pm.providePhotoChooseCallback());
+        pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         pid.show();
-      //
-      //  pm.onActionGalleryClick();
+        multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_photo)
     public void actionPhoto(View view) {
-        pm.onActionPhotoClick();
+        pid = new PickImageDialog(getAbsActivity(), this);
+        pid.setTitle("Select avatar");
+        pid.setCallback(pm.providePhotoChooseCallback());
+        pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
+        pid.show();
+        multipleActionsDown.collapse();
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        pid.onActivityResult(requestCode, resultCode, data);
+    }
 }

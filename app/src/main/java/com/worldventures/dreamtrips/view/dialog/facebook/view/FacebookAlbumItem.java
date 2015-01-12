@@ -1,16 +1,19 @@
-package com.worldventures.dreamtrips.view.adapter.item;
+package com.worldventures.dreamtrips.view.dialog.facebook.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.facebook.Session;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.adapter.item.ItemWrapper;
+import com.worldventures.dreamtrips.view.dialog.facebook.model.FacebookAlbum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +23,13 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class PhotoItem implements ItemWrapper<Photo> {
+public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
 
-    Photo photo;
+    FacebookAlbum photo;
     @Inject
     UniversalImageLoader universalImageLoader;
 
-    public PhotoItem(Injector injector, Photo photo) {
+    public FacebookAlbumItem(Injector injector, FacebookAlbum photo) {
         this.photo = photo;
         injector.inject(this);
 
@@ -34,14 +37,17 @@ public class PhotoItem implements ItemWrapper<Photo> {
 
     @Override
     public RecyclerView.ViewHolder getBaseRecycleItem(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_item_photo, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_item_facebook_album, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder h = ((ViewHolder) holder);
-        universalImageLoader.loadImage(photo.getUrl().getMedium(), h.ivBg, null, new SimpleImageLoadingListener());
+        //https://graph.facebook.com/<?=$album['id']?>/picture?type=album&access_token=<?=$access_token?>
+        universalImageLoader.loadImage(photo.getCoverUrl(Session.getActiveSession().getAccessToken()), h.ivBg, null, new SimpleImageLoadingListener());
+        h.tvTitle.setText(photo.getName());
+        h.tvCount.setText(photo.getCount() + "");
     }
 
     @Override
@@ -50,13 +56,17 @@ public class PhotoItem implements ItemWrapper<Photo> {
     }
 
     @Override
-    public Photo getItem() {
+    public FacebookAlbum getItem() {
         return photo;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.iv_bg)
         public ImageView ivBg;
+        @InjectView(R.id.tv_album_title)
+        public TextView tvTitle;
+        @InjectView(R.id.tv_count)
+        public TextView tvCount;
 
         public ViewHolder(View v) {
             super(v);
@@ -65,18 +75,17 @@ public class PhotoItem implements ItemWrapper<Photo> {
     }
 
 
-    public static PhotoItem convert(Injector injector, Photo photo) {
-        return new PhotoItem(injector, photo);
+    public static FacebookAlbumItem convert(Injector injector, FacebookAlbum photo) {
+        return new FacebookAlbumItem(injector, photo);
     }
 
-    public static List<PhotoItem> convert(Injector injector, List<Photo> photos) {
-        List<PhotoItem> result = new ArrayList<>();
+    public static List<FacebookAlbumItem> convert(Injector injector, List<FacebookAlbum> photos) {
+        List<FacebookAlbumItem> result = new ArrayList<>();
         if (photos != null) {
-            for (Photo p : photos) {
+            for (FacebookAlbum p : photos) {
                 result.add(convert(injector, p));
             }
         }
         return result;
     }
-
 }

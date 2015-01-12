@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.view.adapter.item;
+package com.worldventures.dreamtrips.view.dialog.facebook.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,9 +8,10 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.adapter.item.ItemWrapper;
+import com.worldventures.dreamtrips.view.dialog.facebook.model.FacebookPhoto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +21,13 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class PhotoItem implements ItemWrapper<Photo> {
+public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
 
-    Photo photo;
+    FacebookPhoto photo;
     @Inject
     UniversalImageLoader universalImageLoader;
 
-    public PhotoItem(Injector injector, Photo photo) {
+    public FacebookPhotoItem(Injector injector, FacebookPhoto photo) {
         this.photo = photo;
         injector.inject(this);
 
@@ -41,7 +42,7 @@ public class PhotoItem implements ItemWrapper<Photo> {
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder h = ((ViewHolder) holder);
-        universalImageLoader.loadImage(photo.getUrl().getMedium(), h.ivBg, null, new SimpleImageLoadingListener());
+        universalImageLoader.loadImage(photo.getPicture(), h.ivBg, null, new SimpleImageLoadingListener());
     }
 
     @Override
@@ -50,8 +51,8 @@ public class PhotoItem implements ItemWrapper<Photo> {
     }
 
     @Override
-    public Photo getItem() {
-        return photo;
+    public FacebookPhoto getItem() {
+        return photo ;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,14 +66,14 @@ public class PhotoItem implements ItemWrapper<Photo> {
     }
 
 
-    public static PhotoItem convert(Injector injector, Photo photo) {
-        return new PhotoItem(injector, photo);
+    public static FacebookPhotoItem convert(Injector injector, FacebookPhoto photo) {
+        return new FacebookPhotoItem(injector, photo);
     }
 
-    public static List<PhotoItem> convert(Injector injector, List<Photo> photos) {
-        List<PhotoItem> result = new ArrayList<>();
+    public static List<FacebookPhotoItem> convert(Injector injector, List<FacebookPhoto> photos) {
+        List<FacebookPhotoItem> result = new ArrayList<>();
         if (photos != null) {
-            for (Photo p : photos) {
+            for (FacebookPhoto p : photos) {
                 result.add(convert(injector, p));
             }
         }

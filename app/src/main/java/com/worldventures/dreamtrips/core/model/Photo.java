@@ -67,4 +67,5 @@ public class Photo extends BaseEntity {
     public void setUrl(Image url) {
         this.url = url;
     }
+
 }

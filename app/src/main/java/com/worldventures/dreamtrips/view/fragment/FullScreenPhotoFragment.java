@@ -1,12 +1,16 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -27,6 +31,8 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivit
 
     @InjectView(R.id.iv_image)
     ImageView ivImage;
+    @InjectView(R.id.pb)
+    ProgressBar pb;
     @InjectView(R.id.tv_title)
     TextView tvTitle;
     @Inject
@@ -40,9 +46,29 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivit
         ButterKnife.inject(this, view);
         getAbsActivity().inject(this);
         photo = (Photo) getArguments().getSerializable(EXTRA_PHOTO);
-        imageLoader.loadImage(photo.getUrl().getOriginal(), ivImage, null);
+        imageLoader.loadImage(photo.getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                pb.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                pb.setVisibility(View.GONE);
+                informUser("Error while loading image");
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                pb.setVisibility(View.GONE);
+            }
+        });
         tvTitle.setText(photo.getTitle());
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 }

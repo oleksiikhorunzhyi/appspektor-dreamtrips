@@ -7,12 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.view.presentation.TripImagesListFragmentPresentation;
 
@@ -27,12 +29,14 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     @InjectView(R.id.lv_items)
-    RecyclerView lvItems;
+    EmptyRecyclerView lvItems;
+    @InjectView(R.id.ll_empty_view)
+    LinearLayout llEmptyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
+    Type type;
     private BaseRecycleAdapter adapter;
     private TripImagesListFragmentPresentation pm;
-    Type type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,13 +49,12 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
         lvItems.setLayoutManager(layoutManager);
         adapter = new BaseRecycleAdapter();
         lvItems.setAdapter(adapter);
+        lvItems.setEmptyView(llEmptyView);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         lvItems.addOnItemTouchListener(
-                new RecyclerItemClickListener(getAbsActivity(), (view1, position) -> {
-                    pm.onItemClick(position);
-                })
+                new RecyclerItemClickListener(getAbsActivity(), (view1, position) -> pm.onItemClick(position))
         );
         return view;
     }

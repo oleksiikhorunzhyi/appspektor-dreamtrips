@@ -46,4 +46,8 @@ public class BaseRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void clear() {
         data.clear();
     }
+
+    public ItemWrapper getItem(int pos) {
+        return data.get(pos);
+    }
 }

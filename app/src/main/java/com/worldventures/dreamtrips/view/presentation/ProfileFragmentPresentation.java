@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.activity.Injector;
+import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import org.robobinding.annotation.PresentationModel;
@@ -45,7 +46,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     @Inject
     protected SessionManager sessionManager;
 
-    private PickImageDialog.Callback avatarCallback = (image, error) -> {
+    private ImagePickCallback avatarCallback = (image, error) -> {
         dataManager.uploadAvatar(sessionManager,
                 new File(image.getFileThumbnail()),
                 (avatar, e) -> {
@@ -59,7 +60,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 
-    private PickImageDialog.Callback coverCallback = (image, error) -> {
+    private ImagePickCallback coverCallback = (image, error) -> {
         view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
         dataManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
         eventBus.post(new UpdateUserInfoEvent());
@@ -147,7 +148,6 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
     public void logout() {
         sessionManager.logoutUser();
-        activityRouter.openLogin();
         activityRouter.finish();
     }
 
@@ -158,12 +158,12 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
     }
 
-    //don't use of getAvata...
-    public PickImageDialog.Callback provideAvatarChooseCallback() {
+    //don't use of get prefix
+    public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
     }
 
-    public PickImageDialog.Callback provideCoverChooseCallback() {
+    public ImagePickCallback provideCoverChooseCallback() {
         return coverCallback;
     }
 

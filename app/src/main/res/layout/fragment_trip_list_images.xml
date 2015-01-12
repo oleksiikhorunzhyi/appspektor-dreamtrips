@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/ll_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitEnd"
+            android:src="@drawable/bg_empty_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.54"
+            android:text="Sorry, there were no results, that match your filters"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+    </LinearLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
 
-        <android.support.v7.widget.RecyclerView
+        <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/margin_small" />
+
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+
+</RelativeLayout>

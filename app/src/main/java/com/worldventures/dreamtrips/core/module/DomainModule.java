@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
+import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
@@ -53,6 +55,9 @@ import de.greenrobot.event.EventBus;
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
                 ProfileFragment.class,
+                CreatePhotoFragment.class,
+                FacebookAlbumItem.class,
+                FacebookPhotoItem.class,
                 PhotoItem.class
         },
         library = true

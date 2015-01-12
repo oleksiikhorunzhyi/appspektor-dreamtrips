@@ -45,6 +45,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation impleme
             data = listPhotoResponse.getData();
             view.setPhotos(data);
         } else if (e != null) {
+            view.setPhotos(null);
             handleError(e);
         }
     }

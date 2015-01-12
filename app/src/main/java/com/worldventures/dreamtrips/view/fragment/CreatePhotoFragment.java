@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +13,8 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
@@ -19,6 +22,8 @@ import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
 import org.robobinding.ViewBinder;
 
 import java.util.Calendar;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -39,7 +44,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
     DTEditText etTime;
     @InjectView(R.id.et_tags)
     DTEditText etTags;
-
+    @Inject
+    UniversalImageLoader imageLoader;
     private CreatePhotoFragmentPM pm;
 
     @Override
@@ -48,8 +54,13 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
         ViewBinder viewBinder = getAbsActivity().createViewBinder();
         View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_create_photo, pm, container);
         ButterKnife.inject(this, view);
+        getAbsActivity().inject(this);
         etDate.setOnTouchListener(this);
         etTime.setOnTouchListener(this);
+        ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
+        lp.height = ViewIUtils.getScreenWidth(getAbsActivity());//but by material style guide 3:2
+
+        imageLoader.loadImage(Uri.parse(getAbsActivity().getImageUri().toString()), ivImage, null);
         return view;
     }
 

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.SessionManager;
+import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
@@ -43,8 +44,14 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
         this.view.showProgressDialog();
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
-                sessionManager.createUserLoginSession(o.getToken());
-                sessionManager.saveCurrentUser(o.getUser());
+                String sessionToken = o.getToken();
+                User sessionUser = o.getUser();
+                if (sessionUser == null || sessionToken == null) {
+                    this.view.showLoginErrorMessage();
+                    return;
+                }
+                sessionManager.createUserLoginSession(sessionToken);
+                sessionManager.saveCurrentUser(sessionUser);
                 dataManager.getToken(username, userPassword, (oi, ei) -> {
                     if (oi != null) {
                         String token = oi.get("result").getAsString();

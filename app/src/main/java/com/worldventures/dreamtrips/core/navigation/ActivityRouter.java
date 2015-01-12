@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.model.Photo;
@@ -37,8 +38,10 @@ public class ActivityRouter {
         currentActivity.startActivity(intent);
     }
 
-    public void openCreatePhoto() {
-        startActivity(CreatePhotoActivity.class);
+    public void openCreatePhoto(Uri fileUri) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
+        startActivity(CreatePhotoActivity.class, bundle);
     }
 
     public void openLogin() {

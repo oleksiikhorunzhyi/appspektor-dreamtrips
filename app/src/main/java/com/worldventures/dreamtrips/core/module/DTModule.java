@@ -17,15 +17,16 @@ import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
 
-@Module(injects = {
-        DreamTripsApplication.class,
-        LaunchActivity.class,
-        MainActivity.class,
-        LoginActivity.class,
+@Module(
+        injects = {
+                DreamTripsApplication.class,
+                LaunchActivity.class,
+                MainActivity.class,
+                LoginActivity.class,
 
-        ImageLoaderInitializer.class,
-        UploadingServiceInitializer.class
-},
+                ImageLoaderInitializer.class,
+                UploadingServiceInitializer.class
+        },
         includes = {
                 InjectingApplicationModule.class,
                 ApiModule.class

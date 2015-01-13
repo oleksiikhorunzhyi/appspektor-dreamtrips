@@ -40,14 +40,12 @@ public abstract class BaseApplicationWithInjector extends Application implements
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<>();
 
-        Object usedModule = ModuleHelper.getUsedModule(this);
-
-        if (usedModule != null) {
-            result.add(usedModule);
-        }
+        result.add(getApplicationModule());
 
         return result;
-    };
+    }
+
+    protected abstract Object getApplicationModule();
 
     @Override
     public ObjectGraph getObjectGraph() {

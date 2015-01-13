@@ -23,10 +23,6 @@ public class UploadingService extends InjectingService {
         }
     }
 
-    static protected Class getCurrentClass() {
-        return UploadingService.class;
-    }
-
     @Inject
     JobManager uploadJobManager;
 

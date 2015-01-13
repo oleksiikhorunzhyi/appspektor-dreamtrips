@@ -5,6 +5,7 @@ import android.content.Context;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Application;
+import com.techery.spares.service.ServiceActionRunner;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,5 +55,10 @@ public class InjectingApplicationModule {
 
             }
         };
+    }
+
+    @Provides
+    ServiceActionRunner provideServiceActionRunner(Context context) {
+        return new ServiceActionRunner(context);
     }
 }

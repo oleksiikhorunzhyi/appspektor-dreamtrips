@@ -23,17 +23,18 @@ public class ServiceActionRouter {
     }
 
     public void dispatchIntent(Intent intent) {
-        checkNotNull(intent);
+        checkNotNull(intent, "Intent is required");
 
         final String action = intent.getAction();
-        checkNotNull(action);
 
-        ActionBody body = actionsMap.get(action);
+        if (action != null) {
+            ActionBody body = actionsMap.get(action);
 
-        if (body != null) {
-            body.run(intent);
-        } else {
-            throw new IllegalArgumentException("Unknown action:" + action + " for service:" + intent.getComponent().getClassName());
+            if (body != null) {
+                body.run(intent);
+            } else {
+                throw new IllegalArgumentException("Unknown action:" + action + " for service:" + intent.getComponent().getClassName());
+            }
         }
     }
 

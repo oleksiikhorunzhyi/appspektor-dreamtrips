@@ -57,9 +57,4 @@ public class InjectingServiceModule {
         return this.injector;
     }
 
-    @Provides
-    ServiceActionRunner provideServiceActionRunner(Context context) {
-        return new ServiceActionRunner(context);
-    }
-
 }

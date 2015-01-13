@@ -15,5 +15,4 @@ public class CreatePhotoActivity extends BaseActivity {
         pm = new CreatePhotoActivityPM(this, this);
         pm.onCreate();
     }
-
 }

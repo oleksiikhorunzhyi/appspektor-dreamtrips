@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.view.presentation;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.SessionManager;
+import com.worldventures.dreamtrips.core.uploader.UploadingService;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
-import com.worldventures.dreamtrips.view.activity.Injector;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -29,6 +30,7 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
     }
 
     public void loginAction() {
+
 
 
         String username = getUsername();

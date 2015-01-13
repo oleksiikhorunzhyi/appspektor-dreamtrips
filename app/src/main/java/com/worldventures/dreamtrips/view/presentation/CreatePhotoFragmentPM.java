@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.presentation;
 
-import com.worldventures.dreamtrips.view.activity.Injector;
+
+import com.techery.spares.module.Injector;
 
 import org.robobinding.annotation.PresentationModel;
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core;
 
 import com.google.gson.JsonObject;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
@@ -10,7 +11,6 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
 import com.worldventures.dreamtrips.utils.Logs;
-import com.worldventures.dreamtrips.view.activity.Injector;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +36,6 @@ public class DataManager {
 
     @Inject
     protected SharedServicesApi sharedServicesApi;
-
 
     private User currentUser;
 

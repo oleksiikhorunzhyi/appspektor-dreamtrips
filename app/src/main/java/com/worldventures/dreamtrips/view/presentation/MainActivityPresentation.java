@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
 public class MainActivityPresentation extends BasePresentation implements FragmentCompass.OnTransactionListener {

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import de.greenrobot.event.EventBus;
 
-public abstract class BaseActivity extends ActionBarActivity implements Injector {
+public abstract class InjectingActivity extends ActionBarActivity implements Injector {
     private ObjectGraph objectGraph;
 
     @Override
@@ -43,12 +43,6 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
 
     private Injector getApplicationInjector() {
         return ((Injector)getApplication());
-    }
-
-    public interface Events {
-        class ReloadEvent {
-
-        }
     }
 
     @Inject
@@ -78,7 +72,11 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     @Override
     protected void onResume() {
         super.onResume();
-        this.eventBus.registerSticky(this);
+        try {
+            this.eventBus.registerSticky(this);
+        } catch(Exception e) {
+
+        }
     }
 
     @Override
@@ -108,10 +106,6 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
         List<Object> result = new ArrayList<Object>();
         result.add(new InjectingActivityModule(this, this));
         return result;
-    }
-
-    public void onEvent(Events.ReloadEvent reloadEvent) {
-
     }
 
     protected void afterCreateView(Bundle savedInstanceState) {

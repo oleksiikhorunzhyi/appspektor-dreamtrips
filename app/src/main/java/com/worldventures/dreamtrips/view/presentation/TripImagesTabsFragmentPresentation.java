@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.view.presentation;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.worldventures.dreamtrips.view.activity.Injector;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import org.robobinding.annotation.PresentationModel;

@@ -6,6 +6,7 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Application;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -49,7 +50,7 @@ public class InjectingApplicationModule {
     AppInitializer provideEmptyInitializer() {
         return new AppInitializer() {
             @Override
-            public void initialize() {
+            public void initialize(Injector injector) {
 
             }
         };

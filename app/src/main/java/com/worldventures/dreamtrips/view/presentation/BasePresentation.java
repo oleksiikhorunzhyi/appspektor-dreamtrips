@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import android.os.Handler;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.view.activity.Injector;
+
 
 import org.apache.http.HttpStatus;
 

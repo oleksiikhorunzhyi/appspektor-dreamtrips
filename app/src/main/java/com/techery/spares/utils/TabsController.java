@@ -5,15 +5,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 
 import com.techery.spares.adapter.FragmentTabsPagerAdapter;
-import com.techery.spares.ui.activity.BaseActivity;
+import com.techery.spares.ui.activity.InjectingActivity;
 
 import java.util.List;
 
 public class TabsController implements ActionBar.TabListener {
     private ViewPager viewPager;
-    private final BaseActivity activity;
+    private final InjectingActivity activity;
 
-    public TabsController(BaseActivity activity) {
+    public TabsController(InjectingActivity activity) {
         this.activity = activity;
     }
 

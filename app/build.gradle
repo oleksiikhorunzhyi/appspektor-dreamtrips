@@ -7,9 +7,10 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 
 }
+
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -22,12 +23,17 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "0.1"
+
+        buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+        buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
+        buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+        buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-        }
+//        debug {
+//            applicationIdSuffix ".debug"
+//        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -41,23 +47,23 @@ android {
         }
     }
 
-    productFlavors {
-        dev {
-            applicationId = "com.worldventures.dreamtrips.dev"
-            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
-            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
-            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
-        }
-
-        prod {
-            applicationId "com.worldventures.dreamtrips"
-            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
-            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
-            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
-        }
-    }
+//    productFlavors {
+//        dev {
+//            applicationId "com.worldventures.dreamtrips.dev"
+//            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+//            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
+//            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+//            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+//        }
+//
+//        prod {
+//            applicationId "com.worldventures.dreamtrips"
+//            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+//            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
+//            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+//            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+//        }
+//    }
 
 
     lintOptions {
@@ -86,6 +92,10 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.robolectric:robolectric:2.4'
     compile 'de.greenrobot:eventbus:2.4.0'
+
+    compile 'com.path:android-priority-jobqueue:1.1.2'
+    compile 'io.realm:realm-android:0.76.0'
+
 //UI
     compile 'com.balysv:material-ripple:1.0.6-SNAPSHOT'
     compile 'com.rengwuxian.materialedittext:library:1.6.0'

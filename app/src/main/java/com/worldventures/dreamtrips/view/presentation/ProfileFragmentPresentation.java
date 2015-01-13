@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import android.net.Uri;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import org.robobinding.annotation.PresentationModel;

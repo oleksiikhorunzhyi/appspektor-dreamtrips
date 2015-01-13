@@ -31,7 +31,7 @@ import dagger.Provides;
 import de.greenrobot.event.EventBus;
 
 @Module(
-        addsTo = DTModule.class,
+
         injects = {
                 LaunchActivityPresentation.class,
                 LoginActivityPresentation.class,
@@ -49,6 +49,7 @@ import de.greenrobot.event.EventBus;
                 ProfileFragment.class,
                 PhotoItem.class
         },
+        complete = false,
         library = true
 )
 public class DomainModule {

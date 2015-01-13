@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.presentation;
 
-import com.worldventures.dreamtrips.view.activity.Injector;
+
+import com.techery.spares.module.Injector;
 
 public class BaseActivityPresentation extends BasePresentation {
 

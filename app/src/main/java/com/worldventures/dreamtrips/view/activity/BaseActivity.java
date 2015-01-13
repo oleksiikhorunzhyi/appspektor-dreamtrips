@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
 import com.nispok.snackbar.Snackbar;
-import com.worldventures.dreamtrips.DTApplication;
-import com.worldventures.dreamtrips.core.module.DTModule;
+import com.techery.spares.module.Injector;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.DomainModule;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
@@ -16,33 +15,23 @@ import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
 import org.robobinding.binder.BinderFactoryBuilder;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import dagger.ObjectGraph;
+public abstract class BaseActivity extends InjectingActivity implements Injector, IInformView {
 
-public abstract class BaseActivity extends ActionBarActivity implements Injector, IInformView {
-
-
-    private ObjectGraph activityGraph;
     private BinderFactory binderFactory;
     private BaseActivityPresentation baseActivityPresentation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityGraph = ObjectGraph.create(getModules().toArray());
         baseActivityPresentation = new BaseActivityPresentation(this,this);
-    }
-
-    public void inject(Object ob) {
-        activityGraph.inject(ob);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        activityGraph = null;
     }
 
     public void initializeContentView(int layoutId, Object presentationModel) {
@@ -69,7 +58,9 @@ public abstract class BaseActivity extends ActionBarActivity implements Injector
     }
 
     protected List<Object> getModules() {
-        return Arrays.<Object>asList(new DomainModule(this), new DTModule(DTApplication.get(this)));
+        List<Object> result = new ArrayList<Object>();
+        result.add(new DomainModule(this));
+        return result;
     }
 
     public void informUser(String st) {

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.view.presentation;
 
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.SessionManager;
-import com.worldventures.dreamtrips.view.activity.Injector;
 
 import javax.inject.Inject;
 

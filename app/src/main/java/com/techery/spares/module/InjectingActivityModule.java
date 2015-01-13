@@ -3,7 +3,7 @@ package com.techery.spares.module;
 import android.content.Context;
 
 import com.techery.spares.adapter.AdapterBuilder;
-import com.techery.spares.ui.activity.BaseActivity;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.techery.spares.utils.TabsController;
 import com.techery.spares.utils.params.ParamsBuilderCreator;
 import com.techery.spares.utils.params.ParamsExtractor;
@@ -13,10 +13,10 @@ import dagger.Provides;
 
 @Module(library = true, overrides = true)
 public class InjectingActivityModule {
-    private final BaseActivity activity;
+    private final InjectingActivity activity;
     private final Injector injector;
 
-    public InjectingActivityModule(BaseActivity activity, Injector injector) {
+    public InjectingActivityModule(InjectingActivity activity, Injector injector) {
         this.activity = activity;
         this.injector = injector;
     }
@@ -27,7 +27,7 @@ public class InjectingActivityModule {
     }
 
     @Provides
-    BaseActivity provideActivity() {
+    InjectingActivity provideActivity() {
         return activity;
     }
 
@@ -42,12 +42,12 @@ public class InjectingActivityModule {
     }
 
     @Provides
-    TabsController provideTabsController(BaseActivity activity) {
+    TabsController provideTabsController(InjectingActivity activity) {
         return new TabsController(activity);
     }
 
     @Provides
-    ParamsExtractor provideParamsExtractor(BaseActivity activity) {
+    ParamsExtractor provideParamsExtractor(InjectingActivity activity) {
         return new ParamsExtractor(activity);
     }
 

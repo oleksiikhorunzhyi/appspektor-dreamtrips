@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.presentation.IInformView;
 
 public class BaseFragment<T extends BaseActivity> extends Fragment implements IInformView {

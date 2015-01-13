@@ -11,14 +11,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ServiceActionRouter {
 
-    private Map<String, ActionBody> actionsMap = new HashMap<>();
+    private Map<String, ActionHandler> actionsMap = new HashMap<>();
     private Gson gson = new Gson();
 
-    public interface ActionBody {
+    public interface ActionHandler {
         public void run(Intent intent);
     }
 
-    public interface ActionBodyWithPayload<T> {
+    public interface ActionHandlerWithPayload<T> {
         public void run(T payload);
     }
 
@@ -28,7 +28,7 @@ public class ServiceActionRouter {
         final String action = intent.getAction();
 
         if (action != null) {
-            ActionBody body = actionsMap.get(action);
+            ActionHandler body = actionsMap.get(action);
 
             if (body != null) {
                 body.run(intent);
@@ -38,14 +38,14 @@ public class ServiceActionRouter {
         }
     }
 
-    public void on(String action, ActionBody body) {
+    public void on(String action, ActionHandler body) {
         checkNotNull(action);
         checkNotNull(body);
 
         actionsMap.put(action, body);
     }
 
-    public <T> void on(String action, Class<T> clazz, ActionBodyWithPayload<T> body) {
+    public <T> void on(String action, Class<T> clazz, ActionHandlerWithPayload<T> body) {
         checkNotNull(action);
         checkNotNull(body);
 
@@ -62,7 +62,7 @@ public class ServiceActionRouter {
         });
     }
 
-    public <T> void on( Class<T> clazz, ActionBodyWithPayload<T> body) {
+    public <T> void on( Class<T> clazz, ActionHandlerWithPayload<T> body) {
         on(clazz.getName(), clazz, body);
     }
 }

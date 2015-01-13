@@ -6,6 +6,7 @@ import android.os.IBinder;
 
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
+import com.techery.spares.utils.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public abstract class InjectingService extends Service implements Injector {
 
         result.add(new InjectingServiceModule(this, this));
 
-        Object usedModule = ServiceHelper.getServiceModule(this);
+        Object usedModule = ModuleHelper.getUsedModule(this);
 
         if (usedModule != null) {
             result.add(usedModule);

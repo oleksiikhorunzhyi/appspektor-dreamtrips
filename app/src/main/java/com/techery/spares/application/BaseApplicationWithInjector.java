@@ -2,8 +2,11 @@ package com.techery.spares.application;
 
 import android.app.Application;
 
+import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
+import com.techery.spares.utils.ModuleHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +37,17 @@ public abstract class BaseApplicationWithInjector extends Application implements
         }
     }
 
-    protected abstract List<Object> getModules();
+    protected List<Object> getModules() {
+        List<Object> result = new ArrayList<>();
+
+        Object usedModule = ModuleHelper.getUsedModule(this);
+
+        if (usedModule != null) {
+            result.add(usedModule);
+        }
+
+        return result;
+    };
 
     @Override
     public ObjectGraph getObjectGraph() {

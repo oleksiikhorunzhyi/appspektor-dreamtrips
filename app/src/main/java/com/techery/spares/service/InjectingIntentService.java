@@ -1,16 +1,14 @@
 package com.techery.spares.service;
 
 import android.app.IntentService;
-import android.app.Service;
 import android.content.Intent;
 
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
+import com.techery.spares.utils.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
@@ -53,7 +51,7 @@ public abstract class InjectingIntentService extends IntentService implements In
 
         result.add(new InjectingServiceModule(this, this));
 
-        Object usedModule = ServiceHelper.getServiceModule(this);
+        Object usedModule = ModuleHelper.getUsedModule(this);
 
         if (usedModule != null) {
             result.add(usedModule);

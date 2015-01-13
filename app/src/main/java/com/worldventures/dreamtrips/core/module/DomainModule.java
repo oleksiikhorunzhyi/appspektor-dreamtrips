@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.worldventures.dreamtrips.DTApplication;
+import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
-import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -78,13 +77,13 @@ public class DomainModule {
 
     @Provides
     @Singleton
-    public DataManager provideDataManager(DTApplication app) {
+    public DataManager provideDataManager(DreamTripsApplication app) {
         return new DataManager(app);
     }
 
     @Provides
     @Singleton
-    public SessionManager provideSessionManager(DTApplication app) {
+    public SessionManager provideSessionManager(DreamTripsApplication app) {
         return new SessionManager(app);
     }
 

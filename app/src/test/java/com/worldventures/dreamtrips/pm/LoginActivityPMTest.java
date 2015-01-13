@@ -1,9 +1,5 @@
 package com.worldventures.dreamtrips.pm;
 
-import com.worldventures.dreamtrips.DTApplication;
-import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +7,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-
-import java.util.concurrent.CountDownLatch;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)

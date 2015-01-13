@@ -1,14 +1,12 @@
-package com.techery.spares.service;
+package com.techery.spares.utils;
 
-
-import android.app.Service;
 
 import com.techery.spares.module.Annotations.UseModule;
 
-public class ServiceHelper {
-    public static Object getServiceModule(Service service) {
+public class ModuleHelper {
+    public static Object getUsedModule(Object object) {
         try {
-            UseModule useModule = service.getClass().getAnnotation(UseModule.class);
+            UseModule useModule = object.getClass().getAnnotation(UseModule.class);
             if (useModule != null) {
                 return useModule.value().newInstance();
             } else {

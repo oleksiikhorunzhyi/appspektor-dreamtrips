@@ -27,7 +27,7 @@ public class UploadingService extends InjectingService {
     JobManager uploadJobManager;
 
     @Inject
-    transient Repository<ImageUploadTask> repository;
+    Repository<ImageUploadTask> repository;
 
     @Override
     public void onCreate() {

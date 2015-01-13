@@ -9,8 +9,10 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
+import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.io.File;
 import java.util.Locale;
@@ -22,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class UploadJob extends Job {
     private static final String TAG = UploadJob.class.getSimpleName();
 
-    private final String filePath;
+    private final String taskId;
 
     @Inject
     transient TransferManager transferManager;
@@ -33,24 +35,28 @@ public class UploadJob extends Job {
     @Inject
     transient UploadingFileManager uploadingFileManager;
 
+    @Inject
+    transient Repository<ImageUploadTask> repository;
+
     transient Upload uploadHandler;
 
-    public UploadJob(String filePath) {
+    public UploadJob(String taskId) {
         super(new Params(Priority.MID).requireNetwork().persist());
 
-        this.filePath = filePath;
+        this.taskId = taskId;
     }
 
     @Override
     public void onAdded() {
-        Log.d(TAG, "Added");
+
     }
 
     @Override
     public void onRun() throws Throwable {
-        Log.d(TAG, "Running");
 
-        File file = this.uploadingFileManager.copyFileIfNeed(this.filePath);
+        ImageUploadTask uploadTask = repository.query().equalTo("taskId", this.taskId).findFirst();
+
+        File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFilePath());
 
         checkNotNull(file, "Can't copy file into uploader storage");
 
@@ -70,9 +76,9 @@ public class UploadJob extends Job {
 
         processUploadResults(uploadResult);
 
-        file.delete();
+        repository.remove(uploadTask);
 
-        Log.d(TAG, "Uploaded:" + uploadResult.getKey());
+        file.delete();
     }
 
     protected void processUploadResults(UploadResult uploadResult) {

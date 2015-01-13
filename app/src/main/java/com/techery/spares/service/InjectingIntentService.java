@@ -4,14 +4,20 @@ import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 
+import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import dagger.ObjectGraph;
 
 public abstract class InjectingIntentService extends IntentService implements Injector {
+
+    protected ServiceActionRouter actionRouter = new ServiceActionRouter();
+
     private ObjectGraph objectGraph;
 
     public InjectingIntentService(String name) {
@@ -37,8 +43,22 @@ public abstract class InjectingIntentService extends IntentService implements In
         getObjectGraph().inject(this);
     }
 
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        actionRouter.dispatchIntent(intent);
+    }
+
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<Object>();
+
+        result.add(new InjectingServiceModule(this, this));
+
+        Object usedModule = ServiceHelper.getServiceModule(this);
+
+        if (usedModule != null) {
+            result.add(usedModule);
+        }
+
         return result;
     }
 }

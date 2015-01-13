@@ -68,6 +68,7 @@ public class DTModule {
 
     @Provides
     Realm provideRealm(Context context) {
-        return Realm.getInstance(context);
+        Realm realm = Realm.getInstance(context);
+        return realm;
     }
 }

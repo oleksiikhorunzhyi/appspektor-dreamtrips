@@ -13,11 +13,14 @@ import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.DTModule;
+import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import javax.inject.Singleton;
 
 import dagger.Provides;
+import io.realm.Realm;
 
 @dagger.Module(
         addsTo = DTModule.class,
@@ -52,12 +55,7 @@ public class UploaderModule {
     }
 
     @Provides
-    QueueFactory provideQueueFactory() {
-        return new UploaderQueueFactory();
-    }
-
-    @Provides
-    Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector, QueueFactory queueFactory) {
+    Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector) {
         return new Configuration.Builder(context)
                 .customLogger(new Logger())
                 .injector(injector)
@@ -65,7 +63,6 @@ public class UploaderModule {
                 .maxConsumerCount(3)
                 .loadFactor(3)
                 .consumerKeepAlive(120)
-                .queueFactory(queueFactory)
                 .id("Uploading Job Manager")
                 .build();
     }
@@ -79,5 +76,10 @@ public class UploaderModule {
     @Provides
     UploadingFileManager provideUploadingFileManager(Context context) {
         return new UploadingFileManager(context);
+    }
+
+    @Provides
+    Repository<ImageUploadTask> provideImageUploadRepository(Realm realm) {
+        return new ImageUploadsRepository(realm);
     }
 }

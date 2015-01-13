@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.techery.spares.module.Annotations.UseModule;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 
@@ -13,7 +12,14 @@ import java.util.List;
 
 import dagger.ObjectGraph;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public abstract class InjectingService extends Service implements Injector {
+
+    public static final String EXTRA_PAYLOAD = "com.techery.spares.service.extra.PAYLOAD";
+
+    protected ServiceActionRouter actionRouter = new ServiceActionRouter();
+
     private ObjectGraph objectGraph;
 
     @Override
@@ -40,30 +46,26 @@ public abstract class InjectingService extends Service implements Injector {
         inject(this);
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        checkNotNull(intent);
+
+        actionRouter.dispatchIntent(intent);
+
+        return Service.START_STICKY;
+    }
+
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<Object>();
 
         result.add(new InjectingServiceModule(this, this));
 
-        Object usedModule = getServiceModule();
+        Object usedModule = ServiceHelper.getServiceModule(this);
 
         if (usedModule != null) {
             result.add(usedModule);
         }
 
         return result;
-    }
-
-    private Object getServiceModule() {
-        try {
-            UseModule useModule = this.getClass().getAnnotation(UseModule.class);
-            if (useModule != null) {
-                return useModule.value().newInstance();
-            } else {
-                return null;
-            }
-        } catch (InstantiationException | IllegalAccessException e) {
-            return null;
-        }
     }
 }

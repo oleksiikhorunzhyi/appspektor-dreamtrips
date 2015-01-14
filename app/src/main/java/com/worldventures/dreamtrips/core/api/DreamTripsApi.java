@@ -21,15 +21,15 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/sessions")
-    public void getSession(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
+    public void login(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
 
     @POST("/api/profile/avatar")
     @Multipart
-    public void uploadAvatar(@Header("Authorization") String authorization, @Part("avatar") TypedFile image, Callback<Image> callback);
+    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<Image> callback);
 
     @GET("/api/photos")
-    public void getUserPhotos(@Header("Authorization") String authorization, Callback<ListPhotoResponse> callback);
+    public void getUserPhotos(Callback<ListPhotoResponse> callback);
 
     @GET("/api/users/{id}/photos")
-    public void getMyPhotos(@Header("Authorization") String authorization, @Path("id") int currentUserId, Callback<ListPhotoResponse> callback);
+    public void getMyPhotos(@Path("id") int currentUserId, Callback<ListPhotoResponse> callback);
 }

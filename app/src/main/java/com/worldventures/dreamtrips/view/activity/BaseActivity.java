@@ -6,7 +6,7 @@ import android.view.View;
 import com.nispok.snackbar.Snackbar;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.core.module.DomainModule;
+import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.IInformView;
 
@@ -60,7 +60,7 @@ public abstract class BaseActivity extends InjectingActivity implements Injector
 
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<Object>();
-        result.add(new DomainModule(this));
+        result.add(new ActivityModule(this));
         return result;
     }
 

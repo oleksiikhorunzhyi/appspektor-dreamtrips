@@ -23,7 +23,9 @@ public class ServiceActionRouter {
     }
 
     public void dispatchIntent(Intent intent) {
-        checkNotNull(intent, "Intent is required");
+        if (intent == null) {
+            return;
+        }
 
         final String action = intent.getAction();
 

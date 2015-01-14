@@ -49,7 +49,6 @@ public abstract class InjectingService extends Service implements Injector {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        checkNotNull(intent);
 
         actionRouter.dispatchIntent(intent);
 
@@ -57,7 +56,7 @@ public abstract class InjectingService extends Service implements Injector {
     }
 
     protected List<Object> getModules() {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
 
         result.add(new InjectingServiceModule(this, this));
 

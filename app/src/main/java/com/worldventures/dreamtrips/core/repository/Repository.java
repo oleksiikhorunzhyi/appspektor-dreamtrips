@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.repository;
 
 
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
@@ -8,6 +10,7 @@ import io.realm.RealmQuery;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Repository<T extends RealmObject> {
+
     public interface Consumer<T> {
         public void consume(T object);
     }

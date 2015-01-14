@@ -17,9 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.module.Annotations.Application;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.DataManager;
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
@@ -35,10 +38,14 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREFERENCES_FILE = "my_app_settings"; //TODO: change this to your file
+
     @Inject
-    DataManager dataManager;
-    @Inject
+    @Global
     EventBus eventBus;
+
+    @Inject
+    SessionManager sessionManager;
+
     private NavigationDrawerCallbacks mCallbacks;
     private RecyclerView mDrawerList;
     private View mFragmentContainerView;
@@ -81,7 +88,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     private NavigationHeader getNavigationHeader() {
         NavigationHeader navHeader = new NavigationHeader();
-        User user = dataManager.getCurrentUser();
+
+        User user = sessionManager.getCurrentUser();
         navHeader.setUserEmail(user.getEmail());
         navHeader.setUserNome(user.getUsername());
         navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));

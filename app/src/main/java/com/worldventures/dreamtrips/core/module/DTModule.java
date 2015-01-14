@@ -6,12 +6,16 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.worldventures.dreamtrips.DreamTripsApplication;
+import com.worldventures.dreamtrips.core.DataManager;
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer;
 import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,5 +73,17 @@ public class DTModule {
     @Provides
     Realm provideRealm(Context context) {
         return Realm.getInstance(context);
+    }
+
+    @Provides
+    @Singleton
+    public DataManager provideDataManager(DreamTripsApplication app) {
+        return new DataManager(app);
+    }
+
+    @Provides
+    @Singleton
+    public SessionManager provideSessionManager(DreamTripsApplication app) {
+        return new SessionManager(app);
     }
 }

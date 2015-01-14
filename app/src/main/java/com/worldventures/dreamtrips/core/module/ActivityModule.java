@@ -51,11 +51,11 @@ import de.greenrobot.event.EventBus;
         complete = false,
         library = true
 )
-public class DomainModule {
+public class ActivityModule {
 
     BaseActivity baseActivity;
 
-    public DomainModule(BaseActivity baseActivity) {
+    public ActivityModule(BaseActivity baseActivity) {
         this.baseActivity = baseActivity;
     }
 
@@ -73,24 +73,6 @@ public class DomainModule {
     @Provides
     public FragmentCompass provideFragmentCompass() {
         return new FragmentCompass(baseActivity);
-    }
-
-    @Provides
-    @Singleton
-    public DataManager provideDataManager(DreamTripsApplication app) {
-        return new DataManager(app);
-    }
-
-    @Provides
-    @Singleton
-    public SessionManager provideSessionManager(DreamTripsApplication app) {
-        return new SessionManager(app);
-    }
-
-    @Provides
-    @Singleton
-    EventBus provideEventBus() {
-        return EventBus.getDefault();
     }
 
 }

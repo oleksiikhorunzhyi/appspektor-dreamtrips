@@ -19,6 +19,7 @@ public class ImageUploadTask extends RealmObject {
     private float latitude;
     private float longitude;
     private Date shotAt;
+    private String originPhotoURL;
 
     public String getTaskId() {
         return taskId;
@@ -82,5 +83,13 @@ public class ImageUploadTask extends RealmObject {
 
     public void setShotAt(Date shotAt) {
         this.shotAt = shotAt;
+    }
+
+    public String getOriginPhotoURL() {
+        return originPhotoURL;
+    }
+
+    public void setOriginPhotoURL(String originPhotoURL) {
+        this.originPhotoURL = originPhotoURL;
     }
 }

@@ -9,8 +9,10 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
+import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
+import com.worldventures.dreamtrips.core.uploader.UploadingAPI;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
@@ -38,7 +40,11 @@ public class UploadJob extends Job {
     @Inject
     transient Repository<ImageUploadTask> repository;
 
+    @Inject
+    transient UploadingAPI uploadingAPI;
+
     transient Upload uploadHandler;
+
 
     public UploadJob(String taskId) {
         super(new Params(Priority.MID).requireNetwork().persist());
@@ -74,15 +80,19 @@ public class UploadJob extends Job {
 
         UploadResult uploadResult = uploadHandler.waitForUploadResult();
 
-        processUploadResults(uploadResult);
+        repository.transaction((realm) -> {
+            uploadTask.setOriginPhotoURL(getURLFromUploadResult(uploadResult));
+        });
+
+        Photo photo = uploadingAPI.uploadTripPhoto(uploadTask);
 
         repository.remove(uploadTask);
 
         file.delete();
     }
 
-    protected void processUploadResults(UploadResult uploadResult) {
-
+    private String getURLFromUploadResult(UploadResult uploadResult) {
+        return "https://" + uploadResult.getBucketName() + "s3.amazonaws.com/" + uploadResult.getKey();
     }
 
     @Override
@@ -94,6 +104,6 @@ public class UploadJob extends Job {
 
     @Override
     protected boolean shouldReRunOnThrowable(Throwable throwable) {
-        return true;
+        return getCurrentRunCount() < 3;
     }
 }

@@ -37,38 +37,34 @@ public class DataManager {
     @Inject
     protected SharedServicesApi sharedServicesApi;
 
-    private User currentUser;
+    @Inject
+    protected SessionManager sessionManager;
 
     public DataManager(Injector injector) {
         injector.inject(this);
     }
 
-    public void uploadAvatar(SessionManager sessionManager, File image, Result<Image> result) {
-        String token = getTokenForQuery(sessionManager);
-        dreamTripsApi.uploadAvatar(token, new TypedFile("image/*", image), convert(result));
+    public void uploadAvatar(File image, Result<Image> result) {
+        dreamTripsApi.uploadAvatar(new TypedFile("image/*", image), convert(result));
     }
 
-    private String getTokenForQuery(SessionManager sessionManager) {
-        return "Token token=" + sessionManager.getCurrentSession();
-    }
-
-    public void getMemberPhotos(SessionManager sessionManager, Result<ListPhotoResponse> response) {
+    public void getMemberPhotos(Result<ListPhotoResponse> response) {
         Callback<ListPhotoResponse> callback = convert(response);
-        dreamTripsApi.getUserPhotos(getTokenForQuery(sessionManager), callback);
+        dreamTripsApi.getUserPhotos(callback);
     }
 
-    public void getYouShouldBeHerePhotos(SessionManager sessionManager, Result<ListPhotoResponse> result) {
+    public void getYouShouldBeHerePhotos(Result<ListPhotoResponse> result) {
         result.response(new ListPhotoResponse(), null);
     }
 
-    public void getMyPhotos(SessionManager sessionManager, Result<ListPhotoResponse> response) {
+    public void getMyPhotos( Result<ListPhotoResponse> response) {
         Callback<ListPhotoResponse> callback = convert(response);
-        dreamTripsApi.getMyPhotos(getTokenForQuery(sessionManager), currentUser.getId(), callback);
+        dreamTripsApi.getMyPhotos(sessionManager.getCurrentUser().getId(), callback);
     }
 
     public void getSession(String username, String password, Result<Session> result) {
         Callback<Session> callback = convert(result);
-        dreamTripsApi.getSession(username, password, callback);
+        dreamTripsApi.login(username, password, callback);
     }
 
     public void getToken(String username, String password, Result<JsonObject> result) {
@@ -79,14 +75,6 @@ public class DataManager {
     public void getWebSiteDocumentsByCountry(Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         sharedServicesApi.getWebSiteDocumentsByCountry(callback);
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
     }
 
     private <T> Callback<T> convert(Result<T> result) {

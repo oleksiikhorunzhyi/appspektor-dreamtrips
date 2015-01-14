@@ -18,8 +18,8 @@ public class UploadingServiceInitializer implements AppInitializer {
 
         serviceActionRunner.from(UploadingService.class).start();
 
-        UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction("content://media/external/file/91");
+//        UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction("content://media/external/file/91");
 
-        serviceActionRunner.from(UploadingService.class).run(action);
+//        serviceActionRunner.from(UploadingService.class).run(action);
     }
 }

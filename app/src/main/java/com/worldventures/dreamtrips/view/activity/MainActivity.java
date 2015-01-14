@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerCallbacks;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+@Layout(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements MainActivityPresentation.View, NavigationDrawerCallbacks {
 
     @InjectView(R.id.toolbar_actionbar)
@@ -27,12 +29,12 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         presentation = new MainActivityPresentation(this, this);
-        presentation.onCreate();
-        setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
     }
@@ -41,7 +43,6 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     protected void onResume() {
         super.onResume();
     }
-
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -75,6 +76,5 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     @Override
     protected void onPause() {
         super.onPause();
-        presentation.onPause();
     }
 }

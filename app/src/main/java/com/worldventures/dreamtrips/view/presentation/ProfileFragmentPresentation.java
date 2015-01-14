@@ -42,15 +42,13 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
     @Inject
     protected EventBus eventBus;
-    @Inject
-    protected SessionManager sessionManager;
 
     private PickImageDialog.Callback avatarCallback = (image, error) -> {
-        dataManager.uploadAvatar(sessionManager,
+        dataManager.uploadAvatar(
                 new File(image.getFileThumbnail()),
                 (avatar, e) -> {
                     if (e == null) {
-                        dataManager.getCurrentUser().setAvatar(avatar);
+                        sessionManager.getCurrentUser().setAvatar(avatar);
                         eventBus.post(new UpdateUserInfoEvent());
                     } else {
                         handleError(e);
@@ -61,7 +59,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
     private PickImageDialog.Callback coverCallback = (image, error) -> {
         view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
-        dataManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
+        sessionManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
         eventBus.post(new UpdateUserInfoEvent());
     };
 
@@ -69,7 +67,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         super(view, injector);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
-        User user = dataManager.getCurrentUser();
+        User user = sessionManager.getCurrentUser();
         setUserName(user.getUsername());
         setUserEmail(user.getEmail());
         setUserId(user.getUsername());
@@ -85,7 +83,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
 
     public void onViewCreated() {
-        User currentUser = dataManager.getCurrentUser();
+        User currentUser = sessionManager.getCurrentUser();
         view.setAvatarImage(currentUser.getAvatar().getMediumUri());
         view.setCoverImage(Uri.fromFile(new File(currentUser.getCoverPath())));
 

@@ -24,13 +24,13 @@ public class TripImagesListFragmentPresentation extends BasePresentation impleme
     public void loadImages() {
         switch (type) {
             case MY_IMAGES:
-                dataManager.getMyPhotos(sessionManager, this);
+                dataManager.getMyPhotos(this);
                 break;
             case MEMBER_IMAGES:
-                dataManager.getMemberPhotos(sessionManager, this);
+                dataManager.getMemberPhotos(this);
                 break;
             case YOU_SHOULD_BE_HERE:
-                dataManager.getYouShouldBeHerePhotos(sessionManager, this);
+                dataManager.getYouShouldBeHerePhotos(this);
 
                 break;
         }

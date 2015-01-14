@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/indecent_content"
+        android:title="Indecent Content" />
+    <item
+        android:id="@+id/violent_content"
+        android:title="Violent Conten" />
+    <item
+        android:id="@+id/culturally_insensitive"
+        android:title="Culturally Insensitive" />
+    <item
+        android:id="@+id/other"
+        android:title="Other" />
+
+</menu>

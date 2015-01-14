@@ -11,6 +11,8 @@ public class Photo extends BaseEntity {
     Coordinate coordinates;
     List<String> tags;
     Image url;
+    boolean liked;
+    int likeCount;
 
     public List<String> getTags() {
         return tags;
@@ -66,6 +68,22 @@ public class Photo extends BaseEntity {
 
     public void setUrl(Image url) {
         this.url = url;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
     @Override

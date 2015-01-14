@@ -9,13 +9,11 @@ import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
+import com.worldventures.dreamtrips.utils.CommonUtils;
 import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.Injector;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
@@ -90,6 +88,23 @@ public class DataManager {
         this.currentUser = currentUser;
     }
 
+
+    public void flagPhoto(SessionManager sessionManager, int photoId, String nameOfReason, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.flagPhoto(getTokenForQuery(sessionManager), photoId, nameOfReason, callback);
+    }
+
+    public void likePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.likePhoto(getTokenForQuery(sessionManager), photoId, callback);
+    }
+
+    public void unlikePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.unlikePhoto(getTokenForQuery(sessionManager), photoId, callback);
+    }
+
+
     private <T> Callback<T> convert(Result<T> result) {
         return new Callback<T>() {
             @Override
@@ -102,35 +117,15 @@ public class DataManager {
                 try {
                     Logs.d(error.toString());
                     if (error.getResponse().getBody() != null) {
-                        String errorString = convertStreamToString(error.getResponse().getBody().in());
+                        String errorString = CommonUtils.convertStreamToString(error.getResponse().getBody().in());
                         Logs.d(errorString);
                     }
-
-
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logs.e(e);
                 }
                 result.response(null, error);
             }
         };
-    }
-
-    private String convertStreamToString(java.io.InputStream in) throws IOException {
-        InputStreamReader is = new InputStreamReader(in);
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(is);
-            String read = br.readLine();
-
-            while (read != null) {
-                sb.append(read);
-                read = br.readLine();
-            }
-        } catch (Exception e) {
-            Logs.e(e);
-        }
-
-        return sb.toString();
     }
 
     public static interface Result<T> {

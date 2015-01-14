@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.nispok.snackbar.Snackbar;
 import com.techery.spares.module.Injector;
@@ -17,9 +16,7 @@ import org.robobinding.binder.BinderFactoryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
-public abstract class BaseActivity extends InjectingActivity implements Injector, IInformView {
+public abstract class BaseActivity extends InjectingActivity implements IInformView {
 
     private BinderFactory binderFactory;
     private BaseActivityPresentation baseActivityPresentation;
@@ -33,12 +30,6 @@ public abstract class BaseActivity extends InjectingActivity implements Injector
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    public void initializeContentView(int layoutId, Object presentationModel) {
-        ViewBinder viewBinder = createViewBinder();
-        View rootView = viewBinder.inflateAndBind(layoutId, presentationModel);
-        setContentView(rootView);
     }
 
     public ViewBinder createViewBinder() {
@@ -65,7 +56,6 @@ public abstract class BaseActivity extends InjectingActivity implements Injector
     }
 
     public void informUser(String st) {
-        Timber.d("InformUser", st);
         Snackbar.with(getApplicationContext()).text(st).show(this);
     }
 

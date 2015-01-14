@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.presentation;
 
 import android.net.Uri;
 
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
@@ -41,6 +42,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     protected String userEmail;
 
     @Inject
+    @Global
     protected EventBus eventBus;
 
     private PickImageDialog.Callback avatarCallback = (image, error) -> {

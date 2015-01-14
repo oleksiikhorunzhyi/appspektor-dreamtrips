@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.worldventures.dreamtrips.DreamTripsApplication;
-import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
+import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
@@ -27,7 +29,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 
 @Module(
 
@@ -39,13 +40,21 @@ import de.greenrobot.event.EventBus;
                 BaseActivityPresentation.class,
                 ProfileFragmentPresentation.class,
                 MainActivityPresentation.class,
-                NavigationDrawerFragment.class,
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
                 TripImagesListFragmentPresentation.class,
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
+
+                NavigationDrawerFragment.class,
                 ProfileFragment.class,
+                DreamTripsFragment.class,
+                TripImagesTabsFragment.class,
+                LoginFragment.class,
+                TripImagesListFragment.class,
+                TripImagesTabsFragment.class,
+                WebViewFragment.class,
+
                 PhotoItem.class
         },
         complete = false,

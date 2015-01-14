@@ -4,10 +4,11 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
+import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.presentation.IInformView;
 
-public class BaseFragment<T extends BaseActivity> extends Fragment implements IInformView {
+public class BaseFragment<T extends BaseActivity> extends InjectingFragment implements IInformView {
 
     private T activity;
 

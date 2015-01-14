@@ -8,20 +8,15 @@ import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
-import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedFile;
-import timber.log.Timber;
 
 public class DataManager {
 
@@ -48,33 +43,28 @@ public class DataManager {
         dreamTripsApi.uploadAvatar(new TypedFile("image/*", image), convert(result));
     }
 
-    public void getMemberPhotos(Result<ListPhotoResponse> response) {
-        Callback<ListPhotoResponse> callback = convert(response);
-        dreamTripsApi.getUserPhotos(callback);
+    public void getMemberPhotos(Result<ListPhotoResponse> resultCallback) {
+        dreamTripsApi.getUserPhotos(convert(resultCallback));
     }
 
     public void getYouShouldBeHerePhotos(Result<ListPhotoResponse> result) {
         result.response(new ListPhotoResponse(), null);
     }
 
-    public void getMyPhotos( Result<ListPhotoResponse> response) {
-        Callback<ListPhotoResponse> callback = convert(response);
-        dreamTripsApi.getMyPhotos(sessionManager.getCurrentUser().getId(), callback);
+    public void getMyPhotos( Result<ListPhotoResponse> resultCallback) {
+        dreamTripsApi.getMyPhotos(sessionManager.getCurrentUser().getId(), convert(resultCallback));
     }
 
-    public void getSession(String username, String password, Result<Session> result) {
-        Callback<Session> callback = convert(result);
-        dreamTripsApi.login(username, password, callback);
+    public void getSession(String username, String password, Result<Session> resultCallback) {
+        dreamTripsApi.login(username, password, convert(resultCallback));
     }
 
-    public void getToken(String username, String password, Result<JsonObject> result) {
-        Callback<JsonObject> callback = convert(result);
-        worldVenturesApi.getToken(username, password, callback);
+    public void getToken(String username, String password, Result<JsonObject> resultCallback) {
+        worldVenturesApi.getToken(username, password, convert(resultCallback));
     }
 
-    public void getWebSiteDocumentsByCountry(Result<JsonObject> result) {
-        Callback<JsonObject> callback = convert(result);
-        sharedServicesApi.getWebSiteDocumentsByCountry(callback);
+    public void getWebSiteDocumentsByCountry(Result<JsonObject> resultCallback) {
+        sharedServicesApi.getWebSiteDocumentsByCountry(convert(resultCallback));
     }
 
     private <T> Callback<T> convert(Result<T> result) {
@@ -86,38 +76,9 @@ public class DataManager {
 
             @Override
             public void failure(RetrofitError error) {
-                try {
-                    Timber.d(error.toString());
-                    if (error.getResponse().getBody() != null) {
-                        String errorString = convertStreamToString(error.getResponse().getBody().in());
-                        Timber.d(errorString);
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 result.response(null, error);
             }
         };
-    }
-
-    private String convertStreamToString(java.io.InputStream in) throws IOException {
-        InputStreamReader is = new InputStreamReader(in);
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(is);
-            String read = br.readLine();
-
-            while (read != null) {
-                sb.append(read);
-                read = br.readLine();
-            }
-        } catch (Exception e) {
-            Timber.e(e, "error during stream convert");
-        }
-
-        return sb.toString();
     }
 
     public static interface Result<T> {

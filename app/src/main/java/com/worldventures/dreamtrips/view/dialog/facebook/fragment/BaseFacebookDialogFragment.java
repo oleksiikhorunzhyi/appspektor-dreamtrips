@@ -6,21 +6,25 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.Injector;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
-public class BaseFacebookDialogFragment extends DialogFragment {
-    private static final String FB_TAG = "FB_TAG";
+public abstract class BaseFacebookDialogFragment extends DialogFragment {
     protected Injector injector;
     protected ImagePickCallback imagePickCallback;
-    private FragmentManager fm;
+    protected FragmentManager fm;
+
+
+    public abstract String getDialogTag();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_DreamTripsTheme);
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         return dialog;
     }
 
@@ -30,6 +34,13 @@ public class BaseFacebookDialogFragment extends DialogFragment {
         this.fm = fm;
         this.injector = injector;
         imagePickCallback = callback;
-        show(fm, FB_TAG);
+        show(fm, getDialogTag());
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Window window = getDialog().getWindow();
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 }

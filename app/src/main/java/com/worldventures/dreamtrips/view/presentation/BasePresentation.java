@@ -25,6 +25,7 @@ public class BasePresentation {
 
     @Inject
     protected ActivityRouter activityRouter;
+
     @Inject
     protected SessionManager sessionManager;
 

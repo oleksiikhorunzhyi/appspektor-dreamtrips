@@ -7,9 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+
+import timber.log.Timber;
 
 public class FragmentCompass {
 
@@ -73,10 +74,10 @@ public class FragmentCompass {
                     fragmentTransaction.commitAllowingStateLoss();
                 }
             } catch (Exception e) {
-                Logs.e(TAG, "TransitionManager error", e);
+                Timber.e("TransitionManager error", e);
             }
         } else {
-            Logs.e(TAG, new IllegalStateException("Incorrect call of transaction manager action. validateState() false."));
+            Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
         }
     }
 
@@ -91,7 +92,7 @@ public class FragmentCompass {
     public void switchBranch(final State state, final Bundle args) {
         clearBackStack();
         replace(state, args);
-        Logs.d(TAG, "switch branch");
+        Timber.d(TAG, "switch branch");
     }
 
     private boolean validateState() {
@@ -107,7 +108,7 @@ public class FragmentCompass {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (IllegalStateException e) {
-            Logs.e(TAG, "TransitionManager error", e); //for avoid application crash when called at runtime
+            Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
         }
     }
 
@@ -120,7 +121,7 @@ public class FragmentCompass {
                 activity.finish();
             }
         } catch (IllegalStateException e) {
-            Logs.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
         }
         if (onTransactionListener != null) {
             onTransactionListener.onTransactionDone(null, Action.POP);

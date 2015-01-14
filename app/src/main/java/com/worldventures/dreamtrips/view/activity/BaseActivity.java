@@ -7,7 +7,6 @@ import com.nispok.snackbar.Snackbar;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.DomainModule;
-import com.worldventures.dreamtrips.utils.Logs;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.IInformView;
 
@@ -17,6 +16,8 @@ import org.robobinding.binder.BinderFactoryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public abstract class BaseActivity extends InjectingActivity implements Injector, IInformView {
 
@@ -64,7 +65,7 @@ public abstract class BaseActivity extends InjectingActivity implements Injector
     }
 
     public void informUser(String st) {
-        Logs.d("InformUser", st);
+        Timber.d("InformUser", st);
         Snackbar.with(getApplicationContext()).text(st).show(this);
     }
 

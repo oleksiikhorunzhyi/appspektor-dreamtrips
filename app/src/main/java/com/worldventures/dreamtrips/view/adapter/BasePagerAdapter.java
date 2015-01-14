@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.worldventures.dreamtrips.utils.Logs;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
     private List<FragmentItem<? extends T>> fragmentItems = new ArrayList<>();
@@ -27,7 +27,7 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
             setArgs(i, value);
             return value;
         } catch (Exception e) {
-            Logs.e(e);
+            Timber.e(e, "");
         }
         return null;
     }

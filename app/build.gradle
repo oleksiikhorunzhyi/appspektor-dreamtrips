@@ -96,6 +96,7 @@ dependencies {
 
     compile 'com.path:android-priority-jobqueue:1.1.2'
     compile 'io.realm:realm-android:0.76.0'
+    compile 'com.jakewharton.timber:timber:2.5.0'
 
 //UI
     compile 'com.balysv:material-ripple:1.0.6-SNAPSHOT'

@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
-import com.worldventures.dreamtrips.utils.Logs;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +21,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedFile;
+import timber.log.Timber;
 
 public class DataManager {
 
@@ -99,10 +99,10 @@ public class DataManager {
             @Override
             public void failure(RetrofitError error) {
                 try {
-                    Logs.d(error.toString());
+                    Timber.d(error.toString());
                     if (error.getResponse().getBody() != null) {
                         String errorString = convertStreamToString(error.getResponse().getBody().in());
-                        Logs.d(errorString);
+                        Timber.d(errorString);
                     }
 
 
@@ -126,7 +126,7 @@ public class DataManager {
                 read = br.readLine();
             }
         } catch (Exception e) {
-            Logs.e(e);
+            Timber.e(e, "error during stream convert");
         }
 
         return sb.toString();

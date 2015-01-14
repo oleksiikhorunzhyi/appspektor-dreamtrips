@@ -24,15 +24,6 @@ public class User extends BaseEntity {
     public void setCoverPath(String coverPath) {
         this.coverPath = coverPath;
     }
-    // {id=1.0, username=888888,
-    // email=wvoperations@gmail.com,
-    // first_name=wvoperations@gmail.com,
-    // last_name=Account5,
-    // enroll_date=2007-06-14,
-    // birth_date=null,
-    // location=null,
-    // avatar={original=/avatars/original/missing.png, medium=/avatars/medium/missing.png, thumb=/avatars/thumb/missing.png}}}
-
 
     public String getUsername() {
         return username;

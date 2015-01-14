@@ -54,7 +54,7 @@ public class BaseRouter {
         this.activity.startService(intent);
     }
 
-    protected void finish() {
+    public void finish() {
         activity.finish();
     }
 

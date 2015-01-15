@@ -1,6 +1,5 @@
 package com.techery.spares.ui.routing;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
 public class BaseRouter {
-    private final Activity activity;
+    private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
 
-    public BaseRouter(Activity activity) {
-        this.activity = activity;
+    private final Context context;
+
+    public BaseRouter(Context context) {
+        this.context = context;
     }
 
     protected void startActivity(Class<? extends InjectingActivity> activityClass) {
@@ -29,7 +31,7 @@ public class BaseRouter {
     }
 
     protected void startActivity(Class<? extends InjectingActivity> activityClass, Bundle params, int flags) {
-        Intent intent = new Intent(this.activity, activityClass);
+        Intent intent = new Intent(getContext(), activityClass);
         
         if (params != null) {
             intent.putExtras(params);
@@ -42,34 +44,33 @@ public class BaseRouter {
         startActivityIntent(intent);
     }
 
+    protected void startActivity(Class<? extends BaseActivity> activityClass, Bundle bundle) {
+        Intent intent = new Intent(getContext(), activityClass);
+        if (bundle != null) {
+            intent.putExtra(EXTRA_BUNDLE, bundle);
+        }
+        getContext().startActivity(intent);
+    }
+
     protected void startActivityIntent(Intent intent) {
-        this.activity.startActivity(intent);
+        getContext().startActivity(intent);
     }
 
     protected void startService(Class<? extends Service> serviceClass) {
-        startServiceIntent(new Intent(this.activity, serviceClass));
+        startServiceIntent(new Intent(getContext(), serviceClass));
     }
 
     protected void startServiceIntent(Intent intent) {
-        this.activity.startService(intent);
-    }
-
-    public void finish() {
-        activity.finish();
+        getContext().startService(intent);
     }
 
     public Context getContext() {
-        return this.activity;
+        return this.context;
     }
 
     protected void openUri(Uri uri) {
         Intent videoClient = new Intent(Intent.ACTION_VIEW);
         videoClient.setData(uri);
         startActivityIntent(videoClient);
-    }
-
-    protected void startNewAndFinishCurrentActivity(Class<? extends InjectingActivity> activityClass) {
-        startActivity(activityClass);
-        finish();
     }
 }

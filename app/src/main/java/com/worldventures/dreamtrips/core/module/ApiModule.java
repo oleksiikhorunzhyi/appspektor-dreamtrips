@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
+import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
@@ -15,6 +16,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -36,18 +38,29 @@ public class ApiModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(GsonConverter gsonConverter, SessionManager sessionManager) {
+    RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, DefaultErrorHandler defaultErrorHandler) {
         return new RestAdapter.Builder()
                 .setEndpoint(DreamTripsApi.DEFAULT_URL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
-                .setRequestInterceptor(request -> {
-                    if (sessionManager.getCurrentSession() != null) {
-                        String authToken = "Token token=" + sessionManager.getCurrentSession();
-                        request.addHeader("Authorization", authToken);
-                    }
-                })
+                .setRequestInterceptor(requestInterceptor)
+                .setErrorHandler(defaultErrorHandler)
                 .build();
+    }
+
+    @Provides
+    DefaultErrorHandler provideDefaultErrorHandler(SessionManager sessionManager) {
+        return new DefaultErrorHandler(sessionManager);
+    }
+
+    @Provides
+    RequestInterceptor provideRequestInterceptor(SessionManager sessionManager) {
+        return request -> {
+            if (sessionManager.getCurrentSession() != null) {
+                String authToken = "Token token=" + sessionManager.getCurrentSession();
+                request.addHeader("Authorization", authToken);
+            }
+        };
     }
 
     @Provides

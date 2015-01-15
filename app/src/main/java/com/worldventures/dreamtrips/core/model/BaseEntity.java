@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.model;
 
-public class BaseEntity {
+import java.io.Serializable;
+
+public class BaseEntity implements Serializable {
     private int id;
 
     public int getId() {

@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.view.presentation.TripImagesListFragmentPresentation;
 
 import org.robobinding.ViewBinder;
@@ -27,11 +29,13 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     @InjectView(R.id.lv_items)
     RecyclerView lvItems;
+    @InjectView(R.id.ll_empty_view)
+    ViewGroup llEmptyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
+    Type type;
     private BaseRecycleAdapter adapter;
     private TripImagesListFragmentPresentation pm;
-    Type type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,9 +48,12 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
         lvItems.setLayoutManager(layoutManager);
         adapter = new BaseRecycleAdapter();
         lvItems.setAdapter(adapter);
-
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+        lvItems.addOnItemTouchListener(
+                new RecyclerItemClickListener(getAbsActivity(), (view1, position) -> pm.onItemClick(position))
+        );
         return view;
     }
 
@@ -54,10 +61,12 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
     @Override
     public void onResume() {
         super.onResume();
-        refreshLayout.post(() -> {
-            refreshLayout.setRefreshing(true);
-            pm.loadImages();
-        });
+        if (adapter.getItemCount() == 0) {
+            refreshLayout.post(() -> {
+                refreshLayout.setRefreshing(true);
+                pm.loadImages();
+            });
+        }
     }
 
     @Override
@@ -65,6 +74,11 @@ public class TripImagesListFragment extends BaseFragment<MainActivity> implement
         adapter.addItems(PhotoItem.convert(getAbsActivity(), photos));
         adapter.notifyDataSetChanged();
         refreshLayout.setRefreshing(false);
+        if (photos == null || photos.isEmpty()) {
+            llEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            llEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

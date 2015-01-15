@@ -46,7 +46,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     @Override
     public void onResume() {
         super.onResume();
-        this.eventBus.registerSticky(this);
+        try {
+            this.eventBus.registerSticky(this);
+        } catch (Throwable ignored) {
+
+        }
     }
 
     @Override

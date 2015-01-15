@@ -4,11 +4,16 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
+import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
+import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
@@ -19,10 +24,13 @@ import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDra
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.view.presentation.FullScreenActivityPM;
+import com.worldventures.dreamtrips.view.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.view.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.view.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.view.presentation.TripImagesTabsFragmentPresentation;
@@ -38,6 +46,7 @@ import dagger.Provides;
                 LaunchActivity.class,
                 MainActivity.class,
                 LoginActivity.class,
+                FullScreenPhotoActivity.class,
 
                 LaunchActivityPresentation.class,
                 LoginActivityPresentation.class,
@@ -49,6 +58,9 @@ import dagger.Provides;
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
                 TripImagesListFragmentPresentation.class,
+                FullScreenActivityPM.class,
+                FullScreenPhotoFragmentPM.class,
+                FullScreenPhotoFragment.class,
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
 
@@ -61,6 +73,10 @@ import dagger.Provides;
                 TripImagesTabsFragment.class,
                 WebViewFragment.class,
 
+                CreatePhotoFragment.class,
+                FacebookAlbumItem.class,
+                FacebookPhotoItem.class,
+                NavigationDrawerPM.class,
                 PhotoItem.class
         },
         complete = false,

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment.navigationdrawer;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,15 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.DataManager;
+import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.view.presentation.IInformView;
+import com.worldventures.dreamtrips.view.presentation.NavigationDrawerPM;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +35,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
+public class NavigationDrawerFragment extends BaseFragment implements NavigationDrawerCallbacks, IInformView {
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREFERENCES_FILE = "my_app_settings"; //TODO: change this to your file
@@ -46,6 +47,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Inject
     SessionManager sessionManager;
 
+    private NavigationDrawerPM pm;
     private NavigationDrawerCallbacks mCallbacks;
     private RecyclerView mDrawerList;
     private View mFragmentContainerView;
@@ -71,8 +73,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((Injector) getActivity()).inject(this);
+        getAbsActivity().inject(this);
 
+        pm = new NavigationDrawerPM(this, getAbsActivity());
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -90,10 +93,16 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         NavigationHeader navHeader = new NavigationHeader();
 
         User user = sessionManager.getCurrentUser();
-        navHeader.setUserEmail(user.getEmail());
-        navHeader.setUserNome(user.getUsername());
-        navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));
-        navHeader.setUserPhoto(user.getAvatar().getMediumUri());
+
+        if (user == null) {
+            pm.handleError(new IllegalCuurentUserState());
+        } else {
+            navHeader.setUserEmail(user.getEmail());
+            navHeader.setUserNome(user.getUsername());
+            navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));
+            navHeader.setUserPhoto(user.getAvatar().getMediumUri());
+        }
+
         return navHeader;
     }
 
@@ -226,4 +235,5 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public void setDrawerLayout(DrawerLayout drawerLayout) {
         mDrawerLayout = drawerLayout;
     }
+
 }

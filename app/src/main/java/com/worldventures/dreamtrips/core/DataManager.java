@@ -67,6 +67,23 @@ public class DataManager {
         sharedServicesApi.getWebSiteDocumentsByCountry(convert(resultCallback));
     }
 
+
+    public void flagPhoto(SessionManager sessionManager, int photoId, String nameOfReason, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.flagPhoto(photoId, nameOfReason, callback);
+    }
+
+    public void likePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.likePhoto(photoId, callback);
+    }
+
+    public void unlikePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+        Callback<JsonObject> callback = convert(result);
+        dreamTripsApi.unlikePhoto(photoId, callback);
+    }
+
+
     private <T> Callback<T> convert(Result<T> result) {
         return new Callback<T>() {
             @Override

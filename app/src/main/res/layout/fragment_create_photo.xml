@@ -8,6 +8,8 @@
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <ImageView
@@ -19,8 +21,8 @@
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_save"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="false"
             android:layout_alignWithParentIfMissing="false"
             android:layout_below="@+id/iv_image"
@@ -63,13 +65,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="Give a title to the image"
+                    android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${title}"
-                    android:inputType="textCapSentences" />
+                    bind:text="${title}" />
             </LinearLayout>
 
             <LinearLayout
@@ -98,13 +100,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="Set location"
+                    android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${location}"
-                    android:inputType="textCapSentences" />
+                    bind:text="${location}" />
             </LinearLayout>
 
             <LinearLayout
@@ -137,13 +139,13 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:hint="Date"
+                    android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${date}"
-                    android:inputType="textCapSentences" />
+                    bind:text="${date}" />
 
                 <com.worldventures.dreamtrips.view.custom.DTEditText
                     android:id="@+id/et_time"
@@ -155,13 +157,13 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:hint="Time"
+                    android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${time}"
-                    android:inputType="textCapSentences" />
+                    bind:text="${time}" />
 
 
             </LinearLayout>
@@ -192,12 +194,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="Add comma separated tags here"
+                    android:inputType="textCapWords"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="highlight"
                     app:primaryColor="#2196F3"
-                    bind:text="${tags}"
-                    android:inputType="textCapWords" />
+                    bind:text="${tags}" />
             </LinearLayout>
 
         </LinearLayout>

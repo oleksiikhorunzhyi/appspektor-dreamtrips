@@ -1,24 +1,38 @@
 package com.worldventures.dreamtrips.view.presentation;
 
+import android.net.Uri;
+
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
+import java.io.File;
+
 @PresentationModel
 public class TripImagesTabsFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
     private final View view;
-    private PickImageDialog.Callback selectImageCallback = new PickImageDialog.Callback() {
+    ImagePickCallback selectImageCallback = new ImagePickCallback() {
         @Override
         public void onResult(ChosenImage image, String error) {
             if (error != null) {
                 view.informUser(error);
             } else {
-
+                activityRouter.openCreatePhoto(Uri.fromFile(new File(image.getFilePathOriginal())));
+            }
+        }
+    };
+    ImagePickCallback fbCallback = new ImagePickCallback() {
+        @Override
+        public void onResult(ChosenImage image, String error) {
+            if (error != null) {
+                view.informUser(error);
+            } else {
+                activityRouter.openCreatePhoto(Uri.parse(image.getFilePathOriginal()));
             }
         }
     };
@@ -34,20 +48,12 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation impleme
         return changeSupport;
     }
 
-    public void onActionFacebookClick() {
-
-    }
-
-    public void onActionGalleryClick() {
-
-    }
-
-    public void onActionPhotoClick() {
-        activityRouter.openCreatePhoto();
-    }
-
-    public PickImageDialog.Callback providePhotoChooseCallback() {
+    public ImagePickCallback providePhotoChooseCallback() {
         return selectImageCallback;
+    }
+
+    public ImagePickCallback provideFbCallback() {
+        return fbCallback;
     }
 
     public static interface View extends IInformView {

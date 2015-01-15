@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +13,8 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
@@ -19,9 +22,13 @@ import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
 import org.robobinding.ViewBinder;
 
 import java.util.Calendar;
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
 
@@ -39,7 +46,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
     DTEditText etTime;
     @InjectView(R.id.et_tags)
     DTEditText etTags;
-
+    @Inject
+    UniversalImageLoader imageLoader;
     private CreatePhotoFragmentPM pm;
 
     @Override
@@ -48,15 +56,36 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
         ViewBinder viewBinder = getAbsActivity().createViewBinder();
         View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_create_photo, pm, container);
         ButterKnife.inject(this, view);
+        getAbsActivity().inject(this);
         etDate.setOnTouchListener(this);
         etTime.setOnTouchListener(this);
+        ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
+        lp.height = ViewIUtils.getMinSideSize(getAbsActivity());//but by material style guide 3:2
+
+        imageLoader.loadImage(Uri.parse(getAbsActivity().getImageUri().toString()), ivImage, null);
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+
+        pm.onDataSet(year, month, day);
+        pm.onTimeSet(hour, minute);
         return view;
     }
 
 
+    @OnClick(R.id.btn_save)
+    public void onActionSave(View v) {
+        pm.saveAction();
+    }
+
     @Override
-    public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i2) {
-        pm.onTimeSet(i, i2);
+    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int min) {
+        pm.onTimeSet(hour, min);
     }
 
     @Override

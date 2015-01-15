@@ -15,7 +15,7 @@ public class PickImageDialog implements ImageChooserListener {
 
 
     public static final String FOLDERNAME = "dreamtrip_folder";
-    private Callback callback;
+    private ImagePickCallback callback;
     private MaterialDialog.Builder builder;
     private Context context;
     private String title;
@@ -23,6 +23,7 @@ public class PickImageDialog implements ImageChooserListener {
     private ImageChooserManager imageChooserManager;
     private String filePath;
     private Fragment fragment;
+    private int[] requestTypes;
 
     public PickImageDialog(Context context, Fragment fragment) {
         this.context = context;
@@ -35,6 +36,16 @@ public class PickImageDialog implements ImageChooserListener {
     }
 
     public void show() {
+        if (requestTypes != null && requestTypes.length == 1) {
+            switch (requestTypes[0]) {
+                case ChooserType.REQUEST_CAPTURE_PICTURE:
+                    takePicture();
+                    return;
+                case ChooserType.REQUEST_PICK_PICTURE:
+                    chooseImage();
+                    return;
+            }
+        }
         builder.title(title != null ? title : "")
                 .items(new String[]{"Take picture", "Choose image"})
                 .itemsCallback((dialog, view, which, text) -> {
@@ -44,6 +55,10 @@ public class PickImageDialog implements ImageChooserListener {
                         chooseImage();
                     }
                 }).show();
+    }
+
+    public void setRequestTypes(int... requestTypes) {
+        this.requestTypes = requestTypes;
     }
 
     private void chooseImage() {
@@ -98,12 +113,9 @@ public class PickImageDialog implements ImageChooserListener {
         imageChooserManager.reinitialize(filePath);
     }
 
-    public void setCallback(Callback callback) {
+    public void setCallback(ImagePickCallback callback) {
         this.callback = callback;
     }
 
-    public static interface Callback {
-        void onResult(ChosenImage image, String error);
-    }
 
 }

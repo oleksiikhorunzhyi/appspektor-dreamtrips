@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDra
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_main)
@@ -35,7 +34,11 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
     }
 

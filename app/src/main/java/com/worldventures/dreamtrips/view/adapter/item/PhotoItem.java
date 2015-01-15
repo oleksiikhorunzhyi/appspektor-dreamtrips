@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.techery.spares.module.Injector;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class PhotoItem implements ItemWrapper {
+public class PhotoItem implements ItemWrapper<Photo> {
 
     Photo photo;
     @Inject
@@ -40,12 +41,17 @@ public class PhotoItem implements ItemWrapper {
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder h = ((ViewHolder) holder);
-        universalImageLoader.loadImage(photo.getUrl().getMedium(), h.ivBg,null);
+        universalImageLoader.loadImage(photo.getUrl().getMedium(), h.ivBg, null, new SimpleImageLoadingListener());
     }
 
     @Override
     public int getItemViewType() {
         return 0;
+    }
+
+    @Override
+    public Photo getItem() {
+        return photo;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,8 +71,10 @@ public class PhotoItem implements ItemWrapper {
 
     public static List<PhotoItem> convert(Injector injector, List<Photo> photos) {
         List<PhotoItem> result = new ArrayList<>();
-        for (Photo p : photos) {
-            result.add(convert(injector, p));
+        if (photos != null) {
+            for (Photo p : photos) {
+                result.add(convert(injector, p));
+            }
         }
         return result;
     }

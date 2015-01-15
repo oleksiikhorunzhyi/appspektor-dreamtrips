@@ -2,8 +2,7 @@ package com.worldventures.dreamtrips.core.model.response;
 
 import com.worldventures.dreamtrips.core.model.Photo;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 
 public class ListPhotoResponse {
     long total;
@@ -12,7 +11,7 @@ public class ListPhotoResponse {
     long lastPage;
     long from;
     long to;
-    List<Photo> data;
+    ArrayList<Photo> data;
 
     public long getTotal() {
         return total;
@@ -62,12 +61,12 @@ public class ListPhotoResponse {
         this.to = to;
     }
 
-    public List<Photo> getData() {
-        if (data == null) return Collections.emptyList();
+    public ArrayList<Photo> getData() {
+        if (data == null) return new ArrayList<>();
         return data;
     }
 
-    public void setData(List<Photo> data) {
+    public void setData(ArrayList<Photo> data) {
         this.data = data;
     }
 }

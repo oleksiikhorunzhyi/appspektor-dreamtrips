@@ -98,6 +98,7 @@ dependencies {
     compile 'io.realm:realm-android:0.76.0'
     compile 'com.jakewharton.timber:timber:2.5.0'
 
+    compile 'com.facebook.android:facebook-android-sdk:3.22.0'
 //UI
     compile 'com.balysv:material-ripple:1.0.6-SNAPSHOT'
     compile 'com.rengwuxian.materialedittext:library:1.6.0'

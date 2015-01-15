@@ -1,12 +1,12 @@
 package com.techery.spares.loader;
 
 import android.content.Context;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 
 public interface ContentLoader<T> {
     public interface LoaderCreator {
-        public Loader createLoader(final Context context, Bundle bundle);
+        public android.support.v4.content.Loader createLoader(final Context context, Bundle bundle);
     }
 
     public interface ContentLoadingObserving<T> {

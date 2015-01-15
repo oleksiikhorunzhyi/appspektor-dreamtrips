@@ -6,7 +6,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -44,9 +44,8 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     @Global
     protected EventBus eventBus;
 
-    private PickImageDialog.Callback avatarCallback = (image, error) -> {
-        dataManager.uploadAvatar(
-                new File(image.getFileThumbnail()),
+    private ImagePickCallback avatarCallback = (image, error) -> {
+        dataManager.uploadAvatar(new File(image.getFileThumbnail()),
                 (avatar, e) -> {
                     if (e == null) {
                         sessionManager.getCurrentUser().setAvatar(avatar);
@@ -58,7 +57,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 
-    private PickImageDialog.Callback coverCallback = (image, error) -> {
+    private ImagePickCallback coverCallback = (image, error) -> {
         view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
         sessionManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
         eventBus.post(new UpdateUserInfoEvent());
@@ -146,8 +145,8 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
 
     public void logout() {
         sessionManager.logoutUser();
-        activityRouter.openLogin();
         activityRouter.finish();
+        activityRouter.openLogin();
     }
 
     public void onDataSet(int year, int month, int day) {
@@ -157,12 +156,12 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
     }
 
-    //don't use of getAvata...
-    public PickImageDialog.Callback provideAvatarChooseCallback() {
+    //don't use of get prefix
+    public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
     }
 
-    public PickImageDialog.Callback provideCoverChooseCallback() {
+    public ImagePickCallback provideCoverChooseCallback() {
         return coverCallback;
     }
 

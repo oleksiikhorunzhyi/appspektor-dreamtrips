@@ -10,7 +10,7 @@ import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
 public class BaseRouter {
-    private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
+    public static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
 
     private final Context context;
 

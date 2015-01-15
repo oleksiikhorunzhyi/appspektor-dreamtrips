@@ -18,7 +18,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePre
 
     ImagePickCallback selectImageCallback = (image, error) -> {
         if (error != null) {
-            getView().informUser(error);
+            view.informUser(error);
         } else {
             activityRouter.openCreatePhoto(Uri.fromFile(new File(image.getFilePathOriginal())));
         }
@@ -26,7 +26,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePre
 
     ImagePickCallback fbCallback = (image, error) -> {
         if (error != null) {
-            getView().informUser(error);
+            view.informUser(error);
         } else {
             activityRouter.openCreatePhoto(Uri.parse(image.getFilePathOriginal()));
         }

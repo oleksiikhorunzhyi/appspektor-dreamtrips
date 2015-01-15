@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
@@ -25,13 +26,15 @@ import static com.worldventures.dreamtrips.utils.UniversalImageLoader.OP_COVER;
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    @Inject
+    UniversalImageLoader universalImageLoader;
+
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int HEADER_SIZE = 1;
-    @Inject
-    UniversalImageLoader universalImageLoader;
+
     private List<State> mData;
-    private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
+    private NavigationDrawerListener mNavigationDrawerListener;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
     private NavigationHeader navigationHeader;
@@ -41,8 +44,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         mData = data;
     }
 
-    public void setNavigationDrawerCallbacks(NavigationDrawerCallbacks navigationDrawerCallbacks) {
-        mNavigationDrawerCallbacks = navigationDrawerCallbacks;
+    public void setNavigationDrawerCallbacks(NavigationDrawerListener navigationDrawerListener) {
+        mNavigationDrawerListener = navigationDrawerListener;
     }
 
     @Override
@@ -53,8 +56,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new ItemHolder(v);
         } else if (viewType == TYPE_HEADER) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_navigation_drawer, viewGroup, false);
-         //   int dimensionPixelSize = viewGroup.getContext().getResources().getDimensionPixelSize(R.dimen.userSpace);
-          //  v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dimensionPixelSize));
             return new HeaderHolder(v);
         }
         return null;
@@ -85,8 +86,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     }
             );
             holder.itemView.setOnClickListener(v -> {
-                if (mNavigationDrawerCallbacks != null)
-                    mNavigationDrawerCallbacks.onNavigationDrawerItemSelected(i - HEADER_SIZE);
+                if (mNavigationDrawerListener != null)
+                    mNavigationDrawerListener.onNavigationDrawerItemSelected(i - HEADER_SIZE);
             });
             if (mSelectedPosition == i || mTouchedPosition == i) {
                 holder.itemName.setSelected(true);

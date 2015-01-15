@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
@@ -16,9 +17,9 @@ import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
@@ -63,6 +64,7 @@ import dagger.Provides;
                 FullScreenPhotoFragment.class,
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
+                DummyPresentationModel.class,
 
                 NavigationDrawerFragment.class,
                 ProfileFragment.class,
@@ -71,7 +73,9 @@ import dagger.Provides;
                 LoginFragment.class,
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
-                WebViewFragment.class,
+                StaticInfoFragment.class,
+                StaticInfoFragment.FAQFragment.class,
+                StaticInfoFragment.TermsAndConditionsFragment.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,

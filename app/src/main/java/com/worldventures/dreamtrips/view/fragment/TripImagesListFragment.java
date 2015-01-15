@@ -33,7 +33,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     private BaseRecycleAdapter adapter;
 
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);

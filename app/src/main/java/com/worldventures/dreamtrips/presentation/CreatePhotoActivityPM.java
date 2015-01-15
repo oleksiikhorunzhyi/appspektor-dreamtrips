@@ -4,6 +4,9 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.navigation.State;
 
+import org.robobinding.annotation.PresentationModel;
+
+@PresentationModel
 public class CreatePhotoActivityPM extends BasePresentation<BasePresentation.View> {
 
     private Uri imageUri;

@@ -14,9 +14,9 @@ import timber.log.Timber;
 
 public class FragmentCompass {
 
-    protected String TAG = getClass().getSimpleName();
     BaseActivity activity;
     OnTransactionListener onTransactionListener;
+
     private int containerId;
 
     public FragmentCompass(BaseActivity activity) {
@@ -92,7 +92,6 @@ public class FragmentCompass {
     public void switchBranch(final State state, final Bundle args) {
         clearBackStack();
         replace(state, args);
-        Timber.d(TAG, "switch branch");
     }
 
     private boolean validateState() {

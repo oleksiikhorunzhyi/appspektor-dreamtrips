@@ -54,17 +54,15 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     DTEditText dateOfBirth;
     @Inject
     UniversalImageLoader universalImageLoader;
+
     private PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        getPresentationModel().onViewCreated();
-
         ViewGroup.LayoutParams lp = userCover.getLayoutParams();
         lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
-
     }
 
     @Override

@@ -45,14 +45,25 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
         }
 
         ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
-        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(
-                layout.value(),
-                this.presentationModel,
-                container
-        );
+
+        View view = null;
+
+        if (container != null) {
+            view = viewBinder.inflateAndBindWithoutAttachingToRoot(
+                    layout.value(),
+                    this.presentationModel,
+                    container
+            );
+        } else {
+            view = viewBinder.inflateAndBind(
+                    layout.value(),
+                    this.presentationModel
+            );
+        }
 
         ButterKnife.inject(this, view);
 
+        afterCreateView(view);
 
         return view;
     }

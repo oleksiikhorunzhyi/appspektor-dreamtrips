@@ -17,9 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public class WebViewFragment extends BaseFragment<WebViewFragmentPresentation> {
-
-    public static final String HTTP_URL = "HTTP_URL";
+public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPresentation> {
 
     @InjectView(R.id.web_view)
     WebView webView;
@@ -33,7 +31,6 @@ public class WebViewFragment extends BaseFragment<WebViewFragmentPresentation> {
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        String url = getArguments().getString(HTTP_URL);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -41,8 +38,10 @@ public class WebViewFragment extends BaseFragment<WebViewFragmentPresentation> {
                 return false;
             }
         });
-        webView.loadUrl(url);
+        webView.loadUrl(getURL());
     }
+
+    abstract protected String getURL();
 
     @Override
     public void onResume() {
@@ -54,5 +53,23 @@ public class WebViewFragment extends BaseFragment<WebViewFragmentPresentation> {
     public void onPause() {
         super.onPause();
         webView.onPause();
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class FAQFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return null;
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class TermsAndConditionsFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return null;
+        }
     }
 }

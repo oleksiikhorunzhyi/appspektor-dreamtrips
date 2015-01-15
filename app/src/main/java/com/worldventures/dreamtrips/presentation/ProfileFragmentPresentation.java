@@ -31,6 +31,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     public static final String USER_EMAIL = "userEmail";
 
     private final PresentationModelChangeSupport changeSupport;
+
     protected View view;
     protected String from;
     protected String livesIn;
@@ -66,6 +67,12 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         super(view);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+
         User user = sessionManager.getCurrentUser();
         setUserName(user.getUsername());
         setUserEmail(user.getEmail());
@@ -78,14 +85,9 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         changeSupport.firePropertyChange(USER_ID);
         changeSupport.firePropertyChange(USER_NOTE);
         changeSupport.firePropertyChange(USER_EMAIL);
-    }
 
-
-    public void onViewCreated() {
-        User currentUser = sessionManager.getCurrentUser();
-        view.setAvatarImage(currentUser.getAvatar().getMediumUri());
-        view.setCoverImage(Uri.fromFile(new File(currentUser.getCoverPath())));
-
+        view.setAvatarImage(user.getAvatar().getMediumUri());
+        view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
     }
 
     public String getUserEmail() {

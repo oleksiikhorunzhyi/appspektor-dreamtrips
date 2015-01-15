@@ -22,14 +22,10 @@ public class BasePresentation<VT extends BasePresentation.View> {
     @Inject
     protected SessionManager sessionManager;
 
-    private final VT view;
+    protected final VT view;
 
     public BasePresentation(VT view) {
         this.view = view;
-    }
-
-    public VT getView() {
-        return view;
     }
 
     public void resume() {

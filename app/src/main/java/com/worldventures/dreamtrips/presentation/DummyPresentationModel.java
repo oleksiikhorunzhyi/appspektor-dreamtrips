@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.presentation;
 
-
 import org.robobinding.annotation.PresentationModel;
 
 @PresentationModel
-public class NavigationDrawerPM extends BasePresentation<BasePresentation.View> {
+public class DummyPresentationModel extends BasePresentation<BasePresentation.View> {
 
-    public NavigationDrawerPM(View view) {
+    public DummyPresentationModel(View view) {
         super(view);
     }
 }

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -92,21 +91,5 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         }
 
         getSupportActionBar().setTitle(menuElement.title);
-    }
-
-
-    public void resetActionBar() {
-        makeActionBarTransparent(false);
-    }
-
-    public void makeActionBarTransparent(boolean isTransparent) {
-        if (isTransparent) {
-            toolbar.getBackground().setAlpha(0);
-            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, 0, 0, 0);
-        } else {
-            toolbar.getBackground().setAlpha(255);
-            int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
-            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
-        }
     }
 }

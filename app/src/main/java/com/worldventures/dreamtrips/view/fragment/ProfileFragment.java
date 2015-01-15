@@ -115,8 +115,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        //TODO:fix action bar transparency
-//        getActivity().makeActionBarTransparent(true);
     }
 
     @Override

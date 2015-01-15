@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumF
 
 public class PickImageFacebookDialog {
 
-
     private Injector injector;
     private FragmentManager fm;
     private ImagePickCallback callback;

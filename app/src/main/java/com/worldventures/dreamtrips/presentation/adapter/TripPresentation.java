@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.view.presentation.adapter;
+package com.worldventures.dreamtrips.presentation.adapter;
 
 import com.worldventures.dreamtrips.core.model.Trip;
 

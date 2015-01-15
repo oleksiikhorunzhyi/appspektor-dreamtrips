@@ -10,12 +10,12 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerCallbacks;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.view.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements MainActivityPresentation.View, NavigationDrawerCallbacks {
+public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresentation> implements MainActivityPresentation.View, NavigationDrawerCallbacks {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -23,13 +23,15 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     View container;
 
     private NavigationDrawerFragment navigationDrawerFragment;
-    private MainActivityPresentation presentation;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected MainActivityPresentation createPresentationModel(Bundle savedInstanceState) {
+        return new MainActivityPresentation(this);
+    }
 
-        presentation = new MainActivityPresentation(this, this);
+    @Override
+    protected void afterCreateView(Bundle savedInstanceState) {
+        super.afterCreateView(savedInstanceState);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -43,15 +45,9 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onNavigationDrawerItemSelected(int position) {
-        presentation.onNavigationClick(position);
+        getPresentationModel().onNavigationClick(position);
     }
-
 
     @Override
     public void setActionBarTitle(String title) {
@@ -63,7 +59,6 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
         makeActionBarTransparent(false);
     }
 
-
     public void makeActionBarTransparent(boolean isTransparent) {
         if (isTransparent) {
             toolbar.getBackground().setAlpha(0);
@@ -72,12 +67,6 @@ public class MainActivity extends BaseActivity implements MainActivityPresentati
             toolbar.getBackground().setAlpha(255);
             int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
-
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 }

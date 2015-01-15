@@ -30,6 +30,7 @@ import butterknife.InjectView;
 
 public class FacebookAlbumFragment extends BaseFacebookDialogFragment {
     public static final String FB_ALBUM_TAG = "FB_ALBUM_TAG";
+
     @InjectView(R.id.lv_items)
     RecyclerView lvItems;
     private BaseRecycleAdapter adapter;
@@ -37,11 +38,13 @@ public class FacebookAlbumFragment extends BaseFacebookDialogFragment {
     LoginButton loginButton;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
            // loadData();
         }
     };
+
     private boolean tryToOpenSession = false;
 
 

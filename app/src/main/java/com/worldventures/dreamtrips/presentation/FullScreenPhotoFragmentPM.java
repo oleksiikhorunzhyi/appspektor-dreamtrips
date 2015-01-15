@@ -1,22 +1,17 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Photo;
 
 import org.robobinding.annotation.PresentationModel;
 
 @PresentationModel
-public class FullScreenPhotoFragmentPM extends BasePresentation {
-
-
-    private View view;
-
-    public FullScreenPhotoFragmentPM(View view, Injector injector) {
-        super(view, injector);
-        this.view = view;
-    }
+public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoFragmentPM.View> {
 
     Photo photo;
+
+    public FullScreenPhotoFragmentPM(View view) {
+        super(view);
+    }
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
@@ -56,7 +51,7 @@ public class FullScreenPhotoFragmentPM extends BasePresentation {
     }
 
 
-    public static interface View extends IInformView {
+    public static interface View extends BasePresentation.View {
         void setTitle(String title);
 
         void setLiked(boolean isLiked);

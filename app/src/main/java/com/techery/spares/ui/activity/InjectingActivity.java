@@ -56,11 +56,18 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
         setupObjectGraph();
         inject(this);
 
+        beforeCreateView(savedInstanceState);
+
         setupLayout();
         ButterKnife.inject(this);
 
         afterCreateView(savedInstanceState);
     }
+
+    protected void beforeCreateView(Bundle savedInstanceState) {
+
+    }
+
 
     public void setupLayout() {
         Layout layout = this.getClass().getAnnotation(Layout.class);

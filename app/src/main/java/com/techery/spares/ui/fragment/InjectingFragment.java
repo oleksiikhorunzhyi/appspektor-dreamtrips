@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.ui.activity.InjectingActivity;
 
 import javax.inject.Inject;
 
@@ -62,7 +63,14 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        this.objectGraph = getInitialObjectGraph();
+
         FragmentHelper.inject(activity, this);
+    }
+
+    protected ObjectGraph getInitialObjectGraph() {
+        return ((InjectingActivity)getActivity()).getObjectGraph();
     }
 
     @Override

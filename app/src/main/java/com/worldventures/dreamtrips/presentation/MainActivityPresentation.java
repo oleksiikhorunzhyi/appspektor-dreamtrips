@@ -1,22 +1,23 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
-public class MainActivityPresentation extends BasePresentation implements FragmentCompass.OnTransactionListener {
+public class MainActivityPresentation extends BasePresentation<MainActivityPresentation.View> implements FragmentCompass.OnTransactionListener {
 
-    private View view;
+    public MainActivityPresentation(View view) {
+        super(view);
+    }
 
-    public MainActivityPresentation(View view, Injector injector) {
-        super(view, injector);
-        this.view = view;
-        fragmentCompass.setOnTransactionListener(this);
+    @Override
+    public void resume() {
+        super.resume();
+
         updateFaqAndTermLinks();
     }
 
@@ -60,9 +61,8 @@ public class MainActivityPresentation extends BasePresentation implements Fragme
         });
     }
 
-    public static interface View extends IInformView {
+    public static interface View extends BasePresentation.View {
         void setActionBarTitle(String title);
-
         void resetActionBar();
     }
 }

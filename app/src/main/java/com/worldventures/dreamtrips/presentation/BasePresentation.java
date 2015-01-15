@@ -1,6 +1,5 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.SessionManager;
@@ -9,7 +8,7 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 
 import javax.inject.Inject;
 
-public class BasePresentation {
+public class BasePresentation<VT extends BasePresentation.View> {
 
     @Inject
     protected DataManager dataManager;
@@ -23,10 +22,18 @@ public class BasePresentation {
     @Inject
     protected SessionManager sessionManager;
 
-    protected IInformView view;
+    private final VT view;
 
-    public BasePresentation(IInformView view, Injector injector) {
-        injector.inject(this);
+    public BasePresentation(VT view) {
+        this.view = view;
+    }
+
+    public VT getView() {
+        return view;
+    }
+
+    public void resume() {
+
     }
 
     public void handleError(Exception ex) {
@@ -37,4 +44,7 @@ public class BasePresentation {
         }
     }
 
+    public interface View {
+        public void informUser(String stringId);
+    }
 }

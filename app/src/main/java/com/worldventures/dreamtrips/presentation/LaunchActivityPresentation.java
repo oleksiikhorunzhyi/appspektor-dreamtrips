@@ -1,18 +1,17 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.SessionManager;
 
 import javax.inject.Inject;
 
-public class LaunchActivityPresentation extends BasePresentation {
+public class LaunchActivityPresentation extends BasePresentation<BasePresentation.View> {
 
     @Inject
     protected SessionManager sessionManager;
 
-    public LaunchActivityPresentation(IInformView view, Injector objectGraph) {
-        super(view, objectGraph);
+    public LaunchActivityPresentation(View view) {
+        super(view);
     }
 
     public void onCreate() {

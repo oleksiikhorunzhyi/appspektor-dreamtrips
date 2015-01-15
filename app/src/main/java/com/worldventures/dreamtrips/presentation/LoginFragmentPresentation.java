@@ -1,6 +1,5 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
@@ -13,9 +12,8 @@ import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 import javax.inject.Inject;
 
 @PresentationModel
-public class LoginFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
+public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPresentation.View> implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
-    private final View view;
 
     @Inject
     protected SessionManager sessionManager;
@@ -23,15 +21,12 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
     private String username;
     private String userPassword;
 
-    public LoginFragmentPresentation(View view, Injector injector) {
-        super(view, injector);
-        this.view = view;
+    public LoginFragmentPresentation(View view) {
+        super(view);
         this.changeSupport = new PresentationModelChangeSupport(this);
     }
 
     public void loginAction() {
-
-
 
         String username = getUsername();
         String userPassword = getUserPassword();
@@ -102,7 +97,7 @@ public class LoginFragmentPresentation extends BasePresentation implements HasPr
         }
     }
 
-    public static interface View extends IInformView {
+    public static interface View extends BasePresentation.View {
         void showProgressDialog();
 
         void showLoginSuccess();

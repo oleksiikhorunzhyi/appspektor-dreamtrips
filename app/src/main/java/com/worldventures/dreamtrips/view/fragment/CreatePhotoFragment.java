@@ -12,12 +12,13 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
-import com.worldventures.dreamtrips.view.presentation.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 
 import org.robobinding.ViewBinder;
 
@@ -30,7 +31,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
+@Layout(R.layout.fragment_create_photo)
+public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
 
     @InjectView(R.id.iv_image)
     ImageView ivImage;
@@ -48,21 +50,17 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
     DTEditText etTags;
     @Inject
     UniversalImageLoader imageLoader;
-    private CreatePhotoFragmentPM pm;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        pm = new CreatePhotoFragmentPM(this, getAbsActivity());
-        ViewBinder viewBinder = getAbsActivity().createViewBinder();
-        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_create_photo, pm, container);
-        ButterKnife.inject(this, view);
-        getAbsActivity().inject(this);
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+
         etDate.setOnTouchListener(this);
         etTime.setOnTouchListener(this);
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
-        lp.height = ViewIUtils.getMinSideSize(getAbsActivity());//but by material style guide 3:2
+        lp.height = ViewIUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
-        imageLoader.loadImage(Uri.parse(getAbsActivity().getImageUri().toString()), ivImage, null);
+        imageLoader.loadImage(Uri.parse(getPresentationModel().getImageUri().toString()), ivImage, null);
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -72,25 +70,29 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoActivity> imple
         int hour = cal.get(Calendar.HOUR);
         int minute = cal.get(Calendar.MINUTE);
 
-        pm.onDataSet(year, month, day);
-        pm.onTimeSet(hour, minute);
-        return view;
+        getPresentationModel().onDataSet(year, month, day);
+        getPresentationModel().onTimeSet(hour, minute);
+    }
+
+    @Override
+    protected CreatePhotoFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new CreatePhotoFragmentPM(this);
     }
 
 
     @OnClick(R.id.btn_save)
     public void onActionSave(View v) {
-        pm.saveAction();
+        getPresentationModel().saveAction();
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int min) {
-        pm.onTimeSet(hour, min);
+        getPresentationModel().onTimeSet(hour, min);
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        pm.onDataSet(year, month, day);
+        getPresentationModel().onDataSet(year, month, day);
     }
 
     @Override

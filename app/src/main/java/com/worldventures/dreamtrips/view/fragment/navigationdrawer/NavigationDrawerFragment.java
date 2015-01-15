@@ -6,16 +6,14 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
+import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -23,19 +21,21 @@ import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.view.presentation.IInformView;
-import com.worldventures.dreamtrips.view.presentation.NavigationDrawerPM;
 
 import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
-public class NavigationDrawerFragment extends BaseFragment implements NavigationDrawerCallbacks, IInformView {
+@Layout(R.layout.fragment_navigation_drawer)
+public class NavigationDrawerFragment extends BaseFragment implements NavigationDrawerCallbacks, BasePresentation.View {
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREFERENCES_FILE = "my_app_settings"; //TODO: change this to your file
@@ -47,9 +47,11 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     @Inject
     SessionManager sessionManager;
 
-    private NavigationDrawerPM pm;
     private NavigationDrawerCallbacks mCallbacks;
-    private RecyclerView mDrawerList;
+
+    @InjectView(R.id.drawerList)
+    RecyclerView mDrawerList;
+
     private View mFragmentContainerView;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -70,14 +72,10 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         return sharedPref.getString(settingName, defaultValue);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getAbsActivity().inject(this);
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
 
-        pm = new NavigationDrawerPM(this, getAbsActivity());
-        View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
@@ -86,7 +84,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         adapter.setNavigationDrawerCallbacks(this);
         updateHeader();
         mDrawerList.setAdapter(adapter);
-        return view;
     }
 
     private NavigationHeader getNavigationHeader() {
@@ -95,7 +92,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         User user = sessionManager.getCurrentUser();
 
         if (user == null) {
-            pm.handleError(new IllegalCuurentUserState());
+            getPresentationModel().handleError(new IllegalCuurentUserState());
         } else {
             navHeader.setUserEmail(user.getEmail());
             navHeader.setUserNome(user.getUsername());
@@ -133,6 +130,11 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
+    }
+
+    @Override
+    protected BasePresentation createPresentationModel(Bundle savedInstanceState) {
+        return new NavigationDrawerPM(this);
     }
 
     public ActionBarDrawerToggle getActionBarDrawerToggle() {

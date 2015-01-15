@@ -15,13 +15,14 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
-import com.worldventures.dreamtrips.view.presentation.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 
 import org.robobinding.ViewBinder;
 
@@ -33,7 +34,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ProfileFragment extends BaseFragment<MainActivity>
+@Layout(R.layout.fragment_profile)
+public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfileFragmentPresentation.View {
 
     @InjectView(R.id.user_cover)
@@ -52,34 +54,35 @@ public class ProfileFragment extends BaseFragment<MainActivity>
     DTEditText dateOfBirth;
     @Inject
     UniversalImageLoader universalImageLoader;
-    private ProfileFragmentPresentation presentationModel;
     private PickImageDialog pid;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presentationModel = new ProfileFragmentPresentation(this, getAbsActivity());
-        ViewBinder viewBinder = getAbsActivity().createViewBinder();
-        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_profile, presentationModel, container);
-        ButterKnife.inject(this, view);
-        getAbsActivity().inject(this);
-        presentationModel.onViewCreated();
-        ViewGroup.LayoutParams lp = userCover.getLayoutParams();
-        lp.height = ViewIUtils.getScreenWidth(getAbsActivity());//but by material style guide 3:2
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
 
-        return view;
+        getPresentationModel().onViewCreated();
+
+        ViewGroup.LayoutParams lp = userCover.getLayoutParams();
+        lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
+
+    }
+
+    @Override
+    protected ProfileFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
+        return new ProfileFragmentPresentation(this);
     }
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick(ImageView iv) {
-        pid = new PickImageDialog(getAbsActivity(), this);
+        pid = new PickImageDialog(getActivity(), this);
         pid.setTitle("Select avatar");
-        pid.setCallback(presentationModel.provideAvatarChooseCallback());
+        pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
         pid.show();
     }
 
     @Override
     public void setAvatarImage(Uri uri) {
-        getAbsActivity().runOnUiThread(() -> {
+        getActivity().runOnUiThread(() -> {
             if (uri != null) {
                 universalImageLoader.loadImage(uri, userPhoto, UniversalImageLoader.OP_AVATAR);
             }
@@ -88,7 +91,7 @@ public class ProfileFragment extends BaseFragment<MainActivity>
 
     @Override
     public void setCoverImage(Uri uri) {
-        getAbsActivity().runOnUiThread(() -> {
+        getActivity().runOnUiThread(() -> {
             if (uri != null) {
                 universalImageLoader.loadImage(uri, userCover, UniversalImageLoader.OP_COVER);
             }
@@ -98,9 +101,9 @@ public class ProfileFragment extends BaseFragment<MainActivity>
 
     @OnClick(R.id.user_cover)
     public void onCoverClick(ImageView iv) {
-        pid = new PickImageDialog(getAbsActivity(), this);
+        pid = new PickImageDialog(getActivity(), this);
         pid.setTitle("Select cover");
-        pid.setCallback(presentationModel.provideCoverChooseCallback());
+        pid.setCallback(getPresentationModel().provideCoverChooseCallback());
         pid.show();
     }
 
@@ -114,7 +117,8 @@ public class ProfileFragment extends BaseFragment<MainActivity>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        getAbsActivity().makeActionBarTransparent(true);
+        //TODO:fix action bar transparency
+//        getActivity().makeActionBarTransparent(true);
     }
 
     @Override
@@ -134,7 +138,7 @@ public class ProfileFragment extends BaseFragment<MainActivity>
     }
 
     private void showLogoutDialog() {
-        new MaterialDialog.Builder(getAbsActivity())
+        new MaterialDialog.Builder(getActivity())
                 .title(getString(R.string.logout_dialog_title))
                 .content(getString(R.string.logout_dialog_message))
                 .positiveText(getString(R.string.logout_dialog_positive_btn))
@@ -144,7 +148,7 @@ public class ProfileFragment extends BaseFragment<MainActivity>
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        presentationModel.logout();
+                        getPresentationModel().logout();
                     }
                 })
                 .show();
@@ -157,7 +161,7 @@ public class ProfileFragment extends BaseFragment<MainActivity>
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        presentationModel.onDataSet(year, month, day);
+        getPresentationModel().onDataSet(year, month, day);
     }
 
     @Override
@@ -166,7 +170,7 @@ public class ProfileFragment extends BaseFragment<MainActivity>
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
             datePickerDialog.setYearRange(1915, 2015);
-            datePickerDialog.show(getAbsActivity().getSupportFragmentManager(), null);
+            datePickerDialog.show(getActivity().getSupportFragmentManager(), null);
         }
         return false;
     }

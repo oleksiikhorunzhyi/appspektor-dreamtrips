@@ -4,6 +4,9 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.activity.LaunchActivity;
+import com.worldventures.dreamtrips.view.activity.LoginActivity;
+import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
@@ -31,8 +34,11 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-
         injects = {
+                LaunchActivity.class,
+                MainActivity.class,
+                LoginActivity.class,
+
                 LaunchActivityPresentation.class,
                 LoginActivityPresentation.class,
                 LoginFragmentPresentation.class,

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.worldventures.dreamtrips.core.model.User;
 
+import de.greenrobot.event.EventBus;
+
 public class SessionManager {
 
 
@@ -17,15 +19,23 @@ public class SessionManager {
     private static final String TERMS = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
     private static final String FAQ = "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
     private static final String PREFER_NAME = "DreamTripsYo";
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    Context context;
-    int PRIVATE_MODE = 0;
 
-    public SessionManager(Context context) {
+
+    public static class LogoutEvent {
+
+    }
+
+    private final SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
+    private final Context context;
+    private final EventBus eventBus;
+    private final int PRIVATE_MODE = 0;
+
+    public SessionManager(Context context, EventBus eventBus) {
         this.context = context;
-        pref = this.context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
-        editor = pref.edit();
+        this.eventBus = eventBus;
+        this.pref = this.context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
+        this.editor = pref.edit();
     }
 
     public String getCurrentSession() {
@@ -33,54 +43,55 @@ public class SessionManager {
     }
 
     public void createUserLoginSession(String token) {
-        editor.putString(KEY_TOKEN, token);
-        editor.commit();
+        this.editor.putString(KEY_TOKEN, token);
+        this.editor.commit();
     }
 
     public String getDreamToken() {
-        return pref.getString(KEY_DREAM_TOKEN, "");
+        return this.pref.getString(KEY_DREAM_TOKEN, "");
     }
 
     public void createDreamToken(String token) {
-        editor.putString(KEY_DREAM_TOKEN, token);
-        editor.commit();
+        this.editor.putString(KEY_DREAM_TOKEN, token);
+        this.editor.commit();
     }
 
     public void saveCurrentUser(User user) {
-        editor.putString(KEY_USER, new Gson().toJson(user));
-        editor.commit();
+        this.editor.putString(KEY_USER, new Gson().toJson(user));
+        this.editor.commit();
     }
 
     public User getCurrentUser() {
-        return new Gson().fromJson(pref.getString(KEY_USER, ""), User.class);
+        return new Gson().fromJson(this.pref.getString(KEY_USER, ""), User.class);
     }
 
     public void logoutUser() {
-        editor.clear();
-        editor.commit();
+        this.editor.clear();
+        this.editor.commit();
+        this.eventBus.post(new LogoutEvent());
     }
 
 
     public boolean isUserLoggedIn() {
-        return pref.contains(KEY_TOKEN) && pref.contains(KEY_DREAM_TOKEN);
+        return this.pref.contains(KEY_TOKEN) && this.pref.contains(KEY_DREAM_TOKEN);
     }
 
     public void setTermsUrl(String termsUrl) {
-        editor.putString(KEY_URL_TERMS, termsUrl);
-        editor.commit();
+        this.editor.putString(KEY_URL_TERMS, termsUrl);
+        this.editor.commit();
     }
 
     public String getTermUrl() {
-        return pref.getString(KEY_URL_TERMS, TERMS);
+        return this.pref.getString(KEY_URL_TERMS, TERMS);
     }
 
     public String getFaqUrl() {
-        return pref.getString(KEY_URL_FAQ, FAQ);
+        return this.pref.getString(KEY_URL_FAQ, FAQ);
     }
 
     public void setFaqUrl(String faqUrl) {
-        editor.putString(KEY_URL_FAQ, faqUrl);
-        editor.commit();
+        this.editor.putString(KEY_URL_FAQ, faqUrl);
+        this.editor.commit();
     }
 
 

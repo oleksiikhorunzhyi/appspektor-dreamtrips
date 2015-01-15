@@ -3,9 +3,10 @@ package com.worldventures.dreamtrips.view.activity;
 import android.os.Bundle;
 
 import com.nispok.snackbar.Snackbar;
-import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.view.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.view.presentation.IInformView;
 
@@ -16,20 +17,20 @@ import org.robobinding.binder.BinderFactoryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public abstract class BaseActivity extends InjectingActivity implements IInformView {
 
     private BinderFactory binderFactory;
     private BaseActivityPresentation baseActivityPresentation;
 
+    @Inject
+    ActivityRouter router;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         baseActivityPresentation = new BaseActivityPresentation(this,this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     public ViewBinder createViewBinder() {
@@ -61,6 +62,11 @@ public abstract class BaseActivity extends InjectingActivity implements IInformV
 
     public void handleError(Exception e) {
         baseActivityPresentation.handleError(e);
+    }
+
+    public void onEvent(SessionManager.LogoutEvent logoutEvent) {
+        this.router.finish();
+        this.router.openLogin();
     }
 }
 

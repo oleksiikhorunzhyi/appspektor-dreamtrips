@@ -5,7 +5,6 @@ import com.techery.spares.module.Injector;
 
 public class BaseActivityPresentation extends BasePresentation {
 
-
     public BaseActivityPresentation(IInformView view, Injector injector) {
         super(view, injector);
     }
@@ -13,6 +12,4 @@ public class BaseActivityPresentation extends BasePresentation {
     public void pop() {
         fragmentCompass.pop();
     }
-
-
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.DataManager;
@@ -19,14 +20,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import io.realm.Realm;
 
 @Module(
         injects = {
                 DreamTripsApplication.class,
-                LaunchActivity.class,
-                MainActivity.class,
-                LoginActivity.class,
 
                 ImageLoaderInitializer.class,
                 UploadingServiceInitializer.class
@@ -83,7 +82,7 @@ public class DTModule {
 
     @Provides
     @Singleton
-    public SessionManager provideSessionManager(DreamTripsApplication app) {
-        return new SessionManager(app);
+    public SessionManager provideSessionManager(DreamTripsApplication app, @Global EventBus eventBus) {
+        return new SessionManager(app, eventBus);
     }
 }

@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,15 +13,11 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
-
-import org.robobinding.ViewBinder;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -31,6 +25,7 @@ import butterknife.OnClick;
 public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
+    
     Photo photo;
 
     @InjectView(R.id.iv_image)

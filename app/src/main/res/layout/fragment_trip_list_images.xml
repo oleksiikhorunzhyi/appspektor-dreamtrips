@@ -45,7 +45,7 @@
         android:layout_alignParentTop="true"
         android:visibility="visible">
 
-        <android.support.v7.widget.RecyclerView
+        <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

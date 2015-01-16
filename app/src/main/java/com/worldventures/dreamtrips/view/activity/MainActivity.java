@@ -94,7 +94,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         getSupportActionBar().setTitle(menuElement.title);
     }
 
-
     public void makeActionBarTransparent(boolean isTransparent) {
         if (isTransparent) {
             this.toolbar.getBackground().setAlpha(0);

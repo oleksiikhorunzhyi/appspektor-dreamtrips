@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
 import java.util.List;
@@ -25,28 +26,32 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
     @InjectView(R.id.lv_items)
-    RecyclerView lvItems;
+    EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup llEmptyView;
+    ViewGroup emptyView;
 
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    private BaseRecycleAdapter adapter;
+    BaseRecycleAdapter adapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        this.lvItems.setLayoutManager(layoutManager);
+
+        this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setEmptyView(emptyView);
+
         this.adapter = new BaseRecycleAdapter();
-        this.lvItems.setAdapter(adapter);
+        this.recyclerView.setAdapter(adapter);
+
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        this.lvItems.addOnItemTouchListener(
+        this.recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
         );
     }
@@ -67,11 +72,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.adapter.addItems(PhotoItem.convert(this, photos));
         this.adapter.notifyDataSetChanged();
         this.refreshLayout.setRefreshing(false);
-        if (photos == null || photos.isEmpty()) {
-            this.llEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            this.llEmptyView.setVisibility(View.GONE);
-        }
     }
 
     @Override

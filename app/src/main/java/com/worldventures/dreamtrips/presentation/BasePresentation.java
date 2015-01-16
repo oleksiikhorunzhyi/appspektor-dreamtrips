@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -9,9 +8,6 @@ import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import javax.inject.Inject;
 
 public class BasePresentation<VT extends BasePresentation.View> {
-
-    @Inject
-    protected DataManager dataManager;
 
     @Inject
     protected FragmentCompass fragmentCompass;

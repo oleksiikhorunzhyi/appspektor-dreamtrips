@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
@@ -11,7 +10,6 @@ import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;

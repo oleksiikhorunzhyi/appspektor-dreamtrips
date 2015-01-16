@@ -7,14 +7,10 @@ import android.support.v4.content.AsyncTaskLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by zen on 10/28/13.
- */
 public abstract class BaseAbstractLoader<T> extends AsyncTaskLoader<T> {
     private Throwable lastError;
     private T cachedResult;
     private Bundle params;
-
 
     public BaseAbstractLoader(Context context) {
         super(context);
@@ -24,7 +20,6 @@ public abstract class BaseAbstractLoader<T> extends AsyncTaskLoader<T> {
     @Override
     protected void onReset() {
         super.onReset();
-
         this.cachedResult = null;
     }
 

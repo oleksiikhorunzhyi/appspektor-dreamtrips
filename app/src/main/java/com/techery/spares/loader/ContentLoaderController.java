@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-/**
- * Created by zen on 11/15/13.
- */
 public class ContentLoaderController<T> implements ContentLoader<T> {
     private static final int DEFAULT_LOADER = 1;
 

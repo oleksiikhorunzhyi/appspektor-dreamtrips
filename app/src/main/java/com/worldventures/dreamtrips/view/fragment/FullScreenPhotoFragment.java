@@ -48,7 +48,7 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
         getPresentationModel().setPhoto(photo);
 
-        imageLoader.loadImage(getPresentationModel().getPhoto().getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+        this.imageLoader.loadImage(getPresentationModel().getPhoto().getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 progressBar.setVisibility(View.VISIBLE);

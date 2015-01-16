@@ -1,9 +1,5 @@
 package com.techery.spares.loader;
 
-/**
- * Created by zen on 11/13/13.
- */
-
 import android.content.Context;
 
 import java.util.List;

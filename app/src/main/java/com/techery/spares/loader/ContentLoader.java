@@ -5,6 +5,7 @@ import android.content.Loader;
 import android.os.Bundle;
 
 public interface ContentLoader<T> {
+
     public interface LoaderCreator {
         public android.support.v4.content.Loader createLoader(final Context context, Bundle bundle);
     }

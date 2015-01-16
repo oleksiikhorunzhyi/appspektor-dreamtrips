@@ -17,10 +17,6 @@ public class AdapterController {
     private EventBus eventBus;
     private BaseCell.CellBuilder cellBuilder;
 
-    public AdapterController(Context context) {
-        this(context, null);
-    }
-
     public AdapterController(Context context, BaseCell.CellBuilder cellBuilder) {
         this(context, cellBuilder, null);
     }
@@ -28,7 +24,7 @@ public class AdapterController {
     public AdapterController(Context context, BaseCell.CellBuilder cellBuilder, EventBus bus) {
         this.cellBuilder = cellBuilder;
         this.context = context;
-        this.states = new SparseArray<Bundle>();
+        this.states = new SparseArray<>();
         this.eventBus = bus;
     }
 
@@ -38,7 +34,7 @@ public class AdapterController {
 
     public android.view.View bindView(DataListAdapter adapter, int position, View view) {
 
-        BaseCell cell = (BaseCell)view;
+        BaseCell cell = (BaseCell) view;
 
         Object item = adapter.getItem(position);
 
@@ -64,7 +60,7 @@ public class AdapterController {
     }
 
     public View newView(DataListAdapter adapter, int position, ViewGroup parent) {
-        return (View) cellBuilder.build(getContext(), adapter.getItem(position));
+        return (View) this.cellBuilder.build(getContext(), adapter.getItem(position));
     }
 
     private Bundle getState(int position) {

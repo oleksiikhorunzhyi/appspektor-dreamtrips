@@ -6,15 +6,13 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer;
-import com.worldventures.dreamtrips.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.view.activity.LoginActivity;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Singleton;
 
@@ -82,7 +80,7 @@ public class DTModule {
 
     @Provides
     @Singleton
-    public SessionManager provideSessionManager(DreamTripsApplication app, @Global EventBus eventBus) {
-        return new SessionManager(app, eventBus);
+    AppSessionHolder provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
+        return new AppSessionHolder(simpleKeyValueStorage, eventBus);
     }
 }

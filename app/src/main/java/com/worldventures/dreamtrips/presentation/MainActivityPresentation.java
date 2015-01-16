@@ -25,11 +25,12 @@ public class MainActivityPresentation extends BasePresentation<MainActivityPrese
                     JsonObject obj = element.getAsJsonObject();
                     String name = obj.getAsJsonPrimitive("NameNative").getAsString();
                     String url = obj.getAsJsonPrimitive("Url").getAsString();
-                    if (name.equals("FAQ")) {
-                        sessionManager.setFaqUrl(url);
-                    } else if (name.equals("Terms of Use")) {
-                        sessionManager.setTermsUrl(url);
-                    }
+                    //TODO: Add static info loading logic.
+//                    if (name.equals("FAQ")) {
+//                        sessionManager.setFaqUrl(url);
+//                    } else if (name.equals("Terms of Use")) {
+//                        sessionManager.setTermsUrl(url);
+//                    }
                 }
             }
         });

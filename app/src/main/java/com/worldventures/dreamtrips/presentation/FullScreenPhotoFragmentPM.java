@@ -23,14 +23,14 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
 
     public void onLikeAction() {
         if (!photo.isLiked()) {
-            dataManager.likePhoto(sessionManager, photo.getId(), (jsonObject, e) -> {
+            dataManager.likePhoto(photo.getId(), (jsonObject, e) -> {
                 if (e == null) {
                     photo.setLiked(true);
                     view.setLiked(true);
                 }
             });
         } else {
-            dataManager.unlikePhoto(sessionManager, photo.getId(), (jsonObject, e) -> {
+            dataManager.unlikePhoto(photo.getId(), (jsonObject, e) -> {
                 if (e == null) {
                     photo.setLiked(false);
                     view.setLiked(false);
@@ -45,7 +45,7 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
     }
 
     public void flagAction(String title) {
-        dataManager.flagPhoto(sessionManager, photo.getId(), title, (jsonObject, e) -> {
+        dataManager.flagPhoto(photo.getId(), title, (jsonObject, e) -> {
             if (e == null) {
                 view.informUser("Photo has been flagged");
             } else {

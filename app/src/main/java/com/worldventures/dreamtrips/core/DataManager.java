@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import java.io.File;
 
@@ -33,7 +34,7 @@ public class DataManager {
     protected SharedServicesApi sharedServicesApi;
 
     @Inject
-    protected SessionManager sessionManager;
+    protected AppSessionHolder appSessionHolder;
 
     public DataManager(Injector injector) {
         injector.inject(this);
@@ -52,7 +53,7 @@ public class DataManager {
     }
 
     public void getMyPhotos( Result<ListPhotoResponse> resultCallback) {
-        dreamTripsApi.getMyPhotos(sessionManager.getCurrentUser().getId(), convert(resultCallback));
+        dreamTripsApi.getMyPhotos(appSessionHolder.get().get().getUser().getId(), convert(resultCallback));
     }
 
     public void getSession(String username, String password, Result<Session> resultCallback) {
@@ -67,17 +68,17 @@ public class DataManager {
         sharedServicesApi.getWebSiteDocumentsByCountry(convert(resultCallback));
     }
 
-    public void flagPhoto(SessionManager sessionManager, int photoId, String nameOfReason, Result<JsonObject> result) {
+    public void flagPhoto(int photoId, String nameOfReason, Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         dreamTripsApi.flagPhoto(photoId, nameOfReason, callback);
     }
 
-    public void likePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+    public void likePhoto(int photoId, Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         dreamTripsApi.likePhoto(photoId, callback);
     }
 
-    public void unlikePhoto(SessionManager sessionManager, int photoId, Result<JsonObject> result) {
+    public void unlikePhoto(int photoId, Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         dreamTripsApi.unlikePhoto(photoId, callback);
     }

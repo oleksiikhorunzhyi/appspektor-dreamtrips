@@ -4,12 +4,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.utils.RealmGsonExlusionStrategy;
 
 import javax.inject.Singleton;
@@ -49,15 +49,15 @@ public class ApiModule {
     }
 
     @Provides
-    DefaultErrorHandler provideDefaultErrorHandler(SessionManager sessionManager) {
-        return new DefaultErrorHandler(sessionManager);
+    DefaultErrorHandler provideDefaultErrorHandler(AppSessionHolder appSessionHolder) {
+        return new DefaultErrorHandler(appSessionHolder);
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(SessionManager sessionManager) {
+    RequestInterceptor provideRequestInterceptor(AppSessionHolder appSessionHolder) {
         return request -> {
-            if (sessionManager.getCurrentSession() != null) {
-                String authToken = "Token token=" + sessionManager.getCurrentSession();
+            if (appSessionHolder.get().isPresent()) {
+                String authToken = "Token token=" + appSessionHolder.get().get().getApiToken();
                 request.addHeader("Authorization", authToken);
             }
         };

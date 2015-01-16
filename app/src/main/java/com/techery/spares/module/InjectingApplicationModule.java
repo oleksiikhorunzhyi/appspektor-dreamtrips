@@ -20,7 +20,8 @@ import dagger.Provides;
                 EventBusModule.class,
                 AndroidServicesModule.class,
                 ConcurentModule.class,
-                SupportModule.class
+                SupportModule.class,
+                StorageModule.class
         },
         library = true,
         complete = false

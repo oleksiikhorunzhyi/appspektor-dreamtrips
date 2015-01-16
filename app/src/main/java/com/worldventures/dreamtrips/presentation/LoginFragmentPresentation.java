@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import org.robobinding.annotation.PresentationModel;
@@ -16,7 +17,7 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
     private final PresentationModelChangeSupport changeSupport;
 
     @Inject
-    protected SessionManager sessionManager;
+    AppSessionHolder appSessionHolder;
 
     private String username;
     private String userPassword;
@@ -37,23 +38,31 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
             view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
             return;
         }
+
         this.view.showProgressDialog();
         dataManager.getSession(username, userPassword, (o, e) -> {
             if (o != null) {
+
                 String sessionToken = o.getToken();
                 User sessionUser = o.getUser();
+
+                UserSession userSession = new UserSession();
+                userSession.setUser(sessionUser);
+                userSession.setApiToken(sessionToken);
+
                 if (sessionUser == null || sessionToken == null) {
                     this.view.showLoginErrorMessage();
                     return;
                 }
-                sessionManager.createUserLoginSession(sessionToken);
-                sessionManager.saveCurrentUser(sessionUser);
 
                 dataManager.getToken(username, userPassword, (oi, ei) -> {
                     if (oi != null) {
                         String token = oi.get("result").getAsString();
 
-                        sessionManager.createDreamToken(token);
+                        userSession.setLegacyApiToken(token);
+
+                        appSessionHolder.put(userSession);
+
                         activityRouter.openMain();
                         activityRouter.finish();
                         this.view.showLoginSuccess();

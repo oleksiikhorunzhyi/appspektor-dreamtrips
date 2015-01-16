@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
@@ -48,7 +49,14 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         dataManager.uploadAvatar(new File(image.getFileThumbnail()),
                 (avatar, e) -> {
                     if (e == null) {
-                        sessionManager.getCurrentUser().setAvatar(avatar);
+
+                        UserSession userSession = this.appSessionHolder.get().get();
+                        User user = userSession.getUser();
+
+                        user.setAvatar(avatar);
+
+                        this.appSessionHolder.put(userSession);
+
                         eventBus.post(new UpdateUserInfoEvent());
                     } else {
                         handleError(e);
@@ -59,7 +67,14 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
 
     private ImagePickCallback coverCallback = (image, error) -> {
         view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
-        sessionManager.getCurrentUser().setCoverPath(image.getFileThumbnail());
+
+        UserSession userSession = this.appSessionHolder.get().get();
+        User user = userSession.getUser();
+
+        user.setCoverPath(image.getFileThumbnail());
+
+        this.appSessionHolder.put(userSession);
+
         eventBus.post(new UpdateUserInfoEvent());
     };
 
@@ -73,7 +88,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     public void resume() {
         super.resume();
 
-        User user = sessionManager.getCurrentUser();
+        User user = this.appSessionHolder.get().get().getUser();
         setUserName(user.getUsername());
         setUserEmail(user.getEmail());
         setUserId(user.getUsername());
@@ -145,7 +160,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     }
 
     public void logout() {
-        sessionManager.logoutUser();
+        this.appSessionHolder.destroy();
         activityRouter.finish();
         activityRouter.openLogin();
     }

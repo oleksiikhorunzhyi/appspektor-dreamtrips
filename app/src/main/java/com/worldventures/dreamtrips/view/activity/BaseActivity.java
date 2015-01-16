@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.view.activity;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 
@@ -55,7 +55,7 @@ public abstract class BaseActivity extends InjectingActivity  {
         return result;
     }
 
-    public void onEvent(SessionManager.LogoutEvent logoutEvent) {
+    public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
         this.router.finish();
         this.router.openLogin();
     }

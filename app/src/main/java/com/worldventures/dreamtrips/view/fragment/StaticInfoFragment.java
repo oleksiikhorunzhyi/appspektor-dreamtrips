@@ -60,7 +60,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            return null;
+            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            return null;
+            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
         }
     }
 }

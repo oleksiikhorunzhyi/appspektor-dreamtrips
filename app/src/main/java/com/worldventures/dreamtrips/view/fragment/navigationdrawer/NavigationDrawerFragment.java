@@ -17,10 +17,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
@@ -46,7 +46,7 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     EventBus eventBus;
 
     @Inject
-    SessionManager sessionManager;
+    AppSessionHolder appSessionHolder;
 
     private NavigationDrawerListener navigationDrawerListener;
 
@@ -77,7 +77,7 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     private NavigationHeader getNavigationHeader() {
         NavigationHeader navHeader = new NavigationHeader();
 
-        User user = sessionManager.getCurrentUser();
+        User user = appSessionHolder.get().get().getUser();
 
         navHeader.setUserEmail(user.getEmail());
         navHeader.setUserNome(user.getUsername());

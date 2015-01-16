@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
-import com.worldventures.dreamtrips.core.SessionManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
     protected ActivityRouter activityRouter;
 
     @Inject
-    protected SessionManager sessionManager;
+    protected AppSessionHolder appSessionHolder;
 
     protected final VT view;
 
@@ -34,7 +34,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
 
     public void handleError(Exception ex) {
         if (ex instanceof IllegalCuurentUserState) {
-            sessionManager.logoutUser();
+            appSessionHolder.destroy();
             activityRouter.finish();
             activityRouter.openLogin();
         }

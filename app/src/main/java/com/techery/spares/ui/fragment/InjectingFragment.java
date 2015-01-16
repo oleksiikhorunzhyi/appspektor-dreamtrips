@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
@@ -36,7 +39,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     public void afterCreateView(View rootView) {
-
+        setupMenuIfNeed();
     }
 
     @Override
@@ -54,6 +57,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
         }
     }
 
+    private void setupMenuIfNeed() {
+        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        setHasOptionsMenu(menuResource != null);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -67,6 +75,14 @@ public abstract class InjectingFragment extends Fragment implements Configurable
         this.objectGraph = getInitialObjectGraph();
 
         FragmentHelper.inject(activity, this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        if (menuResource != null) {
+            inflater.inflate(menuResource.value(), menu);
+        }
     }
 
     protected ObjectGraph getInitialObjectGraph() {

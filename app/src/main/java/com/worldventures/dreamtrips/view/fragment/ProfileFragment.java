@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
@@ -35,6 +36,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_profile)
+@MenuResource(R.menu.profile_fragment)
 public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfileFragmentPresentation.View {
 
@@ -63,6 +65,18 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
         ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
         lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).makeActionBarTransparent(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).makeActionBarTransparent(false);
     }
 
     @Override
@@ -96,7 +110,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         });
     }
 
-
     @OnClick(R.id.user_cover)
     public void onCoverClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
@@ -108,17 +121,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         this.pid.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_fragment, menu);
     }
 
     @Override

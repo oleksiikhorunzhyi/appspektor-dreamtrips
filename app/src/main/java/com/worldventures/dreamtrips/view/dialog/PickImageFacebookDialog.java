@@ -24,5 +24,4 @@ public class PickImageFacebookDialog {
     public void setCallback(ImagePickCallback callback) {
         this.callback = callback;
     }
-
 }

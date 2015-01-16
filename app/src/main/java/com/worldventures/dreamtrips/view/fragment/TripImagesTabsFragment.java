@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -14,15 +12,11 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 import com.worldventures.dreamtrips.view.dialog.PickImageFacebookDialog;
-import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 
-import org.robobinding.ViewBinder;
-
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -47,7 +41,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @InjectView(R.id.fab_photo)
     FloatingActionButton fabPhoto;
 
-    TripImagesTabsFragmentPresentation pm;
     BasePagerAdapter adapter;
     PickImageDialog pid;
 
@@ -55,7 +48,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        adapter = new BasePagerAdapter(getChildFragmentManager()) {
+        this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
                 Bundle args = new Bundle();
@@ -65,13 +58,13 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
             }
         };
 
-        adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
-        adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
-        adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
+        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
+        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
+        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
 
-        pager.setAdapter(adapter);
-        tabs.setViewPager(pager);
-        multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
+        this.pager.setAdapter(adapter);
+        this.tabs.setViewPager(pager);
+        this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
     }
 
     @Override
@@ -81,46 +74,45 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onMenuExpanded() {
-        vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+        this.vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
     @Override
     public void onMenuCollapsed() {
-        vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        this.vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
     @OnClick(R.id.fab_facebook)
     public void actionFacebook(View view) {
         PickImageFacebookDialog dialog = new PickImageFacebookDialog(this, getFragmentManager());
-        dialog.setCallback(pm.provideFbCallback());
+        dialog.setCallback(getPresentationModel().provideFbCallback());
         dialog.show();
-        multipleActionsDown.collapse();
+        this.multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_gallery)
     public void actionGallery(View view) {
-        pid = new PickImageDialog(getActivity(), this);
-        pid.setTitle("Select avatar");
-        pid.setCallback(pm.providePhotoChooseCallback());
-        pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
-        pid.show();
-        multipleActionsDown.collapse();
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("Select avatar");
+        this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
+        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
+        this.pid.show();
+        this.multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_photo)
     public void actionPhoto(View view) {
-        pid = new PickImageDialog(getActivity(), this);
-        pid.setTitle("Select avatar");
-        pid.setCallback(pm.providePhotoChooseCallback());
-        pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
-        pid.show();
-        multipleActionsDown.collapse();
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("Select avatar");
+        this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
+        this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
+        this.pid.show();
+        this.multipleActionsDown.collapse();
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        pid.onActivityResult(requestCode, resultCode, data);
+        this.pid.onActivityResult(requestCode, resultCode, data);
     }
 }

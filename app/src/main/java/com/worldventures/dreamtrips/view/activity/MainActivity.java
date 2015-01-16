@@ -56,19 +56,19 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
 
-        drawerElements.add(new MenuElement(DreamTripsFragment.class, "DreamTrips", R.drawable.ic_dreamtrips));
-        drawerElements.add(new MenuElement(TripImagesTabsFragment.class, "Trip Images", R.drawable.ic_trip_images));
-        drawerElements.add(new MenuElement(DreamTripsFragment.class, "Membership", R.drawable.ic_membership));
-        drawerElements.add(new MenuElement(DreamTripsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
-        drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
-        drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));
-        drawerElements.add(new MenuElement(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", R.drawable.ic_termsconditions));
+        this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "DreamTrips", R.drawable.ic_dreamtrips));
+        this.drawerElements.add(new MenuElement(TripImagesTabsFragment.class, "Trip Images", R.drawable.ic_trip_images));
+        this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "Membership", R.drawable.ic_membership));
+        this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
+        this.drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", R.drawable.ic_termsconditions));
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(this.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
+        navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), this.toolbar);
     }
 
     @Override

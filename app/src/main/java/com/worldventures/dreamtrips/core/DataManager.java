@@ -67,7 +67,6 @@ public class DataManager {
         sharedServicesApi.getWebSiteDocumentsByCountry(convert(resultCallback));
     }
 
-
     public void flagPhoto(SessionManager sessionManager, int photoId, String nameOfReason, Result<JsonObject> result) {
         Callback<JsonObject> callback = convert(result);
         dreamTripsApi.flagPhoto(photoId, nameOfReason, callback);

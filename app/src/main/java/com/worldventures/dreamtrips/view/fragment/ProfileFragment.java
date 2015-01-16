@@ -61,7 +61,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        ViewGroup.LayoutParams lp = userCover.getLayoutParams();
+        ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
         lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
     }
 
@@ -72,17 +72,17 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick(ImageView iv) {
-        pid = new PickImageDialog(getActivity(), this);
-        pid.setTitle("Select avatar");
-        pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
-        pid.show();
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("Select avatar");
+        this.pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
+        this.pid.show();
     }
 
     @Override
     public void setAvatarImage(Uri uri) {
         getActivity().runOnUiThread(() -> {
             if (uri != null) {
-                universalImageLoader.loadImage(uri, userPhoto, UniversalImageLoader.OP_AVATAR);
+                this.universalImageLoader.loadImage(uri, this.userPhoto, UniversalImageLoader.OP_AVATAR);
             }
         });
     }
@@ -91,7 +91,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     public void setCoverImage(Uri uri) {
         getActivity().runOnUiThread(() -> {
             if (uri != null) {
-                universalImageLoader.loadImage(uri, userCover, UniversalImageLoader.OP_COVER);
+                this.universalImageLoader.loadImage(uri, this.userCover, UniversalImageLoader.OP_COVER);
             }
         });
     }
@@ -99,16 +99,15 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @OnClick(R.id.user_cover)
     public void onCoverClick(ImageView iv) {
-        pid = new PickImageDialog(getActivity(), this);
-        pid.setTitle("Select cover");
-        pid.setCallback(getPresentationModel().provideCoverChooseCallback());
-        pid.show();
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("Select cover");
+        this.pid.setCallback(getPresentationModel().provideCoverChooseCallback());
+        this.pid.show();
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        pid.onActivityResult(requestCode, resultCode, data);
+        this.pid.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -148,11 +147,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
                     }
                 })
                 .show();
-    }
-
-    @OnClick(R.id.btn_save)
-    public void onSaveClick() {
-        informUser("This feature is not implemented yet.");
     }
 
     @Override

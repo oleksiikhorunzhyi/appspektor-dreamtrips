@@ -26,8 +26,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     @InjectView(R.id.lv_items)
     RecyclerView lvItems;
+
     @InjectView(R.id.ll_empty_view)
     ViewGroup llEmptyView;
+
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
@@ -38,13 +40,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         super.afterCreateView(rootView);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        lvItems.setLayoutManager(layoutManager);
-        adapter = new BaseRecycleAdapter();
-        lvItems.setAdapter(adapter);
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        this.lvItems.setLayoutManager(layoutManager);
+        this.adapter = new BaseRecycleAdapter();
+        this.lvItems.setAdapter(adapter);
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        lvItems.addOnItemTouchListener(
+        this.lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
         );
     }
@@ -52,9 +54,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @Override
     public void onResume() {
         super.onResume();
-        if (adapter.getItemCount() == 0) {
-            refreshLayout.post(() -> {
-                refreshLayout.setRefreshing(true);
+        if (this.adapter.getItemCount() == 0) {
+            this.refreshLayout.post(() -> {
+                this.refreshLayout.setRefreshing(true);
                 this.getPresentationModel().loadImages();
             });
         }
@@ -62,19 +64,19 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     @Override
     public void setPhotos(List<Photo> photos) {
-        adapter.addItems(PhotoItem.convert(this, photos));
-        adapter.notifyDataSetChanged();
-        refreshLayout.setRefreshing(false);
+        this.adapter.addItems(PhotoItem.convert(this, photos));
+        this.adapter.notifyDataSetChanged();
+        this.refreshLayout.setRefreshing(false);
         if (photos == null || photos.isEmpty()) {
-            llEmptyView.setVisibility(View.VISIBLE);
+            this.llEmptyView.setVisibility(View.VISIBLE);
         } else {
-            llEmptyView.setVisibility(View.GONE);
+            this.llEmptyView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void clearAdapter() {
-        adapter.clear();
+        this.adapter.clear();
     }
 
     @Override

@@ -19,7 +19,6 @@ import retrofit.http.Path;
 import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
-    String DEFAULT_URL = BuildConfig.DreamTripsApi;
 
     @FormUrlEncoded
     @POST("/api/sessions")

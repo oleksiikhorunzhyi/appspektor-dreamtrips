@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Photo;
 
 import org.robobinding.annotation.PresentationModel;
+
+import javax.inject.Inject;
 
 @PresentationModel
 public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoFragmentPM.View> {
@@ -53,7 +56,6 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
             }
         });
     }
-
 
     public static interface View extends BasePresentation.View {
         void setTitle(String title);

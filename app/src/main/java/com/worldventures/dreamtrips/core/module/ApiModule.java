@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
@@ -40,7 +41,7 @@ public class ApiModule {
     @Provides
     RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, DefaultErrorHandler defaultErrorHandler) {
         return new RestAdapter.Builder()
-                .setEndpoint(DreamTripsApi.DEFAULT_URL)
+                .setEndpoint(BuildConfig.DreamTripsApi)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
                 .setRequestInterceptor(requestInterceptor)

@@ -17,6 +17,10 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
         this.photo = photo;
     }
 
+    public Photo getPhoto() {
+        return photo;
+    }
+
     public void onLikeAction() {
         if (!photo.isLiked()) {
             dataManager.likePhoto(sessionManager, photo.getId(), (jsonObject, e) -> {

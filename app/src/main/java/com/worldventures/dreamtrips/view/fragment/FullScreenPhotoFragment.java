@@ -25,8 +25,6 @@ import butterknife.OnClick;
 public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
-    
-    Photo photo;
 
     @InjectView(R.id.iv_image)
     ImageView ivImage;
@@ -37,7 +35,7 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     @InjectView(R.id.iv_flag)
     ImageView ivFlag;
     @InjectView(R.id.pb)
-    ProgressBar pb;
+    ProgressBar progressBar;
 
     @Inject
     UniversalImageLoader imageLoader;
@@ -46,23 +44,25 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        photo = (Photo) getArguments().getSerializable(EXTRA_PHOTO);
+        Photo photo = (Photo) getArguments().getSerializable(EXTRA_PHOTO);
+
         getPresentationModel().setPhoto(photo);
-        imageLoader.loadImage(photo.getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+
+        imageLoader.loadImage(getPresentationModel().getPhoto().getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                pb.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                pb.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 informUser("Error while loading image");
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                pb.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         });
 

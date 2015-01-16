@@ -1,30 +1,24 @@
 package com.worldventures.dreamtrips.view.fragment;
 
-
-import android.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class DreamTripsFragment extends BaseFragment<MainActivity> {
+import org.robobinding.annotation.PresentationModel;
+
+@Layout(R.layout.fragment_dream_trips)
+public class DreamTripsFragment extends BaseFragment<DummyPresentationModel> {
 
 
     public DreamTripsFragment() {
-        // Required empty public constructor
-    }
 
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dream_trips, container, false);
+    protected DummyPresentationModel createPresentationModel(Bundle savedInstanceState) {
+        return new DummyPresentationModel(this);
     }
-
-
 }

@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.view.fragment.WebViewFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public enum State {
     LOGIN(LoginFragment.class, "Log in"),
-    WEB_STATIC(WebViewFragment.class, "Web"),
+    WEB_STATIC(StaticInfoFragment.class, "Web"),
     CREATE_PHOTO(CreatePhotoFragment.class, "New Photo"),
 
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
@@ -26,13 +26,18 @@ public enum State {
     MEMBERSHIP(DreamTripsFragment.class, "Membership", 2, R.drawable.ic_membership),
     BUCKET_LIST(DreamTripsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),
-    FAQ(WebViewFragment.class, "FAQ", 5, R.drawable.ic_faq),
-    TERMS_AND_CONDITIONS(WebViewFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions);
+    FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq),
+    TERMS_AND_CONDITIONS(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions);
+
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;
     private String title;
     private int menuWeight;
     private int drawableId;
+
+    static {
+        generateSideMenuFields();
+    }
 
     State(Class<? extends BaseFragment> fragmentClass, String title) {
         this(fragmentClass, title, -1, -1);
@@ -46,7 +51,7 @@ public enum State {
     }
 
     private static void generateSideMenuFields() {
-        menuItemsArray = new ArrayList<State>();
+        menuItemsArray = new ArrayList<>();
         List<State> states = Arrays.asList(State.values());
         Collections.sort(states, new MenuComparator());
         for (State v : states) {

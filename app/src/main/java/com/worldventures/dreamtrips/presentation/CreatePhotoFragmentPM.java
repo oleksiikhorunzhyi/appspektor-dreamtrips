@@ -1,5 +1,7 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
+
+import android.net.Uri;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Photo;
@@ -18,7 +20,7 @@ import java.util.List;
 import timber.log.Timber;
 
 @PresentationModel
-public class CreatePhotoFragmentPM extends BasePresentation implements HasPresentationModelChangeSupport {
+public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.View> implements HasPresentationModelChangeSupport {
     public static final String TIME = "time";
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "MMM dd, yyyy";
@@ -31,10 +33,11 @@ public class CreatePhotoFragmentPM extends BasePresentation implements HasPresen
     String time;
     String tags;
 
-    public CreatePhotoFragmentPM(IInformView view, Injector injector) {
-        super(view, injector);
+    public CreatePhotoFragmentPM(View view) {
+        super(view);
         this.changeSupport = new PresentationModelChangeSupport(this);
     }
+
 
     public String getTitle() {
         return title;
@@ -158,5 +161,9 @@ public class CreatePhotoFragmentPM extends BasePresentation implements HasPresen
 
         Date result = calendarA.getTime();
         return result;
+    }
+
+    public Uri getImageUri() {
+        return null;
     }
 }

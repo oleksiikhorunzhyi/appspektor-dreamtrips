@@ -1,6 +1,5 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
@@ -12,14 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @PresentationModel
-public class TripImagesListFragmentPresentation extends BasePresentation implements DataManager.Result<ListPhotoResponse> {
-    private View view;
+public class TripImagesListFragmentPresentation extends BasePresentation<TripImagesListFragmentPresentation.View> implements DataManager.Result<ListPhotoResponse> {
     private TripImagesListFragment.Type type;
     private ArrayList<Photo> data;
 
-    public TripImagesListFragmentPresentation(View view, TripImagesListFragment.Type type, Injector injector) {
-        super(view, injector);
-        this.view = view;
+    public TripImagesListFragmentPresentation(View view, TripImagesListFragment.Type type) {
+        super(view);
         this.type = type;
     }
 
@@ -55,7 +52,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation impleme
         activityRouter.openFullScreenPhoto(data, position);
     }
 
-    public static interface View extends IInformView {
+    public static interface View extends BasePresentation.View {
         void setPhotos(List<Photo> photos);
 
         void clearAdapter();

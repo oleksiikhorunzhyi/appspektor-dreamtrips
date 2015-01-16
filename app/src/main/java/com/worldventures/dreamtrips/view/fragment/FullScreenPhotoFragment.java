@@ -12,11 +12,12 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
-import com.worldventures.dreamtrips.view.presentation.FullScreenPhotoFragmentPM;
+import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 
 import org.robobinding.ViewBinder;
 
@@ -26,7 +27,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivity> implements FullScreenPhotoFragmentPM.View {
+@Layout(R.layout.fragment_fullscreen_photo)
+public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     Photo photo;
@@ -44,17 +46,13 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivit
 
     @Inject
     UniversalImageLoader imageLoader;
-    private FullScreenPhotoFragmentPM pm;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        pm = new FullScreenPhotoFragmentPM(this, getAbsActivity());
-        ViewBinder viewBinder = getAbsActivity().createViewBinder();
-        View view = viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_fullscreen_photo, pm, container);
-        ButterKnife.inject(this, view);
-        getAbsActivity().inject(this);
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+
         photo = (Photo) getArguments().getSerializable(EXTRA_PHOTO);
-        pm.setPhoto(photo);
+        getPresentationModel().setPhoto(photo);
         imageLoader.loadImage(photo.getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -73,21 +71,25 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivit
             }
         });
 
-        pm.onCreate();
-        return view;
+        getPresentationModel().onCreate();
+    }
+
+    @Override
+    protected FullScreenPhotoFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new FullScreenPhotoFragmentPM(this);
     }
 
     @OnClick(R.id.iv_like)
     public void actionLike() {
-        pm.onLikeAction();
+        getPresentationModel().onLikeAction();
     }
 
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
-        PopupMenu popup = new PopupMenu(getAbsActivity(), ivFlag);
+        PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
         popup.getMenuInflater().inflate(R.menu.menu_flag, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
-            pm.flagAction(item.getTitle().toString());
+            getPresentationModel().flagAction(item.getTitle().toString());
             return true;
         });
         popup.show();
@@ -101,7 +103,6 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoActivit
     @Override
     public void setTitle(String title) {
         tvTitle.setText(title);
-
     }
 
     @Override

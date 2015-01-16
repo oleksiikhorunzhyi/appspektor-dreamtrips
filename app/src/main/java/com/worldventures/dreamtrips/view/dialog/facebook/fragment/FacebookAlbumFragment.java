@@ -30,29 +30,37 @@ import butterknife.InjectView;
 
 public class FacebookAlbumFragment extends BaseFacebookDialogFragment {
     public static final String FB_ALBUM_TAG = "FB_ALBUM_TAG";
+
     @InjectView(R.id.lv_items)
     RecyclerView lvItems;
-    private BaseRecycleAdapter adapter;
+
+    BaseRecycleAdapter adapter;
+
     @InjectView(R.id.login_button)
     LoginButton loginButton;
+
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
-           // loadData();
+           loadData();
         }
     };
-    private boolean tryToOpenSession = false;
 
+    private boolean tryToOpenSession = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_facebook_select_album, container, false);
         ButterKnife.inject(this, view);
+
         adapter = new BaseRecycleAdapter();
+
         toolbar.setTitle("Select Album");
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> dismissAllowingStateLoss());
+
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
@@ -63,13 +71,16 @@ public class FacebookAlbumFragment extends BaseFacebookDialogFragment {
                 })
         );
         lvItems.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         Session session = Session.getActiveSession();
+
         if (session != null && session.isOpened()) {
             loadData();
         } else if (!tryToOpenSession) {

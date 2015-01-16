@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.techery.spares.module.Injector;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -23,13 +23,13 @@ import butterknife.InjectView;
 public class PhotoItem implements ItemWrapper<Photo> {
 
     Photo photo;
+
     @Inject
     UniversalImageLoader universalImageLoader;
 
     public PhotoItem(Injector injector, Photo photo) {
         this.photo = photo;
         injector.inject(this);
-
     }
 
     @Override

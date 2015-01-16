@@ -17,7 +17,6 @@ public abstract class BaseFacebookDialogFragment extends DialogFragment {
     protected ImagePickCallback imagePickCallback;
     protected FragmentManager fm;
 
-
     public abstract String getDialogTag();
 
     @Override
@@ -27,7 +26,6 @@ public abstract class BaseFacebookDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
-
 
     public void show(FragmentManager fm, Injector injector, ImagePickCallback callback) {
 

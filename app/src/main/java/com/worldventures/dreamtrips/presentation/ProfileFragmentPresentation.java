@@ -1,9 +1,8 @@
-package com.worldventures.dreamtrips.view.presentation;
+package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
@@ -22,7 +21,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 @PresentationModel
-public class ProfileFragmentPresentation extends BasePresentation implements HasPresentationModelChangeSupport {
+public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> implements HasPresentationModelChangeSupport {
 
     public static final String FROM = "from";
     public static final String LIVE_IN = "livesIn";
@@ -32,6 +31,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     public static final String USER_EMAIL = "userEmail";
 
     private final PresentationModelChangeSupport changeSupport;
+
     protected View view;
     protected String from;
     protected String livesIn;
@@ -63,10 +63,16 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         eventBus.post(new UpdateUserInfoEvent());
     };
 
-    public ProfileFragmentPresentation(View view, Injector injector) {
-        super(view, injector);
+    public ProfileFragmentPresentation(View view) {
+        super(view);
         this.view = view;
         this.changeSupport = new PresentationModelChangeSupport(this);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+
         User user = sessionManager.getCurrentUser();
         setUserName(user.getUsername());
         setUserEmail(user.getEmail());
@@ -79,14 +85,9 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
         changeSupport.firePropertyChange(USER_ID);
         changeSupport.firePropertyChange(USER_NOTE);
         changeSupport.firePropertyChange(USER_EMAIL);
-    }
 
-
-    public void onViewCreated() {
-        User currentUser = sessionManager.getCurrentUser();
-        view.setAvatarImage(currentUser.getAvatar().getMediumUri());
-        view.setCoverImage(Uri.fromFile(new File(currentUser.getCoverPath())));
-
+        view.setAvatarImage(user.getAvatar().getMediumUri());
+        view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
     }
 
     public String getUserEmail() {
@@ -166,7 +167,7 @@ public class ProfileFragmentPresentation extends BasePresentation implements Has
     }
 
 
-    public static interface View extends IInformView {
+    public static interface View extends BasePresentation.View {
         public void setAvatarImage(Uri uri);
 
         public void setCoverImage(Uri uri);

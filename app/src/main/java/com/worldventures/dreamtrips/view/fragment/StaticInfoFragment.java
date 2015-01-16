@@ -8,30 +8,29 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
-import com.worldventures.dreamtrips.view.presentation.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class WebViewFragment extends BaseFragment<MainActivity> {
+@Layout(R.layout.fragment_webview)
+public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPresentation> {
 
-
-    public static final String HTTP_URL = "HTTP_URL";
     @InjectView(R.id.web_view)
     WebView webView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WebViewFragmentPresentation presentationModel = new WebViewFragmentPresentation(this,getAbsActivity());
-        return inflater.inflate(R.layout.fragment_webview, container, false);
+    protected WebViewFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
+        return new WebViewFragmentPresentation(this);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ButterKnife.inject(this, view);
-        String url = getArguments().getString(HTTP_URL);
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -39,8 +38,10 @@ public class WebViewFragment extends BaseFragment<MainActivity> {
                 return false;
             }
         });
-        webView.loadUrl(url);
+        webView.loadUrl(getURL());
     }
+
+    abstract protected String getURL();
 
     @Override
     public void onResume() {
@@ -52,5 +53,23 @@ public class WebViewFragment extends BaseFragment<MainActivity> {
     public void onPause() {
         super.onPause();
         webView.onPause();
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class FAQFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return null;
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class TermsAndConditionsFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return null;
+        }
     }
 }

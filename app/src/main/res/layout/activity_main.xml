@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
+        
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -28,7 +27,7 @@
             android:layout_marginTop="0dp" />
 
     </RelativeLayout>
-    <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
+
     <fragment
         android:id="@+id/fragment_drawer"
         android:name="com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment"
@@ -36,4 +35,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:layout="@layout/fragment_navigation_drawer" />
+
 </android.support.v4.widget.DrawerLayout>

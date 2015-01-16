@@ -11,4 +11,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop" />
+
 </com.worldventures.dreamtrips.view.custom.SquareRelativeLayout>

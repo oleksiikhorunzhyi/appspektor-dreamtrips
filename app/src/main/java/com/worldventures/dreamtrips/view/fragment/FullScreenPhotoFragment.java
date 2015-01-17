@@ -49,6 +49,7 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
         getPresentationModel().setPhoto(photo);
 
         this.imageLoader.loadImage(getPresentationModel().getPhoto().getUrl().getOriginal(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -88,11 +89,6 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
             return true;
         });
         popup.show();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

@@ -25,7 +25,7 @@ public abstract class BaseAbstractLoader<T> extends AsyncTaskLoader<T> {
 
     @Override
     protected void onStartLoading() {
-        if(this.cachedResult != null) {
+        if (this.cachedResult != null) {
             deliverResult(this.cachedResult);
         } else {
             forceLoad();

@@ -42,7 +42,7 @@ public abstract class InjectingListFragment<T, ET, LV> extends CollectionFragmen
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ET item = (ET) getDataAdapter().getItem(position);
-        
+
         getEventBus().post(new DataListAdapter.Events.ItemSelectionEvent<ET>(item));
     }
 
@@ -56,7 +56,9 @@ public abstract class InjectingListFragment<T, ET, LV> extends CollectionFragmen
     }
 
     protected abstract void setupOnItemClickListener(LV listView);
+
     protected abstract void linkAdapter(LV listView);
+
     protected abstract LV findListView(View rootView);
 
 }

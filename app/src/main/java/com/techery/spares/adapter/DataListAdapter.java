@@ -9,7 +9,9 @@ import com.techery.spares.loader.ContentLoader;
  */
 public interface DataListAdapter<T> extends ListAdapter {
     public void setContentLoader(ContentLoader<T> contentLoader);
+
     public ContentLoader<T> getContentLoader();
+
     public AdapterController getController();
 
     public interface Events {

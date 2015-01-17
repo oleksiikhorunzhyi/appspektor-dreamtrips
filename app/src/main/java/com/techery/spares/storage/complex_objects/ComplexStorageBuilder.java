@@ -17,6 +17,6 @@ public class ComplexStorageBuilder {
     }
 
     private ObjectPreferenceStorage getStorage(final String key) {
-        return new ObjectPreferenceStorage(simpleKeyValueStorage,  key);
+        return new ObjectPreferenceStorage(simpleKeyValueStorage, key);
     }
 }

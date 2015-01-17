@@ -64,13 +64,13 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).makeActionBarTransparent(true);
+        ((MainActivity) getActivity()).makeActionBarTransparent(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)getActivity()).makeActionBarTransparent(false);
+        ((MainActivity) getActivity()).makeActionBarTransparent(false);
     }
 
     @Override

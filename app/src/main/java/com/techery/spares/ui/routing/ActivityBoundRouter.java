@@ -23,5 +23,4 @@ public class ActivityBoundRouter extends BaseRouter {
     }
 
 
-
 }

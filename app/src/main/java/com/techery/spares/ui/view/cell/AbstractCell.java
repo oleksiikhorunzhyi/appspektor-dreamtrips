@@ -71,5 +71,6 @@ public abstract class AbstractCell<T> extends LinearLayout implements BaseCell<T
     }
 
     protected abstract int getLayoutResourceId();
+
     protected abstract void syncUIStateWithModel();
 }

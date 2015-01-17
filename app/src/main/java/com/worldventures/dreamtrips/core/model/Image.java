@@ -3,11 +3,8 @@ package com.worldventures.dreamtrips.core.model;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 
-import java.io.Serializable;
-
-public class Image extends BaseEntity{
+public class Image extends BaseEntity {
     String original;
     String medium;
     String thumb;

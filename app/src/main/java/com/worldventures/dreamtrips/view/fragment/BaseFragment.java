@@ -46,7 +46,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
         ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
 
-        View view = null;
+        View view;
 
         if (container != null) {
             view = viewBinder.inflateAndBindWithoutAttachingToRoot(

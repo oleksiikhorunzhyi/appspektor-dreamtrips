@@ -11,7 +11,7 @@ import com.techery.spares.ui.view.cell.BaseCell;
 
 import de.greenrobot.event.EventBus;
 
-public class BaseCursorListAdapter extends CursorAdapter implements DataListAdapter<Cursor>,ContentLoader.ContentLoadingObserving<Cursor> {
+public class BaseCursorListAdapter extends CursorAdapter implements DataListAdapter<Cursor>, ContentLoader.ContentLoadingObserving<Cursor> {
     private ContentLoader<Cursor> contentLoader;
     private AdapterController adapterController;
 

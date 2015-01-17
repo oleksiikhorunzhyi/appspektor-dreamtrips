@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.uploader.model;
 
 import java.util.Date;
-import java.util.List;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Index;

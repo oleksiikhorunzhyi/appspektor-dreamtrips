@@ -7,7 +7,6 @@ import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.service.ServiceActionRunner;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;

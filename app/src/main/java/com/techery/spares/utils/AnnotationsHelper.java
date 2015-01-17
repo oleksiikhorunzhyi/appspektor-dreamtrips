@@ -11,7 +11,7 @@ public class AnnotationsHelper {
 
         Field[] fields = target.getClass().getFields();
 
-        for(Field f : fields) {
+        for (Field f : fields) {
             Object annotation = f.getAnnotation(annotationClass);
 
             if (annotation != null) {

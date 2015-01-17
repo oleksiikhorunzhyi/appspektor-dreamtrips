@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Photo;
+
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;

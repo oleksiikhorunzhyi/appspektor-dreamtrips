@@ -32,7 +32,7 @@ public class BaseRouter {
 
     protected void startActivity(Class<? extends InjectingActivity> activityClass, Bundle params, int flags) {
         Intent intent = new Intent(getContext(), activityClass);
-        
+
         if (params != null) {
             intent.putExtras(params);
         }

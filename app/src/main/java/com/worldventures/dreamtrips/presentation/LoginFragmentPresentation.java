@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.model.Session;

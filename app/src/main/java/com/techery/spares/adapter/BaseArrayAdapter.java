@@ -10,8 +10,6 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> {
 
@@ -38,7 +36,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> {
         injector.inject(cell);
 
         if (cell instanceof ReusableCell) {
-            ((ReusableCell)cell).prepareForReuse();
+            ((ReusableCell) cell).prepareForReuse();
         }
 
         cell.setObject(getItem(position));

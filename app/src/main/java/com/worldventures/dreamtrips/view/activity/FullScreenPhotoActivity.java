@@ -3,20 +3,18 @@ package com.worldventures.dreamtrips.view.activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
-import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)

@@ -11,7 +11,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
-public class BaseArrayListAdapter<T> extends ArrayAdapter<T> implements DataListAdapter<List<T>>,ContentLoader.ContentLoadingObserving<List<T>> {
+public class BaseArrayListAdapter<T> extends ArrayAdapter<T> implements DataListAdapter<List<T>>, ContentLoader.ContentLoadingObserving<List<T>> {
     private AdapterController adapterController;
     private ContentLoader<List<T>> contentLoader;
 

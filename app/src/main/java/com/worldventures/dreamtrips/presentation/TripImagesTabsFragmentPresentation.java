@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
 import org.robobinding.annotation.PresentationModel;

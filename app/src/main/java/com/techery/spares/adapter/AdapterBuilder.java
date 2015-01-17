@@ -6,8 +6,6 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 public class AdapterBuilder {
     private final Injector injector;
     private final Context context;

@@ -28,7 +28,7 @@ public class AdapterHelper {
             ButterKnife.inject(cellObject, cellView);
 
             if (cellObject instanceof Cell.OnReadyListener) {
-                ((Cell.OnReadyListener)cellObject).onViewReady();
+                ((Cell.OnReadyListener) cellObject).onViewReady();
             }
 
         } catch (InstantiationException e) {

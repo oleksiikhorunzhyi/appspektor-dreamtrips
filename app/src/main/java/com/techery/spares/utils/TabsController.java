@@ -25,7 +25,7 @@ public class TabsController implements ActionBar.TabListener {
 
     protected void setupTabs(ViewPager viewPager, List<FragmentTabsPagerAdapter.TabItem> tabItems) {
         final ActionBar actionBar = activity.getSupportActionBar();
-        FragmentTabsPagerAdapter sectionsPagerAdapter = new FragmentTabsPagerAdapter(activity.getSupportFragmentManager(),tabItems);
+        FragmentTabsPagerAdapter sectionsPagerAdapter = new FragmentTabsPagerAdapter(activity.getSupportFragmentManager(), tabItems);
 
         viewPager.setAdapter(sectionsPagerAdapter);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

@@ -44,7 +44,7 @@ public class FacebookAlbumFragment extends BaseFacebookDialogFragment {
 
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
-           loadData();
+            loadData();
         }
     };
 

@@ -13,8 +13,6 @@ import java.util.List;
 
 import dagger.ObjectGraph;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public abstract class InjectingService extends Service implements Injector {
 
     public static final String EXTRA_PAYLOAD = "com.techery.spares.service.extra.PAYLOAD";

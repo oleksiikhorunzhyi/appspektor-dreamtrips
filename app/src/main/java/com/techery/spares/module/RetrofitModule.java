@@ -8,7 +8,7 @@ import retrofit.RestAdapter;
 
 @Module(library = true, complete = false)
 public class RetrofitModule {
-    
+
     @Provides
     RestAdapter provideRestAdapter(NetworkingModuleConfig config) {
         RestAdapter adapter = new RestAdapter.Builder()

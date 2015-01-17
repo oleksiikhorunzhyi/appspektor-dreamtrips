@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +13,16 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
-import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
-import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
-
-import org.robobinding.ViewBinder;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 

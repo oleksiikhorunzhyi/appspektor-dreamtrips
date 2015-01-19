@@ -10,8 +10,6 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 
-import com.techery.spares.module.Annotations.Application;
-
 import javax.inject.Singleton;
 
 import dagger.Module;

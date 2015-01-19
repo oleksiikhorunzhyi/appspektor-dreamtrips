@@ -24,7 +24,7 @@ public class SessionHolder<S> extends ComplexObjectStorage<S> {
             }
         }
 
-        public class SessionDestroyed  extends SessionChanged {
+        public class SessionDestroyed extends SessionChanged {
 
         }
     }

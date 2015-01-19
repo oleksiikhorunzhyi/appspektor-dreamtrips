@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.core.model;
 
-import java.io.Serializable;
-
-public class Coordinate extends BaseEntity{
+public class Coordinate extends BaseEntity {
     double latitude;
     double longitude;
 

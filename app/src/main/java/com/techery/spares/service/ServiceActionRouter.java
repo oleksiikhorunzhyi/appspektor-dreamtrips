@@ -64,7 +64,7 @@ public class ServiceActionRouter {
         });
     }
 
-    public <T> void on( Class<T> clazz, ActionHandlerWithPayload<T> body) {
+    public <T> void on(Class<T> clazz, ActionHandlerWithPayload<T> body) {
         on(clazz.getName(), clazz, body);
     }
 }

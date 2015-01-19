@@ -32,7 +32,6 @@ public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
     public FacebookAlbumItem(Injector injector, FacebookAlbum photo) {
         this.photo = photo;
         injector.inject(this);
-
     }
 
     @Override

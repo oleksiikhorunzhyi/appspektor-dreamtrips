@@ -1,9 +1,7 @@
 package com.techery.spares.ui.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -28,7 +26,7 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
         if (objectGraph == null) {
             setupObjectGraph();
         }
-        
+
         return objectGraph;
     }
 
@@ -42,7 +40,7 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
     }
 
     private Injector getApplicationInjector() {
-        return ((Injector)getApplication());
+        return ((Injector) getApplication());
     }
 
     @Inject
@@ -81,7 +79,7 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
         super.onResume();
         try {
             this.eventBus.registerSticky(this);
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
     }

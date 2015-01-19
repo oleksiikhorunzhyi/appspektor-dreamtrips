@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import org.robobinding.annotation.PresentationModel;
 
 @PresentationModel

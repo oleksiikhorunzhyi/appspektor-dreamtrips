@@ -2,9 +2,7 @@ package com.techery.spares.application;
 
 import android.app.Application;
 
-import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
-import com.techery.spares.utils.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,7 @@ public abstract class BaseApplicationWithInjector extends Application implements
     }
 
     private void runInitializers() {
-        for(AppInitializer initializer : appInitializers) {
+        for (AppInitializer initializer : appInitializers) {
             initializer.initialize(this);
         }
     }

@@ -52,7 +52,7 @@ public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
 
     @Override
     public FacebookPhoto getItem() {
-        return photo ;
+        return photo;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

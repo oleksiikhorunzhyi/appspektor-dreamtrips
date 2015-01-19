@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.core.repository;
 
 
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;

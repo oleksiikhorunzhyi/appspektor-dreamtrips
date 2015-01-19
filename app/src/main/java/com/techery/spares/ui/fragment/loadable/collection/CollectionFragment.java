@@ -36,7 +36,6 @@ public abstract class CollectionFragment<T> extends LoadableFragment<T> {
         this.dataAdapter = dataAdapter;
 
         getDataAdapter().setContentLoader(getContentLoader());
-        getDataAdapter().getController().setCellBuilder(getCellBuilder());
     }
 
     protected abstract BaseCell.CellBuilder getCellBuilder();

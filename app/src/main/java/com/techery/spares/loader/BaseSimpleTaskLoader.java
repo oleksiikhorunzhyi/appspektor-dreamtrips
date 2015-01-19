@@ -2,7 +2,6 @@ package com.techery.spares.loader;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 
 public class BaseSimpleTaskLoader<T> extends BaseAbstractLoader<T> {
     private final LoadingTask<T> loadingTask;

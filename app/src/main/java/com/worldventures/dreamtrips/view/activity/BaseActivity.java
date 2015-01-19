@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public abstract class BaseActivity extends InjectingActivity  {
+public abstract class BaseActivity extends InjectingActivity {
 
     private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
 

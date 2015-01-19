@@ -1,25 +1,19 @@
 package com.techery.spares.ui.view.cell;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.widget.LinearLayout;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
-public abstract class AbstractCell<T> extends LinearLayout implements BaseCell<T> {
+public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements BaseCell<T> {
     private T modelObject;
 
     private EventBus eventBus;
-    private int lastPosition;
 
-    public AbstractCell(Context context) {
-        super(context);
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        android.view.View view = inflater.inflate(getLayoutResourceId(), this);
-
+    public AbstractCell(View view) {
+        super(view);
         ButterKnife.inject(this, view);
 
         initialUISetup();
@@ -60,16 +54,5 @@ public abstract class AbstractCell<T> extends LinearLayout implements BaseCell<T
 
     }
 
-    @Override
-    public int getLastPosition() {
-        return this.lastPosition;
-    }
-
-    @Override
-    public void setLastPosition(int position) {
-        this.lastPosition = position;
-    }
-
-    protected abstract int getLayoutResourceId();
     protected abstract void syncUIStateWithModel();
 }

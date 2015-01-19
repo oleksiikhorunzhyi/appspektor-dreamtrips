@@ -7,8 +7,6 @@ import com.techery.spares.annotations.State;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class ObjectStateHelper {
 
     private final AnnotationsHelper annotationsHelper;

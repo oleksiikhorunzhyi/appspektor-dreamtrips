@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Photo;
+
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
@@ -32,6 +32,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
     String date;
     String time;
     String tags;
+    private Uri imageUri;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
@@ -164,6 +165,10 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
     }
 
     public Uri getImageUri() {
-        return null;
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 }

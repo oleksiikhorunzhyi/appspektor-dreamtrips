@@ -8,7 +8,6 @@ import com.techery.spares.ui.view.cell.BaseCell;
 
 public abstract class InjectingListFragment<T, ET, LV> extends CollectionFragment<T> implements AdapterView.OnItemClickListener {
     protected LV listView;
-    private BaseCell.CellBuilder cellBuilder;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -42,21 +41,14 @@ public abstract class InjectingListFragment<T, ET, LV> extends CollectionFragmen
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ET item = (ET) getDataAdapter().getItem(position);
-        
+
         getEventBus().post(new DataListAdapter.Events.ItemSelectionEvent<ET>(item));
     }
 
-    protected BaseCell.CellBuilder getCellBuilder() {
-        return cellBuilder;
-    }
-
-    public void setCellBuilder(BaseCell.CellBuilder cellBuilder) {
-        this.cellBuilder = cellBuilder;
-        getDataAdapter().getController().setCellBuilder(getCellBuilder());
-    }
-
     protected abstract void setupOnItemClickListener(LV listView);
+
     protected abstract void linkAdapter(LV listView);
+
     protected abstract LV findListView(View rootView);
 
 }

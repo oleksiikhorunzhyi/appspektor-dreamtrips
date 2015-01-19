@@ -30,7 +30,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         this.presentationModel = createPresentationModel(savedInstanceState);
 
@@ -46,7 +46,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
         ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
 
-        View view = null;
+        View view;
 
         if (container != null) {
             view = viewBinder.inflateAndBindWithoutAttachingToRoot(

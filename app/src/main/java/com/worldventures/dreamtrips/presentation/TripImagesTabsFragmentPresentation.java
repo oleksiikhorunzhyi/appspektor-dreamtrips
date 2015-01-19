@@ -2,9 +2,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
+import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -40,6 +39,10 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePre
     @Override
     public PresentationModelChangeSupport getPresentationModelChangeSupport() {
         return changeSupport;
+    }
+
+    public void onFacebookAction(BaseFragment from) {
+        activityRouter.openFacebookPhoto(from);
     }
 
     public ImagePickCallback providePhotoChooseCallback() {

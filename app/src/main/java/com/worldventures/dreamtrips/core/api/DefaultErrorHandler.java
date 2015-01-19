@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.core.api;
 
+import android.database.DatabaseErrorHandler;
+import android.util.Log;
+
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import org.apache.http.HttpStatus;
@@ -16,9 +19,12 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public Throwable handleError(RetrofitError cause) {
-
-        if (cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED) {
-            this.appSessionHolder.destroy();
+        if (cause.getResponse() != null) {
+            if (cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED) {
+                this.appSessionHolder.destroy();
+            }
+        } else {
+            Log.e(DatabaseErrorHandler.class.getSimpleName(), cause.toString());
         }
 
         return cause;

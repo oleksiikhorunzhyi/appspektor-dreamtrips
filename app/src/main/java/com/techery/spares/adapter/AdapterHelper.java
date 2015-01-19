@@ -5,6 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.BaseCell;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import butterknife.ButterKnife;
 
@@ -16,29 +21,23 @@ public class AdapterHelper {
         this.layoutInflater = layoutInflater;
     }
 
-    public <T> View buildCell(Class<T> cellClass, ViewGroup parent) {
+    public AbstractCell buildCell(Class<? extends AbstractCell> cellClass, ViewGroup parent) {
         Layout layoutAnnotation = cellClass.getAnnotation(Layout.class);
 
         View cellView = layoutInflater.inflate(layoutAnnotation.value(), parent, false);
 
-        Cell<T> cellObject = null;
+        AbstractCell cellObject = null;
 
         try {
-            cellObject = (Cell<T>) cellClass.newInstance();
-            ButterKnife.inject(cellObject, cellView);
 
-            if (cellObject instanceof Cell.OnReadyListener) {
-                ((Cell.OnReadyListener)cellObject).onViewReady();
-            }
+            Constructor constructor = cellClass.getConstructor(View.class);
 
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            cellObject = (AbstractCell)constructor.newInstance(cellView);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
-        cellView.setTag(cellObject);
-
-        return cellView;
+        return cellObject;
     }
 }

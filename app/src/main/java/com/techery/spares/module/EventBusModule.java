@@ -17,7 +17,7 @@ public class EventBusModule {
     EventBus provideGlobalEventBus() {
         return EventBus.getDefault();
     }
-    
+
     @Provides
     @Private
     EventBus provideEventBus() {

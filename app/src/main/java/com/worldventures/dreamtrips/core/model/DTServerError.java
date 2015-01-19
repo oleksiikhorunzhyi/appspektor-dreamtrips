@@ -22,9 +22,9 @@ public class DTServerError {
 
     public String getErrorString() {
         String result = null;
-        if (base!=null &&base.length > 0) {
+        if (base != null && base.length > 0) {
             result = base[0];
-        } else if (uploadId!=null && uploadId.length > 0) {
+        } else if (uploadId != null && uploadId.length > 0) {
             result = uploadId[0];
         }
         return result;

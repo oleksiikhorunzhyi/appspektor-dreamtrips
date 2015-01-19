@@ -4,13 +4,12 @@ import android.widget.ListAdapter;
 
 import com.techery.spares.loader.ContentLoader;
 
-/**
- * Created by zen on 11/13/13.
- */
-public interface DataListAdapter<T> extends ListAdapter {
+public interface DataListAdapter<T> {
     public void setContentLoader(ContentLoader<T> contentLoader);
+
     public ContentLoader<T> getContentLoader();
-    public AdapterController getController();
+
+    Object getItem(int position);
 
     public interface Events {
         public class ItemSelectionEvent<T> {

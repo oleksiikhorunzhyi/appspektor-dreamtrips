@@ -5,7 +5,7 @@ import android.database.Observable;
 public class ContentLoaderObserver<T> extends Observable<ContentLoader.ContentLoadingObserving<T>> {
     public void sendOnStartLoading() {
         synchronized (mObservers) {
-            for(ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
+            for (ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
                 observing.onStartLoading();
             }
         }
@@ -13,7 +13,7 @@ public class ContentLoaderObserver<T> extends Observable<ContentLoader.ContentLo
 
     public void sendOnFinishLoading(T result) {
         synchronized (mObservers) {
-            for(ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
+            for (ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
                 observing.onFinishLoading(result);
             }
         }
@@ -21,7 +21,7 @@ public class ContentLoaderObserver<T> extends Observable<ContentLoader.ContentLo
 
     public void sendOnError(Throwable throwable) {
         synchronized (mObservers) {
-            for(ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
+            for (ContentLoader.ContentLoadingObserving<T> observing : mObservers) {
                 observing.onError(throwable);
             }
         }

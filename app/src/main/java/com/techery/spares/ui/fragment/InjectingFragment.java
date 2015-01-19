@@ -27,7 +27,8 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     EventBus eventBus;
 
     public interface Events {
-        class ReloadEvent {}
+        class ReloadEvent {
+        }
     }
 
     public void onEvent(Events.ReloadEvent reloadEvent) {
@@ -86,7 +87,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     protected ObjectGraph getInitialObjectGraph() {
-        return ((InjectingActivity)getActivity()).getObjectGraph();
+        return ((InjectingActivity) getActivity()).getObjectGraph();
     }
 
     @Override

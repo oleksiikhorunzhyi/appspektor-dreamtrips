@@ -33,6 +33,6 @@ public class FragmentHelper {
             throw new IllegalArgumentException("InjectingFragment have to be attached to instance of Injector");
         }
 
-        ((Injector)activity).inject(injectingFragment);
+        ((Injector) activity).inject(injectingFragment);
     }
 }

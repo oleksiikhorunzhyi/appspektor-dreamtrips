@@ -7,12 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
@@ -34,7 +36,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    BaseRecycleAdapter adapter;
+    BaseArrayListAdapter<Photo> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -45,8 +47,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseRecycleAdapter();
-        this.recyclerView.setAdapter(adapter);
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
+
+        this.recyclerView.setAdapter(this.arrayListAdapter);
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -59,7 +63,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @Override
     public void onResume() {
         super.onResume();
-        if (this.adapter.getItemCount() == 0) {
+        if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
                 this.refreshLayout.setRefreshing(true);
                 this.getPresentationModel().loadImages();
@@ -69,14 +73,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     @Override
     public void setPhotos(List<Photo> photos) {
-        this.adapter.addItems(PhotoItem.convert(this, photos));
-        this.adapter.notifyDataSetChanged();
+        this.arrayListAdapter.addItems(photos);
         this.refreshLayout.setRefreshing(false);
     }
 
     @Override
     public void clearAdapter() {
-        this.adapter.clear();
+        this.arrayListAdapter.clear();
     }
 
     @Override

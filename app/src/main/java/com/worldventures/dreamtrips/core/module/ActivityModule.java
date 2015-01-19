@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
+import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
@@ -24,6 +26,7 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
@@ -81,7 +84,11 @@ import dagger.Provides;
                 FacebookAlbumItem.class,
                 FacebookPhotoItem.class,
                 NavigationDrawerPM.class,
-                PhotoItem.class
+                PhotoItem.class,
+                PhotoCell.class,
+
+                BaseArrayListAdapter.class
+
         },
         complete = false,
         library = true

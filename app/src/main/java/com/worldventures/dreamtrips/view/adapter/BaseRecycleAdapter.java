@@ -18,36 +18,36 @@ public class BaseRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return data.get(viewTypePositionMap.get(viewType)).getBaseRecycleItem(parent);
+        return this.data.get(this.viewTypePositionMap.get(viewType)).getBaseRecycleItem(parent);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        data.get(position).bindViewHolder(holder, position);
+        this.data.get(position).bindViewHolder(holder, position);
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return this.data.size();
     }
-
 
     @Override
     public int getItemViewType(int position) {
-        int itemViewType = data.get(position).getItemViewType();
-        viewTypePositionMap.put(itemViewType, position);
+        int itemViewType = this.data.get(position).getItemViewType();
+        this.viewTypePositionMap.put(itemViewType, position);
         return itemViewType;
     }
 
     public void addItems(Collection<? extends ItemWrapper> itemWrappers) {
-        data.addAll(itemWrappers);
+        this.data.addAll(itemWrappers);
+        this.notifyDataSetChanged();
     }
 
     public void clear() {
-        data.clear();
+        this.data.clear();
     }
 
     public ItemWrapper getItem(int pos) {
-        return data.get(pos);
+        return this.data.get(pos);
     }
 }

@@ -37,9 +37,7 @@ public class FragmentTabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         try {
             return (Fragment) this.tabs.get(position).getFragmentClass().newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;

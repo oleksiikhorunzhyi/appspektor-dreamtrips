@@ -27,9 +27,8 @@ public class PhotoItem implements ItemWrapper<Photo> {
     @Inject
     UniversalImageLoader universalImageLoader;
 
-    public PhotoItem(Injector injector, Photo photo) {
+    public PhotoItem(Photo photo) {
         this.photo = photo;
-        injector.inject(this);
     }
 
     @Override
@@ -64,16 +63,15 @@ public class PhotoItem implements ItemWrapper<Photo> {
         }
     }
 
-
-    public static PhotoItem convert(Injector injector, Photo photo) {
-        return new PhotoItem(injector, photo);
+    public static PhotoItem convert(Photo photo) {
+        return new PhotoItem(photo);
     }
 
-    public static List<PhotoItem> convert(Injector injector, List<Photo> photos) {
+    public static List<PhotoItem> convert(List<Photo> photos) {
         List<PhotoItem> result = new ArrayList<>();
         if (photos != null) {
             for (Photo p : photos) {
-                result.add(convert(injector, p));
+                result.add(convert(p));
             }
         }
         return result;

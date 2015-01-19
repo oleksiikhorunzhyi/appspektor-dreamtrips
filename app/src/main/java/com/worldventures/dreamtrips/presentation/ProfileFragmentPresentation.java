@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
@@ -20,6 +22,10 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 @PresentationModel
 public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> implements HasPresentationModelChangeSupport {
@@ -45,23 +51,31 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     @Global
     protected EventBus eventBus;
 
+    @Inject
+    DreamTripsApi dreamTripsApi;
+
     private ImagePickCallback avatarCallback = (image, error) -> {
-        dataManager.uploadAvatar(new File(image.getFileThumbnail()),
-                (avatar, e) -> {
-                    if (e == null) {
+        final File file = new File(image.getFileThumbnail());
+        final TypedFile typedFile = new TypedFile("image/*", file);
+        dreamTripsApi.uploadAvatar(typedFile, new Callback<Image>() {
+            @Override
+            public void success(Image avatar, Response response) {
+                UserSession userSession = appSessionHolder.get().get();
+                User user = userSession.getUser();
 
-                        UserSession userSession = this.appSessionHolder.get().get();
-                        User user = userSession.getUser();
+                user.setAvatar(avatar);
 
-                        user.setAvatar(avatar);
+                ProfileFragmentPresentation.this.appSessionHolder.put(userSession);
 
-                        this.appSessionHolder.put(userSession);
+                eventBus.post(new UpdateUserInfoEvent());
+            }
 
-                        eventBus.post(new UpdateUserInfoEvent());
-                    } else {
-                        handleError(e);
-                    }
-                });
+            @Override
+            public void failure(RetrofitError error) {
+                handleError(error);
+            }
+        });
+
         view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 

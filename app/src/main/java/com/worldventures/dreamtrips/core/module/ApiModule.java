@@ -4,7 +4,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -23,9 +22,10 @@ import retrofit.converter.GsonConverter;
 
 @Module(injects =
         {
-                DataManager.class
+
         },
-        complete = false
+        complete = false,
+        library = true
 )
 public class ApiModule {
 

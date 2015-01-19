@@ -1,11 +1,22 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.google.gson.JsonObject;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Photo;
 
 import org.robobinding.annotation.PresentationModel;
 
+import javax.inject.Inject;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 @PresentationModel
 public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoFragmentPM.View> {
+
+    @Inject
+    DreamTripsApi dreamTripsApi;
 
     Photo photo;
 
@@ -22,20 +33,24 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
     }
 
     public void onLikeAction() {
+        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject, Response response) {
+                boolean isLiked = photo.isLiked();
+                photo.setLiked(!isLiked);
+                view.setLiked(!isLiked);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+
         if (!photo.isLiked()) {
-            dataManager.likePhoto(photo.getId(), (jsonObject, e) -> {
-                if (e == null) {
-                    photo.setLiked(true);
-                    view.setLiked(true);
-                }
-            });
+            dreamTripsApi.likePhoto(photo.getId(), callback);
         } else {
-            dataManager.unlikePhoto(photo.getId(), (jsonObject, e) -> {
-                if (e == null) {
-                    photo.setLiked(false);
-                    view.setLiked(false);
-                }
-            });
+            dreamTripsApi.unlikePhoto(photo.getId(), callback);
         }
     }
 
@@ -45,11 +60,15 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
     }
 
     public void flagAction(String title) {
-        dataManager.flagPhoto(photo.getId(), title, (jsonObject, e) -> {
-            if (e == null) {
+        dreamTripsApi.flagPhoto(photo.getId(), title, new Callback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject, Response response) {
                 view.informUser("Photo has been flagged");
-            } else {
-                handleError(e);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                handleError(error);
             }
         });
     }

@@ -8,7 +8,6 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.DreamTripsApplication;
-import com.worldventures.dreamtrips.core.DataManager;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer;
@@ -70,12 +69,6 @@ public class DTModule {
     @Provides
     Realm provideRealm(Context context) {
         return Realm.getInstance(context);
-    }
-
-    @Provides
-    @Singleton
-    public DataManager provideDataManager(DreamTripsApplication app) {
-        return new DataManager(app);
     }
 
     @Provides

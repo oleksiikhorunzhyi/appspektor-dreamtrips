@@ -1,6 +1,11 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.api.AuthApi;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
+import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -12,9 +17,19 @@ import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
 import javax.inject.Inject;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 @PresentationModel
 public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPresentation.View> implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
+
+    @Inject
+    DreamTripsApi dreamTripsApi;
+
+    @Inject
+    WorldVenturesApi worldVenturesApi;
 
     @Inject
     AppSessionHolder appSessionHolder;
@@ -40,24 +55,26 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
         }
 
         this.view.showProgressDialog();
-        dataManager.getSession(username, userPassword, (o, e) -> {
-            if (o != null) {
 
-                String sessionToken = o.getToken();
-                User sessionUser = o.getUser();
+        dreamTripsApi.login(username, userPassword, new Callback<Session>() {
+            @Override
+            public void success(Session session, Response response) {
+                String sessionToken = session.getToken();
+                User sessionUser = session.getUser();
 
                 UserSession userSession = new UserSession();
                 userSession.setUser(sessionUser);
                 userSession.setApiToken(sessionToken);
 
                 if (sessionUser == null || sessionToken == null) {
-                    this.view.showLoginErrorMessage();
+                    LoginFragmentPresentation.this.view.showLoginErrorMessage();
                     return;
                 }
 
-                dataManager.getToken(username, userPassword, (oi, ei) -> {
-                    if (oi != null) {
-                        String token = oi.get("result").getAsString();
+                worldVenturesApi.getToken(username, userPassword, new Callback<JsonObject>() {
+                    @Override
+                    public void success(JsonObject jsonObject, Response response) {
+                        String token = jsonObject.get("result").getAsString();
 
                         userSession.setLegacyApiToken(token);
 
@@ -65,13 +82,19 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
 
                         activityRouter.openMain();
                         activityRouter.finish();
-                        this.view.showLoginSuccess();
-                    } else {
-                        this.view.showLoginErrorMessage();
+                        LoginFragmentPresentation.this.view.showLoginSuccess();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        LoginFragmentPresentation.this.view.showLoginErrorMessage();
                     }
                 });
-            } else {
-                this.view.showLoginErrorMessage();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
     }

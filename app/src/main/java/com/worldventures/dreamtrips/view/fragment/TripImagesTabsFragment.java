@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,13 +10,15 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
-import com.worldventures.dreamtrips.view.dialog.PickImageFacebookDialog;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -84,16 +87,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @OnClick(R.id.fab_facebook)
     public void actionFacebook(View view) {
-        PickImageFacebookDialog dialog = new PickImageFacebookDialog(this, getFragmentManager());
-        dialog.setCallback(getPresentationModel().provideFbCallback());
-        dialog.show();
+        getPresentationModel().onFacebookAction(this);
         this.multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_gallery)
     public void actionGallery(View view) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select avatar");
+        this.pid.setTitle("");
         this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
         this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.show();
@@ -103,7 +104,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @OnClick(R.id.fab_photo)
     public void actionPhoto(View view) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select avatar");
+        this.pid.setTitle("");
         this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
         this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
         this.pid.show();
@@ -113,6 +114,13 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.pid.onActivityResult(requestCode, resultCode, data);
+        if (pid != null) {
+            this.pid.onActivityResult(requestCode, resultCode, data);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
+            ChosenImage image = new Gson().fromJson(data.getStringExtra(FBPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+            getPresentationModel().provideFbCallback().onResult(image, null);
+        }
+
     }
 }

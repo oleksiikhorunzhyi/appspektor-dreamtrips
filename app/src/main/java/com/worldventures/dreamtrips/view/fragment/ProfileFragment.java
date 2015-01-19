@@ -58,7 +58,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         super.afterCreateView(rootView);
 
         ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
-        lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
+        lp.height = ViewIUtils.getScreenWidth(getActivity());
     }
 
     @Override

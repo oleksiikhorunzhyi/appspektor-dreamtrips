@@ -29,6 +29,7 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_create_photo)
 public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
 
+    public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
     ImageView ivImage;
     @InjectView(R.id.btn_save)
@@ -54,8 +55,9 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         etTime.setOnTouchListener(this);
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewIUtils.getMinSideSize(getActivity());//but by material style guide 3:2
-
-        imageLoader.loadImage(Uri.parse(getPresentationModel().getImageUri().toString()), ivImage, null);
+        Uri uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
+        getPresentationModel().setImageUri(uri);
+        imageLoader.loadImage(getPresentationModel().getImageUri(), ivImage, null);
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

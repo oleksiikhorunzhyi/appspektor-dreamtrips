@@ -32,6 +32,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
     String date;
     String time;
     String tags;
+    private Uri imageUri;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
@@ -164,6 +165,10 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
     }
 
     public Uri getImageUri() {
-        return null;
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 }

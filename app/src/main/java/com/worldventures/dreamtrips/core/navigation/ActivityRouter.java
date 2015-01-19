@@ -3,10 +3,12 @@ package com.worldventures.dreamtrips.core.navigation;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
@@ -43,5 +45,9 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, photoList);
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_POSITION, position);
         startActivity(FullScreenPhotoActivity.class, bundle);
+    }
+
+    public void openFacebookPhoto(Fragment fm) {
+        startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 }

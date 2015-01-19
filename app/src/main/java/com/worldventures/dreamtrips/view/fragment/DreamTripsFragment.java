@@ -7,12 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
-import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
-import com.worldventures.dreamtrips.view.adapter.item.TripItem;
+import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
@@ -32,7 +32,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    BaseRecycleAdapter adapter;
+    BaseArrayListAdapter<Trip> adapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -42,7 +42,9 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseRecycleAdapter();
+        this.adapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.adapter.registerCell(Trip.class, TripCell.class);
+
         this.recyclerView.setAdapter(adapter);
 
         this.refreshLayout.setOnRefreshListener(this);
@@ -71,8 +73,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void setTrips(List<Trip> trips) {
-        this.adapter.addItems(TripItem.convert(this, trips));
-        this.adapter.notifyDataSetChanged();
+        this.adapter.addItems(trips);
         this.refreshLayout.setRefreshing(false);
     }
 

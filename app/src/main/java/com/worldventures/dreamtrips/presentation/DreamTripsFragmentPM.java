@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.model.response.ListTripResponse;
 
 import org.robobinding.annotation.PresentationModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,11 +29,11 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super(view);
     }
 
-    final Callback<ListTripResponse> callback = new Callback<ListTripResponse>() {
+    final Callback<List<Trip>> callback = new Callback<List<Trip>>() {
         @Override
-        public void success(ListTripResponse listPhotoResponse, Response response) {
+        public void success(List<Trip> listPhotoResponse, Response response) {
             view.clearAdapter();
-            data = listPhotoResponse.getData();
+            data = listPhotoResponse;
             view.setTrips(data);
         }
 
@@ -48,13 +46,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
 
     public void loadTrips() {
-        //TODO implement api call
-        view.clearAdapter();
-        data = new ArrayList<>();
-        data.add(Trip.dummy());
-        data.add(Trip.dummy());
-        data.add(Trip.dummy());
-        view.setTrips(data);
+        dreamTripsApi.getTrips(callback);
     }
 
     public void onItemClick(int position) {

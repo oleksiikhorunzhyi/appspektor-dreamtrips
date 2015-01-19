@@ -45,8 +45,7 @@
         <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
             android:id="@+id/recyclerViewTrips"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/margin_small" />
+            android:layout_height="match_parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

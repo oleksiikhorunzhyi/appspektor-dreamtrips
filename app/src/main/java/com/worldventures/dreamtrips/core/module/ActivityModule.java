@@ -34,7 +34,7 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
-import com.worldventures.dreamtrips.view.adapter.item.TripItem;
+import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -107,8 +107,7 @@ import dagger.Provides;
                 FacebookAlbumItem.class,
                 FacebookPhotoItem.class,
                 NavigationDrawerPM.class,
-                TripItem.class,
-                PhotoItem.class,
+                TripCell.class,
                 PhotoItem.class,
                 PhotoCell.class,
 

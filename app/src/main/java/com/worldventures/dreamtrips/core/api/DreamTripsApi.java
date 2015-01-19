@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.core.api;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
-import com.worldventures.dreamtrips.core.model.response.ListTripResponse;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.DELETE;
@@ -31,7 +33,7 @@ public interface DreamTripsApi {
     public void getUserPhotos(Callback<ListPhotoResponse> callback);
 
     @GET("/api/trips")
-    public void getTrips(Callback<ListTripResponse> callback);
+    public void getTrips(Callback<List<Trip>> callback);
 
     @GET("/api/users/{id}/photos")
     public void getMyPhotos(@Path("id") int currentUserId, Callback<ListPhotoResponse> callback);

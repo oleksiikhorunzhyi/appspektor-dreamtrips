@@ -24,6 +24,10 @@ public class BasePresentation<VT extends BasePresentation.View> {
         this.view = view;
     }
 
+    public void init() {
+
+    }
+
     public void resume() {
 
     }

@@ -38,6 +38,8 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
             inject(this.presentationModel);
         }
 
+        this.presentationModel.init();
+
         Layout layout = this.getClass().getAnnotation(Layout.class);
 
         if (layout == null) {

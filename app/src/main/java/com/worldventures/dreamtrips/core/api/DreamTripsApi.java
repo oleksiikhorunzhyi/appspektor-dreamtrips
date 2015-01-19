@@ -27,10 +27,10 @@ public interface DreamTripsApi {
     public void uploadAvatar(@Part("avatar") TypedFile image, Callback<Image> callback);
 
     @GET("/api/photos")
-    public void getUserPhotos(Callback<ListPhotoResponse> callback);
+    public ListPhotoResponse getUserPhotos();
 
     @GET("/api/users/{id}/photos")
-    public void getMyPhotos(@Path("id") int currentUserId, Callback<ListPhotoResponse> callback);
+    public ListPhotoResponse getMyPhotos(@Path("id") int currentUserId);
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")

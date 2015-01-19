@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.core.model;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.BuildConfig;
 
-import java.io.Serializable;
-
-public class Image extends BaseEntity{
+public class Image extends BaseEntity {
     String original;
     String medium;
     String thumb;
@@ -45,6 +43,6 @@ public class Image extends BaseEntity{
     }
 
     public Uri getMediumUri() {
-        return Uri.parse(DreamTripsApi.DEFAULT_URL + getMedium());
+        return Uri.parse(BuildConfig.DreamTripsApi + getMedium());
     }
 }

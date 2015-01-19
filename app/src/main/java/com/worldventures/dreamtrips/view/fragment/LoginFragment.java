@@ -4,22 +4,16 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.utils.ViewIUtils;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
+import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.view.custom.DTEditText;
 
-import org.robobinding.ViewBinder;
-
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_login)
@@ -42,7 +36,7 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         int screenHeight = ViewIUtils.getScreenHeight(getActivity());
         int statusBarHeight = ViewIUtils.getStatusBarHeight(getActivity());
-        ivBg.getLayoutParams().height= screenHeight- statusBarHeight;
+        ivBg.getLayoutParams().height = screenHeight - statusBarHeight;
     }
 
     @Override

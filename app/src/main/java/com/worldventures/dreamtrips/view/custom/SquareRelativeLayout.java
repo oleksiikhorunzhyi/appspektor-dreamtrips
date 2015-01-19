@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-/** A RelativeLayout that will always be square -- same width and height,
- * where the height is based off the width. */
+/**
+ * A RelativeLayout that will always be square -- same width and height,
+ * where the height is based off the width.
+ */
 public class SquareRelativeLayout extends RelativeLayout {
 
     public SquareRelativeLayout(Context context) {

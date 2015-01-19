@@ -52,7 +52,7 @@ public class DataManager {
         result.response(new ListPhotoResponse(), null);
     }
 
-    public void getMyPhotos( Result<ListPhotoResponse> resultCallback) {
+    public void getMyPhotos(Result<ListPhotoResponse> resultCallback) {
         dreamTripsApi.getMyPhotos(appSessionHolder.get().get().getUser().getId(), convert(resultCallback));
     }
 

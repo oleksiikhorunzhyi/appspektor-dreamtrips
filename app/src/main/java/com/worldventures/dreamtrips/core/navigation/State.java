@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.core.navigation;
 
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
+import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
@@ -20,6 +22,8 @@ public enum State {
     LOGIN(LoginFragment.class, "Log in"),
     WEB_STATIC(StaticInfoFragment.class, "Web"),
     CREATE_PHOTO(CreatePhotoFragment.class, "New Photo"),
+    PICK_FB_ALBUM(FacebookAlbumFragment.class, "Select album"),
+    PICK_FB_PHOTO(FacebookPhotoFragment.class, "Select photo"),
 
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
     TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
@@ -27,7 +31,7 @@ public enum State {
     BUCKET_LIST(DreamTripsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),
     FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq),
-    TERMS_AND_CONDITIONS(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions);
+    TERMS_AND_CONDITIONS(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions),;
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;

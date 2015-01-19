@@ -58,19 +58,19 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         super.afterCreateView(rootView);
 
         ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
-        lp.height = ViewIUtils.getScreenWidth(getActivity());//but by material style guide 3:2
+        lp.height = ViewIUtils.getScreenWidth(getActivity());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).makeActionBarTransparent(true);
+        ((MainActivity) getActivity()).makeActionBarTransparent(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)getActivity()).makeActionBarTransparent(false);
+        ((MainActivity) getActivity()).makeActionBarTransparent(false);
     }
 
     @Override

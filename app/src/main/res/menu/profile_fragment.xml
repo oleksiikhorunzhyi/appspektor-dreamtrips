@@ -6,6 +6,5 @@
         android:icon="@drawable/ic_logout_sh"
         app:showAsAction="ifRoom"
         android:orderInCategory="10"
-        android:title="@string/activity_feed_sh">
-    </item>
+        android:title="@string/activity_feed_sh"></item>
 </menu>

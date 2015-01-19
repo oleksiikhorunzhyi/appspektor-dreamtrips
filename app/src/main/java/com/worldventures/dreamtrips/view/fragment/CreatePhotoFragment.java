@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,26 +13,23 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
-import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
-import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
-
-import org.robobinding.ViewBinder;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_create_photo)
 public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
 
+    public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
     ImageView ivImage;
     @InjectView(R.id.btn_save)
@@ -59,8 +55,9 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         etTime.setOnTouchListener(this);
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewIUtils.getMinSideSize(getActivity());//but by material style guide 3:2
-
-        imageLoader.loadImage(Uri.parse(getPresentationModel().getImageUri().toString()), ivImage, null);
+        Uri uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
+        getPresentationModel().setImageUri(uri);
+        imageLoader.loadImage(getPresentationModel().getImageUri(), ivImage, null);
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

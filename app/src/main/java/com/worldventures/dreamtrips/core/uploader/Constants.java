@@ -16,7 +16,7 @@
 package com.worldventures.dreamtrips.core.uploader;
 
 public class Constants {
-    
+
 //    public static final String AWS_ACCOUNT_ID = "360783003803";
 //    public static final String COGNITO_POOL_ID = "us-east-1:1a3cd42a-77b1-4a47-80d7-c39a39e6e688";
 //    public static final String COGNITO_ROLE_UNAUTH = "arn:aws:iam::360783003803:role/Cognito_dreamtripsdevUnauth_DefaultRole";

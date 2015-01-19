@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
+import com.worldventures.dreamtrips.core.model.response.ListTripResponse;
 
 import retrofit.Callback;
 import retrofit.http.DELETE;
@@ -28,6 +29,9 @@ public interface DreamTripsApi {
 
     @GET("/api/photos")
     public void getUserPhotos(Callback<ListPhotoResponse> callback);
+
+    @GET("/api/trips")
+    public void getTrips(Callback<ListTripResponse> callback);
 
     @GET("/api/users/{id}/photos")
     public void getMyPhotos(@Path("id") int currentUserId, Callback<ListPhotoResponse> callback);

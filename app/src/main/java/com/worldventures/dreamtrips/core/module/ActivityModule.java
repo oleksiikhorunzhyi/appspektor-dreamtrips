@@ -2,17 +2,23 @@ package com.worldventures.dreamtrips.core.module;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
+import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
+import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.adapter.item.TripItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
@@ -48,6 +54,7 @@ import dagger.Provides;
                 MainActivity.class,
                 LoginActivity.class,
                 FullScreenPhotoActivity.class,
+                DetailTripActivity.class,
 
                 LaunchActivityPresentation.class,
                 LoginActivityPresentation.class,
@@ -59,6 +66,9 @@ import dagger.Provides;
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
                 TripImagesListFragmentPresentation.class,
+                DreamTripsFragmentPM.class,
+                DetailedTripFragmentPM.class,
+                DetailTripActivityPM.class,
                 FullScreenActivityPM.class,
                 FullScreenPhotoFragmentPM.class,
                 FullScreenPhotoFragment.class,
@@ -69,6 +79,7 @@ import dagger.Provides;
                 NavigationDrawerFragment.class,
                 ProfileFragment.class,
                 DreamTripsFragment.class,
+                DetailedTripFragment.class,
                 TripImagesTabsFragment.class,
                 LoginFragment.class,
                 TripImagesListFragment.class,
@@ -81,6 +92,7 @@ import dagger.Provides;
                 FacebookAlbumItem.class,
                 FacebookPhotoItem.class,
                 NavigationDrawerPM.class,
+                TripItem.class,
                 PhotoItem.class
         },
         complete = false,

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tripImageHeight">
+
+        <ImageView
+            android:id="@+id/imageViewTripImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_trip_image_placeholder" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tripImagePanelMargin">
+
+            <TextView
+                android:id="@+id/textViewTripCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/tripImagePanelPaddingVertical"
+                android:paddingLeft="@dimen/tripImagePanelPaddingHorizontal"
+                android:paddingRight="@dimen/tripImagePanelPaddingHorizontal"
+                android:paddingTop="@dimen/tripImagePanelPaddingVertical"
+                android:text="May 8 - 10"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/imageViewLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+                android:src="@drawable/ic_thumb" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/tripDetailPanelPadding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tripNameColor"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:text="THE MAGIC OF IRELAND"/>
+
+
+            <TextView
+                android:id="@+id/textViewPlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tripPlaceColor"
+                android:text="Kilkenny Island"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/tripPlaceColor"
+            android:gravity="center_vertical"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:text="$299"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

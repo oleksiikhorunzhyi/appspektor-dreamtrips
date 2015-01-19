@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.core.navigation;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
@@ -20,7 +21,7 @@ public enum State {
     LOGIN(LoginFragment.class, "Log in"),
     WEB_STATIC(StaticInfoFragment.class, "Web"),
     CREATE_PHOTO(CreatePhotoFragment.class, "New Photo"),
-
+    DETAILED_TRIP(DetailedTripFragment.class, "Detailed Trip"),
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
     TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
     MEMBERSHIP(DreamTripsFragment.class, "Membership", 2, R.drawable.ic_membership),

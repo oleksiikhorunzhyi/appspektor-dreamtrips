@@ -4,6 +4,7 @@ public class Trip extends BaseEntity {
     String name;
     String description;
     String location;
+    String price;
     boolean isFeatured;
     boolean isRewarded;
     long duration;
@@ -72,5 +73,22 @@ public class Trip extends BaseEntity {
 
     public void setRewardsLimit(long rewardsLimit) {
         this.rewardsLimit = rewardsLimit;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public static Trip dummy() {
+        Trip trip = new Trip();
+        trip.name = "Lorem";
+        trip.price = "$399";
+        trip.location = "fsadf";
+        trip.description = "fdfas";
+        return trip;
     }
 }

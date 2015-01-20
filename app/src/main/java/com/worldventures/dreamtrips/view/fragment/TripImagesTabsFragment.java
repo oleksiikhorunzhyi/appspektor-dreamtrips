@@ -57,7 +57,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
-                    Type type = position == 0 ? Type.MEMBER_IMAGES : position == 1 ? Type.MY_IMAGES : Type.YOU_SHOULD_BE_HERE;
+                    Type type = Type.values()[position];
                     args.putSerializable(BUNDLE_TYPE, type);
                     fragment.setArguments(args);
                 }
@@ -66,6 +66,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
             this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
             this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
             this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
+            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
 
         }
         this.pager.setAdapter(adapter);

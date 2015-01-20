@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_photo)
-public class PhotoCell extends AbstractCell<Photo> {
+public class  PhotoCell extends AbstractCell<Photo> {
 
     @InjectView(R.id.iv_bg)
     public ImageView imageView;

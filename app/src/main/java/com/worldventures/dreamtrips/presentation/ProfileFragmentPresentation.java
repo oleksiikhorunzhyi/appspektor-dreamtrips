@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
@@ -54,7 +53,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     @Inject
     DreamTripsApi dreamTripsApi;
 
-    private ImagePickCallback avatarCallback = (image, error) -> {
+    private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         final File file = new File(image.getFileThumbnail());
         final TypedFile typedFile = new TypedFile("image/*", file);
         dreamTripsApi.uploadAvatar(typedFile, new Callback<User.Avatar>() {
@@ -79,7 +78,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 
-    private ImagePickCallback coverCallback = (image, error) -> {
+    private ImagePickCallback coverCallback = (fragment, image, error) -> {
         view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
 
         UserSession userSession = this.appSessionHolder.get().get();

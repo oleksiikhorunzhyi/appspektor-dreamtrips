@@ -1,9 +1,15 @@
 package com.worldventures.dreamtrips.core.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Photo extends BaseEntity {
+public class Photo extends BaseEntity implements Parcelable {
+
+
     String title;
     int userId;
     String shotAt;
@@ -98,4 +104,48 @@ public class Photo extends BaseEntity {
                 ", url=" + images +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeInt(this.userId);
+        dest.writeString(this.shotAt);
+        dest.writeString(this.locationName);
+        dest.writeParcelable(this.coordinates, flags);
+        dest.writeList(this.tags);
+        dest.writeParcelable(this.images, flags);
+        dest.writeByte(liked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.likeCount);
+    }
+
+    public Photo() {
+    }
+
+    private Photo(Parcel in) {
+        this.title = in.readString();
+        this.userId = in.readInt();
+        this.shotAt = in.readString();
+        this.locationName = in.readString();
+        this.coordinates = in.readParcelable(Coordinate.class.getClassLoader());
+        this.tags = new ArrayList<>();
+        in.readList(this.tags, ArrayList.class.getClassLoader());
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.liked = in.readByte() != 0;
+        this.likeCount = in.readInt();
+    }
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        public Photo createFromParcel(Parcel source) {
+            return new Photo(source);
+        }
+
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 }

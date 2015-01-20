@@ -4,25 +4,30 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.loader.BaseListLoader;
-import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
+import io.realm.ImageUploadTaskRealmProxy;
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentPresentation> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
@@ -38,12 +43,17 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    BaseArrayListAdapter<Photo> arrayListAdapter;
+    @Inject
+    @Global
+    EventBus eventBus;
+
+
+    BaseArrayListAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
+        eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
 
         this.recyclerView.setLayoutManager(layoutManager);
@@ -51,6 +61,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
+        this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -62,15 +73,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         );
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getPhotosController());
-    
-        getPresentationModel().getPhotosController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Photo>>() {
+
+        getPresentationModel().getPhotosController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
             @Override
             public void onStartLoading() {
                 refreshLayout.setRefreshing(true);
             }
 
             @Override
-            public void onFinishLoading(List<Photo> result) {
+            public void onFinishLoading(List<Object> result) {
                 refreshLayout.setRefreshing(false);
             }
 
@@ -92,6 +103,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         }
     }
 
+
+    public void onEvent(UploadProgressUpdateEvent event) {
+        //   getPresentationModel().getPhotosController().reload();
+        Log.i("EVENT", event.getProgress() + "");
+    }
+
     @Override
     public void onRefresh() {
         getPresentationModel().getPhotosController().reload();
@@ -101,6 +118,11 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     protected TripImagesListFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return new TripImagesListFragmentPresentation(this, type);
+    }
+
+    @Override
+    public void requestUpdateAdapter() {
+        arrayListAdapter.notifyItemChanged(0);
     }
 
     public static enum Type {

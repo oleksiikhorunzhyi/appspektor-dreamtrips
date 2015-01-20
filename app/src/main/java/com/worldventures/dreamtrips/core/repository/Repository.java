@@ -34,6 +34,7 @@ public class Repository<T extends RealmObject> {
         this.realm.beginTransaction();
 
         T object = this.realm.createObject(this.itemClazz);
+
         consumer.consume(object);
 
         this.realm.commitTransaction();

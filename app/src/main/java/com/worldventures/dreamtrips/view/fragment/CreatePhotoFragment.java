@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
 import java.util.Calendar;
@@ -27,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_create_photo)
-public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
+public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener, CreatePhotoFragmentPM.View {
 
     public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
@@ -119,5 +120,10 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
         datePickerDialog.setYearRange(1915, 2015);
         datePickerDialog.show(getChildFragmentManager(), null);
+    }
+
+    @Override
+    public void end() {
+        ((CreatePhotoActivity) getActivity()).preFinishProcess();
     }
 }

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.InjectView;
@@ -28,7 +29,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
     Toolbar toolbar;
 
     private BasePagerAdapter<FullScreenPhotoFragment> adapter;
-    ArrayList<Photo> photoList;
+    ArrayList<Serializable> photoList;
 
     @Override
     protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
 
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
-        photoList = (ArrayList<Photo>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
+        photoList = (ArrayList<Serializable>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
 
         int position = bundleExtra.getInt(EXTRA_POSITION);
 
@@ -65,7 +66,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
             }
         };
 
-        for (Photo photo : photoList) {
+        for (Serializable photo : photoList) {
             adapter.add(new BasePagerAdapter.FragmentItem<>(FullScreenPhotoFragment.class, ""));
         }
 

@@ -16,6 +16,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
@@ -51,20 +52,22 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
-            @Override
-            public void setArgs(int position, Fragment fragment) {
-                Bundle args = new Bundle();
-                Type type = position == 0 ? Type.MEMBER_IMAGES : position == 1 ? Type.MY_IMAGES : Type.YOU_SHOULD_BE_HERE;
-                args.putSerializable(BUNDLE_TYPE, type);
-                fragment.setArguments(args);
-            }
-        };
+        if (adapter == null) {
+            this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
+                @Override
+                public void setArgs(int position, Fragment fragment) {
+                    Bundle args = new Bundle();
+                    Type type = position == 0 ? Type.MEMBER_IMAGES : position == 1 ? Type.MY_IMAGES : Type.YOU_SHOULD_BE_HERE;
+                    args.putSerializable(BUNDLE_TYPE, type);
+                    fragment.setArguments(args);
+                }
+            };
 
-        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
-        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
-        this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
+            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
+            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
+            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
 
+        }
         this.pager.setAdapter(adapter);
         this.tabs.setViewPager(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
@@ -119,7 +122,10 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         }
         if (resultCode == Activity.RESULT_OK && requestCode == FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
             ChosenImage image = new Gson().fromJson(data.getStringExtra(FBPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-            getPresentationModel().provideFbCallback().onResult(image, null);
+            getPresentationModel().provideFbCallback().onResult(this, image, null);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
+            pager.setCurrentItem(1);
         }
 
     }

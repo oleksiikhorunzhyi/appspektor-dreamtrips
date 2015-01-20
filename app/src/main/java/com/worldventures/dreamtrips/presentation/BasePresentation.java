@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class BasePresentation<VT extends BasePresentation.View> {
 
@@ -18,6 +21,10 @@ public class BasePresentation<VT extends BasePresentation.View> {
     @Inject
     protected AppSessionHolder appSessionHolder;
 
+    @Inject
+    @Global
+    EventBus eventBus;
+
     protected final VT view;
 
     public BasePresentation(VT view) {
@@ -25,7 +32,11 @@ public class BasePresentation<VT extends BasePresentation.View> {
     }
 
     public void init() {
+        try {
+            eventBus.register(this);
+        } catch (Exception ignored) {
 
+        }
     }
 
     public void resume() {

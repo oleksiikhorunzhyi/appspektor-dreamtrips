@@ -82,7 +82,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class itemClass = this.viewTypes.get(viewType);
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
 
-        return this.adapterHelper.buildCell(cellClass, parent);
+        final AbstractCell abstractCell = this.adapterHelper.buildCell(cellClass, parent);
+
+        this.injector.inject(abstractCell);
+
+        abstractCell.afterInject();
+
+        return abstractCell;
     }
 
     @Override
@@ -97,8 +103,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         BaseItemClass item = this.getItem(position);
 
         cell.prepareForReuse();
-
-        this.injector.inject(cell);
 
         cell.fillWithItem(item);
     }

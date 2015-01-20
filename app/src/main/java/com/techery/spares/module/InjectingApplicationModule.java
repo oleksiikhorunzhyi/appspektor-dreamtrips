@@ -36,13 +36,6 @@ public class InjectingApplicationModule {
     @Provides
     @Singleton
     @Application
-    Context provideApplicationContext(BaseApplicationWithInjector baseApplicationWithInjector) {
-        return baseApplicationWithInjector.getApplicationContext();
-    }
-
-    @Provides
-    @Singleton
-    @Application
     ObjectGraph provideObjectGraph(BaseApplicationWithInjector baseApplicationWithInjector) {
         return baseApplicationWithInjector.getObjectGraph();
     }

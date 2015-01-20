@@ -15,6 +15,8 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
@@ -103,12 +105,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         }
     }
 
-
-    public void onEvent(UploadProgressUpdateEvent event) {
-        //   getPresentationModel().getPhotosController().reload();
-        Log.i("EVENT", event.getProgress() + "");
-    }
-
     @Override
     public void onRefresh() {
         getPresentationModel().getPhotosController().reload();
@@ -123,6 +119,14 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @Override
     public void requestUpdateAdapter() {
         arrayListAdapter.notifyItemChanged(0);
+    }
+
+    public void onEventMainThread(PhotoUploadStarted event) {
+        getPresentationModel().getPhotosController().reload();
+    }
+
+    public void onEventMainThread(PhotoUploadFinished event) {
+        getPresentationModel().getPhotosController().reload();
     }
 
     public static enum Type {

@@ -10,6 +10,9 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
+import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -27,10 +30,6 @@ import io.realm.RealmResults;
 
 @PresentationModel
 public class TripImagesListFragmentPresentation extends BasePresentation<TripImagesListFragmentPresentation.View> {
-
-//    @Inject
-//    Repository<ImageUploadTask> repository;
-
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -58,12 +57,10 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         Handler mainHandler = new Handler(context.getMainLooper());
         final List<List<ImageUploadTask>> result = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                result.add(command.run());
-                countDownLatch.countDown();
-            }
+
+        mainHandler.post(() -> {
+            result.add(command.run());
+            countDownLatch.countDown();
         });
 
         try {
@@ -123,7 +120,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
      //TODO TO OPEN       this.activityRouter.openFullScreenPhoto(this.photos, position);
         }
     }
-
 
     public static interface View extends BasePresentation.View {
         void requestUpdateAdapter();

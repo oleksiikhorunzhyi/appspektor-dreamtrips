@@ -47,12 +47,15 @@
             ppv:ppvStrokeColor="@android:color/transparent"
             ppv:ppvStrokeWidth="8dp" />
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/cancel_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_thumb_normal" />
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:adjustViewBounds="false"
+            android:padding="4dp" />
 
     </RelativeLayout>
 </com.worldventures.dreamtrips.view.custom.SquareRelativeLayout>

@@ -19,4 +19,9 @@ public class LoaderFactory {
         ContentLoader.LoaderCreator creator = BaseListLoader.buildCreator(loadingTask);
         return new CollectionController<>(this.context, this.loaderManager, creator);
     }
+
+    public <T> CollectionController<T> create(int loaderId, BaseSimpleTaskLoader.LoadingTask<List<T>> loadingTask) {
+        ContentLoader.LoaderCreator creator = BaseListLoader.buildCreator(loadingTask);
+        return new CollectionController<>(this.context, this.loaderManager, loaderId, creator);
+    }
 }

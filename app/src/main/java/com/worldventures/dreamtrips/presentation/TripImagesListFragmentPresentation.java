@@ -36,7 +36,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     public void init() {
         super.init();
 
-        this.photosController = loaderFactory.create((context, params) -> {
+        this.photosController = loaderFactory.create(this.type.ordinal(), (context, params) -> {
             this.photos = this.loadPhotos();
             return this.photos;
         });

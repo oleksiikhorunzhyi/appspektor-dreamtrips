@@ -120,7 +120,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
 
     public void onItemClick(int position) {
         if (photos.get(position) instanceof Photo) {
-     //TODO TO OPEN       this.activityRouter.openFullScreenPhoto(this.photos, position);
+            this.activityRouter.openFullScreenPhoto(this.photos, position);
         }
     }
 

@@ -3,7 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.core.model.Photo;
+import com.techery.spares.service.ServiceActionRunner;
+import com.worldventures.dreamtrips.core.uploader.UploadingService;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -12,20 +13,24 @@ import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
 @PresentationModel
-public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.View> implements HasPresentationModelChangeSupport {
+public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> implements HasPresentationModelChangeSupport {
     public static final String TIME = "time";
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
     private final PresentationModelChangeSupport changeSupport;
+    @Inject
+    ServiceActionRunner serviceActionRunner;
 
     String title;
     String location;
@@ -114,22 +119,24 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
     }
 
     public void saveAction() {
-        Photo photo = new Photo();
-        photo.setTitle(getTitle());
-        photo.setTags(getParsedText(getTags()));
-        photo.setUserId(appSessionHolder.get().get().getUser().getId());
-        photo.setCoordinates(null);
-        photo.setLocationName(getLocation());
-        photo.setShotAt(getParsedDateTime(getDate(), getTime()).toString());
-        view.informUser(photo.toString());
+        UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
+        action.setFileUri(imageUri.toString());
+        action.setTitle(getTitle());
+        action.setTags(getParsedText(getTags()));
+        action.setLatitude(56);
+        action.setLongitude(92);
+        action.setLocationName("Krasnoyarsk");
+        action.setShotAt(getParsedDateTime(getDate(), getTime()));
+        serviceActionRunner.from(UploadingService.class).run(action);
+        view.end();
     }
 
-    private List<String> getParsedText(String tags) {
+    private ArrayList<String> getParsedText(String tags) {
         String[] split = tags.split(",");
         String[] trimed = new String[split.length];
         for (int i = 0; i < trimed.length; i++)
             trimed[i] = split[i].trim();
-        return Arrays.asList(trimed);
+        return new ArrayList<String>(Arrays.asList(trimed));
     }
 
     public Date getParsedDateTime(String dateS, String timeS) {
@@ -169,5 +176,11 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
 
     public void setImageUri(Uri imageUri) {
         this.imageUri = imageUri;
+    }
+
+
+    public interface View extends BasePresentation.View {
+        void end();
+
     }
 }

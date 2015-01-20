@@ -15,19 +15,19 @@ import java.io.File;
 public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePresentation.View> implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
 
-    ImagePickCallback selectImageCallback = (image, error) -> {
+    ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(Uri.fromFile(new File(image.getFilePathOriginal())));
+            activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFilePathOriginal())));
         }
     };
 
-    ImagePickCallback fbCallback = (image, error) -> {
+    ImagePickCallback fbCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(Uri.parse(image.getFilePathOriginal()));
+            activityRouter.openCreatePhoto(fragment, Uri.parse(image.getFilePathOriginal()));
         }
     };
 

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
+import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
@@ -38,6 +39,7 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.TripCell;
+import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -113,8 +115,10 @@ import dagger.Provides;
                 TripCell.class,
                 PhotoItem.class,
                 PhotoCell.class,
+                PhotoUploadCell.class,
 
-                BaseArrayListAdapter.class
+                BaseArrayListAdapter.class,
+                UploadJob.class
         },
         complete = false,
         library = true

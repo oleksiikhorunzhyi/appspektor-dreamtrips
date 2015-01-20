@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.model.User;
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -47,4 +48,8 @@ public interface DreamTripsApi {
 
     @DELETE("/api/photos/{id}/like")
     public void unlikePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+
+    @POST("/api/photos")
+    @Multipart
+    public void postPhoto(@Body Photo photo);
 }

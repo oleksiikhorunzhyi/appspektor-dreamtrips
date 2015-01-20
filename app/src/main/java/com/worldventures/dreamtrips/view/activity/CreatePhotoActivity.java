@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_create_photo)
 public class CreatePhotoActivity extends PresentationModelDrivenActivity<CreatePhotoActivityPM> {
     public static final String EXTRA_FILE_URI = "EXTRA_FILE_URI";
+    public static final int REQUEST_CODE_CREATE_PHOTO = 342;
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -41,5 +43,11 @@ public class CreatePhotoActivity extends PresentationModelDrivenActivity<CreateP
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         toolbar.getBackground().setAlpha(0);
+    }
+
+    public void preFinishProcess() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
@@ -67,7 +68,7 @@ public class DTModule {
     }
 
     @Provides
-    Realm provideRealm(Context context) {
+    Realm provideRealm(@Application Context context) {
         return Realm.getInstance(context);
     }
 

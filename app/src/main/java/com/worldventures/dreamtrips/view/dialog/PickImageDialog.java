@@ -86,14 +86,14 @@ public class PickImageDialog implements ImageChooserListener {
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
         if (callback != null) {
-            callback.onResult(chosenImage, null);
+            callback.onResult(fragment, chosenImage, null);
         }
     }
 
     @Override
     public void onError(String s) {
         if (callback != null) {
-            callback.onResult(null, s);
+            callback.onResult(fragment, null, s);
         }
     }
 

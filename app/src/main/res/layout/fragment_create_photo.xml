@@ -68,7 +68,6 @@
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
-                    app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
                     bind:text="${title}" />
@@ -103,7 +102,6 @@
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
-                    app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
                     bind:text="${location}" />
@@ -142,7 +140,6 @@
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
-                    app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
                     bind:text="${date}" />
@@ -160,7 +157,6 @@
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
-                    app:errorColor="#ddaa00"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
                     bind:text="${time}" />

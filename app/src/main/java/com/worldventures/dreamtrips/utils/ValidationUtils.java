@@ -36,6 +36,10 @@ public class ValidationUtils {
         return new VResult(true, null);
     }
 
+    public static boolean isPhotoTitleValid(String title){
+        return !title.trim().isEmpty();
+    }
+
 
     public static class VResult {
         boolean isValid;

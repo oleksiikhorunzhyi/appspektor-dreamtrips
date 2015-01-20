@@ -14,7 +14,7 @@ public class Trip extends BaseEntity {
     Price price;
     List<TripImage> images;
     Location location;
-    Schedule availabilityDates;
+    Schedule dates;
 
     public String getName() {
         return name;
@@ -105,10 +105,10 @@ public class Trip extends BaseEntity {
     }
 
     public Schedule getAvailabilityDates() {
-        return availabilityDates;
+        return dates;
     }
 
     public void setAvailabilityDates(Schedule availabilityDates) {
-        this.availabilityDates = availabilityDates;
+        this.dates = availabilityDates;
     }
 }

@@ -30,11 +30,12 @@ public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
+        toolbar.getBackground().setAlpha(0);
+
     }
 
     @Override

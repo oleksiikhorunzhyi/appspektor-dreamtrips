@@ -25,6 +25,14 @@ public class Price implements Serializable {
 
     @Override
     public String toString() {
-        return currency + String.valueOf(amount);
+        return getCurrencySymbol() + String.valueOf((int) amount);
+    }
+
+    private String getCurrencySymbol() {
+        String result = currency;
+        if (currency.equals("USD")) {
+            result = "$";
+        }
+        return result;
     }
 }

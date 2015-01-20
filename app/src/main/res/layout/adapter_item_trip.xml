@@ -21,17 +21,15 @@
             android:layout_marginTop="@dimen/tripImagePanelMargin">
 
             <TextView
-                android:id="@+id/textViewTripCalendar"
+                android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingBottom="@dimen/tripImagePanelPaddingVertical"
-                android:paddingLeft="@dimen/tripImagePanelPaddingHorizontal"
-                android:paddingRight="@dimen/tripImagePanelPaddingHorizontal"
-                android:paddingTop="@dimen/tripImagePanelPaddingVertical"
-                android:text="May 8 - 10"
+                android:text="Jul 10 - 15 2015"
+                android:textStyle="bold"
+                android:background="@color/tripDateBackgroundColor"
+                android:padding="@dimen/tripDetailPanelPadding"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/imageViewLike"

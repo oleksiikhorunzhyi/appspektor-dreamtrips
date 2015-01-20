@@ -32,6 +32,8 @@ public class TripCell extends AbstractCell<Trip> {
     TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
     TextView textViewPrice;
+    @InjectView(R.id.textViewDate)
+    TextView textViewDate;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -45,7 +47,9 @@ public class TripCell extends AbstractCell<Trip> {
         textViewName.setText(getModelObject().getName());
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
-        universalImageLoader.loadImage(getModelObject().getImages().get(0).getUrl(), this.imageViewTripImage,
+        textViewDate.setText(getModelObject().getAvailabilityDates().toString());
+        universalImageLoader.loadImage(getModelObject().getImages().get(0
+                ).getUrl(), this.imageViewTripImage,
                 null, new SimpleImageLoadingListener());
     }
 

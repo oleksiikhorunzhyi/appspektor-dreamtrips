@@ -11,6 +11,7 @@ public class ListPhotoResponse {
     long lastPage;
     long from;
     long to;
+
     ArrayList<Photo> data;
 
     public long getTotal() {

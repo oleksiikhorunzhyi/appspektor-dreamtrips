@@ -16,9 +16,9 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActivityRouter extends ActivityBoundRouter {
-
 
     public ActivityRouter(Activity activity) {
         super(activity);
@@ -42,9 +42,9 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(CreatePhotoActivity.class);
     }
 
-    public void openFullScreenPhoto(ArrayList<Photo> photoList, int position) {
+    public void openFullScreenPhoto(List<Photo> photoList, int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, photoList);
+        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_POSITION, position);
         startActivity(FullScreenPhotoActivity.class, bundle);
     }

@@ -4,13 +4,43 @@ import java.util.Date;
 
 public class User extends BaseEntity {
 
+    public static class Avatar {
+        String original;
+        String medium;
+        String thumb;
+
+        public String getOriginal() {
+            return original;
+        }
+
+        public void setOriginal(String original) {
+            this.original = original;
+        }
+
+        public String getMedium() {
+            return medium;
+        }
+
+        public void setMedium(String medium) {
+            this.medium = medium;
+        }
+
+        public String getThumb() {
+            return thumb;
+        }
+
+        public void setThumb(String thumb) {
+            this.thumb = thumb;
+        }
+    }
+
     String username;
     String email;
     String firstName;
     String lastName;
     Date birthDate;
     String location;
-    Image avatar;
+    Avatar avatar;
 
     String coverPath;
 
@@ -73,11 +103,11 @@ public class User extends BaseEntity {
         this.location = location;
     }
 
-    public Image getAvatar() {
+    public Avatar getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Image avatar) {
+    public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
 

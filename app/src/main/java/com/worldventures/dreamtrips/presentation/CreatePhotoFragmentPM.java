@@ -117,7 +117,6 @@ public class CreatePhotoFragmentPM extends BasePresentation<BasePresentation.Vie
         Photo photo = new Photo();
         photo.setTitle(getTitle());
         photo.setTags(getParsedText(getTags()));
-        photo.setUrl(/*TODO*/null);
         photo.setUserId(appSessionHolder.get().get().getUser().getId());
         photo.setCoordinates(null);
         photo.setLocationName(getLocation());

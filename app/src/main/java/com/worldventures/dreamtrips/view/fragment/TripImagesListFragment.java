@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.loader.BaseListLoader;
+import com.techery.spares.loader.CollectionController;
+import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
-import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
-import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -58,33 +60,41 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
         );
+
+        this.arrayListAdapter.setContentLoader(getPresentationModel().getPhotosController());
+    
+        getPresentationModel().getPhotosController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Photo>>() {
+            @Override
+            public void onStartLoading() {
+                refreshLayout.setRefreshing(true);
+            }
+
+            @Override
+            public void onFinishLoading(List<Photo> result) {
+                refreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
-                this.refreshLayout.setRefreshing(true);
-                this.getPresentationModel().loadImages();
+                getPresentationModel().getPhotosController().reload();
             });
         }
     }
 
     @Override
-    public void setPhotos(List<Photo> photos) {
-        this.arrayListAdapter.addItems(photos);
-        this.refreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void clearAdapter() {
-        this.arrayListAdapter.clear();
-    }
-
-    @Override
     public void onRefresh() {
-        this.getPresentationModel().loadImages();
+        getPresentationModel().getPhotosController().reload();
     }
 
     @Override

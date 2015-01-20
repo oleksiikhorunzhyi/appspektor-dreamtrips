@@ -1,7 +1,12 @@
 package com.techery.spares.module;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
 
+import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.techery.spares.utils.AnnotationsHelper;
 import com.techery.spares.utils.BinderRetriever;
 import com.techery.spares.utils.ObjectStateHelper;

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.core.module;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.module.InjectingActivityModule;
+import com.techery.spares.module.SupportModule;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
@@ -112,7 +115,6 @@ import dagger.Provides;
                 PhotoCell.class,
 
                 BaseArrayListAdapter.class
-
         },
         complete = false,
         library = true

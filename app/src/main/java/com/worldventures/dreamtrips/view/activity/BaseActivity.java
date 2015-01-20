@@ -50,7 +50,7 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
+        List<Object> result = super.getModules();
         result.add(new ActivityModule(this));
         return result;
     }

@@ -25,7 +25,7 @@ public class ContentLoaderController<T> implements ContentLoader<T> {
         this.context = context;
         this.loaderID = loaderID;
         this.loaderCreator = factory;
-        this.contentLoaderObserver = new ContentLoaderObserver<T>();
+        this.contentLoaderObserver = new ContentLoaderObserver<>();
     }
 
     public final void load() {
@@ -48,6 +48,7 @@ public class ContentLoaderController<T> implements ContentLoader<T> {
     }
 
     LoaderManager.LoaderCallbacks<T> loaderCallbacks = new LoaderManager.LoaderCallbacks<T>() {
+
         @Override
         public final Loader<T> onCreateLoader(int i, Bundle bundle) {
             return ContentLoaderController.this.loaderCreator.createLoader(context, bundle);

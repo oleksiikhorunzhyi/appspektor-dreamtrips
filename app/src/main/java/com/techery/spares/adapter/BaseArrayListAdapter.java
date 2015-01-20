@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.EventBusBuilder;
+
 public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
 
     private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
@@ -22,6 +25,8 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private final Injector injector;
     private ContentLoader<List<BaseItemClass>> contentLoader;
     private List<BaseItemClass> items = new ArrayList<>();
+
+    private final EventBus eventBus = EventBus.getDefault();
 
     private List<Class> viewTypes = new ArrayList<>();
 
@@ -76,8 +81,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
         Class itemClass = this.viewTypes.get(viewType);
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
-
-        return this.adapterHelper.buildCell(cellClass, parent);
+        AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
+        cell.setEventBus(eventBus);
+        return cell;
     }
 
     @Override

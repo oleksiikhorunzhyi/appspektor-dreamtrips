@@ -13,17 +13,21 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
+import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
@@ -37,6 +41,10 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
+
+    @Inject
+    @Global
+    EventBus eventBus;
 
     BaseArrayListAdapter<Trip> adapter;
 
@@ -57,10 +65,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        this.recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
-        );
-
         getPresentationModel().getTripsController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
             @Override
             public void onStartLoading() {
@@ -78,6 +82,12 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
                 ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
             }
         });
+
+        eventBus.register(this);
+    }
+
+    public void onEvent(LikeTripEvent likeTripEvent) {
+        likeTripEvent.getTrip();
     }
 
     @Override

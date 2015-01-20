@@ -10,6 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
         //TODO return original url
+        imageViewLike.setImageResource(!getModelObject().isFeatured() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
         universalImageLoader.loadImage("http://miriadna.com/desctopwalls/images/max/Green-nature.jpg",
                 this.imageViewTripImage,
                 null, new SimpleImageLoadingListener());
@@ -57,7 +59,8 @@ public class TripCell extends AbstractCell<Trip> {
 
     @OnClick(R.id.imageViewLike)
     void actionLike() {
-        imageViewLike.setImageResource(R.drawable.ic_heart_2_sh);
+        imageViewLike.setImageResource(!getModelObject().isFeatured() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+        getEventBus().post(new LikeTripEvent(getModelObject()));
     }
 
     @Override

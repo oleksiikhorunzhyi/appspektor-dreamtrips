@@ -37,6 +37,8 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setDesription(trip.getDescription());
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
+        view.loadPhoto("");
+        view.setDuration(trip.getDuration());
     }
 
 
@@ -48,5 +50,6 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         void setDates(String text);
         void setDesription(String text);
         void loadPhoto(String url);
+        void setDuration(int count);
     }
 }

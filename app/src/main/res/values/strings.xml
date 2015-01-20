@@ -5,6 +5,9 @@
     <string name="facebook_app_id">1533648703554385</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_map">Map</string>
+    <string name="action_like">Like</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_main">Dream trips</string>
     <string name="hello_blank_fragment"></string>
@@ -22,5 +25,6 @@
     <string name="you_should_be_here">You should be here</string>
     <string name="title_activity_full_screen_photo">DreamTrips</string>
     <string name="skip_login">Skip login</string>
-
+    <string name="duration">%d Nights,\n Standard Acc</string>
+    <string name="smth_went_wrong">Something went wrong =(</string>
 </resources>

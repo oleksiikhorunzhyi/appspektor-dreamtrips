@@ -53,6 +53,13 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         return new MainActivityPresentation(this);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        makeActionBarTransparent(false);
+    }
+
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);

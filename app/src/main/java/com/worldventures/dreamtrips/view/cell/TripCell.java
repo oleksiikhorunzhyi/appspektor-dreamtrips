@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by Edward on 19.01.15.
@@ -48,9 +49,15 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
-        universalImageLoader.loadImage(getModelObject().getImages().get(0
-                ).getUrl(), this.imageViewTripImage,
+        //TODO return original url
+        universalImageLoader.loadImage("http://miriadna.com/desctopwalls/images/max/Green-nature.jpg",
+                this.imageViewTripImage,
                 null, new SimpleImageLoadingListener());
+    }
+
+    @OnClick(R.id.imageViewLike)
+    void actionLike() {
+        imageViewLike.setImageResource(R.drawable.ic_heart_2_sh);
     }
 
     @Override

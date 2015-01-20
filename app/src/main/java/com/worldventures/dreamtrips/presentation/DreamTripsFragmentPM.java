@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.techery.spares.loader.CollectionController;
+import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Trip;
 
@@ -23,30 +25,32 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Inject
     DreamTripsApi dreamTripsApi;
 
+    @Inject
+    LoaderFactory loaderFactory;
+
     List<Trip> data;
+    CollectionController<Trip> tripsController;
 
     public DreamTripsFragmentPM(View view) {
         super(view);
     }
 
-    final Callback<List<Trip>> callback = new Callback<List<Trip>>() {
-        @Override
-        public void success(List<Trip> listPhotoResponse, Response response) {
-            view.clearAdapter();
-            data = listPhotoResponse;
-            view.setTrips(data);
-        }
+    @Override
+    public void init() {
+        super.init();
+        this.tripsController = loaderFactory.create(0, (context, params) -> {
+            this.data = this.loadTrips();
+            return this.data;
+        });
 
-        @Override
-        public void failure(RetrofitError error) {
-            view.setTrips(null);
-            handleError(error);
-        }
-    };
+    }
 
+    public CollectionController<Trip> getTripsController() {
+        return tripsController;
+    }
 
-    public void loadTrips() {
-        dreamTripsApi.getTrips(callback);
+    public List<Trip> loadTrips() {
+        return dreamTripsApi.getTrips();
     }
 
     public void onItemClick(int position) {
@@ -55,10 +59,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
 
     public static interface View extends BasePresentation.View {
-        void setTrips(List<Trip> photos);
-
-        void clearAdapter();
     }
-
 
 }

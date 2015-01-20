@@ -7,12 +7,11 @@ public class Trip extends BaseEntity {
     String description;
     boolean featured;
     boolean rewarded;
-    long duration;
+    int duration;
     boolean price_available;
     boolean available;
     long rewardsLimit;
     Price price;
-    List<TripImage> images;
     Location location;
     Schedule dates;
 
@@ -48,11 +47,11 @@ public class Trip extends BaseEntity {
         this.rewarded = rewarded;
     }
 
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -86,14 +85,6 @@ public class Trip extends BaseEntity {
 
     public void setPrice(Price price) {
         this.price = price;
-    }
-
-    public List<TripImage> getImages() {
-        return images;
-    }
-
-    public void setImages(List<TripImage> images) {
-        this.images = images;
     }
 
     public Location getGeoLocation() {

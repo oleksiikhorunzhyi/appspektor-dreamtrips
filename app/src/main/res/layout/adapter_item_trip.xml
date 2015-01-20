@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/imageLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tripImageHeight">
 
@@ -26,27 +27,17 @@
                 android:layout_height="wrap_content"
                 android:text="Jul 10 - 15 2015"
                 android:textStyle="bold"
-                android:background="@color/tripDateBackgroundColor"
+                android:background="@drawable/ic_stripe"
                 android:padding="@dimen/tripDetailPanelPadding"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
-
-            <ImageView
-                android:id="@+id/imageViewLike"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end"
-                android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-                android:src="@drawable/ic_thumb" />
 
         </RelativeLayout>
 
     </FrameLayout>
 
     <LinearLayout
+        android:layout_below="@+id/imageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -72,6 +63,9 @@
                 android:id="@+id/textViewPlace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawableStart="@drawable/ic_location"
+                android:drawablePadding="5dp"
                 android:textColor="@color/tripPlaceColor"
                 android:text="Kilkenny Island"/>
         </LinearLayout>
@@ -86,8 +80,19 @@
             android:textStyle="bold"
             android:textSize="22sp"
             android:text="$299"/>
-
-
     </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageViewLike"
+        android:clickable="true"
+        android:tag="like"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tripImagePanelMargin"
+        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+        android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
+        android:src="@drawable/ic_heart_1_sh" />
+
+</RelativeLayout>

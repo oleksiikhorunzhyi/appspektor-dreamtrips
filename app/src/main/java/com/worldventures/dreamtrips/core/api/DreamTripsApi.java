@@ -33,7 +33,7 @@ public interface DreamTripsApi {
     public List<Photo> getUserPhotos();
 
     @GET("/api/trips")
-    public void getTrips(Callback<List<Trip>> callback);
+    public List<Trip> getTrips();
 
     @GET("/api/users/{id}/photos")
     public List<Photo> getMyPhotos(@Path("id") int currentUserId);

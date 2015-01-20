@@ -2,12 +2,13 @@ package com.worldventures.dreamtrips.core.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Schedule implements Serializable {
 
-    private static final String patternFirst = "MMM d";
-    private static final String patternSecond = "d yyyy";
+    private static final String PATTERN_MONTH_AND_DAY = "MMM d";
+    private static final String PATTERN_DAY = "d";
 
 
     java.util.Date start_on;
@@ -31,12 +32,19 @@ public class Schedule implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat simpleDateFormatfirst = new SimpleDateFormat(patternFirst, Locale.US);
-        SimpleDateFormat simpleDateFormatsecond = new SimpleDateFormat(patternSecond, Locale.US);
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTimeInMillis(start_on.getTime());
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(end_on.getTime());
+
+        SimpleDateFormat simpleDateFormatFirst = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
+        SimpleDateFormat simpleDateFormatSecond = new SimpleDateFormat(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH)
+                ? PATTERN_MONTH_AND_DAY : PATTERN_DAY, Locale.US);
+
         StringBuilder builder = new StringBuilder();
-        builder.append(simpleDateFormatfirst.format(getStartDate()));
+        builder.append(simpleDateFormatFirst.format(getStartDate()));
         builder.append(" - ");
-        builder.append(simpleDateFormatsecond.format(getEndDate()));
+        builder.append(simpleDateFormatSecond.format(getEndDate()));
         return builder.toString();
     }
 }

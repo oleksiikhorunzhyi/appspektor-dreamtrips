@@ -35,7 +35,16 @@ public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTr
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         toolbar.getBackground().setAlpha(0);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

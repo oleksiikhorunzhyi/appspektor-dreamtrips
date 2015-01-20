@@ -2,11 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
     android:background="@color/white"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -22,7 +25,7 @@
                     android:id="@+id/imageViewTripImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_trip_image_placeholder" />
 
             </FrameLayout>
@@ -53,6 +56,9 @@
                         android:id="@+id/textViewPlace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_location"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="5dp"
                         android:text="Kilkenny Island"
                         android:textColor="@color/tripPlaceColor" />
                 </LinearLayout>
@@ -70,6 +76,10 @@
 
 
             </LinearLayout>
+
+            <View android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@drawable/trip_details_shadow"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:text="Jul 10 - 15 2015"
                         android:textStyle="bold"
-                        android:background="@color/tripDateBackgroundColor"
+                        android:background="@drawable/ic_stripe"
                         android:padding="@dimen/tripDetailPanelPadding"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
@@ -103,7 +113,6 @@
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:fontFamily="sans-serif-light"
                     android:gravity="end"
-                    android:text="4 Nights,\n Standard Acc"
                     android:textColor="@color/tripNameColor"
                     />
 

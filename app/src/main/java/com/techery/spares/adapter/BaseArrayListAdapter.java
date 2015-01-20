@@ -50,7 +50,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
             if (this.contentLoader.getResult() != null) {
                 onFinishLoading(this.contentLoader.getResult());
             }
-            this.contentLoader.load();
         }
     }
 

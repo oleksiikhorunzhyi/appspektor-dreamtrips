@@ -29,7 +29,7 @@ public class PhotoCell extends AbstractCell<Photo> {
 
     @Override
     protected void syncUIStateWithModel() {
-        universalImageLoader.loadImage(getModelObject().getUrl().getMedium(), this.imageView, null, new SimpleImageLoadingListener());
+        this.universalImageLoader.loadImage(getModelObject().getImages().getMedium().getUrl(), this.imageView, null, new SimpleImageLoadingListener());
     }
 
     @Override

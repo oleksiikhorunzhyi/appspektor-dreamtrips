@@ -10,7 +10,7 @@ public class Photo extends BaseEntity {
     String locationName;
     Coordinate coordinates;
     List<String> tags;
-    Image url;
+    Image images;
     boolean liked;
     int likeCount;
 
@@ -62,12 +62,12 @@ public class Photo extends BaseEntity {
         this.title = title;
     }
 
-    public Image getUrl() {
-        return url;
+    public Image getImages() {
+        return images;
     }
 
-    public void setUrl(Image url) {
-        this.url = url;
+    public void setImages(Image images) {
+        this.images = images;
     }
 
     public boolean isLiked() {
@@ -95,7 +95,7 @@ public class Photo extends BaseEntity {
                 ", locationName='" + locationName + '\'' +
                 ", coordinates=" + coordinates +
                 ", tags=" + tags +
-                ", url=" + url +
+                ", url=" + images +
                 '}';
     }
 }

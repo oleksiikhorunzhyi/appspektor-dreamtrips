@@ -1,48 +1,44 @@
 package com.worldventures.dreamtrips.core.model;
 
-import android.net.Uri;
-
-import com.worldventures.dreamtrips.BuildConfig;
-
 public class Image extends BaseEntity {
-    String original;
-    String medium;
-    String thumb;
 
-    public String getOriginal() {
+    public static class ImageVersion {
+        String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+
+    ImageVersion original;
+    ImageVersion medium;
+    ImageVersion thumb;
+
+    public ImageVersion getOriginal() {
         return original;
     }
 
-    public void setOriginal(String original) {
+    public void setOriginal(ImageVersion original) {
         this.original = original;
     }
 
-    public String getMedium() {
+    public ImageVersion getMedium() {
         return medium;
     }
 
-    public void setMedium(String medium) {
+    public void setMedium(ImageVersion medium) {
         this.medium = medium;
     }
 
-    public String getThumb() {
+    public ImageVersion getThumb() {
         return thumb;
     }
 
-    public void setThumb(String thumb) {
+    public void setThumb(ImageVersion thumb) {
         this.thumb = thumb;
-    }
-
-    @Override
-    public String toString() {
-        return "Avatar{" +
-                "original='" + original + '\'' +
-                ", medium='" + medium + '\'' +
-                ", thumb='" + thumb + '\'' +
-                '}';
-    }
-
-    public Uri getMediumUri() {
-        return Uri.parse(BuildConfig.DreamTripsApi + getMedium());
     }
 }

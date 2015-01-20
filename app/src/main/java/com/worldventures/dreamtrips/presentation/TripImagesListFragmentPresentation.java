@@ -5,7 +5,6 @@ import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
-import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -14,10 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 @PresentationModel
 public class TripImagesListFragmentPresentation extends BasePresentation<TripImagesListFragmentPresentation.View> {
@@ -55,9 +50,9 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         switch (type) {
             case MY_IMAGES:
                 final User user = appSessionHolder.get().get().getUser();
-                return dreamTripsApi.getMyPhotos(user.getId()).getData();
+                return dreamTripsApi.getMyPhotos(user.getId());
             case MEMBER_IMAGES:
-                return dreamTripsApi.getUserPhotos().getData();
+                return dreamTripsApi.getUserPhotos();
             case YOU_SHOULD_BE_HERE:
                 return new ArrayList<>();
         }

@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Image;
+import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
-import com.worldventures.dreamtrips.core.model.response.ListPhotoResponse;
+import com.worldventures.dreamtrips.core.model.User;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.DELETE;
@@ -24,13 +27,13 @@ public interface DreamTripsApi {
 
     @POST("/api/profile/avatar")
     @Multipart
-    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<Image> callback);
+    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User.Avatar> callback);
 
     @GET("/api/photos")
-    public ListPhotoResponse getUserPhotos();
+    public List<Photo> getUserPhotos();
 
     @GET("/api/users/{id}/photos")
-    public ListPhotoResponse getMyPhotos(@Path("id") int currentUserId);
+    public List<Photo> getMyPhotos(@Path("id") int currentUserId);
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")

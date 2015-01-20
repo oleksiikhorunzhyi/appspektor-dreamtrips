@@ -57,9 +57,9 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     private ImagePickCallback avatarCallback = (image, error) -> {
         final File file = new File(image.getFileThumbnail());
         final TypedFile typedFile = new TypedFile("image/*", file);
-        dreamTripsApi.uploadAvatar(typedFile, new Callback<Image>() {
+        dreamTripsApi.uploadAvatar(typedFile, new Callback<User.Avatar>() {
             @Override
-            public void success(Image avatar, Response response) {
+            public void success(User.Avatar avatar, Response response) {
                 UserSession userSession = appSessionHolder.get().get();
                 User user = userSession.getUser();
 
@@ -115,7 +115,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         changeSupport.firePropertyChange(USER_NOTE);
         changeSupport.firePropertyChange(USER_EMAIL);
 
-        view.setAvatarImage(user.getAvatar().getMediumUri());
+        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
     }
 
@@ -139,7 +139,6 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     public PresentationModelChangeSupport getPresentationModelChangeSupport() {
         return changeSupport;
     }
-
 
     public String getFrom() {
         return from;

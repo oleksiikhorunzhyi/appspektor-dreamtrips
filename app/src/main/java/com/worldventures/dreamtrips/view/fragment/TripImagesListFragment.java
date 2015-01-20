@@ -62,7 +62,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         );
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getPhotosController());
-
+    
         getPresentationModel().getPhotosController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Photo>>() {
             @Override
             public void onStartLoading() {
@@ -84,8 +84,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @Override
     public void onResume() {
         super.onResume();
-
-
 
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {

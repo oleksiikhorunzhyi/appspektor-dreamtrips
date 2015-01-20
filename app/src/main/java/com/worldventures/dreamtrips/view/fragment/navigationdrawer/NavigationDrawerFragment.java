@@ -82,7 +82,7 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         navHeader.setUserEmail(user.getEmail());
         navHeader.setUserNome(user.getUsername());
         navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));
-        navHeader.setUserPhoto(user.getAvatar().getMediumUri());
+        navHeader.setUserPhoto(Uri.parse(user.getAvatar().getOriginal()));
 
         return navHeader;
     }

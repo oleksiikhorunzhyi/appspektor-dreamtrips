@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Date;
 
@@ -41,9 +42,7 @@ public class UploadingFileManager {
         InputStream in = null;
         FileOutputStream out = null;
 
-        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(
-                context.getContentResolver().getType(uri)
-        );
+        String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
 
         checkNotNull(extension);
 
@@ -56,7 +55,11 @@ public class UploadingFileManager {
         String fileKeyHash = hashCode.toString();
 
         try {
-            in = resolver.openInputStream(uri);
+            if (uri.getScheme().startsWith("http")) {
+                in = new URL(uri.toString()).openStream();
+            } else {
+                in = resolver.openInputStream(uri);
+            }
             file = File.createTempFile(
                     fileKeyHash,
                     "." + extension,

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
@@ -26,21 +25,18 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(MainActivity.class);
     }
 
-    public void openCreatePhoto(Uri fileUri) {
+    public void openCreatePhoto(Fragment fm, Uri fileUri) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
-        startActivity(CreatePhotoActivity.class, bundle);
+        startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
     }
 
     public void openLogin() {
         startActivity(LoginActivity.class);
     }
 
-    public void openCreatePhoto() {
-        startActivity(CreatePhotoActivity.class);
-    }
 
-    public void openFullScreenPhoto(List<Photo> photoList, int position) {
+    public void openFullScreenPhoto(List<Object> photoList, int position) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_POSITION, position);

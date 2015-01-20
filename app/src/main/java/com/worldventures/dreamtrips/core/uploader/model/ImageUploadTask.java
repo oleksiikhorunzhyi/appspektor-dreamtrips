@@ -10,7 +10,7 @@ public class ImageUploadTask extends RealmObject {
     @Index
     private String taskId;
 
-    private String filePath;
+    private String fileUri;
     private float progress;
 
     private String title;
@@ -18,7 +18,25 @@ public class ImageUploadTask extends RealmObject {
     private float latitude;
     private float longitude;
     private Date shotAt;
-    private String originPhotoURL;
+    private String originUrl;
+
+    /**
+     * Temporary for fix RealmDB null object problem
+     */
+    public static ImageUploadTask copy(ImageUploadTask obj) {
+        ImageUploadTask t = new ImageUploadTask();
+        t.setTaskId(obj.getTaskId());
+        t.setFileUri(obj.getFileUri());
+        t.setProgress(obj.getProgress());
+        t.setTitle(obj.getTitle());
+        t.setLocationName(obj.getLocationName());
+        t.setLatitude(obj.getLatitude());
+        t.setLongitude(obj.getLongitude());
+        t.setShotAt(obj.getShotAt());
+        t.setOriginUrl(obj.getOriginUrl());
+        return t;
+    }
+
 
     public String getTaskId() {
         return taskId;
@@ -28,12 +46,12 @@ public class ImageUploadTask extends RealmObject {
         this.taskId = taskId;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getFileUri() {
+        return fileUri;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileUri(String fileUri) {
+        this.fileUri = fileUri;
     }
 
     public float getProgress() {
@@ -84,11 +102,11 @@ public class ImageUploadTask extends RealmObject {
         this.shotAt = shotAt;
     }
 
-    public String getOriginPhotoURL() {
-        return originPhotoURL;
+    public String getOriginUrl() {
+        return originUrl;
     }
 
-    public void setOriginPhotoURL(String originPhotoURL) {
-        this.originPhotoURL = originPhotoURL;
+    public void setOriginUrl(String originUrl) {
+        this.originUrl = originUrl;
     }
 }

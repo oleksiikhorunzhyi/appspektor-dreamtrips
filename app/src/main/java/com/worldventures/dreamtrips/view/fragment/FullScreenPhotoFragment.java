@@ -44,10 +44,11 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        Photo photo = (Photo) getArguments().getSerializable(EXTRA_PHOTO);
+        Object photo = (Object) getArguments().getSerializable(EXTRA_PHOTO);
 
-        getPresentationModel().setPhoto(photo);
-
+        if (photo instanceof Photo) {
+            getPresentationModel().setPhoto((Photo) photo);
+        }
         this.imageLoader.loadImage(getPresentationModel().getPhoto().getImages().getOriginal().getUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override

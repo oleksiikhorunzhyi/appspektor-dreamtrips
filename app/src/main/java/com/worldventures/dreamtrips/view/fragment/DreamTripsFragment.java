@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
+import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -88,6 +89,10 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     public void onEvent(LikeTripEvent likeTripEvent) {
         likeTripEvent.getTrip();
+    }
+
+    public void onEvent(TouchTripEvent event) {
+        getPresentationModel().onItemClick(event.getPosition());
     }
 
     @Override

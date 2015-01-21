@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
@@ -59,7 +60,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
         this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "DreamTrips", R.drawable.ic_dreamtrips));
         this.drawerElements.add(new MenuElement(TripImagesTabsFragment.class, "Trip Images", R.drawable.ic_trip_images));
-        this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "Membership", R.drawable.ic_membership));
+        this.drawerElements.add(new MenuElement(MemberShipFragment.class, "Membership", R.drawable.ic_membership));
         this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
         this.drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
         this.drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));

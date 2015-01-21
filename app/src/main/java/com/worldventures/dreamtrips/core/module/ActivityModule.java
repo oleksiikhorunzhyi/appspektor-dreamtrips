@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.InjectingActivityModule;
-import com.techery.spares.module.SupportModule;
-import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
@@ -20,6 +17,7 @@ import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.presentation.MemberShipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
@@ -34,16 +32,18 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
+import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
+import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
@@ -84,8 +84,10 @@ import dagger.Provides;
                 DummyPresentationModel.class,
                 FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
+                MemberShipPM.class,
 
                 NavigationDrawerFragment.class,
+                MemberShipFragment.class,
                 ProfileFragment.class,
                 DreamTripsFragment.class,
                 TripImagesTabsFragment.class,
@@ -105,6 +107,7 @@ import dagger.Provides;
                 PhotoItem.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,
+                VideoCell.class,
 
                 BaseArrayListAdapter.class,
                 UploadJob.class

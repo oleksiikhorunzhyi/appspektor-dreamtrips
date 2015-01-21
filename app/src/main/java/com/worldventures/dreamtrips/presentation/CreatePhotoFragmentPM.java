@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.techery.spares.service.ServiceActionRunner;
 import com.worldventures.dreamtrips.core.uploader.UploadingService;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -119,16 +120,22 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     }
 
     public void saveAction() {
-        UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
-        action.setFileUri(imageUri.toString());
-        action.setTitle(getTitle());
-        action.setTags(getParsedText(getTags()));
-        action.setLatitude(56);
-        action.setLongitude(92);
-        action.setLocationName("Krasnoyarsk");
-        action.setShotAt(getParsedDateTime(getDate(), getTime()));
-        serviceActionRunner.from(UploadingService.class).run(action);
-        view.end();
+        if (!ValidationUtils.isPhotoTitleValid(getTitle())) {
+            view.showTitleError("Title can't be empty");
+        } else if (imageUri.toString().isEmpty()) {
+            view.informUser("");
+        } else {
+            UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
+            action.setFileUri(imageUri.toString());
+            action.setTitle(getTitle());
+            action.setTags(getParsedText(getTags()));
+            action.setLatitude(56);
+            action.setLongitude(92);
+            action.setLocationName("Krasnoyarsk");
+            action.setShotAt(getParsedDateTime(getDate(), getTime()));
+            serviceActionRunner.from(UploadingService.class).run(action);
+            view.end();
+        }
     }
 
     private ArrayList<String> getParsedText(String tags) {
@@ -182,5 +189,6 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     public interface View extends BasePresentation.View {
         void end();
 
+        void showTitleError(String s);
     }
 }

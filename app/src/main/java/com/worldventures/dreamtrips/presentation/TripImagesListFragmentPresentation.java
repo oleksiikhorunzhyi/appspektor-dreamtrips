@@ -110,14 +110,17 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
             case MEMBER_IMAGES:
                 return new ArrayList<>(dreamTripsApi.getUserPhotos());
             case YOU_SHOULD_BE_HERE:
-                return new ArrayList<>();
+                return new ArrayList<>(dreamTripsApi.getYouShoulBeHerePhotos());
+            case INSPIRE_ME:
+                return new ArrayList<>(dreamTripsApi.getInspirationsPhotos());
+
         }
         return new ArrayList<>();
     }
 
     public void onItemClick(int position) {
         if (photos.get(position) instanceof Photo) {
-     //TODO TO OPEN       this.activityRouter.openFullScreenPhoto(this.photos, position);
+            this.activityRouter.openFullScreenPhoto(this.photos, position);
         }
     }
 

@@ -39,6 +39,12 @@ public interface DreamTripsApi {
     @GET("/api/users/{id}/photos")
     public List<Photo> getMyPhotos(@Path("id") int currentUserId);
 
+    @GET("/api/inspirations")
+    public List<Photo> getInspirationsPhotos();
+
+    @GET("/api/ysbh_photos")
+    public List<Photo> getYouShoulBeHerePhotos();
+
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
     public void flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason, Callback<JsonObject> callback);

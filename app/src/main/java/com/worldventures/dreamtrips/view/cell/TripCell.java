@@ -61,7 +61,7 @@ public class TripCell extends AbstractCell<Trip> {
     @OnClick(R.id.imageViewLike)
     void actionLike() {
         imageViewLike.setImageResource(!getModelObject().isFeatured() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
-        getModelObject().setFeatured(true);
+        getModelObject().setFeatured(!getModelObject().isFeatured());
         getEventBus().post(new LikeTripEvent(getModelObject()));
     }
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F4F4F5"
+        >
+
+        <TextView
+            android:id="@+id/textViewCancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:textColor="#06568D"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/textViewApplyFilter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:textColor="#06568D"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Apply Filter"
+            android:textSize="26sp" />
+    </LinearLayout>
+
+    <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rangeBarDay"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        custom:rangeBar="false"
+        custom:tickEnd="9"
+        custom:tickInterval="3"
+        custom:tickStart="0" />
+
+    <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rangeBarPrice"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        custom:rangeBar="false"
+        custom:tickEnd="500"
+        custom:tickInterval="100"
+        custom:tickStart="100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F4F4F5"
+        >
+
+        <TextView
+            android:id="@+id/textViewDeclineFilter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:textColor="#06568D"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Reset all filters"
+            android:textSize="26sp" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

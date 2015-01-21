@@ -6,9 +6,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.appyvet.rangebar.RangeBar;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -28,6 +35,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_dream_trips)
@@ -43,14 +51,26 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
+    @InjectView(R.id.filtersLayout)
+    LinearLayout filtersLayout;
+
+    @InjectView(R.id.rangeBarDay)
+    RangeBar rangeBarDay;
+
+    @InjectView(R.id.rangeBarPrice)
+    RangeBar rangeBarPrice;
+
     @Inject
     @Global
     EventBus eventBus;
 
     BaseArrayListAdapter<Trip> adapter;
 
+    int lastConfig;
+
     @Override
     public void afterCreateView(View rootView) {
+        lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
@@ -65,6 +85,13 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+        this.rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
+            getPresentationModel().setMaxNights(Integer.valueOf(s2));
+        });
+        this.rangeBarPrice.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
+            getPresentationModel().setMaxPrice(Double.valueOf(s2));
+        });
 
         getPresentationModel().getTripsController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
             @Override
@@ -95,19 +122,50 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         getPresentationModel().onItemClick(event.getPosition());
     }
 
+    @OnClick(R.id.textViewCancel)
+    void cancelClicked() {
+        collapseFilterLayout();
+    }
+
+    @OnClick(R.id.textViewApplyFilter)
+    void applyClicked() {
+        collapseFilterLayout();
+        getPresentationModel().getTripsController().reload();
+    }
+
+    @OnClick(R.id.textViewDeclineFilter)
+    void resetClicked() {
+        collapseFilterLayout();
+        getPresentationModel().resetFilters();
+        getPresentationModel().getTripsController().reload();
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        switch (newConfig.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                this.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                this.recyclerView.requestLayout();
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-                this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                this.recyclerView.requestLayout();
+        if (lastConfig != newConfig.orientation) {
+            lastConfig = newConfig.orientation;
+            switch (newConfig.orientation) {
+                case Configuration.ORIENTATION_LANDSCAPE:
+                    this.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    this.recyclerView.requestLayout();
+                    break;
+                case Configuration.ORIENTATION_PORTRAIT:
+                    this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    this.recyclerView.requestLayout();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_filter:
+                expandFilterLayout();
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -122,11 +180,42 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void onRefresh() {
-        getPresentationModel().getTripsController().reload();
+        getPresentationModel().reload();
     }
 
     @Override
     protected DreamTripsFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DreamTripsFragmentPM(this);
     }
+
+    private void collapseFilterLayout() {
+        YoYo.with(Techniques.SlideOutDown)
+                .duration(500l)
+                .withListener(
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                filtersLayout.setVisibility(View.GONE);
+                            }
+                        }
+                ).playOn(filtersLayout);
+
+    }
+
+    private void expandFilterLayout() {
+        if (filtersLayout.getVisibility() == View.GONE)
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(500l)
+                    .withListener(
+                            new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    filtersLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                    ).playOn(filtersLayout);
+    }
+
 }

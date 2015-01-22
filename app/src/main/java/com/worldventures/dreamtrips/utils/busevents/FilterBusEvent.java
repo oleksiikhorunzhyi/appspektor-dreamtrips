@@ -12,6 +12,7 @@ public class FilterBusEvent {
     private int maxNights;
     private double minPrice;
     private double maxPrice;
+    private boolean reset;
     private List<Integer> acceptedRegions = new ArrayList<>();
 
     public int getMinNights() {
@@ -52,5 +53,13 @@ public class FilterBusEvent {
 
     public void setAcceptedRegions(List<Integer> acceptedRegions) {
         this.acceptedRegions = acceptedRegions;
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset(boolean reset) {
+        this.reset = reset;
     }
 }

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
+import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -49,8 +50,13 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @OnClick(R.id.textViewApplyFilter)
     void applyFilter() {
         getPresentationModel().acceptFilters();
+        ((MainActivity) getActivity()).closeDrawer();
     }
 
+    @OnClick(R.id.textViewResetFilter)
+    void resetFilter() {getPresentationModel().resetFilters();
+        ((MainActivity) getActivity()).closeDrawer();
+    }
     @Override
     public void onResume() {
         super.onResume();

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
+import android.content.Context;
+
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -44,6 +46,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     @Inject
     Prefs prefs;
+
+    @Inject
+    Context context;
 
     @Inject
     @Global
@@ -91,12 +96,16 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void onEvent(FilterBusEvent event) {
-        maxPrice = event.getMaxPrice();
-        minNights = event.getMinNights();
-        minPrice = event.getMinPrice();
-        maxNights = event.getMaxNights();
-        acceptedRegions = event.getAcceptedRegions();
-        fromCash = true;
+        if (event.isReset()) {
+            resetFilters();
+        } else {
+            maxPrice = event.getMaxPrice();
+            minNights = event.getMinNights();
+            minPrice = event.getMinPrice();
+            maxNights = event.getMaxNights();
+            acceptedRegions = event.getAcceptedRegions();
+            fromCash = true;
+        }
         tripsController.reload();
     }
 
@@ -132,6 +141,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         final Callback<JsonObject> callback = new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
+                FileUtils.saveJsonToCache(context, data, FileUtils.TRIPS);
             }
 
             @Override
@@ -165,6 +175,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     public static interface View extends BasePresentation.View {
         void dataSetChanged();
+
         void showErrorMessage();
     }
 

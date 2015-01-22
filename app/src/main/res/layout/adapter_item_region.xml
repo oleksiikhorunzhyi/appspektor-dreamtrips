@@ -16,7 +16,7 @@
 
     <CheckBox
         android:layout_width="wrap_content"
-        android:paddingRight="15dp"
+        android:paddingRight="20dp"
         android:layout_height="wrap_content"
         android:id="@+id/checkBox" />
 

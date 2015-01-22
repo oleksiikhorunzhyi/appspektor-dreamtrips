@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.view.activity.MainActivity;
 
 import java.text.Format;
 
@@ -46,15 +49,47 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     @Inject
     UniversalImageLoader universalImageLoader;
 
+    private Trip trip;
+
     @Override
     protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trip = (Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem menuItem = menu.findItem(R.id.action_like);
+        menuItem.setIcon(trip.isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case (R.id.action_like):
+                item.setIcon(!trip.isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+                trip.setLiked(!trip.isLiked());
+                getPresentationModel().actionLike();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showErrorMessage() {
+        ((DetailTripActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        Trip trip = (Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP);
         getPresentationModel().setTrip(trip);
         getPresentationModel().onCreate();
     }

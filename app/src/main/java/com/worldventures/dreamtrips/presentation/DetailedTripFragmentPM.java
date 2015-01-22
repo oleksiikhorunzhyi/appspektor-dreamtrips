@@ -1,11 +1,16 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Trip;
 
 import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Edward on 19.01.15.
@@ -41,6 +46,27 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setDuration(trip.getDuration());
     }
 
+    public void actionLike() {
+        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                trip.setLiked(!trip.isLiked());
+                view.showErrorMessage();
+            }
+        };
+
+        if (trip.isLiked()) {
+            dreamTripsApi.likeTrip(trip.getId(), callback);
+        } else {
+            dreamTripsApi.unlikeTrio(trip.getId(), callback);
+        }
+    }
+
 
     public static interface View extends BasePresentation.View {
 
@@ -51,5 +77,6 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         void setDesription(String text);
         void loadPhoto(String url);
         void setDuration(int count);
+        void showErrorMessage();
     }
 }

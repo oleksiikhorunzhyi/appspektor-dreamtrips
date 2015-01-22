@@ -126,6 +126,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         filtersFragment.refresh();
     }
 
+    public void closeDrawer() {
+        drawerLayout.closeDrawer(Gravity.END);
+    }
+
     public void disableRightDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
     }

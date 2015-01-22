@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.cell;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -10,6 +11,8 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.utils.busevents.RegionSetChangedEvent;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,6 +27,8 @@ public class RegionCell extends AbstractCell<Region> {
     TextView textViewName;
     @InjectView(R.id.checkBox)
     CheckBox checkBox;
+    @Inject
+    Context context;
 
     public RegionCell(View view) {
         super(view);
@@ -32,6 +37,9 @@ public class RegionCell extends AbstractCell<Region> {
     @Override
     protected void syncUIStateWithModel() {
         textViewName.setText(getModelObject().getName());
+        textViewName.setTextColor(getModelObject().isChecked() ?
+                context.getResources().getColor(R.color.textViewFilterEnabled) :
+                context.getResources().getColor(R.color.textViewFilterDisabled));
         checkBox.setChecked(getModelObject().isChecked());
     }
 

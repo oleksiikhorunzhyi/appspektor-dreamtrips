@@ -67,9 +67,10 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
             if (needUpdate()) {
                 this.regions = this.loadRegion();
 
-                FileUtils.saveJsonToCache(context, this.data, FileUtils.REGIONS);
-
-                prefs.put(Prefs.REGIONS_LOADED, true);
+                if (regions != null && regions.size() > 0) {
+                    FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
+                    prefs.put(Prefs.REGIONS_LOADED, true);
+                }
             } else {
                 this.regions = FileUtils.parseJsonFromCache(context, new TypeToken<List<Region>>() {
                 }.getType(), FileUtils.REGIONS);
@@ -110,6 +111,12 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         filterBusEvent.setMaxPrice(maxPrice);
         filterBusEvent.setMinNights(minNights);
         filterBusEvent.setAcceptedRegions(getAcceptedRegions());
+        eventBus.post(filterBusEvent);
+    }
+
+    public void resetFilters() {
+        FilterBusEvent filterBusEvent = new FilterBusEvent();
+        filterBusEvent.setReset(true);
         eventBus.post(filterBusEvent);
     }
 

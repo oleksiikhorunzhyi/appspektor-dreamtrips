@@ -27,7 +27,6 @@ public class MemberShipPM extends BasePresentation<BasePresentation.View> {
     SharedServicesApi sp;
     private List<Video> objects;
 
-
     public MemberShipPM(View view) {
         super(view);
     }

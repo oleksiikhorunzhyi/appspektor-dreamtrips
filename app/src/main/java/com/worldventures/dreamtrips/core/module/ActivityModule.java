@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.core.module;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.InjectingActivityModule;
-import com.techery.spares.module.SupportModule;
-import com.techery.spares.ui.activity.InjectingActivity;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
@@ -11,6 +13,8 @@ import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
+import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
+import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
@@ -24,6 +28,7 @@ import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.presentation.MemberShipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
@@ -42,18 +47,23 @@ import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
+import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
+import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
+import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
@@ -101,6 +111,12 @@ import dagger.Provides;
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
+                MemberShipPM.class,
+                BucketTabsFragmentPM.class,
+                BucketListFragmentPM.class,
+
+                NavigationDrawerFragment.class,
+                MemberShipFragment.class,
                 ProfileFragment.class,
                 DreamTripsFragment.class,
                 DetailedTripFragment.class,
@@ -113,6 +129,8 @@ import dagger.Provides;
                 FacebookPhotoFragment.class,
                 StaticInfoFragment.FAQFragment.class,
                 StaticInfoFragment.TermsAndConditionsFragment.class,
+                BucketTabsFragment.class,
+                BucketListFragment.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,
@@ -124,6 +142,8 @@ import dagger.Provides;
                 PhotoCell.class,
                 PhotoUploadCell.class,
                 FiltersCell.class,
+                VideoCell.class,
+                BucketItemCell.class,
 
                 BaseArrayListAdapter.class,
                 UploadJob.class
@@ -153,6 +173,17 @@ public class ActivityModule {
     @Provides
     public FragmentCompass provideFragmentCompass() {
         return new FragmentCompass(baseActivity);
+    }
+
+    @Provides
+    SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
+        return new SimpleKeyValueStorage(preferences);
+    }
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
 }

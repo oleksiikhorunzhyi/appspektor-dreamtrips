@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.model;
 
+import com.google.common.collect.Collections2;
+
 import java.util.List;
 
 public class Trip extends BaseEntity {
@@ -16,6 +18,7 @@ public class Trip extends BaseEntity {
     Location location;
     Schedule dates;
     Region region;
+    List<TripImage> images;
 
     public String getName() {
         return name;
@@ -120,4 +123,17 @@ public class Trip extends BaseEntity {
     public void setRegion(Region region) {
         this.region = region;
     }
+
+    public String getImageUrl(String type) {
+        String url = null;
+        if (images != null) {
+            for (TripImage image : images) {
+                if (image.getType().equals(type)) {
+                    url =  image.getUrl();
+                }
+            }
+        }
+        return url;
+    }
+
 }

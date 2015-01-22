@@ -5,6 +5,7 @@ public class TripImage extends BaseEntity {
     String description;
     String url;
     String type;
+    String original_url;
 
     public String getDescription() {
         return description;
@@ -28,5 +29,13 @@ public class TripImage extends BaseEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getOriginalUrl() {
+        return original_url;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.original_url = originalUrl;
     }
 }

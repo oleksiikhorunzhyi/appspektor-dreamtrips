@@ -51,9 +51,8 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
-        //TODO return original url
         imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
-        universalImageLoader.loadImage("http://miriadna.com/desctopwalls/images/max/Green-nature.jpg",
+        universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
                 null, new SimpleImageLoadingListener());
     }
@@ -75,5 +74,6 @@ public class TripCell extends AbstractCell<Trip> {
         textViewName.setText("");
         textViewPlace.setText("");
         textViewPrice.setText("");
+        imageViewTripImage.setImageBitmap(null);
     }
 }

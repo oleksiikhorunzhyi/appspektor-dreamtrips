@@ -1,12 +1,15 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -33,6 +36,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @InjectView(R.id.imageViewTripImage)
     ImageView imageViewTripImage;
+    @InjectView(R.id.progressBarImage)
+    ProgressBar progressBarImage;
     @InjectView(R.id.textViewName)
     TextView textViewName;
     @InjectView(R.id.textViewPlace)
@@ -121,10 +126,19 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void loadPhoto(String url) {
-        //TODO replace with normal url
-        universalImageLoader.loadImage("http://miriadna.com/desctopwalls/images/max/Green-nature.jpg",
+        universalImageLoader.loadImage(trip.getImageUrl("NORMAL"),
                 this.imageViewTripImage,
-                null, new SimpleImageLoadingListener());
+                null, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        progressBarImage.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        progressBarImage.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @Override

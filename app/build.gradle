@@ -20,8 +20,8 @@ android {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 1
-        versionName "0.1"
+        versionCode 3
+        versionName "0.1.2"
 
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'

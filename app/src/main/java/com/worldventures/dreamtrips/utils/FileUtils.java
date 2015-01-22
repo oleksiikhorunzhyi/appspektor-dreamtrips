@@ -19,11 +19,15 @@ import timber.log.Timber;
  */
 public class FileUtils {
 
-    public static void saveJsonToCache(Context context, Object object) {
+    public static final String TRIPS = "trips.json";
+    public static final String REGIONS = "regions.json";
+
+
+    public static void saveJsonToCache(Context context, Object object, String name) {
         Gson gson = new Gson();
         String jsonFile = gson.toJson(object);
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("trips.json",
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(name,
                     Context.MODE_PRIVATE));
             outputStreamWriter.write(jsonFile);
             outputStreamWriter.close();
@@ -32,12 +36,12 @@ public class FileUtils {
         }
     }
 
-    public static <T> T parseJsonFromCache(Context context, Type type) {
+    public static <T> T parseJsonFromCache(Context context, Type type, String fileName) {
         T result = null;
         Gson gson = new Gson();
 
         try {
-            InputStream inputStream = context.openFileInput("trips.json");
+            InputStream inputStream = context.openFileInput(fileName);
 
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);

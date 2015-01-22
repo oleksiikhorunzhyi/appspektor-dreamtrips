@@ -7,6 +7,7 @@ public class Trip extends BaseEntity {
     String description;
     boolean featured;
     boolean rewarded;
+    boolean liked;
     int duration;
     boolean price_available;
     boolean available;
@@ -14,6 +15,7 @@ public class Trip extends BaseEntity {
     Price price;
     Location location;
     Schedule dates;
+    Region region;
 
     public String getName() {
         return name;
@@ -101,5 +103,21 @@ public class Trip extends BaseEntity {
 
     public void setAvailabilityDates(Schedule availabilityDates) {
         this.dates = availabilityDates;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }

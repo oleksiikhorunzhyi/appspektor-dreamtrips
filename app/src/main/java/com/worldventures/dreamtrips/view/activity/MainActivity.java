@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
@@ -33,6 +35,9 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     @InjectView(R.id.container)
     View container;
+
+    @InjectView(R.id.drawer)
+    DrawerLayout drawerLayout;
 
     private static class MenuElement {
         final Class<? extends Fragment> fragmentClass;
@@ -77,6 +82,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), this.toolbar);
+        disableRightDrawer();
     }
 
     @Override
@@ -111,4 +117,16 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
     }
+
+    public void openRightDrawer() {
+        drawerLayout.openDrawer(Gravity.END);
+        FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
+        filtersFragment.refresh();
+    }
+
+    public void disableRightDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+    }
+
+
 }

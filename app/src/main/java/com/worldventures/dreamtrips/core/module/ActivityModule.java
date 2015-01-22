@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
+import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
@@ -38,6 +39,8 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.cell.FiltersCell;
+import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
@@ -48,6 +51,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
@@ -93,8 +97,10 @@ import dagger.Provides;
                 DummyPresentationModel.class,
                 FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
+                FiltersFragmentPM.class,
 
                 NavigationDrawerFragment.class,
+                FiltersFragment.class,
                 ProfileFragment.class,
                 DreamTripsFragment.class,
                 DetailedTripFragment.class,
@@ -112,10 +118,12 @@ import dagger.Provides;
                 FacebookAlbumItem.class,
                 FacebookPhotoItem.class,
                 NavigationDrawerPM.class,
+                RegionCell.class,
                 TripCell.class,
                 PhotoItem.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,
+                FiltersCell.class,
 
                 BaseArrayListAdapter.class,
                 UploadJob.class

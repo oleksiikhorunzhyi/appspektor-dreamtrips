@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="15dp"
+            android:text="DURATION (NIGHTS)"
+            android:textColor="@color/myNavigationColor"
+             />
+
+        <com.appyvet.rangebar.RangeBar
+            android:id="@+id/rangeBarDay"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            custom:pinColor="#54B5FC"
+            custom:connectingLineColor="#54B5FC"
+            custom:selectorColor="#54B5FC"
+            custom:rangeBar="true"
+            custom:tickEnd="9"
+            custom:tickInterval="3"
+            custom:tickStart="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:layout_gravity="bottom"
+            android:paddingTop="15dp"
+            android:text="0"
+            android:textColor="@color/myNavigationColor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="25dp"
+            android:layout_gravity="bottom|end"
+            android:paddingTop="15dp"
+            android:text="9+"
+            android:textColor="@color/myNavigationColor"
+            android:textSize="14sp" />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#CCCCCC" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="15dp"
+            android:text="PRICE ($)"
+            android:textColor="@color/myNavigationColor"
+             />
+
+        <com.appyvet.rangebar.RangeBar
+            android:id="@+id/rangeBarPrice"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            custom:pinColor="#54B5FC"
+            custom:connectingLineColor="#54B5FC"
+            custom:selectorColor="#54B5FC"
+            custom:tickEnd="500"
+            custom:tickInterval="100"
+            custom:tickStart="100" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:layout_gravity="bottom"
+            android:paddingTop="15dp"
+            android:text="100"
+            android:textColor="@color/myNavigationColor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="15dp"
+            android:layout_gravity="bottom|end"
+            android:paddingTop="15dp"
+            android:text="500+"
+            android:textColor="@color/myNavigationColor"
+            android:textSize="14sp" />
+
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#CCCCCC" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="REGION"
+            android:textColor="@color/myNavigationColor"
+             />
+
+        <TextView
+            android:id="@+id/textViewSelectAll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            android:paddingLeft="20dp"
+            android:text="SELECT ALL"
+             />
+
+
+        <CheckBox
+            android:id="@+id/checkBoxSelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingRight="15dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -52,7 +52,7 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
         //TODO return original url
-        imageViewLike.setImageResource(getModelObject().isFeatured() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+        imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
         universalImageLoader.loadImage("http://miriadna.com/desctopwalls/images/max/Green-nature.jpg",
                 this.imageViewTripImage,
                 null, new SimpleImageLoadingListener());
@@ -60,8 +60,8 @@ public class TripCell extends AbstractCell<Trip> {
 
     @OnClick(R.id.imageViewLike)
     void actionLike() {
-        imageViewLike.setImageResource(!getModelObject().isFeatured() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
-        getModelObject().setFeatured(!getModelObject().isFeatured());
+        imageViewLike.setImageResource(!getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+        getModelObject().setLiked(!getModelObject().isLiked());
         getEventBus().post(new LikeTripEvent(getModelObject()));
     }
 

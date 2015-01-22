@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.User;
@@ -36,6 +37,9 @@ public interface DreamTripsApi {
     @GET("/api/trips")
     public List<Trip> getTrips();
 
+    @GET("/api/regions")
+    public List<Region> getRegions();
+
     @GET("/api/users/{id}/photos")
     public List<Photo> getMyPhotos(@Path("id") int currentUserId);
 
@@ -58,4 +62,11 @@ public interface DreamTripsApi {
     @POST("/api/photos")
     @Multipart
     public void postPhoto(@Body Photo photo);
+
+    @POST("/api/trips/{id}/like")
+    public void likeTrip(@Path("id") int photoId, Callback<JsonObject> callback);
+
+    @DELETE("/api/trips/{id}/like")
+    public void unlikeTrio(@Path("id") int photoId, Callback<JsonObject> callback);
+
 }

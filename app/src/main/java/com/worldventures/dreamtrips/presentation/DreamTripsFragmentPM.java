@@ -1,13 +1,18 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.google.common.collect.Collections2;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
+import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
+import com.worldventures.dreamtrips.view.activity.MainActivity;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -16,6 +21,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Edward on 19.01.15.
@@ -35,12 +45,22 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Inject
     Prefs prefs;
 
+    @Inject
+    @Global
+    EventBus eventBus;
+
     List<Trip> data;
+    List<Trip> filteredData;
     CollectionController<Trip> tripsController;
 
     private boolean loadFromApi;
+    private boolean fromCash;
+
     private double maxPrice = Double.MAX_VALUE;
+    private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
+    private int minNights = 0;
+    private List<Integer> acceptedRegions;
 
     public DreamTripsFragmentPM(View view) {
         super(view);
@@ -50,20 +70,34 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     public void init() {
         super.init();
         this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate() || loadFromApi) {
+            if (!fromCash && needUpdate() || loadFromApi) {
                 this.loadFromApi = false;
                 this.data = this.loadTrips();
 
-                FileUtils.saveJsonToCache(context, this.data);
+                FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
 
                 prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
             } else {
                 this.data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-                }.getType());
+                }.getType(), FileUtils.TRIPS);
+                fromCash = false;
             }
 
-            return performFiltering(data);
+            filteredData = performFiltering(data);
+
+            return filteredData;
         });
+        eventBus.register(this);
+    }
+
+    public void onEvent(FilterBusEvent event) {
+        maxPrice = event.getMaxPrice();
+        minNights = event.getMinNights();
+        minPrice = event.getMinPrice();
+        maxNights = event.getMaxNights();
+        acceptedRegions = event.getAcceptedRegions();
+        fromCash = true;
+        tripsController.reload();
     }
 
     public CollectionController<Trip> getTripsController() {
@@ -77,22 +111,43 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     private List<Trip> performFiltering(List<Trip> data) {
         List<Trip> filteredTrips = new ArrayList<>();
-        filteredTrips.addAll(Collections2.filter(data, (input) -> input.getPrice().getAmount() <= maxPrice
-                && input.getDuration() <= maxNights));
+        filteredTrips.addAll(Collections2.filter(data, (input) ->
+                input.getPrice().getAmount() <= maxPrice
+                        && input.getPrice().getAmount() >= minPrice
+                        && input.getDuration() >= minNights
+                        && input.getDuration() <= maxNights
+                        && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
         return filteredTrips;
     }
 
     public void resetFilters() {
         this.maxNights = Integer.MAX_VALUE;
         this.maxPrice = Double.MAX_VALUE;
+        this.minPrice = 0;
+        this.minNights = 0;
+        this.acceptedRegions = null;
     }
 
-    public void setMaxPrice(double maxPrice) {
-        this.maxPrice = maxPrice;
-    }
+    public void onItemLike(Trip trip) {
+        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject, Response response) {
+            }
 
-    public void setMaxNights(int maxNights) {
-        this.maxNights = maxNights;
+            @Override
+            public void failure(RetrofitError error) {
+                trip.setLiked(!trip.isLiked());
+                view.dataSetChanged();
+                view.showErrorMessage();
+            }
+        };
+
+        if (trip.isLiked()) {
+            dreamTripsApi.likeTrip(trip.getId(), callback);
+        } else {
+            dreamTripsApi.unlikeTrio(trip.getId(), callback);
+        }
+
     }
 
     public List<Trip> loadTrips() {
@@ -100,7 +155,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void onItemClick(int position) {
-        activityRouter.openTripDetails(data.get(position));
+        activityRouter.openTripDetails(filteredData.get(position));
     }
 
     public boolean needUpdate() {
@@ -109,6 +164,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public static interface View extends BasePresentation.View {
+        void dataSetChanged();
+        void showErrorMessage();
     }
 
 }

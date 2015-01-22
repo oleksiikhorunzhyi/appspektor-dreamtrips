@@ -51,15 +51,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    @InjectView(R.id.filtersLayout)
-    LinearLayout filtersLayout;
-
-    @InjectView(R.id.rangeBarDay)
-    RangeBar rangeBarDay;
-
-    @InjectView(R.id.rangeBarPrice)
-    RangeBar rangeBarPrice;
-
     @Inject
     @Global
     EventBus eventBus;
@@ -86,13 +77,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        this.rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
-            getPresentationModel().setMaxNights(Integer.valueOf(s2));
-        });
-        this.rangeBarPrice.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
-            getPresentationModel().setMaxPrice(Double.valueOf(s2));
-        });
-
         getPresentationModel().getTripsController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
             @Override
             public void onStartLoading() {
@@ -107,37 +91,29 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
             @Override
             public void onError(Throwable throwable) {
                 refreshLayout.setRefreshing(false);
-                ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+                showErrorMessage();
             }
         });
 
         eventBus.register(this);
     }
 
+    @Override
+    public void dataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showErrorMessage() {
+        ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+    }
+
     public void onEvent(LikeTripEvent likeTripEvent) {
-        likeTripEvent.getTrip();
+        getPresentationModel().onItemLike(likeTripEvent.getTrip());
     }
 
     public void onEvent(TouchTripEvent event) {
         getPresentationModel().onItemClick(event.getPosition());
-    }
-
-    @OnClick(R.id.textViewCancel)
-    void cancelClicked() {
-        collapseFilterLayout();
-    }
-
-    @OnClick(R.id.textViewApplyFilter)
-    void applyClicked() {
-        collapseFilterLayout();
-        getPresentationModel().getTripsController().reload();
-    }
-
-    @OnClick(R.id.textViewDeclineFilter)
-    void resetClicked() {
-        collapseFilterLayout();
-        getPresentationModel().resetFilters();
-        getPresentationModel().getTripsController().reload();
     }
 
     @Override
@@ -162,7 +138,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                expandFilterLayout();
+                ((MainActivity) getActivity()).openRightDrawer();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -188,34 +164,5 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         return new DreamTripsFragmentPM(this);
     }
 
-    private void collapseFilterLayout() {
-        YoYo.with(Techniques.SlideOutDown)
-                .duration(500l)
-                .withListener(
-                        new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                filtersLayout.setVisibility(View.GONE);
-                            }
-                        }
-                ).playOn(filtersLayout);
-
-    }
-
-    private void expandFilterLayout() {
-        if (filtersLayout.getVisibility() == View.GONE)
-            YoYo.with(Techniques.SlideInUp)
-                    .duration(500l)
-                    .withListener(
-                            new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    filtersLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                    ).playOn(filtersLayout);
-    }
 
 }

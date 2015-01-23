@@ -184,7 +184,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
     }
 
-    //don't use of get prefix
+    //don't use of get PREFIX
     public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
     }

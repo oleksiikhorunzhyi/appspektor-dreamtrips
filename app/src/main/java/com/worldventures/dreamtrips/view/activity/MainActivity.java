@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,8 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
@@ -119,7 +122,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
     }
-
     public void openRightDrawer() {
         drawerLayout.openDrawer(Gravity.END);
         FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
@@ -134,5 +136,25 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupToolbarLayout();
+        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
+        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
+    }
+
+    private void setupToolbarLayout() {
+        if (toolbar != null) {
+            int size = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            toolbar.setMinimumHeight(size);
+            ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
+            lp.height = size;
+            toolbar.setLayoutParams(lp);
+            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
+
+        }
+    }
 
 }

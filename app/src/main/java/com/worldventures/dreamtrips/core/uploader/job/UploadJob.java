@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingAPI;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 
 import java.io.File;
 import java.util.Locale;
@@ -89,32 +88,18 @@ public class UploadJob extends Job {
                 double l = byteTransferred / file.length() * 100;
                 if (l > lastPercent + 5 || l > 99) {
                     lastPercent = (int) l;
-                    eventBus.post(new UploadProgressUpdateEvent(taskId, (int) l));
-                    Log.d(TAG, "Progress:" + msg.what);
-                    Log.d(TAG, "--------:" + l);
                 }
                 return false;
             }
         });
 
-        ProgressListener progressListener = new ProgressListener() {
-
-            @Override
-            public void progressChanged(ProgressEvent progressEvent) {
-                mainHandler.sendEmptyMessage((int) progressEvent.getBytesTransferred());
-            }
-        };
+        ProgressListener progressListener = progressEvent -> mainHandler.sendEmptyMessage((int) progressEvent.getBytesTransferred());
 
         uploadHandler.addProgressListener(progressListener);
 
         UploadResult uploadResult = uploadHandler.waitForUploadResult();
 
-        repository.transaction(new Repository.TransactionCallback() {
-            @Override
-            public void consume(Realm realm) {
-                uploadTask.setOriginUrl(UploadJob.this.getURLFromUploadResult(uploadResult));
-            }
-        });
+        repository.transaction(realm -> uploadTask.setOriginUrl(UploadJob.this.getURLFromUploadResult(uploadResult)));
 
         Photo photo = uploadingAPI.uploadTripPhoto(ImageUploadTask.copy(uploadTask));
 

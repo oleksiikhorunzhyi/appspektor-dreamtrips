@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +14,8 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -54,9 +54,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         eventBus.register(this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
 
-        this.recyclerView.setLayoutManager(layoutManager);
+        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
@@ -90,6 +89,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                 refreshLayout.setRefreshing(false);
             }
         });
+
     }
 
     @Override
@@ -104,9 +104,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     }
 
 
-    public void onEvent(UploadProgressUpdateEvent event) {
-        //   getPresentationModel().getAdapterController().reload();
-        Log.i("EVENT", event.getProgress() + "");
+    public void onEvent(ScreenOrientationChangeEvent event) {
+        boolean landscape = event.isLandscape();
+        setupLayoutManager(landscape);
+    }
+
+    private void setupLayoutManager(boolean landscape) {
+        int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+        this.recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -118,11 +124,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     protected TripImagesListFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return new TripImagesListFragmentPresentation(this, type);
-    }
-
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
     }
 
     public static enum Type {

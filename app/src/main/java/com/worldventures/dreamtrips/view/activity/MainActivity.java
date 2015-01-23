@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,8 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
@@ -105,5 +108,22 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
+        if (toolbar != null) {
+            int size = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            toolbar.setMinimumHeight(size);
+            ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
+            lp.height = size;
+            toolbar.setLayoutParams(lp);
+            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
+
+        }
+        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
     }
 }

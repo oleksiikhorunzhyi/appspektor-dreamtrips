@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.utils.ViewUtils;
@@ -71,13 +74,6 @@ public abstract class BaseActivity extends InjectingActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
-        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
     }
 }
 

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
-import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
 import butterknife.InjectView;
@@ -34,8 +34,8 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        int screenHeight = ViewIUtils.getScreenHeight(getActivity());
-        int statusBarHeight = ViewIUtils.getStatusBarHeight(getActivity());
+        int screenHeight = ViewUtils.getScreenHeight(getActivity());
+        int statusBarHeight = ViewUtils.getStatusBarHeight(getActivity());
         ivBg.getLayoutParams().height = screenHeight - statusBarHeight;
     }
 

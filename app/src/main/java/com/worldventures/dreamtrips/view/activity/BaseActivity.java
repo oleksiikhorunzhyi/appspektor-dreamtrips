@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
@@ -7,12 +8,13 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
 import org.robobinding.binder.BinderFactoryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -69,6 +71,13 @@ public abstract class BaseActivity extends InjectingActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
+        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
     }
 }
 

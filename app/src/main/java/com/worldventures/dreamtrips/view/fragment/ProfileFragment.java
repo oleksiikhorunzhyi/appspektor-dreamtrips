@@ -17,7 +17,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
@@ -58,7 +58,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         super.afterCreateView(rootView);
 
         ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
-        lp.height = ViewIUtils.getScreenWidth(getActivity());
+        lp.height = ViewUtils.getScreenWidth(getActivity());
     }
 
     @Override

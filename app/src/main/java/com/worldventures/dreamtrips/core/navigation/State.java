@@ -34,6 +34,7 @@ public enum State {
     BUCKET_LIST(BucketTabsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),
     FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, ""),
     TERMS_AND_CONDITIONS(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions),;
 
     private static ArrayList<State> menuItemsArray;

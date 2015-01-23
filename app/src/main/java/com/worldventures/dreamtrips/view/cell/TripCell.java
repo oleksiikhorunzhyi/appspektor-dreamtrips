@@ -37,6 +37,8 @@ public class TripCell extends AbstractCell<Trip> {
     TextView textViewPrice;
     @InjectView(R.id.textViewDate)
     TextView textViewDate;
+    @InjectView(R.id.textViewPoints)
+    TextView textViewPoints;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -51,10 +53,11 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
+        textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
         imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
         universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
-                null, new SimpleImageLoadingListener());
+                UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
     }
 
     @OnClick(R.id.imageViewLike)

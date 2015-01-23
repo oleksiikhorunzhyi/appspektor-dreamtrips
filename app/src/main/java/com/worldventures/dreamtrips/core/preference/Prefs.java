@@ -12,6 +12,7 @@ public class Prefs extends SimpleKeyValueStorage {
 
     public static final String LAST_SYNC = "LAST_SYNC";
     public static final String REGIONS_LOADED = "REGIONS_LOADED";
+    public static final String ACTIVITIES_LOADED = "ACTIVITIES_LOADED";
 
     public Prefs(SharedPreferences preferences) {
         super(preferences);

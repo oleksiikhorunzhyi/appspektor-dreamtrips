@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/web_view"
+    <ImageView
+        android:id="@+id/imageViewTripImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_trip_image_placeholder" />
 
     <ProgressBar
-        android:id="@+id/progressBarWeb"
+        android:id="@+id/progressBarImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_gravity="center"/>
 
 </FrameLayout>

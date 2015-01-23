@@ -2,37 +2,58 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:clipToPadding="false"
     android:background="@color/white"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tripImageHeightDetailed">
 
-                <ImageView
-                    android:id="@+id/imageViewTripImage"
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPagerGallery"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_trip_image_placeholder" />
+                    android:layout_height="match_parent" />
 
-                <ProgressBar
-                    android:id="@+id/progressBarImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_actionbar"
+                    style="@style/ToolBarStyle"
+                    android:layout_width="match_parent" />
+
+                <FrameLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="bottom"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_points_badge" />
+
+                    <TextView
+                        android:id="@+id/textViewPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+
+                </FrameLayout>
+
+
             </FrameLayout>
 
             <LinearLayout
@@ -62,8 +83,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_location"
-                        android:drawableStart="@drawable/ic_location"
                         android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_location"
                         android:text="Kilkenny Island"
                         android:textColor="@color/tripPlaceColor" />
                 </LinearLayout>
@@ -82,9 +103,10 @@
 
             </LinearLayout>
 
-            <View android:layout_width="match_parent"
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="@drawable/trip_details_shadow"/>
+                android:background="@drawable/trip_details_shadow" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,20 +116,20 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textViewDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jul 10 - 15 2015"
-                        android:textStyle="bold"
                         android:background="@drawable/ic_stripe"
                         android:padding="@dimen/tripDetailPanelPadding"
+                        android:text="Jul 10 - 15 2015"
                         android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -115,11 +137,10 @@
                     android:id="@+id/textViewScheduleDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/tripDetailPanelPadding"
                     android:fontFamily="sans-serif-light"
                     android:gravity="end"
-                    android:textColor="@color/tripNameColor"
-                    />
+                    android:padding="@dimen/tripDetailPanelPadding"
+                    android:textColor="@color/tripNameColor" />
 
 
             </LinearLayout>
@@ -128,35 +149,42 @@
                 android:id="@+id/textViewDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/tripDetailPanelPadding"
                 android:background="@color/tripDescription"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/tripNameColor"
-                />
+                android:padding="@dimen/tripDetailPanelPadding"
+                android:textColor="@color/tripNameColor" />
 
             <ProgressBar
+                android:id="@+id/progressBarDetailLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                />
+                android:layout_gravity="center" />
+
+            <com.linearlistview.LinearListView
+                android:id="@+id/listViewContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:showDividers="none" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="64dp"/>
+                android:layout_height="64dp" />
 
         </LinearLayout>
 
     </ScrollView>
 
     <TextView
+        android:id="@+id/textViewBookIt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tripButtonColor"
         android:layout_gravity="bottom"
+        android:background="@color/tripButtonColor"
         android:gravity="center"
-        android:textSize="22sp"
         android:padding="15dp"
+        android:text="Book It!"
         android:textColor="@color/white"
-        android:text="Book It!"/>
+        android:textSize="22sp" />
 
 </FrameLayout>

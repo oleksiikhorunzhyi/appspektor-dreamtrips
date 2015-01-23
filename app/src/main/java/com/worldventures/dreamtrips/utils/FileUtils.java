@@ -21,6 +21,7 @@ public class FileUtils {
 
     public static final String TRIPS = "trips.json";
     public static final String REGIONS = "regions.json";
+    public static final String ACTIVITIES = "activities.json";
 
 
     public static void saveJsonToCache(Context context, Object object, String name) {

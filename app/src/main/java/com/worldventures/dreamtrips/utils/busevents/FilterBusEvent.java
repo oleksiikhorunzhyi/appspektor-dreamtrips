@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
+import com.worldventures.dreamtrips.core.model.Activity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,9 @@ public class FilterBusEvent {
     private double minPrice;
     private double maxPrice;
     private boolean reset;
+    private boolean showSoldOut;
     private List<Integer> acceptedRegions = new ArrayList<>();
+    private List<Activity> acceptedActivities = new ArrayList<>();
 
     public int getMinNights() {
         return minNights;
@@ -55,11 +59,27 @@ public class FilterBusEvent {
         this.acceptedRegions = acceptedRegions;
     }
 
+    public List<Activity> getAcceptedActivities() {
+        return acceptedActivities;
+    }
+
+    public void setAcceptedActivities(List<Activity> acceptedActivities) {
+        this.acceptedActivities = acceptedActivities;
+    }
+
     public boolean isReset() {
         return reset;
     }
 
     public void setReset(boolean reset) {
         this.reset = reset;
+    }
+
+    public boolean isShowSoldOut() {
+        return showSoldOut;
+    }
+
+    public void setShowSoldOut(boolean showSoldOut) {
+        this.showSoldOut = showSoldOut;
     }
 }

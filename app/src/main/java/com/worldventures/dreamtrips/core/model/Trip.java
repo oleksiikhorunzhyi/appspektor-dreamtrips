@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.model;
 
 import com.google.common.collect.Collections2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Trip extends BaseEntity {
@@ -19,6 +20,7 @@ public class Trip extends BaseEntity {
     Schedule dates;
     Region region;
     List<TripImage> images;
+    List<Activity> activities;
 
     public String getName() {
         return name;
@@ -129,11 +131,25 @@ public class Trip extends BaseEntity {
         if (images != null) {
             for (TripImage image : images) {
                 if (image.getType().equals(type)) {
-                    url =  image.getUrl();
+                    url =  image.getOriginalUrl();
                 }
             }
         }
         return url;
     }
 
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public List<TripImage> getImages() {
+        return images;
+    }
+
+    public List<Object> getFilteredImages() {
+        List<Object> filteredImages = new ArrayList<>();
+        filteredImages.addAll(Collections2.filter(images, (input) ->
+                input.getType().equals("RETINA")));
+        return filteredImages;
+    }
 }

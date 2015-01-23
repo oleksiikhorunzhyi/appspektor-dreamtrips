@@ -5,10 +5,16 @@
     tools:context="com.worldventures.dreamtrips.view.activity.DetailTripActivity"
     >
 
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_actionbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent" />
 
 
 </RelativeLayout>

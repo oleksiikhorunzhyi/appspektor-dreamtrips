@@ -93,7 +93,7 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
 
             @Override
             public void failure(RetrofitError error) {
-
+                view.showLoginErrorMessage();
             }
         });
     }

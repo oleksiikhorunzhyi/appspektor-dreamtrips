@@ -1,10 +1,19 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.ContentItem;
+import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.core.model.TripDetails;
+import com.worldventures.dreamtrips.core.model.TripImage;
 
+import org.json.JSONObject;
 import org.robobinding.annotation.PresentationModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,7 +31,9 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     @Inject
     DreamTripsApi dreamTripsApi;
 
-    Trip trip;
+    private Trip trip;
+    private List<Object> filteredImages;
+    private List<TripImage> images;
 
     public DetailedTripFragmentPM(View view) {
         super(view);
@@ -34,6 +45,11 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
 
     public void setTrip(Trip trip) {
         this.trip = trip;
+        images = trip.getImages();
+        filteredImages = new ArrayList<>();
+        filteredImages.addAll(Collections2.filter(images, (input) ->
+                input.getType().equals("RETINA")));
+
     }
 
     public void onCreate() {
@@ -42,8 +58,32 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setDesription(trip.getDescription());
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
-        view.loadPhoto("");
         view.setDuration(trip.getDuration());
+        view.setRedemption(String.valueOf(trip.getRewardsLimit()));
+        loadTripDetails();
+    }
+
+    public List<Object> getFilteredImages() {
+        return filteredImages;
+    }
+
+    public void actionBookIt() {
+        activityRouter.openBookItActivity(trip.getId());
+    }
+
+    private void loadTripDetails() {
+        Callback<TripDetails> callback = new Callback<TripDetails>() {
+            @Override
+            public void success(TripDetails tripDetails, Response response) {
+                view.setContent(tripDetails.getContent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                view.showErrorMessage();
+            }
+        };
+        dreamTripsApi.getDetails(trip.getId(), callback);
     }
 
     public void actionLike() {
@@ -67,16 +107,21 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         }
     }
 
+    public void onItemClick(int position) {
+        if (filteredImages.get(position) instanceof TripImage) {
+            this.activityRouter.openFullScreenTrip(this.filteredImages, position);
+        }
+    }
 
     public static interface View extends BasePresentation.View {
-
+        void setContent(List<ContentItem> contentItems);
         void setName(String text);
         void setLocation(String text);
         void setPrice(String text);
         void setDates(String text);
         void setDesription(String text);
-        void loadPhoto(String url);
         void setDuration(int count);
         void showErrorMessage();
+        void setRedemption(String count);
     }
 }

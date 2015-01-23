@@ -19,9 +19,6 @@ import butterknife.InjectView;
 public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTripActivityPM> {
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
-    @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-
     @Override
     protected DetailTripActivityPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailTripActivityPM(this);
@@ -30,11 +27,6 @@ public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-        toolbar.getBackground().setAlpha(0);
     }
 
     @Override

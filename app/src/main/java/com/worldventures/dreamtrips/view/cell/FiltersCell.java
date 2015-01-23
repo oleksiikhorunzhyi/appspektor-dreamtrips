@@ -40,14 +40,20 @@ public class FiltersCell extends AbstractCell<FilterModel>{
 
     @Override
     protected void syncUIStateWithModel() {
+        this.rangeBarDay.setRangePinsByIndices(getModelObject().getIndexLeftDuration(), getModelObject().getIndexRightDuration());
+        this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
         this.rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
             minNights = Integer.valueOf(s);
             maxNights = i2 == (rangeBarDay.getTickCount() - 1) ? Integer.MAX_VALUE : Integer.valueOf(s2);
+            getModelObject().setIndexLeftDuration(i);
+            getModelObject().setIndexRightDuration(i2);
             getEventBus().post(new RangeBarDurationEvent(minNights, maxNights));
         });
         this.rangeBarPrice.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
             minPrice = Double.valueOf(s);
             maxPrice = i2 == (rangeBarPrice.getTickCount() - 1) ? Double.MAX_VALUE : Double.valueOf(s2);
+            getModelObject().setIndexLeftPrice(i);
+            getModelObject().setIndexRightPrice(i2);
             getEventBus().post(new RangeBarPriceEvent(minPrice, maxPrice));
         });
         checkBoxSelectAll.setChecked(getModelObject().isChecked());

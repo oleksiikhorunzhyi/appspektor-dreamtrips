@@ -9,13 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.appyvet.rangebar.RangeBar;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -25,6 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
+import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
 import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.cell.TripCell;
@@ -142,6 +136,11 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.textViewResetFilters)
+    public void resetFilters() {
+        getEventBus().post(new ResetFiltersEvent());
     }
 
     @Override

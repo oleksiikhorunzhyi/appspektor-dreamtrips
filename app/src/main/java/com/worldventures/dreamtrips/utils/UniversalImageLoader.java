@@ -50,6 +50,17 @@ public class UniversalImageLoader {
             .displayer(new FadeInBitmapDisplayer(300))
             .bitmapConfig(Bitmap.Config.RGB_565)
             .build();
+    public static final DisplayImageOptions OP_LIST_SCREEN = new DisplayImageOptions.Builder()
+            .cacheOnDisk(true)
+            .cacheInMemory(false)
+            .resetViewBeforeLoading(true)
+            .showImageForEmptyUri(R.drawable.ic_trip_image_placeholder)
+            .showImageOnFail(R.drawable.ic_trip_image_placeholder)
+            .showImageOnLoading(R.drawable.ic_trip_image_placeholder)
+            .displayer(new FadeInBitmapDisplayer(300))
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
 
     public UniversalImageLoader() {
     }

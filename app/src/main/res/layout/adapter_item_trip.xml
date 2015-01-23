@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/itemLayout"
     android:orientation="vertical">
 
     <FrameLayout
@@ -26,38 +26,60 @@
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jul 10 - 15 2015"
-                android:textStyle="bold"
                 android:background="@drawable/ic_stripe"
                 android:padding="@dimen/tripDetailPanelPadding"
+                android:text="Jul 10 - 15 2015"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_points_badge" />
+
+            <TextView
+                android:id="@+id/textViewPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:textColor="@color/white"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
 
     </FrameLayout>
 
     <LinearLayout
-        android:layout_below="@+id/imageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/imageLayout"
         android:orientation="horizontal"
         android:padding="@dimen/tripDetailPanelPadding">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tripNameColor"
                 android:fontFamily="sans-serif-light"
-                android:textSize="16sp"
-                android:text="THE MAGIC OF IRELAND"/>
+                android:text="THE MAGIC OF IRELAND"
+                android:textColor="@color/tripNameColor"
+                android:textSize="16sp" />
 
 
             <TextView
@@ -65,35 +87,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_location"
-                android:drawableStart="@drawable/ic_location"
                 android:drawablePadding="5dp"
-                android:textColor="@color/tripPlaceColor"
-                android:text="Kilkenny Island"/>
+                android:drawableStart="@drawable/ic_location"
+                android:text="Kilkenny Island"
+                android:textColor="@color/tripPlaceColor" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/textViewPrice"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="@color/tripPlaceColor"
-            android:gravity="center_vertical"
             android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:text="$299"
+            android:textColor="@color/tripPlaceColor"
             android:textSize="22sp"
-            android:text="$299"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/imageViewLike"
-        android:clickable="true"
-        android:tag="like"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tripImagePanelMargin"
-        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-        android:src="@drawable/ic_heart_1_sh" />
+        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+        android:layout_marginTop="@dimen/tripImagePanelMargin"
+        android:clickable="true"
+        android:src="@drawable/ic_heart_1_sh"
+        android:tag="like" />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@ import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
@@ -20,6 +21,7 @@ import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -65,7 +67,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
+    private boolean showSoldOut;
     private List<Integer> acceptedRegions;
+    private List<Activity> acceptedThemes;
 
     public DreamTripsFragmentPM(View view) {
         super(view);
@@ -104,6 +108,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             minPrice = event.getMinPrice();
             maxNights = event.getMaxNights();
             acceptedRegions = event.getAcceptedRegions();
+            acceptedThemes = event.getAcceptedActivities();
+            showSoldOut = event.isShowSoldOut();
             fromCash = true;
         }
         tripsController.reload();
@@ -125,6 +131,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                         && input.getPrice().getAmount() >= minPrice
                         && input.getDuration() >= minNights
                         && input.getDuration() <= maxNights
+                        && (showSoldOut || input.isAvailable())
+                        && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
                         && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
         return filteredTrips;
     }
@@ -135,6 +143,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         this.minPrice = 0;
         this.minNights = 0;
         this.acceptedRegions = null;
+        this.acceptedThemes = null;
     }
 
     public void onItemLike(Trip trip) {

@@ -6,9 +6,12 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
+import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
@@ -36,16 +39,21 @@ import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentat
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
+import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
+import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
+import com.worldventures.dreamtrips.view.cell.SoldOutCell;
+import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -58,6 +66,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
@@ -79,9 +88,12 @@ import dagger.Provides;
 @Module(
         injects = {
                 LaunchActivity.class,
+                BookItActivity.class,
+                BookItActivityPresentation.class,
                 MainActivity.class,
                 LoginActivity.class,
                 FullScreenPhotoActivity.class,
+                FullScreenTripImageActivity.class,
                 DetailTripActivity.class,
                 FBPickPhotoActivity.class,
                 CreatePhotoActivity.class,
@@ -108,6 +120,7 @@ import dagger.Provides;
                 FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
                 FiltersFragmentPM.class,
+                DetailedImagePagerFragmentPresentation.class,
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
@@ -129,8 +142,10 @@ import dagger.Provides;
                 FacebookPhotoFragment.class,
                 StaticInfoFragment.FAQFragment.class,
                 StaticInfoFragment.TermsAndConditionsFragment.class,
+                StaticInfoFragment.BookItFragment.class,
                 BucketTabsFragment.class,
                 BucketListFragment.class,
+                DetailedImagePagerFragment.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,
@@ -143,7 +158,10 @@ import dagger.Provides;
                 PhotoUploadCell.class,
                 FiltersCell.class,
                 VideoCell.class,
+                ActivityCell.class,
                 BucketItemCell.class,
+                ThemeHeaderCell.class,
+                SoldOutCell.class,
 
                 BaseArrayListAdapter.class,
                 UploadJob.class

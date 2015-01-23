@@ -7,6 +7,7 @@ public class Region extends BaseEntity {
 
     private String name;
     private transient boolean checked = true;
+    private transient boolean shouldBeGone = true;
 
     public boolean isChecked() {
         return checked;
@@ -22,5 +23,13 @@ public class Region extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isShouldBeGone() {
+        return shouldBeGone;
+    }
+
+    public void setShouldBeGone(boolean shouldBeGone) {
+        this.shouldBeGone = shouldBeGone;
     }
 }

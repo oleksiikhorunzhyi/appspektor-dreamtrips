@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
+import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -68,5 +72,11 @@ public interface DreamTripsApi {
 
     @DELETE("/api/trips/{id}/like")
     public void unlikeTrio(@Path("id") int photoId, Callback<JsonObject> callback);
+
+    @GET("/api/trips/{id}/details")
+    public void getDetails(@Path("id") int tripId, Callback<TripDetails> callback);
+
+    @GET("/api/activities")
+    public List<Activity> getActivities();
 
 }

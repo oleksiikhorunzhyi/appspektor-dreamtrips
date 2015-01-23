@@ -5,16 +5,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
-import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_login)
 public class LoginFragment extends BaseFragment<LoginFragmentPresentation> implements LoginFragmentPresentation.View {
@@ -27,6 +29,8 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     DTEditText etPassword;
     @InjectView(R.id.iv_bg)
     ImageView ivBg;
+    @InjectView(R.id.vg_content_container)
+    ViewGroup vgContentContainer;
 
     public LoginFragment() {
 
@@ -34,9 +38,7 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        int screenHeight = ViewUtils.getScreenHeight(getActivity());
-        int statusBarHeight = ViewUtils.getStatusBarHeight(getActivity());
-        ivBg.getLayoutParams().height = screenHeight - statusBarHeight;
+        layoutConfiguration();
     }
 
     @Override
@@ -72,5 +74,10 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     @Override
     protected LoginFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
         return new LoginFragmentPresentation(this);
+    }
+
+    private void layoutConfiguration() {
+        int minSideSize = getMinSideSize(getActivity());
+        vgContentContainer.getLayoutParams().width = minSideSize;
     }
 }

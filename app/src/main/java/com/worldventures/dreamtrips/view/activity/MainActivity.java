@@ -114,7 +114,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        setupToolbarLayout();
         boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
+        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
+    }
+
+    private void setupToolbarLayout() {
         if (toolbar != null) {
             int size = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             toolbar.setMinimumHeight(size);
@@ -124,6 +129,5 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
 
         }
-        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
     }
 }

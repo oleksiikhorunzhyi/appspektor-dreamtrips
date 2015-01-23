@@ -6,8 +6,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,6 +27,7 @@ import javax.inject.Inject;
 public class BucketListFragmentPM extends BasePresentation {
     private CollectionController<Object> adapterController;
     private BucketTabsFragment.Type type;
+    private boolean filterEnabled;
 
     public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -39,6 +43,9 @@ public class BucketListFragmentPM extends BasePresentation {
     @Inject
     Gson gson;
 
+    @Inject
+    SimpleKeyValueStorage storage;
+
     @Override
     public void init() {
         super.init();
@@ -47,7 +54,18 @@ public class BucketListFragmentPM extends BasePresentation {
             String stringFromAsset = getStringFromAsset(type.getFileName());
             gson.fromJson(stringFromAsset, BucketItem.class);
             BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
-            result.addAll(response.getData());
+            List<BucketItem> data = response.getData();
+            if (filterEnabled) {
+                List<BucketItem> filteredData = new ArrayList<BucketItem>();
+                for (BucketItem bucketItem : data) {
+                    if (storage.get(BucketItemCell.PREFIX + bucketItem.getId()) != null) {
+                        filteredData.add(bucketItem);
+                    }
+                }
+                result.addAll(filteredData);
+            } else {
+                result.addAll(data);
+            }
             return result;
         });
     }
@@ -71,5 +89,9 @@ public class BucketListFragmentPM extends BasePresentation {
 
     public CollectionController<Object> getAdapterController() {
         return adapterController;
+    }
+
+    public void filterEnabled(boolean onlyFavorites) {
+        this.filterEnabled = onlyFavorites;
     }
 }

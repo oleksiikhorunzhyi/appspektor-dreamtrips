@@ -29,6 +29,7 @@ import de.greenrobot.event.EventBus;
 public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
+    public static final String BUNDLE_FILTER_ENABLED = "BUNDLE_FILTER_ENABLED";
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -85,7 +86,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void onResume() {
         super.onResume();
-
+        boolean filterEnabled = getArguments().getBoolean(BUNDLE_FILTER_ENABLED);
+        getPresentationModel().filterEnabled(filterEnabled);
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
                 getPresentationModel().getAdapterController().reload();
@@ -104,8 +106,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         return new BucketListFragmentPM(this, type);
     }
 
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
+    public void loadOnlyFavorites(boolean onlyFavorites) {
+        getPresentationModel().filterEnabled(onlyFavorites);
+        getPresentationModel().getAdapterController().reload();
     }
+
 }

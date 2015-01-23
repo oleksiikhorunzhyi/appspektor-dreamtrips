@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
 
-import com.nispok.snackbar.Snackbar;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 
 public abstract class PresentationModelDrivenActivity<PM extends BasePresentation> extends BaseActivity implements BasePresentation.View {
@@ -26,6 +26,7 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
     }
 
     public void informUser(String st) {
-        Snackbar.with(getApplicationContext()).text(st).show(this);
+        SnackBar snackbar = new SnackBar(this,st);
+        snackbar.show();
     }
 }

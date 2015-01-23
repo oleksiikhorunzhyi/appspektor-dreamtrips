@@ -129,6 +129,5 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
 
 
     public static interface View extends BasePresentation.View {
-        void requestUpdateAdapter();
     }
 }

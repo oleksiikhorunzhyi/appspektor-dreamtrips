@@ -103,9 +103,4 @@ public class MemberShipFragment extends BaseFragment<MemberShipPM> implements Tr
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);
     }
-
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
-    }
 }

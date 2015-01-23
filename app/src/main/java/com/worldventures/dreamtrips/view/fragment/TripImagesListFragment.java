@@ -126,11 +126,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         return new TripImagesListFragmentPresentation(this, type);
     }
 
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
-    }
-
     public static enum Type {
         MY_IMAGES, MEMBER_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
     }

@@ -56,25 +56,6 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         final File file = new File(image.getFileThumbnail());
         final TypedFile typedFile = new TypedFile("image/*", file);
-        dreamTripsApi.uploadAvatar(typedFile, new Callback<User.Avatar>() {
-            @Override
-            public void success(User.Avatar avatar, Response response) {
-                UserSession userSession = appSessionHolder.get().get();
-                User user = userSession.getUser();
-
-                user.setAvatar(avatar);
-
-                ProfileFragmentPresentation.this.appSessionHolder.put(userSession);
-
-                eventBus.post(new UpdateUserInfoEvent());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                handleError(error);
-            }
-        });
-
         view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Singleton;
@@ -75,5 +77,11 @@ public class DTModule {
     @Singleton
     AppSessionHolder provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new AppSessionHolder(simpleKeyValueStorage, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    Prefs providePrefs(SharedPreferences sharedPreferences) {
+        return new Prefs(sharedPreferences);
     }
 }

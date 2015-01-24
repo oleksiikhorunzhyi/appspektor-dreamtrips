@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+            android:id="@+id/recyclerViewRegions"
+            android:layout_above="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.worldventures.dreamtrips.view.custom.EmptyRecyclerView>
+
+        <RelativeLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewApplyFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:textStyle="bold"
+                android:layout_toLeftOf="@+id/textViewResetFilter"
+                android:textColor="#025E93"
+                android:gravity="end"
+                android:text="APPLY FILTERS"/>
+
+            <TextView
+                android:id="@+id/textViewResetFilter"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:textColor="#025E93"
+                android:textStyle="bold"
+                android:text="RESET ALL"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

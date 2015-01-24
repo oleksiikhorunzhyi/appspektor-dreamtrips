@@ -3,7 +3,7 @@ package com.techery.spares.storage.preferences;
 import android.content.SharedPreferences;
 
 public class SimpleKeyValueStorage {
-    private final SharedPreferences appSharedPrefs;
+    protected final SharedPreferences appSharedPrefs;
 
     public SimpleKeyValueStorage(final SharedPreferences preferences) {
         this.appSharedPrefs = preferences;

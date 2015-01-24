@@ -10,7 +10,7 @@ public class User extends BaseEntity {
         String thumb;
 
         public String getOriginal() {
-            return original;
+            return original != null ? original : "";
         }
 
         public void setOriginal(String original) {
@@ -18,7 +18,7 @@ public class User extends BaseEntity {
         }
 
         public String getMedium() {
-            return medium;
+            return medium != null ? medium : "";
         }
 
         public void setMedium(String medium) {
@@ -26,7 +26,7 @@ public class User extends BaseEntity {
         }
 
         public String getThumb() {
-            return thumb;
+            return thumb != null ? thumb : "";
         }
 
         public void setThumb(String thumb) {

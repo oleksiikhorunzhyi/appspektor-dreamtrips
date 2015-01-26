@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
@@ -45,6 +46,9 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     protected String userId;
     protected String userName;
     protected String userEmail;
+
+    @Inject
+    protected Prefs prefs;
 
     @Inject
     @Global
@@ -172,6 +176,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     }
 
     public void logout() {
+        this.prefs.clear();
         this.appSessionHolder.destroy();
         activityRouter.finish();
         activityRouter.openLogin();

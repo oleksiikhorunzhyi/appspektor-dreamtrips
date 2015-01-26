@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.FilterModel;
@@ -22,6 +24,8 @@ import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
+import java.util.List;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -34,6 +38,8 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
 
     @InjectView(R.id.recyclerViewRegions)
     EmptyRecyclerView recyclerView;
+    @InjectView(R.id.progressBarFilters)
+    ProgressBar progressBar;
 
     BaseArrayListAdapter<Object> arrayListAdapter;
 
@@ -52,8 +58,26 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());
+        getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
+            @Override
+            public void onStartLoading() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFinishLoading(List<Object> result) {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
         this.recyclerView.setAdapter(this.arrayListAdapter);
         this.recyclerView.setHasFixedSize(true);
+
     }
 
     @OnClick(R.id.textViewApplyFilter)
@@ -63,9 +87,11 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     }
 
     @OnClick(R.id.textViewResetFilter)
-    void resetFilter() {getPresentationModel().resetFilters();
+    void resetFilter() {
+        getPresentationModel().resetFilters();
         ((MainActivity) getActivity()).closeDrawer();
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -79,9 +105,9 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
 
     public void refresh() {
         if (this.arrayListAdapter.getItemCount() == 0) {
-            this.recyclerView.post(() -> {
-                getPresentationModel().getRegionController().reload();
-            });
+            this.recyclerView.post(() ->
+                            getPresentationModel().getRegionController().reload()
+            );
         }
     }
 

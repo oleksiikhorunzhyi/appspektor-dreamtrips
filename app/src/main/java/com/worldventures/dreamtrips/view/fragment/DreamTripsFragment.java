@@ -4,11 +4,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -17,6 +17,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
 import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
@@ -57,9 +58,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     public void afterCreateView(View rootView) {
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
 
-        this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
 
         this.adapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
@@ -92,6 +92,18 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         eventBus.register(this);
     }
 
+    private void setupLayoutManager(boolean landscape) {
+        int spanCount;
+        if (landscape) {
+            spanCount = ViewUtils.isTablet(getActivity()) ? 4 : 2;
+        } else {
+            spanCount = ViewUtils.isTablet(getActivity()) ? 2 : 1;
+        }
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+        this.recyclerView.setLayoutManager(layoutManager);
+    }
+
+
     @Override
     public void dataSetChanged() {
         adapter.notifyDataSetChanged();
@@ -115,16 +127,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         super.onConfigurationChanged(newConfig);
         if (lastConfig != newConfig.orientation) {
             lastConfig = newConfig.orientation;
-            switch (newConfig.orientation) {
-                case Configuration.ORIENTATION_LANDSCAPE:
-                    this.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                    this.recyclerView.requestLayout();
-                    break;
-                case Configuration.ORIENTATION_PORTRAIT:
-                    this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    this.recyclerView.requestLayout();
-                    break;
-            }
+            setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         }
     }
 

@@ -1,121 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/itemLayout"
-    android:layout_width="match_parent"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_gravity="center"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
 
-    <FrameLayout
-        android:id="@+id/imageLayout"
+    <RelativeLayout
+        android:id="@+id/itemLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tripImageHeight">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageViewTripImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_trip_image_placeholder" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/tripImagePanelMargin">
-
-            <TextView
-                android:id="@+id/textViewDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_stripe"
-                android:padding="@dimen/tripDetailPanelPadding"
-                android:text="Jul 10 - 15 2015"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
 
         <FrameLayout
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:padding="5dp">
+            android:id="@+id/imageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tripImageHeight">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_points_badge" />
+                android:id="@+id/imageViewTripImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_trip_image_placeholder" />
 
-            <TextView
-                android:id="@+id/textViewPoints"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="10dp"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
+                android:layout_marginTop="@dimen/tripImagePanelMargin">
+
+                <TextView
+                    android:id="@+id/textViewDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_stripe"
+                    android:padding="@dimen/tripDetailPanelPadding"
+                    android:text="Jul 10 - 15 2015"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="bottom"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_points_badge" />
+
+                <TextView
+                    android:id="@+id/textViewPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="10dp" />
+
+            </FrameLayout>
+
 
         </FrameLayout>
 
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageLayout"
-        android:orientation="horizontal"
-        android:padding="@dimen/tripDetailPanelPadding">
-
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_below="@+id/imageLayout"
+            android:orientation="horizontal"
+            android:padding="@dimen/tripDetailPanelPadding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="THE MAGIC OF IRELAND"
+                    android:textColor="@color/tripNameColor"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/textViewPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_location"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_location"
+                    android:text="Kilkenny Island"
+                    android:textColor="@color/tripPlaceColor" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/textViewName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/textViewPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:fontFamily="sans-serif-light"
-                android:text="THE MAGIC OF IRELAND"
-                android:textColor="@color/tripNameColor"
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/textViewPlace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_location"
-                android:drawablePadding="5dp"
-                android:drawableStart="@drawable/ic_location"
-                android:text="Kilkenny Island"
-                android:textColor="@color/tripPlaceColor" />
+                android:gravity="center_vertical"
+                android:text="$299"
+                android:textColor="@color/tripPlaceColor"
+                android:textSize="22sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewPrice"
+        <ImageView
+            android:id="@+id/imageViewLike"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_vertical"
-            android:text="$299"
-            android:textColor="@color/tripPlaceColor"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
+            android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+            android:layout_marginTop="@dimen/tripImagePanelMargin"
+            android:clickable="true"
+            android:src="@drawable/ic_heart_1_sh"
+            android:tag="like" />
 
-    <ImageView
-        android:id="@+id/imageViewLike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-        android:layout_marginTop="@dimen/tripImagePanelMargin"
-        android:clickable="true"
-        android:src="@drawable/ic_heart_1_sh"
-        android:tag="like" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

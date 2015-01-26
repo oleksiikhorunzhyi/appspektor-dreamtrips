@@ -71,7 +71,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         activityRouter.openBookItActivity(trip.getId());
     }
 
-    private void loadTripDetails() {
+    public void loadTripDetails() {
         Callback<TripDetails> callback = new Callback<TripDetails>() {
             @Override
             public void success(TripDetails tripDetails, Response response) {

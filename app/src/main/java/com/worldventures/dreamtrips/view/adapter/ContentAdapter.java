@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
+import com.worldventures.dreamtrips.utils.HtmlTagHandler;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class ContentAdapter extends BaseAdapter {
 
         ContentItem contentItem = getItem(position);
         holder.textViewContentHeader.setText(contentItem.getName());
-        holder.textViewContent.setText(Html.fromHtml(contentItem.getDescription()));
+        holder.textViewContent.setText(Html.fromHtml(contentItem.getDescription(), null, new HtmlTagHandler()));
 
         return view;
     }

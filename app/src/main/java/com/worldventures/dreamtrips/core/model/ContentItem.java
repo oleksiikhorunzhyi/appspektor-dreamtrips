@@ -11,7 +11,7 @@ public class ContentItem {
     private String tag;
 
     public String getDescription() {
-        return description;
+        return description.replaceAll("\n", "").replaceAll("\t", "");
     }
 
     public void setDescription(String description) {

@@ -26,6 +26,10 @@ public class Prefs extends SimpleKeyValueStorage {
         return this.appSharedPrefs.getBoolean(key, false);
     }
 
+    public void clear() {
+        this.appSharedPrefs.edit().clear().apply();
+    }
+
     public void put(final String key, Long value) {
         SharedPreferences.Editor prefsEditor = this.appSharedPrefs.edit();
         prefsEditor.putLong(key, value);

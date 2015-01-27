@@ -9,7 +9,6 @@ import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -27,7 +26,6 @@ import javax.inject.Inject;
 public class BucketListFragmentPM extends BasePresentation {
     private CollectionController<Object> adapterController;
     private BucketTabsFragment.Type type;
-    private boolean filterEnabled;
 
     public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -55,10 +53,10 @@ public class BucketListFragmentPM extends BasePresentation {
             gson.fromJson(stringFromAsset, BucketItem.class);
             BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
             List<BucketItem> data = response.getData();
-            if (filterEnabled) {
+            if (isFilterEnabled()) {
                 List<BucketItem> filteredData = new ArrayList<BucketItem>();
                 for (BucketItem bucketItem : data) {
-                    if (storage.get(BucketItemCell.PREFIX + bucketItem.getId()) != null) {
+                    if (storage.get(bucketItem.getSPName()) != null) {
                         filteredData.add(bucketItem);
                     }
                 }
@@ -68,6 +66,10 @@ public class BucketListFragmentPM extends BasePresentation {
             }
             return result;
         });
+    }
+
+    private Boolean isFilterEnabled() {
+        return Boolean.valueOf(storage.get(BucketTabsFragmentPM.BUCKET_FILTER_ENABLED));
     }
 
     private String getStringFromAsset(String fileName) {
@@ -89,9 +91,5 @@ public class BucketListFragmentPM extends BasePresentation {
 
     public CollectionController<Object> getAdapterController() {
         return adapterController;
-    }
-
-    public void filterEnabled(boolean onlyFavorites) {
-        this.filterEnabled = onlyFavorites;
     }
 }

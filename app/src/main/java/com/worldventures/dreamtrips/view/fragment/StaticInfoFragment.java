@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.webkit.DownloadListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -56,7 +53,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class FAQFragment extends StaticInfoFragment {
+    public static class TermsOfServiceFragment extends StaticInfoFragment {
 
         @Override
         protected String getURL() {
@@ -65,11 +62,20 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class TermsAndConditionsFragment extends StaticInfoFragment {
+    public static class PrivacyPolicyFragment extends StaticInfoFragment {
 
         @Override
         protected String getURL() {
-            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
+            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class CookiePolicyFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
         }
     }
 

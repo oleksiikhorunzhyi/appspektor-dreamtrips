@@ -33,7 +33,7 @@ public interface DreamTripsApi {
 
     @POST("/api/profile/avatar")
     @Multipart
-    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User.Avatar> callback);
+    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);
 
     @GET("/api/photos")
     public List<Photo> getUserPhotos();

@@ -12,7 +12,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.presentation.MemberShipPM;
+import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
-public class MemberShipFragment extends BaseFragment<MemberShipPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -89,8 +89,8 @@ public class MemberShipFragment extends BaseFragment<MemberShipPM> implements Tr
     }
 
     @Override
-    protected MemberShipPM createPresentationModel(Bundle savedInstanceState) {
-        return new MemberShipPM(this);
+    protected MembershipPM createPresentationModel(Bundle savedInstanceState) {
+        return new MembershipPM(this);
     }
 
     public void onEvent(ScreenOrientationChangeEvent event) {

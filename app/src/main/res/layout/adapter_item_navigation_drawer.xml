@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:background="@android:color/holo_red_dark"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="48dp">
 
     <ImageView
@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="72dp"
         android:textSize="14sp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/selector_navigation_drawer_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:layout_toLeftOf="@+id/section_notification"
         android:layout_toStartOf="@+id/section_notification"

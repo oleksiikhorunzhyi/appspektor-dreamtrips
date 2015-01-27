@@ -9,22 +9,32 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.worldventures.dreamtrips.R;
 
 public class DTEditText extends MaterialEditText {
+
+    public static final String NAMESPACE = "http://schemas.android.com/apk/res/android";
+
     public DTEditText(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public DTEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setHintTextColor(Color.WHITE);
+        this(context, attrs, 0);
 
     }
 
     public DTEditText(Context context, AttributeSet attrs, int style) {
         super(context, attrs, style);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.ColorOptionsView, 0, 0);
-        int valueColor = a.getColor(R.styleable.ColorOptionsView_hintColor, android.R.color.holo_blue_light);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DTEditText);
+        String valueColor = a.getString(R.styleable.DTEditText_hintColor);
         a.recycle();
-        setHintTextColor(valueColor);
+        if (valueColor != null && !valueColor.isEmpty()) {
+            setHintTextColor(Color.parseColor(valueColor));
+        }
+        boolean b1 = attrs.getAttributeBooleanValue(NAMESPACE, "focusableInTouchMode", true);
+        boolean focusable = attrs.getAttributeBooleanValue(NAMESPACE, "focusable", true);
+        boolean clickable = attrs.getAttributeBooleanValue(NAMESPACE, "clickable", true);
+
+        setFocusableInTouchMode(b1);
+        setFocusable(focusable);
+        setClickable(clickable);
     }
 }

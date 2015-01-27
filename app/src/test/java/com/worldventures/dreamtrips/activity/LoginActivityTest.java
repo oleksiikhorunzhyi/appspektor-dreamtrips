@@ -23,7 +23,7 @@ import static org.robolectric.Robolectric.clickOn;
 import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk=18)
+@Config(emulateSdk = 18)
 public class LoginActivityTest {
 
     private LoginActivity activity;

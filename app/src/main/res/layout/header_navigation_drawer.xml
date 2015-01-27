@@ -6,22 +6,23 @@
 
     <ImageView
         android:id="@+id/user_cover"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/userSpace"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:scaleType="fitXY"
-        android:src="#c6c6c6" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_cover_place_holder" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_photo"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/photoMarginTop" />
+        android:layout_marginTop="@dimen/photoMarginTop"
+        android:src="@drawable/ic_avatar_placeholder" />
 
     <ImageView
         android:id="@+id/user_photo_2"
@@ -53,7 +54,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/user_nome"
+            android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"

@@ -2,44 +2,82 @@ package com.worldventures.dreamtrips.view.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.view.presentation.LoginFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
+import com.worldventures.dreamtrips.view.custom.DTEditText;
 
-import org.robobinding.ViewBinder;
-
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class LoginFragment extends BaseFragment<BaseActivity> implements LoginFragmentPresentation.View {
+import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
+
+@Layout(R.layout.fragment_login)
+public class LoginFragment extends BaseFragment<LoginFragmentPresentation> implements LoginFragmentPresentation.View {
 
     @InjectView(R.id.btn_login)
-    Button btnLogin;
+    Button loginButton;
+    @InjectView(R.id.et_username)
+    DTEditText etUsername;
+    @InjectView(R.id.et_password)
+    DTEditText etPassword;
+    @InjectView(R.id.iv_bg)
+    ImageView ivBg;
+    @InjectView(R.id.vg_content_container)
+    ViewGroup vgContentContainer;
 
     public LoginFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LoginFragmentPresentation presentationModel = new LoginFragmentPresentation(this,getAbsActivity());
-        ViewBinder viewBinder = getAbsActivity().createViewBinder();
-        return viewBinder.inflateAndBindWithoutAttachingToRoot(R.layout.fragment_login, presentationModel, container);
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ButterKnife.inject(this, view);
-        MaterialRippleLayout.on(btnLogin)
-                .rippleColor(getResources().getColor(R.color.theme_main_darker))
-                .create();
+        layoutConfiguration();
     }
 
+    @Override
+    public void showProgressDialog() {
+        loginButton.setVisibility(View.GONE);
+        loginButton.setClickable(false);
+    }
+
+    @Override
+    public void showLoginSuccess() {
+        dismissProgressDialog();
+    }
+
+    @Override
+    public void showLoginErrorMessage() {
+        dismissProgressDialog();
+        informUser("Invalid username or password");
+    }
+
+    private void dismissProgressDialog() {
+        //Handler for better visual effect
+        new Handler().postDelayed(() -> {
+            loginButton.setVisibility(View.VISIBLE);
+            loginButton.setClickable(true);
+        }, 50);
+    }
+
+    public void showLocalErrors(String userNameError, String passwordError) {
+        etUsername.setError(userNameError);
+        etPassword.setError(passwordError);
+    }
+
+    @Override
+    protected LoginFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
+        return new LoginFragmentPresentation(this);
+    }
+
+    private void layoutConfiguration() {
+        int minSideSize = getMinSideSize(getActivity());
+        vgContentContainer.getLayoutParams().width = minSideSize;
+    }
 }

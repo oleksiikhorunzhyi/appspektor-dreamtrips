@@ -2,26 +2,89 @@ package com.worldventures.dreamtrips.view.fragment;
 
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.fragment.InjectingFragment;
+import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
-public class BaseFragment<T extends BaseActivity> extends Fragment {
+import org.robobinding.ViewBinder;
 
-    protected static final String TAG = BaseFragment.class.getSimpleName();
-    private T activity;
+import butterknife.ButterKnife;
+
+public abstract class BaseFragment<PM extends BasePresentation> extends InjectingFragment implements BasePresentation.View {
+
+    private PM presentationModel;
+
+    public PM getPresentationModel() {
+        return presentationModel;
+    }
+
+    @Override
+    public void informUser(String stringId) {
+
+    }
+
+    @Override
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        this.presentationModel = createPresentationModel(savedInstanceState);
+
+        if (this.presentationModel != null) {
+            inject(this.presentationModel);
+        }
+
+        this.presentationModel.init();
+
+        Layout layout = this.getClass().getAnnotation(Layout.class);
+
+        if (layout == null) {
+            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
+        }
+
+        ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
+
+        View view;
+
+        if (container != null) {
+            view = viewBinder.inflateAndBindWithoutAttachingToRoot(
+                    layout.value(),
+                    this.presentationModel,
+                    container
+            );
+        } else {
+            view = viewBinder.inflateAndBind(
+                    layout.value(),
+                    this.presentationModel
+            );
+        }
+
+        ButterKnife.inject(this, view);
+
+        afterCreateView(view);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPresentationModel().resume();
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity = (T) activity;
+
+        if (this.presentationModel != null) {
+            inject(this.presentationModel);
+        }
+
     }
 
-    public void informUser(String st) {
-        getAbsActivity().informUser(st);
-    }
-
-    public T getAbsActivity() {
-        return activity;
-    }
+    abstract protected PM createPresentationModel(Bundle savedInstanceState);
 }

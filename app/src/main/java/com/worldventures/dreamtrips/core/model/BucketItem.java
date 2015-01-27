@@ -138,5 +138,11 @@ public class BucketItem extends BaseEntity {
 
     String publisherContent;
 
+    private static final String PREFIX = "bucket_";
+
+    public String getSPName() {
+        return PREFIX + getId();
+    }
+
 
 }

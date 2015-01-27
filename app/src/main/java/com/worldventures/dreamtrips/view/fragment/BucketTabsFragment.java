@@ -24,7 +24,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
         return new BucketTabsFragmentPM(this);
     }
 
-
     @InjectView(R.id.sw_liked)
     Switch swLiked;
     @InjectView(R.id.tabs)
@@ -45,7 +44,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
                     Bundle args = new Bundle();
                     Type type = Type.values()[position];
                     args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
-                    args.putSerializable(BucketListFragment.BUNDLE_FILTER_ENABLED, swLiked.isCheck());
                     fragment.setArguments(args);
                 }
             };
@@ -55,15 +53,16 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
             this.adapter.add(new BasePagerAdapter.FragmentItem(BucketListFragment.class, "Restaurants"));
 
         }
-        this.pager.setAdapter(adapter);
-        this.tabs.setViewPager(pager);
-
+        pager.setAdapter(adapter);
+        tabs.setViewPager(pager);
+        swLiked.setChecked(getPresentationModel().isFilterEnabled());
         swLiked.setOncheckListener(b -> {
+            getPresentationModel().filterEnabled(b);
             for (int i = 0; i < adapter.getCount(); i++) {
                 String id = "android:switcher:" + R.id.pager + ":" + i;
                 Fragment page = getChildFragmentManager().findFragmentByTag(id);
                 if (page != null) {
-                    ((BucketListFragment) page).loadOnlyFavorites(b);
+                    ((BucketListFragment) page).requestReload();
                 }
             }
         });

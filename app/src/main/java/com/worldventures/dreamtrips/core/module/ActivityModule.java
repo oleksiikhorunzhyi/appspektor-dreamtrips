@@ -6,20 +6,19 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
-import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
-import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
-import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPresentation;
-import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
-import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
+import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
+import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
+import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
@@ -31,7 +30,7 @@ import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
-import com.worldventures.dreamtrips.presentation.MemberShipPM;
+import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
@@ -40,8 +39,8 @@ import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
-import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
@@ -50,14 +49,14 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
+import com.worldventures.dreamtrips.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.view.cell.PhotoCell;
-import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
@@ -124,7 +123,7 @@ import dagger.Provides;
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
-                MemberShipPM.class,
+                MembershipPM.class,
                 BucketTabsFragmentPM.class,
                 BucketListFragmentPM.class,
 
@@ -140,8 +139,9 @@ import dagger.Provides;
                 StaticInfoFragment.class,
                 FacebookAlbumFragment.class,
                 FacebookPhotoFragment.class,
-                StaticInfoFragment.FAQFragment.class,
-                StaticInfoFragment.TermsAndConditionsFragment.class,
+                StaticInfoFragment.TermsOfServiceFragment.class,
+                StaticInfoFragment.PrivacyPolicyFragment.class,
+                StaticInfoFragment.CookiePolicyFragment.class,
                 StaticInfoFragment.BookItFragment.class,
                 BucketTabsFragment.class,
                 BucketListFragment.class,

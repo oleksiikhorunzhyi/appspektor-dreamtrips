@@ -8,6 +8,8 @@ buildscript {
             url "https://github.com/RoboBinding/RoboBinding-aspectj-plugin/raw/master/mavenRepo"
         }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url 'http://archiva.instabug.com/repository/release' }
+
 
     }
     dependencies {

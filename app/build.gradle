@@ -5,6 +5,7 @@ apply plugin: 'android-apt'
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url 'http://archiva.instabug.com/repository/release' }
 }
 
 android {
@@ -97,6 +98,8 @@ dependencies {
     compile 'com.path:android-priority-jobqueue:1.1.2'
     compile 'io.realm:realm-android:0.76.0'
     compile 'com.jakewharton.timber:timber:2.5.0'
+
+    compile 'com.instabug.library:instabugsupport:1.2.7'
 
     compile 'com.facebook.android:facebook-android-sdk:3.22.0'
 //UI

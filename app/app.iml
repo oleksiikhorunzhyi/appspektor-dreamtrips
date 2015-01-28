@@ -222,6 +222,70 @@
     <orderEntry type="library" exported="" scope="TEST" name="commons-codec-1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="maven-ant-tasks-2.1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="instabugcore-1.2.7" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="instabugsupport-1.2.7" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="linearlistview-1.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="multidex-1.0.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="material-dialogs-0.4.7" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="image-chooser-library-1.4.02" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="gson-2.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="dagger-1.2.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="commons-codec-1.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="circleimageview-1.2.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-1.6.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="cardview-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-0.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="play-services-maps-6.5.87" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="maven-ant-tasks-2.1.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="asm-analysis-5.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="play-services-base-6.5.87" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="facebook-android-sdk-3.22.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="support-annotations-21.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="mimecraft-1.1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="asm-tree-5.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="httpcore-4.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="ant-1.8.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="retrofit-1.8.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="instabugcore-1.2.7" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="robolectric-2.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="recyclerview-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="universal-image-loader-1.9.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-1.0.10" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="asm-commons-5.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="bolts-android-1.1.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="eventbus-2.4.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="json-20080701" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-1.0.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="guava-18.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="opengl-api-gl1.1-android-2.1_r1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="asm-5.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="aws-android-sdk-2.1.7-core" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="sqlite4java-0.282" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="ant-launcher-1.8.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="asm-util-5.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="httpclient-4.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="materialrangebar-0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="aws-android-sdk-2.1.7-s3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="android-priority-jobqueue-1.1.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="vtd-xml-2.11" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="robolectric-annotations-2.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="realm-android-0.76.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="xpp3-1.1.4c" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="objenesis-1.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-1.0.8" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-1.1.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="support-v4-21.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="floatingactionbutton-1.5.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="xmlParserAPIs-2.6.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="butterknife-6.0.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="timber-2.5.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="appcompat-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="MaterialDesign-1.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="robobinding-0.8.10-SNAPSHOT-with-aop" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="library-2.4.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="android-2.2.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
   </component>
 </module>
 

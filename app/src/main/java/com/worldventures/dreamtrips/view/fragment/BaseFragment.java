@@ -30,7 +30,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         this.presentationModel = createPresentationModel(savedInstanceState);
 

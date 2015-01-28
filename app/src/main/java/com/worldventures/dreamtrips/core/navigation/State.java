@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
+import com.worldventures.dreamtrips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
@@ -28,6 +30,8 @@ public enum State {
     DETAILED_TRIP(DetailedTripFragment.class, "Detailed Trip"),
     PICK_FB_ALBUM(FacebookAlbumFragment.class, "Select album"),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, "Select photo"),
+    MAP(MapFragment.class, ""),
+    MAP_INFO(FragmentMapTripInfo.class, ""),
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
     TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
     MEMBERSHIP(MemberShipFragment.class, "Membership", 2, R.drawable.ic_membership),

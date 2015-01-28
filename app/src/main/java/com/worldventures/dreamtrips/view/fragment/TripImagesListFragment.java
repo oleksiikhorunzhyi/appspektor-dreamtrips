@@ -16,6 +16,9 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
+import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -89,7 +92,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                 refreshLayout.setRefreshing(false);
             }
         });
-
     }
 
     @Override
@@ -126,7 +128,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         return new TripImagesListFragmentPresentation(this, type);
     }
 
+    public void onEventMainThread(PhotoUploadStarted event) {
+        getPresentationModel().getPhotosController().reload();
+    }
+
+    public void onEventMainThread(PhotoUploadFinished event) {
+        getPresentationModel().getPhotosController().reload();
+    }
+
     public static enum Type {
-        MY_IMAGES, MEMBER_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
+        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
     }
 }

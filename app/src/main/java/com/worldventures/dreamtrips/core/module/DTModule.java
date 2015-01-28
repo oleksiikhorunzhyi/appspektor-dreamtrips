@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;

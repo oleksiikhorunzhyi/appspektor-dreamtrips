@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.core.uploader;
 
+import android.os.Handler;
+
 import com.path.android.jobqueue.JobManager;
 import com.techery.spares.module.Annotations.UseModule;
 import com.techery.spares.service.InjectingService;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.CancelUpload;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,16 +83,21 @@ public class UploadingService extends InjectingService {
 
         this.actionRouter.on(ImageUploadAction.class, (imageUploadParams) -> {
 
-            ImageUploadTask uploadTask = repository.create((task) -> {
-                task.setFileUri(imageUploadParams.fileUri);
-                task.setLatitude(imageUploadParams.latitude);
-                task.setLongitude(imageUploadParams.longitude);
-                task.setLocationName(imageUploadParams.locationName);
-                task.setShotAt(imageUploadParams.shotAt);
-                task.setTitle(imageUploadParams.title);
-            });
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                ImageUploadTask uploadTask = repository.create((task) -> {
+                    task.setFileUri(imageUploadParams.fileUri);
+                    task.setLatitude(imageUploadParams.latitude);
+                    task.setLongitude(imageUploadParams.longitude);
+                    task.setLocationName(imageUploadParams.locationName);
+                    task.setShotAt(imageUploadParams.shotAt);
+                    task.setTitle(imageUploadParams.title);
+                });
 
-            this.uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));
+                uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));
+            }, 100);
         });
     }
+
+
 }

@@ -112,7 +112,6 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
             this.data.add(soldOutModel);
             return data;
         });
-        eventBus.register(this);
     }
 
 

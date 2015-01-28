@@ -104,8 +104,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
         cell.prepareForReuse();
 
-        this.injector.inject(cell);
-
         cell.fillWithItem(item);
     }
 

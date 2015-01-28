@@ -105,9 +105,9 @@ dependencies {
     compile 'com.path:android-priority-jobqueue:1.1.2'
     compile 'io.realm:realm-android:0.76.0'
     compile 'com.jakewharton.timber:timber:2.5.0'
-
+//SDK
     compile 'com.instabug.library:instabugsupport:1.2.7'
-
+    compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
     compile 'com.facebook.android:facebook-android-sdk:3.22.0'
 //UI
     compile 'com.rengwuxian.materialedittext:library:1.6.0'

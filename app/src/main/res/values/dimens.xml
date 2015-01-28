@@ -19,4 +19,6 @@
     <dimen name="tripImagePanelPaddingVertical">5dp</dimen>
     <dimen name="tripDetailPanelPadding">10dp</dimen>
     <dimen name="tripImageHeightDetailed">300dp</dimen>
+
+    <dimen name="map_offset_y">64dp</dimen>
 </resources>

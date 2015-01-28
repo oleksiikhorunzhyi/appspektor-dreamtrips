@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
@@ -12,10 +13,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -56,13 +59,13 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Global
     EventBus eventBus;
 
-    List<Trip> data;
-    List<Trip> filteredData;
-    CollectionController<Trip> tripsController;
+    private CollectionController<Trip> tripsController;
 
     private boolean loadFromApi;
     private boolean fromCash;
 
+    private ArrayList<Trip> data = new ArrayList<>();
+    private ArrayList<Trip> filteredData;
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -81,7 +84,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         this.tripsController = loaderFactory.create(0, (context, params) -> {
             if (!fromCash && needUpdate() || loadFromApi) {
                 this.loadFromApi = false;
-                this.data = this.loadTrips();
+                this.data.addAll(this.loadTrips());
 
                 FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
 
@@ -97,6 +100,15 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             return filteredData;
         });
         eventBus.register(this);
+    }
+
+    public CollectionController<Trip> getTripsController() {
+        return tripsController;
+    }
+
+    public void reload() {
+        loadFromApi = true;
+        tripsController.reload();
     }
 
     public void onEvent(FilterBusEvent event) {
@@ -115,17 +127,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         tripsController.reload();
     }
 
-    public CollectionController<Trip> getTripsController() {
-        return tripsController;
-    }
 
-    public void reload() {
-        loadFromApi = true;
-        tripsController.reload();
-    }
-
-    private List<Trip> performFiltering(List<Trip> data) {
-        List<Trip> filteredTrips = new ArrayList<>();
+    private ArrayList<Trip> performFiltering(List<Trip> data) {
+        ArrayList<Trip> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Collections2.filter(data, (input) ->
                 input.getPrice().getAmount() <= maxPrice
                         && input.getPrice().getAmount() >= minPrice
@@ -167,6 +171,12 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             dreamTripsApi.unlikeTrio(trip.getId(), callback);
         }
 
+    }
+
+    public void actionMap() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MapFragment.EXTRA_TRIPS, data);
+        fragmentCompass.replace(State.MAP, bundle);
     }
 
     public List<Trip> loadTrips() {

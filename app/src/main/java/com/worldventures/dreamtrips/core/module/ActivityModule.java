@@ -24,12 +24,14 @@ import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
+import com.worldventures.dreamtrips.presentation.FragmentMapInfoPM;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.presentation.MapFragmentPM;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
@@ -69,8 +71,10 @@ import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
+import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
+import com.worldventures.dreamtrips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
@@ -120,14 +124,17 @@ import dagger.Provides;
                 FacebookPhotoFragmentPM.class,
                 FiltersFragmentPM.class,
                 DetailedImagePagerFragmentPresentation.class,
+                FragmentMapInfoPM.class,
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
                 MembershipPM.class,
                 BucketTabsFragmentPM.class,
                 BucketListFragmentPM.class,
+                MapFragmentPM.class,
 
                 NavigationDrawerFragment.class,
+                FragmentMapTripInfo.class,
                 MemberShipFragment.class,
                 ProfileFragment.class,
                 DreamTripsFragment.class,
@@ -146,6 +153,7 @@ import dagger.Provides;
                 BucketTabsFragment.class,
                 BucketListFragment.class,
                 DetailedImagePagerFragment.class,
+                MapFragment.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,

@@ -137,6 +137,9 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
             case R.id.action_filter:
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
+            case R.id.action_map:
+                getPresentationModel().actionMap();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

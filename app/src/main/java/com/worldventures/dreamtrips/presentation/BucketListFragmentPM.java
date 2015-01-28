@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,6 +41,9 @@ public class BucketListFragmentPM extends BasePresentation {
     @Inject
     Gson gson;
 
+    @Inject
+    SimpleKeyValueStorage storage;
+
     @Override
     public void init() {
         super.init();
@@ -47,9 +52,24 @@ public class BucketListFragmentPM extends BasePresentation {
             String stringFromAsset = getStringFromAsset(type.getFileName());
             gson.fromJson(stringFromAsset, BucketItem.class);
             BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
-            result.addAll(response.getData());
+            List<BucketItem> data = response.getData();
+            if (isFilterEnabled()) {
+                List<BucketItem> filteredData = new ArrayList<BucketItem>();
+                for (BucketItem bucketItem : data) {
+                    if (storage.get(bucketItem.getSPName()) != null) {
+                        filteredData.add(bucketItem);
+                    }
+                }
+                result.addAll(filteredData);
+            } else {
+                result.addAll(data);
+            }
             return result;
         });
+    }
+
+    private Boolean isFilterEnabled() {
+        return Boolean.valueOf(storage.get(BucketTabsFragmentPM.BUCKET_FILTER_ENABLED));
     }
 
     private String getStringFromAsset(String fileName) {

@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 @PresentationModel
-public class MemberShipPM extends BasePresentation<BasePresentation.View> {
+public class MembershipPM extends BasePresentation<BasePresentation.View> {
 
     @Inject
     LoaderFactory loaderFactory;
@@ -27,8 +27,7 @@ public class MemberShipPM extends BasePresentation<BasePresentation.View> {
     SharedServicesApi sp;
     private List<Video> objects;
 
-
-    public MemberShipPM(View view) {
+    public MembershipPM(View view) {
         super(view);
     }
 

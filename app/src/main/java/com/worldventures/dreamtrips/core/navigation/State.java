@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoF
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
@@ -24,16 +25,19 @@ public enum State {
     LOGIN(LoginFragment.class, "Log in"),
     WEB_STATIC(StaticInfoFragment.class, "Web"),
     CREATE_PHOTO(CreatePhotoFragment.class, "New Photo"),
+    DETAILED_TRIP(DetailedTripFragment.class, "Detailed Trip"),
     PICK_FB_ALBUM(FacebookAlbumFragment.class, "Select album"),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, "Select photo"),
-
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
     TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
     MEMBERSHIP(MemberShipFragment.class, "Membership", 2, R.drawable.ic_membership),
     BUCKET_LIST(BucketTabsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),
-    FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq),
-    TERMS_AND_CONDITIONS(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", 6, R.drawable.ic_termsconditions),;
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", 5, R.drawable.ic_faq),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", 5, R.drawable.ic_termsconditions),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", 5, R.drawable.ic_cookie),
+
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, "");
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;

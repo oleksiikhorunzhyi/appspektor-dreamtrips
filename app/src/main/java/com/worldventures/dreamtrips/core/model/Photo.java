@@ -105,6 +105,10 @@ public class Photo extends BaseEntity implements Parcelable {
                 '}';
     }
 
+    public Photo() {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -116,14 +120,12 @@ public class Photo extends BaseEntity implements Parcelable {
         dest.writeInt(this.userId);
         dest.writeString(this.shotAt);
         dest.writeString(this.locationName);
-        dest.writeParcelable(this.coordinates, flags);
+        dest.writeParcelable(this.coordinates, 0);
         dest.writeList(this.tags);
-        dest.writeParcelable(this.images, flags);
+        dest.writeParcelable(this.images, 0);
         dest.writeByte(liked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.likeCount);
-    }
-
-    public Photo() {
+        dest.writeInt(this.id);
     }
 
     private Photo(Parcel in) {
@@ -133,10 +135,11 @@ public class Photo extends BaseEntity implements Parcelable {
         this.locationName = in.readString();
         this.coordinates = in.readParcelable(Coordinate.class.getClassLoader());
         this.tags = new ArrayList<>();
-        in.readList(this.tags, ArrayList.class.getClassLoader());
+        in.readList(this.tags, String.class.getClassLoader());
         this.images = in.readParcelable(Image.class.getClassLoader());
         this.liked = in.readByte() != 0;
         this.likeCount = in.readInt();
+        this.id = in.readInt();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {

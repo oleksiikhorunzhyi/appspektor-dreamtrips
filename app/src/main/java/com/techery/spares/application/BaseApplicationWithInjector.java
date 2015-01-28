@@ -1,6 +1,7 @@
 package com.techery.spares.application;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.techery.spares.module.Injector;
 
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
-public abstract class BaseApplicationWithInjector extends Application implements Injector {
+public abstract class BaseApplicationWithInjector extends MultiDexApplication implements Injector {
     private ObjectGraph objectGraph;
 
     @Inject

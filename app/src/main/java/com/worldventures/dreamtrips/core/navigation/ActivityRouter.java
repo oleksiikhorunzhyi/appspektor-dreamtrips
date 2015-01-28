@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
+import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 
@@ -43,7 +48,27 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FullScreenPhotoActivity.class, bundle);
     }
 
+    public void openFullScreenTrip(List<Object> photoList, int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
+        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_POSITION, position);
+        startActivity(FullScreenTripImageActivity.class, bundle);
+    }
+
+    public void openBookItActivity(int tripId) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
+        startActivity(BookItActivity.class, bundle);
+    }
+
+    public void openTripDetails(Trip trip) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
+        startActivity(DetailTripActivity.class, bundle);
+    }
+
     public void openFacebookPhoto(Fragment fm) {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
+
 }

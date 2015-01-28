@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
@@ -47,6 +48,9 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     protected String userEmail;
 
     @Inject
+    protected Prefs prefs;
+
+    @Inject
     @Global
     protected EventBus eventBus;
 
@@ -56,13 +60,12 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         final File file = new File(image.getFileThumbnail());
         final TypedFile typedFile = new TypedFile("image/*", file);
-        dreamTripsApi.uploadAvatar(typedFile, new Callback<User.Avatar>() {
+        dreamTripsApi.uploadAvatar(typedFile, new Callback<User>() {
             @Override
-            public void success(User.Avatar avatar, Response response) {
+            public void success(User userResponse, Response response) {
                 UserSession userSession = appSessionHolder.get().get();
                 User user = userSession.getUser();
-
-                user.setAvatar(avatar);
+                user.setAvatar(userResponse.getAvatar());
 
                 ProfileFragmentPresentation.this.appSessionHolder.put(userSession);
 
@@ -73,9 +76,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
             public void failure(RetrofitError error) {
                 handleError(error);
             }
-        });
-
-        view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
+        });        view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
     };
 
     private ImagePickCallback coverCallback = (fragment, image, error) -> {
@@ -172,6 +173,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     }
 
     public void logout() {
+        this.prefs.clear();
         this.appSessionHolder.destroy();
         activityRouter.finish();
         activityRouter.openLogin();
@@ -184,7 +186,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         changeSupport.firePropertyChange(DATE_OF_BIRTH);
     }
 
-    //don't use of get prefix
+    //don't use of get PREFIX
     public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
     }

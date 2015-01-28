@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +12,19 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.presentation.MemberShipPM;
+import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 
 import java.util.List;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
-public class MemberShipFragment extends BaseFragment<MemberShipPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -40,9 +40,7 @@ public class MemberShipFragment extends BaseFragment<MemberShipPM> implements Tr
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-
-        this.recyclerView.setLayoutManager(layoutManager);
+        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
@@ -91,12 +89,18 @@ public class MemberShipFragment extends BaseFragment<MemberShipPM> implements Tr
     }
 
     @Override
-    protected MemberShipPM createPresentationModel(Bundle savedInstanceState) {
-        return new MemberShipPM(this);
+    protected MembershipPM createPresentationModel(Bundle savedInstanceState) {
+        return new MembershipPM(this);
     }
 
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
+    public void onEvent(ScreenOrientationChangeEvent event) {
+        boolean landscape = event.isLandscape();
+        setupLayoutManager(landscape);
+    }
+
+    private void setupLayoutManager(boolean landscape) {
+        int spanCount = landscape ? 2 : 1;
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+        this.recyclerView.setLayoutManager(layoutManager);
     }
 }

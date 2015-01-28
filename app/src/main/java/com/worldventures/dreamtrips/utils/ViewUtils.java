@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.view.Display;
 
-public class ViewIUtils {
+public class ViewUtils {
 
     public static int getScreenWidth(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
@@ -35,5 +37,19 @@ public class ViewIUtils {
             result = activity.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static boolean isLandscapeOrientation(Activity activity) {
+        int orientation = activity.getResources().getConfiguration().orientation;
+        return Configuration.ORIENTATION_LANDSCAPE == orientation;
+
+    }
+
+    public static boolean isTablet(Context context) {
+        boolean xlarge = ((context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
+        boolean large = ((context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
     }
 }

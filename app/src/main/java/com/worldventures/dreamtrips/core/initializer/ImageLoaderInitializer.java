@@ -25,14 +25,13 @@ public class ImageLoaderInitializer implements AppInitializer {
         optionBuilder.cacheInMemory(true);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this.context)
                 .threadPoolSize(3)
-                .writeDebugLogs()
+                //.writeDebugLogs()
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()
                 .memoryCacheSizePercentage(30)
                 .diskCacheSize(50 * 1024 * 1024)
                 .defaultDisplayImageOptions(optionBuilder.build())
-                .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
     }

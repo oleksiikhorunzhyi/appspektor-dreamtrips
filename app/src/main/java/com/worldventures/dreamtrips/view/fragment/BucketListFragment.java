@@ -85,7 +85,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void onResume() {
         super.onResume();
-
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
                 getPresentationModel().getAdapterController().reload();
@@ -104,8 +103,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         return new BucketListFragmentPM(this, type);
     }
 
-    @Override
-    public void requestUpdateAdapter() {
-        arrayListAdapter.notifyItemChanged(0);
+    public void requestReload() {
+        getPresentationModel().getAdapterController().reload();
     }
+
 }

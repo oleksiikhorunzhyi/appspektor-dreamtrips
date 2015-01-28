@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.Photo;
 
 import org.robobinding.annotation.PresentationModel;
@@ -59,8 +60,18 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
         view.setLiked(photo.isLiked());
     }
 
-    public void flagAction(String title) {
-        dreamTripsApi.flagPhoto(photo.getId(), title, new Callback<JsonObject>() {
+    public void showFlagAction(int itemId) {
+        FlagContent flagContent = FlagContent.values()[itemId];
+        if (flagContent.isNeedDescription()) {
+            view.showFlagDescription(flagContent.getTitle());
+        } else {
+            view.showFlagConfirmDialog(flagContent.getTitle(), null);
+        }
+    }
+
+    public void sendFlagAction(String title, String desc) {
+        if (desc == null) desc = "";
+        dreamTripsApi.flagPhoto(photo.getId(), title + ". " + desc, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
                 view.informUser("Photo has been flagged");
@@ -77,5 +88,9 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
         void setTitle(String title);
 
         void setLiked(boolean isLiked);
+
+        public void showFlagConfirmDialog(String reason, String desc);
+
+        public void showFlagDescription(String reason);
     }
 }

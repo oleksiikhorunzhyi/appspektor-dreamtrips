@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,7 +18,8 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
@@ -29,6 +31,8 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
+
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
@@ -36,6 +40,8 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @InjectView(R.id.user_cover)
     ImageView userCover;
+    @InjectView(R.id.vg_content_container)
+    ViewGroup vgContentContainer;
     @InjectView(R.id.user_photo)
     ImageView userPhoto;
     @InjectView(R.id.user_photo_2)
@@ -50,15 +56,34 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     DTEditText dateOfBirth;
     @Inject
     UniversalImageLoader universalImageLoader;
+    @InjectView(R.id.sv)
+    ScrollView sv;
+
+    @InjectView(R.id.v_top_strip)
+    View vTopStirp;
 
     private PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        layoutConfiguration();
+    }
 
-        ViewGroup.LayoutParams lp = this.userCover.getLayoutParams();
-        lp.height = ViewIUtils.getScreenWidth(getActivity());
+    public void onEvent(ScreenOrientationChangeEvent event) {
+        layoutConfiguration();
+    }
+
+    private void layoutConfiguration() {
+        int minSideSize = getMinSideSize(getActivity());
+        userCover.getLayoutParams().height = minSideSize;
+        vgContentContainer.getLayoutParams().width = minSideSize;
+        int m = 0;
+        if (minSideSize < ViewUtils.getScreenWidth(getActivity())) {
+            m = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+        }
+        ((ViewGroup.MarginLayoutParams) sv.getLayoutParams()).setMargins(0, m, 0, 0);
+        vTopStirp.getLayoutParams().height = m;
     }
 
     @Override

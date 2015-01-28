@@ -2,7 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="navigation_drawer_width">240dp</dimen>
+    <dimen name="navigation_drawer_width">248dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="statusMargin">0dp</dimen>
     <dimen name="userSpace">164dp</dimen>
@@ -11,4 +11,12 @@
     <dimen name="margin_small">1dp</dimen>
     <dimen name="create_photo_text_size">17sp</dimen>
     <dimen name="create_phot_left_hint_width">72dp</dimen>
+
+    <!-- dimen for trip items -->
+    <dimen name="tripImageHeight">200dp</dimen>
+    <dimen name="tripImagePanelMargin">20dp</dimen>
+    <dimen name="tripImagePanelPaddingHorizontal">10dp</dimen>
+    <dimen name="tripImagePanelPaddingVertical">5dp</dimen>
+    <dimen name="tripDetailPanelPadding">10dp</dimen>
+    <dimen name="tripImageHeightDetailed">300dp</dimen>
 </resources>

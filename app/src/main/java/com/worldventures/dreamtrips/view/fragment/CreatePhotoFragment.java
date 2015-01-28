@@ -15,7 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.ViewIUtils;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
@@ -55,7 +55,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         etDate.setOnTouchListener(this);
         etTime.setOnTouchListener(this);
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
-        lp.height = ViewIUtils.getMinSideSize(getActivity());//but by material style guide 3:2
+        lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
         Uri uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
         getPresentationModel().setImageUri(uri);
         imageLoader.loadImage(getPresentationModel().getImageUri(), ivImage, null);

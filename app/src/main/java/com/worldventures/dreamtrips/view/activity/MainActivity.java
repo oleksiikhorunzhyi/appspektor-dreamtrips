@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,9 +15,12 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
+import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
+import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
@@ -36,6 +41,9 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @InjectView(R.id.container)
     View container;
 
+    @InjectView(R.id.drawer)
+    DrawerLayout drawerLayout;
+
     private static class MenuElement {
         final Class<? extends Fragment> fragmentClass;
         final String title;
@@ -55,6 +63,13 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         return new MainActivityPresentation(this);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        makeActionBarTransparent(false);
+    }
+
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
@@ -64,14 +79,16 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         this.drawerElements.add(new MenuElement(MemberShipFragment.class, "Membership", R.drawable.ic_membership));
         this.drawerElements.add(new MenuElement(BucketTabsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
         this.drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.TermsAndConditionsFragment.class, "Terms&Conditions", R.drawable.ic_termsconditions));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", R.drawable.ic_faq));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", R.drawable.ic_termsconditions));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", R.drawable.ic_cookie));
 
         setSupportActionBar(this.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), this.toolbar);
+        disableRightDrawer();
     }
 
     @Override
@@ -106,4 +123,40 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
     }
+
+    public void openRightDrawer() {
+        drawerLayout.openDrawer(Gravity.END);
+        FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
+        filtersFragment.refresh();
+    }
+
+    public void closeDrawer() {
+        drawerLayout.closeDrawer(Gravity.END);
+    }
+
+    public void disableRightDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupToolbarLayout();
+        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
+        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
+    }
+
+    private void setupToolbarLayout() {
+        if (toolbar != null) {
+            int size = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            toolbar.setMinimumHeight(size);
+            ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
+            lp.height = size;
+            toolbar.setLayoutParams(lp);
+            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
+
+        }
+    }
+
 }

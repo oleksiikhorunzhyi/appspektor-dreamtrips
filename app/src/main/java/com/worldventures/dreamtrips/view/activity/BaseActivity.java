@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
+import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
@@ -12,7 +14,6 @@ import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
 import org.robobinding.binder.BinderFactoryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ import timber.log.Timber;
 public abstract class BaseActivity extends InjectingActivity {
 
     private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
-
+    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
     ActivityRouter router;
 
@@ -69,6 +70,12 @@ public abstract class BaseActivity extends InjectingActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        dispatcher.dispatchTouchEvent(this, ev);
+        return super.dispatchTouchEvent(ev);
     }
 }
 

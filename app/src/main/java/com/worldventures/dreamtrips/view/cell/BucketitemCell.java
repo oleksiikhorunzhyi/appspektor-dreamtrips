@@ -18,7 +18,6 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_bucket_item)
 public class BucketItemCell extends AbstractCell<BucketItem> {
 
-    private static final String prefix = "bucket_";
     @InjectView(R.id.tv_name)
     TextView tvName;
     @InjectView(R.id.iv_like)
@@ -34,7 +33,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
     @Override
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName());
-        ivLike.setSelected(storage.get(prefix + getModelObject().getId()) != null);
+        ivLike.setSelected(storage.get(getModelObject().getSPName()) != null);
     }
 
     @Override
@@ -44,10 +43,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
     @OnClick(R.id.iv_like)
     public void onLikeClick() {
         if (!ivLike.isSelected()) {
-            storage.put(prefix + getModelObject().getId(), "");
+            storage.put(getModelObject().getSPName(), "");
             ivLike.setSelected(true);
         } else {
-            storage.remove(prefix + getModelObject().getId());
+            storage.remove(getModelObject().getSPName());
             ivLike.setSelected(false);
         }
     }

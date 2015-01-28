@@ -73,6 +73,7 @@ public class ApiModule {
     Gson provideGson() {
         return new GsonBuilder()
                 .setExclusionStrategies(new RealmGsonExlusionStrategy())
+                .setDateFormat("yyyy-MM-dd")
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }

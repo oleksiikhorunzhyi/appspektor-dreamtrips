@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
@@ -13,16 +14,18 @@ import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 
 import butterknife.InjectView;
 
-import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 
 @Layout(R.layout.fragment_bucket_tab)
 public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
+
+
     @Override
     protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new BucketTabsFragmentPM(this);
     }
 
-
+    @InjectView(R.id.sw_liked)
+    Switch swLiked;
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
@@ -40,7 +43,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
                 public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
                     Type type = Type.values()[position];
-                    args.putSerializable(BUNDLE_TYPE, type);
+                    args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
                     fragment.setArguments(args);
                 }
             };
@@ -50,8 +53,19 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
             this.adapter.add(new BasePagerAdapter.FragmentItem(BucketListFragment.class, "Restaurants"));
 
         }
-        this.pager.setAdapter(adapter);
-        this.tabs.setViewPager(pager);
+        pager.setAdapter(adapter);
+        tabs.setViewPager(pager);
+        swLiked.setChecked(getPresentationModel().isFilterEnabled());
+        swLiked.setOncheckListener(b -> {
+            getPresentationModel().filterEnabled(b);
+            for (int i = 0; i < adapter.getCount(); i++) {
+                String id = "android:switcher:" + R.id.pager + ":" + i;
+                Fragment page = getChildFragmentManager().findFragmentByTag(id);
+                if (page != null) {
+                    ((BucketListFragment) page).requestReload();
+                }
+            }
+        });
     }
 
     public enum Type {

@@ -26,7 +26,7 @@ import timber.log.Timber;
 
 public abstract class BaseActivity extends InjectingActivity {
 
-    private static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
+    protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
     private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
@@ -90,11 +90,8 @@ public abstract class BaseActivity extends InjectingActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    private void initHockeyApp() {
+    protected void initHockeyApp() {
         CrashManager.register(this, HOCKEY_APP_ID);
-        if (BuildConfig.DEBUG) {
-            UpdateManager.register(this, HOCKEY_APP_ID);
-        }
     }
 
 

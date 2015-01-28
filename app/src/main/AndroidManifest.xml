@@ -108,6 +108,8 @@
             android:name="com.instabug.ProductionMode"
             android:value="false" />
 
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+
     </application>
 
 </manifest>

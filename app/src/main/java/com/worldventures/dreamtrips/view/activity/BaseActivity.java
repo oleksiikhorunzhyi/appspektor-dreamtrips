@@ -7,8 +7,12 @@ import android.view.MotionEvent;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
@@ -22,6 +26,7 @@ import timber.log.Timber;
 
 public abstract class BaseActivity extends InjectingActivity {
 
+    protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
     private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
@@ -30,6 +35,12 @@ public abstract class BaseActivity extends InjectingActivity {
     public ViewBinder createViewBinder() {
         BinderFactory binderFactory = getReusableBinderFactory();
         return binderFactory.createViewBinder(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initHockeyApp();
     }
 
     private BinderFactory getReusableBinderFactory() {
@@ -72,10 +83,17 @@ public abstract class BaseActivity extends InjectingActivity {
         }
     }
 
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         dispatcher.dispatchTouchEvent(this, ev);
         return super.dispatchTouchEvent(ev);
     }
+
+    protected void initHockeyApp() {
+        CrashManager.register(this, HOCKEY_APP_ID);
+    }
+
+
 }
 

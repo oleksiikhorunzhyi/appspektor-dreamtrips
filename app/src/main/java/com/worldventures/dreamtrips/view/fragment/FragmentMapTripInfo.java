@@ -15,9 +15,11 @@ import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
- * Created by 1 on 28.01.15.
+ * Created by Edward on 28.01.15.
+ * kind of info window for map pin
  */
 @Layout(R.layout.fragment_trip_pin)
 public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> implements FragmentMapInfoPM.View {
@@ -83,6 +85,11 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
     @Override
     public void setLiked(boolean liked) {
         imageViewLike.setImageResource(liked ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+    }
+
+    @OnClick(R.id.itemLayout)
+    void onClick() {
+        getPresentationModel().onClick();
     }
 
     @Override

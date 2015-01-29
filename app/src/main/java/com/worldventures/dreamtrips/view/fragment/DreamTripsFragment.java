@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,10 +47,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    @Inject
-    @Global
-    EventBus eventBus;
-
     BaseArrayListAdapter<Trip> adapter;
 
     int lastConfig;
@@ -88,8 +85,11 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
                 showErrorMessage();
             }
         });
+    }
 
-        eventBus.register(this);
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
     }
 
     private void setupLayoutManager(boolean landscape) {

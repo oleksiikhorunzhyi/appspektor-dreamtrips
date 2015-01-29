@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,17 +37,21 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
 
 /**
  * Created by Edward on 19.01.15.
  * fragment to show detailed trip
  */
 @Layout(R.layout.fragment_detailed_trip)
-@MenuResource(R.menu.menu_detailed_trip)
 public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> implements DetailedTripFragmentPM.View {
 
     @InjectView(R.id.textViewName)
     TextView textViewName;
+    @InjectView(R.id.imageViewLike)
+    ImageView imageViewLike;
+    @InjectView(R.id.textViewReload)
+    TextView textViewReloadTripDetails;
     @InjectView(R.id.textViewPlace)
     TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
@@ -65,6 +70,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     LinearListView linearListView;
     @InjectView(R.id.progressBarDetailLoading)
     ProgressBar progressBarDetailLoading;
+    @InjectView(R.id.circleIndicator)
+    CircleIndicator circleIndicator;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -72,36 +79,14 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
-    private Trip trip;
-
     @Override
     protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        trip = (Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem menuItem = menu.findItem(R.id.action_like);
-        menuItem.setIcon(trip.isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case (R.id.action_like):
-                item.setIcon(!trip.isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
-                trip.setLiked(!trip.isLiked());
-                getPresentationModel().actionLike();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    @OnClick(R.id.imageViewLike)
+    void onLike() {
+        getPresentationModel().actionLike();
     }
 
     @OnClick(R.id.textViewBookIt)
@@ -111,14 +96,16 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void showErrorMessage() {
-        ((DetailTripActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
-        getActivity().invalidateOptionsMenu();
+        if (isAdded()) {
+            ((DetailTripActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+            getActivity().invalidateOptionsMenu();
+        }
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        getPresentationModel().setTrip(trip);
+        getPresentationModel().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
         getPresentationModel().onCreate();
 
         ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
@@ -145,8 +132,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
         viewPagerGallery.setAdapter(adapter);
         viewPagerGallery.setCurrentItem(0);
-
-        getEventBus().register(this);
+        circleIndicator.setViewPager(viewPagerGallery);
     }
 
     public void onEvent(TripImageClickedEvent event) {
@@ -185,14 +171,28 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void setContent(List<ContentItem> contentItems) {
+        progressBarDetailLoading.setVisibility(View.GONE);
         if (contentItems != null) {
-            progressBarDetailLoading.setVisibility(View.GONE);
             linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
+        } else {
+            textViewReloadTripDetails.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.textViewReload)
+    void onReloadClicked() {
+        textViewReloadTripDetails.setVisibility(View.GONE);
+        progressBarDetailLoading.setVisibility(View.VISIBLE);
+        getPresentationModel().loadTripDetails();
     }
 
     @Override
     public void setDuration(int count) {
         textViewScheduleDescription.setText(String.format(getString(R.string.duration), count));
+    }
+
+    @Override
+    public void setLike(boolean like) {
+        imageViewLike.setImageResource(like ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
     }
 }

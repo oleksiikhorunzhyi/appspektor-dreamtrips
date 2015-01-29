@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
@@ -41,7 +42,7 @@ import retrofit.client.Response;
 @PresentationModel
 public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.View> {
 
-    private static final long DELTA = 10 * 60 * 1000;
+    private static final long DELTA = 30 * 60 * 1000;
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -62,7 +63,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     private CollectionController<Trip> tripsController;
 
     private boolean loadFromApi;
-    private boolean fromCash;
 
     private ArrayList<Trip> data = new ArrayList<>();
     private ArrayList<Trip> filteredData;
@@ -81,8 +81,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Override
     public void init() {
         super.init();
+
         this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (!fromCash && needUpdate() || loadFromApi) {
+            if (needUpdate() || loadFromApi) {
                 this.loadFromApi = false;
                 this.data.addAll(this.loadTrips());
 
@@ -92,14 +93,15 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             } else {
                 this.data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
                 }.getType(), FileUtils.TRIPS);
-                fromCash = false;
             }
 
             filteredData = performFiltering(data);
 
             return filteredData;
         });
+
         eventBus.register(this);
+        eventBus.post(new RequestFilterDataEvent());
     }
 
     public CollectionController<Trip> getTripsController() {
@@ -122,7 +124,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             acceptedRegions = event.getAcceptedRegions();
             acceptedThemes = event.getAcceptedActivities();
             showSoldOut = event.isShowSoldOut();
-            fromCash = true;
         }
         tripsController.reload();
     }

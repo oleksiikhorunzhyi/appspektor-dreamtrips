@@ -60,6 +60,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setPrice(trip.getPrice().toString());
         view.setDuration(trip.getDuration());
         view.setRedemption(String.valueOf(trip.getRewardsLimit()));
+        view.setLike(trip.isLiked());
         loadTripDetails();
     }
 
@@ -81,6 +82,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void failure(RetrofitError error) {
                 view.showErrorMessage();
+                view.setContent(null);
             }
         };
         dreamTripsApi.getDetails(trip.getId(), callback);
@@ -100,6 +102,8 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             }
         };
 
+        trip.setLiked(!trip.isLiked());
+        view.setLike(trip.isLiked());
         if (trip.isLiked()) {
             dreamTripsApi.likeTrip(trip.getId(), callback);
         } else {
@@ -123,5 +127,6 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         void setDuration(int count);
         void showErrorMessage();
         void setRedemption(String count);
+        void setLike(boolean like);
     }
 }

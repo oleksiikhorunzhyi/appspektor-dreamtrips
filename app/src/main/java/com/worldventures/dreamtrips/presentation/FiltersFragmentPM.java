@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RangeBarDurationEvent;
 import com.worldventures.dreamtrips.utils.busevents.RangeBarPriceEvent;
 import com.worldventures.dreamtrips.utils.busevents.RegionSetChangedEvent;
+import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
 import com.worldventures.dreamtrips.utils.busevents.SoldOutEvent;
 import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
@@ -112,11 +113,12 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
             this.data.add(soldOutModel);
             return data;
         });
+
         eventBus.register(this);
     }
 
 
-    public void setChecked(boolean isChecked) {
+    public void setRegionsChecked(boolean isChecked) {
         if (regions != null) {
             for (Region region : regions) {
                 region.setChecked(isChecked);
@@ -124,7 +126,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         }
     }
 
-    public void setThemeChecked(boolean isChecked) {
+    public void setThemesChecked(boolean isChecked) {
         if (parentActivities != null) {
             for (Activity activity : parentActivities) {
                 activity.setChecked(isChecked);
@@ -150,8 +152,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         filterModel.reset();
         themeHeaderModel.setChecked(true);
         soldOutModel.setShowSoldOut(false);
-        setChecked(true);
-        setThemeChecked(true);
+        setRegionsChecked(true);
+        setThemesChecked(true);
         view.dataSetChanged();
         eventBus.post(filterBusEvent);
     }
@@ -163,11 +165,14 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     }
 
     private List<Integer> getAcceptedRegions() {
-        List<Integer> regionsList = new ArrayList<>();
+        List<Integer> regionsList = null;
 
-        for (Region region : regions) {
-            if (region.isChecked()) {
-                regionsList.add(region.getId());
+        if (regions != null) {
+            regionsList = new ArrayList<>();
+            for (Region region : regions) {
+                if (region.isChecked()) {
+                    regionsList.add(region.getId());
+                }
             }
         }
 
@@ -175,12 +180,14 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     }
 
     private List<Activity> getAcceptedThemes() {
-        List<Activity> themesList = new ArrayList<>();
-
-        for (Activity activity : parentActivities) {
-            if (activity.isChecked()) {
-                themesList.addAll(Collections2.filter(activities, (input) -> input.getParent_id()
-                        == activity.getId()));
+        List<Activity> themesList = null;
+        if (parentActivities != null) {
+            themesList = new ArrayList<>();
+            for (Activity activity : parentActivities) {
+                if (activity.isChecked()) {
+                    themesList.addAll(Collections2.filter(activities, (input) -> input.getParent_id()
+                            == activity.getId()));
+                }
             }
         }
 
@@ -199,6 +206,10 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         return dreamTripsApi.getRegions();
     }
 
+    public void onEvent(RequestFilterDataEvent event) {
+        acceptFilters();
+    }
+
     public void onEvent(RangeBarDurationEvent event) {
         this.minNights = event.getMinNights();
         this.maxNights = event.getMaxNights();
@@ -214,12 +225,12 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     }
 
     public void onEvent(CheckBoxAllPressedEvent event) {
-        setChecked(event.isChecked());
+        setRegionsChecked(event.isChecked());
         view.dataSetChanged();
     }
 
     public void onEvent(CheckBoxAllThemePressedEvent event) {
-        setThemeChecked(event.isChecked());
+        setThemesChecked(event.isChecked());
         view.dataSetChanged();
     }
 

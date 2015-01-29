@@ -5,7 +5,8 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import org.robobinding.annotation.PresentationModel;
 
 /**
- * Created by 1 on 28.01.15.
+ * Created by Edward on 28.01.15.
+ * presentation model for fragmentMapTripInfo
  */
 @PresentationModel
 public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> {
@@ -38,6 +39,10 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
     public void setTrip(Trip trip) {
         this.trip = trip;
         setView();
+    }
+
+    public void onClick() {
+        activityRouter.openTripDetails(trip);
     }
 
     public interface View extends BasePresentation.View {

@@ -13,7 +13,7 @@ import org.robobinding.annotation.PresentationModel;
 @PresentationModel
 public class BookItActivityPresentation extends BasePresentation<BookItActivityPresentation.View> {
 
-    private String urlBase = "https://www.dreamtrips.com/trips/details/%d?user=%s&token=%s&appMode=true#/book";
+    private static final String urlBase = "https://www.dreamtrips.com/trips/details/%d?user=%s&token=%s&appMode=true#/book";
 
     public BookItActivityPresentation(BookItActivityPresentation.View view) {
         super(view);

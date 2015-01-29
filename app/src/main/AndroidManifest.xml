@@ -84,14 +84,12 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU" />
 
-        <!--
-                <meta-data
-                    android:name="com.google.android.gms.version"
-                    android:value="@integer/google_play_services_version" />
-                <meta-data
-                    android:name="com.google.android.maps.v2.API_KEY"
-                    android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU"/>
-        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU" />
 
         <activity
             android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
@@ -109,6 +107,8 @@
         <meta-data
             android:name="com.instabug.ProductionMode"
             android:value="false" />
+
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
     </application>
 

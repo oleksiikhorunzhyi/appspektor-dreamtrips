@@ -27,6 +27,8 @@ import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 
+import net.hockeyapp.android.UpdateManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,6 +158,14 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             toolbar.setLayoutParams(lp);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
 
+        }
+    }
+
+    @Override
+    protected void initHockeyApp() {
+        super.initHockeyApp();
+        if (BuildConfig.DEBUG) {
+            UpdateManager.register(this, HOCKEY_APP_ID);
         }
     }
 

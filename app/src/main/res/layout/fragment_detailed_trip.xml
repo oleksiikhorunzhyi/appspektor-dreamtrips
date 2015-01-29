@@ -73,7 +73,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="THE MAGIC OF IRELAND"
                         android:textColor="@color/tripNameColor"
                         android:textSize="16sp" />
 
@@ -85,7 +84,6 @@
                         android:drawableLeft="@drawable/ic_location"
                         android:drawablePadding="5dp"
                         android:drawableStart="@drawable/ic_location"
-                        android:text="Kilkenny Island"
                         android:textColor="@color/tripPlaceColor" />
                 </LinearLayout>
 
@@ -95,7 +93,6 @@
                     android:layout_height="match_parent"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
-                    android:text="$299"
                     android:textColor="@color/tripPlaceColor"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -126,7 +123,6 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/ic_stripe"
                         android:padding="@dimen/tripDetailPanelPadding"
-                        android:text="Jul 10 - 15 2015"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -160,6 +156,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
+            <TextView
+                android:id="@+id/textViewReload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/tripBookItPadding"
+                android:visibility="gone"
+                android:textSize="22sp"
+                android:textColor="@color/tripPlaceColor"
+                android:gravity="center"
+                android:text="@string/reload_trip_details"/>
+
             <com.linearlistview.LinearListView
                 android:id="@+id/listViewContent"
                 android:layout_width="match_parent"
@@ -183,8 +190,8 @@
         android:layout_gravity="bottom"
         android:background="@color/tripButtonColor"
         android:gravity="center"
-        android:padding="15dp"
-        android:text="Book It!"
+        android:padding="@dimen/tripBookItPadding"
+        android:text="@string/book_it"
         android:textColor="@color/white"
         android:textSize="22sp" />
 

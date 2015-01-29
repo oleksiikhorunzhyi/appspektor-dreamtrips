@@ -47,6 +47,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @InjectView(R.id.textViewName)
     TextView textViewName;
+    @InjectView(R.id.textViewReload)
+    TextView textViewReloadTripDetails;
     @InjectView(R.id.textViewPlace)
     TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
@@ -185,10 +187,19 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void setContent(List<ContentItem> contentItems) {
+        progressBarDetailLoading.setVisibility(View.GONE);
         if (contentItems != null) {
-            progressBarDetailLoading.setVisibility(View.GONE);
             linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
+        } else {
+            textViewReloadTripDetails.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.textViewReload)
+    void onReloadClicked() {
+        textViewReloadTripDetails.setVisibility(View.GONE);
+        progressBarDetailLoading.setVisibility(View.VISIBLE);
+        getPresentationModel().loadTripDetails();
     }
 
     @Override

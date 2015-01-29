@@ -50,6 +50,11 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         View v = super.onCreateView(inflater, container, savedInstanceState);
         MapsInitializer.initialize(getActivity());
         mapView.onCreate(savedInstanceState);
+        initMap();
+        return v;
+    }
+
+    private void initMap() {
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
@@ -61,7 +66,6 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
                 getPresentationModel().onCameraChanged();
             });
         });
-        return v;
     }
 
     @Override

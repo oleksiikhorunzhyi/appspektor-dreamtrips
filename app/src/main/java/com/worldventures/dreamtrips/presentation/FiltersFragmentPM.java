@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
 import com.techery.spares.loader.CollectionController;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.utils.busevents.RangeBarDurationEvent;
 import com.worldventures.dreamtrips.utils.busevents.RangeBarPriceEvent;
 import com.worldventures.dreamtrips.utils.busevents.RegionSetChangedEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
+import com.worldventures.dreamtrips.utils.busevents.SoldOutEvent;
 import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
 
 import org.robobinding.annotation.PresentationModel;
@@ -209,8 +209,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         this.maxPrice = event.getMaxPrice();
     }
 
-    public void onEvent(SoldOutModel soldOutModel) {
-        showSoldOut = soldOutModel.isShowSoldOut();
+    public void onEvent(SoldOutEvent soldOutEvent) {
+        showSoldOut = soldOutEvent.isSoldOut();
     }
 
     public void onEvent(CheckBoxAllPressedEvent event) {

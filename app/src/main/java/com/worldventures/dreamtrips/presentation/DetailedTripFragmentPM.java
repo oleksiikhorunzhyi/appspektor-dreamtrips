@@ -81,6 +81,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void failure(RetrofitError error) {
                 view.showErrorMessage();
+                view.setContent(null);
             }
         };
         dreamTripsApi.getDetails(trip.getId(), callback);

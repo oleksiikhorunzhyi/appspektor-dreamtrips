@@ -157,6 +157,7 @@ import dagger.Provides;
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
+                StaticInfoFragment.FAQFragment.class,
                 BookItDialogFragment.class,
                 BucketTabsFragment.class,
                 BucketListFragment.class,

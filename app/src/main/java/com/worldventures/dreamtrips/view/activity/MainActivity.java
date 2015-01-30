@@ -82,6 +82,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         this.drawerElements.add(new MenuElement(BucketTabsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
         this.drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
         this.drawerElements.add(new MenuElement(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", R.drawable.ic_faq));
+        this.drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));
         this.drawerElements.add(new MenuElement(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", R.drawable.ic_termsconditions));
         this.drawerElements.add(new MenuElement(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", R.drawable.ic_cookie));
 

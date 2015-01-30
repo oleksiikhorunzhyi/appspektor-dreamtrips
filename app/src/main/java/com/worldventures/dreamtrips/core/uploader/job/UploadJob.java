@@ -82,7 +82,7 @@ public class UploadJob extends Job {
             checkNotNull(uploadTask);
             Log.w(TAG, "send eventBus: PhotoUploadStarted");
 
-            eventBus.post(new PhotoUploadStarted(uploadTask));
+            eventBus.post(new PhotoUploadStarted(ImageUploadTask.copy(uploadTask)));
         });
 
     }

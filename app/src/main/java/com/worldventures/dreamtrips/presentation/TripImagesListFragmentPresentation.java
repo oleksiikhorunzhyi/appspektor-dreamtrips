@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.v4.app.LoaderManager;
 
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
@@ -86,7 +85,8 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         Repository<ImageUploadTask> repository = new Repository<>(Realm.getInstance(context), ImageUploadTask.class);
         RealmResults<ImageUploadTask> all = repository.query().findAll();
         List<ImageUploadTask> list = Arrays.asList(all.toArray(new ImageUploadTask[all.size()]));
-        Collections.reverse(list);
+        Collections.reverse(ImageUploadTask.copy(list));
+
         return list;
     }
 

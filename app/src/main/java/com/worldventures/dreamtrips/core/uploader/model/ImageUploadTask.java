@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.uploader.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
@@ -35,6 +37,14 @@ public class ImageUploadTask extends RealmObject {
         t.setShotAt(obj.getShotAt());
         t.setOriginUrl(obj.getOriginUrl());
         return t;
+    }
+
+    public static List<ImageUploadTask> copy(List<ImageUploadTask> lst) {
+        List<ImageUploadTask> result = new ArrayList<>();
+        for (ImageUploadTask uploadTask : lst) {
+            result.add(copy(uploadTask));
+        }
+        return result;
     }
 
 

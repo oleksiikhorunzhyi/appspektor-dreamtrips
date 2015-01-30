@@ -93,12 +93,12 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
 
     public void onEventMainThread(PhotoUploadFinished event) {
-        //   if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
-        Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
-        pb.setVisibility(View.INVISIBLE);
-        ivResult.setBackgroundResource(R.drawable.circle_green);
-        btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
-        //    }
+        if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
+            Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
+            pb.setVisibility(View.INVISIBLE);
+            ivResult.setBackgroundResource(R.drawable.circle_green);
+            btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
+        }
     }
 
 }

@@ -14,6 +14,7 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
@@ -65,6 +66,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -143,8 +145,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
             getPresentationModel().getPhotosController().reload();
         } else {
             new Handler().postDelayed(() -> {
-                arrayListAdapter.replaceItem(0, event.getPhoto());
-                arrayListAdapter.notifyDataSetChanged();
+                for (int i = 0; i < arrayListAdapter.getItemCount(); i++) {
+                    Object item = arrayListAdapter.getItem(i);
+                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
+                        arrayListAdapter.replaceItem(i, event.getPhoto());
+                        arrayListAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+
             }, 500);
         }
     }

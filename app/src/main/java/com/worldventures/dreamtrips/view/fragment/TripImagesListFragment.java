@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +14,11 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
@@ -49,6 +53,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
 
     BaseArrayListAdapter<Object> arrayListAdapter;
+    private Type type;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -61,6 +66,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -89,7 +95,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                 refreshLayout.setRefreshing(false);
             }
         });
-
     }
 
     @Override
@@ -122,11 +127,38 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     @Override
     protected TripImagesListFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
+        type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return new TripImagesListFragmentPresentation(this, type);
     }
 
+    public void onEventMainThread(PhotoUploadStarted event) {
+        if (type != Type.MY_IMAGES) {
+            getPresentationModel().getPhotosController().reload();
+        } else {
+            arrayListAdapter.addItem(0, event.getUploadTask());
+            arrayListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void onEventMainThread(PhotoUploadFinished event) {
+        if (type != Type.MY_IMAGES) {
+            getPresentationModel().getPhotosController().reload();
+        } else {
+            new Handler().postDelayed(() -> {
+                for (int i = 0; i < arrayListAdapter.getItemCount(); i++) {
+                    Object item = arrayListAdapter.getItem(i);
+                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
+                        arrayListAdapter.replaceItem(i, event.getPhoto());
+                        arrayListAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+
+            }, 500);
+        }
+    }
+
     public static enum Type {
-        MY_IMAGES, MEMBER_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
+        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
     }
 }

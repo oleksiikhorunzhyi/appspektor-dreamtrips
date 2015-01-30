@@ -60,6 +60,14 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
+    @Layout(R.layout.fragment_webview)
+    public static class FAQFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
+        }
+    }
 
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {

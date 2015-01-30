@@ -28,7 +28,7 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_trip_tabs_images)
-public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresentation> implements TripImagesTabsFragmentPresentation.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
+public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresentation> implements TripImagesTabsFragmentPresentation.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
@@ -70,6 +70,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
         }
         this.pager.setAdapter(adapter);
+        this.tabs.setOnPageChangeListener(this);
         this.tabs.setViewPager(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
     }
@@ -128,6 +129,25 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
             pager.setCurrentItem(1);
         }
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (position == Type.YOU_SHOULD_BE_HERE.ordinal()) {
+            multipleActionsDown.setVisibility(View.GONE);
+        } else {
+            multipleActionsDown.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
     }
 }

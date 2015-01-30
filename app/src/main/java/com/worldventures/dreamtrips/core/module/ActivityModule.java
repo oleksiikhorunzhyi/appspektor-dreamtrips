@@ -8,6 +8,9 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
+import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
+import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
@@ -55,6 +58,7 @@ import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
@@ -153,6 +157,7 @@ import dagger.Provides;
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
+                StaticInfoFragment.FAQFragment.class,
                 BookItDialogFragment.class,
                 BucketTabsFragment.class,
                 BucketListFragment.class,

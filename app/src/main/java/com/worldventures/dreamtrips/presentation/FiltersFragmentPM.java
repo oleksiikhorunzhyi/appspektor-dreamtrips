@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
 import com.techery.spares.loader.CollectionController;

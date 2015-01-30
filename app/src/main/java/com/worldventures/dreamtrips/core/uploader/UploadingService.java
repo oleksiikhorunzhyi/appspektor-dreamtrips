@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.core.uploader;
 
+import android.content.Intent;
+import android.os.Handler;
+import android.util.Log;
+
 import com.path.android.jobqueue.JobManager;
 import com.techery.spares.module.Annotations.UseModule;
 import com.techery.spares.service.InjectingService;
@@ -16,6 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @UseModule(UploaderModule.class)
 public class UploadingService extends InjectingService {
+
+    public static final String TAG = UploadingService.class.getSimpleName();
 
     public static class ImageUploadAction {
         private String fileUri;
@@ -76,20 +82,28 @@ public class UploadingService extends InjectingService {
 
     @Override
     public void onCreate() {
+        Log.w(TAG, "onCreate");
         super.onCreate();
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.w(TAG, "onStartCommand");
         this.actionRouter.on(ImageUploadAction.class, (imageUploadParams) -> {
-
-            ImageUploadTask uploadTask = repository.create((task) -> {
-                task.setFileUri(imageUploadParams.fileUri);
-                task.setLatitude(imageUploadParams.latitude);
-                task.setLongitude(imageUploadParams.longitude);
-                task.setLocationName(imageUploadParams.locationName);
-                task.setShotAt(imageUploadParams.shotAt);
-                task.setTitle(imageUploadParams.title);
-            });
-
-            this.uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));
+            new Handler().postDelayed(() -> {
+                ImageUploadTask uploadTask = repository.create((task) -> {
+                    task.setFileUri(imageUploadParams.fileUri);
+                    task.setLatitude(imageUploadParams.latitude);
+                    task.setLongitude(imageUploadParams.longitude);
+                    task.setLocationName(imageUploadParams.locationName);
+                    task.setShotAt(imageUploadParams.shotAt);
+                    task.setTitle(imageUploadParams.title);
+                });
+                Log.w(TAG, "addJob");
+                uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));
+            }, 100);
         });
+
+        return super.onStartCommand(intent, flags, startId);
     }
 }

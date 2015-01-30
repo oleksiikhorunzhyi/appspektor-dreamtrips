@@ -26,6 +26,8 @@ public class Repository<T extends RealmObject> {
 
         this.realm = realm;
         this.itemClazz = itemClazz;
+
+        realm.refresh();
     }
 
     public T create(Consumer<T> consumer) {

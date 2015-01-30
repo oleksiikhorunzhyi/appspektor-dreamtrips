@@ -28,10 +28,6 @@ import io.realm.RealmResults;
 @PresentationModel
 public class TripImagesListFragmentPresentation extends BasePresentation<TripImagesListFragmentPresentation.View> {
 
-//    @Inject
-//    Repository<ImageUploadTask> repository;
-
-
     @Inject
     DreamTripsApi dreamTripsApi;
 
@@ -58,12 +54,10 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         Handler mainHandler = new Handler(context.getMainLooper());
         final List<List<ImageUploadTask>> result = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                result.add(command.run());
-                countDownLatch.countDown();
-            }
+
+        mainHandler.post(() -> {
+            result.add(command.run());
+            countDownLatch.countDown();
         });
 
         try {
@@ -80,7 +74,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     public void init() {
         super.init();
         this.photosController = loaderFactory.create(this.type.ordinal(), (context, params) -> {
-
             this.photos = this.loadPhotos();
             ArrayList<Object> result = new ArrayList<>();
             result.addAll(photos);
@@ -92,7 +85,8 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         Repository<ImageUploadTask> repository = new Repository<>(Realm.getInstance(context), ImageUploadTask.class);
         RealmResults<ImageUploadTask> all = repository.query().findAll();
         List<ImageUploadTask> list = Arrays.asList(all.toArray(new ImageUploadTask[all.size()]));
-        Collections.reverse(list);
+        Collections.reverse(ImageUploadTask.copy(list));
+
         return list;
     }
 
@@ -126,7 +120,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
             this.activityRouter.openFullScreenPhoto(this.photos, position);
         }
     }
-
 
     public static interface View extends BasePresentation.View {
     }

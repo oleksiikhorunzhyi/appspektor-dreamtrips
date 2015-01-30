@@ -63,9 +63,9 @@ public class UploaderModule {
                 .customLogger(new Logger())
                 .injector(injector)
                 .minConsumerCount(1)
-                .maxConsumerCount(3)
+                .maxConsumerCount(5)
                 .loadFactor(3)
-                .consumerKeepAlive(120)
+                .consumerKeepAlive(15)
                 .id("Uploading Job Manager")
                 .build();
     }

@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class BasePresentation<VT extends BasePresentation.View> {
 

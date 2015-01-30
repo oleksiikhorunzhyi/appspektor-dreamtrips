@@ -55,4 +55,8 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
     }
 
     protected abstract void syncUIStateWithModel();
+
+    public void afterInject() {
+
+    }
 }

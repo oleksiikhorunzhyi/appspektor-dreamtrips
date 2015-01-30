@@ -19,6 +19,7 @@ public class Photo extends BaseEntity implements Parcelable {
     Image images;
     boolean liked;
     int likeCount;
+    private String taskId;
 
     public List<String> getTags() {
         return tags;
@@ -151,4 +152,12 @@ public class Photo extends BaseEntity implements Parcelable {
             return new Photo[size];
         }
     };
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
 }

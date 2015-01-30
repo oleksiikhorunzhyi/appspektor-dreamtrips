@@ -94,22 +94,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
         return photosController;
     }
 
-    public static class PhotoCollectionController extends CollectionController<Object> {
-
-        public PhotoCollectionController(Context context, LoaderManager loaderManager, LoaderCreator factory) {
-            super(context, loaderManager, factory);
-        }
-
-        public PhotoCollectionController(Context context, LoaderManager loaderManager, int loaderID, LoaderCreator factory) {
-            super(context, loaderManager, loaderID, factory);
-        }
-        public void addOnlyUpdates(){
-
-            reload();
-        }
-
-    }
-
     public List<Object> loadPhotos() {
         switch (type) {
             case MY_IMAGES:

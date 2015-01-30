@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
@@ -32,6 +33,7 @@ public enum State {
     PICK_FB_PHOTO(FacebookPhotoFragment.class, "Select photo"),
     MAP(MapFragment.class, ""),
     MAP_INFO(FragmentMapTripInfo.class, ""),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, ""),
     DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips),
     TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images),
     MEMBERSHIP(MemberShipFragment.class, "Membership", 2, R.drawable.ic_membership),
@@ -39,9 +41,7 @@ public enum State {
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", 5, R.drawable.ic_faq),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", 5, R.drawable.ic_termsconditions),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", 5, R.drawable.ic_cookie),
-
-    BOOK_IT(StaticInfoFragment.BookItFragment.class, "");
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", 5, R.drawable.ic_cookie);
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;

@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.utils;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.worldventures.dreamtrips.core.model.Trip;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -22,7 +25,6 @@ public class FileUtils {
     public static final String TRIPS = "trips.json";
     public static final String REGIONS = "regions.json";
     public static final String ACTIVITIES = "activities.json";
-
 
     public static void saveJsonToCache(Context context, Object object, String name) {
         Gson gson = new Gson();

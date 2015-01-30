@@ -28,5 +28,8 @@
     <string name="duration">%d Nights,\n Standard Acc</string>
     <string name="smth_went_wrong">Something went wrong =(</string>
     <string name="inspire_me">Inspire Me</string>
+    <string name="book_it">Book It!</string>
+    <string name="reload_trip_details">RELOAD TRIP DETAILS</string>
+    <string name="title_book_it">Book It</string>
 
 </resources>

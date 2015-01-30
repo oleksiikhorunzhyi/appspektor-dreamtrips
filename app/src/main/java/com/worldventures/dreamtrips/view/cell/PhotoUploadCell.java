@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.view.cell;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.busevents.CancelUpload;
@@ -50,6 +50,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
         universalImageLoader.loadImage(getModelObject().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
     }
 
@@ -57,14 +60,14 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     public void prepareForReuse() {
         imageView.setImageBitmap(null);
         pb.setProgress(0);
+        pb.setVisibility(View.VISIBLE);
+        ivResult.setBackgroundResource(R.drawable.circle_blue);
+        btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
     }
 
     @Override
     public void afterInject() {
         super.afterInject();
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
     }
 
     @OnClick(R.id.cancel_upload)
@@ -83,10 +86,12 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
 
     public void onEventMainThread(PhotoUploadFinished event) {
+        Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
+
         pb.setVisibility(View.INVISIBLE);
         ivResult.setBackgroundResource(R.drawable.circle_green);
         btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
-        new Handler().postDelayed(() -> vgUploadHolder.setVisibility(View.GONE), 100);
+        //  new Handler().postDelayed(() -> vgUploadHolder.setVisibility(View.GONE), 100);
     }
 
 }

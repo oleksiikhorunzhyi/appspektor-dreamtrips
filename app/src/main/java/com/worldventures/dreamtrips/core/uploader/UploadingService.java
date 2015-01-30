@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.uploader;
 
+import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import com.path.android.jobqueue.JobManager;
 import com.techery.spares.module.Annotations.UseModule;
@@ -8,7 +10,6 @@ import com.techery.spares.service.InjectingService;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.CancelUpload;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @UseModule(UploaderModule.class)
 public class UploadingService extends InjectingService {
+
+    public static final String TAG = UploadingService.class.getSimpleName();
 
     public static class ImageUploadAction {
         private String fileUri;
@@ -79,8 +82,13 @@ public class UploadingService extends InjectingService {
 
     @Override
     public void onCreate() {
+        Log.w(TAG, "onCreate");
         super.onCreate();
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.w(TAG, "onStartCommand");
         this.actionRouter.on(ImageUploadAction.class, (imageUploadParams) -> {
 
             final Handler handler = new Handler();
@@ -93,11 +101,11 @@ public class UploadingService extends InjectingService {
                     task.setShotAt(imageUploadParams.shotAt);
                     task.setTitle(imageUploadParams.title);
                 });
-
+                Log.w(TAG, "addJob");
                 uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));
             }, 100);
         });
+
+        return super.onStartCommand(intent, flags, startId);
     }
-
-
 }

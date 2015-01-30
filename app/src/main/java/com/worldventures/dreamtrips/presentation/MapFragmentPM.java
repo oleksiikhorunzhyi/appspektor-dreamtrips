@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
 import org.robobinding.annotation.PresentationModel;
@@ -51,6 +52,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     public void init() {
         super.init();
         eventBus.register(this);
+        eventBus.post(new RequestFilterDataEvent());
     }
 
     public void setData(List<Trip> data) {
@@ -85,16 +87,18 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     }
 
     private void performFiltering() {
-        filteredData = new ArrayList<>();
-        filteredData.addAll(Collections2.filter(data, (input) ->
-                input.getPrice().getAmount() <= maxPrice
-                        && input.getPrice().getAmount() >= minPrice
-                        && input.getDuration() >= minNights
-                        && input.getDuration() <= maxNights
-                        && (showSoldOut || input.isAvailable())
-                        && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
-                        && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
-        reloadPins();
+        if (data != null) {
+            filteredData = new ArrayList<>();
+            filteredData.addAll(Collections2.filter(data, (input) ->
+                    input.getPrice().getAmount() <= maxPrice
+                            && input.getPrice().getAmount() >= minPrice
+                            && input.getDuration() >= minNights
+                            && input.getDuration() <= maxNights
+                            && (showSoldOut || input.isAvailable())
+                            && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
+                            && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
+            reloadPins();
+        }
     }
 
     public void resetFilters() {

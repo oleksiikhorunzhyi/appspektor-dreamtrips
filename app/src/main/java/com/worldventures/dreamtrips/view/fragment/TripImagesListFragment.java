@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -129,12 +130,22 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     }
 
     public void onEventMainThread(PhotoUploadStarted event) {
-        getPresentationModel().getPhotosController().reload();
+        if (type != Type.MY_IMAGES) {
+            getPresentationModel().getPhotosController().reload();
+        } else {
+            arrayListAdapter.addItem(0, event.getUploadTask());
+            arrayListAdapter.notifyDataSetChanged();
+        }
     }
 
     public void onEventMainThread(PhotoUploadFinished event) {
         if (type != Type.MY_IMAGES) {
             getPresentationModel().getPhotosController().reload();
+        } else {
+            new Handler().postDelayed(() -> {
+                arrayListAdapter.replaseItem(0, event.getPhoto());
+                arrayListAdapter.notifyDataSetChanged();
+            }, 500);
         }
     }
 

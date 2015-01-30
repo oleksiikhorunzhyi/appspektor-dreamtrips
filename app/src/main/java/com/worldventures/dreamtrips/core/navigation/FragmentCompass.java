@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
 import timber.log.Timber;
@@ -26,6 +28,14 @@ public class FragmentCompass {
 
     public void setContainerId(int containerId) {
         this.containerId = containerId;
+    }
+
+    public void show(DialogState state) {
+        show(state, null);
+    }
+
+    public void show(DialogState state, Bundle bundle) {
+        showDialog(state, bundle);
     }
 
     public void add(State state) {
@@ -76,6 +86,26 @@ public class FragmentCompass {
             } catch (Exception e) {
                 Timber.e("TransitionManager error", e);
             }
+        } else {
+            Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
+        }
+    }
+
+    protected void showDialog(DialogState state, Bundle bundle) {
+        if (validateState()) {
+            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+            String clazzName = state.getClazzName();
+            BaseDialogFragment dialogFragment = (BaseDialogFragment) DialogFragment.instantiate(activity, clazzName);
+            dialogFragment.setArguments(bundle);
+
+            FragmentTransaction ft = supportFragmentManager.beginTransaction();
+            Fragment prev = supportFragmentManager.findFragmentByTag("dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            dialogFragment.show(supportFragmentManager, "dialog");
         } else {
             Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
         }

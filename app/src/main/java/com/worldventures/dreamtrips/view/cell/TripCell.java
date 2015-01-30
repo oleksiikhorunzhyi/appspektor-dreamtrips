@@ -54,7 +54,7 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
         textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
-        imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+        imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
         universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
                 UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
@@ -62,7 +62,7 @@ public class TripCell extends AbstractCell<Trip> {
 
     @OnClick(R.id.imageViewLike)
     void actionLike() {
-        imageViewLike.setImageResource(!getModelObject().isLiked() ? R.drawable.ic_heart_2_sh : R.drawable.ic_heart_1_sh);
+        imageViewLike.setImageResource(!getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
         getModelObject().setLiked(!getModelObject().isLiked());
         getEventBus().post(new LikeTripEvent(getModelObject()));
     }

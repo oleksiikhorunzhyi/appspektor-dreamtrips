@@ -2,17 +2,14 @@ package com.worldventures.dreamtrips.core.uploader.job;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import com.amazonaws.event.ProgressEvent;
 import com.amazonaws.event.ProgressListener;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
-import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.repository.Repository;
@@ -36,7 +33,7 @@ import io.realm.Realm;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UploadJob extends Job {
-    private static final String TAG = UploadJob.class.getSimpleName();
+    public static final String TAG = UploadJob.class.getSimpleName();
 
     private final String taskId;
 
@@ -76,17 +73,27 @@ public class UploadJob extends Job {
 
     @Override
     public void onAdded() {
-        eventBus.post(new PhotoUploadStarted());
+        Log.w(TAG, "onAdded");
+        new Handler(context.getMainLooper()).post(() -> {
+            Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
+
+            ImageUploadTask uploadTask = repository.query().equalTo("taskId", taskId).findFirst();
+
+            checkNotNull(uploadTask);
+            Log.w(TAG, "send eventBus: PhotoUploadStarted");
+
+            eventBus.post(new PhotoUploadStarted(uploadTask));
+        });
+
     }
 
     @Override
     public void onRun() throws Throwable {
+        Log.w(TAG, "onRun");
 
         if (this.isCanceled) {
             return;
         }
-
-        eventBus.post(new PhotoUploadStarted());
 
         Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
 
@@ -95,6 +102,7 @@ public class UploadJob extends Job {
         checkNotNull(uploadTask);
 
         String taskId = uploadTask.getTaskId();
+        Log.w(TAG, "task ID: " + uploadTask.getTaskId());
 
         File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFileUri());
 
@@ -111,6 +119,8 @@ public class UploadJob extends Job {
             double l = byteTransferred / file.length() * 100;
             if (l > lastPercent + 5 || l > 99) {
                 lastPercent = (int) l;
+                Log.i(TAG, "send Event UploadProgressUpdateEvent:" + l);
+
                 eventBus.post(new UploadProgressUpdateEvent(taskId, (int) l));
             }
         };
@@ -128,8 +138,9 @@ public class UploadJob extends Job {
         repository.remove(uploadTask);
 
         file.delete();
+        Log.w(TAG, "send event PhotoUploadFinished");
 
-        eventBus.post(new PhotoUploadFinished());
+        eventBus.post(new PhotoUploadFinished(photo));
     }
 
     private String getURLFromUploadResult(UploadResult uploadResult) {
@@ -138,7 +149,9 @@ public class UploadJob extends Job {
 
     @Override
     protected void onCancel() {
-        if (uploadHandler != null) {
+        Log.w(TAG, "onCancel");
+
+/*        if (uploadHandler != null) {
             uploadHandler.abort();
         }
 
@@ -147,11 +160,13 @@ public class UploadJob extends Job {
         ImageUploadTask uploadTask = repository.query().equalTo("taskId", this.taskId).findFirst();
         repository.remove(uploadTask);
 
-        eventBus.post(new PhotoUploadFinished());
+        eventBus.post(new PhotoUploadFinished());*/
     }
 
     @Override
     protected boolean shouldReRunOnThrowable(Throwable throwable) {
+        Log.w(TAG, "shouldReRunOnThrowable");
+
         return getCurrentRunCount() < 10;
     }
 }

@@ -31,7 +31,8 @@ public class BookItActivity extends PresentationModelDrivenActivity<BookItActivi
         getPresentationModel().onCreate();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle(R.string.title_book_it);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
     }
 
     @Override

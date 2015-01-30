@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.graphics.Point;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -22,7 +22,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.MapFragmentPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.custom.ToucheableMapView;
 
 import java.util.ArrayList;
 
@@ -37,11 +39,11 @@ import butterknife.InjectView;
 public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View {
 
     public static final String EXTRA_TRIPS = "EXTRA_TRIPS";
-
+    private static final float DEFAULT_ZOOM = 10.0f;
     private static Handler handler = new Handler();
 
     @InjectView(R.id.map)
-    MapView mapView;
+    ToucheableMapView mapView;
 
     GoogleMap googleMap;
 
@@ -50,6 +52,11 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         View v = super.onCreateView(inflater, container, savedInstanceState);
         MapsInitializer.initialize(getActivity());
         mapView.onCreate(savedInstanceState);
+        initMap();
+        return v;
+    }
+
+    private void initMap() {
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
@@ -57,11 +64,15 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
                 updateMap(marker.getPosition(), marker.getSnippet());
                 return true;
             });
-            this.googleMap.setOnCameraChangeListener((cameraPosition) -> {
-                getPresentationModel().onCameraChanged();
-            });
+            this.mapView.setMapTouchListener(()->getPresentationModel().onCameraChanged());
+            this.googleMap.setMyLocationEnabled(true);
         });
-        return v;
+    }
+
+    private void animateTo(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
+        googleMap.animateCamera(cameraUpdate);
     }
 
     @Override
@@ -126,7 +137,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     }
 
     private void updateMap(final LatLng latLng, final String id) {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10.0f);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         googleMap.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
@@ -147,7 +158,8 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                handler.postDelayed(()->getPresentationModel().onMarkerClick(id), 20);
+                if (!ViewUtils.isLandscapeOrientation(getActivity()))
+                    handler.postDelayed(() -> getPresentationModel().onMarkerClick(id), 20);
             }
 
             @Override

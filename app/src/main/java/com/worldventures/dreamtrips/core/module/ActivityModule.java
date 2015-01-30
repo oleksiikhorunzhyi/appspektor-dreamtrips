@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
+import com.worldventures.dreamtrips.presentation.BookItDialogPM;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
@@ -64,6 +65,7 @@ import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
+import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
@@ -95,10 +97,9 @@ import dagger.Provides;
 @Module(
         injects = {
                 LaunchActivity.class,
-                BookItActivity.class,
-                BookItActivityPresentation.class,
                 MainActivity.class,
                 LoginActivity.class,
+                BookItActivity.class,
                 FullScreenPhotoActivity.class,
                 FullScreenTripImageActivity.class,
                 DetailTripActivity.class,
@@ -129,6 +130,7 @@ import dagger.Provides;
                 FiltersFragmentPM.class,
                 DetailedImagePagerFragmentPresentation.class,
                 FragmentMapInfoPM.class,
+                BookItDialogPM.class,
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
@@ -141,6 +143,7 @@ import dagger.Provides;
                 FragmentMapTripInfo.class,
                 MemberShipFragment.class,
                 ProfileFragment.class,
+                BookItActivityPresentation.class,
                 DreamTripsFragment.class,
                 DetailedTripFragment.class,
                 TripImagesTabsFragment.class,
@@ -150,10 +153,11 @@ import dagger.Provides;
                 StaticInfoFragment.class,
                 FacebookAlbumFragment.class,
                 FacebookPhotoFragment.class,
+                StaticInfoFragment.BookItFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
-                StaticInfoFragment.BookItFragment.class,
+                BookItDialogFragment.class,
                 BucketTabsFragment.class,
                 BucketListFragment.class,
                 DetailedImagePagerFragment.class,

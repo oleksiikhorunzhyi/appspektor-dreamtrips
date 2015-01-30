@@ -143,7 +143,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
             getPresentationModel().getPhotosController().reload();
         } else {
             new Handler().postDelayed(() -> {
-                arrayListAdapter.replaseItem(0, event.getPhoto());
+                arrayListAdapter.replaceItem(0, event.getPhoto());
                 arrayListAdapter.notifyDataSetChanged();
             }, 500);
         }

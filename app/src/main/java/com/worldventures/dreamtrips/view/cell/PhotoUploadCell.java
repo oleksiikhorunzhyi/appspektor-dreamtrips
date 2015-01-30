@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.CancelUpload;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailed;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 
@@ -38,7 +38,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     @InjectView(R.id.vg_upload_holder)
     ViewGroup vgUploadHolder;
 
-    @InjectView(R.id.cancel_upload)
+    @InjectView(R.id.btn_action)
     ImageButton btnCancelUpload;
 
     @Inject
@@ -70,9 +70,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         super.afterInject();
     }
 
-    @OnClick(R.id.cancel_upload)
-    public void onCancelUpload() {
-        getEventBus().post(new CancelUpload(getModelObject()));
+    @OnClick(R.id.btn_action)
+    public void onBtnAction() {
+        //TODO
     }
 
     public void onEventMainThread(UploadProgressUpdateEvent event) {
@@ -84,14 +84,21 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         }
     }
 
+    public void onEventMainThread(PhotoUploadFailed event) {
+        pb.setProgress(0);
+        pb.setVisibility(View.INVISIBLE);
+        ivResult.setBackgroundResource(R.drawable.circle_red);
+        btnCancelUpload.setImageResource(R.drawable.ic_upload_retry);
+    }
+
 
     public void onEventMainThread(PhotoUploadFinished event) {
+        //   if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
         Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
-
         pb.setVisibility(View.INVISIBLE);
         ivResult.setBackgroundResource(R.drawable.circle_green);
         btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
-        //  new Handler().postDelayed(() -> vgUploadHolder.setVisibility(View.GONE), 100);
+        //    }
     }
 
 }

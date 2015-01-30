@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.uploader;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
@@ -9,7 +8,6 @@ import com.amazonaws.regions.Regions;
 import com.path.android.jobqueue.JobManager;
 import com.path.android.jobqueue.config.Configuration;
 import com.path.android.jobqueue.di.DependencyInjector;
-import com.path.android.jobqueue.log.CustomLogger;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.module.ApiModule;
@@ -62,29 +60,7 @@ public class UploaderModule {
     @Provides
     Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector) {
         return new Configuration.Builder(context)
-                .customLogger(new CustomLogger() {
-                    private static final String TAG = "JOBS";
-
-                    @Override
-                    public boolean isDebugEnabled() {
-                        return true;
-                    }
-
-                    @Override
-                    public void d(String text, Object... args) {
-                        Log.d(TAG, String.format(text, args));
-                    }
-
-                    @Override
-                    public void e(Throwable t, String text, Object... args) {
-                        Log.e(TAG, String.format(text, args), t);
-                    }
-
-                    @Override
-                    public void e(String text, Object... args) {
-                        Log.e(TAG, String.format(text, args));
-                    }
-                })
+                .customLogger(new Logger())
                 .injector(injector)
                 .minConsumerCount(1)
                 .maxConsumerCount(5)

@@ -45,7 +45,7 @@
             android:textSize="18sp" />
 
         <ImageButton
-            android:id="@+id/cancel_upload"
+            android:id="@+id/btn_action"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"

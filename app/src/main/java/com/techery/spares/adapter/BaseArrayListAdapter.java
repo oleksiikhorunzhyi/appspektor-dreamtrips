@@ -133,7 +133,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.items.add(location, obj);
     }
 
-    public void replaseItem(int location, BaseItemClass obj) {
+    public void replaceItem(int location, BaseItemClass obj) {
         this.items.set(location, obj);
     }
 

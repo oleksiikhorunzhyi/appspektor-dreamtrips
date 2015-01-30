@@ -90,9 +90,7 @@ public class UploadingService extends InjectingService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.w(TAG, "onStartCommand");
         this.actionRouter.on(ImageUploadAction.class, (imageUploadParams) -> {
-
-            final Handler handler = new Handler();
-            handler.postDelayed(() -> {
+            new Handler().postDelayed(() -> {
                 ImageUploadTask uploadTask = repository.create((task) -> {
                     task.setFileUri(imageUploadParams.fileUri);
                     task.setLatitude(imageUploadParams.latitude);

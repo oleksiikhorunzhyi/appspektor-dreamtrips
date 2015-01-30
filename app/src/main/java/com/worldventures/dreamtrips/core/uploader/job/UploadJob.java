@@ -133,8 +133,9 @@ public class UploadJob extends Job {
             uploadTask.setOriginUrl(UploadJob.this.getURLFromUploadResult(uploadResult));
         });
 
-        Photo photo = uploadingAPI.uploadTripPhoto(ImageUploadTask.copy(uploadTask));
-
+        ImageUploadTask copy = ImageUploadTask.copy(uploadTask);
+        Photo photo = uploadingAPI.uploadTripPhoto(copy);
+        photo.setTaskId(copy.getTaskId());
         repository.remove(uploadTask);
 
         file.delete();
@@ -150,23 +151,11 @@ public class UploadJob extends Job {
     @Override
     protected void onCancel() {
         Log.w(TAG, "onCancel");
-
-/*        if (uploadHandler != null) {
-            uploadHandler.abort();
-        }
-
-        Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
-
-        ImageUploadTask uploadTask = repository.query().equalTo("taskId", this.taskId).findFirst();
-        repository.remove(uploadTask);
-
-        eventBus.post(new PhotoUploadFinished());*/
     }
 
     @Override
     protected boolean shouldReRunOnThrowable(Throwable throwable) {
         Log.w(TAG, "shouldReRunOnThrowable");
-
-        return getCurrentRunCount() < 10;
+        return true;
     }
 }

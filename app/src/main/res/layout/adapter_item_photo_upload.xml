@@ -34,28 +34,27 @@
             ppv:ppvStrokeColor="@android:color/transparent"
             ppv:ppvStrokeWidth="6dp" />
 
-        <com.filippudak.ProgressPieView.ProgressPieView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+        <ImageView
+            android:id="@+id/iv_result"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:textSize="18sp"
-            ppv:ppvBackgroundColor="@color/theme_main_darker"
-            ppv:ppvProgressColor="@android:color/white"
-            ppv:ppvProgressFillType="radial"
-            ppv:ppvStrokeColor="@android:color/transparent"
-            ppv:ppvStrokeWidth="8dp" />
+            android:background="@drawable/circle_blue"
+            android:textSize="18sp" />
 
         <ImageButton
             android:id="@+id/cancel_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_upload_cloud"
             android:adjustViewBounds="false"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:background="@null"
+            android:scaleType="centerInside" />
 
     </RelativeLayout>
 </com.worldventures.dreamtrips.view.custom.SquareRelativeLayout>

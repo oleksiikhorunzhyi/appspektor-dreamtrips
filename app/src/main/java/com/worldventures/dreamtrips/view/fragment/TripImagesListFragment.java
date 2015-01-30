@@ -15,10 +15,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -52,6 +51,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
 
     BaseArrayListAdapter<Object> arrayListAdapter;
+    private Type type;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -124,7 +124,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     @Override
     protected TripImagesListFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
+        type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return new TripImagesListFragmentPresentation(this, type);
     }
 
@@ -133,7 +133,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     }
 
     public void onEventMainThread(PhotoUploadFinished event) {
-        getPresentationModel().getPhotosController().reload();
+        if (type != Type.MY_IMAGES) {
+            getPresentationModel().getPhotosController().reload();
+        }
     }
 
     public static enum Type {

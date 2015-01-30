@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.techery.spares.loader.ContentLoader;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 
@@ -15,8 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.EventBusBuilder;
 
 public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
 
@@ -27,7 +29,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private ContentLoader<List<BaseItemClass>> contentLoader;
     private List<BaseItemClass> items = new ArrayList<>();
 
-    private final EventBus eventBus = EventBus.getDefault();
+    @Inject
+    @Global
+    EventBus eventBus;
 
     private List<Class> viewTypes = new ArrayList<>();
 
@@ -82,7 +86,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     @Override
     public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("",viewType+"");
+        Log.e("", viewType + "");
 
         Class itemClass = this.viewTypes.get(viewType);
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
@@ -103,7 +107,8 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         BaseItemClass item = this.getItem(position);
 
         cell.prepareForReuse();
-
+        this.injector.inject(cell);
+        cell.afterInject();
         cell.fillWithItem(item);
     }
 

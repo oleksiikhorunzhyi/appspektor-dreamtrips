@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v4.app.LoaderManager;
 
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
@@ -10,9 +11,6 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -77,7 +75,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     public void init() {
         super.init();
         this.photosController = loaderFactory.create(this.type.ordinal(), (context, params) -> {
-
             this.photos = this.loadPhotos();
             ArrayList<Object> result = new ArrayList<>();
             result.addAll(photos);
@@ -95,6 +92,22 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
 
     public CollectionController<Object> getPhotosController() {
         return photosController;
+    }
+
+    public static class PhotoCollectionController extends CollectionController<Object> {
+
+        public PhotoCollectionController(Context context, LoaderManager loaderManager, LoaderCreator factory) {
+            super(context, loaderManager, factory);
+        }
+
+        public PhotoCollectionController(Context context, LoaderManager loaderManager, int loaderID, LoaderCreator factory) {
+            super(context, loaderManager, loaderID, factory);
+        }
+        public void addOnlyUpdates(){
+
+            reload();
+        }
+
     }
 
     public List<Object> loadPhotos() {

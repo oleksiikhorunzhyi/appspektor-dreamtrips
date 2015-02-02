@@ -13,6 +13,7 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
@@ -26,7 +27,7 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
-public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BasePresentation.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 

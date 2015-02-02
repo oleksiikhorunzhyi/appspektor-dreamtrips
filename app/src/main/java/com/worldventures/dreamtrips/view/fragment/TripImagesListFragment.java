@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -136,7 +137,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
             getPresentationModel().getPhotosController().reload();
         } else {
             arrayListAdapter.addItem(0, event.getUploadTask());
-            arrayListAdapter.notifyDataSetChanged();
+            arrayListAdapter.notifyItemInserted(0);
+        }
+    }
+
+    public void onEvent(PhotoLikeEvent event) {
+        for (Object o : arrayListAdapter.getItems()) {
+            if (o instanceof Photo && ((Photo) o).getId() == event.getId()) {
+                ((Photo) o).setLiked(event.isLiked());
+            }
         }
     }
 
@@ -149,13 +158,18 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                     Object item = arrayListAdapter.getItem(i);
                     if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                         arrayListAdapter.replaceItem(i, event.getPhoto());
-                        arrayListAdapter.notifyDataSetChanged();
+                        arrayListAdapter.notifyItemChanged(0);
                         break;
                     }
                 }
 
-            }, 500);
+            }, 600);
         }
+    }
+
+    @Override
+    public List<Object> getPhotosFromAdapter() {
+        return arrayListAdapter.getItems();
     }
 
     public static enum Type {

@@ -20,12 +20,16 @@ import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.util.TextWatcherAdapter;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
+import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.MY_IMAGES;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
@@ -45,12 +49,17 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
     @Inject
     UniversalImageLoader imageLoader;
+    private TripImagesListFragment.Type type;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
-        Object photo = (Object) getArguments().getSerializable(EXTRA_PHOTO);
+        type = ((FullScreenPhotoActivity) getActivity()).getType();
+        if (type != MY_IMAGES && type != MEMBER_IMAGES) {
+            ivFlag.setVisibility(View.GONE);
+            ivLike.setVisibility(View.GONE);
+        }
+        Object photo = getArguments().getSerializable(EXTRA_PHOTO);
 
         if (photo instanceof Photo) {
             getPresentationModel().setPhoto((Photo) photo);

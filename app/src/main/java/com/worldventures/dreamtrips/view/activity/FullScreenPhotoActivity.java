@@ -7,11 +7,11 @@ import android.view.WindowManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import butterknife.InjectView;
 public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<FullScreenActivityPM> {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
     @InjectView(R.id.pager)
     ViewPager pager;
@@ -30,10 +31,15 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
 
     private BasePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<Serializable> photoList;
+    private TripImagesListFragment.Type type;
 
     @Override
     protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
         return new FullScreenActivityPM(this);
+    }
+
+    public TripImagesListFragment.Type getType() {
+        return type;
     }
 
     @Override
@@ -50,7 +56,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
         photoList = (ArrayList<Serializable>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
-
+        type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
         int position = bundleExtra.getInt(EXTRA_POSITION);
 
         if (position < 0) {

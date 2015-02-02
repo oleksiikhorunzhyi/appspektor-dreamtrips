@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.core.navigation;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,11 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
 
-    public void openFullScreenPhoto(List<Object> photoList, int position) {
+    public void openFullScreenPhoto(List<Object> photoList, int position, TripImagesListFragment.Type type) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
-        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_POSITION, position);
+        bundle.putInt(FullScreenPhotoActivity.EXTRA_POSITION, position);
+        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_TYPE, type);
         startActivity(FullScreenPhotoActivity.class, bundle);
     }
 

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -137,6 +138,14 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         } else {
             arrayListAdapter.addItem(0, event.getUploadTask());
             arrayListAdapter.notifyItemInserted(0);
+        }
+    }
+
+    public void onEvent(PhotoLikeEvent event) {
+        for (Object o : arrayListAdapter.getItems()) {
+            if (o instanceof Photo && ((Photo) o).getId() == event.getId()) {
+                ((Photo) o).setLiked(event.isLiked());
+            }
         }
     }
 

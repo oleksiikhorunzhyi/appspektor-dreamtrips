@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 
+import com.techery.spares.loader.BaseSimpleTaskLoader;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -72,11 +75,14 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     @Override
     public void init() {
         super.init();
-        this.photosController = loaderFactory.create(this.type.ordinal(), (context, params) -> {
-            List<Object> photos = this.loadPhotos();
-            ArrayList<Object> result = new ArrayList<>();
-            result.addAll(photos);
-            return result;
+        this.photosController = loaderFactory.create(this.type.ordinal(), new BaseSimpleTaskLoader.LoadingTask<List<Object>>() {
+            @Override
+            public List<Object> call(Context context, Bundle params) {
+                List<Object> photos = TripImagesListFragmentPresentation.this.loadPhotos();
+                ArrayList<Object> result = new ArrayList<>();
+                result.addAll(photos);
+                return result;
+            }
         });
     }
 
@@ -117,7 +123,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     public void onItemClick(int position) {
         List<Object> photos = view.getPhotosFromAdapter();
         if (photos.get(position) instanceof Photo) {
-            this.activityRouter.openFullScreenPhoto(photos, position);
+            this.activityRouter.openFullScreenPhoto(photos, position, type);
         }
     }
 

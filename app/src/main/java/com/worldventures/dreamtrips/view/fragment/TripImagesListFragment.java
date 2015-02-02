@@ -136,7 +136,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
             getPresentationModel().getPhotosController().reload();
         } else {
             arrayListAdapter.addItem(0, event.getUploadTask());
-            arrayListAdapter.notifyDataSetChanged();
+            arrayListAdapter.notifyItemInserted(0);
         }
     }
 
@@ -149,13 +149,18 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                     Object item = arrayListAdapter.getItem(i);
                     if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                         arrayListAdapter.replaceItem(i, event.getPhoto());
-                        arrayListAdapter.notifyDataSetChanged();
+                        arrayListAdapter.notifyItemChanged(0);
                         break;
                     }
                 }
 
-            }, 500);
+            }, 600);
         }
+    }
+
+    @Override
+    public List<Object> getPhotosFromAdapter() {
+        return arrayListAdapter.getItems();
     }
 
     public static enum Type {

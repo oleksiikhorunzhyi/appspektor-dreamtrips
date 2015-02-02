@@ -78,8 +78,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     public void onEventMainThread(UploadProgressUpdateEvent event) {
         if (getModelObject().getTaskId().equalsIgnoreCase(event.getTaskId())) {
             Log.d("Progress event", event.getProgress() + "");
-            if (event.getProgress() < 100) {
-                pb.setProgress(event.getProgress());
+            if (event.getProgress() <= 100) {
+                if (event.getProgress() > pb.getProgress())
+                    pb.setProgress(event.getProgress());
             }
         }
     }
@@ -93,8 +94,8 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
 
     public void onEventMainThread(PhotoUploadFinished event) {
+        Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
         if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
-            Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
             pb.setVisibility(View.INVISIBLE);
             ivResult.setBackgroundResource(R.drawable.circle_green);
             btnCancelUpload.setImageResource(R.drawable.ic_upload_done);

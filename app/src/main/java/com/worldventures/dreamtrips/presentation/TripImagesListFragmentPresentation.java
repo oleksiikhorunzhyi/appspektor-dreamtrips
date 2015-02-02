@@ -38,7 +38,6 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     Context context;
 
     private TripImagesListFragment.Type type;
-    private List<Object> photos;
     private CollectionController<Object> photosController;
 
     public TripImagesListFragmentPresentation(View view, TripImagesListFragment.Type type) {
@@ -74,7 +73,7 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     public void init() {
         super.init();
         this.photosController = loaderFactory.create(this.type.ordinal(), (context, params) -> {
-            this.photos = this.loadPhotos();
+            List<Object> photos = this.loadPhotos();
             ArrayList<Object> result = new ArrayList<>();
             result.addAll(photos);
             return result;
@@ -116,11 +115,13 @@ public class TripImagesListFragmentPresentation extends BasePresentation<TripIma
     }
 
     public void onItemClick(int position) {
+        List<Object> photos = view.getPhotosFromAdapter();
         if (photos.get(position) instanceof Photo) {
-            this.activityRouter.openFullScreenPhoto(this.photos, position);
+            this.activityRouter.openFullScreenPhoto(photos, position);
         }
     }
 
     public static interface View extends BasePresentation.View {
+        List<Object> getPhotosFromAdapter();
     }
 }

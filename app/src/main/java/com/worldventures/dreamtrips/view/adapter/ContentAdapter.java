@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.utils.HtmlTagHandler;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by Edward on 23.01.15.
@@ -68,7 +70,12 @@ public class ContentAdapter extends BaseAdapter {
         @InjectView(R.id.textViewContentHeader)
         TextView textViewContentHeader;
         @InjectView(R.id.textViewContent)
-        TextView textViewContent;
+        ExpandableTextView textViewContent;
+
+        @OnClick(R.id.textViewContentHeader)
+        void onClick() {
+            textViewContent.onClick(textViewContent);
+        }
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

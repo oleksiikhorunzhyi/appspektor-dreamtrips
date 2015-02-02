@@ -42,6 +42,6 @@ public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTr
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        this.getPresentationModel().onCreate(getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE));
+        this.getPresentationModel().onCreate(getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE), savedInstanceState);
     }
 }

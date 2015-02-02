@@ -17,8 +17,10 @@ public class DetailTripActivityPM extends BasePresentation<BasePresentation.View
         super(view);
     }
 
-    public void onCreate(Bundle bundle) {
-        fragmentCompass.add(State.DETAILED_TRIP, bundle);
+    public void onCreate(Bundle bundle, Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            fragmentCompass.add(State.DETAILED_TRIP, bundle);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.OkHttpClient;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
@@ -18,6 +19,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
 @Module(injects =
@@ -39,11 +41,12 @@ public class ApiModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, DefaultErrorHandler defaultErrorHandler) {
+    RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, OkClient okClient, DefaultErrorHandler defaultErrorHandler) {
         return new RestAdapter.Builder()
                 .setEndpoint(BuildConfig.DreamTripsApi)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
+                .setClient(okClient)
                 .setRequestInterceptor(requestInterceptor)
                 .setErrorHandler(defaultErrorHandler)
                 .build();
@@ -108,5 +111,14 @@ public class ApiModule {
         return adapter.create(SharedServicesApi.class);
     }
 
+    @Provides
+    OkClient provideOkClient(OkHttpClient okHttpClient) {
+        return new OkClient(okHttpClient);
+    }
+
+    @Provides
+    OkHttpClient provideOkHttpClient() {
+        return new OkHttpClient();
+    }
 
 }

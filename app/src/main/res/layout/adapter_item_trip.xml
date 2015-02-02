@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_trip_image_placeholder"/>
+                android:src="@drawable/ic_trip_image_placeholder" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
-                    android:text="Jul 10 - 15 2015"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -70,10 +69,10 @@
 
         <LinearLayout
             android:id="@+id/layoutInfo"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageLayout"
+            android:background="@color/white"
             android:orientation="horizontal"
             android:padding="@dimen/tripDetailPanelPadding">
 
@@ -88,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="THE MAGIC OF IRELAND"
+                    android:singleLine="true"
                     android:textColor="@color/tripNameColor"
                     android:textSize="16sp" />
 
@@ -100,7 +99,7 @@
                     android:drawableLeft="@drawable/ic_location"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
-                    android:text="Kilkenny Island"
+                    android:singleLine="true"
                     android:textColor="@color/tripPlaceColor" />
             </LinearLayout>
 
@@ -110,7 +109,6 @@
                 android:layout_height="match_parent"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
-                android:text="$299"
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="22sp"
                 android:textStyle="bold" />

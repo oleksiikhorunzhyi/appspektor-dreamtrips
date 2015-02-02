@@ -72,6 +72,11 @@ public class ContentAdapter extends BaseAdapter {
         @InjectView(R.id.textViewContent)
         ExpandableTextView textViewContent;
 
+        @OnClick(R.id.textViewContentHeader)
+        void onClick() {
+            textViewContent.onClick(textViewContent);
+        }
+
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }

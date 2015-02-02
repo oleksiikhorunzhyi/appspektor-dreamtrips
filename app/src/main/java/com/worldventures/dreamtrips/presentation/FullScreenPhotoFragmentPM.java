@@ -1,14 +1,17 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.google.gson.JsonObject;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 
 import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -18,7 +21,9 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
 
     @Inject
     DreamTripsApi dreamTripsApi;
-
+    @Inject
+    @Global
+    EventBus eventBus;
     Photo photo;
 
     public FullScreenPhotoFragmentPM(View view) {
@@ -40,6 +45,7 @@ public class FullScreenPhotoFragmentPM extends BasePresentation<FullScreenPhotoF
                 boolean isLiked = photo.isLiked();
                 photo.setLiked(!isLiked);
                 view.setLiked(!isLiked);
+                eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
             }
 
             @Override

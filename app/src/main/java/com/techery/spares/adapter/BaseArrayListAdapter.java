@@ -10,7 +10,6 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,5 +139,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void clear() {
         this.items.clear();
         this.notifyDataSetChanged();
+    }
+
+    public List<BaseItemClass> getItems() {
+        return items;
     }
 }

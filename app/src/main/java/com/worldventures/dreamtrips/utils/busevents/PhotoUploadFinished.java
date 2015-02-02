@@ -9,7 +9,6 @@ public class PhotoUploadFinished {
     private Photo photo;
 
     public PhotoUploadFinished(Photo photo) {
-        Log.d(UploadJob.TAG+"_PUF", "new PhotoUploadFinished", new RuntimeException());
         this.photo = photo;
     }
 

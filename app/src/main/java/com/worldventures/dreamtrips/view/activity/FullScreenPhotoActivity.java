@@ -1,9 +1,15 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -12,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +29,7 @@ import butterknife.InjectView;
 public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<FullScreenActivityPM> {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
     @InjectView(R.id.pager)
     ViewPager pager;
@@ -30,6 +38,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
 
     private BasePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<Serializable> photoList;
+    private TripImagesListFragment.Type type;
 
     @Override
     protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
@@ -50,9 +59,9 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
         photoList = (ArrayList<Serializable>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
-
+        type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
         int position = bundleExtra.getInt(EXTRA_POSITION);
-
+        getIntent().removeExtra(EXTRA_PHOTOS_LIST);
         if (position < 0) {
             position = 0;
         }
@@ -61,7 +70,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
             @Override
             public void setArgs(int position, FullScreenPhotoFragment fragment) {
                 Bundle args = new Bundle();
-                args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, photoList.get(position));
+                args.putInt(FullScreenPhotoFragment.EXTRA_POSITION, position);
                 fragment.setArguments(args);
             }
         };
@@ -73,5 +82,13 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
         pager.setAdapter(adapter);
         pager.setCurrentItem(position);
         toolbar.getBackground().setAlpha(0);
+    }
+
+    public TripImagesListFragment.Type getType() {
+        return type;
+    }
+
+    public Photo getPhoto(int position) {
+        return (Photo) photoList.get(position);
     }
 }

@@ -134,12 +134,12 @@ public class UploadJob extends Job {
         });
 
         ImageUploadTask copy = ImageUploadTask.copy(uploadTask);
+        eventBus.post(new UploadProgressUpdateEvent(taskId, 100));
         Photo photo = uploadingAPI.uploadTripPhoto(copy);
         photo.setTaskId(copy.getTaskId());
         repository.remove(uploadTask);
 
         file.delete();
-        Log.w(TAG, "send event PhotoUploadFinished");
 
         eventBus.post(new PhotoUploadFinished(photo));
     }

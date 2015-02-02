@@ -13,13 +13,17 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.util.TextWatcherAdapter;
 
@@ -35,6 +39,7 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
+    public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
     ImageView ivImage;
@@ -49,21 +54,23 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
     @Inject
     UniversalImageLoader imageLoader;
-    private TripImagesListFragment.Type type;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        type = ((FullScreenPhotoActivity) getActivity()).getType();
+        ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()), ViewUtils.getScreenHeight(getActivity()));
+        ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
+        TripImagesListFragment.Type type = ((FullScreenPhotoActivity) getActivity()).getType();
         if (type != MY_IMAGES && type != MEMBER_IMAGES) {
             ivFlag.setVisibility(View.GONE);
             ivLike.setVisibility(View.GONE);
         }
-        Object photo = getArguments().getSerializable(EXTRA_PHOTO);
+        Photo photo = ((FullScreenPhotoActivity) getActivity()).getPhoto(getArguments().getInt(EXTRA_POSITION));
 
-        if (photo instanceof Photo) {
+        if (photo != null) {
             getPresentationModel().setPhoto((Photo) photo);
         }
+        System.gc();
         this.imageLoader.loadImage(getPresentationModel().getPhoto().getImages().getOriginal().getUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override
@@ -73,6 +80,7 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                imageLoader.loadImage(getPresentationModel().getPhoto().getImages().getMedium().getUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN);
                 progressBar.setVisibility(View.GONE);
                 informUser("Error while loading image");
             }

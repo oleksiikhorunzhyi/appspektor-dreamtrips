@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.initializer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,13 +26,13 @@ public class ImageLoaderInitializer implements AppInitializer {
         optionBuilder.cacheInMemory(true);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this.context)
                 .threadPoolSize(3)
-                //.writeDebugLogs()
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()
                 .memoryCacheSizePercentage(30)
                 .diskCacheSize(50 * 1024 * 1024)
                 .defaultDisplayImageOptions(optionBuilder.build())
+                .diskCacheExtraOptions(720, 1280, null)
                 .build();
         ImageLoader.getInstance().init(config);
     }

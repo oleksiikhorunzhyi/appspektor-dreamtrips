@@ -51,9 +51,9 @@ public class UniversalImageLoader {
             .showImageForEmptyUri(R.drawable.ic_trip_image_placeholder)
             .showImageOnFail(R.drawable.ic_trip_image_placeholder)
             .showImageOnLoading(R.drawable.ic_trip_image_placeholder)
-            .displayer(new FadeInBitmapDisplayer(300))
             .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+            .resetViewBeforeLoading(true)
+            .imageScaleType(ImageScaleType.EXACTLY)
             .build();
     public static final DisplayImageOptions OP_LIST_SCREEN = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)

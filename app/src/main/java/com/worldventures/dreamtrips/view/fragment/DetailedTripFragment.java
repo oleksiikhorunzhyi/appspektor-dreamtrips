@@ -6,22 +6,17 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.common.collect.Collections2;
 import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.model.TripImage;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
@@ -30,13 +25,13 @@ import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.ContentAdapter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import me.relex.circleindicator.CircleIndicator;
 
 /**
@@ -44,12 +39,11 @@ import me.relex.circleindicator.CircleIndicator;
  * fragment to show detailed trip
  */
 @Layout(R.layout.fragment_detailed_trip)
+@MenuResource(R.menu.menu_detailed_trip)
 public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> implements DetailedTripFragmentPM.View {
 
     @InjectView(R.id.textViewName)
     TextView textViewName;
-    @InjectView(R.id.imageViewLike)
-    ImageView imageViewLike;
     @InjectView(R.id.textViewReload)
     TextView textViewReloadTripDetails;
     @InjectView(R.id.textViewPlace)
@@ -76,19 +70,20 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     @Inject
     UniversalImageLoader universalImageLoader;
 
+    @Optional
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+
+    @Optional
+    @InjectView(R.id.toolbar_actionbar_landscape)
+    Toolbar toolbarLanscape;
+
+    MenuItem likeItem;
 
     @Override
     protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
-
-    @OnClick(R.id.imageViewLike)
-    void onLike() {
-        getPresentationModel().actionLike();
-    }
-
     @OnClick(R.id.textViewBookIt)
     public void bookIt() {
         getPresentationModel().actionBookIt();
@@ -103,18 +98,41 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        likeItem = menu.findItem(R.id.action_like);
+        getPresentationModel().menuPrepared();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_like:
+                getPresentationModel().actionLike();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        if (toolbar != null) {
+            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
+            toolbar.getBackground().setAlpha(0);
+        } else if (toolbarLanscape != null) {
+            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbarLanscape);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbarLanscape.setBackgroundColor(getResources().getColor(R.color.theme_main));
+            toolbarLanscape.getBackground().setAlpha(255);
+        }
+
         getPresentationModel().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
         getPresentationModel().onCreate();
 
-        ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
-        toolbar.getBackground().setAlpha(0);
-
-
-        BasePagerAdapter<DetailedImagePagerFragment> adapter = new BasePagerAdapter<DetailedImagePagerFragment>(getFragmentManager()) {
+        BasePagerAdapter<DetailedImagePagerFragment> adapter = new BasePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();
@@ -162,6 +180,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     @Override
     public void setName(String name) {
         textViewName.setText(name);
+        if (toolbarLanscape != null)
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(name);
     }
 
     @Override
@@ -171,11 +191,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void setContent(List<ContentItem> contentItems) {
-        progressBarDetailLoading.setVisibility(View.GONE);
-        if (contentItems != null) {
-            linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
-        } else {
-            textViewReloadTripDetails.setVisibility(View.VISIBLE);
+        if (isAdded()) {
+            progressBarDetailLoading.setVisibility(View.GONE);
+            if (contentItems != null) {
+                linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
+            } else {
+                textViewReloadTripDetails.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -193,6 +215,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
 
     @Override
     public void setLike(boolean like) {
-        imageViewLike.setImageResource(like ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
+        if (likeItem != null)
+            likeItem.setIcon(like ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
     }
 }

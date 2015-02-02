@@ -128,5 +128,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.nineoldandroids:library:2.4.+'
     compile 'me.relex:circleindicator:1.0.0@aar'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.ms-square:expandableTextView:0.1.3'
 }
 

@@ -38,15 +38,6 @@
                     style="@style/ToolBarStyle"
                     android:layout_width="match_parent" />
 
-                <ImageView
-                    android:id="@+id/imageViewLike"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="8dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/ic_heart_1"
-                    android:layout_gravity="end"/>
-
                 <FrameLayout
                     android:layout_width="64dp"
                     android:layout_height="64dp"
@@ -165,6 +156,22 @@
                 android:padding="@dimen/tripDetailPanelPadding"
                 android:textColor="@color/tripNameColor" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:fontFamily="sans-serif-light"
+                android:background="@android:color/white"
+                android:textSize="22sp"
+                android:text="@string/trip_details"
+                android:textColor="@android:color/black"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@drawable/trip_details_shadow"
+                android:layout_height="4dp"/>
+
+
             <ProgressBar
                 android:id="@+id/progressBarDetailLoading"
                 android:layout_width="wrap_content"
@@ -185,7 +192,6 @@
             <com.linearlistview.LinearListView
                 android:id="@+id/listViewContent"
                 android:layout_width="match_parent"
-                android:padding="10dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:showDividers="none" />

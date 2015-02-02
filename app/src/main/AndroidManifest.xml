@@ -72,8 +72,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_full_screen_photo" />
         <activity
-            android:name=".view.activity.DetailTripActivity"
-            android:configChanges="orientation|screenSize" />
+            android:name=".view.activity.DetailTripActivity"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

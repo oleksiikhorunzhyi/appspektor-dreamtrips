@@ -25,4 +25,7 @@
     <color name="textViewFilterDisabled">#A5A5A5</color>
     <color name="textViewFilterEnabled">#000000</color>
 
+    <color name="contentItemBackground">#F7F7F7</color>
+    <color name="contentItemTextColor">#8A8A8A</color>
+
 </resources>

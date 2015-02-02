@@ -64,6 +64,10 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         loadTripDetails();
     }
 
+    public void menuPrepared() {
+        view.setLike(trip.isLiked());
+    }
+
     public List<Object> getFilteredImages() {
         return filteredImages;
     }

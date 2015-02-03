@@ -14,7 +14,7 @@
 
     <!-- dimen for trip items -->
     <dimen name="tripImageHeight">200dp</dimen>
-    <dimen name="tripImagePanelMargin">20dp</dimen>
+    <dimen name="tripImagePanelMargin">10dp</dimen>
     <dimen name="tripImagePanelPaddingHorizontal">10dp</dimen>
     <dimen name="tripImagePanelPaddingVertical">5dp</dimen>
     <dimen name="tripDetailPanelPadding">10dp</dimen>

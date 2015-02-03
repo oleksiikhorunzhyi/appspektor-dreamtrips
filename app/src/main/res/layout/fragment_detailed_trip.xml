@@ -33,6 +33,12 @@
                     android:layout_gravity="bottom"
                     android:layout_height="40dp"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@drawable/trip_item_shadow"/>
+
+
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_actionbar"
                     style="@style/ToolBarStyle"

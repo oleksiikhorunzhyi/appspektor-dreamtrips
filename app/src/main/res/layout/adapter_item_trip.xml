@@ -25,6 +25,10 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_trip_image_placeholder" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/trip_item_shadow"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,11 +41,28 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <ImageView
+                    android:id="@+id/imageViewLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
+                    android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+                    android:layout_marginTop="@dimen/tripImagePanelMargin"
+                    android:clickable="true"
+                    android:src="@drawable/ic_heart_1_sh"
+                    android:tag="like" />
+
+
             </RelativeLayout>
+
 
             <FrameLayout
                 android:layout_width="56dp"
@@ -114,18 +135,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageViewLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginTop="@dimen/tripImagePanelMargin"
-            android:clickable="true"
-            android:src="@drawable/ic_heart_1_sh"
-            android:tag="like" />
 
     </RelativeLayout>
 

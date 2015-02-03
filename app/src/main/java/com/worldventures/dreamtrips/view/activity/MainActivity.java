@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
+import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.Optional;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresentation> implements MainActivityPresentation.View, NavigationDrawerListener {
@@ -43,22 +46,9 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @InjectView(R.id.container)
     View container;
 
+    @Optional
     @InjectView(R.id.drawer)
     DrawerLayout drawerLayout;
-
-    private static class MenuElement {
-        final Class<? extends Fragment> fragmentClass;
-        final String title;
-        final int iconResource;
-
-        private MenuElement(Class<? extends Fragment> fragmentClass, String title, int iconResource) {
-            this.fragmentClass = fragmentClass;
-            this.title = title;
-            this.iconResource = iconResource;
-        }
-    }
-
-    List<MenuElement> drawerElements = new ArrayList<>();
 
     @Override
     protected MainActivityPresentation createPresentationModel(Bundle savedInstanceState) {
@@ -76,44 +66,41 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
 
-        this.drawerElements.add(new MenuElement(DreamTripsFragment.class, "DreamTrips", R.drawable.ic_dreamtrips));
-        this.drawerElements.add(new MenuElement(TripImagesTabsFragment.class, "Trip Images", R.drawable.ic_trip_images));
-        this.drawerElements.add(new MenuElement(MemberShipFragment.class, "Membership", R.drawable.ic_membership));
-        this.drawerElements.add(new MenuElement(BucketTabsFragment.class, "Bucket list", R.drawable.ic_bucket_lists));
-        this.drawerElements.add(new MenuElement(ProfileFragment.class, "My profile", R.drawable.ic_profile));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", R.drawable.ic_terms));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.FAQFragment.class, "FAQ", R.drawable.ic_faq));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", R.drawable.ic_termsconditions));
-        this.drawerElements.add(new MenuElement(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", R.drawable.ic_cookie));
-
         setSupportActionBar(this.toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), this.toolbar);
+        if (!ViewUtils.isLandscapeOrientation(this)) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                    toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+                /** Called when a drawer has settled in a completely closed state. */
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                }
+
+                /** Called when a drawer has settled in a completely open state. */
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                }
+            };
+
+            // Set the drawer toggle as the DrawerListener
+            drawerLayout.setDrawerListener(mDrawerToggle);
+            this.drawerLayout.post(mDrawerToggle::syncState);
+
+            //openLeftDrawer();
+        }
+
         disableRightDrawer();
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-
-        MenuElement menuElement = drawerElements.get(position);
-
-        final String className = menuElement.fragmentClass.getName();
-
-        BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.addToBackStack(className);
-
-        if (BuildConfig.DEBUG) {
-            fragmentTransaction.commit();
-        } else {
-            fragmentTransaction.commitAllowingStateLoss();
-        }
-
-        getSupportActionBar().setTitle(menuElement.title);
+    public void onNavigationDrawerItemSelected(State state) {
+        closeLeftDrawer();
+        getPresentationModel().selectItem(state);
+        getSupportActionBar().setTitle(state.getTitle());
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {
@@ -122,9 +109,19 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, 0, 0, 0);
         } else {
             this.toolbar.getBackground().setAlpha(255);
-            int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            int topMargin = ViewUtils.isLandscapeOrientation(this) ? 0 : getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
+    }
+
+    public void openLeftDrawer() {
+        if (!ViewUtils.isLandscapeOrientation(this))
+            drawerLayout.openDrawer(Gravity.START);
+    }
+
+    public void closeLeftDrawer() {
+        if (!ViewUtils.isLandscapeOrientation(this))
+            drawerLayout.closeDrawer(Gravity.START);
     }
 
     public void openRightDrawer() {
@@ -133,14 +130,13 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         filtersFragment.refresh();
     }
 
-    public void closeDrawer() {
+    public void closeRightDrawer() {
         drawerLayout.closeDrawer(Gravity.END);
     }
 
     public void disableRightDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -157,9 +153,13 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
             lp.height = size;
             toolbar.setLayoutParams(lp);
-            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
-
+            // ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, ViewUtils.isLandscapeOrientation(this) ? 0 : size, 0, 0);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

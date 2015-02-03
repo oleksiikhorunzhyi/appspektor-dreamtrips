@@ -60,11 +60,12 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
+            zoomIn();
             this.googleMap.setOnMarkerClickListener((marker) -> {
                 updateMap(marker.getPosition(), marker.getSnippet());
                 return true;
             });
-            this.mapView.setMapTouchListener(()->getPresentationModel().onCameraChanged());
+            this.mapView.setMapTouchListener(() -> getPresentationModel().onCameraChanged());
             this.googleMap.setMyLocationEnabled(true);
         });
     }
@@ -136,21 +137,12 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
     }
 
-    private void updateMap(final LatLng latLng, final String id) {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
-        googleMap.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                addOffset(latLng, id);
-            }
-
-            @Override
-            public void onCancel() {
-            }
-        });
+    private void zoomIn() {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.zoomIn();
+        googleMap.moveCamera(cameraUpdate);
     }
 
-    private void addOffset(final LatLng latLng, final String id) {
+    private void updateMap(final LatLng latLng, final String id) {
         Projection projection = googleMap.getProjection();
         Point screenLocation = projection.toScreenLocation(latLng);
         screenLocation.y -= getResources().getDimensionPixelSize(R.dimen.map_offset_y);

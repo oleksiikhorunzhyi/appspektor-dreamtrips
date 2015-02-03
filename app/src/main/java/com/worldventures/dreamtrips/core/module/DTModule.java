@@ -10,6 +10,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.DreamTripsApplication;
+import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
@@ -29,7 +30,8 @@ import io.realm.Realm;
                 DreamTripsApplication.class,
                 InstabugInitializer.class,
                 ImageLoaderInitializer.class,
-                UploadingServiceInitializer.class
+                UploadingServiceInitializer.class,
+                DreamTripsApiProxy.class
         },
         includes = {
                 InjectingApplicationModule.class,

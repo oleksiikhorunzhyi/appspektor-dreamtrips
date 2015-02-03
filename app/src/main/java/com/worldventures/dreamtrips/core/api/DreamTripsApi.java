@@ -31,6 +31,10 @@ public interface DreamTripsApi {
     @POST("/api/sessions")
     public void login(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
 
+    @FormUrlEncoded
+    @POST("/api/sessions")
+    public Session login(@Field("username") String username, @Field("password") String password);
+
     @POST("/api/profile/avatar")
     @Multipart
     public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);

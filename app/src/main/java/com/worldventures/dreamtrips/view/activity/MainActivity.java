@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.Optional;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresentation> implements MainActivityPresentation.View, NavigationDrawerListener {
@@ -43,6 +44,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @InjectView(R.id.container)
     View container;
 
+    @Optional
     @InjectView(R.id.drawer)
     DrawerLayout drawerLayout;
 
@@ -87,7 +89,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         this.drawerElements.add(new MenuElement(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", R.drawable.ic_cookie));
 
         setSupportActionBar(this.toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), this.toolbar);
@@ -122,7 +124,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, 0, 0, 0);
         } else {
             this.toolbar.getBackground().setAlpha(255);
-            int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            int topMargin = ViewUtils.isLandscapeOrientation(this) ? 0 : getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
     }
@@ -157,8 +159,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
             lp.height = size;
             toolbar.setLayoutParams(lp);
-            ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, size, 0, 0);
-
+            // ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, ViewUtils.isLandscapeOrientation(this) ? 0 : size, 0, 0);
         }
     }
 

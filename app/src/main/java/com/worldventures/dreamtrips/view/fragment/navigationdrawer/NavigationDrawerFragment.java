@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
@@ -92,8 +93,10 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     }
 
     private void updateHeader() {
-        adapter.setHeader(getNavigationHeader());
-        adapter.notifyItemChanged(0);
+        if (drawerLayout != null) {
+            adapter.setHeader(getNavigationHeader());
+            adapter.notifyItemChanged(0);
+        }
     }
 
     @Override
@@ -134,42 +137,46 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         adapter = new NavigationDrawerAdapter(getMenu(), (Injector) getActivity());
         adapter.setNavigationDrawerCallbacks(this);
 
-        updateHeader();
-
         drawerList.setAdapter(adapter);
 
         fragmentContainerView = getActivity().findViewById(fragmentId);
-        this.drawerLayout = drawerLayout;
-        actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), NavigationDrawerFragment.this.drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                if (isAdded()) {
-                    getActivity().invalidateOptionsMenu();
-                }
-            }
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                if (isAdded()) {
-                    if (!userLearnedDrawer) {
-                        userLearnedDrawer = true;
-                        saveSharedSetting(getActivity(), PREF_USER_LEARNED_DRAWER, "true");
+        if (drawerLayout != null && !ViewUtils.isLandscapeOrientation(getActivity())) {
+            this.drawerLayout = drawerLayout;
+            actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), NavigationDrawerFragment.this.drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+                    if (isAdded()) {
+                        getActivity().invalidateOptionsMenu();
                     }
-
-                    getActivity().invalidateOptionsMenu();
                 }
-            }
-        };
 
-        if (!userLearnedDrawer && !fromSavedInstanceState) {
-            this.drawerLayout.openDrawer(fragmentContainerView);
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    if (isAdded()) {
+                        if (!userLearnedDrawer) {
+                            userLearnedDrawer = true;
+                            saveSharedSetting(getActivity(), PREF_USER_LEARNED_DRAWER, "true");
+                        }
+
+                        getActivity().invalidateOptionsMenu();
+                    }
+                }
+            };
+
+
+            if (!userLearnedDrawer && !fromSavedInstanceState) {
+                this.drawerLayout.openDrawer(fragmentContainerView);
+            }
+
+            this.drawerLayout.post(actionBarDrawerToggle::syncState);
+
+            this.drawerLayout.setDrawerListener(actionBarDrawerToggle);
+            updateHeader();
         }
 
-        this.drawerLayout.post(actionBarDrawerToggle::syncState);
-
-        this.drawerLayout.setDrawerListener(actionBarDrawerToggle);
         selectItem(currentSelectedPosition);
         eventBus.register(this);
     }

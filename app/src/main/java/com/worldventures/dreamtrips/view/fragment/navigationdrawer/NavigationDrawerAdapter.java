@@ -88,10 +88,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
                         return true;
                     }
             );
+
             holder.itemView.setOnClickListener(v -> {
+                selectPosition(i);
                 if (mNavigationDrawerListener != null)
-                    mNavigationDrawerListener.onNavigationDrawerItemSelected(i - headerSize);
+                    mNavigationDrawerListener.onNavigationDrawerItemSelected(mData.get(i - headerSize));
             });
+
             if (mSelectedPosition == i || mTouchedPosition == i) {
                 if (holder.itemName != null)
                     holder.itemName.setSelected(true);
@@ -123,7 +126,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void selectPosition(int position) {
-        position = position + headerSize;
         int lastPosition = mSelectedPosition;
         mSelectedPosition = position;
         notifyItemChanged(lastPosition);

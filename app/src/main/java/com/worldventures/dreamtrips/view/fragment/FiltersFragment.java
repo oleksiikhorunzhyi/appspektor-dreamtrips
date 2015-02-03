@@ -83,13 +83,13 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @OnClick(R.id.textViewApplyFilter)
     void applyFilter() {
         getPresentationModel().acceptFilters();
-        ((MainActivity) getActivity()).closeDrawer();
+        ((MainActivity) getActivity()).closeRightDrawer();
     }
 
     @OnClick(R.id.textViewResetFilter)
     void resetFilter() {
         getPresentationModel().resetFilters();
-        ((MainActivity) getActivity()).closeDrawer();
+        ((MainActivity) getActivity()).closeRightDrawer();
     }
 
     @Override

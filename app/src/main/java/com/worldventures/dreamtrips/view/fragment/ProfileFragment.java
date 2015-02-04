@@ -79,7 +79,8 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         userCover.getLayoutParams().height = minSideSize;
         vgContentContainer.getLayoutParams().width = minSideSize;
         int m = 0;
-        if (minSideSize < ViewUtils.getScreenWidth(getActivity())) {
+        if (!ViewUtils.isLandscapeOrientation(getActivity())
+                && minSideSize < ViewUtils.getScreenWidth(getActivity())) {
             m = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
         }
         ((ViewGroup.MarginLayoutParams) sv.getLayoutParams()).setMargins(0, m, 0, 0);
@@ -89,13 +90,15 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).makeActionBarTransparent(true);
+        if (!ViewUtils.isLandscapeOrientation(getActivity()))
+            ((MainActivity) getActivity()).makeActionBarTransparent(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity) getActivity()).makeActionBarTransparent(false);
+        if (!ViewUtils.isLandscapeOrientation(getActivity()))
+            ((MainActivity) getActivity()).makeActionBarTransparent(false);
     }
 
     @Override

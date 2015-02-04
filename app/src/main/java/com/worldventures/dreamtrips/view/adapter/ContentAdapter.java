@@ -3,15 +3,19 @@ package com.worldventures.dreamtrips.view.adapter;
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.utils.HtmlTagHandler;
+import com.worldventures.dreamtrips.view.custom.ExpandableTextViewCallable;
 
 import java.util.List;
 
@@ -70,15 +74,29 @@ public class ContentAdapter extends BaseAdapter {
         @InjectView(R.id.textViewContentHeader)
         TextView textViewContentHeader;
         @InjectView(R.id.textViewContent)
-        ExpandableTextView textViewContent;
+        ExpandableTextViewCallable textViewContent;
+        @InjectView(R.id.imageViewArrow)
+        ImageView imageViewArrow;
 
-        @OnClick(R.id.textViewContentHeader)
+        private boolean isExpanded = false;
+
+        @OnClick(R.id.layoutContentHeader)
         void onClick() {
+            isExpanded = !isExpanded;
             textViewContent.onClick(textViewContent);
+            checkArrowState();
+        }
+
+        private void checkArrowState() {
+            imageViewArrow.setImageResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
         }
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
+            textViewContent.setOnTouchedListener(() -> {
+                    isExpanded = !isExpanded;
+                    checkArrowState();
+            });
         }
     }
 }

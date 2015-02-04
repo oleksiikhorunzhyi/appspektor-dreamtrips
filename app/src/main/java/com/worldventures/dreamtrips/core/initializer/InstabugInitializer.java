@@ -20,6 +20,7 @@ public class InstabugInitializer implements AppInitializer {
         Instabug.initialize(context)
                 .setCrashReportingEnabled(false)
                 .setAnnotationActivityClass(InstabugAnnotationActivity.class)
+                .setCrashReportingEnabled(false)
                 .setShowIntroDialog(true)
                 .setEnableOverflowMenuItem(true);
     }

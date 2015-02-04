@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="250dp"
+    android:paddingBottom="10dp"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -12,7 +13,7 @@
         <FrameLayout
             android:id="@+id/imageLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tripImageHeight">
+            android:layout_height="150dp">
 
             <ImageView
                 android:id="@+id/imageViewTripImage"
@@ -29,12 +30,12 @@
                 <TextView
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:text="Jul 10 - 15 2015"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
@@ -85,7 +86,7 @@
                     android:fontFamily="sans-serif-light"
                     android:text="THE MAGIC OF IRELAND"
                     android:textColor="@color/tripNameColor"
-                    android:textSize="16sp" />
+                    android:textSize="12sp" />
 
 
                 <TextView
@@ -95,6 +96,7 @@
                     android:drawableLeft="@drawable/ic_location"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
+                    android:textSize="10sp"
                     android:text="Kilkenny Island"
                     android:textColor="@color/tripPlaceColor" />
             </LinearLayout>
@@ -107,7 +109,7 @@
                 android:gravity="center_vertical"
                 android:text="$299"
                 android:textColor="@color/tripPlaceColor"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -120,8 +122,8 @@
 
         <ImageView
             android:id="@+id/imageViewLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"

@@ -53,6 +53,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
@@ -99,6 +100,7 @@ import dagger.Provides;
                 LaunchActivity.class,
                 MainActivity.class,
                 LoginActivity.class,
+                PlayerActivity.class,
                 BookItActivity.class,
                 FullScreenPhotoActivity.class,
                 FullScreenTripImageActivity.class,

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -30,13 +31,13 @@
                 <me.relex.circleindicator.CircleIndicator
                     android:id="@+id/circleIndicator"
                     android:layout_width="match_parent"
-                    android:layout_gravity="bottom"
-                    android:layout_height="40dp"/>
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:background="@drawable/trip_item_shadow"/>
+                    android:background="@drawable/trip_item_shadow" />
 
 
                 <android.support.v7.widget.Toolbar
@@ -59,9 +60,9 @@
                         android:id="@+id/textViewPoints"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12dp"
+                        android:layout_gravity="center"
                         android:textColor="@color/white"
-                        android:layout_gravity="center"/>
+                        android:textSize="12dp" />
 
                 </FrameLayout>
 
@@ -165,17 +166,17 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:fontFamily="sans-serif-light"
                 android:background="@android:color/white"
-                android:textSize="22sp"
+                android:fontFamily="sans-serif-light"
+                android:padding="10dp"
                 android:text="@string/trip_details"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                android:textSize="22sp" />
 
             <View
                 android:layout_width="match_parent"
-                android:background="@drawable/trip_details_shadow"
-                android:layout_height="4dp"/>
+                android:layout_height="4dp"
+                android:background="@drawable/trip_details_shadow" />
 
 
             <ProgressBar
@@ -188,12 +189,12 @@
                 android:id="@+id/textViewReload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/tripBookItPadding"
-                android:visibility="gone"
-                android:textSize="22sp"
-                android:textColor="@color/tripPlaceColor"
                 android:gravity="center"
-                android:text="@string/reload_trip_details"/>
+                android:padding="@dimen/tripBookItPadding"
+                android:text="@string/reload_trip_details"
+                android:textColor="@color/tripPlaceColor"
+                android:textSize="22sp"
+                android:visibility="gone" />
 
             <com.linearlistview.LinearListView
                 android:id="@+id/listViewContent"
@@ -210,16 +211,29 @@
 
     </ScrollView>
 
-    <TextView
-        android:id="@+id/textViewBookIt"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/tripButtonColor"
-        android:gravity="center"
-        android:padding="@dimen/tripBookItPadding"
-        android:text="@string/book_it"
-        android:textColor="@color/white"
-        android:textSize="22sp" />
+        android:layout_gravity="bottom">
+
+        <com.andexert.library.RippleView
+            android:id="@+id/layoutBookIt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            ripple:rv_color="#D3D3D3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/tripButtonColor"
+                android:gravity="center"
+                android:padding="@dimen/tripBookItPadding"
+                android:text="@string/book_it"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+        </com.andexert.library.RippleView>
+    </FrameLayout>
+
 
 </FrameLayout>

@@ -95,7 +95,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     private void setupLayoutManager(boolean landscape) {
         int spanCount;
         if (landscape) {
-            spanCount = ViewUtils.isTablet(getActivity()) ? 4 : 2;
+            spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 2;
         } else {
             spanCount = ViewUtils.isTablet(getActivity()) ? 2 : 1;
         }
@@ -153,9 +153,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     public void onResume() {
         super.onResume();
         if (this.adapter.getItemCount() == 0) {
-            this.refreshLayout.post(() -> {
-                getPresentationModel().getTripsController().reload();
-            });
+            this.refreshLayout.post(() -> getPresentationModel().getTripsController().reload());
         }
     }
 

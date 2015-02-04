@@ -77,6 +77,17 @@ public enum State {
         }
     }
 
+    public static State restoreByClass(String clazzName) {
+        State result = State.DREAMTRIPS;
+        for (State state : values()) {
+            if (state.getClazzName().equals(clazzName)) {
+                result = state;
+                break;
+            }
+        }
+        return result;
+    }
+
     public static ArrayList<State> getMenuItemsArray() {
         generateSideMenuFields();
         return menuItemsArray;

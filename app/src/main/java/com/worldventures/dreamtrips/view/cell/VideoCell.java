@@ -12,6 +12,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 
 import javax.inject.Inject;
 
@@ -46,8 +47,8 @@ public class VideoCell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_play)
     public void onPlayClick() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getModelObject().getMp4Url()));
-        intent.setDataAndType(Uri.parse(getModelObject().getMp4Url()), "video/*");
+        Intent intent = new Intent(context, PlayerActivity.class)
+                .setData(Uri.parse(getModelObject().getMp4Url()));
         context.startActivity(intent);
     }
 

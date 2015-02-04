@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -263,16 +264,28 @@
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/textViewBookIt"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/tripButtonColor"
-        android:gravity="center"
-        android:padding="@dimen/tripBookItPadding"
-        android:text="@string/book_it"
-        android:textColor="@color/white"
-        android:textSize="22sp" />
+        android:layout_gravity="bottom">
+
+        <com.andexert.library.RippleView
+            android:id="@+id/layoutBookIt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            ripple:rv_color="#D3D3D3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/tripButtonColor"
+                android:gravity="center"
+                android:padding="@dimen/tripBookItPadding"
+                android:text="@string/book_it"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+        </com.andexert.library.RippleView>
+    </FrameLayout>
 
 </FrameLayout>

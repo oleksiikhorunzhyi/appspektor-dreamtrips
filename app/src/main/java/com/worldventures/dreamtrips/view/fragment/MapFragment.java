@@ -16,6 +16,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -39,7 +40,6 @@ import butterknife.InjectView;
 public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View {
 
     public static final String EXTRA_TRIPS = "EXTRA_TRIPS";
-    private static final float DEFAULT_ZOOM = 10.0f;
     private static Handler handler = new Handler();
 
     @InjectView(R.id.map)
@@ -61,19 +61,28 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
             zoomIn();
-            this.googleMap.setOnMarkerClickListener((marker) -> {
-                updateMap(marker.getPosition(), marker.getSnippet());
-                return true;
-            });
+            if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+                this.googleMap.setOnMarkerClickListener((marker) -> {
+                    updateMap(marker.getPosition(), marker.getSnippet());
+                    return true;
+                });
+            } else {
+                this.googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_trip_pin, null);
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        return null;
+                    }
+                });
+            }
+
             this.mapView.setMapTouchListener(() -> getPresentationModel().onCameraChanged());
             this.googleMap.setMyLocationEnabled(true);
         });
-    }
-
-    private void animateTo(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
-        googleMap.animateCamera(cameraUpdate);
     }
 
     @Override
@@ -104,18 +113,21 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (mapView != null)
+            mapView.onPause();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+        if (mapView != null)
+            mapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onDestroy() {
-        mapView.onDestroy();
+        if (mapView != null)
+            mapView.onDestroy();
         super.onDestroy();
     }
 
@@ -150,8 +162,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                if (!ViewUtils.isLandscapeOrientation(getActivity()))
-                    handler.postDelayed(() -> getPresentationModel().onMarkerClick(id), 20);
+                handler.postDelayed(() -> getPresentationModel().onMarkerClick(id), 20);
             }
 
             @Override

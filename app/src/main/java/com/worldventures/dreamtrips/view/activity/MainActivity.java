@@ -55,7 +55,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         return new MainActivityPresentation(this);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -158,6 +157,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     }
 
     @Override
+    public void onBackPressed() {
+        getPresentationModel().onBackPressed();
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
@@ -170,4 +175,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         }
     }
 
+    @Override
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
 }

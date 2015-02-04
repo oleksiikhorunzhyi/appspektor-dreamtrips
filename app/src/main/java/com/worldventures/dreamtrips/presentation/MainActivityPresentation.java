@@ -23,6 +23,11 @@ public class MainActivityPresentation extends BasePresentation<MainActivityPrese
 
     }
 
+    public void onBackPressed() {
+        String title = fragmentCompass.getPreviousFragmentTitle();
+        view.setTitle(title);
+    }
+
     public void selectItem(State state) {
         if (!state.equals(currentState)) {
             currentState = state;
@@ -31,6 +36,6 @@ public class MainActivityPresentation extends BasePresentation<MainActivityPrese
     }
 
     public static interface View extends BasePresentation.View {
-
+        void setTitle(String title);
     }
 }

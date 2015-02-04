@@ -111,6 +111,18 @@ public class FragmentCompass {
         }
     }
 
+    public String getPreviousFragmentTitle() {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 2) {
+            FragmentManager.BackStackEntry backEntry =
+                    fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1);
+            String str = backEntry.getName();
+            State state = State.restoreByClass(str);
+            return state.getTitle();
+        }
+        return State.DREAMTRIPS.getTitle();
+    }
+
     private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {
         fragment.setArguments(bundle);
     }

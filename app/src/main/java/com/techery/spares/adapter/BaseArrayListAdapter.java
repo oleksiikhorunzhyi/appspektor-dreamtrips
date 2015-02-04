@@ -98,7 +98,11 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     @Override
     public int getItemViewType(int position) {
         Class itemClass = this.items.get(position).getClass();
-        return viewTypes.indexOf(itemClass);
+        int index = viewTypes.indexOf(itemClass);
+        if (index < 0) {
+            throw new IllegalArgumentException(itemClass.getSimpleName() + "is not registered");
+        }
+        return index;
     }
 
 
@@ -132,6 +136,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.items.add(location, obj);
     }
 
+    public void addItem(BaseItemClass obj) {
+        this.items.add(obj);
+    }
+
     public void replaceItem(int location, BaseItemClass obj) {
         this.items.set(location, obj);
     }
@@ -144,4 +152,5 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public List<BaseItemClass> getItems() {
         return items;
     }
+
 }

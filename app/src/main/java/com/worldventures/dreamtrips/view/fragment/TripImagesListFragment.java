@@ -1,25 +1,21 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
@@ -35,7 +31,7 @@ import de.greenrobot.event.EventBus;
 import io.realm.ImageUploadTaskRealmProxy;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentPresentation> implements TripImagesListFragmentPresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment extends BaseFragment<TripImagesListPM> implements TripImagesListPM.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -52,9 +48,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     @Global
     EventBus eventBus;
 
-
     BaseArrayListAdapter<Object> arrayListAdapter;
     private Type type;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -77,25 +73,17 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
         this.recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
         );
-
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getPhotosController());
-
-        getPresentationModel().getPhotosController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
+        this.recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
+
+
     }
 
     @Override
@@ -104,7 +92,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
-                getPresentationModel().getPhotosController().reload();
+                getPresentationModel().reload();
             });
         }
     }
@@ -117,59 +105,63 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
 
     private void setupLayoutManager(boolean landscape) {
         int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+        layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void onRefresh() {
-        getPresentationModel().getPhotosController().reload();
+        getPresentationModel().reload();
     }
 
     @Override
-    protected TripImagesListFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
+    protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
         type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return new TripImagesListFragmentPresentation(this, type);
-    }
-
-    public void onEventMainThread(PhotoUploadStarted event) {
-        if (type != Type.MY_IMAGES) {
-            getPresentationModel().getPhotosController().reload();
-        } else {
-            arrayListAdapter.addItem(0, event.getUploadTask());
-            arrayListAdapter.notifyItemInserted(0);
-        }
-    }
-
-    public void onEvent(PhotoLikeEvent event) {
-        for (Object o : arrayListAdapter.getItems()) {
-            if (o instanceof Photo && ((Photo) o).getId() == event.getId()) {
-                ((Photo) o).setLiked(event.isLiked());
-            }
-        }
-    }
-
-    public void onEventMainThread(PhotoUploadFinished event) {
-        if (type != Type.MY_IMAGES) {
-            getPresentationModel().getPhotosController().reload();
-        } else {
-            new Handler().postDelayed(() -> {
-                for (int i = 0; i < arrayListAdapter.getItemCount(); i++) {
-                    Object item = arrayListAdapter.getItem(i);
-                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
-                        arrayListAdapter.replaceItem(i, event.getPhoto());
-                        arrayListAdapter.notifyItemChanged(0);
-                        break;
-                    }
-                }
-
-            }, 600);
-        }
+        return TripImagesListPM.create(type, this);
     }
 
     @Override
     public List<Object> getPhotosFromAdapter() {
         return arrayListAdapter.getItems();
+    }
+
+    @Override
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void finishLoading() {
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void addAll(List<Object> items) {
+        arrayListAdapter.addItems(items);
+        arrayListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void add(Object item) {
+        arrayListAdapter.addItem(item);
+        arrayListAdapter.notifyItemInserted(arrayListAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void add(int position, Object item) {
+        arrayListAdapter.addItem(position, item);
+        arrayListAdapter.notifyItemInserted(position);
+    }
+
+    @Override
+    public void clear() {
+        arrayListAdapter.clear();
+    }
+
+    @Override
+    public void replace(int position, Object item) {
+        arrayListAdapter.replaceItem(position, item);
+        arrayListAdapter.notifyItemChanged(position);
     }
 
     public static enum Type {

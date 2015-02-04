@@ -4,10 +4,13 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+import com.techery.spares.application.BaseApplicationWithInjector;
+import com.techery.spares.module.Annotations.Private;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
@@ -35,9 +38,15 @@ public class ApiModule {
 
     }
 
+    @Private
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {
         return adapter.create(DreamTripsApi.class);
+    }
+
+    @Provides
+    DreamTripsApi provideApiProxy(BaseApplicationWithInjector injector) {
+        return new DreamTripsApiProxy(injector);
     }
 
     @Provides
@@ -48,7 +57,7 @@ public class ApiModule {
                 .setConverter(gsonConverter)
                 .setClient(okClient)
                 .setRequestInterceptor(requestInterceptor)
-                .setErrorHandler(defaultErrorHandler)
+                        //.setErrorHandler(defaultErrorHandler)
                 .build();
     }
 

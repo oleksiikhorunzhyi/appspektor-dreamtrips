@@ -1,45 +1,99 @@
 package com.worldventures.dreamtrips.view.activity;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.View;
+import android.support.v4.app.FragmentManager;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 
-import com.worldventures.dreamtrips.DTApplication;
-import com.worldventures.dreamtrips.core.DataManager;
-import com.worldventures.dreamtrips.core.DreamTripsApi;
+import com.instabug.library.util.TouchEventDispatcher;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.module.ActivityModule;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
 import org.robobinding.binder.BinderFactoryBuilder;
 
-public abstract class BaseActivity extends FragmentActivity {
+import java.util.List;
 
+import javax.inject.Inject;
 
-    private DataManager dataManager;
+import timber.log.Timber;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        dataManager = ((DTApplication) getApplicationContext()).getDataManager();
-    }
+public abstract class BaseActivity extends InjectingActivity {
 
-    public void initializeContentView(int layoutId, Object presentationModel) {
-        ViewBinder viewBinder = createViewBinder();
-        View rootView = viewBinder.inflateAndBind(layoutId, presentationModel);
-        setContentView(rootView);
-    }
+    protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
+    private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
+    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
+    @Inject
+    ActivityRouter router;
 
-    private ViewBinder createViewBinder() {
+    public ViewBinder createViewBinder() {
         BinderFactory binderFactory = getReusableBinderFactory();
         return binderFactory.createViewBinder(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initHockeyApp();
+    }
+
     private BinderFactory getReusableBinderFactory() {
-        BinderFactory binderFactory = new BinderFactoryBuilder().build();
         return binderFactory;
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
+    @Override
+    public void onBackPressed() {
+        try {
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 1) {
+                fm.popBackStack();
+            } else {
+                finish();
+            }
+        } catch (IllegalStateException e) {
+            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+        }
     }
+
+    protected List<Object> getModules() {
+        List<Object> result = super.getModules();
+        result.add(new ActivityModule(this));
+        return result;
+    }
+
+    public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
+        this.router.finish();
+        this.router.openLogin();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        dispatcher.dispatchTouchEvent(this, ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    protected void initHockeyApp() {
+        CrashManager.register(this, HOCKEY_APP_ID);
+    }
+
+
 }
+

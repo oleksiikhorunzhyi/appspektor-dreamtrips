@@ -12,6 +12,9 @@ build:
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
+          keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
+#   - setup-android-emulator:
+#       target: 1
     - setup-android-emulator:		
         target: 1
     - script:
@@ -21,11 +24,45 @@ build:
     - script:
         name: run gradle build
         code: |
-          gradle --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR build
+          gradle build --stacktrace --info --no-color -q
+#    - script:
+#         name: run gradle connectedCheck
+#         code: |
+#           gradle test --stacktrace --info --no-color -q
   after-steps:
     # Use the build results
     - script:
         name: inspect build result
         code: |
+          ls -la app/build/outputs/apk/
+          cp app/build/outputs/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR
+          echo $WERCKER_REPORT_ARTIFACTS_DIR
+          echo $WERCKER_GIT_COMMIT
+          echo $WERCKER_GIT_BRANCH
+          ls -la $WERCKER_REPORT_ARTIFACTS_DIR
+deploy:
+  steps:
+    - script:
+       name: hockeyapp
+       code: >
+        ls -la;
+
+        RESULT=$(
+        curl
+        -F status=2
+        -F notify=0
+        -F notes="Deploy to HockeyApp"
+        -F notes_type=0
+        -F ipa=@app/build/outputs/apk/app-debug.apk
+        -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26"
+        https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload)
+
+        echo $RESULT;
+
+        if [[ $RESULT == *"appsize"* ]]; then
+        echo "Apk file has been successfully uploaded";
+        else
+        exit 1;
+        fi;
           ls -la .
           cp app/build/outputs/apk/*.apk $WERCKER_REPORT_ARTIFACTS_DIR

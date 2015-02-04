@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/theme_main"
+        android:fillViewport="false"
+        android:textColor="@android:color/white"
+        fab:pstsIndicatorColor="@color/theme_main_darker"
+        fab:pstsTextSelectedStyle="normal"
+        fab:pstsTextStyle="normal"
+        fab:pstsUnderlineColor="@color/theme_main_darker" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tabs"
+        android:background="@android:color/white" />
+
+    <View
+        android:id="@+id/v_bg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pager"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="@color/theme_main_darker"
+        fab:fab_colorNormal="@color/theme_main"
+        fab:fab_colorPressed="@color/theme_main_darker"
+        fab:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_facebook"
+            fab:fab_title="Choose from facebook" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_gallery"
+            fab:fab_title="Choose from a gallery" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_photo"
+            fab:fab_title="Take a photo" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>

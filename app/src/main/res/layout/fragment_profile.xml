@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/v_top_strip"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/theme_main" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:overScrollMode="never"
+        android:id="@+id/sv">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/vg_content_container"
+                android:layout_width="480dp"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/include"
+                    layout="@layout/header_profile" />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_save"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="-32dp"
+                    android:visibility="gone"
+                    app:fab_icon="@drawable/ic_save" />
+
+                <include layout="@layout/include_profile_info" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

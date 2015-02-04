@@ -1,21 +1,22 @@
 package com.worldventures.dreamtrips.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.presentation.activity.LoginActivityPresentation;
+import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 
-public class LoginActivity extends BaseActivity implements LoginActivityPresentation.View {
+@Layout(R.layout.activity_login)
+public class LoginActivity extends PresentationModelDrivenActivity<LoginActivityPresentation> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LoginActivityPresentation presentationModel = new LoginActivityPresentation(this,getDataManager());
-        initializeContentView(R.layout.activity_login, presentationModel);
+    protected LoginActivityPresentation createPresentationModel(Bundle savedInstanceState) {
+        return new LoginActivityPresentation(this);
     }
+
     @Override
-    public void openMainWindow() {
-        startActivity(new Intent(this, MainActivity.class));
+    protected void afterCreateView(Bundle savedInstanceState) {
+        super.afterCreateView(savedInstanceState);
+        this.getPresentationModel().onCreate();
     }
 }

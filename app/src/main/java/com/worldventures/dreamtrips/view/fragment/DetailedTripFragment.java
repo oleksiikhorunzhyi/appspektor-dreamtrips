@@ -84,7 +84,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
-    @OnClick(R.id.textViewBookIt)
+    @OnClick(R.id.layoutBookIt)
     public void bookIt() {
         getPresentationModel().actionBookIt();
     }

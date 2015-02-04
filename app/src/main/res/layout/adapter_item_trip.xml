@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="5dp"
     card_view:cardCornerRadius="4dp">
+
 
     <RelativeLayout
         android:id="@+id/itemLayout"
@@ -24,11 +26,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
+                android:padding="-2dp"
                 android:src="@drawable/ic_trip_image_placeholder" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@drawable/trip_item_shadow"/>
+                android:background="@drawable/trip_item_shadow" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -39,29 +43,42 @@
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
-                    android:layout_centerVertical="true"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/imageViewLike"
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/tripImagePanelMargin">
+
+                <com.andexert.library.RippleView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-                    android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-                    android:layout_marginTop="@dimen/tripImagePanelMargin"
-                    android:clickable="true"
-                    android:src="@drawable/ic_heart_1_sh"
-                    android:tag="like" />
+                    ripple:rv_centered="true">
 
+                    <ImageView
+                        android:id="@+id/imageViewLike"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
+                        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
+                        android:layout_marginTop="@dimen/tripImagePanelMargin"
+                        android:clickable="true"
+                        android:src="@drawable/ic_heart_1_sh"
+                        android:tag="like" />
+                </com.andexert.library.RippleView>
 
-            </RelativeLayout>
+            </FrameLayout>
 
 
             <FrameLayout
@@ -88,54 +105,62 @@
 
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutInfo"
-            android:layout_width="match_parent"
+        <com.andexert.library.RippleView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageLayout"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/tripDetailPanelPadding">
+            ripple:rv_centered="true"
+            ripple:rv_color="#D3D3D3">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/layoutInfo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/tripDetailPanelPadding">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:singleLine="true"
+                        android:textColor="@color/tripNameColor"
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:id="@+id/textViewPlace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_location"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_location"
+                        android:singleLine="true"
+                        android:textColor="@color/tripPlaceColor" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/textViewName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:fontFamily="sans-serif-light"
-                    android:singleLine="true"
-                    android:textColor="@color/tripNameColor"
-                    android:textSize="16sp" />
-
-
-                <TextView
-                    android:id="@+id/textViewPlace"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_location"
-                    android:drawablePadding="5dp"
-                    android:drawableStart="@drawable/ic_location"
-                    android:singleLine="true"
-                    android:textColor="@color/tripPlaceColor" />
+                    android:gravity="center_vertical"
+                    android:textColor="@color/tripPlaceColor"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/textViewPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
-                android:textColor="@color/tripPlaceColor"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        </com.andexert.library.RippleView>
 
 
     </RelativeLayout>
+
 
 </android.support.v7.widget.CardView>

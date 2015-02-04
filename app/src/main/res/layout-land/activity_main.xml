@@ -40,7 +40,7 @@
     <fragment
         android:id="@+id/fragment_filters"
         android:name="com.worldventures.dreamtrips.view.fragment.FiltersFragment"
-        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_width="@dimen/navigation_drawer_width_filter"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         app:layout="@layout/fragment_navigation_drawer" />

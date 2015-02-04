@@ -84,7 +84,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
 
     @Override
     public void setLiked(boolean liked) {
-        imageViewLike.setImageResource(liked ? R.drawable.ic_heart_1 : R.drawable.ic_bucket_like_selected);
+        imageViewLike.setImageResource(!liked ? R.drawable.ic_heart_1 : R.drawable.ic_bucket_like_selected);
     }
 
     @OnClick(R.id.itemLayout)

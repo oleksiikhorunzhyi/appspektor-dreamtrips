@@ -72,6 +72,9 @@ public class TripCell extends AbstractCell<Trip> {
         getEventBus().post(new TouchTripEvent(getPosition()));
     }
 
+    @OnClick(R.id.layoutInfo)
+    void onInfoClick() {actionItemClick();}
+
     @Override
     public void prepareForReuse() {
         textViewName.setText("");

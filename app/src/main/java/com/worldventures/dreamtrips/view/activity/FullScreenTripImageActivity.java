@@ -7,12 +7,10 @@ import android.view.WindowManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
-import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;

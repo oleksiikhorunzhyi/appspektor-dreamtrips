@@ -6,6 +6,10 @@ import android.os.Handler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
+import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
+import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
+import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
@@ -23,7 +27,7 @@ import retrofit.client.Response;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @PresentationModel
-public abstract class TripImagesListFragmentPM<T> extends BasePresentation<TripImagesListFragmentPM.View> {
+public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
     @Inject
@@ -33,19 +37,42 @@ public abstract class TripImagesListFragmentPM<T> extends BasePresentation<TripI
     protected Context context;
 
     protected Type type;
-    private Callback<List<T>> callback;
-    private int currentPage;
+    private Callback<List<T>> cbNext;
+    private Callback<List<T>> cbRefresh;
+    private Callback<List<T>> cbPrev;
 
-    public TripImagesListFragmentPM(View view, Type type) {
+
+    public TripImagesListPM(View view, Type type) {
         super(view);
         this.type = type;
-        callback = new Callback<List<T>>() {
+        cbNext = new Callback<List<T>>() {
             @Override
             public void success(List<T> objects, Response response) {
-                if(currentPage==1){
-                    view.clear();//PullTORefresh
-                }
-                currentPage++;
+                view.addAll((List<Object>) objects);
+                view.finishLoading();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                view.finishLoading();
+            }
+        };
+        cbRefresh = new Callback<List<T>>() {
+            @Override
+            public void success(List<T> objects, Response response) {
+                view.clear();//PullTORefresh
+                view.addAll((List<Object>) objects);
+                view.finishLoading();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                view.finishLoading();
+            }
+        };
+        cbPrev = new Callback<List<T>>() {
+            @Override
+            public void success(List<T> objects, Response response) {
                 view.addAll((List<Object>) objects);
                 view.finishLoading();
             }
@@ -75,14 +102,12 @@ public abstract class TripImagesListFragmentPM<T> extends BasePresentation<TripI
         }
         if (!loading && (totalItemCount - visibleItemCount)
                 <= (firstVisibleItem + visibleThreshold)) {
-            // End has been reached
-
-            // Do something
-
-            loadPhotos(PER_PAGE, currentPage, callback);
+            loadNext(itemCount / PER_PAGE + 1);
             loading = true;
         }
     }
+
+
 
     public interface Command {
         List<ImageUploadTask> run();
@@ -95,9 +120,19 @@ public abstract class TripImagesListFragmentPM<T> extends BasePresentation<TripI
 
 
     public void reload() {
-        currentPage = 1;
         view.startLoading();
-        loadPhotos(PER_PAGE, currentPage, callback);
+        loadMore(1, cbRefresh);
+    }
+
+    public void loadNext(int page) {
+        loadMore(page, cbNext);
+    }
+    public void loadPrev(int page) {
+        loadMore(page, cbPrev);
+    }
+
+    private void loadMore(int page, Callback<List<T>> callback) {
+        loadPhotos(PER_PAGE, page, callback);
     }
 
     public abstract void loadPhotos(int perPage, int page, Callback<List<T>> callback);
@@ -150,6 +185,20 @@ public abstract class TripImagesListFragmentPM<T> extends BasePresentation<TripI
                 ((Photo) o).setLiked(event.isLiked());
             }
         }
+    }
+
+    public static TripImagesListPM create(Type type, View view) {
+        switch (type) {
+            case MEMBER_IMAGES:
+                return new UserImagesPM(view);
+            case MY_IMAGES:
+                return new MyImagesPM(view);
+            case YOU_SHOULD_BE_HERE:
+                return new YSBHPM(view);
+            case INSPIRE_ME:
+                return new InspireMePM(view);
+        }
+        return null;
     }
 
 }

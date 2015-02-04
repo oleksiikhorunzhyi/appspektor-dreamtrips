@@ -11,5 +11,5 @@ public interface AdapterView<T> {
 
     void clear();
 
-    void replace(int positiob, T item);
+    void replace(int position, T item);
 }

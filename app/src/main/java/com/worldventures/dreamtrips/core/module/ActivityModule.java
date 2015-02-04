@@ -37,7 +37,7 @@ import com.worldventures.dreamtrips.presentation.MapFragmentPM;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
-import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPM;
+import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
@@ -116,7 +116,7 @@ import dagger.Provides;
                 FacebookPickPhotoActivityPM.class,
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
-                TripImagesListFragmentPM.class,
+                TripImagesListPM.class,
                 InspireMePM.class,
                 MyImagesPM.class,
                 UserImagesPM.class,

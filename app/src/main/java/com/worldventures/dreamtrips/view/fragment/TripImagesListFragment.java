@@ -14,11 +14,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPM;
-import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
-import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
-import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
-import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
+import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -35,7 +31,7 @@ import de.greenrobot.event.EventBus;
 import io.realm.ImageUploadTaskRealmProxy;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentPM> implements TripImagesListFragmentPM.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment extends BaseFragment<TripImagesListPM> implements TripImagesListPM.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -86,6 +82,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
                 getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
+
+
     }
 
     @Override
@@ -117,20 +115,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListFragmentP
     }
 
     @Override
-    protected TripImagesListFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
         type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        switch (type) {
-
-            case MEMBER_IMAGES:
-                return new UserImagesPM(this);
-            case MY_IMAGES:
-                return new MyImagesPM(this);
-            case YOU_SHOULD_BE_HERE:
-                return new YSBHPM(this);
-            case INSPIRE_ME:
-                return new InspireMePM(this);
-        }
-        return null;
+        return TripImagesListPM.create(type, this);
     }
 
     @Override

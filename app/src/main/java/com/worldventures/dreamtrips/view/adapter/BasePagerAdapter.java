@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
+public class BasePagerAdapter<T extends Fragment> extends FragmentStatePagerAdapter {
     private List<FragmentItem<? extends T>> fragmentItems = new ArrayList<>();
 
     public BasePagerAdapter(FragmentManager fm) {

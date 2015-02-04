@@ -1,32 +1,26 @@
 package com.worldventures.dreamtrips.view.activity;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
+import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)
-public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<FullScreenActivityPM> {
+public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<TripImagesListPM> implements TripImagesListPM.View {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
@@ -36,31 +30,31 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
-    private BasePagerAdapter<FullScreenPhotoFragment> adapter;
-    ArrayList<Serializable> photoList;
-    private TripImagesListFragment.Type type;
+    BasePagerAdapter<FullScreenPhotoFragment> adapter;
+    List<Object> photoList;
+    TripImagesListFragment.Type type;
 
     @Override
-    protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new FullScreenActivityPM(this);
+    protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
+        return TripImagesListPM.create(type, this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
+
+        photoList = (ArrayList<Object>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
+        type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
+        int position = bundleExtra.getInt(EXTRA_POSITION);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
 
-        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
-
-        photoList = (ArrayList<Serializable>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
-        type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
-        int position = bundleExtra.getInt(EXTRA_POSITION);
         getIntent().removeExtra(EXTRA_PHOTOS_LIST);
         if (position < 0) {
             position = 0;
@@ -75,13 +69,28 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
             }
         };
 
-        for (Serializable photo : photoList) {
+        for (Object photo : photoList) {
             adapter.add(new BasePagerAdapter.FragmentItem<>(FullScreenPhotoFragment.class, ""));
         }
 
         pager.setAdapter(adapter);
         pager.setCurrentItem(position);
         toolbar.getBackground().setAlpha(0);
+
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                if (adapter.getCount() - 2 == position) {
+                    getPresentationModel().loadNext(photoList.size() / TripImagesListPM.PER_PAGE + 1);
+                }
+
+            }
+        });
     }
 
     public TripImagesListFragment.Type getType() {
@@ -90,5 +99,49 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Ful
 
     public Photo getPhoto(int position) {
         return (Photo) photoList.get(position);
+    }
+
+    @Override
+    public List<Object> getPhotosFromAdapter() {
+        return photoList;
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void finishLoading() {
+
+    }
+
+    @Override
+    public void addAll(List<Object> items) {
+        photoList.addAll(items);
+        for (Object item : items) {
+            adapter.add(new BasePagerAdapter.FragmentItem<>(FullScreenPhotoFragment.class, ""));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void add(Object item) {
+
+    }
+
+    @Override
+    public void add(int position, Object item) {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void replace(int position, Object item) {
+
     }
 }

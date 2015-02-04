@@ -139,7 +139,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageSelected(int position) {
-        if (position == Type.YOU_SHOULD_BE_HERE.ordinal()) {
+        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
         } else {
             multipleActionsDown.setVisibility(View.VISIBLE);

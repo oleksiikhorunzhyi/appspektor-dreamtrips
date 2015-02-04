@@ -69,23 +69,23 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public List<Photo> getUserPhotos() {
-        return runApiMethodSync(dreamTripsApi::getUserPhotos);
+    public void getUserPhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getUserPhotos(perPage, page, proxyCallback));
     }
 
     @Override
-    public List<Photo> getMyPhotos(@Path("id") int currentUserId) {
-        return runApiMethodSync(() -> dreamTripsApi.getMyPhotos(currentUserId));
+    public void getMyPhotos(@Path("id") int currentUserId, @Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getMyPhotos(currentUserId, perPage, page, callback));
     }
 
     @Override
-    public List<Photo> getInspirationsPhotos() {
-        return runApiMethodSync(dreamTripsApi::getInspirationsPhotos);
+    public void getInspirationsPhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getInspirationsPhotos(perPage, page, proxyCallback));
     }
 
     @Override
-    public List<Photo> getYouShoulBeHerePhotos() {
-        return runApiMethodSync(dreamTripsApi::getYouShoulBeHerePhotos);
+    public void getYouShoulBeHerePhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getYouShoulBeHerePhotos(perPage, page, proxyCallback));
     }
 
     @Override

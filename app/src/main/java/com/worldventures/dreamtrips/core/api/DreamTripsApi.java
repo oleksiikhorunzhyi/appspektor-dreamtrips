@@ -9,8 +9,6 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import retrofit.Callback;
@@ -23,6 +21,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
@@ -31,12 +30,13 @@ public interface DreamTripsApi {
     @POST("/api/sessions")
     public void login(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
 
+    @FormUrlEncoded
+    @POST("/api/sessions")
+    public Session login(@Field("username") String username, @Field("password") String password);
+
     @POST("/api/profile/avatar")
     @Multipart
     public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);
-
-    @GET("/api/photos")
-    public List<Photo> getUserPhotos();
 
     @GET("/api/trips")
     public List<Trip> getTrips();
@@ -44,14 +44,17 @@ public interface DreamTripsApi {
     @GET("/api/regions")
     public List<Region> getRegions();
 
+    @GET("/api/photos")
+    public void getUserPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+
     @GET("/api/users/{id}/photos")
-    public List<Photo> getMyPhotos(@Path("id") int currentUserId);
+    public void getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page, Callback<List<Photo>> callback);
 
     @GET("/api/inspirations")
-    public List<Photo> getInspirationsPhotos();
+    public void getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
 
     @GET("/api/ysbh_photos")
-    public List<Photo> getYouShoulBeHerePhotos();
+    public void getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")

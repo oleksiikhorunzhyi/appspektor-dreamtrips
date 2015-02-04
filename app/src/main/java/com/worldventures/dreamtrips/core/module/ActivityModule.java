@@ -6,11 +6,9 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
-import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
-import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
@@ -39,9 +37,13 @@ import com.worldventures.dreamtrips.presentation.MapFragmentPM;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
-import com.worldventures.dreamtrips.presentation.TripImagesListFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
+import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
+import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
+import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
@@ -59,7 +61,6 @@ import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
-import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
@@ -117,7 +118,11 @@ import dagger.Provides;
                 FacebookPickPhotoActivityPM.class,
                 NavigationDrawerAdapter.class,
                 TripImagesTabsFragmentPresentation.class,
-                TripImagesListFragmentPresentation.class,
+                TripImagesListPM.class,
+                InspireMePM.class,
+                MyImagesPM.class,
+                UserImagesPM.class,
+                YSBHPM.class,
                 DreamTripsFragmentPM.class,
                 DetailedTripFragmentPM.class,
                 DetailTripActivityPM.class,
@@ -183,7 +188,9 @@ import dagger.Provides;
                 SoldOutCell.class,
 
                 BaseArrayListAdapter.class,
-                UploadJob.class
+                UploadJob.class,
+
+                DreamTripsApiProxy.class
         },
         complete = false,
         library = true

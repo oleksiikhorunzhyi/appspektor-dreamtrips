@@ -6,6 +6,8 @@ public class UserSession {
     private User user;
     private String apiToken;
     private String legacyApiToken;
+    private String userPassword;
+    private String username;
 
     public User getUser() {
         return user;
@@ -29,5 +31,21 @@ public class UserSession {
 
     public void setLegacyApiToken(String legacyApiToken) {
         this.legacyApiToken = legacyApiToken;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

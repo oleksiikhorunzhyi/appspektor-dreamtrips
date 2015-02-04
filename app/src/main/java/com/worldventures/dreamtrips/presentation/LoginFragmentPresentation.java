@@ -69,26 +69,13 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
                     LoginFragmentPresentation.this.view.showLoginErrorMessage();
                     return;
                 }
+                userSession.setUsername(username);
+                userSession.setUserPassword(userPassword);
+                appSessionHolder.put(userSession);
+                activityRouter.openMain();
+                activityRouter.finish();
+                view.showLoginSuccess();
 
-                worldVenturesApi.getToken(username, userPassword, new Callback<JsonObject>() {
-                    @Override
-                    public void success(JsonObject jsonObject, Response response) {
-                        String token = jsonObject.get("result").getAsString();
-
-                        userSession.setLegacyApiToken(token);
-
-                        appSessionHolder.put(userSession);
-
-                        activityRouter.openMain();
-                        activityRouter.finish();
-                        LoginFragmentPresentation.this.view.showLoginSuccess();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        LoginFragmentPresentation.this.view.showLoginErrorMessage();
-                    }
-                });
             }
 
             @Override

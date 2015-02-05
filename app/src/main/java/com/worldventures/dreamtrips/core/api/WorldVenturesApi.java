@@ -14,4 +14,8 @@ public interface WorldVenturesApi {
     @FormUrlEncoded
     @POST("/ipadapp/api/v1/auth/token")
     public void getToken(@Field("username") String username, @Field("password") String password, Callback<JsonObject> callback);
+
+    @FormUrlEncoded
+    @POST("/ipadapp/api/v1/auth/token")
+    public JsonObject getToken(@Field("username") String username, @Field("password") String password);
 }

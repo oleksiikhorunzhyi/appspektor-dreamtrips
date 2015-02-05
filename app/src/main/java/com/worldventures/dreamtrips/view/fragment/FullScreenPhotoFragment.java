@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.FlagContent;
+import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -54,6 +55,8 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
     @Inject
     UniversalImageLoader imageLoader;
+    private SimpleImageLoadingListener originalCallback;
+    private SimpleImageLoadingListener mediumCallback;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -71,7 +74,10 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
             getPresentationModel().setPhoto((Photo) photo);
         }
         System.gc();
-        this.imageLoader.loadImage(getPresentationModel().getPhoto().getImages().getOriginal().getUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+        Image images = getPresentationModel().getPhoto().getImages();
+        String medium = images.getMedium().getUrl();
+        String original = images.getOriginal().getUrl();
+        originalCallback = new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -80,7 +86,6 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                imageLoader.loadImage(getPresentationModel().getPhoto().getImages().getMedium().getUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN);
                 progressBar.setVisibility(View.GONE);
                 informUser("Error while loading image");
             }
@@ -89,7 +94,15 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressBar.setVisibility(View.GONE);
             }
-        });
+        };
+        mediumCallback = new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                imageLoader.loadImage(original, ivImage, UniversalImageLoader.OP_FULL_SCREEN, originalCallback);
+            }
+        };
+        imageLoader.loadImage(medium, ivImage, UniversalImageLoader.OP_FULL_SCREEN, mediumCallback);
+
 
         getPresentationModel().onCreate();
     }

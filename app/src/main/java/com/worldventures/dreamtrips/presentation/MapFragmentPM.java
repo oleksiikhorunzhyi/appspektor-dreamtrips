@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
+import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
 import org.robobinding.annotation.PresentationModel;
@@ -110,6 +112,14 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         this.acceptedThemes = null;
     }
 
+    public void onEvent(InfoWindowSizeEvent event) {
+        view.showInfoWindow(event.getOffset());
+    }
+
+    public void markerReady() {
+        eventBus.post(new ShowInfoWindowEvent());
+    }
+
     public void onMarkerClick(String id) {
         Trip resultTrip = null;
         int realId = Integer.valueOf(id);
@@ -139,5 +149,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         public void addPin(LatLng latLng, int id);
 
         public void clearMap();
+
+        public void showInfoWindow(int offset);
     }
 }

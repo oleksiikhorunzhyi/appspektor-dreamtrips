@@ -22,7 +22,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 10
-        versionName "0.1.9"
+        versionName "0.1.10"
         multiDexEnabled true
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'

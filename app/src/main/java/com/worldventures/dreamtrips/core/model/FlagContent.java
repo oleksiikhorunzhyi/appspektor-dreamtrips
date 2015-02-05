@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.model;
 
+//TODO refresh
 public enum FlagContent {
     INDECENT_CONTENT("Indecent Content", true),
     VIOLENT_CONTENT("Violent Content", false),

@@ -42,6 +42,8 @@ public class TripCell extends AbstractCell<Trip> {
     TextView textViewPoints;
     @InjectView(R.id.pointsCountLayout)
     FrameLayout pointsCountLayout;
+    @InjectView(R.id.textViewFeatured)
+    TextView textViewFeatured;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -56,6 +58,12 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
+
+        if (getModelObject().isFeatured()) {
+            textViewFeatured.setVisibility(View.VISIBLE);
+        } else {
+            textViewFeatured.setVisibility(View.GONE);
+        }
 
         if (getModelObject().getRewardsLimit() > 0)
             textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));

@@ -69,7 +69,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     CircleIndicator circleIndicator;
     @InjectView(R.id.pointsCountLayout)
     FrameLayout pointsCountLayout;
-
+    @InjectView(R.id.textViewFeatured)
+    TextView textViewFeatured;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -186,6 +187,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
         textViewName.setText(name);
         if (toolbarLanscape != null)
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(name);
+    }
+
+    @Override
+    public void setFeatured(boolean featured) {
+        if (featured) {
+            textViewFeatured.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

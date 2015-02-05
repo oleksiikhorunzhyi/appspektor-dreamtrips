@@ -39,10 +39,15 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
         view.setPrice(trip.getPrice().toString());
         view.setDate(trip.getAvailabilityDates().toString());
         view.setImage(trip.getImageUrl("THUMB"));
-        view.setPoints(String.valueOf(trip.getRewardsLimit()));
+        if (trip.getRewardsLimit() > 0) {
+            view.setPoints(String.valueOf(trip.getRewardsLimit()));
+        } else {
+            view.setPointsInvisible();
+        }
         view.setPlace(trip.getGeoLocation().getName());
         view.setLiked(trip.isLiked());
         view.setDescription(trip.getDescription());
+        view.setFeatured(trip.isFeatured());
     }
 
     public Trip getTrip() {
@@ -76,5 +81,7 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
         void setLiked(boolean liked);
         void setDescription(String description);
         void showLayout();
+        void setPointsInvisible();
+        void setFeatured(boolean isFeatured);
     }
 }

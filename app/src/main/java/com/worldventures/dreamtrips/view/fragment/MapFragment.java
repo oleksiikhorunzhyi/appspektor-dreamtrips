@@ -67,17 +67,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
                     return true;
                 });
             } else {
-                this.googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_trip_pin, null);
-                    }
 
-                    @Override
-                    public View getInfoContents(Marker marker) {
-                        return null;
-                    }
-                });
             }
 
             this.mapView.setMapTouchListener(() -> getPresentationModel().onCameraChanged());

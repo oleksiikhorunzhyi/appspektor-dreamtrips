@@ -12,8 +12,7 @@ public class Photo extends BaseEntity implements Parcelable {
 
     String title;
     String shotAt;
-    String locationName;
-    Coordinate coordinates;
+    Location location;
     List<String> tags;
     Image images;
     boolean liked;
@@ -38,20 +37,12 @@ public class Photo extends BaseEntity implements Parcelable {
         this.tags = tags;
     }
 
-    public Coordinate getCoordinates() {
-        return coordinates;
+    public Location getCoordinates() {
+        return location;
     }
 
-    public void setCoordinates(Coordinate coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
+    public void setCoordinates(Location coordinates) {
+        this.location = coordinates;
     }
 
     public String getShotAt() {
@@ -96,13 +87,16 @@ public class Photo extends BaseEntity implements Parcelable {
 
     @Override
     public String toString() {
-        return "{" +
+        return "Photo{" +
                 "title='" + title + '\'' +
                 ", shotAt='" + shotAt + '\'' +
-                ", locationName='" + locationName + '\'' +
-                ", coordinates=" + coordinates +
+                ", location=" + location +
                 ", tags=" + tags +
-                ", url=" + images +
+                ", images=" + images +
+                ", liked=" + liked +
+                ", likeCount=" + likeCount +
+                ", taskId='" + taskId + '\'' +
+                ", user=" + user +
                 '}';
     }
 
@@ -128,8 +122,7 @@ public class Photo extends BaseEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
         dest.writeString(this.shotAt);
-        dest.writeString(this.locationName);
-        dest.writeParcelable(this.coordinates, 0);
+        dest.writeParcelable(this.location, 0);
         dest.writeList(this.tags);
         dest.writeParcelable(this.images, 0);
         dest.writeByte(liked ? (byte) 1 : (byte) 0);
@@ -142,8 +135,7 @@ public class Photo extends BaseEntity implements Parcelable {
     private Photo(Parcel in) {
         this.title = in.readString();
         this.shotAt = in.readString();
-        this.locationName = in.readString();
-        this.coordinates = in.readParcelable(Coordinate.class.getClassLoader());
+        this.location = in.readParcelable(Location.class.getClassLoader());
         this.tags = new ArrayList<String>();
         in.readList(this.tags, String.class.getClassLoader());
         this.images = in.readParcelable(Image.class.getClassLoader());

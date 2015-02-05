@@ -99,12 +99,12 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
         return new FullScreenPhotoFragmentPM(this);
     }
 
-    @OnClick(R.id.iv_like)
+    @OnClick(R.id.likeButton)
     public void actionLike() {
         getPresentationModel().onLikeAction();
     }
 
-    @OnClick(R.id.iv_flag)
+    @OnClick(R.id.flagButton)
     public void actionFlag() {
         PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
         FlagContent[] values = FlagContent.values();

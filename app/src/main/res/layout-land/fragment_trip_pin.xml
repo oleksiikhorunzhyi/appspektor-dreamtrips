@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
-    android:paddingBottom="10dp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/itemLayout"
-        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="vertical">
 
         <FrameLayout
@@ -35,7 +36,7 @@
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:text="Jul 10 - 15 2015"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
@@ -113,8 +114,23 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <ImageView
+        <TextView
             android:layout_below="@+id/layoutInfo"
+            android:id="@+id/textViewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="fasdfasdfsadf"
+            android:textSize="10sp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:background="@android:color/white"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/tripNameColor" />
+
+
+        <ImageView
+            android:layout_below="@+id/textViewDescription"
             android:layout_width="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"

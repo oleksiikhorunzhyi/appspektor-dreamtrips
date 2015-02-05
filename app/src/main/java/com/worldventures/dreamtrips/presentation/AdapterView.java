@@ -12,4 +12,6 @@ public interface AdapterView<T> {
     void clear();
 
     void replace(int position, T item);
+
+    void remove(int index);
 }

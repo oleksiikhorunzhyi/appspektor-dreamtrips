@@ -60,6 +60,9 @@ public interface DreamTripsApi {
     @POST("/api/photos/{id}/flags")
     public void flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason, Callback<JsonObject> callback);
 
+    @DELETE("/api/photos/{id}")
+    public void deletePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+
     @POST("/api/photos/{id}/like")
     public void likePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
 

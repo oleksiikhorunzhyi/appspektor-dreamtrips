@@ -94,6 +94,11 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
+    public void deletePhoto(@Path("id") int photoId, Callback<JsonObject> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.deletePhoto(photoId, proxyCallback));
+    }
+
+    @Override
     public void likePhoto(@Path("id") int photoId, Callback<JsonObject> callback) {
         runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.likePhoto(photoId, proxyCallback));
     }

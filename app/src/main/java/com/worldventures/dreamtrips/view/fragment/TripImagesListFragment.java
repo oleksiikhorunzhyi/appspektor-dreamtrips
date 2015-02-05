@@ -164,6 +164,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         arrayListAdapter.notifyItemChanged(position);
     }
 
+    @Override
+    public void remove(int index) {
+        arrayListAdapter.remove(index);
+        arrayListAdapter.notifyItemRemoved(index);
+    }
+
     public static enum Type {
         MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
     }

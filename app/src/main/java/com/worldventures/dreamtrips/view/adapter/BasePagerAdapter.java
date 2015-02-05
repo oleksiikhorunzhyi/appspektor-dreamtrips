@@ -21,6 +21,10 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentStatePagerAdap
         fragmentItems.add(item);
     }
 
+    public void remove(int index) {
+        fragmentItems.remove(index);
+    }
+
     private T getFragment(int i) {
         try {
             T value = fragmentItems.get(i).aClass.newInstance();

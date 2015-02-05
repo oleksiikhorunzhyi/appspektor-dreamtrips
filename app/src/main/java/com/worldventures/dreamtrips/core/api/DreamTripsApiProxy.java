@@ -248,7 +248,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         String userPassword = appSessionHolder.get().get().getUserPassword();
         userSession.setUsername(username);
         userSession.setUserPassword(userPassword);
-
+        userSession.setLastUpdate(System.currentTimeMillis());
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);

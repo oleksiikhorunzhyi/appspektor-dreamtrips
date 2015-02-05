@@ -78,7 +78,7 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
                         userSession.setLegacyApiToken(token);
                         userSession.setUsername(username);
                         userSession.setUserPassword(userPassword);
-
+                        userSession.setLastUpdate(System.currentTimeMillis());
                         appSessionHolder.put(userSession);
 
                         activityRouter.openMain();

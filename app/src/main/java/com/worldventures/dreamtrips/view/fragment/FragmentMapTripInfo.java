@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,7 +49,10 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
     TextView textViewDescription;
     @InjectView(R.id.itemLayout)
     RelativeLayout itemLayout;
-
+    @InjectView(R.id.pointsCountLayout)
+    FrameLayout pointsCountLayout;
+    @InjectView(R.id.textViewFeatured)
+    TextView textViewFeatured;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -115,6 +119,18 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
     @Override
     public void setPoints(String points) {
         textViewPoints.setText(points);
+    }
+
+    @Override
+    public void setPointsInvisible() {
+        pointsCountLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setFeatured(boolean isFeatured) {
+        if (isFeatured) {
+            textViewFeatured.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

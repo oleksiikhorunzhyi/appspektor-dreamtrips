@@ -58,6 +58,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setDesription(trip.getDescription());
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
+        view.setFeatured(trip.isFeatured());
         view.setDuration(trip.getDuration());
         if (trip.getRewardsLimit() > 0)
             view.setRedemption(String.valueOf(trip.getRewardsLimit()));
@@ -146,5 +147,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         void setLike(boolean like);
 
         void setPointsInvisible();
+
+        void setFeatured(boolean featured);
     }
 }

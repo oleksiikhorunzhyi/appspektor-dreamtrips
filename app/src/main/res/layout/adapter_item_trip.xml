@@ -26,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:padding="-2dp"
                 android:src="@drawable/ic_trip_image_placeholder" />
 
             <View
@@ -52,29 +51,48 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end">
+
+                <TextView
+                    android:id="@+id/textViewFeatured"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"
+                    android:background="@drawable/ic_stripe2"
+                    android:padding="@dimen/tripDetailPanelPadding"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:text="FEATURED TRIP"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+
             <FrameLayout
-                android:layout_width="48dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_marginRight="@dimen/tripImagePanelMargin"
+                android:layout_marginEnd="@dimen/tripImagePanelMargin"
                 android:layout_marginTop="@dimen/tripImagePanelMargin">
 
                 <com.andexert.library.RippleView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     ripple:rv_centered="true">
 
                     <ImageView
                         android:id="@+id/imageViewLike"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-                        android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-                        android:layout_marginTop="@dimen/tripImagePanelMargin"
                         android:clickable="true"
-                        android:src="@drawable/ic_heart_1_sh"
+                        android:src="@drawable/ic_heart_1"
                         android:tag="like" />
                 </com.andexert.library.RippleView>
 
@@ -82,6 +100,7 @@
 
 
             <FrameLayout
+                android:id="@+id/pointsCountLayout"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="bottom"

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 import android.os.Handler;
 
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -10,6 +11,7 @@ import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
+import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,6 +38,10 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
 
     @Inject
     protected Context context;
+
+    @Inject
+    @Global
+    EventBus eventBus;
 
     protected Type type;
     private Callback<List<T>> cbNext;
@@ -108,7 +115,6 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
     }
 
 
-
     public interface Command {
         List<ImageUploadTask> run();
     }
@@ -116,6 +122,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
     @Override
     public void init() {
         super.init();
+        eventBus.register(this);
     }
 
 
@@ -127,6 +134,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
     public void loadNext(int page) {
         loadMore(page, cbNext);
     }
+
     public void loadPrev(int page) {
         loadMore(page, cbPrev);
     }
@@ -176,6 +184,16 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
                 }
 
             }, 600);
+        }
+    }
+
+    public void onEventMainThread(PhotoDeletedEvent event) {
+        List<Object> photosFromAdapter = view.getPhotosFromAdapter();
+        for (int i = 0; i < photosFromAdapter.size(); i++) {
+            Object o = photosFromAdapter.get(i);
+            if (o instanceof Photo && ((Photo) o).getId() == event.getPhotoId()) {
+                view.remove(i);
+            }
         }
     }
 

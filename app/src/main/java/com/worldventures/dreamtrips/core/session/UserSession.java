@@ -8,6 +8,7 @@ public class UserSession {
     private String legacyApiToken;
     private String userPassword;
     private String username;
+    private long lastUpdate;
 
     public User getUser() {
         return user;
@@ -47,5 +48,13 @@ public class UserSession {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public long getLastUpdate() {
+        return lastUpdate;
     }
 }

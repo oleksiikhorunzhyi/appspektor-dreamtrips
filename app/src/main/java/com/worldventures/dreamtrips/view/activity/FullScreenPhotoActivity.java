@@ -144,4 +144,21 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     public void replace(int position, Object item) {
 
     }
+
+    @Override
+    public void remove(int index) {
+        if (adapter.getCount() == 1) {
+            finish();
+        } else {
+            int currentItem = pager.getCurrentItem();
+            photoList.remove(index);
+            adapter.remove(index);
+            adapter.notifyDataSetChanged();
+            pager.setAdapter(adapter);
+            pager.setCurrentItem(Math.min(currentItem, adapter.getCount()-1));
+
+
+        }
+
+    }
 }

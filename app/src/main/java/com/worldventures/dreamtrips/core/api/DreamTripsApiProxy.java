@@ -36,6 +36,9 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     DreamTripsApi dreamTripsApi;
 
     @Inject
+    WorldVenturesApi worldVenturesApi;
+
+    @Inject
     AppSessionHolder appSessionHolder;
 
     public DreamTripsApiProxy(Injector injector) {
@@ -75,7 +78,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
 
     @Override
     public void getMyPhotos(@Path("id") int currentUserId, @Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
-        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getMyPhotos(currentUserId, perPage, page, callback));
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getMyPhotos(currentUserId, perPage, page, proxyCallback));
     }
 
     @Override
@@ -91,6 +94,11 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     @Override
     public void flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason, Callback<JsonObject> callback) {
         runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.flagPhoto(photoId, nameOfReason, proxyCallback));
+    }
+
+    @Override
+    public void deletePhoto(@Path("id") int photoId, Callback<JsonObject> callback) {
+        runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.deletePhoto(photoId, proxyCallback));
     }
 
     @Override
@@ -139,7 +147,8 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         } catch (RetrofitError error) {
             if (isLoginError(error) && isCredentialExist()) {
                 Session session = tryLoginSync();
-                if (handleSession(session)) return e.get();
+                String token = tryGetLegacyTokenSync();
+                if (handleSession(session, token)) return e.get();
             }
             return null;
         }
@@ -158,7 +167,18 @@ public class DreamTripsApiProxy implements DreamTripsApi {
                     tryLoginAsync(new Callback<Session>() {
                         @Override
                         public void success(Session session, Response response) {
-                            if (handleSession(session)) e.execute(callback);
+                            tryGetLegacyTokenAsync(new Callback<JsonObject>() {
+                                @Override
+                                public void success(JsonObject jsonObject, Response response) {
+                                    if (handleSession(session, getStringToken(jsonObject)))
+                                        e.execute(callback);
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    callback.failure(error);
+                                }
+                            });
                         }
 
                         @Override
@@ -173,6 +193,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         };
         e.execute(proxy);
     }
+
 
     private boolean isCredentialExist() {
         UserSession userSession = appSessionHolder.get().get();
@@ -189,24 +210,45 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         return dreamTripsApi.login(username, userPassword);
     }
 
+    public String tryGetLegacyTokenSync() {
+        String username = appSessionHolder.get().get().getUsername();
+        String userPassword = appSessionHolder.get().get().getUserPassword();
+
+        JsonObject jsonObject = worldVenturesApi.getToken(username, userPassword);
+        return getStringToken(jsonObject);
+    }
+
+
+    private void tryGetLegacyTokenAsync(Callback<JsonObject> callback) {
+        String username = appSessionHolder.get().get().getUsername();
+        String userPassword = appSessionHolder.get().get().getUserPassword();
+        worldVenturesApi.getToken(username, userPassword, callback);
+    }
+
+    private String getStringToken(JsonObject jsonObject) {
+        return jsonObject.get("result").getAsString();
+    }
+
     private void tryLoginAsync(Callback<Session> callback) {
         String username = appSessionHolder.get().get().getUsername();
         String userPassword = appSessionHolder.get().get().getUserPassword();
         dreamTripsApi.login(username, userPassword, callback);
     }
 
-    private boolean handleSession(Session session) {
+    private boolean handleSession(Session session, String legacyToken) {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
         UserSession userSession = new UserSession();
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
+        userSession.setLegacyApiToken(legacyToken);
 
         String username = appSessionHolder.get().get().getUsername();
         String userPassword = appSessionHolder.get().get().getUserPassword();
         userSession.setUsername(username);
         userSession.setUserPassword(userPassword);
+        userSession.setLastUpdate(System.currentTimeMillis());
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);

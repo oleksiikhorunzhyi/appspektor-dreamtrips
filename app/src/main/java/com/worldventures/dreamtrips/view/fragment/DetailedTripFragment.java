@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -66,6 +67,10 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     ProgressBar progressBarDetailLoading;
     @InjectView(R.id.circleIndicator)
     CircleIndicator circleIndicator;
+    @InjectView(R.id.pointsCountLayout)
+    FrameLayout pointsCountLayout;
+    @InjectView(R.id.textViewFeatured)
+    TextView textViewFeatured;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -185,8 +190,20 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     }
 
     @Override
+    public void setFeatured(boolean featured) {
+        if (featured) {
+            textViewFeatured.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void setRedemption(String count) {
         textViewPoints.setText(count);
+    }
+
+    @Override
+    public void setPointsInvisible() {
+        pointsCountLayout.setVisibility(View.GONE);
     }
 
     @Override

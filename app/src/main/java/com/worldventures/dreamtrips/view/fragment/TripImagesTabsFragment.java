@@ -51,7 +51,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override

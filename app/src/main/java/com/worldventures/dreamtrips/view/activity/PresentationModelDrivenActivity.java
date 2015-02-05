@@ -19,6 +19,7 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
     protected void beforeCreateView(Bundle savedInstanceState) {
         this.presentationModel = createPresentationModel(savedInstanceState);
         inject(this.presentationModel);
+        this.presentationModel.init();
     }
 
     public void handleError(Exception e) {

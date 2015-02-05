@@ -143,6 +143,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void replaceItem(int location, BaseItemClass obj) {
         this.items.set(location, obj);
     }
+    public void remove(int location) {
+        this.items.remove(location);
+    }
 
     public void clear() {
         this.items.clear();

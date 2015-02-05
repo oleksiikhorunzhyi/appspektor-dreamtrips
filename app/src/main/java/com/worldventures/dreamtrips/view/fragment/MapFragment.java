@@ -40,12 +40,13 @@ import butterknife.InjectView;
 public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View {
 
     public static final String EXTRA_TRIPS = "EXTRA_TRIPS";
-    private static Handler handler = new Handler();
 
     @InjectView(R.id.map)
     ToucheableMapView mapView;
 
     GoogleMap googleMap;
+
+    private LatLng lastClickedLocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,24 +62,11 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
             zoomIn();
-            if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-                this.googleMap.setOnMarkerClickListener((marker) -> {
-                    updateMap(marker.getPosition(), marker.getSnippet());
-                    return true;
-                });
-            } else {
-                this.googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_trip_pin, null);
-                    }
-
-                    @Override
-                    public View getInfoContents(Marker marker) {
-                        return null;
-                    }
-                });
-            }
+            this.googleMap.setOnMarkerClickListener((marker) -> {
+                getPresentationModel().onMarkerClick(marker.getSnippet());
+                lastClickedLocation = marker.getPosition();
+                return true;
+            });
 
             this.mapView.setMapTouchListener(() -> getPresentationModel().onCameraChanged());
             this.googleMap.setMyLocationEnabled(true);
@@ -154,15 +142,21 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         googleMap.moveCamera(cameraUpdate);
     }
 
-    private void updateMap(final LatLng latLng, final String id) {
+
+    @Override
+    public void showInfoWindow(int offset) {
+        updateMap(lastClickedLocation, offset);
+    }
+
+    private void updateMap(final LatLng latLng, int offset) {
         Projection projection = googleMap.getProjection();
         Point screenLocation = projection.toScreenLocation(latLng);
-        screenLocation.y -= getResources().getDimensionPixelSize(R.dimen.map_offset_y);
+        screenLocation.y -= offset;
         LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                handler.postDelayed(() -> getPresentationModel().onMarkerClick(id), 20);
+                getPresentationModel().markerReady();
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.cell;
 
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +40,10 @@ public class TripCell extends AbstractCell<Trip> {
     TextView textViewDate;
     @InjectView(R.id.textViewPoints)
     TextView textViewPoints;
+    @InjectView(R.id.pointsCountLayout)
+    FrameLayout pointsCountLayout;
+    @InjectView(R.id.textViewFeatured)
+    TextView textViewFeatured;
 
     @Inject
     UniversalImageLoader universalImageLoader;
@@ -53,7 +58,18 @@ public class TripCell extends AbstractCell<Trip> {
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
         textViewDate.setText(getModelObject().getAvailabilityDates().toString());
-        textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
+
+        if (getModelObject().isFeatured()) {
+            textViewFeatured.setVisibility(View.VISIBLE);
+        } else {
+            textViewFeatured.setVisibility(View.GONE);
+        }
+
+        if (getModelObject().getRewardsLimit() > 0)
+            textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
+        else
+            pointsCountLayout.setVisibility(View.GONE);
+
         imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
         universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
@@ -73,7 +89,9 @@ public class TripCell extends AbstractCell<Trip> {
     }
 
     @OnClick(R.id.layoutInfo)
-    void onInfoClick() {actionItemClick();}
+    void onInfoClick() {
+        actionItemClick();
+    }
 
     @Override
     public void prepareForReuse() {

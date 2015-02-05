@@ -59,7 +59,10 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
         view.setDuration(trip.getDuration());
-        view.setRedemption(String.valueOf(trip.getRewardsLimit()));
+        if (trip.getRewardsLimit() > 0)
+            view.setRedemption(String.valueOf(trip.getRewardsLimit()));
+        else
+            view.setPointsInvisible();
         view.setLike(trip.isLiked());
         loadTripDetails();
     }
@@ -123,14 +126,25 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
 
     public static interface View extends BasePresentation.View {
         void setContent(List<ContentItem> contentItems);
+
         void setName(String text);
+
         void setLocation(String text);
+
         void setPrice(String text);
+
         void setDates(String text);
+
         void setDesription(String text);
+
         void setDuration(int count);
+
         void showErrorMessage();
+
         void setRedemption(String count);
+
         void setLike(boolean like);
+
+        void setPointsInvisible();
     }
 }

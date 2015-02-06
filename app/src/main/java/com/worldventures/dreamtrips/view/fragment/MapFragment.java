@@ -59,7 +59,6 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
-            zoomIn();
             this.googleMap.setOnMarkerClickListener((marker) -> {
                 getPresentationModel().onMarkerClick(marker.getSnippet());
                 lastClickedLocation = marker.getPosition();

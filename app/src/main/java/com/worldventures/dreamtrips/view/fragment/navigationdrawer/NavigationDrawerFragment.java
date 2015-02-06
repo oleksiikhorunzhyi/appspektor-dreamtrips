@@ -12,12 +12,14 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
+import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
@@ -42,6 +44,9 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
 
     @Inject
     AppSessionHolder appSessionHolder;
+
+    @Inject
+    FragmentCompass fragmentCompass;
 
     private NavigationDrawerListener navigationDrawerListener;
 
@@ -108,6 +113,14 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         return navHeader;
     }
 
+    public void onEvent(UpdateSelectionEvent event) {
+        State state = fragmentCompass.getPreviousFragment();
+        instanceSaved = true;
+        savedState = state;
+        adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
+                state.getPosition() : state.getPosition() + 1);
+    }
+
     public void onEvent(UpdateUserInfoEvent event) {
         updateHeader();
     }
@@ -130,9 +143,12 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     void selectItem(State state) {
         if ((!instanceSaved || !state.equals(savedState)) && this.navigationDrawerListener != null) {
             this.navigationDrawerListener.onNavigationDrawerItemSelected(state);
+            instanceSaved = false;
         }
         savedState = state;
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

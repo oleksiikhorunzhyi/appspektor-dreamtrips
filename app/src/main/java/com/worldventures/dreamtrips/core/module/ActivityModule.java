@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPrese
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
+import com.worldventures.dreamtrips.presentation.EnrollActivityPresentation;
 import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
@@ -51,6 +52,7 @@ import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
@@ -136,6 +138,8 @@ import dagger.Provides;
                 DummyPresentationModel.class,
                 FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
+                EnrollActivity.class,
+                EnrollActivityPresentation.class,
                 FiltersFragmentPM.class,
                 DetailedImagePagerFragmentPresentation.class,
                 FragmentMapInfoPM.class,

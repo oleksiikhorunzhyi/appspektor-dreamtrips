@@ -112,15 +112,19 @@ public class FragmentCompass {
     }
 
     public String getPreviousFragmentTitle() {
+       return getPreviousFragment().getTitle();
+    }
+
+    public State getPreviousFragment() {
         FragmentManager fm = activity.getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 2) {
             FragmentManager.BackStackEntry backEntry =
                     fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1);
             String str = backEntry.getName();
-            State state = State.restoreByClass(str);
-            return state.getTitle();
+            return State.restoreByClass(str);
         }
-        return State.DREAMTRIPS.getTitle();
+        return State.DREAMTRIPS;
+
     }
 
     private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {

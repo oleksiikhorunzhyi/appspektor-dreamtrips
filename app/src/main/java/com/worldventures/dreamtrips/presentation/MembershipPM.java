@@ -45,7 +45,7 @@ public class MembershipPM extends BasePresentation<BasePresentation.View> {
 
 
     public void actionEnroll() {
-        fragmentCompass.replace(State.ENROLL);
+        activityRouter.openEnroll();
     }
 
     @Override

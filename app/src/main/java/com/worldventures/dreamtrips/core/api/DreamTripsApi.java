@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
@@ -51,7 +52,7 @@ public interface DreamTripsApi {
     public void getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page, Callback<List<Photo>> callback);
 
     @GET("/api/inspirations")
-    public void getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+    public void getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Inspiration>> callback);
 
     @GET("/api/ysbh_photos")
     public void getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);

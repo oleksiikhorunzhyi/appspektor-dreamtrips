@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
 import org.robobinding.ViewBinder;
+import org.robobinding.annotation.PresentationModel;
 
 import butterknife.ButterKnife;
 
@@ -49,18 +50,23 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
         ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
 
         View view;
+        PresentationModel pmAnnotation = presentationModel.getClass().getAnnotation(PresentationModel.class);
 
-        if (container != null) {
-            view = viewBinder.inflateAndBindWithoutAttachingToRoot(
-                    layout.value(),
-                    this.presentationModel,
-                    container
-            );
+        if (pmAnnotation == null) {
+            view = inflater.inflate(layout.value(), container, false);
         } else {
-            view = viewBinder.inflateAndBind(
-                    layout.value(),
-                    this.presentationModel
-            );
+            if (container != null) {
+                view = viewBinder.inflateAndBindWithoutAttachingToRoot(
+                        layout.value(),
+                        this.presentationModel,
+                        container
+                );
+            } else {
+                view = viewBinder.inflateAndBind(
+                        layout.value(),
+                        this.presentationModel
+                );
+            }
         }
 
         ButterKnife.inject(this, view);

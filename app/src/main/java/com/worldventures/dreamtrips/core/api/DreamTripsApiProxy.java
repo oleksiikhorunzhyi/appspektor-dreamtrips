@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.techery.spares.module.Annotations.Private;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
@@ -82,7 +83,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public void getInspirationsPhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
+    public void getInspirationsPhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Inspiration>> callback) {
         runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getInspirationsPhotos(perPage, page, proxyCallback));
     }
 

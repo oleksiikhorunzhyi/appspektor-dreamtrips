@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.view.fragment;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,9 +22,9 @@ import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.FlagContent;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
-import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
+import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
@@ -38,7 +38,7 @@ import butterknife.OnClick;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmentPM> implements FullScreenPhotoFragmentPM.View {
+public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<BaseFSViewPM<T>> implements BaseFSViewPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
@@ -60,28 +60,39 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     @InjectView(R.id.ripple_like)
     View vRippleLike;
 
+    @InjectView(R.id.vg_inpire_me)
+    ViewGroup vgInspireMe;
+    @InjectView(R.id.tv_description)
+    TextView tvDescription;
+
     @Inject
     UniversalImageLoader imageLoader;
     private SimpleImageLoadingListener originalCallback;
     private SimpleImageLoadingListener mediumCallback;
-    private Photo photo;
     private Type type;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+
+        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
+        type = activity.getType();
+        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
+
         getPresentationModel().onCreate();
 
         ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()), ViewUtils.getScreenHeight(getActivity()));
         ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
-        type = ((FullScreenPhotoActivity) getActivity()).getType();
-        photo = ((FullScreenPhotoActivity) getActivity()).getPhoto(getArguments().getInt(EXTRA_POSITION));
 
         if (photo != null) {
-            getPresentationModel().setupPhoto(photo);
+            getPresentationModel().setupPhoto((T) photo);
             getPresentationModel().setupType(type);
         }
-        Image images = getPresentationModel().providePhoto().getImages();
+        getPresentationModel().setupActualViewState();
+    }
+
+    @Override
+    public void loadImage(Image images) {
         String medium = images.getMedium().getUrl();
         String original = images.getOriginal().getUrl();
         originalCallback = new SimpleImageLoadingListener() {
@@ -109,34 +120,20 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
             }
         };
         imageLoader.loadImage(medium, ivImage, UniversalImageLoader.OP_FULL_SCREEN, mediumCallback);
-        getPresentationModel().setupActualViewState();
     }
 
     @Override
-    protected FullScreenPhotoFragmentPM createPresentationModel(Bundle savedInstanceState) {
-        return new FullScreenPhotoFragmentPM(this);
+    protected BaseFSViewPM createPresentationModel(Bundle savedInstanceState) {
+        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) ((FullScreenPhotoActivity) getActivity())
+                .getPhoto(getArguments().getInt(EXTRA_POSITION));
+
+        return BaseFSViewPM.create(this, photo);
     }
 
 
     @OnClick(R.id.iv_share)
     public void actionShare() {
-        if (type == Type.INSPIRE_ME) {
-
-        }else{
-            Intent shareCaptionIntent = new Intent(Intent.ACTION_SEND);
-            shareCaptionIntent.setType("image/*");
-
-            //set photo
-            shareCaptionIntent.setData(Uri.parse(photo.getImages().getOriginal().getUrl()));
-            shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photo.getImages().getOriginal().getUrl()));
-
-            //set caption
-            shareCaptionIntent.putExtra(Intent.EXTRA_TEXT, photo.getTitle());
-            shareCaptionIntent.putExtra(Intent.EXTRA_SUBJECT, photo.getTitle());
-            shareCaptionIntent.putExtra(Intent.EXTRA_TITLE, photo.getTitle());
-
-            startActivity(Intent.createChooser(shareCaptionIntent,"Share"));
-        }
+        getPresentationModel().onShareAction();
     }
 
 
@@ -144,13 +141,13 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     public void actionDelete() {
         new MaterialDialog.Builder(getActivity())
                 .title("Delete photo")
-                .content("Are you you want to delete photo?")
+                .content("Are you you want to onDeleteAction photo?")
                 .positiveText("Delete")
                 .negativeText("Cancel")
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        getPresentationModel().delete();
+                        getPresentationModel().onDeleteAction();
                     }
 
                     @Override
@@ -225,6 +222,16 @@ public class FullScreenPhotoFragment extends BaseFragment<FullScreenPhotoFragmen
     @Override
     public void setTitle(String title) {
         tvTitle.setText(title);
+    }
+
+    @Override
+    public void setInspireDescription(String desc) {
+        if (!TextUtils.isEmpty(desc)) {
+            tvDescription.setText(desc);
+            vgInspireMe.setVisibility(View.VISIBLE);
+        } else {
+            vgInspireMe.setVisibility(View.GONE);
+        }
     }
 
     @Override

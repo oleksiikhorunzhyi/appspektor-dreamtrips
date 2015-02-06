@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -58,25 +59,32 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     DreamTripsApi dreamTripsApi;
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
-        final File file = new File(image.getFileThumbnail());
-        final TypedFile typedFile = new TypedFile("image/*", file);
-        dreamTripsApi.uploadAvatar(typedFile, new Callback<User>() {
-            @Override
-            public void success(User userResponse, Response response) {
-                UserSession userSession = appSessionHolder.get().get();
-                User user = userSession.getUser();
-                user.setAvatar(userResponse.getAvatar());
+        if (image != null) {
+            final File file = new File(image.getFileThumbnail());
+            final TypedFile typedFile = new TypedFile("image/*", file);
+            view.avatarProgressVisible(true);
+            dreamTripsApi.uploadAvatar(typedFile, new Callback<User>() {
+                @Override
+                public void success(User userResponse, Response response) {
+                    UserSession userSession = appSessionHolder.get().get();
+                    User user = userSession.getUser();
+                    user.setAvatar(userResponse.getAvatar());
 
-                ProfileFragmentPresentation.this.appSessionHolder.put(userSession);
+                    appSessionHolder.put(userSession);
+                    view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
+                    view.avatarProgressVisible(false);
+                    eventBus.post(new UpdateUserInfoEvent());
+                }
 
-                eventBus.post(new UpdateUserInfoEvent());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                handleError(error);
-            }
-        });        view.setAvatarImage(Uri.fromFile(new File(image.getFileThumbnail())));
+                @Override
+                public void failure(RetrofitError error) {
+                    view.avatarProgressVisible(false);
+                    handleError(error);
+                }
+            });
+        } else {
+            Log.e(ProfileFragmentPresentation.class.getSimpleName(), error);
+        }
     };
 
     private ImagePickCallback coverCallback = (fragment, image, error) -> {
@@ -200,5 +208,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         public void setAvatarImage(Uri uri);
 
         public void setCoverImage(Uri uri);
+
+        void avatarProgressVisible(boolean visible);
     }
 }

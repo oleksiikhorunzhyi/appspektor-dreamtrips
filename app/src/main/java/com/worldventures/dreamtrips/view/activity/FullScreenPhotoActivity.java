@@ -97,8 +97,8 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         return type;
     }
 
-    public Photo getPhoto(int position) {
-        return (Photo) photoList.get(position);
+    public Object getPhoto(int position) {
+        return (Object) photoList.get(position);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             adapter.remove(index);
             adapter.notifyDataSetChanged();
             pager.setAdapter(adapter);
-            pager.setCurrentItem(Math.min(currentItem, adapter.getCount()-1));
+            pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
 
 
         }

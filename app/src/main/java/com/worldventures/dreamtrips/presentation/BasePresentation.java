@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.IllegalCuurentUserState;
+import android.util.Log;
+
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class BasePresentation<VT extends BasePresentation.View> {
 
@@ -36,11 +34,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
     }
 
     public void handleError(Exception ex) {
-        if (ex instanceof IllegalCuurentUserState) {
-            appSessionHolder.destroy();
-            activityRouter.finish();
-            activityRouter.openLogin();
-        }
+        Log.e(this.getClass().getSimpleName(), "", ex);
     }
 
     public interface View {

@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
@@ -148,7 +149,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
 
     public void onItemClick(int position) {
         List<Object> photos = view.getPhotosFromAdapter();
-        if (photos.get(position) instanceof Photo) {
+        if (photos.get(position) instanceof IFullScreenAvailableObject) {
             this.activityRouter.openFullScreenPhoto(photos, position, type);
         }
     }

@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Photo extends BaseEntity implements Parcelable {
+public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
 
     String title;
@@ -155,4 +155,24 @@ public class Photo extends BaseEntity implements Parcelable {
             return new Photo[size];
         }
     };
+
+    @Override
+    public Image getFSImage() {
+        return images;
+    }
+
+    @Override
+    public String getFSTitle() {
+        return title;
+    }
+
+    @Override
+    public String getFsDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFsShareText() {
+        return title;
+    }
 }

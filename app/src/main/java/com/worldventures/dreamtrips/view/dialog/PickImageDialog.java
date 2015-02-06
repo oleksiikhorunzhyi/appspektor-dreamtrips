@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.view.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -86,7 +88,7 @@ public class PickImageDialog implements ImageChooserListener {
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
         if (callback != null) {
-            callback.onResult(fragment, chosenImage, null);
+            new Handler(Looper.getMainLooper()).post(() -> callback.onResult(fragment, chosenImage, null));
         }
     }
 

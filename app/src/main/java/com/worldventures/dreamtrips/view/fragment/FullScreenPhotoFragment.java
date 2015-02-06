@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
@@ -56,7 +57,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @InjectView(R.id.iv_flag)
     ImageView ivFlag;
     @InjectView(R.id.pb)
-    ProgressBar progressBar;
+    ProgressBarCircularIndeterminate progressBar;
     @InjectView(R.id.ripple_like)
     View vRippleLike;
 
@@ -141,7 +142,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     public void actionDelete() {
         new MaterialDialog.Builder(getActivity())
                 .title("Delete photo")
-                .content("Are you you want to onDeleteAction photo?")
+                .content("Are you sure you want to delete this photo?")
                 .positiveText("Delete")
                 .negativeText("Cancel")
                 .callback(new MaterialDialog.ButtonCallback() {

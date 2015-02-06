@@ -8,11 +8,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -54,6 +56,8 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
     DTEditText dateOfBirth;
+    @InjectView(R.id.pb)
+    ProgressBarCircularIndeterminate progressBar;
     @Inject
     UniversalImageLoader universalImageLoader;
     @InjectView(R.id.sv)
@@ -130,6 +134,11 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
                 this.universalImageLoader.loadImage(uri, this.userCover, UniversalImageLoader.OP_COVER);
             }
         });
+    }
+
+    @Override
+    public void avatarProgressVisible(boolean visible) {
+        progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.user_cover)

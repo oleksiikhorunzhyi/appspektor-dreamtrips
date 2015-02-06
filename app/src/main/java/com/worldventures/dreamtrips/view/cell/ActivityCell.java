@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
@@ -22,6 +24,8 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_region)
 public class ActivityCell extends AbstractCell<Activity> {
 
+    @InjectView(R.id.cell)
+    LinearLayout cell;
     @InjectView(R.id.textViewRegionName)
     TextView textViewName;
     @InjectView(R.id.checkBox)

@@ -8,6 +8,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllThemePressedEvent;
+import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,6 +42,11 @@ public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
         checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
         getModelObject().setChecked(checkBoxSelectAll.isChecked());
         getEventBus().post(new CheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked()));
+    }
+
+    @OnClick(R.id.listHeader)
+    void toggleVisibility() {
+        getEventBus().post(new ToggleThemeVisibilityEvent());
     }
 
     @Override

@@ -47,8 +47,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Inject
     DreamTripsApi dreamTripsApi;
 
-    @Inject
-    LoaderFactory loaderFactory;
 
     @Inject
     Prefs prefs;
@@ -60,6 +58,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Global
     EventBus eventBus;
 
+    @Inject
+    LoaderFactory loaderFactory;
     private CollectionController<Trip> tripsController;
 
     private boolean loadFromApi;
@@ -100,7 +100,11 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             return filteredData;
         });
 
-        eventBus.register(this);
+        eventBus.registerSticky(this);
+        onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
+    }
+
+    public void requestFiltering() {
         eventBus.post(new RequestFilterDataEvent());
     }
 
@@ -114,18 +118,20 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void onEvent(FilterBusEvent event) {
-        if (event.isReset()) {
-            resetFilters();
-        } else {
-            maxPrice = event.getMaxPrice();
-            minNights = event.getMinNights();
-            minPrice = event.getMinPrice();
-            maxNights = event.getMaxNights();
-            acceptedRegions = event.getAcceptedRegions();
-            acceptedThemes = event.getAcceptedActivities();
-            showSoldOut = event.isShowSoldOut();
+        if (event != null) {
+            if (event.isReset()) {
+                resetFilters();
+            } else {
+                maxPrice = event.getMaxPrice();
+                minNights = event.getMinNights();
+                minPrice = event.getMinPrice();
+                maxNights = event.getMaxNights();
+                acceptedRegions = event.getAcceptedRegions();
+                acceptedThemes = event.getAcceptedActivities();
+                showSoldOut = event.isShowSoldOut();
+            }
+            tripsController.reload();
         }
-        tripsController.reload();
     }
 
 
@@ -175,9 +181,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void actionMap() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MapFragment.EXTRA_TRIPS, data);
-        fragmentCompass.replace(State.MAP, bundle);
+        fragmentCompass.replace(State.MAP, null);
     }
 
     public List<Trip> loadTrips() {

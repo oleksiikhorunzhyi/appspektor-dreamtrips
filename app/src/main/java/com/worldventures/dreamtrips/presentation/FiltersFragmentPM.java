@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
 import com.techery.spares.loader.CollectionController;
@@ -24,6 +23,8 @@ import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
 import com.worldventures.dreamtrips.utils.busevents.SoldOutEvent;
 import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
+import com.worldventures.dreamtrips.utils.busevents.ToggleRegionVisibilityEvent;
+import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -105,19 +106,23 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
             }
 
             parentActivities = getParentActivities();
-
-            this.data.clear();
-            this.data.add(filterModel);
-            this.data.addAll(regions);
-            this.data.add(themeHeaderModel);
-            this.data.addAll(parentActivities);
-            this.data.add(soldOutModel);
+            fillData();
             return data;
         });
 
         eventBus.register(this);
     }
 
+    private void fillData() {
+        this.data.clear();
+        this.data.add(filterModel);
+        if (!filterModel.isHide())
+            this.data.addAll(regions);
+        this.data.add(themeHeaderModel);
+        if (!themeHeaderModel.isHide())
+            this.data.addAll(parentActivities);
+        this.data.add(soldOutModel);
+    }
 
     public void setRegionsChecked(boolean isChecked) {
         if (regions != null) {
@@ -144,7 +149,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         filterBusEvent.setAcceptedRegions(getAcceptedRegions());
         filterBusEvent.setAcceptedActivities(getAcceptedThemes());
         filterBusEvent.setShowSoldOut(showSoldOut);
-        eventBus.post(filterBusEvent);
+        eventBus.removeAllStickyEvents();
+        eventBus.postSticky(filterBusEvent);
     }
 
     public void resetFilters() {
@@ -156,7 +162,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
-        eventBus.post(filterBusEvent);
+        eventBus.removeAllStickyEvents();
+        eventBus.postSticky(filterBusEvent);
     }
 
     private List<Activity> getParentActivities() {
@@ -219,6 +226,16 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     public void onEvent(RangeBarPriceEvent event) {
         this.minPrice = event.getMinPrice();
         this.maxPrice = event.getMaxPrice();
+    }
+
+    public void onEvent(ToggleThemeVisibilityEvent event) {
+        themeHeaderModel.setHide(!themeHeaderModel.isHide());
+        getRegionController().reload();
+    }
+
+    public void onEvent(ToggleRegionVisibilityEvent event) {
+        filterModel.setHide(!filterModel.isHide());
+        getRegionController().reload();
     }
 
     public void onEvent(SoldOutEvent soldOutEvent) {

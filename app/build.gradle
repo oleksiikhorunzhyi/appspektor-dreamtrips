@@ -88,6 +88,8 @@ apply plugin: 'android-unit-test'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':ijkmediaplayer')
+    compile project(':ijkmediawidget')
     compile 'com.android.support:multidex:1.0.0'
 
     compile 'com.google.android.gms:play-services-maps:6.5.87'

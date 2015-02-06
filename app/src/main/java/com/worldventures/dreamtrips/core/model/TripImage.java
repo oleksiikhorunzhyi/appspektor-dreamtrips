@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.model;
 
 public class TripImage extends BaseEntity {
 
+    private static final String PATTERN = "?width=%d&height=%d";
     String description;
     String url;
     String type;
@@ -17,6 +18,10 @@ public class TripImage extends BaseEntity {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getUrl(int width, int height) {
+        return url + String.format(PATTERN, width, height);
     }
 
     public void setUrl(String url) {

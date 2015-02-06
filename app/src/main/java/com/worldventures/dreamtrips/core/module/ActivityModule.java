@@ -152,6 +152,7 @@ import dagger.Provides;
                 ProfileFragment.class,
                 BookItActivityPresentation.class,
                 DreamTripsFragment.class,
+                StaticInfoFragment.EnrollFragment.class,
                 DetailedTripFragment.class,
                 TripImagesTabsFragment.class,
                 LoginFragment.class,

@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
@@ -29,6 +31,8 @@ public class RegionCell extends AbstractCell<Region> {
     CheckBox checkBox;
     @Inject
     Context context;
+    @InjectView(R.id.cell)
+    LinearLayout cell;
 
     public RegionCell(View view) {
         super(view);

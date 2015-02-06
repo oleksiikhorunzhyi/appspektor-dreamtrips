@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.utils.busevents.RangeBarDurationEvent;
 import com.worldventures.dreamtrips.utils.busevents.RangeBarPriceEvent;
+import com.worldventures.dreamtrips.utils.busevents.ToggleRegionVisibilityEvent;
+import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -64,6 +66,11 @@ public class FiltersCell extends AbstractCell<FilterModel>{
     void checkBoxClicked() {
         getModelObject().setChecked(checkBoxSelectAll.isChecked());
         getEventBus().post(new CheckBoxAllPressedEvent(checkBoxSelectAll.isChecked()));
+    }
+
+    @OnClick(R.id.listHeader)
+    void toggleVisibility() {
+        getEventBus().post(new ToggleRegionVisibilityEvent());
     }
 
     @OnClick(R.id.textViewSelectAll)

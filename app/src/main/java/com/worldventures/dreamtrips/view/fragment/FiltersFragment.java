@@ -61,7 +61,8 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
             @Override
             public void onStartLoading() {
-                progressBar.setVisibility(View.VISIBLE);
+                if (arrayListAdapter.getItemCount() == 0)
+                    progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -75,21 +76,20 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
             }
         });
 
+        this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
-        this.recyclerView.setHasFixedSize(true);
-
     }
 
     @OnClick(R.id.textViewApplyFilter)
     void applyFilter() {
-        getPresentationModel().acceptFilters();
         ((MainActivity) getActivity()).closeRightDrawer();
+        getPresentationModel().acceptFilters();
     }
 
     @OnClick(R.id.textViewResetFilter)
     void resetFilter() {
-        getPresentationModel().resetFilters();
         ((MainActivity) getActivity()).closeRightDrawer();
+        getPresentationModel().resetFilters();
     }
 
     @Override

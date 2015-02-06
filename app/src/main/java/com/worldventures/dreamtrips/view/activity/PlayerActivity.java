@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.view.activity;
 
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.MediaController;
-import android.widget.VideoView;
-
 import com.gc.materialdesign.widgets.ProgressDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
+import tv.danmaku.ijk.media.widget.MediaController;
+import tv.danmaku.ijk.media.widget.VideoView;
 
 /**
  * Created by 1 on 04.02.15.

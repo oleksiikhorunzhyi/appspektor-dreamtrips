@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -46,8 +48,11 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             getPresentationModel().setPhoto((TripImage) photo);
         }
 
+        loadImage();
+    }
 
-        this.imageLoader.loadImage(getPresentationModel().getPhoto().getOriginalUrl(), ivImage, null, new SimpleImageLoadingListener() {
+    private void loadImage() {
+        imageLoader.loadImage(getPresentationModel().getPhoto().getOriginalUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {

@@ -6,7 +6,7 @@
     android:background="@android:color/black"
     android:keepScreenOn="true">
 
-    <VideoView
+    <tv.danmaku.ijk.media.widget.VideoView
         android:id="@+id/myVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

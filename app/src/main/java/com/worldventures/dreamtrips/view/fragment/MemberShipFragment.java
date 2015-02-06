@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
@@ -24,6 +26,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
+@MenuResource(R.menu.menu_membership)
 public class MemberShipFragment extends BaseFragment<MembershipPM> implements BasePresentation.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
@@ -70,6 +73,12 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        super.onOptionsMenuClosed(menu);
+        getPresentationModel().actionEnroll();
     }
 
     @Override

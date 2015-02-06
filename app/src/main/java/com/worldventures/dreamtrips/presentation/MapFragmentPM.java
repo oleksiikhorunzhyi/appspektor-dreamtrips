@@ -4,10 +4,16 @@ import android.os.Bundle;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
+import com.google.gson.reflect.TypeToken;
+import com.techery.spares.loader.CollectionController;
+import com.techery.spares.loader.ContentLoader;
+import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
@@ -17,6 +23,7 @@ import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +52,10 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Global
     EventBus eventBus;
 
+    @Inject
+    LoaderFactory loaderFactory;
+    private CollectionController<Trip> tripsController;
+
 
     public MapFragmentPM(MapFragmentPM.View view) {
         super(view);
@@ -53,31 +64,54 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
-        eventBus.post(new RequestFilterDataEvent());
-    }
+        this.tripsController = loaderFactory.create(0, (context, params) -> FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
+        }.getType(), FileUtils.TRIPS));
 
-    public void setData(List<Trip> data) {
-        this.data = data;
+        this.tripsController.getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
+            @Override
+            public void onStartLoading() {
+
+            }
+
+            @Override
+            public void onFinishLoading(List<Trip> result) {
+                data = result;
+                setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
+                performFiltering();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+            }
+        });
+
     }
 
     public void onMapLoaded() {
-        performFiltering();
+        eventBus.registerSticky(this);
+        tripsController.reload();
+    }
+
+    public void setFilters(FilterBusEvent event) {
+        if (event != null)
+            if (event.isReset()) {
+                resetFilters();
+            } else {
+                maxPrice = event.getMaxPrice();
+                minNights = event.getMinNights();
+                minPrice = event.getMinPrice();
+                maxNights = event.getMaxNights();
+                acceptedRegions = event.getAcceptedRegions();
+                acceptedThemes = event.getAcceptedActivities();
+                showSoldOut = event.isShowSoldOut();
+            }
     }
 
     public void onEvent(FilterBusEvent event) {
-        if (event.isReset()) {
-            resetFilters();
-        } else {
-            maxPrice = event.getMaxPrice();
-            minNights = event.getMinNights();
-            minPrice = event.getMinPrice();
-            maxNights = event.getMaxNights();
-            acceptedRegions = event.getAcceptedRegions();
-            acceptedThemes = event.getAcceptedActivities();
-            showSoldOut = event.isShowSoldOut();
+        if (event != null) {
+            setFilters(event);
+            tripsController.reload();
         }
-        performFiltering();
     }
 
     private void reloadPins() {

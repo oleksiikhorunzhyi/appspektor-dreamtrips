@@ -79,6 +79,16 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     }
 
     @Layout(R.layout.fragment_webview)
+    public static class EnrollFragment extends StaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return "https://secure.worldventures.biz/(S(ypszgovffsbbiekgosdwysop))/Checkout/PreRequisite.aspx?did={BASE64_ENCODED_USERID}&pn=UkVUQUlM&sa=ZHQ=";
+        }
+    }
+
+
+    @Layout(R.layout.fragment_webview)
     public static class CookiePolicyFragment extends StaticInfoFragment {
 
         @Override

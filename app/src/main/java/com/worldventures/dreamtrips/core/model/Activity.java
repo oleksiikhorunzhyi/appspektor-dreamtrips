@@ -11,6 +11,7 @@ public class Activity extends BaseEntity {
     String name;
 
     private transient boolean isChecked = true;
+    private transient boolean shouldBeGone = true;
 
     public int getParent_id() {
         return parent_id;
@@ -50,6 +51,14 @@ public class Activity extends BaseEntity {
 
     public void setChecked(boolean isChecked) {
         this.isChecked = isChecked;
+    }
+
+    public boolean isShouldBeGone() {
+        return shouldBeGone;
+    }
+
+    public void setShouldBeGone(boolean shouldBeGone) {
+        this.shouldBeGone = shouldBeGone;
     }
 
     @Override

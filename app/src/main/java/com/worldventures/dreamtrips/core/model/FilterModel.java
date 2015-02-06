@@ -10,6 +10,7 @@ public class FilterModel {
     private int indexLeftDuration = 0;
     private int indexRightDuration = 3;
     private boolean checked = true;
+    private boolean hide = true;
 
     public boolean isChecked() {
         return checked;
@@ -49,6 +50,14 @@ public class FilterModel {
 
     public void setIndexRightDuration(int indexRightDuration) {
         this.indexRightDuration = indexRightDuration;
+    }
+
+    public boolean isHide() {
+        return hide;
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
     }
 
     public void reset() {

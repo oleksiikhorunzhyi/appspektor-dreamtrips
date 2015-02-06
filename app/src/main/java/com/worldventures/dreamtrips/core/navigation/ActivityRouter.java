@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
@@ -41,6 +42,9 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(LoginActivity.class);
     }
 
+    public void openEnroll() {
+        startActivity(EnrollActivity.class);
+    }
 
     public void openFullScreenPhoto(List<Object> photoList, int position, TripImagesListFragment.Type type) {
         Bundle bundle = new Bundle();

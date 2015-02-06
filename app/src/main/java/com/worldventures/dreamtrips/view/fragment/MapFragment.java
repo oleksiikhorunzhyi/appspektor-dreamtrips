@@ -39,8 +39,6 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_map)
 public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View {
 
-    public static final String EXTRA_TRIPS = "EXTRA_TRIPS";
-
     @InjectView(R.id.map)
     ToucheableMapView mapView;
 
@@ -61,7 +59,6 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
             getPresentationModel().onMapLoaded();
-            zoomIn();
             this.googleMap.setOnMarkerClickListener((marker) -> {
                 getPresentationModel().onMarkerClick(marker.getSnippet());
                 lastClickedLocation = marker.getPosition();
@@ -73,10 +70,10 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         });
     }
 
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        getPresentationModel().setData((ArrayList<Trip>) getArguments().getSerializable(EXTRA_TRIPS));
     }
 
     @Override

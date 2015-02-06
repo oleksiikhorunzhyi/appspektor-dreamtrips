@@ -48,6 +48,11 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         return "\"" + quote + "\"";
     }
 
+    @Override
+    public String getFsShareText() {
+        return getFsDescription() + " " + getFSTitle();
+    }
+
 
     public Inspiration() {
     }

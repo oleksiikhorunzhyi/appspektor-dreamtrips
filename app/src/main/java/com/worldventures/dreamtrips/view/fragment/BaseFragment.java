@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
 import org.robobinding.ViewBinder;
@@ -50,9 +51,9 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
         ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
 
         View view;
-        PresentationModel pmAnnotation = presentationModel.getClass().getAnnotation(PresentationModel.class);
+        IgnoreRobobinding pmAnnotation = presentationModel.getClass().getAnnotation(IgnoreRobobinding.class);
 
-        if (pmAnnotation == null) {
+        if (pmAnnotation != null) {
             view = inflater.inflate(layout.value(), container, false);
         } else {
             if (container != null) {

@@ -170,4 +170,9 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     public String getFsDescription() {
         return "";
     }
+
+    @Override
+    public String getFsShareText() {
+        return title;
+    }
 }

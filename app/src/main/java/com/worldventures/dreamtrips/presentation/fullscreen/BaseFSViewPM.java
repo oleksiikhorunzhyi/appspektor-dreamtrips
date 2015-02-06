@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.presentation.fullscreen;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.FlagContent;
@@ -12,6 +14,8 @@ import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -90,23 +94,16 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     }
 
     public void onShareAction() {
-        if (type == Type.INSPIRE_ME) {
+        File file = DiskCacheUtils.findInCache(photo.getFSImage().getOriginal().getUrl(), ImageLoader.getInstance().getDiskCache());
+        //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
+        Uri parse = Uri.fromFile(file);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getFsShareText());
+        shareIntent.putExtra(Intent.EXTRA_STREAM, parse);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        } else {
-            Intent shareCaptionIntent = new Intent(Intent.ACTION_SEND);
-            shareCaptionIntent.setType("image/*");
-
-            //set photo
-            shareCaptionIntent.setData(Uri.parse(photo.getFSImage().getOriginal().getUrl()));
-            shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photo.getFSImage().getOriginal().getUrl()));
-
-            //set caption
-            shareCaptionIntent.putExtra(Intent.EXTRA_TEXT, photo.getFSTitle());
-            shareCaptionIntent.putExtra(Intent.EXTRA_SUBJECT, photo.getFSTitle());
-            shareCaptionIntent.putExtra(Intent.EXTRA_TITLE, photo.getFSTitle());
-
-            activityRouter.openShare(Intent.createChooser(shareCaptionIntent, "Share"));
-        }
+        activityRouter.openShare(Intent.createChooser(shareIntent, "Share"));
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation.fullscreen;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 
@@ -13,6 +14,7 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
+@IgnoreRobobinding
 public class FSPhotoPM extends BaseFSViewPM<Photo> {
     public FSPhotoPM(View view) {
         super(view);

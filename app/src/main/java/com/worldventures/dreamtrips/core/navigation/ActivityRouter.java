@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
@@ -74,8 +73,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
-    public void openShare(Intent share){
-
+    public void openShare(Intent share) {
+        startActivityIntent(share);
     }
 
 }

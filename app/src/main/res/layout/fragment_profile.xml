@@ -15,11 +15,11 @@
         android:background="@color/theme_main" />
 
     <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:overScrollMode="never"
-        android:id="@+id/sv">
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"

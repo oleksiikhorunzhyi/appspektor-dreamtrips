@@ -100,7 +100,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class itemClass = this.items.get(position).getClass();
         int index = viewTypes.indexOf(itemClass);
         if (index < 0) {
-            throw new IllegalArgumentException(itemClass.getSimpleName() + "is not registered");
+            throw new IllegalArgumentException(itemClass.getSimpleName() + " is not registered");
         }
         return index;
     }

@@ -12,6 +12,8 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
@@ -62,6 +64,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
+        this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
 

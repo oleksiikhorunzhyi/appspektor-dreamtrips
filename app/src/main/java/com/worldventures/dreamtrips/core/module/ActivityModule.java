@@ -28,7 +28,9 @@ import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.presentation.FragmentMapInfoPM;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
-import com.worldventures.dreamtrips.presentation.FullScreenPhotoFragmentPM;
+import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
+import com.worldventures.dreamtrips.presentation.fullscreen.FSInspireMePM;
+import com.worldventures.dreamtrips.presentation.fullscreen.FSPhotoPM;
 import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
@@ -127,7 +129,7 @@ import dagger.Provides;
                 DetailedTripFragmentPM.class,
                 DetailTripActivityPM.class,
                 FullScreenActivityPM.class,
-                FullScreenPhotoFragmentPM.class,
+                BaseFSViewPM.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
@@ -145,6 +147,8 @@ import dagger.Provides;
                 BucketTabsFragmentPM.class,
                 BucketListFragmentPM.class,
                 MapFragmentPM.class,
+                FSPhotoPM.class,
+                FSInspireMePM.class,
 
                 NavigationDrawerFragment.class,
                 FragmentMapTripInfo.class,

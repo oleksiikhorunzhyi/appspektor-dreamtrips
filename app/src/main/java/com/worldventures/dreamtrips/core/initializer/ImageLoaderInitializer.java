@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -31,8 +32,7 @@ public class ImageLoaderInitializer implements AppInitializer {
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(50 * 1024 * 1024))
-                .memoryCacheSizePercentage(30)
+                .memoryCache(new WeakMemoryCache())
                 .diskCacheFileNameGenerator(imageUri -> TextUtils.isEmpty(imageUri) ? "" : imageUri.replaceAll("[^A-Za-z0-9.]+", ""))
                 .defaultDisplayImageOptions(optionBuilder.build())
                 .build();

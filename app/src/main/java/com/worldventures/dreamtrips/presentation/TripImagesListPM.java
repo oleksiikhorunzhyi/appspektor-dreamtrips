@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 
 import org.robobinding.annotation.PresentationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -70,6 +71,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
             public void success(List<T> objects, Response response) {
                 view.clear();//PullTORefresh
                 view.addAll((List<Object>) objects);
+                view.firstLoadFinish();
                 view.finishLoading();
             }
 
@@ -115,42 +117,48 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         }
     }
 
-
-    public interface Command {
-        List<ImageUploadTask> run();
-    }
-
     @Override
     public void init() {
         super.init();
         eventBus.register(this);
     }
 
-
     public void reload() {
+        reload(PER_PAGE);
+    }
+
+    public void reload(int perPage) {
         view.startLoading();
-        loadMore(1, cbRefresh);
+        loadMore(perPage, 1, cbRefresh);
     }
 
     public void loadNext(int page) {
-        loadMore(page, cbNext);
+        loadMore(PER_PAGE, page, cbNext);
     }
 
     public void loadPrev(int page) {
-        loadMore(page, cbPrev);
+        loadMore(PER_PAGE, page, cbPrev);
     }
 
-    private void loadMore(int page, Callback<List<T>> callback) {
-        loadPhotos(PER_PAGE, page, callback);
+    private void loadMore(int perPage, int page, Callback<List<T>> callback) {
+        loadPhotos(perPage, page, callback);
     }
 
     public abstract void loadPhotos(int perPage, int page, Callback<List<T>> callback);
 
 
     public void onItemClick(int position) {
-        List<Object> photos = view.getPhotosFromAdapter();
-        if (photos.get(position) instanceof IFullScreenAvailableObject) {
-            this.activityRouter.openFullScreenPhoto(photos, position, type);
+        List<Object> objects = view.getPhotosFromAdapter();
+        List<IFullScreenAvailableObject> photos = new ArrayList<>();
+        for (Object o : objects) {
+            if (o instanceof IFullScreenAvailableObject) {
+                photos.add((IFullScreenAvailableObject) o);
+            } else if (o instanceof ImageUploadTask) {
+                photos.add(ImageUploadTask.from((ImageUploadTask) o));
+            }
+        }
+        if (objects.get(position) instanceof IFullScreenAvailableObject) {
+            this.activityRouter.openFullScreenPhoto(position, type);
         }
     }
 
@@ -160,6 +168,8 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         void startLoading();
 
         void finishLoading();
+
+        void firstLoadFinish();
     }
 
 

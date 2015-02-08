@@ -7,7 +7,6 @@ import android.view.WindowManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
@@ -21,7 +20,6 @@ import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)
 public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<TripImagesListPM> implements TripImagesListPM.View {
-    public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
@@ -33,6 +31,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     BasePagerAdapter<FullScreenPhotoFragment> adapter;
     List<Object> photoList;
     TripImagesListFragment.Type type;
+    private int position;
 
     @Override
     protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
@@ -43,9 +42,9 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     protected void onCreate(Bundle savedInstanceState) {
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
-        photoList = (ArrayList<Object>) bundleExtra.getSerializable(EXTRA_PHOTOS_LIST);
+        photoList = new ArrayList<>();
         type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
-        int position = bundleExtra.getInt(EXTRA_POSITION);
+        position = bundleExtra.getInt(EXTRA_POSITION);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -54,8 +53,6 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-
-        getIntent().removeExtra(EXTRA_PHOTOS_LIST);
         if (position < 0) {
             position = 0;
         }
@@ -69,14 +66,9 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             }
         };
 
-        for (Object photo : photoList) {
-            adapter.add(new BasePagerAdapter.FragmentItem<>(FullScreenPhotoFragment.class, ""));
-        }
-
-        pager.setAdapter(adapter);
-        pager.setCurrentItem(position);
         toolbar.getBackground().setAlpha(0);
 
+        pager.setAdapter(adapter);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -91,6 +83,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
 
             }
         });
+        getPresentationModel().reload(Math.max(position + 2, 15));
     }
 
     public TripImagesListFragment.Type getType() {
@@ -98,7 +91,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     public Object getPhoto(int position) {
-        return (Object) photoList.get(position);
+        return photoList.get(position);
     }
 
     @Override
@@ -114,6 +107,11 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     @Override
     public void finishLoading() {
 
+    }
+
+    @Override
+    public void firstLoadFinish() {
+        pager.setCurrentItem(position, false);
     }
 
     @Override
@@ -156,9 +154,6 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             adapter.notifyDataSetChanged();
             pager.setAdapter(adapter);
             pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
-
-
         }
-
     }
 }

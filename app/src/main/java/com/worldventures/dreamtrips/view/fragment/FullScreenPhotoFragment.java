@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -106,7 +105,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 progressBar.setVisibility(View.GONE);
-                informUser("Error while loading image");
+               // informUser("Error while loading image");
             }
 
             @Override
@@ -125,8 +124,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @Override
     protected BaseFSViewPM createPresentationModel(Bundle savedInstanceState) {
-        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) ((FullScreenPhotoActivity) getActivity())
-                .getPhoto(getArguments().getInt(EXTRA_POSITION));
+        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
+        int position = getArguments().getInt(EXTRA_POSITION);
+        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) activity.getPhoto(position);
 
         return BaseFSViewPM.create(this, photo);
     }

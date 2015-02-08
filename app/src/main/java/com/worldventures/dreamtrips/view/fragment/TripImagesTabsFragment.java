@@ -126,7 +126,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
             getPresentationModel().provideFbCallback().onResult(this, image, null);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
-            pager.setCurrentItem(1);
+            pager.setCurrentItem(1, false);
         }
 
     }

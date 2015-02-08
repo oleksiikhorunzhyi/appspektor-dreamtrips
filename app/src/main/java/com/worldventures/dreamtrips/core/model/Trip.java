@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.core.model;
 
 import com.google.common.collect.Collections2;
+import com.worldventures.dreamtrips.view.util.Filterable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trip extends BaseEntity {
+public class Trip extends BaseEntity implements Filterable {
     String name;
     String description;
     boolean featured;
@@ -151,5 +152,10 @@ public class Trip extends BaseEntity {
         filteredImages.addAll(Collections2.filter(images, (input) ->
                 input.getType().equals("RETINA")));
         return filteredImages;
+    }
+
+    @Override
+    public boolean containsQuery(String query) {
+        return name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
     }
 }

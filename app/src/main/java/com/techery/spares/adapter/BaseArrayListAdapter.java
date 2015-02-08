@@ -27,7 +27,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private final AdapterHelper adapterHelper;
     private final Injector injector;
     private ContentLoader<List<BaseItemClass>> contentLoader;
-    private List<BaseItemClass> items = new ArrayList<>();
+    protected List<BaseItemClass> items = new ArrayList<>();
 
     @Inject
     @Global

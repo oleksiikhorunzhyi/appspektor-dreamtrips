@@ -30,6 +30,7 @@ public class FileUtils {
         Gson gson = new Gson();
         String jsonFile = gson.toJson(object);
         try {
+            context.deleteFile(name);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(name,
                     Context.MODE_PRIVATE));
             outputStreamWriter.write(jsonFile);

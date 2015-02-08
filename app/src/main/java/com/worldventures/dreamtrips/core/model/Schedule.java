@@ -10,7 +10,6 @@ public class Schedule implements Serializable {
     private static final String PATTERN_MONTH_AND_DAY = "MMM d";
     private static final String PATTERN_DAY = "d";
 
-
     java.util.Date start_on;
     java.util.Date end_on;
 
@@ -28,6 +27,10 @@ public class Schedule implements Serializable {
 
     public void setEndDate(java.util.Date endDate) {
         this.end_on = endDate;
+    }
+
+    public boolean check(DateFilterItem dateFilterItem) {
+        return start_on.after(dateFilterItem.getStartDate()) && end_on.before(dateFilterItem.getEndDate());
     }
 
     @Override

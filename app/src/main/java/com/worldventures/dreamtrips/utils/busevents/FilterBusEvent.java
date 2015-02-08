@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class FilterBusEvent {
     private double maxPrice;
     private boolean reset;
     private boolean showSoldOut;
+    private DateFilterItem dateFilterItem;
     private List<Integer> acceptedRegions = new ArrayList<>();
     private List<Activity> acceptedActivities = new ArrayList<>();
 
@@ -81,5 +83,13 @@ public class FilterBusEvent {
 
     public void setShowSoldOut(boolean showSoldOut) {
         this.showSoldOut = showSoldOut;
+    }
+
+    public DateFilterItem getDateFilterItem() {
+        return dateFilterItem;
+    }
+
+    public void setDateFilterItem(DateFilterItem dateFilterItem) {
+        this.dateFilterItem = dateFilterItem;
     }
 }

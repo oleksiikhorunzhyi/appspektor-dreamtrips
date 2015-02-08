@@ -11,6 +11,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
+import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
@@ -56,6 +58,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);
         this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
         this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
+        this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());
         getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {

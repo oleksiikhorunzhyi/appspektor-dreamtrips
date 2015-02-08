@@ -12,6 +12,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -65,12 +66,13 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     private boolean loadFromApi;
 
     private ArrayList<Trip> data = new ArrayList<>();
-    private ArrayList<Trip> filteredData;
+
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
     private boolean showSoldOut;
+    private DateFilterItem dateFilterItem = new DateFilterItem();
     private List<Integer> acceptedRegions;
     private List<Activity> acceptedThemes;
 
@@ -85,6 +87,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         this.tripsController = loaderFactory.create(0, (context, params) -> {
             if (needUpdate() || loadFromApi) {
                 this.loadFromApi = false;
+                this.data.clear();
                 this.data.addAll(this.loadTrips());
 
                 FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
@@ -95,7 +98,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                 }.getType(), FileUtils.TRIPS);
             }
 
-            filteredData = performFiltering(data);
+            List<Trip> filteredData = performFiltering(data);
 
             return filteredData;
         });
@@ -126,6 +129,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                 minNights = event.getMinNights();
                 minPrice = event.getMinPrice();
                 maxNights = event.getMaxNights();
+                dateFilterItem = event.getDateFilterItem();
                 acceptedRegions = event.getAcceptedRegions();
                 acceptedThemes = event.getAcceptedActivities();
                 showSoldOut = event.isShowSoldOut();
@@ -139,6 +143,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         ArrayList<Trip> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Collections2.filter(data, (input) ->
                 input.getPrice().getAmount() <= maxPrice
+                        && input.getAvailabilityDates().check(dateFilterItem)
                         && input.getPrice().getAmount() >= minPrice
                         && input.getDuration() >= minNights
                         && input.getDuration() <= maxNights
@@ -155,6 +160,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         this.minNights = 0;
         this.acceptedRegions = null;
         this.acceptedThemes = null;
+        dateFilterItem.reset();
     }
 
     public void onItemLike(Trip trip) {
@@ -180,6 +186,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     }
 
+    public void actionSearch(String query){}
+
     public void actionMap() {
         fragmentCompass.replace(State.MAP, null);
     }
@@ -188,8 +196,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         return dreamTripsApi.getTrips();
     }
 
-    public void onItemClick(int position) {
-        activityRouter.openTripDetails(filteredData.get(position));
+    public void onItemClick(Trip trip) {
+        activityRouter.openTripDetails(trip);
     }
 
     public boolean needUpdate() {

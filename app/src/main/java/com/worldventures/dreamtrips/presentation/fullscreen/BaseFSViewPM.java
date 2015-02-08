@@ -106,7 +106,7 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
 
             activityRouter.openShare(Intent.createChooser(shareIntent, "Share"));
         } else {
-           view.informUser("Image is not loaded yet");
+            view.informUser("Image is not loaded yet");
         }
     }
 
@@ -116,7 +116,7 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
         } else if (photo instanceof Inspiration) {
             return new FSInspireMePM(view);
         }
-        return null;
+        return new ImageUploadTaskPM(view);
     }
 
     public static interface View extends BasePresentation.View {

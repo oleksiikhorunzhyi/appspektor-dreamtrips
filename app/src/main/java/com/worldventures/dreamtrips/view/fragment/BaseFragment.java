@@ -40,9 +40,11 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
         if (this.presentationModel != null) {
             inject(this.presentationModel);
+            this.presentationModel.init();
+        } else {
+            throw new IllegalArgumentException("Presentation model can't be null");
         }
 
-        this.presentationModel.init();
 
         Layout layout = this.getClass().getAnnotation(Layout.class);
 

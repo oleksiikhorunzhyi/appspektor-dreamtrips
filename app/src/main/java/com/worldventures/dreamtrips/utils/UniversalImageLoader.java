@@ -91,4 +91,17 @@ public class UniversalImageLoader {
         loadImage(uriS, imageView, displayImageOptions, new SimpleImageLoadingListener());
     }
 
+
+    public void pause() {
+        ImageLoader.getInstance().pause();
+    }
+
+    public void resume() {
+        ImageLoader.getInstance().resume();
+    }
+
+    public void destroy() {
+        ImageLoader.getInstance().destroy();
+    }
+
 }

@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.fullscreen.ImageUploadTaskPM;
 import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
@@ -131,7 +132,6 @@ import dagger.Provides;
                 DetailedTripFragmentPM.class,
                 DetailTripActivityPM.class,
                 FullScreenActivityPM.class,
-                BaseFSViewPM.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
@@ -153,6 +153,8 @@ import dagger.Provides;
                 MapFragmentPM.class,
                 FSPhotoPM.class,
                 FSInspireMePM.class,
+                BaseFSViewPM.class,
+                ImageUploadTaskPM.class,
 
                 NavigationDrawerFragment.class,
                 FragmentMapTripInfo.class,

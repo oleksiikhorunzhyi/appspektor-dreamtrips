@@ -52,8 +52,9 @@
     <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
         android:id="@+id/pb"
         style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@color/theme_main_darker"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 

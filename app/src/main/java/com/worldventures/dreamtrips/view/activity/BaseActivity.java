@@ -7,12 +7,11 @@ import android.view.MotionEvent;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
 import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
 
 import org.robobinding.ViewBinder;
 import org.robobinding.binder.BinderFactory;
@@ -31,6 +30,8 @@ public abstract class BaseActivity extends InjectingActivity {
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
     ActivityRouter router;
+    @Inject
+    UniversalImageLoader imageLoader;
 
     public ViewBinder createViewBinder() {
         BinderFactory binderFactory = getReusableBinderFactory();
@@ -94,6 +95,14 @@ public abstract class BaseActivity extends InjectingActivity {
         CrashManager.register(this, HOCKEY_APP_ID);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }
 

@@ -12,7 +12,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -139,9 +138,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
+    public void firstLoadFinish() {
+
+    }
+
+    @Override
     public void addAll(List<Object> items) {
+        int itemCount = arrayListAdapter.getItemCount();
         arrayListAdapter.addItems(items);
-        arrayListAdapter.notifyDataSetChanged();
+        arrayListAdapter.notifyItemRangeInserted(itemCount - 1, items.size());
     }
 
     @Override

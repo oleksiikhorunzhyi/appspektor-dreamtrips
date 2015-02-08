@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
@@ -46,9 +47,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(EnrollActivity.class);
     }
 
-    public void openFullScreenPhoto(List<Object> photoList, int position, TripImagesListFragment.Type type) {
+    public void openFullScreenPhoto(int position, TripImagesListFragment.Type type) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
         bundle.putInt(FullScreenPhotoActivity.EXTRA_POSITION, position);
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_TYPE, type);
         startActivity(FullScreenPhotoActivity.class, bundle);

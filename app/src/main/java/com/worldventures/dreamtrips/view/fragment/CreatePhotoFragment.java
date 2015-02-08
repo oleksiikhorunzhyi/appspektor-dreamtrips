@@ -127,8 +127,4 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         ((CreatePhotoActivity) getActivity()).preFinishProcess();
     }
 
-    @Override
-    public void showTitleError(String s) {
-        etTitle.setError(s);
-    }
 }

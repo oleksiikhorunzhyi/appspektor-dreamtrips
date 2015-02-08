@@ -3,9 +3,14 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +19,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
@@ -23,20 +27,18 @@ import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
 import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> implements DreamTripsFragmentPM.View, SwipeRefreshLayout.OnRefreshListener {
+public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> implements DreamTripsFragmentPM.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)
     EmptyRecyclerView recyclerView;
@@ -47,9 +49,10 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    BaseArrayListAdapter<Trip> adapter;
+    FilterableArrayListAdapter<Trip> adapter;
 
-    int lastConfig;
+    private int lastConfig;
+    private boolean search;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -59,7 +62,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(Trip.class, TripCell.class);
         this.adapter.setContentLoader(getPresentationModel().getTripsController());
 
@@ -85,6 +88,17 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
                 showErrorMessage();
             }
         });
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        adapter.setFilter(s);
+        return false;
     }
 
     @Override
@@ -129,6 +143,18 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
             lastConfig = newConfig.orientation;
             setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnCloseListener(()-> {
+                adapter.flushFilter();
+                return false;
+        });
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override

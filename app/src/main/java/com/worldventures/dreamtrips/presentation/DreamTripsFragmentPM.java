@@ -180,6 +180,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     }
 
+    public void actionSearch(String query){}
+
     public void actionMap() {
         fragmentCompass.replace(State.MAP, null);
     }

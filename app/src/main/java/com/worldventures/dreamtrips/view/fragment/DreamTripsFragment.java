@@ -8,14 +8,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
@@ -133,7 +131,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     }
 
     public void onEvent(TouchTripEvent event) {
-        getPresentationModel().onItemClick(event.getPosition());
+        getPresentationModel().onItemClick(event.getTrip());
     }
 
     @Override

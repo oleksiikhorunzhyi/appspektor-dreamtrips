@@ -64,6 +64,7 @@ import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
@@ -196,6 +197,7 @@ import dagger.Provides;
                 BucketItemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
+                DateCell.class,
 
                 BaseArrayListAdapter.class,
                 FilterableArrayListAdapter.class,

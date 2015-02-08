@@ -91,6 +91,13 @@ public class FragmentCompass {
         }
     }
 
+    public void show(DialogFragment dialogFragment, String tag) {
+        if (validateState()) {
+            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+            dialogFragment.show(supportFragmentManager, tag);
+        }
+    }
+
     protected void showDialog(DialogState state, Bundle bundle) {
         if (validateState()) {
             FragmentManager supportFragmentManager = activity.getSupportFragmentManager();

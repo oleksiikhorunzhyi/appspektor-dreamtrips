@@ -1,17 +1,19 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
+import com.worldventures.dreamtrips.core.model.Trip;
+
 public class TouchTripEvent {
-    int position;
+    Trip trip;
 
-    public TouchTripEvent(int position) {
-        this.position = position;
+    public TouchTripEvent(Trip trip) {
+        this.trip = trip;
     }
 
-    public int getPosition() {
-        return position;
+    public Trip getTrip() {
+        return trip;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 }

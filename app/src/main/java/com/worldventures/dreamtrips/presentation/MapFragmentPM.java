@@ -10,6 +10,7 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -47,6 +48,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private boolean showSoldOut;
     private List<Integer> acceptedRegions;
     private List<Activity> acceptedThemes;
+    private DateFilterItem dateFilterItem = new DateFilterItem();
 
     @Inject
     @Global
@@ -89,7 +91,6 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     public void onMapLoaded() {
         eventBus.registerSticky(this);
-        tripsController.reload();
     }
 
     public void setFilters(FilterBusEvent event) {
@@ -104,6 +105,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
                 acceptedRegions = event.getAcceptedRegions();
                 acceptedThemes = event.getAcceptedActivities();
                 showSoldOut = event.isShowSoldOut();
+                dateFilterItem = event.getDateFilterItem();
             }
     }
 
@@ -127,6 +129,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
             filteredData = new ArrayList<>();
             filteredData.addAll(Collections2.filter(data, (input) ->
                     input.getPrice().getAmount() <= maxPrice
+                            && input.getAvailabilityDates().check(dateFilterItem)
                             && input.getPrice().getAmount() >= minPrice
                             && input.getDuration() >= minNights
                             && input.getDuration() <= maxNights
@@ -144,6 +147,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         this.minNights = 0;
         this.acceptedRegions = null;
         this.acceptedThemes = null;
+        dateFilterItem.reset();
     }
 
     public void onEvent(InfoWindowSizeEvent event) {

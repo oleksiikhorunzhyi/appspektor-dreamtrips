@@ -7,6 +7,7 @@ import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
@@ -73,6 +74,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     private FilterModel filterModel;
     private ThemeHeaderModel themeHeaderModel;
     private SoldOutModel soldOutModel;
+    private DateFilterItem dateFilterItem;
 
     public FiltersFragmentPM(View view) {
         super(view);
@@ -82,6 +84,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     public void init() {
         super.init();
         filterModel = new FilterModel();
+        dateFilterItem = new DateFilterItem();
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
         this.regionController = loaderFactory.create(0, (context, params) -> {
@@ -115,6 +118,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     private void fillData() {
         this.data.clear();
+        this.data.add(dateFilterItem);
         this.data.add(filterModel);
         if (!filterModel.isHide())
             this.data.addAll(regions);
@@ -149,19 +153,24 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         filterBusEvent.setAcceptedRegions(getAcceptedRegions());
         filterBusEvent.setAcceptedActivities(getAcceptedThemes());
         filterBusEvent.setShowSoldOut(showSoldOut);
+        filterBusEvent.setDateFilterItem(dateFilterItem);
+
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
     }
 
     public void resetFilters() {
-        FilterBusEvent filterBusEvent = new FilterBusEvent();
-        filterBusEvent.setReset(true);
+        dateFilterItem.reset();
         filterModel.reset();
         themeHeaderModel.setChecked(true);
         soldOutModel.setShowSoldOut(false);
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
+
+        FilterBusEvent filterBusEvent = new FilterBusEvent();
+        filterBusEvent.setReset(true);
+
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
     }

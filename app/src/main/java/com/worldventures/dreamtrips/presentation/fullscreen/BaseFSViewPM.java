@@ -96,14 +96,18 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     public void onShareAction() {
         File file = DiskCacheUtils.findInCache(photo.getFSImage().getOriginal().getUrl(), ImageLoader.getInstance().getDiskCache());
         //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
-        Uri parse = Uri.fromFile(file);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getFsShareText());
-        shareIntent.putExtra(Intent.EXTRA_STREAM, parse);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if (file != null) {
+            Uri parse = Uri.fromFile(file);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/*");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getFsShareText());
+            shareIntent.putExtra(Intent.EXTRA_STREAM, parse);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        activityRouter.openShare(Intent.createChooser(shareIntent, "Share"));
+            activityRouter.openShare(Intent.createChooser(shareIntent, "Share"));
+        } else {
+           view.informUser("Image is not loaded yet");
+        }
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 
 import org.robobinding.ViewBinder;
-import org.robobinding.annotation.PresentationModel;
 
 import butterknife.ButterKnife;
 
@@ -28,7 +28,9 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void informUser(String stringId) {
-
+        if (getActivity() != null) {
+            Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

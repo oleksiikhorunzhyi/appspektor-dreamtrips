@@ -5,7 +5,6 @@ import android.net.Uri;
 
 import com.techery.spares.service.ServiceActionRunner;
 import com.worldventures.dreamtrips.core.uploader.UploadingService;
-import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import org.robobinding.annotation.PresentationModel;
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
@@ -120,10 +119,8 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     }
 
     public void saveAction() {
-        if (!ValidationUtils.isPhotoTitleValid(getTitle())) {
-            view.showTitleError("Title can't be empty");
-        } else if (imageUri.toString().isEmpty()) {
-            view.informUser("");
+        if (imageUri.toString().isEmpty()) {
+            view.informUser("Wrong image");
         } else {
             UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
             action.setFileUri(imageUri.toString());
@@ -188,7 +185,5 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
 
     public interface View extends BasePresentation.View {
         void end();
-
-        void showTitleError(String s);
     }
 }

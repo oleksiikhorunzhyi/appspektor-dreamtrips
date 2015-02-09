@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Annotations.Private;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Activity;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 
 import org.apache.http.HttpStatus;
 
@@ -21,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -41,6 +44,9 @@ public class DreamTripsApiProxy implements DreamTripsApi {
 
     @Inject
     AppSessionHolder appSessionHolder;
+    @Inject
+    @Global
+    EventBus eventBus;
 
     public DreamTripsApiProxy(Injector injector) {
         injector.inject(this);
@@ -255,6 +261,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
             appSessionHolder.put(userSession);
             return true;
         }
+        eventBus.post(new UpdateUserInfoEvent());
         return false;
     }
 

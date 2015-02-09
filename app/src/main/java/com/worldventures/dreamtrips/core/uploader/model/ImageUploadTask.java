@@ -53,6 +53,21 @@ public class ImageUploadTask extends RealmObject implements Serializable {
         return result;
     }
 
+    public static List<IFullScreenAvailableObject> from(List<ImageUploadTask> lst) {
+        List<IFullScreenAvailableObject> result = new ArrayList<>();
+        for (ImageUploadTask uploadTask : lst) {
+            result.add(from(uploadTask));
+        }
+        return result;
+    }
+
+
+    public static IFullScreenAvailableObject from(ImageUploadTask task) {
+        ImageUploadTaskFullscreen result = new ImageUploadTaskFullscreen();
+        result.setImageUploadTask(copy(task));
+        return result;
+    }
+
 
     public String getTaskId() {
         return taskId;
@@ -124,13 +139,6 @@ public class ImageUploadTask extends RealmObject implements Serializable {
 
     public void setOriginUrl(String originUrl) {
         this.originUrl = originUrl;
-    }
-
-
-    public static IFullScreenAvailableObject from(ImageUploadTask task) {
-        ImageUploadTaskFullscreen result = new ImageUploadTaskFullscreen();
-        result.setImageUploadTask(copy(task));
-        return result;
     }
 
     public static class ImageUploadTaskFullscreen implements IFullScreenAvailableObject {

@@ -2,13 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_filter"
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_white_18dp"
         android:title="@string/action_filter"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/action_filter"
         android:icon="@drawable/ic_filters"
+        android:title="@string/action_filter"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_list"
-        android:title="@string/action_map"
         android:icon="@drawable/ic_list"
+        android:title="@string/action_map"
         app:showAsAction="ifRoom" />
 </menu>

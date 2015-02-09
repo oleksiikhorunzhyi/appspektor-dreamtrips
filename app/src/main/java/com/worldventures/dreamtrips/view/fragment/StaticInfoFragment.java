@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -80,10 +84,34 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollFragment extends StaticInfoFragment {
+        @InjectView(R.id.progressBarWeb)
+        ProgressBar progressBarWeb;
 
         @Override
         protected String getURL() {
             return "https://secure.worldventures.biz/(S(ypszgovffsbbiekgosdwysop))/Checkout/PreRequisite.aspx?did={BASE64_ENCODED_USERID}&pn=UkVUQUlM&sa=ZHQ=";
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.getSettings().setUseWideViewPort(true);
+            webView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    progressBarWeb.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    progressBarWeb.setVisibility(View.GONE);
+                }
+            });
         }
     }
 

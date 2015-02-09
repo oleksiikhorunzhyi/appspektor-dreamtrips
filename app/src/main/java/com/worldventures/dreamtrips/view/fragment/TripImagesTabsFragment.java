@@ -18,7 +18,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
-import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
@@ -45,14 +46,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @InjectView(R.id.fab_photo)
     FloatingActionButton fabPhoto;
 
-    BasePagerAdapter adapter;
+    BaseStatePagerAdapter adapter;
     PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (adapter == null) {
-            this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
+            this.adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
@@ -62,10 +63,10 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
                 }
             };
 
-            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
-            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
-            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
-            this.adapter.add(new BasePagerAdapter.FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
 
         }
         this.pager.setAdapter(adapter);

@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,8 +21,9 @@ import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.ContentAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 
 import java.io.Serializable;
 import java.util.List;
@@ -137,7 +137,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
         getPresentationModel().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
         getPresentationModel().onCreate();
 
-        BasePagerAdapter<DetailedImagePagerFragment> adapter = new BasePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
+        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();
@@ -150,7 +150,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
         };
 
         for (Object photo : getPresentationModel().getFilteredImages()) {
-            adapter.add(new BasePagerAdapter.FragmentItem<>(DetailedImagePagerFragment.class, ""));
+            adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
         }
 
         viewPagerGallery.setAdapter(adapter);

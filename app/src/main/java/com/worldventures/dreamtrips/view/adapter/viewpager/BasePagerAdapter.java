@@ -1,7 +1,8 @@
-package com.worldventures.dreamtrips.view.adapter;
+package com.worldventures.dreamtrips.view.adapter.viewpager;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class BasePagerAdapter<T extends Fragment> extends FragmentStatePagerAdapter {
+public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
     private List<FragmentItem<? extends T>> fragmentItems = new ArrayList<>();
 
     public BasePagerAdapter(FragmentManager fm) {
@@ -54,15 +55,4 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentStatePagerAdap
     public CharSequence getPageTitle(int position) {
         return fragmentItems.get(position).title;
     }
-
-    public static class FragmentItem<T> {
-        Class<? extends T> aClass;
-        String title;
-
-        public FragmentItem(Class<? extends T> aClass, String title) {
-            this.aClass = aClass;
-            this.title = title;
-        }
-    }
-
 }

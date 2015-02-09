@@ -125,7 +125,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         this.data.add(themeHeaderModel);
         if (!themeHeaderModel.isHide())
             this.data.addAll(parentActivities);
-        this.data.add(soldOutModel);
+        //this.data.add(soldOutModel);
     }
 
     public void setRegionsChecked(boolean isChecked) {

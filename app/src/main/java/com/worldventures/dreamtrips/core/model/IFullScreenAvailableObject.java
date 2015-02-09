@@ -14,4 +14,6 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable{
 
     public String getFsShareText();
 
+    public String getId();
+
 }

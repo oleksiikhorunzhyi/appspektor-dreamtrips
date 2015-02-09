@@ -20,6 +20,7 @@ import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
 import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
@@ -54,6 +55,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void afterCreateView(View rootView) {
+        AdobeTrackingHelper.dreamTrips();
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));

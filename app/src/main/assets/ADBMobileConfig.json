@@ -1,0 +1,28 @@
+{
+  "version": "2014-09-16T19:02:54.478Z",
+  "target": {
+    "clientCode": "",
+    "timeout": 5
+  },
+  "audienceManager": {
+    "server": ""
+  },
+  "acquisition": {
+    "server": "c00.adobe.com",
+    "appid": "a6078c70-99c8-4005-ab87-d6fab11a3e63"
+  },
+  "analytics": {
+    "rsids": "rovia-deva",
+    "server": "roviallc.d2.sc.omtrdc.net",
+    "ssl": false,
+    "offlineEnabled": false,
+    "charset": "UTF-8",
+    "lifecycleTimeout": 300,
+    "privacyDefault": "optedin",
+    "batchLimit": 0,
+    "timezone": "CDT",
+    "timezoneOffset": -300,
+    "referrerTimeout": 0,
+    "poi": []
+  }
+}

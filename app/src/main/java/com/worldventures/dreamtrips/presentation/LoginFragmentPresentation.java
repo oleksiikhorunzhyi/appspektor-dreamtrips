@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.presentation;
 
+import com.adobe.mobile.Analytics;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -8,6 +9,7 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import org.robobinding.annotation.PresentationModel;
@@ -75,12 +77,13 @@ public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPre
                     public void success(JsonObject jsonObject, Response response) {
                         String token = jsonObject.get("result").getAsString();
 
+                        AdobeTrackingHelper.login(sessionUser.getUsername());
+
                         userSession.setLegacyApiToken(token);
                         userSession.setUsername(username);
                         userSession.setUserPassword(userPassword);
                         userSession.setLastUpdate(System.currentTimeMillis());
                         appSessionHolder.put(userSession);
-
                         activityRouter.openMain();
                         activityRouter.finish();
                         LoginFragmentPresentation.this.view.showLoginSuccess();

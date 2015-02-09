@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;

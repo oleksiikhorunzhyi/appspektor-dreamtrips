@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
 
+import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 
 public class LaunchActivity extends PresentationModelDrivenActivity<LaunchActivityPresentation> {
@@ -14,6 +15,7 @@ public class LaunchActivity extends PresentationModelDrivenActivity<LaunchActivi
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
+        Config.setContext(this.getApplicationContext());
         this.getPresentationModel().onCreate();
     }
 }

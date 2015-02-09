@@ -8,6 +8,7 @@ import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.model.Video;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -45,6 +46,7 @@ public class MembershipPM extends BasePresentation<BasePresentation.View> {
 
 
     public void actionEnroll() {
+        AdobeTrackingHelper.enroll();
         activityRouter.openEnroll();
     }
 

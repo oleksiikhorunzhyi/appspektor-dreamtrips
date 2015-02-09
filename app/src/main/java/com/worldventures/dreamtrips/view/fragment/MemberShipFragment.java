@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
@@ -55,7 +56,7 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getAdapterController());
-
+        AdobeTrackingHelper.video();
 
         getPresentationModel().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
             @Override

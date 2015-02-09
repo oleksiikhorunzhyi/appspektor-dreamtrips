@@ -47,7 +47,6 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     ToucheableMapView mapView;
 
     GoogleMap googleMap;
-
     private LatLng lastClickedLocation;
 
     @Override

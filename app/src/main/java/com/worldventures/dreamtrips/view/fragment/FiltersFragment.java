@@ -57,7 +57,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);
         this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
-        this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
+        //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());

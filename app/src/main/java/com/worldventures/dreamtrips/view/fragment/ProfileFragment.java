@@ -19,6 +19,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -71,6 +72,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        AdobeTrackingHelper.profile();
         layoutConfiguration();
     }
 

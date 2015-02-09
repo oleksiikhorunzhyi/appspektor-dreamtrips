@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
@@ -48,6 +49,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        AdobeTrackingHelper.bucketList();
         eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 

@@ -16,6 +16,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
@@ -140,6 +141,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageSelected(int position) {
+        if (position == Type.MY_IMAGES.ordinal()) {
+            AdobeTrackingHelper.mine();
+        } else if (position == Type.YOU_SHOULD_BE_HERE.ordinal()) {
+            AdobeTrackingHelper.ysbh();
+        } else if (position == Type.MEMBER_IMAGES.ordinal()) {
+            AdobeTrackingHelper.all();
+        }
+
         if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
         } else {

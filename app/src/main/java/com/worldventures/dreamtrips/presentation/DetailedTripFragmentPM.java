@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 import org.json.JSONObject;
 import org.robobinding.annotation.PresentationModel;
@@ -53,6 +54,8 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     }
 
     public void onCreate() {
+        AdobeTrackingHelper.trip(String.valueOf(trip.getId()));
+
         view.setName(trip.getName());
         view.setDates(trip.getAvailabilityDates().toString());
         view.setDesription(trip.getDescription());
@@ -77,6 +80,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     }
 
     public void actionBookIt() {
+        AdobeTrackingHelper.bookIt(String.valueOf(trip.getId()));
         activityRouter.openBookItActivity(trip.getId());
     }
 
@@ -85,6 +89,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void success(TripDetails tripDetails, Response response) {
                 view.setContent(tripDetails.getContent());
+                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
             }
 
             @Override

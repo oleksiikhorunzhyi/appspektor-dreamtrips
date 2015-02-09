@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation.fullscreen;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
@@ -42,6 +43,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
             @Override
             public void success(JsonObject jsonObject, Response response) {
                 view.informUser("Photo has been flagged");
+                AdobeTrackingHelper.flag(MEMBER_IMAGES, String.valueOf(photo.getId()));
             }
 
             @Override
@@ -59,6 +61,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
                 photo.setLiked(!isLiked);
                 view.setLiked(!isLiked);
                 eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
+                AdobeTrackingHelper.like(MEMBER_IMAGES, String.valueOf(photo.getId()));
             }
 
             @Override

@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
@@ -88,8 +88,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (photo != null) {
             getPresentationModel().setupPhoto((T) photo);
             getPresentationModel().setupType(type);
+            AdobeTrackingHelper.view(type, String.valueOf(photo.getId()));
         }
         getPresentationModel().setupActualViewState();
+
     }
 
     @Override
@@ -106,7 +108,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 progressBar.setVisibility(View.GONE);
-               // informUser("Error while loading image");
+                // informUser("Error while loading image");
             }
 
             @Override

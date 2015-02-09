@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -151,7 +151,11 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        this.pid.onActivityResult(requestCode, resultCode, data);
+        if (this.pid != null) {
+            this.pid.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.e(ProfileFragment.class.getSimpleName(), "Pid is NULL");
+        }
     }
 
     @Override

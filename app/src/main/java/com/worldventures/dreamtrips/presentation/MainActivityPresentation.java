@@ -34,7 +34,8 @@ public class MainActivityPresentation extends BasePresentation<MainActivityPrese
     }
 
     public void onBackPressed() {
-        String title = fragmentCompass.getPreviousFragmentTitle();
+        currentState = fragmentCompass.getPreviousFragment();
+        String title = currentState.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
     }

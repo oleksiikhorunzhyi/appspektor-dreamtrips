@@ -9,7 +9,8 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
-import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
@@ -28,7 +29,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
-    BasePagerAdapter<FullScreenPhotoFragment> adapter;
+    BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     List<Object> photoList;
     TripImagesListFragment.Type type;
     private int position;
@@ -57,7 +58,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             position = 0;
         }
 
-        adapter = new BasePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
+        adapter = new BaseStatePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, FullScreenPhotoFragment fragment) {
                 Bundle args = new Bundle();
@@ -118,7 +119,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     public void addAll(List<Object> items) {
         photoList.addAll(items);
         for (Object item : items) {
-            adapter.add(new BasePagerAdapter.FragmentItem<>(FullScreenPhotoFragment.class, ""));
+            adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
         }
         adapter.notifyDataSetChanged();
     }

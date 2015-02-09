@@ -10,7 +10,8 @@ import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
-import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 
 import butterknife.InjectView;
 
@@ -48,9 +49,9 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
                 }
             };
 
-            this.adapter.add(new BasePagerAdapter.FragmentItem(BucketListFragment.class, "Locations"));
-            this.adapter.add(new BasePagerAdapter.FragmentItem(BucketListFragment.class, "Activities"));
-            this.adapter.add(new BasePagerAdapter.FragmentItem(BucketListFragment.class, "Restaurants"));
+            this.adapter.add(new FragmentItem(BucketListFragment.class, "Locations"));
+            this.adapter.add(new FragmentItem(BucketListFragment.class, "Activities"));
+            this.adapter.add(new FragmentItem(BucketListFragment.class, "Restaurants"));
 
         }
         pager.setAdapter(adapter);

@@ -9,7 +9,8 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
-import com.worldventures.dreamtrips.view.adapter.BasePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
 
 import java.io.Serializable;
@@ -27,7 +28,7 @@ public class FullScreenTripImageActivity extends PresentationModelDrivenActivity
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
-    private BasePagerAdapter<DetailedImagePagerFragment> adapter;
+    private BaseStatePagerAdapter<DetailedImagePagerFragment> adapter;
     ArrayList<Serializable> photoList;
 
     @Override
@@ -56,7 +57,7 @@ public class FullScreenTripImageActivity extends PresentationModelDrivenActivity
             position = 0;
         }
 
-        adapter = new BasePagerAdapter<DetailedImagePagerFragment>(getSupportFragmentManager()) {
+        adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();
@@ -66,7 +67,7 @@ public class FullScreenTripImageActivity extends PresentationModelDrivenActivity
         };
 
         for (Serializable photo : photoList) {
-            adapter.add(new BasePagerAdapter.FragmentItem<>(DetailedImagePagerFragment.class, ""));
+            adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
         }
 
         pager.setAdapter(adapter);

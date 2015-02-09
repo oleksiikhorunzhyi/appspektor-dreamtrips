@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
@@ -50,6 +52,9 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private List<Activity> acceptedThemes;
     private DateFilterItem dateFilterItem = new DateFilterItem();
 
+    private static Handler handler = new Handler();
+    private String query;
+
     @Inject
     @Global
     EventBus eventBus;
@@ -91,28 +96,27 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     public void onMapLoaded() {
         eventBus.registerSticky(this);
+        tripsController.reload();
     }
 
     public void setFilters(FilterBusEvent event) {
-        if (event != null)
-            if (event.isReset()) {
-                resetFilters();
-            } else {
-                maxPrice = event.getMaxPrice();
-                minNights = event.getMinNights();
-                minPrice = event.getMinPrice();
-                maxNights = event.getMaxNights();
-                acceptedRegions = event.getAcceptedRegions();
-                acceptedThemes = event.getAcceptedActivities();
-                showSoldOut = event.isShowSoldOut();
-                dateFilterItem = event.getDateFilterItem();
-            }
+        if (event == null || event.isReset()) {
+            resetFilters();
+        } else {
+            maxPrice = event.getMaxPrice();
+            minNights = event.getMinNights();
+            minPrice = event.getMinPrice();
+            maxNights = event.getMaxNights();
+            acceptedRegions = event.getAcceptedRegions();
+            acceptedThemes = event.getAcceptedActivities();
+            showSoldOut = event.isShowSoldOut();
+            dateFilterItem = event.getDateFilterItem();
+        }
     }
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
-            setFilters(event);
-            tripsController.reload();
+            handler.postDelayed(() -> tripsController.reload(), 100);
         }
     }
 
@@ -131,6 +135,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
                     input.getPrice().getAmount() <= maxPrice
                             && input.getAvailabilityDates().check(dateFilterItem)
                             && input.getPrice().getAmount() >= minPrice
+                            && input.containsQuery(query)
                             && input.getDuration() >= minNights
                             && input.getDuration() <= maxNights
                             && (showSoldOut || input.isAvailable())
@@ -138,6 +143,11 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
                             && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
             reloadPins();
         }
+    }
+
+    public void applySearch(String query) {
+        this.query = query;
+        performFiltering();
     }
 
     public void resetFilters() {

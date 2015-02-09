@@ -126,7 +126,7 @@ public class FragmentCompass {
         FragmentManager fm = activity.getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 2) {
             FragmentManager.BackStackEntry backEntry =
-                    fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1);
+                    fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 2);
             String str = backEntry.getName();
             return State.restoreByClass(str);
         }

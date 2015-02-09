@@ -156,6 +156,6 @@ public class Trip extends BaseEntity implements Filterable {
 
     @Override
     public boolean containsQuery(String query) {
-        return name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
+        return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
     }
 }

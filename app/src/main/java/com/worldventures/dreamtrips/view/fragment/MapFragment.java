@@ -4,7 +4,11 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +41,7 @@ import butterknife.InjectView;
  */
 @Layout(R.layout.fragment_map)
 @MenuResource(R.menu.menu_map)
-public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View {
+public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.map)
     ToucheableMapView mapView;
@@ -74,6 +78,18 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnCloseListener(()-> {
+            getPresentationModel().applySearch(null);
+            return false;
+        });
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -139,6 +155,16 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         googleMap.moveCamera(cameraUpdate);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        getPresentationModel().applySearch(s);
+        return false;
+    }
 
     @Override
     public void showInfoWindow(int offset) {

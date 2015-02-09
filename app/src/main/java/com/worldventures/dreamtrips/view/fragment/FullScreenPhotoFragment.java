@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -56,7 +57,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @InjectView(R.id.iv_flag)
     ImageView ivFlag;
     @InjectView(R.id.pb)
-    ProgressBarCircularIndeterminate progressBar;
+    ProgressBar progressBar;
     @InjectView(R.id.ripple_like)
     View vRippleLike;
 
@@ -77,7 +78,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         type = activity.getType();
-        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
+        IFullScreenAvailableObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
 
         getPresentationModel().onCreate();
 
@@ -126,7 +127,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     protected BaseFSViewPM createPresentationModel(Bundle savedInstanceState) {
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         int position = getArguments().getInt(EXTRA_POSITION);
-        IFullScreenAvailableObject photo = (IFullScreenAvailableObject) activity.getPhoto(position);
+        IFullScreenAvailableObject photo = activity.getPhoto(position);
 
         return BaseFSViewPM.create(this, photo);
     }

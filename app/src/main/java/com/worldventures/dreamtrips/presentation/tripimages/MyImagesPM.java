@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
@@ -22,20 +23,20 @@ import retrofit.client.Response;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @PresentationModel
-public class MyImagesPM extends TripImagesListPM<Object> {
+public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
     public MyImagesPM(View view) {
         super(view, Type.MY_IMAGES);
     }
 
     @Override
-    public void loadPhotos(int perPage, int page, Callback<List<Object>> callback) {
+    public void loadPhotos(int perPage, int page, Callback<List<IFullScreenAvailableObject>> callback) {
         User user = appSessionHolder.get().get().getUser();
         dreamTripsApi.getMyPhotos(user.getId(), perPage, page, new Callback<List<Photo>>() {
             @Override
             public void success(List<Photo> photos, Response response) {
                 List<ImageUploadTask> uploadTasks = getUploadTasks();
-                ArrayList<Object> result = new ArrayList<>();
-                result.addAll(uploadTasks);
+                ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
+                result.addAll(ImageUploadTask.from(uploadTasks));
                 result.addAll(photos);
                 callback.success(result, response);
             }

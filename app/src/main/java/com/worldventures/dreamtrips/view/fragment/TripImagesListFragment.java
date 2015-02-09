@@ -12,6 +12,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -49,7 +50,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     @Global
     EventBus eventBus;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
     private Type type;
     private LinearLayoutManager layoutManager;
 
@@ -123,7 +124,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    public List<Object> getPhotosFromAdapter() {
+    public List<IFullScreenAvailableObject> getPhotosFromAdapter() {
         return arrayListAdapter.getItems();
     }
 
@@ -143,20 +144,20 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    public void addAll(List<Object> items) {
+    public void addAll(List<IFullScreenAvailableObject> items) {
         int itemCount = arrayListAdapter.getItemCount();
         arrayListAdapter.addItems(items);
         arrayListAdapter.notifyItemRangeInserted(itemCount - 1, items.size());
     }
 
     @Override
-    public void add(Object item) {
+    public void add(IFullScreenAvailableObject item) {
         arrayListAdapter.addItem(item);
         arrayListAdapter.notifyItemInserted(arrayListAdapter.getItemCount() - 1);
     }
 
     @Override
-    public void add(int position, Object item) {
+    public void add(int position, IFullScreenAvailableObject item) {
         arrayListAdapter.addItem(position, item);
         arrayListAdapter.notifyItemInserted(position);
     }
@@ -167,7 +168,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    public void replace(int position, Object item) {
+    public void replace(int position, IFullScreenAvailableObject item) {
         arrayListAdapter.replaceItem(position, item);
         arrayListAdapter.notifyItemChanged(position);
     }

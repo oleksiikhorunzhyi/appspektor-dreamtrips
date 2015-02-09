@@ -32,7 +32,7 @@ import retrofit.client.Response;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @PresentationModel
-public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesListPM.View> {
+public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
     @Inject
@@ -57,7 +57,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         cbNext = new Callback<List<T>>() {
             @Override
             public void success(List<T> objects, Response response) {
-                view.addAll((List<Object>) objects);
+                view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
             }
 
@@ -70,7 +70,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
             @Override
             public void success(List<T> objects, Response response) {
                 view.clear();//PullTORefresh
-                view.addAll((List<Object>) objects);
+                view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.firstLoadFinish();
                 view.finishLoading();
             }
@@ -83,7 +83,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         cbPrev = new Callback<List<T>>() {
             @Override
             public void success(List<T> objects, Response response) {
-                view.addAll((List<Object>) objects);
+                view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
             }
 
@@ -148,7 +148,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
 
 
     public void onItemClick(int position) {
-        List<Object> objects = view.getPhotosFromAdapter();
+        List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
         List<IFullScreenAvailableObject> photos = new ArrayList<>();
         for (Object o : objects) {
             if (o instanceof IFullScreenAvailableObject) {
@@ -162,8 +162,8 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         }
     }
 
-    public static interface View extends BasePresentation.View, AdapterView<Object> {
-        List<Object> getPhotosFromAdapter();
+    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
+        List<IFullScreenAvailableObject> getPhotosFromAdapter();
 
         void startLoading();
 
@@ -177,7 +177,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
         if (type != Type.MY_IMAGES) {
             reload();
         } else {
-            view.add(0, event.getUploadTask());
+            view.add(0, ImageUploadTask.from(event.getUploadTask()));
         }
     }
 
@@ -199,7 +199,7 @@ public abstract class TripImagesListPM<T> extends BasePresentation<TripImagesLis
     }
 
     public void onEventMainThread(PhotoDeletedEvent event) {
-        List<Object> photosFromAdapter = view.getPhotosFromAdapter();
+        List<IFullScreenAvailableObject> photosFromAdapter = view.getPhotosFromAdapter();
         for (int i = 0; i < photosFromAdapter.size(); i++) {
             Object o = photosFromAdapter.get(i);
             if (o instanceof Photo && ((Photo) o).getId() == event.getPhotoId()) {

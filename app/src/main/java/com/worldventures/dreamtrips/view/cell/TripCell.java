@@ -85,7 +85,7 @@ public class TripCell extends AbstractCell<Trip> {
 
     @OnClick(R.id.itemLayout)
     void actionItemClick() {
-        getEventBus().post(new TouchTripEvent(getPosition()));
+        getEventBus().post(new TouchTripEvent(getModelObject()));
     }
 
     @OnClick(R.id.layoutInfo)

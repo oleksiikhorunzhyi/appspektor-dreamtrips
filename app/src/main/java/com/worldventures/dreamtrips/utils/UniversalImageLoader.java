@@ -16,8 +16,8 @@ public class UniversalImageLoader {
 
 
     public static final DisplayImageOptions OP_AVATAR = new DisplayImageOptions.Builder()
-            .cacheOnDisk(true)
-            .cacheInMemory(true)
+            .cacheOnDisk(false)
+            .cacheInMemory(false)
             .showImageForEmptyUri(R.drawable.ic_avatar_placeholder)
             .showImageOnFail(R.drawable.ic_avatar_placeholder)
             .displayer(new FadeInBitmapDisplayer(300))

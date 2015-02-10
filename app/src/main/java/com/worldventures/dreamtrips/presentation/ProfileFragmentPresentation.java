@@ -80,6 +80,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
                 public void failure(RetrofitError error) {
                     view.avatarProgressVisible(false);
                     handleError(error);
+                    view.informUser("Internal server error");
                 }
             });
         } else {

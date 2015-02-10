@@ -29,6 +29,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.*;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 @PresentationModel
@@ -154,7 +155,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             if (o instanceof IFullScreenAvailableObject) {
                 photos.add((IFullScreenAvailableObject) o);
             } else if (o instanceof ImageUploadTask) {
-                photos.add(ImageUploadTask.from((ImageUploadTask) o));
+                photos.add(from((ImageUploadTask) o));
             }
         }
         if (objects.get(position) instanceof IFullScreenAvailableObject) {
@@ -177,7 +178,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         if (type != Type.MY_IMAGES) {
             reload();
         } else {
-            view.add(0, ImageUploadTask.from(event.getUploadTask()));
+            view.add(0, from(event.getUploadTask()));
         }
     }
 
@@ -188,7 +189,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             new Handler().postDelayed(() -> {
                 for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
                     Object item = view.getPhotosFromAdapter().get(i);
-                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
+                    if (item instanceof ImageUploadTaskFullscreen && ((ImageUploadTaskFullscreen) item).getTask().getTaskId().equals(event.getPhoto().getTaskId())) {
                         view.replace(i, event.getPhoto());
                         break;
                     }

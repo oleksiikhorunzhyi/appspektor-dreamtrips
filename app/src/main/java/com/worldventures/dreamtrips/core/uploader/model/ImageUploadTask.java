@@ -166,6 +166,10 @@ public class ImageUploadTask extends RealmObject implements Serializable {
             taskId = task.getTaskId();
         }
 
+        public ImageUploadTask getTask() {
+            return task;
+        }
+
         public ImageUploadTaskFullscreen() {
         }
 

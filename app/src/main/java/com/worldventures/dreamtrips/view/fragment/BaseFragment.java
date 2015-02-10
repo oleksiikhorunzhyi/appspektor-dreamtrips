@@ -29,7 +29,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     @Override
     public void informUser(String stringId) {
         if (getActivity() != null) {
-            Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
+            getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show());
         }
     }
 

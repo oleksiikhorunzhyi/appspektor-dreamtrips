@@ -21,13 +21,14 @@ android {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 12
-        versionName "0.1.11"
+        versionCode 13
+        versionName "0.1.12"
         multiDexEnabled true
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+        buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
     }
 
     buildTypes {
@@ -54,6 +55,8 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
             buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
             buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
+
         }
 
         prod {
@@ -62,6 +65,7 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
             buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
             buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
         }
     }
 

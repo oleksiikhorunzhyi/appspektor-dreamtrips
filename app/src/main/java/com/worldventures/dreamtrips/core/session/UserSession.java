@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.session;
 
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 
 public class UserSession {
     private User user;
@@ -9,6 +10,7 @@ public class UserSession {
     private String userPassword;
     private String username;
     private long lastUpdate;
+    private S3GlobalConfig globalConfig;
 
     public User getUser() {
         return user;
@@ -56,5 +58,13 @@ public class UserSession {
 
     public long getLastUpdate() {
         return lastUpdate;
+    }
+
+    public void setGlobalConfig(S3GlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
+    }
+
+    public S3GlobalConfig getGlobalConfig() {
+        return globalConfig;
     }
 }

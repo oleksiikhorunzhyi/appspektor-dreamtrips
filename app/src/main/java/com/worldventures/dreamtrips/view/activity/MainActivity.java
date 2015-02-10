@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -19,20 +17,9 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
-import com.worldventures.dreamtrips.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
-import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
-import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
-import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 
 import net.hockeyapp.android.UpdateManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -53,6 +40,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @Override
     protected MainActivityPresentation createPresentationModel(Bundle savedInstanceState) {
         return new MainActivityPresentation(this);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getPresentationModel().create();
     }
 
     @Override

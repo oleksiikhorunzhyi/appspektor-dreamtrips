@@ -21,15 +21,17 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
+import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.util.TextWatcherAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -169,10 +171,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
         PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        FlagContent[] values = FlagContent.values();
-        for (int i = 0; i < values.length; i++) {
-            FlagContent flagContent = values[i];
-            popup.getMenu().add(0, i, i, flagContent.getTitle());
+        List<Flag> values = getPresentationModel().getFlagContent();
+        for (int i = 0; i < values.size(); i++) {
+            Flag flagContent = values.get(i);
+            popup.getMenu().add(0, i, i, flagContent.getCode());
         }
         popup.setOnMenuItemClickListener(item -> {
             getPresentationModel().showFlagAction(item.getItemId());

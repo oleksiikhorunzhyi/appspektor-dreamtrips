@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.adobe.mobile.Config;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
@@ -36,6 +38,13 @@ public abstract class BaseActivity extends InjectingActivity {
     public ViewBinder createViewBinder() {
         BinderFactory binderFactory = getReusableBinderFactory();
         return binderFactory.createViewBinder(this);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Config.setDebugLogging(true);
+        Config.setContext(this.getApplicationContext());
     }
 
     @Override

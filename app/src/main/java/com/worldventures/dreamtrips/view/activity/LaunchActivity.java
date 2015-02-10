@@ -15,7 +15,6 @@ public class LaunchActivity extends PresentationModelDrivenActivity<LaunchActivi
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        Config.setContext(this.getApplicationContext());
         this.getPresentationModel().onCreate();
     }
 }

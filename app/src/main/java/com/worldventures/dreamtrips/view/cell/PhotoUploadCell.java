@@ -24,7 +24,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_photo_upload)
-public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
+public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTaskFullscreen> {
 
     @InjectView(R.id.iv_bg)
     public ImageView imageView;
@@ -53,7 +53,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
-        universalImageLoader.loadImage(getModelObject().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
+        universalImageLoader.loadImage(getModelObject().getTask().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     }
 
     public void onEventMainThread(UploadProgressUpdateEvent event) {
-        if (getModelObject().getTaskId().equalsIgnoreCase(event.getTaskId())) {
+        if (getModelObject().getTask().getTaskId().equalsIgnoreCase(event.getTaskId())) {
             Log.d("Progress event", event.getProgress() + "");
             if (event.getProgress() <= 100) {
                 if (event.getProgress() > pb.getProgress())
@@ -95,7 +95,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     public void onEventMainThread(PhotoUploadFinished event) {
         Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
-        if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
+        if (event.getPhoto().getTaskId().equals(getModelObject().getTask().getTaskId())) {
             pb.setVisibility(View.INVISIBLE);
             ivResult.setBackgroundResource(R.drawable.circle_green);
             btnCancelUpload.setImageResource(R.drawable.ic_upload_done);

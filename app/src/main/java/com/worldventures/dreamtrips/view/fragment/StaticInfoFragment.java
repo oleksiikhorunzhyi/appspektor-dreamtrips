@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -93,7 +94,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            return "https://secure.worldventures.biz/(S(ypszgovffsbbiekgosdwysop))/Checkout/PreRequisite.aspx?did={BASE64_ENCODED_USERID}&pn=UkVUQUlM&sa=ZHQ=";
+            return getPresentationModel().etEnrollUrl();
         }
 
         @Override
@@ -149,6 +150,9 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
             webView.getSettings().setDomStorageEnabled(true);
+            webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
+            webView.getSettings().setAppCacheEnabled(true);
+            webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
             webView.setWebViewClient(new WebViewClient() {
 
                 @Override

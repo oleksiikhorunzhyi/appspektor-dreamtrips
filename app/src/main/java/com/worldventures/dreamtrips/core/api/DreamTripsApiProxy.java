@@ -246,7 +246,8 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
-        UserSession userSession = new UserSession();
+        UserSession userSession = appSessionHolder.get().get();
+        if (userSession == null) userSession = new UserSession();
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
         userSession.setLegacyApiToken(legacyToken);

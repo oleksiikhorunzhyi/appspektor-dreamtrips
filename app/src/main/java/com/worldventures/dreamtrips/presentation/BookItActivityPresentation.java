@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.TripDetails;
+import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
@@ -25,7 +27,7 @@ import timber.log.Timber;
 @PresentationModel
 public class BookItActivityPresentation extends BasePresentation<BookItActivityPresentation.View> {
 
-    private static final String urlBase = "https://www.dreamtrips.com/trips/details/%d?user=%s&token=%s&appMode=true#/book";
+    private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
     public static final int LIFE_DURATION = 30;
 
     @Inject
@@ -58,7 +60,10 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
 
     private void openBookIt() {
         UserSession userSession = appSessionHolder.get().get();
-        String url = String.format(urlBase, view.getTripId(), userSession.getUser().getUsername(),
+        URLS urls = userSession.getGlobalConfig().getUrls();
+        URLS.Config config = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+        String urlPrefix = config.getBookingPageBaseURL();
+        String url = String.format(urlPrefix + URL_BASE, view.getTripId(), userSession.getUser().getUsername(),
                 userSession.getLegacyApiToken());
         Bundle bundle = new Bundle();
         bundle.putString(StaticInfoFragment.BookItFragment.URL_EXTRA, url);

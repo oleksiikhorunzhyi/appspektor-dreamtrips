@@ -7,15 +7,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.model.FlagContent;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 
 import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -79,11 +80,11 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     protected abstract boolean isLikeVisible();
 
     public void showFlagAction(int itemId) {
-        FlagContent flagContent = FlagContent.values()[itemId];
+        Flag flagContent = getFlagContent().get(itemId);
         if (flagContent.isNeedDescription()) {
-            view.showFlagDescription(flagContent.getTitle());
+            view.showFlagDescription(flagContent.getCode());
         } else {
-            view.showFlagConfirmDialog(flagContent.getTitle(), null);
+            view.showFlagConfirmDialog(flagContent.getCode(), null);
         }
     }
 
@@ -117,6 +118,10 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
             return new FSInspireMePM(view);
         }
         return new ImageUploadTaskPM(view);
+    }
+
+    public List<Flag> getFlagContent() {
+        return appSessionHolder.get().get().getGlobalConfig().getFlagContent().getDefault();
     }
 
     public static interface View extends BasePresentation.View {

@@ -30,7 +30,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
-import io.realm.ImageUploadTaskRealmProxy;
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment extends BaseFragment<TripImagesListPM> implements TripImagesListPM.View, SwipeRefreshLayout.OnRefreshListener {
@@ -65,8 +64,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-        this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
-        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
+        //   this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
+        //   this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(ImageUploadTask.ImageUploadTaskFullscreen.class, PhotoUploadCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 

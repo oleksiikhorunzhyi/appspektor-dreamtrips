@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
+import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
@@ -98,6 +99,16 @@ public class ApiModule {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         return adapter.create(AuthApi.class);
+    }
+
+    @Provides
+    @Singleton
+    S3Api provideS3Api() {
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(S3Api.DEFAULT_URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+        return adapter.create(S3Api.class);
     }
 
     @Provides

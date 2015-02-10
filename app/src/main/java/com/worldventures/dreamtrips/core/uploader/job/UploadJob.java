@@ -8,6 +8,7 @@ import com.amazonaws.event.ProgressListener;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 import com.techery.spares.module.Annotations.Global;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -108,10 +110,12 @@ public class UploadJob extends Job {
 
         checkNotNull(file, "Can't copy file into uploader storage");
 
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("");
         Upload uploadHandler = transferManager.upload(
                 Constants.BUCKET_NAME.toLowerCase(Locale.US),
                 Constants.BUCKET_ROOT_PATH + file.getName(),
-                file
+                new FileInputStream(file), metadata
         );
 
         ProgressListener progressListener = progressEvent -> {

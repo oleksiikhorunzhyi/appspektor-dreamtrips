@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.presentation;
 
 
+import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.model.config.URLS;
+
 import org.robobinding.annotation.PresentationModel;
 
 @PresentationModel
@@ -8,5 +11,15 @@ public class WebViewFragmentPresentation extends BasePresentation<BasePresentati
 
     public WebViewFragmentPresentation(View view) {
         super(view);
+    }
+
+
+    public String etEnrollUrl() {
+        URLS urls = appSessionHolder.get().get().getGlobalConfig().getUrls();
+        if (BuildConfig.DEBUG) {
+            return urls.getQA().getEnrollMemeberURL();
+        } else {
+            return urls.getProduction().getEnrollMemeberURL();
+        }
     }
 }

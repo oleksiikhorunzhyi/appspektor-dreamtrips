@@ -122,7 +122,8 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @Override
     public void setAvatarImage(Uri uri) {
-        getActivity().runOnUiThread(() -> {
+        if (getActivity() != null)
+            getActivity().runOnUiThread(() -> {
             if (uri != null) {
                 this.universalImageLoader.loadImage(uri, this.userPhoto, UniversalImageLoader.OP_AVATAR);
             }
@@ -131,11 +132,12 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @Override
     public void setCoverImage(Uri uri) {
-        getActivity().runOnUiThread(() -> {
-            if (uri != null) {
-                this.universalImageLoader.loadImage(uri, this.userCover, UniversalImageLoader.OP_COVER);
-            }
-        });
+        if (getActivity() != null)
+            getActivity().runOnUiThread(() -> {
+                if (uri != null) {
+                    this.universalImageLoader.loadImage(uri, this.userCover, UniversalImageLoader.OP_COVER);
+                }
+            });
     }
 
     @Override

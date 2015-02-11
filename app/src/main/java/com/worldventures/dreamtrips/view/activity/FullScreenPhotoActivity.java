@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
@@ -79,7 +80,8 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
                 Log.i("Activity", "Success!");
             }
-        });    }
+        });
+    }
 
 
     @Override
@@ -121,6 +123,14 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
                             Session.getActiveSession(),
                             params))
                     .build();
+            feedDialog.setOnCompleteListener((bundle, e) -> {
+                if (feedDialog != null) {
+                    if (e == null) {
+                        informUser("Successfully posted to facebook");
+                    }
+                    feedDialog.dismiss();
+                }
+            });
 
             feedDialog.show();
         } else {

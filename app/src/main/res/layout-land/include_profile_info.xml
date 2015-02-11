@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="24dp"
+    tools:showIn="@layout/fragment_profile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/small_ic_size"
+            android:layout_height="@dimen/small_ic_size"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_profile_home" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.worldventures.dreamtrips.view.custom.DTEditText
+                android:id="@+id/et_from"
+                style="@style/profile_fragment_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="From"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="normal"
+                app:hideUnderline="true"
+                app:primaryColor="@android:color/transparent"
+                bind:text="${from}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/ic_profile_divider"
+                android:contentDescription="@string/empty" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_marginRight="16dp"
+            android:layout_width="@dimen/small_ic_size"
+            android:layout_height="@dimen/small_ic_size"
+            android:src="@drawable/ic_profile_location" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.worldventures.dreamtrips.view.custom.DTEditText
+                android:id="@+id/et_live_in"
+                style="@style/profile_fragment_edit_text"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="Lives in"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="normal"
+                app:hideUnderline="true"
+                app:primaryColor="@android:color/transparent"
+                bind:text="${livesIn}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/ic_profile_divider"
+                android:contentDescription="@string/empty" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_date_of_birth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/small_ic_size"
+            android:layout_marginRight="16dp"
+            android:layout_height="@dimen/small_ic_size"
+            android:src="@drawable/ic_profile_birthday" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.worldventures.dreamtrips.view.custom.DTEditText
+                android:id="@+id/et_date_of_birth"
+                style="@style/profile_fragment_edit_text"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="Date of birth"
+                android:inputType="none"
+                android:textIsSelectable="true"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="normal"
+                app:hideUnderline="true"
+                app:primaryColor="@android:color/transparent"
+                bind:text="${dateOfBirth}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/ic_profile_divider"
+                android:contentDescription="@string/empty" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/small_ic_size"
+            android:layout_height="@dimen/small_ic_size"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_profile_user_id" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.worldventures.dreamtrips.view.custom.DTEditText
+                android:id="@+id/et_user_id"
+                style="@style/profile_fragment_edit_text"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="User ID"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="normal"
+                app:hideUnderline="true"
+                app:primaryColor="@android:color/transparent"
+                bind:text="${userId}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/ic_profile_divider"
+                android:contentDescription="@string/empty" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

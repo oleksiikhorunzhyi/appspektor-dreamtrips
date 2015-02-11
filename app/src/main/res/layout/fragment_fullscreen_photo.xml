@@ -29,13 +29,13 @@
         <com.andexert.library.RippleView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             ripple:rv_centered="true"
             ripple:rv_color="#F3F3F3">
 
             <ImageView
                 android:id="@+id/iv_flag"
                 android:layout_width="match_parent"
+                android:padding="12dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_flag_2" />
 
@@ -43,6 +43,7 @@
                 android:id="@+id/iv_delete"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="12dp"
                 android:src="@drawable/ic_delete_2" />
         </com.andexert.library.RippleView>
 
@@ -108,23 +109,39 @@
             <com.andexert.library.RippleView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
+                android:padding="8dp"
                 ripple:rv_centered="true"
                 ripple:rv_color="#F3F3F3">
 
-                <ImageView
-                    android:id="@+id/iv_share"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_twitter"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_share_2" />
+                    android:src="@drawable/ic_twitter" />
+            </com.andexert.library.RippleView>
+
+
+            <com.andexert.library.RippleView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                ripple:rv_centered="true"
+                android:padding="8dp"
+                ripple:rv_color="#F3F3F3">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_facebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_facebook" />
             </com.andexert.library.RippleView>
 
             <com.andexert.library.RippleView
                 android:id="@+id/ripple_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
                 android:visibility="visible"
                 ripple:rv_centered="true"
                 ripple:rv_color="#F3F3F3">
@@ -132,6 +149,7 @@
                 <ImageView
                     android:id="@+id/iv_like"
                     android:layout_width="wrap_content"
+                    android:padding="12dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_like_2" />

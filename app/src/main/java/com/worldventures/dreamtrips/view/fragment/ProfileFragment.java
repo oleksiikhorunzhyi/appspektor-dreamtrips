@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
 
@@ -43,12 +44,16 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @InjectView(R.id.user_cover)
     ImageView userCover;
+
+    @Optional
     @InjectView(R.id.vg_content_container)
     ViewGroup vgContentContainer;
     @InjectView(R.id.user_photo)
     ImageView userPhoto;
+    @Optional
     @InjectView(R.id.user_photo_2)
     ImageView userPhoto2;
+    @Optional
     @InjectView(R.id.user_photo_3)
     ImageView userPhoto3;
     @InjectView(R.id.user_name)
@@ -61,9 +66,11 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     ProgressBarCircularIndeterminate progressBar;
     @Inject
     UniversalImageLoader universalImageLoader;
+    @Optional
     @InjectView(R.id.sv)
     ScrollView sv;
 
+    @Optional
     @InjectView(R.id.v_top_strip)
     View vTopStirp;
 
@@ -81,16 +88,18 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     }
 
     private void layoutConfiguration() {
-        int minSideSize = getMinSideSize(getActivity());
-        userCover.getLayoutParams().height = minSideSize;
-        vgContentContainer.getLayoutParams().width = minSideSize;
-        int m = 0;
-        if (!ViewUtils.isLandscapeOrientation(getActivity())
-                && minSideSize < ViewUtils.getScreenWidth(getActivity())) {
-            m = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+        if (vgContentContainer != null && sv != null && vTopStirp != null) {
+            int minSideSize = getMinSideSize(getActivity());
+            userCover.getLayoutParams().height = minSideSize;
+            vgContentContainer.getLayoutParams().width = minSideSize;
+            int m = 0;
+            if (!ViewUtils.isLandscapeOrientation(getActivity())
+                    && minSideSize < ViewUtils.getScreenWidth(getActivity())) {
+                m = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            }
+            ((ViewGroup.MarginLayoutParams) sv.getLayoutParams()).setMargins(0, m, 0, 0);
+            vTopStirp.getLayoutParams().height = m;
         }
-        ((ViewGroup.MarginLayoutParams) sv.getLayoutParams()).setMargins(0, m, 0, 0);
-        vTopStirp.getLayoutParams().height = m;
     }
 
     @Override
@@ -124,10 +133,10 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     public void setAvatarImage(Uri uri) {
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
-            if (uri != null) {
-                this.universalImageLoader.loadImage(uri, this.userPhoto, UniversalImageLoader.OP_AVATAR);
-            }
-        });
+                if (uri != null) {
+                    this.universalImageLoader.loadImage(uri, this.userPhoto, UniversalImageLoader.OP_AVATAR);
+                }
+            });
     }
 
     @Override

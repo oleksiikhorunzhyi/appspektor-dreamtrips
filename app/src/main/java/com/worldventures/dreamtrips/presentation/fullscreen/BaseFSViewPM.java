@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.presentation.fullscreen;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.facebook.widget.FacebookDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 
 import java.io.File;
 import java.util.List;
@@ -94,21 +96,20 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     public void onDeleteAction() {
     }
 
-    public void onShareAction() {
+    public void onFbShare(FullScreenPhotoActivity activity) {
+        activity.shareFBDialog(photo.getFSImage().getOriginal().getUrl(), photo.getFsShareText());
+    }
+
+    public void onTwitterShare(FullScreenPhotoActivity activity) {
         File file = DiskCacheUtils.findInCache(photo.getFSImage().getOriginal().getUrl(), ImageLoader.getInstance().getDiskCache());
         //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
         if (file != null) {
             Uri parse = Uri.fromFile(file);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/*");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getFsShareText());
-            shareIntent.putExtra(Intent.EXTRA_STREAM, parse);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            activityRouter.openShare(Intent.createChooser(shareIntent, "Share"));
-        } else {
+            activity.shareTwitterDialog(parse, photo.getFsShareText());
+          } else {
             view.informUser("Image is not loaded yet");
         }
+
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

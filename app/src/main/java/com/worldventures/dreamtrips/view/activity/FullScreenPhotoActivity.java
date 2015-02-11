@@ -1,11 +1,18 @@
 package com.worldventures.dreamtrips.view.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.WindowManager;
 
+import com.facebook.AppEventsLogger;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
 import com.techery.spares.annotations.Layout;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -16,6 +23,8 @@ import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +36,8 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
     public static final String OUT_STATE_POSITION = "OUT_STATE_POSITION";
+
+    private UiLifecycleHelper uiHelper;
 
     @InjectView(R.id.pager)
     ViewPager pager;
@@ -40,6 +51,34 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     private int position;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        uiHelper.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+            @Override
+            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+                Log.e("Activity", String.format("Error: %s", error.toString()));
+            }
+
+            @Override
+            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+                Log.i("Activity", "Success!");
+            }
+        });    }
+
+
+    @Override
     protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
         return TripImagesListPM.create(type, this);
     }
@@ -47,12 +86,32 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
         outState.putSerializable(OUT_STATE_IMAGES, photoList);
         outState.putSerializable(OUT_STATE_POSITION, pager.getCurrentItem());
     }
 
+    public void shareFBDialog(String url, String text) {
+        FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
+                .setLink(url)
+                .setCaption(text)
+                .setApplicationName("DreamTrips")
+                .build();
+        uiHelper.trackPendingDialogCall(shareDialog.present());
+    }
+
+    public void shareTwitterDialog(Uri url, String text) {
+        TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                .text(text)
+                .image(url);
+        builder.show();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        uiHelper = new UiLifecycleHelper(this, null);
+        uiHelper.onCreate(savedInstanceState);
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
         if (savedInstanceState != null) {
             Serializable serializable = savedInstanceState.getSerializable(OUT_STATE_IMAGES);

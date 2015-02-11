@@ -1,14 +1,10 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
-import com.worldventures.dreamtrips.core.model.Session;
-import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import org.robobinding.annotation.PresentationModel;
@@ -36,6 +32,8 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
 
     private String username;
     private String userPassword;
+    @Inject
+    LoginHelper loginHelper;
 
     public LoginFragmentPresentation(View view) {
         super(view);
@@ -54,53 +52,23 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
             return;
         }
 
-        this.view.showProgressDialog();
-
-        dreamTripsApi.login(username, userPassword, new Callback<Session>() {
+        loginHelper.login(callback -> callback.success(null, null), new Callback<Object>() {
             @Override
-            public void success(Session session, Response response) {
-                String sessionToken = session.getToken();
-                User sessionUser = session.getUser();
-
-                UserSession userSession = new UserSession();
-                userSession.setUser(sessionUser);
-                userSession.setApiToken(sessionToken);
-
-                if (sessionUser == null || sessionToken == null) {
-                    LoginFragmentPresentation.this.view.showLoginErrorMessage();
-                    return;
-                }
-
-                worldVenturesApi.getToken(username, userPassword, new Callback<JsonObject>() {
-                    @Override
-                    public void success(JsonObject jsonObject, Response response) {
-                        String token = jsonObject.get("result").getAsString();
-
-                        AdobeTrackingHelper.login(sessionUser.getUsername());
-
-                        userSession.setLegacyApiToken(token);
-                        userSession.setUsername(username);
-                        userSession.setUserPassword(userPassword);
-                        userSession.setLastUpdate(System.currentTimeMillis());
-                        appSessionHolder.put(userSession);
-                        activityRouter.openMain();
-                        activityRouter.finish();
-                        LoginFragmentPresentation.this.view.showLoginSuccess();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        LoginFragmentPresentation.this.view.showLoginErrorMessage();
-                    }
-                });
-
+            public void success(Object o, Response response) {
+                activityRouter.openMain();
+                activityRouter.finish();
+                view.showLoginSuccess();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                view.showLoginErrorMessage();
+                if (error != null) {
+                    view.showLoginErrorMessage();
+                }
             }
-        });
+        }, getUsername(), getUserPassword());
+
+        this.view.showProgressDialog();
     }
 
     public String getUsername() {

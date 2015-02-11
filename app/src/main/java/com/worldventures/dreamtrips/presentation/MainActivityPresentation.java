@@ -1,11 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.S3Api;
-import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
-import com.worldventures.dreamtrips.core.model.config.ServerStatus;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
 
 import org.robobinding.annotation.PresentationModel;
@@ -13,9 +9,6 @@ import org.robobinding.annotation.PresentationModel;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 @PresentationModel
 public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
@@ -31,7 +24,6 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
     }
 
     public void create() {
-        loadS3Config();
     }
 
 

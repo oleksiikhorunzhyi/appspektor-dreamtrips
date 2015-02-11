@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 
 import org.apache.http.HttpStatus;
 
@@ -44,9 +43,15 @@ public class DreamTripsApiProxy implements DreamTripsApi {
 
     @Inject
     AppSessionHolder appSessionHolder;
+
+    @Inject
+    S3Api s3Api;
+
     @Inject
     @Global
     EventBus eventBus;
+    @Inject
+    LoginHelper loginHelper;
 
     public DreamTripsApiProxy(Injector injector) {
         injector.inject(this);
@@ -144,24 +149,20 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
 
-    private static interface Executor<T> {
-        void execute(Callback<T> callback);
-    }
-
     private <T> T runApiMethodSync(Supplier<T> e) {
         try {
             return e.get();
         } catch (RetrofitError error) {
             if (isLoginError(error) && isCredentialExist()) {
-                Session session = tryLoginSync();
-                String token = tryGetLegacyTokenSync();
-                if (handleSession(session, token)) return e.get();
+                String username = appSessionHolder.get().get().getUsername();
+                String userPassword = appSessionHolder.get().get().getUserPassword();
+                if (loginHelper.loginSync(username, userPassword)) return e.get();
             }
             return null;
         }
     }
 
-    private <T> void runApiMethodAsync(Callback<T> callback, Executor<T> e) {
+    private <T> void runApiMethodAsync(Callback<T> callback, Executor<T> executor) {
         Callback<T> proxy = new Callback<T>() {
             @Override
             public void success(T t, Response response) {
@@ -171,34 +172,16 @@ public class DreamTripsApiProxy implements DreamTripsApi {
             @Override
             public void failure(RetrofitError error) {
                 if (isLoginError(error) && isCredentialExist()) {
-                    tryLoginAsync(new Callback<Session>() {
-                        @Override
-                        public void success(Session session, Response response) {
-                            tryGetLegacyTokenAsync(new Callback<JsonObject>() {
-                                @Override
-                                public void success(JsonObject jsonObject, Response response) {
-                                    if (handleSession(session, getStringToken(jsonObject)))
-                                        e.execute(callback);
-                                }
+                    String username = appSessionHolder.get().get().getUsername();
+                    String userPassword = appSessionHolder.get().get().getUserPassword();
+                    loginHelper.login(executor, callback, username, userPassword);
 
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    callback.failure(error);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void failure(RetrofitError e) {
-                            callback.failure(error);
-                        }
-                    });
                 } else {
                     callback.failure(error);
                 }
             }
         };
-        e.execute(proxy);
+        executor.execute(proxy);
     }
 
 
@@ -211,59 +194,5 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         return error.getResponse() != null && error.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
     }
 
-    private Session tryLoginSync() {
-        String username = appSessionHolder.get().get().getUsername();
-        String userPassword = appSessionHolder.get().get().getUserPassword();
-        return dreamTripsApi.login(username, userPassword);
-    }
-
-    public String tryGetLegacyTokenSync() {
-        String username = appSessionHolder.get().get().getUsername();
-        String userPassword = appSessionHolder.get().get().getUserPassword();
-
-        JsonObject jsonObject = worldVenturesApi.getToken(username, userPassword);
-        return getStringToken(jsonObject);
-    }
-
-
-    private void tryGetLegacyTokenAsync(Callback<JsonObject> callback) {
-        String username = appSessionHolder.get().get().getUsername();
-        String userPassword = appSessionHolder.get().get().getUserPassword();
-        worldVenturesApi.getToken(username, userPassword, callback);
-    }
-
-    private String getStringToken(JsonObject jsonObject) {
-        return jsonObject.get("result").getAsString();
-    }
-
-    private void tryLoginAsync(Callback<Session> callback) {
-        String username = appSessionHolder.get().get().getUsername();
-        String userPassword = appSessionHolder.get().get().getUserPassword();
-        dreamTripsApi.login(username, userPassword, callback);
-    }
-
-    private boolean handleSession(Session session, String legacyToken) {
-        String sessionToken = session.getToken();
-        User sessionUser = session.getUser();
-
-        UserSession userSession = appSessionHolder.get().get();
-        if (userSession == null) userSession = new UserSession();
-        userSession.setUser(sessionUser);
-        userSession.setApiToken(sessionToken);
-        userSession.setLegacyApiToken(legacyToken);
-
-        String username = appSessionHolder.get().get().getUsername();
-        String userPassword = appSessionHolder.get().get().getUserPassword();
-        userSession.setUsername(username);
-        userSession.setUserPassword(userPassword);
-        userSession.setLastUpdate(System.currentTimeMillis());
-
-        if (sessionUser != null & sessionToken != null) {
-            appSessionHolder.put(userSession);
-            return true;
-        }
-        eventBus.post(new UpdateUserInfoEvent());
-        return false;
-    }
 
 }

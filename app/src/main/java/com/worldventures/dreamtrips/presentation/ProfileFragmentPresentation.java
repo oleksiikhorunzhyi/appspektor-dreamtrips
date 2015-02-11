@@ -89,16 +89,18 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     };
 
     private ImagePickCallback coverCallback = (fragment, image, error) -> {
-        view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
+        if (image != null) {
+            view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
 
-        UserSession userSession = this.appSessionHolder.get().get();
-        User user = userSession.getUser();
+            UserSession userSession = this.appSessionHolder.get().get();
+            User user = userSession.getUser();
 
-        user.setCoverPath(image.getFileThumbnail());
+            user.setCoverPath(image.getFileThumbnail());
 
-        this.appSessionHolder.put(userSession);
+            this.appSessionHolder.put(userSession);
 
-        eventBus.post(new UpdateUserInfoEvent());
+            eventBus.post(new UpdateUserInfoEvent());
+        }
     };
 
     public ProfileFragmentPresentation(View view) {

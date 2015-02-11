@@ -52,8 +52,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     TextView tvTitle;
     @InjectView(R.id.iv_like)
     ImageView ivLike;
-    @InjectView(R.id.iv_share)
-    ImageView ivShare;
     @InjectView(R.id.iv_delete)
     ImageView ivDelete;
     @InjectView(R.id.iv_flag)
@@ -137,11 +135,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
 
-    @OnClick(R.id.iv_share)
-    public void actionShare() {
-        getPresentationModel().onShareAction();
+    @OnClick(R.id.iv_twitter)
+    public void twitterShare() {
+        getPresentationModel().onTwitterShare(((FullScreenPhotoActivity) getActivity()));
     }
 
+    @OnClick(R.id.iv_facebook)
+    public void fbShare() {
+        getPresentationModel().onFbShare(((FullScreenPhotoActivity) getActivity()));
+    }
 
     @OnClick(R.id.iv_delete)
     public void actionDelete() {

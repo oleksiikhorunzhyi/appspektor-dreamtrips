@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.presentation;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
+import com.worldventures.dreamtrips.core.model.config.ServerStatus;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
@@ -17,36 +18,22 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 @PresentationModel
-public class MainActivityPresentation extends BasePresentation<MainActivityPresentation.View> {
+public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
 
     private State currentState;
 
     @Global
     @Inject
     EventBus eventBus;
-    @Inject
-    S3Api s3Api;
 
     public MainActivityPresentation(View view) {
         super(view);
     }
 
     public void create() {
-        s3Api.getConfig(new Callback<S3GlobalConfig>() {
-            @Override
-            public void success(S3GlobalConfig jsonObject, Response response) {
-                UserSession userSession = appSessionHolder.get().get();
-                if (userSession == null) userSession = new UserSession();
-                userSession.setGlobalConfig(jsonObject);
-                appSessionHolder.put(userSession);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        loadS3Config();
     }
+
 
     @Override
     public void resume() {

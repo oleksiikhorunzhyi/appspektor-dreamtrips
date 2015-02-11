@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.adobe.mobile.Analytics;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -23,7 +22,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 @PresentationModel
-public class LoginFragmentPresentation extends BasePresentation<LoginFragmentPresentation.View> implements HasPresentationModelChangeSupport {
+public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFragmentPresentation.View> implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
 
     @Inject

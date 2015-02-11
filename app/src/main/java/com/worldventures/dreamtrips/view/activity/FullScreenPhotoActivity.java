@@ -8,9 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.facebook.AppEventsLogger;
+import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.LoginButton;
+import com.facebook.widget.WebDialog;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
@@ -23,8 +25,6 @@ import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +43,16 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    @InjectView(R.id.login_button)
+    LoginButton loginButton;
+
 
     BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
 
     TripImagesListFragment.Type type;
     private int position;
+
 
     @Override
     protected void onResume() {
@@ -92,12 +96,43 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     public void shareFBDialog(String url, String text) {
-        FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                .setLink(url)
-                .setCaption(text)
-                .setApplicationName("DreamTrips")
-                .build();
-        uiHelper.trackPendingDialogCall(shareDialog.present());
+        if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
+                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
+                    .setLink(url)
+                    .setCaption(text)
+                    .setApplicationName("DreamTrips")
+                    .build();
+            uiHelper.trackPendingDialogCall(shareDialog.present());
+        } else {
+            publishFeedDialog(url, text, "DreamTrips");
+        }
+    }
+
+    private void publishFeedDialog(String picture, String text, String appName) {
+        Session session = Session.getActiveSession();
+        if (session != null && session.isOpened()) {
+            Bundle params = new Bundle();
+            params.putString("name", appName);
+            params.putString("caption", text);
+            params.putString("picture", picture);
+            WebDialog feedDialog = (
+                    new WebDialog.FeedDialogBuilder(this,
+                            Session.getActiveSession(),
+                            params))
+                    .build();
+
+            feedDialog.show();
+        } else {
+            loginButton.setReadPermissions("user_photos");
+            loginButton.setSessionStatusCallback((s, state, exception) -> {
+                if (session != null && session.isOpened()) {
+                    publishFeedDialog(picture, text, appName);
+                }
+            });
+            loginButton.performClick();
+        }
+
     }
 
     public void shareTwitterDialog(Uri url, String text) {

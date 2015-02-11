@@ -38,6 +38,8 @@ public class BasePresentation<VT extends BasePresentation.View> {
     }
 
     public interface View {
-        public void informUser(String stringId);
+        void informUser(String stringId);
+
+        void alert(String s);
     }
 }

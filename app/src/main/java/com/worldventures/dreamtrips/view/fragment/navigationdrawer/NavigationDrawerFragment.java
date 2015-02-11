@@ -126,8 +126,10 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     }
 
     private void updateHeader() {
-        adapter.setHeader(getNavigationHeader());
-        adapter.notifyItemChanged(0);
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            adapter.setHeader(getNavigationHeader());
+            adapter.notifyItemChanged(0);
+        }
     }
 
     @Override

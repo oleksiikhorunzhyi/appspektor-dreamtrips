@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://robobinding.org/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/black"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_trip_image_placeholder" />
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_below="@+id/iv_image"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="-32dp"
+        android:visibility="visible"
+        app:fab_icon="@drawable/ic_save" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_save"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:text="What"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:hideUnderline="true" />
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:id="@+id/et_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/fab_actions_spacing"
+                    android:hint="Give a title to the image"
+                    android:inputType="textCapSentences"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:baseColor="@android:color/black"
+                    app:floatingLabel="normal"
+                    app:primaryColor="#2196F3"
+                    bind:text="${title}" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:text="Where"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:hideUnderline="true" />
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:id="@+id/et_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/fab_actions_spacing"
+                    android:hint="Set location"
+                    android:inputType="textCapSentences"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:baseColor="@android:color/black"
+                    app:floatingLabel="normal"
+                    app:primaryColor="#2196F3"
+                    bind:text="${location}" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:text="When"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:hideUnderline="true" />
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:id="@+id/et_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/fab_actions_spacing"
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Date"
+                    android:inputType="textCapSentences"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:baseColor="@android:color/black"
+                    app:floatingLabel="normal"
+                    app:primaryColor="#2196F3"
+                    bind:text="${date}" />
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:id="@+id/et_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/fab_actions_spacing"
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Time"
+                    android:inputType="textCapSentences"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:baseColor="@android:color/black"
+                    app:floatingLabel="normal"
+                    app:primaryColor="#2196F3"
+                    bind:text="${time}" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:text="Tags"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:hideUnderline="true" />
+
+                <com.worldventures.dreamtrips.view.custom.DTEditText
+                    android:id="@+id/et_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/fab_actions_spacing"
+                    android:hint="Add comma separated tags here"
+                    android:inputType="textCapWords"
+                    android:textSize="@dimen/create_photo_text_size"
+                    app:baseColor="@android:color/black"
+                    app:floatingLabel="highlight"
+                    app:primaryColor="#2196F3"
+                    bind:text="${tags}" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

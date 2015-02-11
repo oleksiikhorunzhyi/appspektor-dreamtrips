@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.gc.materialdesign.widgets.Dialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
@@ -31,6 +33,16 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show());
         }
+    }
+
+    @Override
+    public void alert(String s) {
+        if (getActivity() != null) getActivity().runOnUiThread(() -> {
+            getActivity().runOnUiThread(() -> {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.title("Alert").content(s).positiveText("Ok").show();
+            });;
+        });
     }
 
     @Override

@@ -12,4 +12,7 @@ public interface S3Api {
     @GET("/config/settings.json")
     public void getConfig(Callback<S3GlobalConfig> callback);
 
+    @GET("/config/settings.json")
+    public S3GlobalConfig getConfig();
+
 }

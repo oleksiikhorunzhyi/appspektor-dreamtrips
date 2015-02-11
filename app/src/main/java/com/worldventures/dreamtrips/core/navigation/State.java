@@ -41,7 +41,7 @@ public enum State {
     BUCKET_LIST(BucketTabsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists, 3),
     MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile, 4),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", 5, R.drawable.ic_terms, 5),
-    FAQ(StaticInfoFragment.TermsOfServiceFragment.class, "FAQ", 5, R.drawable.ic_faq, 6),
+    FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq, 6),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", 5, R.drawable.ic_termsconditions, 7),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", 5, R.drawable.ic_cookie, 8);
 

@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
+import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
@@ -29,9 +30,6 @@ import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.presentation.FragmentMapInfoPM;
 import com.worldventures.dreamtrips.presentation.FullScreenActivityPM;
-import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
-import com.worldventures.dreamtrips.presentation.fullscreen.FSInspireMePM;
-import com.worldventures.dreamtrips.presentation.fullscreen.FSPhotoPM;
 import com.worldventures.dreamtrips.presentation.LaunchActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginActivityPresentation;
 import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
@@ -43,6 +41,9 @@ import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
+import com.worldventures.dreamtrips.presentation.fullscreen.FSInspireMePM;
+import com.worldventures.dreamtrips.presentation.fullscreen.FSPhotoPM;
 import com.worldventures.dreamtrips.presentation.fullscreen.ImageUploadTaskPM;
 import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
@@ -157,6 +158,7 @@ import dagger.Provides;
                 FSInspireMePM.class,
                 BaseFSViewPM.class,
                 ImageUploadTaskPM.class,
+                LoginHelper.class,
 
                 NavigationDrawerFragment.class,
                 FragmentMapTripInfo.class,
@@ -238,6 +240,7 @@ public class ActivityModule {
     SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
         return new SimpleKeyValueStorage(preferences);
     }
+
 
     @Provides
     @Singleton

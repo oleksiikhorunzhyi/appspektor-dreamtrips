@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 
@@ -27,7 +28,15 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
     }
 
     public void informUser(String st) {
-        SnackBar snackbar = new SnackBar(this,st);
+        SnackBar snackbar = new SnackBar(this, st);
         snackbar.show();
+    }
+
+    @Override
+    public void alert(String s) {
+        runOnUiThread(() -> {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+            builder.title("Alert").content(s).positiveText("Ok").show();
+        });
     }
 }

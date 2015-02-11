@@ -32,6 +32,11 @@ public abstract class BaseDialogFragment<PM extends BasePresentation> extends In
     }
 
     @Override
+    public void alert(String s) {
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         this.presentationModel = createPresentationModel(savedInstanceState);

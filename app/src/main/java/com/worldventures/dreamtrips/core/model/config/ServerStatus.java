@@ -26,8 +26,31 @@ public class ServerStatus {
 
 
     public static class Status {
+        @SerializedName("status")
         String status;
-        String outage_type;
+        @SerializedName("outage_type")
+        String outageType;
+        @SerializedName("message")
         String message;
+
+        public String getOutageType() {
+            return outageType;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
     }
 }

@@ -35,7 +35,13 @@ android {
         versionCode 17
         versionName "0.1.17"
         multiDexEnabled true
-   }
+
+        buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+        buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+        buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+        buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
+
+    }
 
     buildTypes {
         debug {
@@ -58,20 +64,17 @@ android {
     productFlavors {
         dev {
             applicationId "com.worldventures.dreamtrips.dev"
-            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
-            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
 
+            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME' , '"dtapp"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
         }
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
-            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
-            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
             buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
@@ -80,14 +83,21 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
 
         }
+        preprod {
+            applicationId "com.worldventures.dreamtrips.preprod"
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID' , 'us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME' , '"dtappprd"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
+
+        }
 
         prod {
             applicationId "com.worldventures.dreamtrips"
-            buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
-            buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-            buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
         }
     }
 

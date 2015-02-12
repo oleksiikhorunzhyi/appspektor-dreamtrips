@@ -132,7 +132,7 @@ public class Trip extends BaseEntity implements Filterable {
         if (images != null) {
             for (TripImage image : images) {
                 if (image.getType().equals(type)) {
-                    url =  image.getOriginalUrl();
+                    url =  image.getUrl();
                 }
             }
         }

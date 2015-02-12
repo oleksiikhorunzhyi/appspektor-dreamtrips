@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ import com.worldventures.dreamtrips.core.model.TripImage;
 import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
+
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -48,6 +51,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             getPresentationModel().setPhoto((TripImage) photo);
         }
 
+/*
         ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -63,14 +67,17 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
                 }
             }
         });
+*/
+        loadImage();
     }
 
-    private void loadImage(int width, int height) {
-        imageLoader.loadImage(getPresentationModel().getPhoto().getUrl(width, height), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+    private void loadImage() {
+        imageLoader.loadImage(getPresentationModel().getPhoto().getOriginalUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 progressBar.setVisibility(View.VISIBLE);
+                Log.d("TAG", "loading started = " + Calendar.getInstance().getTimeInMillis());
             }
 
             @Override
@@ -82,6 +89,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressBar.setVisibility(View.GONE);
+                Log.d("TAG", "loading finished = " + Calendar.getInstance().getTimeInMillis());
             }
         });
     }

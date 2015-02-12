@@ -183,6 +183,13 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         }
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getPresentationModel().onPause();
+    }
+
     @Override
     public void onRefresh() {
         getPresentationModel().reload();

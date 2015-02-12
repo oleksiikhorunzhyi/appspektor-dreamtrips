@@ -120,6 +120,10 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         }
     }
 
+    public void onPause() {
+        eventBus.unregister(this);
+    }
+
     private void reloadPins() {
         view.clearMap();
         for (Trip trip : filteredData) {

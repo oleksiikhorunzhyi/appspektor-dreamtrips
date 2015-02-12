@@ -13,6 +13,8 @@ public class S3GlobalConfig {
     List<Videos360> videos360;
     @SerializedName("server_status")
     ServerStatus serverStatus;
+    @SerializedName("facebook_gallery_enabled")
+    boolean facebook_gallery_enabled;
 
     public FlagList getFlagContent() {
         return this.flagContent;
@@ -44,5 +46,13 @@ public class S3GlobalConfig {
 
     public void setServerStatus(ServerStatus serverStatus) {
         this.serverStatus = serverStatus;
+    }
+
+    public boolean isFacebook_gallery_enabled() {
+        return facebook_gallery_enabled;
+    }
+
+    public void setFacebook_gallery_enabled(boolean facebook_gallery_enabled) {
+        this.facebook_gallery_enabled = facebook_gallery_enabled;
     }
 }

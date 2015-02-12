@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
-import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
@@ -22,7 +21,6 @@ import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
-import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
@@ -60,25 +58,6 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
 
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());
-        getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
-            @Override
-            public void onStartLoading() {
-                if (arrayListAdapter.getItemCount() == 0)
-                    progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
     }
@@ -109,7 +88,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     public void refresh() {
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.recyclerView.post(() ->
-                            getPresentationModel().getRegionController().reload()
+                            getPresentationModel().reload()
             );
         }
     }
@@ -118,4 +97,46 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     protected FiltersFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new FiltersFragmentPM(this);
     }
+
+    @Override
+    public void addAll(List items) {
+        arrayListAdapter.addItems(items);
+    }
+
+    @Override
+    public void add(Object item) {
+
+    }
+
+    @Override
+    public void add(int position, Object item) {
+
+    }
+
+    @Override
+    public void clear() {
+        arrayListAdapter.clear();
+    }
+
+    @Override
+    public void replace(int position, Object item) {
+
+    }
+
+    @Override
+    public void remove(int index) {
+
+    }
+
+    @Override
+    public void startLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        progressBar.setVisibility(View.GONE);
+
+    }
+
 }

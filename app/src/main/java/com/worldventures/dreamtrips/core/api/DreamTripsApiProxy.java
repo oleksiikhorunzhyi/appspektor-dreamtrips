@@ -75,13 +75,14 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public List<Trip> getTrips() {
-        return runApiMethodSync(dreamTripsApi::getTrips);
+    public void getTrips(Callback<List<Trip>> callback) {
+        runApiMethodAsync(callback, dreamTripsApi::getTrips);
     }
 
     @Override
-    public List<Region> getRegions() {
-        return runApiMethodSync(dreamTripsApi::getRegions);
+    public void getRegions(Callback<List<Region>> callback) {
+        runApiMethodAsync(callback, dreamTripsApi::getRegions);
+
     }
 
     @Override
@@ -145,8 +146,8 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public List<Activity> getActivities() {
-        return runApiMethodSync(dreamTripsApi::getActivities);
+    public void getActivities(Callback<List<Activity>> callback) {
+        runApiMethodAsync(callback, dreamTripsApi::getActivities);
     }
 
 

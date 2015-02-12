@@ -1,15 +1,12 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
@@ -19,8 +16,6 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
-import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -61,7 +56,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     @Inject
     LoaderFactory loaderFactory;
-    private CollectionController<Trip> tripsController;
+    //private CollectionController<Trip> tripsController;
 
     private boolean loadFromApi;
 
@@ -83,26 +78,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Override
     public void init() {
         super.init();
-
-        this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate() || loadFromApi) {
-                this.loadFromApi = false;
-                this.data.clear();
-                this.data.addAll(this.loadTrips());
-
-                FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
-
-                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-            } else {
-                this.data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-                }.getType(), FileUtils.TRIPS);
-            }
-
-            List<Trip> filteredData = performFiltering(data);
-
-            return filteredData;
-        });
-
         eventBus.registerSticky(this);
         onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
@@ -116,13 +91,38 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         eventBus.post(new RequestFilterDataEvent());
     }
 
-    public CollectionController<Trip> getTripsController() {
-        return tripsController;
-    }
 
-    public void reload() {
-        loadFromApi = true;
-        tripsController.reload();
+    public void reload(boolean fromApi) {
+        loadFromApi = fromApi;
+        //reload();
+        view.startLoading();
+        dreamTripsApi.getTrips(new Callback<List<Trip>>() {
+            @Override
+            public void success(List<Trip> trips, Response response) {
+                if (needUpdate() || loadFromApi) {
+                    loadFromApi = false;
+                    data.clear();
+                    data.addAll(trips);
+                    FileUtils.saveJsonToCache(context, data, FileUtils.TRIPS);
+                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+                } else {
+                    data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
+                    }.getType(), FileUtils.TRIPS);
+                }
+
+                List<Trip> filteredData = performFiltering(data);
+                view.clear();
+                view.addAll(filteredData);
+                view.finishLoading();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                view.finishLoading();
+            }
+        });
+
+
     }
 
     public void onEvent(FilterBusEvent event) {
@@ -139,7 +139,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                 acceptedThemes = event.getAcceptedActivities();
                 showSoldOut = event.isShowSoldOut();
             }
-            tripsController.reload();
+            reload(false);
         }
     }
 
@@ -191,14 +191,11 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     }
 
-    public void actionSearch(String query){}
+    public void actionSearch(String query) {
+    }
 
     public void actionMap() {
         fragmentCompass.replace(State.MAP, null);
-    }
-
-    public List<Trip> loadTrips() {
-        return dreamTripsApi.getTrips();
     }
 
     public void onItemClick(Trip trip) {
@@ -210,10 +207,14 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA;
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresentation.View, AdapterView<Trip> {
         void dataSetChanged();
 
         void showErrorMessage();
+
+        void startLoading();
+
+        void finishLoading();
     }
 
 }

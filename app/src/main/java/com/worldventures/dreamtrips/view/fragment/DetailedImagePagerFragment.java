@@ -48,11 +48,25 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             getPresentationModel().setPhoto((TripImage) photo);
         }
 
-        loadImage();
+        ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = ivImage.getWidth();
+                int height = ivImage.getHeight();
+                loadImage(width, height);
+                ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                } else {
+                    viewTreeObserver.removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
     }
 
-    private void loadImage() {
-        imageLoader.loadImage(getPresentationModel().getPhoto().getOriginalUrl(), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+    private void loadImage(int width, int height) {
+        imageLoader.loadImage(getPresentationModel().getPhoto().getUrl(width, height), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {

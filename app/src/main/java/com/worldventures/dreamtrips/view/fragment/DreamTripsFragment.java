@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
@@ -64,30 +63,11 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(Trip.class, TripCell.class);
-        this.adapter.setContentLoader(getPresentationModel().getTripsController());
 
         this.recyclerView.setAdapter(adapter);
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-
-        getPresentationModel().getTripsController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
-            @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<Trip> result) {
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
-                showErrorMessage();
-            }
-        });
     }
 
     @Override
@@ -128,6 +108,16 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
     }
 
+    @Override
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void finishLoading() {
+        refreshLayout.setRefreshing(false);
+    }
+
     public void onEvent(LikeTripEvent likeTripEvent) {
         getPresentationModel().onItemLike(likeTripEvent.getTrip());
     }
@@ -150,9 +140,9 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnCloseListener(()-> {
-                adapter.flushFilter();
-                return false;
+        searchView.setOnCloseListener(() -> {
+            adapter.flushFilter();
+            return false;
         });
         searchView.setOnQueryTextListener(this);
     }
@@ -179,7 +169,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     public void onResume() {
         super.onResume();
         if (this.adapter.getItemCount() == 0) {
-            this.refreshLayout.post(() -> getPresentationModel().getTripsController().reload());
+            this.refreshLayout.post(() -> getPresentationModel().reload(false));
         }
     }
 
@@ -192,7 +182,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresentationModel().reload(true);
     }
 
     @Override
@@ -201,4 +191,33 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     }
 
 
+    @Override
+    public void addAll(List<Trip> items) {
+        adapter.addItems(items);
+    }
+
+    @Override
+    public void add(Trip item) {
+
+    }
+
+    @Override
+    public void add(int position, Trip item) {
+
+    }
+
+    @Override
+    public void clear() {
+        adapter.clear();
+    }
+
+    @Override
+    public void replace(int position, Trip item) {
+
+    }
+
+    @Override
+    public void remove(int index) {
+
+    }
 }

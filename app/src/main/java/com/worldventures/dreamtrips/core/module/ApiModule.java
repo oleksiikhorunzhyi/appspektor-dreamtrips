@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.RealmGsonExlusionStrategy;
 
 import javax.inject.Singleton;
@@ -72,10 +73,11 @@ public class ApiModule {
     RequestInterceptor provideRequestInterceptor(AppSessionHolder appSessionHolder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
-                String authToken = "Token token=" + appSessionHolder.get().get().getApiToken();
-                for (Header header : appSessionHolder.get().get().getHeaderList()) {
+                UserSession userSession = appSessionHolder.get().get();
+                for (Header header : userSession.getHeaderList()) {
                     request.addHeader(header.getName(), header.getValue());
                 }
+                String authToken = "Token token=" + userSession.getApiToken();
                 request.addHeader("Authorization", authToken);
             }
         };

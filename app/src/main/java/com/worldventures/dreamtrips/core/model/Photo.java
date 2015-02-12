@@ -175,4 +175,24 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     public String getFsShareText() {
         return title;
     }
+
+    @Override
+    public String getPhotoLocation() {
+        return location != null ? location.getName() : "";
+    }
+
+    @Override
+    public String getUserName() {
+        return user != null ? user.getUsername() : "";
+    }
+
+    @Override
+    public String getUserLocation() {
+        return user != null ? user.getLocation() : "";
+    }
+
+    @Override
+    public String getUserAvatar() {
+        return user != null ? user.getAvatar().getThumb() : "";
+    }
 }

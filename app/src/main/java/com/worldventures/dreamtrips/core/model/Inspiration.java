@@ -86,4 +86,24 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
             return new Inspiration[size];
         }
     };
+
+    @Override
+    public String getPhotoLocation() {
+        return "";
+    }
+
+    @Override
+    public String getUserName() {
+        return author;
+    }
+
+    @Override
+    public String getUserLocation() {
+        return "";
+    }
+
+    @Override
+    public String getUserAvatar() {
+        return "";
+    }
 }

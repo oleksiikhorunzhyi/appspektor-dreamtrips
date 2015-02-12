@@ -9,10 +9,10 @@ import retrofit.http.GET;
 public interface S3Api {
     String DEFAULT_URL = BuildConfig.S3Api;
 
-    @GET("/config/settings.json")
+    @GET("/config/settings_v2.json")
     public void getConfig(Callback<S3GlobalConfig> callback);
 
-    @GET("/config/settings.json")
+    @GET("/config/settings_v2.json")
     public S3GlobalConfig getConfig();
 
 }

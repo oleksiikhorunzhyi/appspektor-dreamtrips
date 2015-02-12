@@ -75,14 +75,13 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public void getTrips(Callback<List<Trip>> callback) {
-        runApiMethodAsync(callback, dreamTripsApi::getTrips);
+    public List<Trip> getTrips() {
+        return runApiMethodSync(dreamTripsApi::getTrips);
     }
 
     @Override
-    public void getRegions(Callback<List<Region>> callback) {
-        runApiMethodAsync(callback, dreamTripsApi::getRegions);
-
+    public List<Region> getRegions() {
+        return runApiMethodSync(dreamTripsApi::getRegions);
     }
 
     @Override
@@ -146,8 +145,8 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     }
 
     @Override
-    public void getActivities(Callback<List<Activity>> callback) {
-        runApiMethodAsync(callback, dreamTripsApi::getActivities);
+    public List<Activity> getActivities() {
+        return runApiMethodSync(dreamTripsApi::getActivities);
     }
 
 
@@ -168,15 +167,7 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         Callback<T> proxy = new Callback<T>() {
             @Override
             public void success(T t, Response response) {
-                List<Header> cookieHeaders = new ArrayList<>();
-                if (response != null && response.getHeaders() != null) {
-                    for (Header header : response.getHeaders()) {
-                        if (header.getName() != null && header.getName().equals("Set-Cookie"))
-                            cookieHeaders.add(header);
-                    }
-                }
                 UserSession userSession = appSessionHolder.get().get();
-                userSession.setHeaderList(cookieHeaders);
                 appSessionHolder.put(userSession);
                 callback.success(t, response);
             }

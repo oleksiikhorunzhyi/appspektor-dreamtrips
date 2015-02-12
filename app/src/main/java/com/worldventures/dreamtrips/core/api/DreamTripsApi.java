@@ -40,10 +40,10 @@ public interface DreamTripsApi {
     public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);
 
     @GET("/api/trips")
-    public void getTrips(Callback<List<Trip>> callback);
+    public List<Trip> getTrips();
 
     @GET("/api/regions")
-    public void getRegions(Callback<List<Region>> callback);
+    public List<Region> getRegions();
 
     @GET("/api/photos")
     public void getUserPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
@@ -84,6 +84,6 @@ public interface DreamTripsApi {
     public void getDetails(@Path("id") int tripId, Callback<TripDetails> callback);
 
     @GET("/api/activities")
-    public void getActivities(Callback<List<Activity>> callback);
+    public List<Activity> getActivities();
 
 }

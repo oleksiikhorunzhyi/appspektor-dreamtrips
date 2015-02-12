@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.presentation;
 
-import android.content.Context;
-
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
+import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -36,9 +35,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by 1 on 22.01.15.
@@ -56,9 +52,6 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     Prefs prefs;
 
     @Inject
-    Context context;
-
-    @Inject
     @Global
     EventBus eventBus;
 
@@ -68,7 +61,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     private List<Activity> parentActivities;
 
 
-    // private CollectionController<Object> regionController;
+    private CollectionController<Object> regionController;
 
     /**
      * variables for filtering
@@ -94,6 +87,32 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         dateFilterItem = new DateFilterItem();
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
+        this.regionController = loaderFactory.create(0, (context, params) -> {
+            if (needUpdate()) {
+                this.regions = this.loadRegion();
+                this.activities = this.dreamTripsApi.getActivities();
+
+                if (activities != null && activities.size() > 0) {
+                    FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
+                    prefs.put(Prefs.ACTIVITIES_LOADED, true);
+                }
+
+                if (regions != null && regions.size() > 0) {
+                    FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
+                    prefs.put(Prefs.REGIONS_LOADED, true);
+                }
+            } else {
+                this.regions = FileUtils.parseJsonFromCache(context, new TypeToken<List<Region>>() {
+                }.getType(), FileUtils.REGIONS);
+                this.activities = FileUtils.parseJsonFromCache(context, new TypeToken<List<Activity>>() {
+                }.getType(), FileUtils.ACTIVITIES);
+            }
+
+            parentActivities = getParentActivities();
+            fillData();
+            return data;
+        });
+
         eventBus.register(this);
     }
 
@@ -106,8 +125,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         this.data.add(themeHeaderModel);
         if (!themeHeaderModel.isHide())
             this.data.addAll(parentActivities);
-        view.clear();
-        view.addAll(data);
+        //this.data.add(soldOutModel);
     }
 
     public void setRegionsChecked(boolean isChecked) {
@@ -193,8 +211,16 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         return themesList;
     }
 
+    public CollectionController<Object> getRegionController() {
+        return regionController;
+    }
+
     private boolean needUpdate() {
         return !prefs.getBoolean(Prefs.REGIONS_LOADED) || !prefs.getBoolean(Prefs.ACTIVITIES_LOADED);
+    }
+
+    public List<Region> loadRegion() {
+        return dreamTripsApi.getRegions();
     }
 
     public void onEvent(RequestFilterDataEvent event) {
@@ -213,62 +239,12 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     public void onEvent(ToggleThemeVisibilityEvent event) {
         themeHeaderModel.setHide(!themeHeaderModel.isHide());
-        reload();
+        getRegionController().reload();
     }
 
     public void onEvent(ToggleRegionVisibilityEvent event) {
         filterModel.setHide(!filterModel.isHide());
-        reload();
-    }
-
-    public void reload() {
-        view.startLoading();
-        if (needUpdate()) {
-            dreamTripsApi.getRegions(new Callback<List<Region>>() {
-                @Override
-                public void success(List<Region> r, Response response) {
-                    dreamTripsApi.getActivities(new Callback<List<Activity>>() {
-                        @Override
-                        public void success(List<Activity> a, Response response) {
-                            regions = r;
-                            activities = a;
-
-                            if (activities != null && activities.size() > 0) {
-                                FileUtils.saveJsonToCache(context, activities, FileUtils.ACTIVITIES);
-                                prefs.put(Prefs.ACTIVITIES_LOADED, true);
-                            }
-
-                            if (regions != null && regions.size() > 0) {
-                                FileUtils.saveJsonToCache(context, regions, FileUtils.REGIONS);
-                                prefs.put(Prefs.REGIONS_LOADED, true);
-                            }
-
-
-                            parentActivities = getParentActivities();
-                            fillData();
-                            view.finishLoading();
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            view.finishLoading();
-                        }
-                    });
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    view.finishLoading();
-                }
-            });
-        } else {
-            regions = FileUtils.parseJsonFromCache(context, new TypeToken<List<Region>>() {
-            }.getType(), FileUtils.REGIONS);
-            activities = FileUtils.parseJsonFromCache(context, new TypeToken<List<Activity>>() {
-            }.getType(), FileUtils.ACTIVITIES);
-            fillData();
-        }
-
+        getRegionController().reload();
     }
 
     public void onEvent(SoldOutEvent soldOutEvent) {
@@ -314,12 +290,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     }
 
 
-    public static interface View extends BasePresentation.View, AdapterView {
+    public static interface View extends BasePresentation.View {
         void dataSetChanged();
-
-        void startLoading();
-
-        void finishLoading();
     }
 
 }

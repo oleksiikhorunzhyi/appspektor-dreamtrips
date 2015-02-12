@@ -54,6 +54,7 @@ android {
         }
     }
 
+
     productFlavors {
         dev {
             applicationId "com.worldventures.dreamtrips.dev"
@@ -71,6 +72,13 @@ android {
             buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
             buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME' , '"dtapp"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
+
         }
 
         prod {
@@ -80,15 +88,6 @@ android {
             buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
             buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
-        }
-    }
-
-    android.sourceSets.stage {
-        res {
-            srcDir 'stage/res'
-        }
-        resources {
-            srcDir 'stage/res'
         }
     }
 

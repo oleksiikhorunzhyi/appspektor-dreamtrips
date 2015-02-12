@@ -15,6 +15,8 @@
 
 package com.worldventures.dreamtrips.core.uploader;
 
+import com.worldventures.dreamtrips.BuildConfig;
+
 public class Constants {
 
 //    public static final String AWS_ACCOUNT_ID = "360783003803";
@@ -23,10 +25,10 @@ public class Constants {
 //
 //    public static final String BUCKET_NAME = "dtuploadingtest";
 
-    public static final String AWS_ACCOUNT_ID = "503446126408";
-    public static final String COGNITO_POOL_ID = "us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0";
-    public static final String COGNITO_ROLE_UNAUTH = "arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole";
+    public static final String AWS_ACCOUNT_ID = BuildConfig.AWS_ACCOUNT_ID;
+    public static final String COGNITO_POOL_ID = BuildConfig.COGNITO_POOL_ID;
+    public static final String COGNITO_ROLE_UNAUTH = BuildConfig.COGNITO_ROLE_UNAUTH;
 
-    public static final String BUCKET_NAME = "dtapp";
-    public static final String BUCKET_ROOT_PATH = "dtuploads/";
+    public static final String BUCKET_NAME = BuildConfig.BUCKET_NAME;
+    public static final String BUCKET_ROOT_PATH = BuildConfig.BUCKET_ROOT_PATH;
 }

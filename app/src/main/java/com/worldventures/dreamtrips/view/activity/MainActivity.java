@@ -68,6 +68,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
                 /** Called when a drawer has settled in a completely closed state. */
                 public void onDrawerClosed(View view) {
                     super.onDrawerClosed(view);
+                    disableRightDrawer();
                     invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 }
 
@@ -118,6 +119,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     public void openRightDrawer() {
         drawerLayout.openDrawer(Gravity.END);
+        enableRightDrawer();
         FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
         filtersFragment.refresh();
     }
@@ -128,6 +130,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     public void disableRightDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+    }
+
+    public void enableRightDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
     }
 
     @Override
@@ -151,8 +157,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     @Override
     public void onBackPressed() {
-        getPresentationModel().onBackPressed();
-        super.onBackPressed();
+        if (drawerLayout.isDrawerOpen(Gravity.END)) {
+            closeRightDrawer();
+        } else {
+            getPresentationModel().onBackPressed();
+            super.onBackPressed();
+        }
     }
 
     @Override

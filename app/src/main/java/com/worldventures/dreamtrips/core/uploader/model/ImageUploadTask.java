@@ -142,12 +142,11 @@ public class ImageUploadTask extends RealmObject implements Serializable {
     }
 
     public static class ImageUploadTaskFullscreen implements IFullScreenAvailableObject {
-
-
         private Image image;
         private String title;
         private String description;
         private String shareText;
+        private String location;
         private ImageUploadTask task;
         private String taskId;
 
@@ -161,6 +160,7 @@ public class ImageUploadTask extends RealmObject implements Serializable {
             image.setOriginal(version);
             image.setThumb(version);
             title = task.getTitle();
+            location = task.getLocationName();
             description = "";
             shareText = task.getTitle();
             taskId = task.getTaskId();
@@ -192,6 +192,26 @@ public class ImageUploadTask extends RealmObject implements Serializable {
         @Override
         public String getFsShareText() {
             return shareText;
+        }
+
+        @Override
+        public String getPhotoLocation() {
+            return "";
+        }
+
+        @Override
+        public String getUserName() {
+            return "";
+        }
+
+        @Override
+        public String getUserLocation() {
+            return "";
+        }
+
+        @Override
+        public String getUserAvatar() {
+            return "";
         }
 
         @Override

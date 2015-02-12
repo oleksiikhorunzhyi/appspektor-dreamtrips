@@ -16,4 +16,9 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable{
 
     public int getId();
 
+    public String getUserName();
+    public String getUserLocation();
+    public String getUserAvatar();
+    public String getPhotoLocation();
+
 }

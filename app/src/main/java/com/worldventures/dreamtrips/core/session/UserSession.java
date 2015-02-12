@@ -3,6 +3,11 @@ package com.worldventures.dreamtrips.core.session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.client.Header;
+
 public class UserSession {
     private User user;
     private String apiToken;
@@ -11,6 +16,7 @@ public class UserSession {
     private String username;
     private long lastUpdate;
     private S3GlobalConfig globalConfig;
+    private List<Header> headerList;
 
     public User getUser() {
         return user;
@@ -66,5 +72,13 @@ public class UserSession {
 
     public S3GlobalConfig getGlobalConfig() {
         return globalConfig;
+    }
+
+    public List<Header> getHeaderList() {
+        return headerList != null ? headerList : new ArrayList<>();
+    }
+
+    public void setHeaderList(List<Header> headerList) {
+        this.headerList = headerList;
     }
 }

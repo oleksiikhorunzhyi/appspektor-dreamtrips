@@ -75,6 +75,12 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
+        getPresentationModel().onCreate();
+    }
+
+    @Override
+    public void setFabVisibility(boolean facebookGallery) {
+        fabFacebook.setVisibility(facebookGallery ? View.VISIBLE: View.INVISIBLE);
     }
 
     @Override

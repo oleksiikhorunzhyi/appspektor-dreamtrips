@@ -58,6 +58,8 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         return v;
     }
 
+
+
     private void initMap() {
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
@@ -115,6 +117,12 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         super.onPause();
         if (mapView != null)
             mapView.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getPresentationModel().onPause();
     }
 
     @Override

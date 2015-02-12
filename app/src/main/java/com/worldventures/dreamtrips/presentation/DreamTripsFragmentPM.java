@@ -107,6 +107,11 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
 
+    public void onPause() {
+        eventBus.unregister(this);
+    }
+
+
     public void requestFiltering() {
         eventBus.post(new RequestFilterDataEvent());
     }

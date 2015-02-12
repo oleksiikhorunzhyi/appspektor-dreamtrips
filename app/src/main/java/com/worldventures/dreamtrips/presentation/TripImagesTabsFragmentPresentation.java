@@ -12,7 +12,7 @@ import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 import java.io.File;
 
 @PresentationModel
-public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePresentation.View> implements HasPresentationModelChangeSupport {
+public class TripImagesTabsFragmentPresentation extends BasePresentation<TripImagesTabsFragmentPresentation.View> implements HasPresentationModelChangeSupport {
     private final PresentationModelChangeSupport changeSupport;
 
     ImagePickCallback selectImageCallback = (fragment, image, error) -> {
@@ -36,6 +36,11 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePre
         this.changeSupport = new PresentationModelChangeSupport(this);
     }
 
+    public void onCreate() {
+        boolean facebookAvailable = appSessionHolder.get().get().getGlobalConfig().isFacebook_gallery_enabled();
+        view.setFabVisibility(facebookAvailable);
+    }
+
     @Override
     public PresentationModelChangeSupport getPresentationModelChangeSupport() {
         return changeSupport;
@@ -51,5 +56,9 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<BasePre
 
     public ImagePickCallback provideFbCallback() {
         return fbCallback;
+    }
+
+    public interface View extends BasePresentation.View {
+        void setFabVisibility(boolean visibility);
     }
 }

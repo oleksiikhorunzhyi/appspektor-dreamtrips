@@ -23,6 +23,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
@@ -72,6 +73,9 @@ public class ApiModule {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 String authToken = "Token token=" + appSessionHolder.get().get().getApiToken();
+                for (Header header : appSessionHolder.get().get().getHeaderList()) {
+                    request.addHeader(header.getName(), header.getValue());
+                }
                 request.addHeader("Authorization", authToken);
             }
         };

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 import org.apache.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Header;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.Field;
@@ -71,7 +73,6 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback) {
         runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.uploadAvatar(image, proxyCallback));
     }
-
 
     @Override
     public List<Trip> getTrips() {
@@ -166,6 +167,16 @@ public class DreamTripsApiProxy implements DreamTripsApi {
         Callback<T> proxy = new Callback<T>() {
             @Override
             public void success(T t, Response response) {
+                List<Header> cookieHeaders = new ArrayList<>();
+                if (response != null && response.getHeaders() != null) {
+                    for (Header header : response.getHeaders()) {
+                        if (header.getName() != null && header.getName().equals("Set-Cookie"))
+                            cookieHeaders.add(header);
+                    }
+                }
+                UserSession userSession = appSessionHolder.get().get();
+                userSession.setHeaderList(cookieHeaders);
+                appSessionHolder.put(userSession);
                 callback.success(t, response);
             }
 
@@ -175,7 +186,6 @@ public class DreamTripsApiProxy implements DreamTripsApi {
                     String username = appSessionHolder.get().get().getUsername();
                     String userPassword = appSessionHolder.get().get().getUserPassword();
                     loginHelper.login(executor, callback, username, userPassword);
-
                 } else {
                     callback.failure(error);
                 }

@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
+import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
@@ -166,6 +167,15 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         this.acceptedRegions = null;
         this.acceptedThemes = null;
         dateFilterItem.reset();
+    }
+
+    public void onEvent(TripLikedEvent trip) {
+        for (Trip temp : data) {
+            if (temp.getId() == trip.getTrip().getId()) {
+                temp.setLiked(trip.getTrip().isLiked());
+            }
+        }
+        view.dataSetChanged();
     }
 
     public void onItemLike(Trip trip) {

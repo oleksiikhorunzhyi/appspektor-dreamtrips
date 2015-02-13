@@ -1,14 +1,19 @@
 package com.worldventures.dreamtrips.presentation;
 
+import android.os.Bundle;
+
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
+import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
 import org.json.JSONObject;
 import org.robobinding.annotation.PresentationModel;
@@ -18,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -31,6 +37,10 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
 
     @Inject
     DreamTripsApi dreamTripsApi;
+
+    @Global
+    @Inject
+    EventBus eventBus;
 
     private Trip trip;
     private List<Object> filteredImages;
@@ -105,7 +115,11 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         final Callback<JsonObject> callback = new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(TripsIntentService.TRIP_EXTRA, trip);
+                eventBus.post(new TripLikedEvent(trip));
 
+                activityRouter.startService(bundle);
             }
 
             @Override
@@ -117,6 +131,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
 
         trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
+
         if (trip.isLiked()) {
             dreamTripsApi.likeTrip(trip.getId(), callback);
         } else {

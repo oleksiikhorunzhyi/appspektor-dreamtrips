@@ -18,6 +18,7 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_detail_trip)
 public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTripActivityPM> {
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
+    public static final String EXTRA_TRIPS = "EXTRA_TRIPS";
 
     @Override
     protected DetailTripActivityPM createPresentationModel(Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
+import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
 import org.robobinding.annotation.PresentationModel;
 
@@ -59,6 +60,14 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
         setView();
     }
 
+    public void onEvent(TripLikedEvent tripEvent) {
+        if (tripEvent.getTrip().getId() == trip.getId()) {
+            trip.setLiked(tripEvent.getTrip().isLiked());
+            view.setLiked(trip.isLiked());
+        }
+    }
+
+
     public void sendOffset(int offset) {
         eventBus.post(new InfoWindowSizeEvent(offset));
     }
@@ -73,15 +82,25 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
 
     public interface View extends BasePresentation.View {
         void setName(String name);
+
         void setDate(String вфе);
+
         void setImage(String image);
+
         void setPrice(String price);
+
         void setPoints(String points);
+
         void setPlace(String place);
+
         void setLiked(boolean liked);
+
         void setDescription(String description);
+
         void showLayout();
+
         void setPointsInvisible();
+
         void setFeatured(boolean isFeatured);
     }
 }

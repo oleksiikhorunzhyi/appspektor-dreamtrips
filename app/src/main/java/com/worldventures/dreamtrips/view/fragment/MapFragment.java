@@ -95,6 +95,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        getPresentationModel().onCameraChanged();
         switch (item.getItemId()) {
             case R.id.action_filter:
                 ((MainActivity) getActivity()).openRightDrawer();

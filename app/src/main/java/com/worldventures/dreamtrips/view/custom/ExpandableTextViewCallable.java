@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.custom;
 
 import android.content.Context;
+import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -28,6 +29,10 @@ public class ExpandableTextViewCallable extends ExpandableTextView {
 
     public void setOnTouchedListener(OnTouchedListener onTouchedListener) {
         this.onTouchedListener = onTouchedListener;
+    }
+
+    public void setMovementMethod(MovementMethod movementMethod) {
+        mTv.setMovementMethod(movementMethod);
     }
 
     @Override

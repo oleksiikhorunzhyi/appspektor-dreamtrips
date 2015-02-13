@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.view.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,6 +80,7 @@ public class ContentAdapter extends BaseAdapter {
         @InjectView(R.id.imageViewArrow)
         ImageView imageViewArrow;
 
+
         private boolean isExpanded = false;
 
         @OnClick(R.id.layoutContentHeader)
@@ -93,6 +96,7 @@ public class ContentAdapter extends BaseAdapter {
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
+            textViewContent.setMovementMethod(new LinkMovementMethod());
             textViewContent.setOnTouchedListener(() -> {
                     isExpanded = !isExpanded;
                     checkArrowState();

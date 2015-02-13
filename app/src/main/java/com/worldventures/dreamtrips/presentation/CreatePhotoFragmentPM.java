@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.presentation;
 
 
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 
 import com.techery.spares.service.ServiceActionRunner;
@@ -121,14 +119,6 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     }
 
     public void saveAction() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean wifiEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        String provider = (wifiEnabled ? LocationManager.NETWORK_PROVIDER :
-                gpsEnabled ? LocationManager.GPS_PROVIDER :
-                        LocationManager.PASSIVE_PROVIDER);
-        Location location = locationManager.getLastKnownLocation(provider);
-
         if (imageUri.toString().isEmpty()) {
             view.informUser("Wrong image");
         } else {

@@ -12,10 +12,10 @@ public interface WorldVenturesApi {
     String DEFAULT_URL = BuildConfig.WorldVenturesApi;
 
     @FormUrlEncoded
-    @POST("/ipadapp/api/v1/auth/token")
+    @POST("/auth/token")
     public void getToken(@Field("username") String username, @Field("password") String password, Callback<JsonObject> callback);
 
     @FormUrlEncoded
-    @POST("/ipadapp/api/v1/auth/token")
+    @POST("/auth/token")
     public JsonObject getToken(@Field("username") String username, @Field("password") String password);
 }

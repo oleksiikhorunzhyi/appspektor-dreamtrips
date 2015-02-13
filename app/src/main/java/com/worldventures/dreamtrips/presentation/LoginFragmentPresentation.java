@@ -25,9 +25,6 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     DreamTripsApi dreamTripsApi;
 
     @Inject
-    WorldVenturesApi worldVenturesApi;
-
-    @Inject
     AppSessionHolder appSessionHolder;
 
     private String username;
@@ -93,6 +90,12 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     }
 
     public void fillDataAction() {
+        if (BuildConfig.DEBUG) {
+            setUsername("888888");
+            setUserPassword("travel1ns1de");
+            changeSupport.firePropertyChange("username");
+            changeSupport.firePropertyChange("userPassword");
+        }
     }
 
     public static interface View extends BasePresentation.View {

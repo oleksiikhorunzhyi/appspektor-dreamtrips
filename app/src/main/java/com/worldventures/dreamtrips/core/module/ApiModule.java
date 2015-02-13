@@ -41,7 +41,6 @@ import retrofit.converter.GsonConverter;
 
 @Module(injects =
         {
-
         },
         complete = false,
         library = true
@@ -51,6 +50,7 @@ public class ApiModule {
     public ApiModule() {
 
     }
+
 
     @Private
     @Provides
@@ -123,16 +123,6 @@ public class ApiModule {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         return adapter.create(S3Api.class);
-    }
-
-    @Provides
-    @Singleton
-    WorldVenturesApi provideWorldVenturesApi() {
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(WorldVenturesApi.DEFAULT_URL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-        return adapter.create(WorldVenturesApi.class);
     }
 
     @Provides

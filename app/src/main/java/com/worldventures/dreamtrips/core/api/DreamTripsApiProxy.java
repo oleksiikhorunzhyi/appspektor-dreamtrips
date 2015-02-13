@@ -41,9 +41,6 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     DreamTripsApi dreamTripsApi;
 
     @Inject
-    WorldVenturesApi worldVenturesApi;
-
-    @Inject
     AppSessionHolder appSessionHolder;
 
     @Inject

@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.ServerStatus;
+import com.worldventures.dreamtrips.core.module.ApiModule;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.ServerConfigError;
@@ -15,8 +16,10 @@ import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
+import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -25,9 +28,6 @@ public class LoginHelper {
     @Inject
     @Private
     DreamTripsApi dreamTripsApi;
-
-    @Inject
-    WorldVenturesApi worldVenturesApi;
 
     @Inject
     AppSessionHolder appSessionHolder;
@@ -51,7 +51,7 @@ public class LoginHelper {
                     tryLoginAsync(new Callback<Session>() {
                         @Override
                         public void success(Session session, Response response) {
-                            tryGetLegacyTokenAsync(new Callback<JsonObject>() {
+                            tryGetLegacyTokenAsync(s3GlobalConfig, new Callback<JsonObject>() {
                                 @Override
                                 public void success(JsonObject jsonObject, Response response) {
                                     if (handleSession(session, getStringToken(jsonObject), s3GlobalConfig, username, userPassword))
@@ -97,7 +97,7 @@ public class LoginHelper {
 
     public boolean loginSync(String username, String userPassword) {
         Session session = tryLoginSync(username, userPassword);
-        String token = tryGetLegacyTokenSync(username, userPassword);
+        String token = tryGetLegacyTokenSync(appSessionHolder.get().get().getGlobalConfig(), username, userPassword);
         S3GlobalConfig s3GlobalConfig = tryGetConfigSync();
 
         if (handleSession(session, token, s3GlobalConfig, username, userPassword))
@@ -110,20 +110,36 @@ public class LoginHelper {
         return s3Api.getConfig();
     }
 
-    public String tryGetLegacyTokenSync(String username, String userPassword) {
-        JsonObject jsonObject = worldVenturesApi.getToken(username, userPassword);
+    public String tryGetLegacyTokenSync(S3GlobalConfig s3GlobalConfig, String username, String userPassword) {
+        JsonObject jsonObject = getWorldVenturesApi(s3GlobalConfig).getToken(username, userPassword);
         return getStringToken(jsonObject);
     }
 
+    private void tryGetLegacyTokenAsync(S3GlobalConfig s3GlobalConfig, Callback<JsonObject> callback, String username, String userPassword) {
+        getWorldVenturesApi(s3GlobalConfig).getToken(username, userPassword, callback);
+    }
 
     private Session tryLoginSync(String username, String userPassword) {
         return dreamTripsApi.login(username, userPassword);
     }
 
-    private void tryGetLegacyTokenAsync(Callback<JsonObject> callback, String username, String userPassword) {
-        worldVenturesApi.getToken(username, userPassword, callback);
-    }
 
+    private WorldVenturesApi getWorldVenturesApi(S3GlobalConfig s3GlobalConfig) {
+        if (s3GlobalConfig != null) {
+            String url = s3GlobalConfig.getUrls().getProduction().getUserGeneratedContentAPIBaseUrl();
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setEndpoint(url)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+            return adapter.create(WorldVenturesApi.class);
+        } else {
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setEndpoint(WorldVenturesApi.DEFAULT_URL)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+            return adapter.create(WorldVenturesApi.class);
+        }
+    }
 
     private void tryLoginAsync(Callback<Session> callback, String username, String userPassword) {
         dreamTripsApi.login(username, userPassword, callback);

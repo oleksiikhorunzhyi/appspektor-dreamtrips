@@ -96,7 +96,7 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        dispatcher.dispatchTouchEvent(this, ev);
+//        dispatcher.dispatchTouchEvent(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 

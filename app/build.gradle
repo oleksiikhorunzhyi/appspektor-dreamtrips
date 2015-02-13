@@ -89,12 +89,11 @@ android {
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
             buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
-            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
             buildConfigField 'String', 'BUCKET_NAME' , '"dtappprd"'
             buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
 
         }
-
         prod {
             applicationId "com.worldventures.dreamtrips"
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'

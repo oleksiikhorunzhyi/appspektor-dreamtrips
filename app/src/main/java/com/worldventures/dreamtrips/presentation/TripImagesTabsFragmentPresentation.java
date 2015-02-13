@@ -19,7 +19,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
         if (error != null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFilePathOriginal())));
+            activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFileThumbnail())));
         }
     };
 

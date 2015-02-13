@@ -126,9 +126,9 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
             action.setFileUri(imageUri.toString());
             action.setTitle(getTitle());
             action.setTags(getParsedText(getTags()));
-            action.setLatitude(56);
-            action.setLongitude(92);
-            action.setLocationName("Krasnoyarsk");
+            action.setLatitude(0);
+            action.setLongitude(0);
+            action.setLocationName(getLocation());
             action.setShotAt(getParsedDateTime(getDate(), getTime()));
             serviceActionRunner.from(UploadingService.class).run(action);
             view.end();

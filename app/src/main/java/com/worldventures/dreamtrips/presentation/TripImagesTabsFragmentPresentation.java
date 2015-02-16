@@ -37,8 +37,8 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
     }
 
     public void onCreate() {
-        //boolean facebookAvailable = appSessionHolder.get().get().getGlobalConfig().isFacebook_gallery_enabled();
-        view.setFabVisibility(true);
+        boolean facebookAvailable = appSessionHolder.get().get().getGlobalConfig().isFacebook_gallery_enabled();
+        view.setFabVisibility(facebookAvailable);
     }
 
     @Override

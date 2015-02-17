@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
-import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
@@ -16,7 +15,6 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 28.01.15.
  * presentation model for fragmentMapTripInfo
  */
-@PresentationModel
 public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> {
 
     private Trip trip;

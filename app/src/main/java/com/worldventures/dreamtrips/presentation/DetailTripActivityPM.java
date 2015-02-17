@@ -4,13 +4,11 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.State;
 
-import org.robobinding.annotation.PresentationModel;
 
 /**
  * Created by Edward on 19.01.15.
  * presentation model for activity with detailed trip
  */
-@PresentationModel
 public class DetailTripActivityPM extends BasePresentation<BasePresentation.View> {
 
     public DetailTripActivityPM(BasePresentation.View view) {

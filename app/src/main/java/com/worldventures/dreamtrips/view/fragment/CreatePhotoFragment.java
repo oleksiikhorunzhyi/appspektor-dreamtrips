@@ -47,6 +47,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
     DTEditText etTags;
     @Inject
     UniversalImageLoader imageLoader;
+    private Uri uri;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -54,14 +55,17 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
 
         etDate.setOnTouchListener(this);
         etTime.setOnTouchListener(this);
+
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
-        Uri uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
-        getPresentationModel().setImageUri(uri);
-        imageLoader.loadImage(getPresentationModel().getImageUri(), ivImage, null);
+
+        uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
+        imageLoader.loadImage(uri, ivImage, null);
+
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -125,6 +129,46 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
     @Override
     public void end() {
         ((CreatePhotoActivity) getActivity()).preFinishProcess();
+    }
+
+    @Override
+    public Uri getImageUri() {
+        return uri;
+    }
+
+    @Override
+    public String getLocation() {
+        return etLocation.getText().toString();
+    }
+
+    @Override
+    public String getTags() {
+        return etTags.getText().toString();
+    }
+
+    @Override
+    public String getTitle() {
+        return etTitle.getText().toString();
+    }
+
+    @Override
+    public String getDate() {
+        return etDate.getText().toString();
+    }
+
+    @Override
+    public String getTime() {
+        return etTime.getText().toString();
+    }
+
+    @Override
+    public void setDate(String format) {
+        etDate.setText(format);
+    }
+
+    @Override
+    public void setTime(String format) {
+        etTime.setText(format);
     }
 
 }

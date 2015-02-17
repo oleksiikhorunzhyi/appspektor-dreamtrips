@@ -4,9 +4,7 @@ package com.worldventures.dreamtrips.presentation;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 
-import org.robobinding.annotation.PresentationModel;
 
-@PresentationModel
 public class WebViewFragmentPresentation extends BasePresentation<BasePresentation.View> {
 
     public WebViewFragmentPresentation(View view) {

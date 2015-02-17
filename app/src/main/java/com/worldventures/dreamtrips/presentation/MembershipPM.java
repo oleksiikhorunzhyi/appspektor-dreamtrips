@@ -7,17 +7,13 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-@PresentationModel
 public class MembershipPM extends BasePresentation<BasePresentation.View> {
 
     @Inject

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +21,6 @@ import retrofit.client.Response;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
-@PresentationModel
 public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
     public MyImagesPM(View view) {
         super(view, Type.MY_IMAGES);

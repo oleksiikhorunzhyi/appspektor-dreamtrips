@@ -13,9 +13,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
-
-import org.robobinding.ViewBinder;
 
 import butterknife.ButterKnife;
 
@@ -40,13 +37,11 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void alert(String s) {
-        if (getActivity() != null) getActivity().runOnUiThread(() -> {
-            getActivity().runOnUiThread(() -> {
+        if (getActivity() != null)
+            getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.title("Alert").content(s).positiveText("Ok").show();
-            });
-            ;
-        });
+            }));
     }
 
     @Override
@@ -68,27 +63,11 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
 
-        ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
 
         View view;
         IgnoreRobobinding pmAnnotation = presentationModel.getClass().getAnnotation(IgnoreRobobinding.class);
 
-        if (pmAnnotation != null) {
-            view = inflater.inflate(layout.value(), container, false);
-        } else {
-            if (container != null) {
-                view = viewBinder.inflateAndBindWithoutAttachingToRoot(
-                        layout.value(),
-                        this.presentationModel,
-                        container
-                );
-            } else {
-                view = viewBinder.inflateAndBind(
-                        layout.value(),
-                        this.presentationModel
-                );
-            }
-        }
+        view = inflater.inflate(layout.value(), container, false);
 
         ButterKnife.inject(this, view);
 

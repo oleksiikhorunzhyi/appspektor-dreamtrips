@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
 
@@ -72,6 +73,27 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     }
 
     @Override
+    public String getUsername() {
+        return etUsername.getText().toString();
+    }
+
+    @Override
+    public String getUserPassword() {
+        return etPassword.getText().toString();
+    }
+
+    @Override
+    public void setUsername(String name) {
+        etUsername.setText(name);
+    }
+
+
+    @Override
+    public void setUserPassword(String pass) {
+        etPassword.setText(pass);
+    }
+
+    @Override
     protected LoginFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
         return new LoginFragmentPresentation(this);
     }
@@ -79,5 +101,15 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     private void layoutConfiguration() {
         int minSideSize = getMinSideSize(getActivity());
         vgContentContainer.getLayoutParams().width = minSideSize;
+    }
+
+    @OnClick(R.id.iv_title)
+    public void onTitleClick() {
+        getPresentationModel().fillDataAction();
+    }
+
+    @OnClick(R.id.btn_login)
+    public void onLoginClick() {
+        getPresentationModel().loginAction();
     }
 }

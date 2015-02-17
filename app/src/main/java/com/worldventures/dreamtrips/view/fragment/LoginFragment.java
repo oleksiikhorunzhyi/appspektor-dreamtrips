@@ -55,7 +55,7 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     @Override
     public void showLoginErrorMessage() {
         dismissProgressDialog();
-        informUser("Invalid username or password");
+        informUser("Your login-id and/or password are incorrect - please use your WorldVentures Member-ID and Password to login");
     }
 
     private void dismissProgressDialog() {

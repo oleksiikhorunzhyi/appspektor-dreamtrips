@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.gc.materialdesign.widgets.Dialog;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
@@ -31,7 +30,11 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     @Override
     public void informUser(String stringId) {
         if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show());
+            getActivity().runOnUiThread(() -> {
+                SnackBar snackBar = new SnackBar(getActivity(), stringId);
+                snackBar.setDismissTimer(stringId.length() > 100 ? 4000 : 2000);
+                snackBar.show();
+            });
         }
     }
 
@@ -41,7 +44,8 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
             getActivity().runOnUiThread(() -> {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.title("Alert").content(s).positiveText("Ok").show();
-            });;
+            });
+            ;
         });
     }
 

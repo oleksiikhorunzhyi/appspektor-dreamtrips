@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
@@ -15,18 +14,13 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
-import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
-import org.robobinding.annotation.PresentationModel;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +32,6 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 27.01.15.
  * presentation model to control map view
  */
-@PresentationModel
 public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     private List<Trip> data;

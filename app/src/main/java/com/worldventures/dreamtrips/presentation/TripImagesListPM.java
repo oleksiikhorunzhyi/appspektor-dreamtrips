@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import retrofit.client.Response;
 import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.*;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
-@PresentationModel
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;

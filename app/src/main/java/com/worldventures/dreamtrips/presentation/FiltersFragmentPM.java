@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.utils.busevents.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
 
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,6 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by 1 on 22.01.15.
  */
-@PresentationModel
 public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> {
 
     @Inject

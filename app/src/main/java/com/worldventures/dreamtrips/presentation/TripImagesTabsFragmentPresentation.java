@@ -5,15 +5,9 @@ import android.net.Uri;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
-import org.robobinding.annotation.PresentationModel;
-import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
-import org.robobinding.presentationmodel.PresentationModelChangeSupport;
-
 import java.io.File;
 
-@PresentationModel
-public class TripImagesTabsFragmentPresentation extends BasePresentation<TripImagesTabsFragmentPresentation.View> implements HasPresentationModelChangeSupport {
-    private final PresentationModelChangeSupport changeSupport;
+public class TripImagesTabsFragmentPresentation extends BasePresentation<TripImagesTabsFragmentPresentation.View> {
 
     ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -33,17 +27,11 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
 
     public TripImagesTabsFragmentPresentation(View view) {
         super(view);
-        this.changeSupport = new PresentationModelChangeSupport(this);
     }
 
     public void onCreate() {
         boolean facebookAvailable = appSessionHolder.get().get().getGlobalConfig().isFacebook_gallery_enabled();
         view.setFabVisibility(facebookAvailable);
-    }
-
-    @Override
-    public PresentationModelChangeSupport getPresentationModelChangeSupport() {
-        return changeSupport;
     }
 
     public void onFacebookAction(BaseFragment from) {

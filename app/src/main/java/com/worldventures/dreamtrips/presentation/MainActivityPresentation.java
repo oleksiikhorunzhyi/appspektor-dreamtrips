@@ -4,13 +4,11 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
 
-import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-@PresentationModel
 public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
 
     private State currentState;

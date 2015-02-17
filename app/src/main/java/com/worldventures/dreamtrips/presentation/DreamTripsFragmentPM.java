@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,7 +40,6 @@ import retrofit.client.Response;
  * Created by Edward on 19.01.15.
  * presentation model for fragment with list of the trips
  */
-@PresentationModel
 public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.View> {
 
     private static final long DELTA = 30 * 60 * 1000;

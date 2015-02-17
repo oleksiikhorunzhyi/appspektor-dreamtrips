@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 
-import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
-@PresentationModel
 public class BucketTabsFragmentPM extends BasePresentation {
     public static final String BUCKET_FILTER_ENABLED = "BUCKET_FILTER_ENABLED";
 

@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
-import org.robobinding.annotation.PresentationModel;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -24,7 +22,6 @@ import timber.log.Timber;
 /**
  * Created by Edward on 23.01.15.
  */
-@PresentationModel
 public class BookItActivityPresentation extends BasePresentation<BookItActivityPresentation.View> {
 
     private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";

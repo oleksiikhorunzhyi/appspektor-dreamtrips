@@ -75,6 +75,8 @@ android {
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
             buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
@@ -132,12 +134,10 @@ dependencies {
     compile project(':ijkmediaplayer')
     compile project(':ijkmediawidget')
     compile 'com.android.support:multidex:1.0.0'
-
+    compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile "com.android.support:appcompat-v7:21.0.3"
-    compile("org.robobinding:robobinding:${robobindingVersion}:with-aop")
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-    apt "org.robobinding:codegen:$robobindingVersion"
     compile 'com.squareup.retrofit:retrofit:1.8.0'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.jakewharton:butterknife:6.0.0'

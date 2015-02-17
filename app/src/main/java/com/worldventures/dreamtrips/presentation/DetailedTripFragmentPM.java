@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
 import org.json.JSONObject;
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import retrofit.client.Response;
  * Created by Edward on 19.01.15.
  * presentation model for DetailedTripFragment
  */
-@PresentationModel
 public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmentPM.View> {
 
     @Inject

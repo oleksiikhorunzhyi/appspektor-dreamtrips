@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingDialogFragment;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
-
-import org.robobinding.ViewBinder;
 
 import butterknife.ButterKnife;
 
@@ -53,23 +50,8 @@ public abstract class BaseDialogFragment<PM extends BasePresentation> extends In
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
 
-        ViewBinder viewBinder = ((BaseActivity) getActivity()).createViewBinder();
-
         View view;
-
-        if (container != null) {
-            view = viewBinder.inflateAndBindWithoutAttachingToRoot(
-                    layout.value(),
-                    this.presentationModel,
-                    container
-            );
-        } else {
-            view = viewBinder.inflateAndBind(
-                    layout.value(),
-                    this.presentationModel
-            );
-        }
-
+        view = inflater.inflate(layout.value(), container, false);
         ButterKnife.inject(this, view);
 
         afterCreateView(view);

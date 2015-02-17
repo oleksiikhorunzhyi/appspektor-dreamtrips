@@ -3,13 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.LoginHelper;
-import com.worldventures.dreamtrips.core.api.WorldVenturesApi;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
-
-import org.robobinding.annotation.PresentationModel;
-import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
-import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
 import javax.inject.Inject;
 
@@ -17,9 +12,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-@PresentationModel
-public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFragmentPresentation.View> implements HasPresentationModelChangeSupport {
-    private final PresentationModelChangeSupport changeSupport;
+public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFragmentPresentation.View> {
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -27,20 +20,17 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     @Inject
     AppSessionHolder appSessionHolder;
 
-    private String username;
-    private String userPassword;
     @Inject
     LoginHelper loginHelper;
 
     public LoginFragmentPresentation(View view) {
         super(view);
-        this.changeSupport = new PresentationModelChangeSupport(this);
     }
 
     public void loginAction() {
 
-        String username = getUsername();
-        String userPassword = getUserPassword();
+        String username = view.getUsername();
+        String userPassword = view.getUserPassword();
 
         ValidationUtils.VResult usernameValid = ValidationUtils.isUsernameValid(username);
         ValidationUtils.VResult passwordValid = ValidationUtils.isPasswordValid(userPassword);
@@ -63,38 +53,15 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
                     view.showLoginErrorMessage();
                 }
             }
-        }, getUsername(), getUserPassword());
+        }, username, userPassword);
 
         this.view.showProgressDialog();
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    @Override
-    public PresentationModelChangeSupport getPresentationModelChangeSupport() {
-        return changeSupport;
-    }
-
     public void fillDataAction() {
         if (BuildConfig.DEBUG) {
-            setUsername("888888");
-            setUserPassword("travel1ns1de");
-            changeSupport.firePropertyChange("username");
-            changeSupport.firePropertyChange("userPassword");
+            view.setUsername("888888");
+            view.setUserPassword("travel1ns1de");
         }
     }
 
@@ -106,5 +73,13 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
         void showLoginErrorMessage();
 
         public void showLocalErrors(String userNameError, String passwordError);
+
+        String getUsername();
+
+        String getUserPassword();
+
+        void setUsername(String s);
+
+        void setUserPassword(String travel1ns1de);
     }
 }

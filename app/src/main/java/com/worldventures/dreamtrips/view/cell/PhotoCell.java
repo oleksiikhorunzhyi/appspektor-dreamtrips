@@ -55,7 +55,7 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
             this.user_name.setText(getModelObject().getUserName());
             this.universalImageLoader.loadImage(getModelObject().getUserAvatar(), this.imageViewUser, null, new SimpleImageLoadingListener());
         }
-        this.universalImageLoader.loadImage(getModelObject().getFSImage().getMedium().getUrl(), this.imageView, null, new SimpleImageLoadingListener());
+        this.universalImageLoader.loadImage(getModelObject().getFSImage().getThumb().getUrl(), this.imageView, null, new SimpleImageLoadingListener());
     }
 
     @Override

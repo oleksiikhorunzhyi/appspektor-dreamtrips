@@ -96,8 +96,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @Override
     public void loadImage(Image images) {
-        String medium = images.getMedium().getUrl();
-        String original = images.getOriginal().getUrl();
+        String medium = images.getThumb().getUrl();
+        String original = images.getMedium().getUrl();
         originalCallback = new SimpleImageLoadingListener() {
 
             @Override

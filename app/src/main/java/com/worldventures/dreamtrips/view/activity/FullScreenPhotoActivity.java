@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
@@ -53,6 +52,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
 
     TripImagesListFragment.Type type;
     private int position;
+    private int lastPage;
 
 
     @Override
@@ -202,10 +202,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             }
 
             public void onPageSelected(int position) {
-                if (adapter.getCount() - 2 == position) {
-                    getPresentationModel().loadNext(photoList.size() / TripImagesListPM.PER_PAGE + 1);
-                }
-
+                getPresentationModel().scrolled(1, adapter.getCount(), position);
             }
         });
         getPresentationModel().reload(Math.max(position + 2, 15));
@@ -244,6 +241,11 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         photoList.addAll(items);
         for (IFullScreenAvailableObject item : items) {
             adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
+        }
+        if (items.isEmpty()) {
+            lastPage = -1;
+        } else {
+            lastPage = photoList.size() / TripImagesListPM.PER_PAGE + 1;
         }
         adapter.notifyDataSetChanged();
     }

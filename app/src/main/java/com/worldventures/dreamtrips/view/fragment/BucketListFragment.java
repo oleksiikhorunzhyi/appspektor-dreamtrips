@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketitemCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.arrayListAdapter.registerCell(BucketItem.class, BucketItemCell.class);
+        this.arrayListAdapter.registerCell(BucketItem.class, BucketitemCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 

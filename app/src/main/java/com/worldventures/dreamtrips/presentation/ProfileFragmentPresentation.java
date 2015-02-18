@@ -184,7 +184,6 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     }
 
     public void logout() {
-        this.prefs.clear();
         this.appSessionHolder.destroy();
         activityRouter.finish();
         activityRouter.openLogin();

@@ -9,6 +9,7 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_item)
-public class BucketItemCell extends AbstractCell<BucketItem> {
+public class BucketitemCell extends AbstractCell<BucketItem> {
 
     @InjectView(R.id.tv_name)
     TextView tvName;
@@ -24,30 +25,33 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
     ImageView ivLike;
 
     @Inject
-    SimpleKeyValueStorage storage;
+    BucketListSelectionStorage bucketListSelectionStorage;
 
-    public BucketItemCell(View view) {
+    public BucketitemCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName());
-        ivLike.setSelected(storage.get(getModelObject().getSPName()) != null);
+        ivLike.setSelected(bucketListSelectionStorage.getSelection().favoriteTrips.contains(getModelObject().getSPName()));
     }
 
     @Override
     public void prepareForReuse() {
+
     }
 
     @OnClick(R.id.iv_like)
     public void onLikeClick() {
         if (!ivLike.isSelected()) {
-            storage.put(getModelObject().getSPName(), "");
+            bucketListSelectionStorage.getSelection().favoriteTrips.add(getModelObject().getSPName());
             ivLike.setSelected(true);
         } else {
-            storage.remove(getModelObject().getSPName());
+            bucketListSelectionStorage.getSelection().favoriteTrips.remove(getModelObject().getSPName());
             ivLike.setSelected(false);
         }
+
+        bucketListSelectionStorage.save();
     }
 }

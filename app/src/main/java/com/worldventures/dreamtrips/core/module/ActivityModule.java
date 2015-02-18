@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
@@ -24,7 +26,7 @@ import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.presentation.EnrollActivityPresentation;
-import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
+import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPm;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
@@ -65,7 +67,7 @@ import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketitemCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -139,7 +141,7 @@ import dagger.Provides;
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
                 DummyPresentationModel.class,
-                FacebookAlbumFragmentPM.class,
+                FacebookAlbumFragmentPm.class,
                 FacebookPhotoFragmentPM.class,
                 EnrollActivity.class,
                 EnrollActivityPresentation.class,
@@ -198,7 +200,7 @@ import dagger.Provides;
                 FiltersCell.class,
                 VideoCell.class,
                 ActivityCell.class,
-                BucketItemCell.class,
+                BucketitemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,
@@ -241,6 +243,11 @@ public class ActivityModule {
         return new SimpleKeyValueStorage(preferences);
     }
 
+    @Provides
+    @Singleton
+    BucketListSelectionStorage provideBucketListSelectionStorage(SimpleKeyValueStorage simpleKeyValueStorage, AppSessionHolder appSessionHolder) {
+        return new BucketListSelectionStorage(simpleKeyValueStorage, appSessionHolder.get().get().getUsername());
+    }
 
     @Provides
     @Singleton

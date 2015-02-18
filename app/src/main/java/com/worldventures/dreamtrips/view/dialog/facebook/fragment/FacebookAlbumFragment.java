@@ -15,7 +15,7 @@ import com.facebook.widget.LoginButton;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
+import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPm;
 import com.worldventures.dreamtrips.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.view.dialog.facebook.FacebookUtils;
@@ -29,7 +29,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.dialog_facebook_select_album)
-public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPM> {
+public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPm> {
 
     @InjectView(R.id.lv_items)
     RecyclerView lvItems;
@@ -87,8 +87,8 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPM>
     }
 
     @Override
-    protected FacebookAlbumFragmentPM createPresentationModel(Bundle savedInstanceState) {
-        return new FacebookAlbumFragmentPM(this);
+    protected FacebookAlbumFragmentPm createPresentationModel(Bundle savedInstanceState) {
+        return new FacebookAlbumFragmentPm(this);
     }
 
     private void loadData() {

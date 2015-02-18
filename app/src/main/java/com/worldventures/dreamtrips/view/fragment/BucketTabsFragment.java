@@ -52,8 +52,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
             this.adapter.add(new FragmentItem(BucketListFragment.class, "Locations"));
             this.adapter.add(new FragmentItem(BucketListFragment.class, "Activities"));
             this.adapter.add(new FragmentItem(BucketListFragment.class, "Restaurants"));
-
         }
+
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
         swLiked.setChecked(getPresentationModel().isFilterEnabled());

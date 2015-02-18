@@ -8,8 +8,8 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoF
 import org.robobinding.annotation.PresentationModel;
 
 @PresentationModel
-public class FacebookAlbumFragmentPM extends BasePresentation<BasePresentation.View> {
-    public FacebookAlbumFragmentPM(View view) {
+public class FacebookAlbumFragmentPm extends BasePresentation<BasePresentation.View> {
+    public FacebookAlbumFragmentPm(View view) {
         super(view);
     }
 

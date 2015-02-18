@@ -10,6 +10,7 @@ import dagger.Provides;
 
 @Module(library = true, complete = false)
 public class StorageModule {
+
     @Provides
     SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
         return new SimpleKeyValueStorage(preferences);

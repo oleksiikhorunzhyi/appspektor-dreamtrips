@@ -9,6 +9,7 @@ import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
+import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import org.robobinding.annotation.PresentationModel;
@@ -42,34 +43,43 @@ public class BucketListFragmentPM extends BasePresentation {
     Gson gson;
 
     @Inject
-    SimpleKeyValueStorage storage;
+    BucketListSelectionStorage bucketListSelectionStorage;
+
+    List<BucketItem> cachedBucketListItems;
 
     @Override
     public void init() {
         super.init();
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
+
+            if (cachedBucketListItems == null) {
+                String stringFromAsset = getStringFromAsset(type.getFileName());
+
+                BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
+
+                cachedBucketListItems = response.getData();
+            }
+
             ArrayList<Object> result = new ArrayList<>();
-            String stringFromAsset = getStringFromAsset(type.getFileName());
-            gson.fromJson(stringFromAsset, BucketItem.class);
-            BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
-            List<BucketItem> data = response.getData();
-            if (isFilterEnabled()) {
+
+            final BucketListSelectionStorage.BucketListSelection selection = bucketListSelectionStorage.getSelection();
+            if (selection.isFilterEnabled) {
                 List<BucketItem> filteredData = new ArrayList<BucketItem>();
-                for (BucketItem bucketItem : data) {
-                    if (storage.get(bucketItem.getSPName()) != null) {
+
+                final List<String> favoriteTrips = selection.favoriteTrips;
+
+                for (BucketItem bucketItem : cachedBucketListItems) {
+
+                    if (favoriteTrips.contains(bucketItem.getSPName())) {
                         filteredData.add(bucketItem);
                     }
                 }
                 result.addAll(filteredData);
             } else {
-                result.addAll(data);
+                result.addAll(cachedBucketListItems);
             }
             return result;
         });
-    }
-
-    private Boolean isFilterEnabled() {
-        return Boolean.valueOf(storage.get(BucketTabsFragmentPM.BUCKET_FILTER_ENABLED));
     }
 
     private String getStringFromAsset(String fileName) {

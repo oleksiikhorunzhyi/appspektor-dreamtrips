@@ -59,7 +59,7 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     }
 
     public void fillDataAction() {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && !BuildConfig.FLAVOR.equals("prod")) {
             view.setUsername("888888");
             view.setUserPassword("travel1ns1de");
         }
@@ -76,9 +76,9 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
 
         String getUsername();
 
-        String getUserPassword();
-
         void setUsername(String s);
+
+        String getUserPassword();
 
         void setUserPassword(String travel1ns1de);
     }

@@ -27,7 +27,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    signingConfigs {
+        debug {
+            storeFile file("../eddebug.keystore")
+        }
+    }
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14

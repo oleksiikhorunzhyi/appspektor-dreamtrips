@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.model;
 
+import com.worldventures.dreamtrips.core.preference.Prefs;
+
 public class BucketItem extends BaseEntity {
     String type;
     String created;
@@ -15,6 +17,7 @@ public class BucketItem extends BaseEntity {
     String globalSharesCount;
     String language;
     String nodeId;
+    String publisherContent;
 
     public String getPublisherContent() {
         return publisherContent;
@@ -136,12 +139,8 @@ public class BucketItem extends BaseEntity {
         this.nodeId = nodeId;
     }
 
-    String publisherContent;
-
-    private static final String PREFIX = "bucket_";
-
     public String getSPName() {
-        return PREFIX + getId();
+        return Prefs.PREFIX + getId();
     }
 
 

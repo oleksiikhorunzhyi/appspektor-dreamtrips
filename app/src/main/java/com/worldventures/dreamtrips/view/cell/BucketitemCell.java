@@ -9,6 +9,7 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
     ImageView ivLike;
 
     @Inject
-    SimpleKeyValueStorage storage;
+    Prefs storage;
 
     public BucketItemCell(View view) {
         super(view);

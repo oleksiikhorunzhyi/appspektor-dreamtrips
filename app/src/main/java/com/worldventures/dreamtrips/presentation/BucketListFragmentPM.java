@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
-import org.robobinding.annotation.PresentationModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-@PresentationModel
 public class BucketListFragmentPM extends BasePresentation {
     private CollectionController<Object> adapterController;
     private BucketTabsFragment.Type type;

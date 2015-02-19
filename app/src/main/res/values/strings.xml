@@ -34,5 +34,7 @@
     <string name="title_book_it">Book It</string>
     <string name="title_enroll_it">Enroll</string>
     <string name="trip_details">Trip Details</string>
+    <string name="user_id_hint">WV Member Id</string>
+    <string name="user_password_hint">WV Member Password</string>
 
 </resources>

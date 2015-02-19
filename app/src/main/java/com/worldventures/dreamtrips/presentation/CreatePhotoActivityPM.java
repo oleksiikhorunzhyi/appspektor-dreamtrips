@@ -6,9 +6,6 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 
-import org.robobinding.annotation.PresentationModel;
-
-@PresentationModel
 public class CreatePhotoActivityPM extends BasePresentation<BasePresentation.View> {
 
     private Uri imageUri;

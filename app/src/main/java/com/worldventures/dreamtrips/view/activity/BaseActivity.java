@@ -15,10 +15,6 @@ import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
 import net.hockeyapp.android.CrashManager;
 
-import org.robobinding.ViewBinder;
-import org.robobinding.binder.BinderFactory;
-import org.robobinding.binder.BinderFactoryBuilder;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,17 +24,11 @@ import timber.log.Timber;
 public abstract class BaseActivity extends InjectingActivity {
 
     protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
-    private final BinderFactory binderFactory = new BinderFactoryBuilder().build();
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
     ActivityRouter router;
     @Inject
     UniversalImageLoader imageLoader;
-
-    public ViewBinder createViewBinder() {
-        BinderFactory binderFactory = getReusableBinderFactory();
-        return binderFactory.createViewBinder(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +41,6 @@ public abstract class BaseActivity extends InjectingActivity {
     protected void onResume() {
         super.onResume();
         initHockeyApp();
-    }
-
-    private BinderFactory getReusableBinderFactory() {
-        return binderFactory;
     }
 
     @Override

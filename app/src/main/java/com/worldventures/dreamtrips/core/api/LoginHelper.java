@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.ServerStatus;
-import com.worldventures.dreamtrips.core.module.ApiModule;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.busevents.ServerConfigError;
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -51,18 +49,8 @@ public class LoginHelper {
                     tryLoginAsync(new Callback<Session>() {
                         @Override
                         public void success(Session session, Response response) {
-                            tryGetLegacyTokenAsync(s3GlobalConfig, new Callback<JsonObject>() {
-                                @Override
-                                public void success(JsonObject jsonObject, Response response) {
-                                    if (handleSession(session, getStringToken(jsonObject), s3GlobalConfig, username, userPassword))
-                                        executor.execute(callback);
-                                }
-
-                                @Override
-                                public void failure(RetrofitError e) {
-                                    callback.failure(e);
-                                }
-                            }, username, userPassword);
+                            if (handleSession(session, session.getSso_token(), s3GlobalConfig, username, userPassword))
+                                executor.execute(callback);
                         }
 
                         @Override
@@ -115,9 +103,9 @@ public class LoginHelper {
         return getStringToken(jsonObject);
     }
 
-    private void tryGetLegacyTokenAsync(S3GlobalConfig s3GlobalConfig, Callback<JsonObject> callback, String username, String userPassword) {
+/*    private void tryGetLegacyTokenAsync(S3GlobalConfig s3GlobalConfig, Callback<JsonObject> callback, String username, String userPassword) {
         getWorldVenturesApi(s3GlobalConfig).getToken(username, userPassword, callback);
-    }
+    }*/
 
     private Session tryLoginSync(String username, String userPassword) {
         return dreamTripsApi.login(username, userPassword);

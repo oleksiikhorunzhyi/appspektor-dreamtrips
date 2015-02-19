@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
-import android.content.Intent;
 import android.net.Uri;
 
-import com.facebook.widget.FacebookDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
@@ -97,16 +95,16 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     }
 
     public void onFbShare(FullScreenPhotoActivity activity) {
-        activity.shareFBDialog(photo.getFSImage().getOriginal().getUrl(), photo.getFsShareText());
+        activity.shareFBDialog(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
     }
 
     public void onTwitterShare(FullScreenPhotoActivity activity) {
-        File file = DiskCacheUtils.findInCache(photo.getFSImage().getOriginal().getUrl(), ImageLoader.getInstance().getDiskCache());
+        File file = DiskCacheUtils.findInCache(photo.getFSImage().getMedium().getUrl(), ImageLoader.getInstance().getDiskCache());
         //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
         if (file != null) {
             Uri parse = Uri.fromFile(file);
             activity.shareTwitterDialog(parse, photo.getFsShareText());
-          } else {
+        } else {
             view.informUser("Image is not loaded yet");
         }
 

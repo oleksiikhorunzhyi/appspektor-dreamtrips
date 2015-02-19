@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -17,7 +18,6 @@ import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.*;
+import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.ImageUploadTaskFullscreen;
+import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.from;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
@@ -72,6 +73,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                 view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.firstLoadFinish();
                 view.finishLoading();
+                resetLazyLoadFields();
             }
 
             @Override
@@ -84,6 +86,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             public void success(List<T> objects, Response response) {
                 view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
+                resetLazyLoadFields();
             }
 
             @Override
@@ -93,10 +96,19 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         };
     }
 
+    private void resetLazyLoadFields() {
+        firstVisibleItem = 0;
+        visibleItemCount = 0;
+        totalItemCount = 0;
+        lastPage = 0;
+        previousTotal=0;
+        loading = false;
+    }
+
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
+    int firstVisibleItem, visibleItemCount, totalItemCount, lastPage;
 
     public void scrolled(int childCount, int itemCount, int firstVisibleItemPosition) {
         visibleItemCount = childCount;
@@ -109,9 +121,10 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                 previousTotal = totalItemCount;
             }
         }
-        if (!loading && (totalItemCount - visibleItemCount)
-                <= (firstVisibleItem + visibleThreshold)) {
-            loadNext(itemCount / PER_PAGE + 1);
+        int page = itemCount / PER_PAGE + 1;
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && page > lastPage) {
+            lastPage = page;
+            loadNext(lastPage);
             loading = true;
         }
     }
@@ -133,6 +146,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void loadNext(int page) {
         loadMore(PER_PAGE, page, cbNext);
+        Log.d("LOAD INFO", page + " " + PER_PAGE + " ");
     }
 
     public void loadPrev(int page) {

@@ -41,6 +41,7 @@ public abstract class BaseActivity extends InjectingActivity {
     protected void onResume() {
         super.onResume();
         initHockeyApp();
+        Config.collectLifecycleData(this);
     }
 
     @Override
@@ -98,6 +99,7 @@ public abstract class BaseActivity extends InjectingActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Config.pauseCollectingLifecycleData();
     }
 }
 

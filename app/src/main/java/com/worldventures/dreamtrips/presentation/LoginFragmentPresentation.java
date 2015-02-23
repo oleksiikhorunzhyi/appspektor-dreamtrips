@@ -72,7 +72,7 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
 
         void showLoginErrorMessage();
 
-        public void showLocalErrors(String userNameError, String passwordError);
+        public void showLocalErrors(int userNameError, int passwordError);
 
         String getUsername();
 

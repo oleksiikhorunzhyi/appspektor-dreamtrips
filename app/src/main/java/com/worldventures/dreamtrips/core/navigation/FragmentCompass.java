@@ -118,7 +118,7 @@ public class FragmentCompass {
         }
     }
 
-    public String getPreviousFragmentTitle() {
+    public int getPreviousFragmentTitle() {
        return getPreviousFragment().getTitle();
     }
 

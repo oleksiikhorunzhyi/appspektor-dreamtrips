@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
@@ -105,7 +106,7 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
             Uri parse = Uri.fromFile(file);
             activity.shareTwitterDialog(parse, photo.getFsShareText());
         } else {
-            view.informUser("Image is not loaded yet");
+            view.informUser(context.getString(R.string.error_image_not_loaded));
         }
 
     }

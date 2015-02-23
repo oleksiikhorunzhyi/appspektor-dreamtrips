@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -58,7 +59,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
                 public void failure(RetrofitError error) {
                     view.avatarProgressVisible(false);
                     handleError(error);
-                    view.informUser("Internal server error");
+                    view.informUser(context.getString(R.string.error_internal_server));
                 }
             });
         } else {

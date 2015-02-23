@@ -26,7 +26,7 @@ public class PlayerActivity extends BaseActivity {
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        pDialog = new ProgressDialog(this, "Buffering...");
+        pDialog = new ProgressDialog(this, getString(R.string.buffering));
         pDialog.setCancelable(false);
         pDialog.show();
 

@@ -12,7 +12,7 @@
         android:paddingLeft="25dp"
         android:gravity="center_vertical"
         android:textColor="@color/myNavigationColor"
-        android:text="REGION"
+        android:text=""
         android:layout_weight="1"/>
 
     <CheckBox

@@ -75,19 +75,17 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                Log.d("TAG", "loading started = " + Calendar.getInstance().getTimeInMillis());
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 progressBar.setVisibility(View.GONE);
-                informUser("Error while loading image");
+                informUser(getString(R.string.error_while_loading));
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressBar.setVisibility(View.GONE);
-                Log.d("TAG", "loading finished = " + Calendar.getInstance().getTimeInMillis());
             }
         });
     }

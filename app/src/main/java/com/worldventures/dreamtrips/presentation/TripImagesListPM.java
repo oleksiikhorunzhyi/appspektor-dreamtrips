@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
+import com.worldventures.dreamtrips.utils.busevents.FSUploadEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
@@ -40,16 +41,17 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     @Inject
     protected Context context;
-
+    protected Type type;
     @Inject
     @Global
     EventBus eventBus;
-
-    protected Type type;
+    int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
     private Callback<List<T>> cbNext;
     private Callback<List<T>> cbRefresh;
     private Callback<List<T>> cbPrev;
-
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
 
     public TripImagesListPM(View view, Type type) {
         super(view);
@@ -59,6 +61,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             public void success(List<T> objects, Response response) {
                 view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
+                eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
             }
 
             @Override
@@ -71,9 +74,10 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             public void success(List<T> objects, Response response) {
                 view.clear();//PullTORefresh
                 view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.firstLoadFinish();
                 view.finishLoading();
+
                 resetLazyLoadFields();
+                eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
             }
 
             @Override
@@ -81,34 +85,55 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                 view.finishLoading();
             }
         };
-        cbPrev = new Callback<List<T>>() {
-            @Override
-            public void success(List<T> objects, Response response) {
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.finishLoading();
-                resetLazyLoadFields();
-            }
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                view.finishLoading();
+    public static TripImagesListPM create(Type type, View view) {
+        switch (type) {
+            case MEMBER_IMAGES:
+                return new UserImagesPM(view);
+            case MY_IMAGES:
+                return new MyImagesPM(view);
+            case YOU_SHOULD_BE_HERE:
+                return new YSBHPM(view);
+            case INSPIRE_ME:
+                return new InspireMePM(view);
+        }
+        return null;
+    }
+
+    public void onEventMainThread(FSUploadEvent.InspireMeImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.YSBHImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.MyImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.MemberImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    private void handleNewPhotoEvent(FSUploadEvent event) {
+        new Handler().postDelayed(() -> {
+            if (type == event.getType()) {
+                view.clear();
+                view.addAll(event.getImages());
+                view.setSelection();
             }
-        };
+        }, 100);
     }
 
     private void resetLazyLoadFields() {
         firstVisibleItem = 0;
         visibleItemCount = 0;
         totalItemCount = 0;
-        lastPage = 0;
-        previousTotal=0;
+        previousTotal = 0;
         loading = false;
     }
-
-    private int previousTotal = 0;
-    private boolean loading = true;
-    private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount, lastPage;
 
     public void scrolled(int childCount, int itemCount, int firstVisibleItemPosition) {
         visibleItemCount = childCount;
@@ -122,9 +147,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             }
         }
         int page = itemCount / PER_PAGE + 1;
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && page > lastPage) {
-            lastPage = page;
-            loadNext(lastPage);
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
+            loadNext(page);
             loading = true;
         }
     }
@@ -132,7 +156,11 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
+        eventBus.registerSticky(this);
+    }
+
+    public void destroy() {
+        eventBus.unregister(this);
     }
 
     public void reload() {
@@ -159,7 +187,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public abstract void loadPhotos(int perPage, int page, Callback<List<T>> callback);
 
-
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
         List<IFullScreenAvailableObject> photos = new ArrayList<>();
@@ -174,17 +201,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             this.activityRouter.openFullScreenPhoto(position, type);
         }
     }
-
-    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
-        List<IFullScreenAvailableObject> getPhotosFromAdapter();
-
-        void startLoading();
-
-        void finishLoading();
-
-        void firstLoadFinish();
-    }
-
 
     public void onEventMainThread(PhotoUploadStarted event) {
         if (type != Type.MY_IMAGES) {
@@ -229,18 +245,14 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         }
     }
 
-    public static TripImagesListPM create(Type type, View view) {
-        switch (type) {
-            case MEMBER_IMAGES:
-                return new UserImagesPM(view);
-            case MY_IMAGES:
-                return new MyImagesPM(view);
-            case YOU_SHOULD_BE_HERE:
-                return new YSBHPM(view);
-            case INSPIRE_ME:
-                return new InspireMePM(view);
-        }
-        return null;
+    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
+        List<IFullScreenAvailableObject> getPhotosFromAdapter();
+
+        void startLoading();
+
+        void finishLoading();
+
+        void setSelection();
     }
 
 }

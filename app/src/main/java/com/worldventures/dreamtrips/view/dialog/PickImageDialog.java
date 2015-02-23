@@ -12,6 +12,7 @@ import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
+import com.worldventures.dreamtrips.R;
 
 public class PickImageDialog implements ImageChooserListener {
 
@@ -49,7 +50,7 @@ public class PickImageDialog implements ImageChooserListener {
             }
         }
         builder.title(title != null ? title : "")
-                .items(new String[]{"Take picture", "Choose image"})
+                .items(R.array.photo_dialog_items)
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
                         takePicture();

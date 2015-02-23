@@ -17,7 +17,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_item)
-public class BucketitemCell extends AbstractCell<BucketItem> {
+public class BucketItemCell extends AbstractCell<BucketItem> {
 
     @InjectView(R.id.tv_name)
     TextView tvName;
@@ -27,7 +27,7 @@ public class BucketitemCell extends AbstractCell<BucketItem> {
     @Inject
     BucketListSelectionStorage bucketListSelectionStorage;
 
-    public BucketitemCell(View view) {
+    public BucketItemCell(View view) {
         super(view);
     }
 

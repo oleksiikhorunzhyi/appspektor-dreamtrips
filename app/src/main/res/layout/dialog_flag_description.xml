@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="Type your reason"
+        android:hint="@string/type_your_reason"
         android:inputType="textCapSentences"
         android:textColor="#000000" />
 

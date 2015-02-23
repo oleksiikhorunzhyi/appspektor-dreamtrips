@@ -179,7 +179,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     }
 
     @Override
-    public void setTitle(String title) {
+    public void setTitle(int title) {
         getSupportActionBar().setTitle(title);
     }
 }

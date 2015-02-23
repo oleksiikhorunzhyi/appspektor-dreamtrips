@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/login_button_selector"
-                    android:text="Log in"
+                    android:text="@string/log_in"
                     android:textColor="@android:color/white"
                     bind:onClick="loginAction" />
             </RelativeLayout>

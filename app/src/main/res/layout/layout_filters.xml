@@ -42,7 +42,7 @@
                 android:layout_toLeftOf="@+id/textViewResetFilter"
                 android:textColor="#025E93"
                 android:gravity="end"
-                android:text="APPLY FILTERS"/>
+                android:text="@string/filter_apply_all"/>
 
             <TextView
                 android:id="@+id/textViewResetFilter"
@@ -52,7 +52,7 @@
                 android:padding="15dp"
                 android:textColor="#025E93"
                 android:textStyle="bold"
-                android:text="RESET ALL"/>
+                android:text="@string/filter_reset_all"/>
 
         </RelativeLayout>
 

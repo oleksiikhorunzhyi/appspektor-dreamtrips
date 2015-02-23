@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.presentation;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -12,6 +13,9 @@ public class BasePresentation<VT extends BasePresentation.View> {
 
     @Inject
     protected FragmentCompass fragmentCompass;
+
+    @Inject
+    protected Context context;
 
     @Inject
     protected ActivityRouter activityRouter;

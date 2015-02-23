@@ -14,7 +14,6 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:text="26/10/2014"
         android:gravity="center"
         android:textSize="26sp"/>
 
@@ -23,7 +22,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:textColor="@android:color/black"
-        android:text="26/10/2015"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="26sp"/>

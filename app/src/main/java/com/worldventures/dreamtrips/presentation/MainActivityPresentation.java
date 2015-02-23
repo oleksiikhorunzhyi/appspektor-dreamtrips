@@ -37,7 +37,7 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
 
     public void onBackPressed() {
         currentState = fragmentCompass.getPreviousFragment();
-        String title = currentState.getTitle();
+        int title = currentState.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
     }
@@ -50,6 +50,6 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
     }
 
     public static interface View extends BasePresentation.View {
-        void setTitle(String title);
+        void setTitle(int title);
     }
 }

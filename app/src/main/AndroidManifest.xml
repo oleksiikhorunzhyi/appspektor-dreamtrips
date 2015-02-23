@@ -79,7 +79,7 @@
 
         <meta-data android:name="com.instabug.DevelopmentAppToken"
             android:value="a3060506f058a57fcc3ef8d80d189e6e" />
-        <meta-data android:name="com.instabug.ProductionMode" android:value="true" />
+        <meta-data android:name="com.instabug.ProductionMode" android:value="false" />
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 

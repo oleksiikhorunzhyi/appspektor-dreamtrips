@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 
-public class FacebookAlbumFragmentPm extends BasePresentation<BasePresentation.View> {
-    public FacebookAlbumFragmentPm(View view) {
+public class FacebookAlbumFragmentPM extends BasePresentation<BasePresentation.View> {
+    public FacebookAlbumFragmentPM(View view) {
         super(view);
     }
 

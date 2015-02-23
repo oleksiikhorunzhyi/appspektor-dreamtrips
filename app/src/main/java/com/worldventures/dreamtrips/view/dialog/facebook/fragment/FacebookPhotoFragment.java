@@ -44,7 +44,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
         super.afterCreateView(rootView);
 
         adapter = new BaseRecycleAdapter();
-        toolbar.setTitle("Select Photo");
+        toolbar.setTitle(R.string.fab_select_photo);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> getPresentationModel().onBackAction());
         lvItems.setAdapter(adapter);

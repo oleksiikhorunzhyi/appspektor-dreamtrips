@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.presentation.DummyPresentationModel;
 import com.worldventures.dreamtrips.presentation.EnrollActivityPresentation;
-import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPm;
+import com.worldventures.dreamtrips.presentation.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPhotoFragmentPM;
 import com.worldventures.dreamtrips.presentation.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
@@ -67,7 +67,7 @@ import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
-import com.worldventures.dreamtrips.view.cell.BucketitemCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -141,7 +141,7 @@ import dagger.Provides;
                 CreatePhotoActivityPM.class,
                 CreatePhotoFragmentPM.class,
                 DummyPresentationModel.class,
-                FacebookAlbumFragmentPm.class,
+                FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
                 EnrollActivity.class,
                 EnrollActivityPresentation.class,
@@ -200,7 +200,7 @@ import dagger.Provides;
                 FiltersCell.class,
                 VideoCell.class,
                 ActivityCell.class,
-                BucketitemCell.class,
+                BucketItemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,

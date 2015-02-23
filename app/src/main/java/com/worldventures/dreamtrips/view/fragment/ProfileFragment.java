@@ -130,7 +130,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @OnClick(R.id.user_photo)
     public void onPhotoClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select avatar");
+        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
         this.pid.show();
     }
@@ -193,7 +193,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @OnClick(R.id.user_cover)
     public void onCoverClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select cover");
+        this.pid.setTitle(getString(R.string.profile_select_cover_header));
         this.pid.setCallback(getPresentationModel().provideCoverChooseCallback());
         this.pid.show();
     }

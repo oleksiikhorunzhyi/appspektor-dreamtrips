@@ -25,29 +25,29 @@ import java.util.Comparator;
 import java.util.List;
 
 public enum State {
-    LOGIN(LoginFragment.class, "Log in"),
-    WEB_STATIC(StaticInfoFragment.class, "Web"),
-    CREATE_PHOTO(CreatePhotoFragment.class, "New Photo"),
-    DETAILED_TRIP(DetailedTripFragment.class, "Detailed Trip"),
-    PICK_FB_ALBUM(FacebookAlbumFragment.class, "Select album"),
-    PICK_FB_PHOTO(FacebookPhotoFragment.class, "Select photo"),
-    MAP_INFO(FragmentMapTripInfo.class, ""),
-    BOOK_IT(StaticInfoFragment.BookItFragment.class, "Book it"),
-    ENROLL(StaticInfoFragment.EnrollFragment.class, "Membership", -1, R.drawable.ic_membership, 2),
-    MAP(MapFragment.class, "DreamTrips", -1, R.drawable.ic_dreamtrips, 0),
-    DREAMTRIPS(DreamTripsFragment.class, "DreamTrips", 0, R.drawable.ic_dreamtrips, 0),
-    TRIP_IMAGES(TripImagesTabsFragment.class, "Trip Images", 1, R.drawable.ic_trip_images, 1),
-    MEMBERSHIP(MemberShipFragment.class, "Membership", 2, R.drawable.ic_membership, 2),
-    BUCKET_LIST(BucketTabsFragment.class, "Bucket list", 3, R.drawable.ic_bucket_lists, 3),
-    MY_PROFILE(ProfileFragment.class, "My profile", 4, R.drawable.ic_profile, 4),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, "Terms of Service", 5, R.drawable.ic_terms, 5),
-    FAQ(StaticInfoFragment.FAQFragment.class, "FAQ", 5, R.drawable.ic_faq, 6),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, "Privacy Policy", 5, R.drawable.ic_termsconditions, 7),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, "Cookie Policy", 5, R.drawable.ic_cookie, 8);
+    LOGIN(LoginFragment.class, R.string.log_in),
+    WEB_STATIC(StaticInfoFragment.class, R.string.web_title),
+    CREATE_PHOTO(CreatePhotoFragment.class, R.string.new_photo),
+    DETAILED_TRIP(DetailedTripFragment.class, R.string.detailed_trip),
+    PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
+    PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
+    MAP_INFO(FragmentMapTripInfo.class, 0),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
+    ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership, -1, R.drawable.ic_membership, 2),
+    MAP(MapFragment.class, R.string.title_activity_main, -1, R.drawable.ic_dreamtrips, 0),
+    DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, 0, R.drawable.ic_dreamtrips, 0),
+    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, 1, R.drawable.ic_trip_images, 1),
+    MEMBERSHIP(MemberShipFragment.class, R.string.membership, 2, R.drawable.ic_membership, 2),
+    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, 3, R.drawable.ic_bucket_lists, 3),
+    MY_PROFILE(ProfileFragment.class, R.string.my_profile, 4, R.drawable.ic_profile, 4),
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, 5, R.drawable.ic_terms, 5),
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, 5, R.drawable.ic_faq, 6),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, 5, R.drawable.ic_termsconditions, 7),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, 5, R.drawable.ic_cookie, 8);
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;
-    private String title;
+    private int titleRes;
     private int menuWeight;
     private int drawableId;
     private int position;
@@ -56,13 +56,13 @@ public enum State {
         generateSideMenuFields();
     }
 
-    State(Class<? extends BaseFragment> fragmentClass, String title) {
+    State(Class<? extends BaseFragment> fragmentClass, int title) {
         this(fragmentClass, title, -1, -1, -1);
     }
 
-    State(Class<? extends BaseFragment> fragmentClass, String title, int weight, int imageID, int position) {
+    State(Class<? extends BaseFragment> fragmentClass, int title, int weight, int imageID, int position) {
         this.fragmentClass = fragmentClass;
-        this.title = title;
+        this.titleRes = title;
         this.menuWeight = weight;
         this.drawableId = imageID;
         this.position = position;
@@ -102,8 +102,8 @@ public enum State {
         return fragmentClass.getName();
     }
 
-    public String getTitle() {
-        return title;
+    public int getTitle() {
+        return titleRes;
     }
 
     public int getDrawableId() {

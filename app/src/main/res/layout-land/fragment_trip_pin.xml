@@ -34,7 +34,6 @@
                     android:layout_height="32dp"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
-                    android:text="Jul 10 - 15 2015"
                     android:textColor="@color/white"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -79,7 +78,7 @@
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:textSize="10sp"
-                    android:text="FEATURED TRIP"
+                    android:text="@string/trip_featured"
                     android:textStyle="bold" />
 
             </RelativeLayout>
@@ -108,7 +107,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="THE MAGIC OF IRELAND"
                     android:textColor="@color/tripNameColor"
                     android:textSize="12sp" />
 
@@ -121,7 +119,6 @@
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
                     android:textSize="10sp"
-                    android:text="Kilkenny Island"
                     android:textColor="@color/tripPlaceColor" />
             </LinearLayout>
 
@@ -131,7 +128,6 @@
                 android:layout_height="match_parent"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
-                android:text="$299"
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -142,7 +138,6 @@
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="fasdfasdfsadf"
             android:textSize="10sp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"

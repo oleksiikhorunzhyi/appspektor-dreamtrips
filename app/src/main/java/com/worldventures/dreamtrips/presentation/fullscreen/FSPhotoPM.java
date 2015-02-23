@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
 import com.google.gson.JsonObject;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
@@ -26,7 +27,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
         dreamTripsApi.deletePhoto(photo.getId(), new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
-                view.informUser("Photo has been deleted");
+                view.informUser(context.getString(R.string.photo_deleted));
                 eventBus.postSticky(new PhotoDeletedEvent(photo.getId()));
             }
 
@@ -42,7 +43,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
         dreamTripsApi.flagPhoto(photo.getId(), title + ". " + desc, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
-                view.informUser("Photo has been flagged");
+                view.informUser(context.getString(R.string.photo_flagged));
                 AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()));
             }
 

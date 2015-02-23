@@ -56,7 +56,7 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     @Override
     public void showLoginErrorMessage() {
         dismissProgressDialog();
-        informUser("Your login-id and/or password are incorrect - please use your WorldVentures Member-ID and Password to login");
+        informUser(getString(R.string.error_log_in));
     }
 
     private void dismissProgressDialog() {
@@ -67,9 +67,9 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
         }, 50);
     }
 
-    public void showLocalErrors(String userNameError, String passwordError) {
-        etUsername.setError(userNameError);
-        etPassword.setError(passwordError);
+    public void showLocalErrors(int userNameError, int passwordError) {
+        etUsername.setError(getString(userNameError));
+        etPassword.setError(getString(passwordError));
     }
 
     @Override

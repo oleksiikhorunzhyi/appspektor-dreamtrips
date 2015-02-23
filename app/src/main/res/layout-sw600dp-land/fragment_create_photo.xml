@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://robobinding.org/android"
@@ -8,7 +7,6 @@
     android:background="@android:color/white"
     android:focusable="true"
     android:focusableInTouchMode="true"
-
     android:orientation="vertical">
 
     <ImageView
@@ -24,10 +22,6 @@
         android:id="@+id/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="false"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_below="@+id/iv_image"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -38,7 +32,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_save"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -62,7 +55,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:text="What"
+                    android:text="@string/photo_what"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/create_photo_text_size"
                     app:hideUnderline="true" />
@@ -72,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
-                    android:hint="Give a title to the image"
+                    android:hint="@string/photo_what_hint"
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
@@ -96,7 +89,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:text="Where"
+                    android:text="@string/photo_where"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/create_photo_text_size"
                     app:hideUnderline="true" />
@@ -106,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
-                    android:hint="Set location"
+                    android:hint="@string/photo_where_hint"
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
@@ -137,7 +130,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:text="When"
+                    android:text="@string/photo_when"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/create_photo_text_size"
                     app:hideUnderline="true" />
@@ -151,7 +144,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="Date"
+                    android:hint="@string/photo_when_date_hint"
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
@@ -168,7 +161,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="Time"
+                    android:hint="@string/photo_when_time_hint"
                     android:inputType="textCapSentences"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
@@ -194,7 +187,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:text="Tags"
+                    android:text="@string/photo_tags"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/create_photo_text_size"
                     app:hideUnderline="true" />
@@ -204,7 +197,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/fab_actions_spacing"
-                    android:hint="Add comma separated tags here"
+                    android:hint="@string/photo_tags_hint"
                     android:inputType="textCapWords"
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"

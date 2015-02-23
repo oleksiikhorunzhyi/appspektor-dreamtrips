@@ -74,8 +74,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
-            bind:text="{userName}" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/user_email"
@@ -84,8 +83,7 @@
             android:layout_marginLeft="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            bind:text="{userEmail}" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 

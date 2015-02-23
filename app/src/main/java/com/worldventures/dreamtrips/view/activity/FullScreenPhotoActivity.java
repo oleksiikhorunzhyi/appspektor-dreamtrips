@@ -119,7 +119,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             feedDialog.setOnCompleteListener((bundle, e) -> {
                 if (feedDialog != null) {
                     if (e == null) {
-                        informUser("Successfully posted to facebook");
+                        informUser(getString(R.string.fab_posted));
                     }
                     feedDialog.dismiss();
                 }

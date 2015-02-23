@@ -44,6 +44,9 @@ public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePage
         return getFragment(i);
     }
 
+    public void clear() {
+        fragmentItems.clear();
+    }
 
     @Override
     public int getCount() {

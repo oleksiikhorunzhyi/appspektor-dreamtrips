@@ -36,24 +36,17 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
     public static final String OUT_STATE_POSITION = "OUT_STATE_POSITION";
-
-    private UiLifecycleHelper uiHelper;
-
     @InjectView(R.id.pager)
     ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     @InjectView(R.id.login_button)
     LoginButton loginButton;
-
-
     BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
-
     TripImagesListFragment.Type type;
+    private UiLifecycleHelper uiHelper;
     private int position;
-    private int lastPage;
-
 
     @Override
     protected void onResume() {
@@ -202,10 +195,10 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             }
 
             public void onPageSelected(int position) {
+                FullScreenPhotoActivity.this.position = position;
                 getPresentationModel().scrolled(1, adapter.getCount(), position);
             }
         });
-        getPresentationModel().reload(Math.max(position + 2, 15));
     }
 
     public TripImagesListFragment.Type getType() {
@@ -232,8 +225,14 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     @Override
-    public void firstLoadFinish() {
+    public void setSelection() {
         pager.setCurrentItem(position, false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getPresentationModel().destroy();
     }
 
     @Override
@@ -241,11 +240,6 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         photoList.addAll(items);
         for (IFullScreenAvailableObject item : items) {
             adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
-        }
-        if (items.isEmpty()) {
-            lastPage = -1;
-        } else {
-            lastPage = photoList.size() / TripImagesListPM.PER_PAGE + 1;
         }
         adapter.notifyDataSetChanged();
     }
@@ -262,7 +256,10 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
 
     @Override
     public void clear() {
-
+        photoList.clear();
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        pager.setAdapter(adapter);
     }
 
     @Override

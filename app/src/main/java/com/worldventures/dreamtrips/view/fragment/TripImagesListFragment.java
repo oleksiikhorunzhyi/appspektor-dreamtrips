@@ -100,6 +100,11 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getPresentationModel().destroy();
+    }
 
     public void onEvent(ScreenOrientationChangeEvent event) {
         boolean landscape = event.isLandscape();
@@ -139,7 +144,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    public void firstLoadFinish() {
+    public void setSelection() {
 
     }
 

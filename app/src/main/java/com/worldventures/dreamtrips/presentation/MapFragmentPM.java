@@ -6,6 +6,9 @@ import android.os.Handler;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
@@ -15,12 +18,14 @@ import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.FileUtils;
+import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,8 +69,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Override
     public void init() {
         super.init();
-        this.tripsController = loaderFactory.create(0, (context, params) -> FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-        }.getType(), FileUtils.TRIPS));
+        this.tripsController = loaderFactory.create(0, (context, params) -> SnappyUtils.getTrips(context));
 
         this.tripsController.getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
             @Override

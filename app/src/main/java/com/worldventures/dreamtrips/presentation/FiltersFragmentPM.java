@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
+import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
@@ -54,8 +55,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     EventBus eventBus;
 
     private List<Object> data = new ArrayList<>();
-    private List<Region> regions;
-    private List<Activity> activities;
+    private List<Region> regions = new ArrayList<>();
+    private List<Activity> activities = new ArrayList<>();
     private List<Activity> parentActivities;
 
 
@@ -91,19 +92,19 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
                 this.activities = this.dreamTripsApi.getActivities();
 
                 if (activities != null && activities.size() > 0) {
-                    FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
+                    SnappyUtils.saveActivities(context, this.activities);
+                    //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
                     prefs.put(Prefs.ACTIVITIES_LOADED, true);
                 }
 
                 if (regions != null && regions.size() > 0) {
-                    FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
+                    SnappyUtils.saveRegions(context, this.regions);
+                 //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
                     prefs.put(Prefs.REGIONS_LOADED, true);
                 }
             } else {
-                this.regions = FileUtils.parseJsonFromCache(context, new TypeToken<List<Region>>() {
-                }.getType(), FileUtils.REGIONS);
-                this.activities = FileUtils.parseJsonFromCache(context, new TypeToken<List<Activity>>() {
-                }.getType(), FileUtils.ACTIVITIES);
+                this.regions = SnappyUtils.getRegions(context);
+                this.activities = SnappyUtils.getActivities(context);
             }
 
             parentActivities = getParentActivities();

@@ -154,6 +154,10 @@ public class Trip extends BaseEntity implements Filterable {
         return filteredImages;
     }
 
+    public long getStartDateMillis() {
+        return dates.getStartDate().getTime();
+    }
+
     @Override
     public boolean containsQuery(String query) {
         return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);

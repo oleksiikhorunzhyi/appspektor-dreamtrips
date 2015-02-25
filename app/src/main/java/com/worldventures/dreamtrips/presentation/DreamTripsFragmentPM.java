@@ -2,10 +2,14 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
@@ -17,6 +21,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.utils.FileUtils;
+import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
@@ -25,9 +30,11 @@ import com.worldventures.dreamtrips.view.fragment.MapFragment;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
 
 import javax.inject.Inject;
 
@@ -35,6 +42,7 @@ import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by Edward on 19.01.15.
@@ -84,18 +92,16 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super.init();
 
         this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate() || loadFromApi) {
-                this.loadFromApi = false;
-                this.data.clear();
-                this.data.addAll(this.loadTrips());
-
-                FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
-
-                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-            } else {
-                this.data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-                }.getType(), FileUtils.TRIPS);
-            }
+                if (needUpdate() || loadFromApi) {
+                    this.loadFromApi = false;
+                    this.data.clear();
+                    this.data.addAll(this.loadTrips());
+                    SnappyUtils.saveTrips(context, this.data);
+                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+                } else {
+                    this.data.clear();
+                    this.data.addAll(SnappyUtils.getTrips(context));
+                }
 
             List<Trip> filteredData = performFiltering(data);
 
@@ -180,7 +186,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         final Callback<JsonObject> callback = new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
-                FileUtils.saveJsonToCache(context, data, FileUtils.TRIPS);
+                SnappyUtils.saveTrip(context, trip);
             }
 
             @Override
@@ -199,7 +205,8 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
     }
 
-    public void actionSearch(String query){}
+    public void actionSearch(String query) {
+    }
 
     public void actionMap() {
         fragmentCompass.replace(State.MAP, null);

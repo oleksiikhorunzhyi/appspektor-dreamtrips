@@ -102,8 +102,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
 
     @Override
     public void onDestroy() {
+        if (getPresentationModel() != null)
+            getPresentationModel().destroy();
         super.onDestroy();
-        getPresentationModel().destroy();
     }
 
     public void onEvent(ScreenOrientationChangeEvent event) {

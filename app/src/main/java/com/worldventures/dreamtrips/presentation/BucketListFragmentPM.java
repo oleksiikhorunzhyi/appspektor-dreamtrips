@@ -49,16 +49,15 @@ public class BucketListFragmentPM extends BasePresentation {
     public void init() {
         super.init();
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
+            ArrayList<Object> result = new ArrayList<>();
 
-            if (cachedBucketListItems == null) {
+           /* if (cachedBucketListItems == null) {
                 String stringFromAsset = getStringFromAsset(type.getFileName());
 
                 BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
 
                 cachedBucketListItems = response.getData();
             }
-
-            ArrayList<Object> result = new ArrayList<>();
 
             final BucketListSelectionStorage.BucketListSelection selection = bucketListSelectionStorage.getSelection();
             if (selection.isFilterEnabled) {
@@ -75,12 +74,14 @@ public class BucketListFragmentPM extends BasePresentation {
                 result.addAll(filteredData);
             } else {
                 result.addAll(cachedBucketListItems);
-            }
+            }*/
+
             return result;
         });
     }
 
     private String getStringFromAsset(String fileName) {
+/*
         try {
             String str;
             StringBuilder buf = new StringBuilder();
@@ -94,6 +95,7 @@ public class BucketListFragmentPM extends BasePresentation {
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "", e);
         }
+*/
         return "";
     }
 

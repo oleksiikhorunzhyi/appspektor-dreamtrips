@@ -23,4 +23,8 @@ public class BucketTabsFragmentPM extends BasePresentation {
     public boolean isFilterEnabled() {
         return bucketListSelectionStorage.getSelection().isFilterEnabled;
     }
+
+    public void addOwn() {
+        activityRouter.openBookItActivity();
+    }
 }

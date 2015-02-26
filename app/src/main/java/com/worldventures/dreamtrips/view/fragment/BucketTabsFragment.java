@@ -7,17 +7,21 @@ import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
+public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  implements FloatingActionsMenu.OnFloatingActionsMenuUpdateListener{
 
 
     @Override
@@ -31,6 +35,11 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
     PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
     ViewPager pager;
+    @InjectView(R.id.v_bg_holder)
+    View vBgHolder;
+    @InjectView(R.id.multiple_actions_down)
+    FloatingActionsMenu multipleActionsDown;
+
 
     BasePagerAdapter adapter;
 
@@ -67,7 +76,26 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
                 }
             }
         });
+        this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
+
     }
+
+    @Override
+    public void onMenuExpanded() {
+        this.vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+    }
+
+    @Override
+    public void onMenuCollapsed() {
+        this.vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    }
+
+    @OnClick(R.id.fab_own)
+    public void actionGallery(View view) {
+        getPresentationModel().addOwn();
+        this.multipleActionsDown.collapse();
+    }
+
 
     public enum Type {
         LOCATIONS("bucket/bucket_list_locations.json"),

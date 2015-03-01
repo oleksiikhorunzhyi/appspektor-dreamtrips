@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -39,6 +40,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
+
+    @InjectView(R.id.textViewEmptyAdd)
+    TextView textView;
 
     @Inject
     @Global

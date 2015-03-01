@@ -4,12 +4,16 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.snappydb.DB;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
@@ -19,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -41,6 +46,9 @@ public class BucketListFragmentPM extends BasePresentation {
     Gson gson;
 
     @Inject
+    SnappyRepository db;
+
+    @Inject
     BucketListSelectionStorage bucketListSelectionStorage;
 
     List<BucketItem> cachedBucketListItems;
@@ -51,7 +59,15 @@ public class BucketListFragmentPM extends BasePresentation {
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
             ArrayList<Object> result = new ArrayList<>();
 
-           /* if (cachedBucketListItems == null) {
+            try {
+                result.addAll(db.getBucketItems(type.name()));
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            /* if (cachedBucketListItems == null) {
                 String stringFromAsset = getStringFromAsset(type.getFileName());
 
                 BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
@@ -102,4 +118,6 @@ public class BucketListFragmentPM extends BasePresentation {
     public CollectionController<Object> getAdapterController() {
         return adapterController;
     }
+
+
 }

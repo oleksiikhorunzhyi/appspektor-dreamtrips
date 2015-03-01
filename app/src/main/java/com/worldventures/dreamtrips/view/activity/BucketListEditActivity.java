@@ -16,13 +16,16 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_book_it)
 public class BucketListEditActivity extends PresentationModelDrivenActivity<BucketListEditActivityPM>{
 
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
+
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPresentationModel().onCreate();
+        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
+        getPresentationModel().onCreate(bundleExtra);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.bucket_list_my_title);

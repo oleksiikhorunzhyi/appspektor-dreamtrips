@@ -58,7 +58,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_gallery"
+            fab:fab_icon="@drawable/list"
             fab:fab_title="@string/bucket_list_choose" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -68,7 +68,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_photo"
+            fab:fab_icon="@drawable/create"
             fab:fab_title="@string/bucket_list_create_new" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

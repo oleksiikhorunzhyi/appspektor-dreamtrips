@@ -27,6 +27,7 @@
             android:textSize="20dp" />
 
         <TextView
+            android:id="@+id/textViewEmptyAdd"
             android:layout_below="@id/textViewEmpty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +46,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"

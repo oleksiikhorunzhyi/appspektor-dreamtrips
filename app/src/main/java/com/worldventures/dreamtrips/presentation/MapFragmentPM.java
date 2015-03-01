@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -39,7 +41,7 @@ import de.greenrobot.event.EventBus;
  */
 public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
-    private List<Trip> data;
+    private List<Trip> data = new ArrayList<>();
     private List<Trip> filteredData;
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
@@ -52,6 +54,9 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     private static Handler handler = new Handler();
     private String query;
+
+    @Inject
+    SnappyRepository db;
 
     @Inject
     @Global
@@ -69,7 +74,17 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Override
     public void init() {
         super.init();
-        this.tripsController = loaderFactory.create(0, (context, params) -> SnappyUtils.getTrips(context));
+        this.tripsController = loaderFactory.create(0, (context, params) -> {
+            try {
+                data.clear();
+                data.addAll(db.getTrips());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return data;
+        });
 
         this.tripsController.getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
             @Override
@@ -79,7 +94,6 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
             @Override
             public void onFinishLoading(List<Trip> result) {
-                data = result;
                 setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
                 performFiltering();
             }

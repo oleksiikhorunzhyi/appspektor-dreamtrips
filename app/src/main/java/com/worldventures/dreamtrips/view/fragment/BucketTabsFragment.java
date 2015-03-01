@@ -51,10 +51,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
-                    Bundle args = new Bundle();
-                    Type type = Type.values()[position];
-                    args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
-                    fragment.setArguments(args);
+                    fragment.setArguments(getPresentationModel().getBundleForPosition(position));
                 }
             };
 
@@ -92,7 +89,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
 
     @OnClick(R.id.fab_own)
     public void actionGallery(View view) {
-        getPresentationModel().addOwn();
+        getPresentationModel().addOwn(pager.getCurrentItem());
         this.multipleActionsDown.collapse();
     }
 

@@ -10,9 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
+import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 
 import butterknife.InjectView;
@@ -20,6 +22,7 @@ import butterknife.InjectView;
 /**
  * Created by 1 on 26.02.15.
  */
+@Layout(R.layout.fragment_bucket__quick_input)
 public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickInputPM> {
 
     @InjectView(R.id.recyclerViewBucketItems)
@@ -44,7 +47,8 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
         this.arrayListAdapter.setContentLoader(getPresentationModel().getAdapterController());
         editTextQuick.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        getPresentationModel().addToBucketList();
+                        getPresentationModel().addToBucketList(editTextQuick.getText().toString());
+                        editTextQuick.setText("");
                     }
                     return false;
                 }
@@ -53,6 +57,11 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
     @Override
     protected BucketListQuickInputPM createPresentationModel(Bundle savedInstanceState) {
-        return new BucketListQuickInputPM(this);
+        String type = getArguments().getString(BucketListEditActivity.EXTRA_TYPE);
+        return new BucketListQuickInputPM(this, type);
     }
 }
+
+
+
+

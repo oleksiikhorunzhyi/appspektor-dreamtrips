@@ -125,9 +125,13 @@
     <string name="password_not_valid">Password is not valid</string>
 
     <string name="bucket_list_my_title">My Bucket List</string>
-    <string name="bucket_list_add">Add location to your bucket list</string>
+    <string name="bucket_list_add">Add [bucket_category] to your bucket list</string>
     <string name="bucket_list_create_message">Currently you have no Bucket List Items. You can choose from the popular Bucket List items or create your Bucket List from scratch.</string>
     <string name="bucket_list_choose">Choose From Popupal Items</string>
     <string name="bucket_list_create_new">Create My Own List</string>
     <string name="bucket_quick_input_title">Title</string>
+
+    <string name="location">location</string>
+    <string name="activity">activity</string>
+    <string name="dinning">dinning</string>
 </resources>

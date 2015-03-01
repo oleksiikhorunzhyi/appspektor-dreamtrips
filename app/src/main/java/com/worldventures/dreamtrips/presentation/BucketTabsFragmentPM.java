@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.presentation;
 
+import android.os.Bundle;
+
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
 import javax.inject.Inject;
@@ -24,7 +28,14 @@ public class BucketTabsFragmentPM extends BasePresentation {
         return bucketListSelectionStorage.getSelection().isFilterEnabled;
     }
 
-    public void addOwn() {
-        activityRouter.openBookItActivity();
+    public void addOwn(int position) {
+        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position].name());
+    }
+
+    public Bundle getBundleForPosition(int position) {
+        Bundle args = new Bundle();
+        BucketTabsFragment.Type type = BucketTabsFragment.Type.values()[position];
+        args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
+        return args;
     }
 }

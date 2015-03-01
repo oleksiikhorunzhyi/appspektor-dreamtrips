@@ -69,8 +69,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
-    public void openBucketListEditActivity() {
-        startActivity(BucketListEditActivity.class);
+    public void openBucketListEditActivity(String type) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
+        startActivity(BucketListEditActivity.class, bundle);
     }
 
     public void openTripDetails(Trip trip) {

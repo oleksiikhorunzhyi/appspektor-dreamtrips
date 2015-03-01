@@ -6,10 +6,13 @@ import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.Futures;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
+import com.snappydb.SnappyDB;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -27,89 +30,108 @@ import timber.log.Timber;
  */
 public class SnappyUtils {
 
-    public static final String TRIPS = "trips.json";
-    public static final String REGIONS = "regions.json";
-    public static final String ACTIVITIES = "activities.json";
+    /*public static final String REGIONS = "regions";
+    public static final String ACTIVITIES = "activities";
 
     private static final String TRIP_KEY = "trip";
+    private static final String BUCKET_KEY = "bucket";
 
-    public static void saveRegions(Context context, List<Region> list) {
+    public static void saveRegions(DB snappyDb, Context context, List<Region> list) {
         try {
-            DB snappyDb = DBFactory.open(context);
             snappyDb.put(REGIONS, list.toArray());
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
     }
 
-    public static List<Region> getRegions(Context context) {
+    public static List<Region> getRegions(DB snappyDb, Context context) {
         List<Region> list = new ArrayList<>();
         try {
-            DB snappyDb = DBFactory.open(context);
             list.addAll(Arrays.asList(snappyDb.getObjectArray(REGIONS, Region.class)));
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    public static void saveActivities(Context context, List<Activity> list) {
+    public static void saveActivities(DB snappyDb, Context context, List<Activity> list) {
         try {
-            DB snappyDb = DBFactory.open(context);
             snappyDb.put(ACTIVITIES, list.toArray());
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
     }
 
-    public static List<Activity> getActivities(Context context) {
+    public static List<Activity> getActivities(DB snappyDb, Context context) {
         List<Activity> list = new ArrayList<>();
         try {
-            DB snappyDb = DBFactory.open(context);
             list.addAll(Arrays.asList(snappyDb.getObjectArray(ACTIVITIES, Activity.class)));
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    public static void saveTrips(Context context, List<Trip> list) {
+    public static void saveTrips(DB snappyDb, Context context, List<Trip> list) {
         try {
-            DB snappyDb = DBFactory.open(context, FileUtils.TRIPS);
             for (Trip trip : list) {
                 snappyDb.put(TRIP_KEY + trip.getId(), trip);
             }
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
     }
 
-    public static void saveTrip(Context context, Trip trip) {
+    public static void saveTrip(DB snappyDb, Context context, Trip trip) {
         try {
-            DB snappyDb = DBFactory.open(context, FileUtils.TRIPS);
             snappyDb.put(TRIP_KEY + trip.getId(), trip);
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
 
     }
 
-    public static List<Trip> getTrips(Context context) {
+    public static List<BucketItem> getBucketItems(DB snappyDb, Context context, BucketTabsFragment.Type type) {
+        List<BucketItem> bucketItems = new ArrayList<>();
+
+        try {
+            String[] keys = snappyDb.findKeys(BUCKET_KEY + ":" + type.name());
+            for (String key : keys) {
+                bucketItems.add(snappyDb.get(key, BucketItem.class));
+            }
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
+
+        return bucketItems;
+    }
+
+    public static void addBucketItem(DB snappyDb, Context context, BucketItem bucketItem, String type) {
+        try {
+            String[] keys = snappyDb.findKeys(BUCKET_KEY + ":" + type);
+            if (keys == null || keys.length == 0) {
+                addToBucket(snappyDb, bucketItem, 0, type);
+            } else {
+                BucketItem lastBucketItem = snappyDb.get(keys[keys.length - 1], BucketItem.class);
+                addToBucket(snappyDb, bucketItem, lastBucketItem.getId() + 1, type);
+            }
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void addToBucket(DB snappyDB, BucketItem bucketItem, int id, String type) throws SnappydbException {
+        snappyDB.put(BUCKET_KEY + ":" + type + ":" + id, bucketItem);
+    }
+
+    public static List<Trip> getTrips(DB snappyDb, Context context) {
         List<Trip> trips = new ArrayList<>();
 
         try {
-            DB snappyDb = DBFactory.open(context, FileUtils.TRIPS);
             String[] keys = snappyDb.findKeys(TRIP_KEY);
             for (String key : keys) {
                 trips.add(snappyDb.get(key, Trip.class));
             }
-            snappyDb.close();
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
@@ -125,5 +147,5 @@ public class SnappyUtils {
         });
 
         return trips;
-    }
+    }*/
 }

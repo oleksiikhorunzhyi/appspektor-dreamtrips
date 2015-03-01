@@ -25,6 +25,10 @@
         <activity android:name=".view.activity.BookItActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />
+        <activity android:name=".view.activity.BucketListEditActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_main" />
+
         <activity android:name=".view.activity.FBPickPhotoActivity"
             android:label="@string/title_activity_main" />
         <activity android:name=".view.activity.CreatePhotoActivity"

@@ -15,8 +15,8 @@ public class BucketListEditActivityPM extends BaseActivityPresentation {
         super(view);
     }
 
-    public void onCreate() {
-        fragmentCompass.add(State.QUICK_INPUT);
+    public void onCreate(Bundle bundle) {
+        fragmentCompass.add(State.QUICK_INPUT, bundle);
     }
 
 }

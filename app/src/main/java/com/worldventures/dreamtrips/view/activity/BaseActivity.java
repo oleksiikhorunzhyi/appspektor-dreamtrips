@@ -9,6 +9,7 @@ import com.adobe.mobile.Config;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -24,11 +25,14 @@ import timber.log.Timber;
 public abstract class BaseActivity extends InjectingActivity {
 
     protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
-    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
     @Inject
     ActivityRouter router;
     @Inject
     UniversalImageLoader imageLoader;
+    @Inject
+    DreamSpiceManager spiceManager;
+
+    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,19 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onResume();
         initHockeyApp();
         Config.collectLifecycleData(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+        if (!spiceManager.isStarted()) spiceManager.start(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        spiceManager.shouldStop();
+        super.onStop();
     }
 
     @Override

@@ -6,8 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
-import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
-import com.worldventures.dreamtrips.core.api.LoginHelper;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
@@ -160,7 +160,6 @@ import dagger.Provides;
                 FSInspireMePM.class,
                 BaseFSViewPM.class,
                 ImageUploadTaskPM.class,
-                LoginHelper.class,
 
                 NavigationDrawerFragment.class,
                 FragmentMapTripInfo.class,
@@ -209,7 +208,8 @@ import dagger.Provides;
                 FilterableArrayListAdapter.class,
                 UploadJob.class,
 
-                DreamTripsApiProxy.class
+                DreamSpiceService.class,
+                DreamSpiceManager.class,
         },
         complete = false,
         library = true

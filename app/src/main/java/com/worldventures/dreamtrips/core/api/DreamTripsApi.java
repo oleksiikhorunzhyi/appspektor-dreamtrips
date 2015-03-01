@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -29,50 +31,45 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/sessions")
-    public void login(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
-
-    @FormUrlEncoded
-    @POST("/api/sessions")
     public Session login(@Field("username") String username, @Field("password") String password);
 
     @POST("/api/profile/avatar")
     @Multipart
-    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);
+    public User uploadAvatar(@Part("avatar") TypedFile image);
 
-    @GET("/api/trips")
+    @GET("/api/trips")/*TODO*/
     public List<Trip> getTrips();
 
-    @GET("/api/regions")
+    @GET("/api/regions")/*TODO*/
     public List<Region> getRegions();
 
     @GET("/api/photos")
-    public void getUserPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{id}/photos")
-    public void getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page);
 
     @GET("/api/inspirations")
-    public void getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Inspiration>> callback);
+    public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/ysbh_photos")
-    public void getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
-    public void flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason, Callback<JsonObject> callback);
+    public JsonObject flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason);
 
     @DELETE("/api/photos/{id}")
-    public void deletePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject deletePhoto(@Path("id") int photoId);
 
     @POST("/api/photos/{id}/like")
-    public void likePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject likePhoto(@Path("id") int photoId);
 
     @DELETE("/api/photos/{id}/like")
-    public void unlikePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject unlikePhoto(@Path("id") int photoId);
 
     @POST("/api/photos")
-    @Multipart
-    public void postPhoto(@Body Photo photo);
+    public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
     @POST("/api/trips/{id}/like")
     public void likeTrip(@Path("id") int photoId, Callback<JsonObject> callback);

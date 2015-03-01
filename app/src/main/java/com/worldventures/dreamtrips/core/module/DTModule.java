@@ -5,14 +5,12 @@ import android.content.SharedPreferences;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
-import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
-import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.DreamTripsApplication;
-import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
-import com.worldventures.dreamtrips.core.api.LoginHelper;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
@@ -33,8 +31,8 @@ import io.realm.Realm;
                 InstabugInitializer.class,
                 ImageLoaderInitializer.class,
                 UploadingServiceInitializer.class,
-                DreamTripsApiProxy.class,
-                LoginHelper.class
+                DreamSpiceService.class,
+                DreamSpiceManager.class
         },
         includes = {
                 InjectingApplicationModule.class,
@@ -97,8 +95,4 @@ public class DTModule {
         return new Prefs(sharedPreferences);
     }
 
-    @Provides
-    public LoginHelper provideLoginHelper(DreamTripsApplication injector) {
-        return new LoginHelper(injector);
-    }
 }

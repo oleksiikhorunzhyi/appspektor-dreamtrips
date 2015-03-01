@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -25,9 +27,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.ImageUploadTaskFullscreen;
 import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.from;
@@ -37,7 +36,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public static final int PER_PAGE = 15;
     @Inject
-    protected DreamTripsApi dreamTripsApi;
+    protected DreamSpiceManager dreamSpiceManager;
 
     @Inject
     protected Context context;
@@ -46,9 +45,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     @Global
     EventBus eventBus;
     int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
-    private Callback<List<T>> cbNext;
-    private Callback<List<T>> cbRefresh;
-    private Callback<List<T>> cbPrev;
+    private RequestListener<ArrayList<T>> cbNext;
+    private RequestListener<ArrayList<T>> cbRefresh;
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
@@ -56,33 +54,34 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     public TripImagesListPM(View view, Type type) {
         super(view);
         this.type = type;
-        cbNext = new Callback<List<T>>() {
+        cbNext = new RequestListener<ArrayList<T>>() {
             @Override
-            public void success(List<T> objects, Response response) {
+            public void onRequestFailure(SpiceException spiceException) {
+                view.finishLoading();
+            }
+
+            @Override
+            public void onRequestSuccess(ArrayList<T> objects) {
                 view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
                 eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
             }
+        };
 
+        cbRefresh = new RequestListener<ArrayList<T>>() {
             @Override
-            public void failure(RetrofitError error) {
+            public void onRequestFailure(SpiceException spiceException) {
                 view.finishLoading();
             }
-        };
-        cbRefresh = new Callback<List<T>>() {
+
             @Override
-            public void success(List<T> objects, Response response) {
+            public void onRequestSuccess(ArrayList<T> objects) {
                 view.clear();//PullTORefresh
                 view.addAll((List<IFullScreenAvailableObject>) objects);
                 view.finishLoading();
 
                 resetLazyLoadFields();
                 eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                view.finishLoading();
             }
         };
     }
@@ -177,15 +176,11 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         Log.d("LOAD INFO", page + " " + PER_PAGE + " ");
     }
 
-    public void loadPrev(int page) {
-        loadMore(PER_PAGE, page, cbPrev);
-    }
-
-    private void loadMore(int perPage, int page, Callback<List<T>> callback) {
+    private void loadMore(int perPage, int page, RequestListener<ArrayList<T>> callback) {
         loadPhotos(perPage, page, callback);
     }
 
-    public abstract void loadPhotos(int perPage, int page, Callback<List<T>> callback);
+    public abstract void loadPhotos(int perPage, int page, RequestListener<ArrayList<T>> callback);
 
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();

@@ -3,9 +3,12 @@ package com.worldventures.dreamtrips.presentation;
 import android.net.Uri;
 import android.util.Log;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -20,9 +23,6 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> {
@@ -35,33 +35,34 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     protected EventBus eventBus;
 
     @Inject
-    DreamTripsApi dreamTripsApi;
+    DreamSpiceManager spiceManager;
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
             final File file = new File(image.getFileThumbnail());
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
-            dreamTripsApi.uploadAvatar(typedFile, new Callback<User>() {
+            spiceManager.execute(new DreamTripsRequest.UploadAvatarRequest(typedFile), new RequestListener<User>() {
                 @Override
-                public void success(User userResponse, Response response) {
+                public void onRequestFailure(SpiceException spiceException) {
+                    view.avatarProgressVisible(false);
+                    handleError(spiceException);
+                    view.informUser(context.getString(R.string.error_internal_server));
+                }
+
+                @Override
+                public void onRequestSuccess(User obj) {
                     UserSession userSession = appSessionHolder.get().get();
                     User user = userSession.getUser();
-                    user.setAvatar(userResponse.getAvatar());
+                    user.setAvatar(obj.getAvatar());
 
                     appSessionHolder.put(userSession);
                     view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
                     view.avatarProgressVisible(false);
-                    eventBus.post(new UpdateUserInfoEvent());
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    view.avatarProgressVisible(false);
-                    handleError(error);
-                    view.informUser(context.getString(R.string.error_internal_server));
                 }
             });
+
+
         } else {
             Log.e(ProfileFragmentPresentation.class.getSimpleName(), error);
         }

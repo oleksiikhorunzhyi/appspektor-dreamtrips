@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,9 +17,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
@@ -27,21 +26,24 @@ public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
     }
 
     @Override
-    public void loadPhotos(int perPage, int page, Callback<List<IFullScreenAvailableObject>> callback) {
+    public void loadPhotos(int perPage, int page, RequestListener<ArrayList<IFullScreenAvailableObject>> callback) {
         User user = appSessionHolder.get().get().getUser();
-        dreamTripsApi.getMyPhotos(user.getId(), perPage, page, new Callback<List<Photo>>() {
+
+        dreamSpiceManager.execute(new DreamTripsRequest.GetMyPhotos(user.getId(), perPage, page), new RequestListener<ArrayList<Photo>>() {
             @Override
-            public void success(List<Photo> photos, Response response) {
+            public void onRequestFailure(SpiceException spiceException) {
+                callback.onRequestFailure(spiceException);
+
+            }
+
+            @Override
+            public void onRequestSuccess(ArrayList<Photo> photos) {
                 List<ImageUploadTask> uploadTasks = getUploadTasks();
                 ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
                 result.addAll(ImageUploadTask.from(uploadTasks));
                 result.addAll(photos);
-                callback.success(result, response);
-            }
+                callback.onRequestSuccess(result);
 
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
             }
         });
     }

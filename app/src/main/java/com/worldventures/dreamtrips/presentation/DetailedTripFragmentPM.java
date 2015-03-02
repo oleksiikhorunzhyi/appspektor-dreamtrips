@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
+import com.snappydb.DB;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.ContentItem;
@@ -11,8 +12,10 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
 import org.json.JSONObject;
@@ -39,6 +42,9 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     @Global
     @Inject
     EventBus eventBus;
+
+    @Inject
+    SnappyRepository db;
 
     private Trip trip;
     private List<Object> filteredImages;
@@ -116,8 +122,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(TripsIntentService.TRIP_EXTRA, trip);
                 eventBus.post(new TripLikedEvent(trip));
-
-                activityRouter.startService(bundle);
+                db.saveTrip(trip);
             }
 
             @Override

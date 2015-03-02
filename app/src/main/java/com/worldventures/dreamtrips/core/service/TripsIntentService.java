@@ -24,13 +24,12 @@ public class TripsIntentService extends IntentService {
 
     public static final String TRIP_EXTRA = "TRIP";
 
+
     public TripsIntentService() {
         super("Trips saver");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Trip trip = (Trip) intent.getSerializableExtra(TRIP_EXTRA);
-        SnappyUtils.saveTrip(this, trip);
     }
 }

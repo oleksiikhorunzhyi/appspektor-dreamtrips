@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.EnrollActivity;
@@ -66,6 +67,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
         startActivity(BookItActivity.class, bundle);
+    }
+
+    public void openBucketListEditActivity(String type) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
+        startActivity(BucketListEditActivity.class, bundle);
     }
 
     public void openTripDetails(Trip trip) {

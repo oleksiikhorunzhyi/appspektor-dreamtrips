@@ -1,15 +1,18 @@
 package com.worldventures.dreamtrips.view.cell;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 
 import javax.inject.Inject;
 
@@ -21,11 +24,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
 
     @InjectView(R.id.tv_name)
     TextView tvName;
-    @InjectView(R.id.iv_like)
-    ImageView ivLike;
-
-    @Inject
-    BucketListSelectionStorage bucketListSelectionStorage;
+    @InjectView(R.id.checkBoxDone)
+    CheckBox checkBoxDone;
+    @InjectView(R.id.swipe_container)
+    SwipeLayout swipeLayout;
 
     public BucketItemCell(View view) {
         super(view);
@@ -34,24 +36,19 @@ public class BucketItemCell extends AbstractCell<BucketItem> {
     @Override
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName());
-        ivLike.setSelected(bucketListSelectionStorage.getSelection().favoriteTrips.contains(getModelObject().getSPName()));
+        //set show mode.
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        //set drag edge.
+        swipeLayout.setDragEdge(SwipeLayout.DragEdge.Right);
+    }
+
+    @OnClick(R.id.delete)
+    void delete() {
+        getEventBus().post(new DeleteBucketItemEvent(getModelObject()));
     }
 
     @Override
     public void prepareForReuse() {
 
-    }
-
-    @OnClick(R.id.iv_like)
-    public void onLikeClick() {
-        if (!ivLike.isSelected()) {
-            bucketListSelectionStorage.getSelection().favoriteTrips.add(getModelObject().getSPName());
-            ivLike.setSelected(true);
-        } else {
-            bucketListSelectionStorage.getSelection().favoriteTrips.remove(getModelObject().getSPName());
-            ivLike.setSelected(false);
-        }
-
-        bucketListSelectionStorage.save();
     }
 }

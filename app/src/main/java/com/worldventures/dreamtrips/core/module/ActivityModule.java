@@ -16,7 +16,9 @@ import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItDialogPM;
+import com.worldventures.dreamtrips.presentation.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
+import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
@@ -54,6 +56,7 @@ import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.EnrollActivity;
@@ -68,6 +71,7 @@ import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.PhotoCell;
@@ -83,6 +87,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoF
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketListQuickInputFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
@@ -119,6 +124,7 @@ import dagger.Provides;
                 FBPickPhotoActivity.class,
                 CreatePhotoActivity.class,
                 LaunchActivityPresentation.class,
+                BucketListQuickInputPM.class,
                 LoginActivityPresentation.class,
                 LoginFragmentPresentation.class,
                 WebViewFragmentPresentation.class,
@@ -146,6 +152,7 @@ import dagger.Provides;
                 EnrollActivity.class,
                 EnrollActivityPresentation.class,
                 FiltersFragmentPM.class,
+                BucketListQuickInputFragment.class,
                 DetailedImagePagerFragmentPresentation.class,
                 FragmentMapInfoPM.class,
                 BookItDialogPM.class,
@@ -158,6 +165,8 @@ import dagger.Provides;
                 MapFragmentPM.class,
                 FSPhotoPM.class,
                 FSInspireMePM.class,
+                BucketListEditActivity.class,
+                BucketListEditActivityPM.class,
                 BaseFSViewPM.class,
                 ImageUploadTaskPM.class,
                 LoginHelper.class,
@@ -204,6 +213,7 @@ import dagger.Provides;
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,
+                BucketQuickCell.class,
 
                 BaseArrayListAdapter.class,
                 FilterableArrayListAdapter.class,

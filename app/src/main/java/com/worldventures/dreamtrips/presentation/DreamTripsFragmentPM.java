@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
@@ -35,6 +36,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -67,6 +69,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     EventBus eventBus;
 
     @Inject
+    SnappyRepository db;
+
+    @Inject
     LoaderFactory loaderFactory;
     private CollectionController<Trip> tripsController;
 
@@ -92,16 +97,23 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super.init();
 
         this.tripsController = loaderFactory.create(0, (context, params) -> {
+            try {
                 if (needUpdate() || loadFromApi) {
                     this.loadFromApi = false;
                     this.data.clear();
                     this.data.addAll(this.loadTrips());
-                    SnappyUtils.saveTrips(context, this.data);
+                    db.saveTrips(this.data);
                     prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
                 } else {
                     this.data.clear();
-                    this.data.addAll(SnappyUtils.getTrips(context));
+                        this.data.addAll(db.getTrips());
+
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             List<Trip> filteredData = performFiltering(data);
 
@@ -186,7 +198,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         final Callback<JsonObject> callback = new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject, Response response) {
-                SnappyUtils.saveTrip(context, trip);
+                db.saveTrip(trip);
             }
 
             @Override
@@ -220,9 +232,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         activityRouter.openTripDetails(trip);
     }
 
-    public boolean needUpdate() {
+    public boolean needUpdate() throws ExecutionException, InterruptedException {
         long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA;
+        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
     }
 
     public static interface View extends BasePresentation.View {

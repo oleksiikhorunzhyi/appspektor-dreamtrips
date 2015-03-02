@@ -33,20 +33,12 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:alpha="0.8"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="100dp"
             android:padding="22dp"
             android:text="@string/bucket_list_add"
             android:textColor="@android:color/black"
             android:textSize="20dp" />
 
-        <ImageView
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="100dp"
-            android:layout_below="@+id/textViewEmptyAdd"
-            android:src="@drawable/arrow"
-            />
     </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout

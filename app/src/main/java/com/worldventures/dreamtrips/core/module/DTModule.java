@@ -3,16 +3,10 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-import com.snappydb.SnappyDB;
-import com.snappydb.SnappydbException;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
-import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
-import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
@@ -24,7 +18,6 @@ import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
-import com.worldventures.dreamtrips.utils.SnappyUtils;
 
 import javax.inject.Singleton;
 

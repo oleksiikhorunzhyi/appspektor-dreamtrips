@@ -7,7 +7,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -34,15 +33,12 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     @Global
     protected EventBus eventBus;
 
-    @Inject
-    DreamSpiceManager spiceManager;
-
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
             final File file = new File(image.getFileThumbnail());
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
-            spiceManager.execute(new DreamTripsRequest.UploadAvatarRequest(typedFile), new RequestListener<User>() {
+            dreamSpiceManager.execute(new DreamTripsRequest.UploadAvatarRequest(typedFile), new RequestListener<User>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     view.avatarProgressVisible(false);

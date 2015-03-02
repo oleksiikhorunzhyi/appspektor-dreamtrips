@@ -60,7 +60,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
 
-        this.recyclerView.setEmptyView(emptyView);
+    //    this.recyclerView.setEmptyView(emptyView);
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(Trip.class, TripCell.class);

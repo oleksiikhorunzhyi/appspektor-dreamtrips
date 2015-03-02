@@ -30,9 +30,6 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
     private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
     public static final int LIFE_DURATION = 30;
 
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
-
     public BookItActivityPresentation(BookItActivityPresentation.View view) {
         super(view);
     }

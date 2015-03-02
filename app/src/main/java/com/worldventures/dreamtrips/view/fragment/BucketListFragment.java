@@ -54,7 +54,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setEmptyView(emptyView);
+     //   this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(BucketItem.class, BucketItemCell.class);

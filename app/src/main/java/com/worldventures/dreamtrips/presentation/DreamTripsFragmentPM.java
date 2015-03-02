@@ -44,9 +44,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     DreamTripsApi dreamTripsApi;
 
     @Inject
-    DreamSpiceManager dreamSpiceManager;
-
-    @Inject
     Prefs prefs;
 
     @Inject

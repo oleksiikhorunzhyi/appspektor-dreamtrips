@@ -44,6 +44,28 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
             }));
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStop() {
+        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
+        // ugly if statement.
+        if (getPresentationModel().getDreamSpiceManager().isStarted()) {
+            getPresentationModel().getDreamSpiceManager().shouldStop();
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presentationModel.getDreamSpiceManager().start(getActivity());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

@@ -23,6 +23,5 @@ public class InspireMePM extends TripImagesListPM<Inspiration> {
     @Override
     public void loadPhotos(int perPage, int page, RequestListener<ArrayList<Inspiration>> callback) {
         dreamSpiceManager.execute(new DreamTripsRequest.GetInspireMePhotos(perPage, page), callback);
-
     }
 }

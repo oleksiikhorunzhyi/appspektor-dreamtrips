@@ -59,7 +59,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         eventBus.register(this);
 
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-        this.recyclerView.setEmptyView(emptyView);
+     //   this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);

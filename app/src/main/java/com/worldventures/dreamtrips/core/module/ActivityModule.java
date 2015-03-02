@@ -258,7 +258,6 @@ public class ActivityModule {
 
 
     @Provides
-    @Singleton
     DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }

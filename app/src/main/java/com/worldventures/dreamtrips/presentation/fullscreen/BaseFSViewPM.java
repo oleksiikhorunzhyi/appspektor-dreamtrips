@@ -28,8 +28,6 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresentation<BaseFSViewPM.View> {
 
     @Inject
-    DreamSpiceManager dreamSpiceManager;
-    @Inject
     @Global
     EventBus eventBus;
 

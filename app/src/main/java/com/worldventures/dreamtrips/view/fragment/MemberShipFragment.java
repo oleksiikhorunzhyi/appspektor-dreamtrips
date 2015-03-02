@@ -45,7 +45,7 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-        this.recyclerView.setEmptyView(emptyView);
+      //  this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);

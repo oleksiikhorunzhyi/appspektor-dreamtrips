@@ -16,8 +16,6 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     @Inject
     AppSessionHolder appSessionHolder;
 
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
 
     public LoginFragmentPresentation(View view) {
         super(view);

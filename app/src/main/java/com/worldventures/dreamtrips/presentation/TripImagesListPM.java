@@ -7,7 +7,6 @@ import android.util.Log;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -36,17 +35,41 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public static final int PER_PAGE = 15;
     @Inject
-    protected DreamSpiceManager dreamSpiceManager;
-
-    @Inject
     protected Context context;
     protected Type type;
     @Inject
     @Global
     EventBus eventBus;
     int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
-    private RequestListener<ArrayList<T>> cbNext;
-    private RequestListener<ArrayList<T>> cbRefresh;
+    private RequestListener<ArrayList<T>> cbNext = new RequestListener<ArrayList<T>>() {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            view.finishLoading();
+        }
+
+        @Override
+        public void onRequestSuccess(ArrayList<T> objects) {
+            List<IFullScreenAvailableObject> list = new ArrayList<>(view.getPhotosFromAdapter());
+            list.addAll(objects);
+            eventBus.postSticky(FSUploadEvent.create(type, list));
+            view.finishLoading();
+        }
+    };
+    private RequestListener<ArrayList<T>> cbRefresh = new RequestListener<ArrayList<T>>() {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            view.finishLoading();
+        }
+
+        @Override
+        public void onRequestSuccess(ArrayList<T> objects) {
+            List<IFullScreenAvailableObject> list = new ArrayList<>();
+            list.addAll(objects);
+            resetLazyLoadFields();
+            eventBus.postSticky(FSUploadEvent.create(type, list));
+            view.finishLoading();
+        }
+    };
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
@@ -54,36 +77,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     public TripImagesListPM(View view, Type type) {
         super(view);
         this.type = type;
-        cbNext = new RequestListener<ArrayList<T>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.finishLoading();
-            }
-
-            @Override
-            public void onRequestSuccess(ArrayList<T> objects) {
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.finishLoading();
-                eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
-            }
-        };
-
-        cbRefresh = new RequestListener<ArrayList<T>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.finishLoading();
-            }
-
-            @Override
-            public void onRequestSuccess(ArrayList<T> objects) {
-                view.clear();//PullTORefresh
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.finishLoading();
-
-                resetLazyLoadFields();
-                eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
-            }
-        };
     }
 
     public static TripImagesListPM create(Type type, View view) {

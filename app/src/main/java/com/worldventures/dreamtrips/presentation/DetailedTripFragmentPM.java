@@ -30,8 +30,6 @@ import de.greenrobot.event.EventBus;
  */
 public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmentPM.View> {
 
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
 
     @Global
     @Inject

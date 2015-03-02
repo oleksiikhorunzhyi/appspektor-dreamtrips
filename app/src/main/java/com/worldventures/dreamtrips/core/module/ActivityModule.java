@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.techery.spares.module.Annotations.ForActivity;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
@@ -211,6 +214,9 @@ import dagger.Provides;
 
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
+
+                LoaderRecycleAdapter.class,
+                IRoboSpiceAdapter.class
         },
         complete = false,
         library = true
@@ -259,6 +265,12 @@ public class ActivityModule {
 
     @Provides
     DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
+        return new DreamSpiceManager(DreamSpiceService.class, injector);
+    }
+
+    @Provides
+    @ForActivity
+    DreamSpiceManager provideSpiceManagerForActivity(BaseApplicationWithInjector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 

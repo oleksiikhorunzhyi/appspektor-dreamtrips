@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
@@ -39,15 +39,15 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
     @InjectView(R.id.ll_empty_view)
     ViewGroup emptyView;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-      //  this.recyclerView.setEmptyView(emptyView);
+          this.recyclerView.setEmptyView(emptyView);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);

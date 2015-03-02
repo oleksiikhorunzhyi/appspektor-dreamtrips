@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
@@ -44,7 +45,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Global
     EventBus eventBus;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -54,9 +55,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.recyclerView.setLayoutManager(layoutManager);
-     //   this.recyclerView.setEmptyView(emptyView);
+        this.recyclerView.setEmptyView(emptyView);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(BucketItem.class, BucketItemCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);

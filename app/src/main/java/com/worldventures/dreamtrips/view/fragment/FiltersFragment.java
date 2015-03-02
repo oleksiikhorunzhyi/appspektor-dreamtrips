@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
@@ -43,7 +44,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @InjectView(R.id.progressBarFilters)
     ProgressBar progressBar;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -52,7 +53,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         this.recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Region.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);

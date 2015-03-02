@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
@@ -59,15 +60,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         eventBus.register(this);
 
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-     //   this.recyclerView.setEmptyView(emptyView);
+           this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-        //   this.arrayListAdapter.registerCell(ImageUploadTaskRealmProxy.class, PhotoUploadCell.class);
-        //   this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTask.ImageUploadTaskFullscreen.class, PhotoUploadCell.class);
-
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
         this.refreshLayout.setOnRefreshListener(this);
@@ -147,6 +145,11 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     @Override
     public void setSelection() {
 
+    }
+
+    @Override
+    public IRoboSpiceAdapter getAdapter() {
+        return arrayListAdapter;
     }
 
     @Override

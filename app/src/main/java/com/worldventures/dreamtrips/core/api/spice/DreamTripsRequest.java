@@ -1,17 +1,26 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.mime.TypedFile;
 
 public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, DreamTripsApi> {
@@ -102,22 +111,38 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
     }
 
-    public static class GetMyPhotos extends DreamTripsRequest<ArrayList<Photo>> {
+    public static class GetMyPhotos extends DreamTripsRequest<ArrayList<IFullScreenAvailableObject>> {
 
+        private Context context;
         private int currentUserId;
         int perPage;
         int page;
 
-        public GetMyPhotos(int currentUserId, int perPage, int page) {
-            super((Class<ArrayList<Photo>>) new ArrayList<Photo>().getClass());
+        public GetMyPhotos(Context context, int currentUserId, int perPage, int page) {
+            super((Class<ArrayList<IFullScreenAvailableObject>>) new ArrayList<IFullScreenAvailableObject>().getClass());
+            this.context = context;
             this.currentUserId = currentUserId;
             this.perPage = perPage;
             this.page = page;
         }
 
         @Override
-        public ArrayList<Photo> loadDataFromNetwork() throws Exception {
-            return getService().getMyPhotos(currentUserId, perPage, page);
+        public ArrayList<IFullScreenAvailableObject> loadDataFromNetwork() throws Exception {
+            ArrayList<Photo> myPhotos = getService().getMyPhotos(currentUserId, perPage, page);
+            List<ImageUploadTask> uploadTasks = getUploadTasks();
+            ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
+            result.addAll(ImageUploadTask.from(uploadTasks));
+            result.addAll(myPhotos);
+            return result;
+        }
+
+        private List<ImageUploadTask> getUploadTasks() {
+            Repository<ImageUploadTask> repository = new Repository<>(Realm.getInstance(context), ImageUploadTask.class);
+            RealmResults<ImageUploadTask> all = repository.query().findAll();
+            List<ImageUploadTask> list = Arrays.asList(all.toArray(new ImageUploadTask[all.size()]));
+            Collections.reverse(ImageUploadTask.copy(list));
+
+            return list;
         }
     }
 

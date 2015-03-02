@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 
@@ -54,8 +55,9 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     public void onStop() {
         // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
         // ugly if statement.
-        if (getPresentationModel().getDreamSpiceManager().isStarted()) {
-            getPresentationModel().getDreamSpiceManager().shouldStop();
+        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
         }
         super.onStop();
     }
@@ -63,7 +65,8 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     @Override
     public void onStart() {
         super.onStart();
-        presentationModel.getDreamSpiceManager().start(getActivity());
+        DreamSpiceManager dreamSpiceManager = presentationModel.getDreamSpiceManager();
+        if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(getActivity());
     }
 
     @Override

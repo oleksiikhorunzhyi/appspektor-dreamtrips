@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
+import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
@@ -14,10 +15,18 @@ public class YSBHPM extends TripImagesListPM<Photo> {
         super(view, Type.YOU_SHOULD_BE_HERE);
     }
 
-
     @Override
-    public void loadPhotos(int perPage, int page, RequestListener<ArrayList<Photo>> callback) {
-        dreamSpiceManager.execute(new DreamTripsRequest.GetYSBHPhotos(perPage, page), callback);
+    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
+        return new TripImagesRoboSpiceController() {
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
+                return new DreamTripsRequest.GetYSBHPhotos(PER_PAGE, 1);
+            }
 
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getNextPageRequest(int currentCount) {
+                return new DreamTripsRequest.GetYSBHPhotos(PER_PAGE, currentCount / PER_PAGE + 1);
+            }
+        };
     }
 }

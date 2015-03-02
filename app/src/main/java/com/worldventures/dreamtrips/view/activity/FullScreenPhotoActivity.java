@@ -13,12 +13,14 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
@@ -42,7 +44,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     Toolbar toolbar;
     @InjectView(R.id.login_button)
     LoginButton loginButton;
-    BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
+    BasePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
     TripImagesListFragment.Type type;
     private UiLifecycleHelper uiHelper;
@@ -174,7 +176,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         }
 
         if (adapter == null) {
-            adapter = new BaseStatePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
+            adapter = new BasePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
                 @Override
                 public void setArgs(int position, FullScreenPhotoFragment fragment) {
                     Bundle args = new Bundle();
@@ -227,6 +229,11 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     @Override
     public void setSelection() {
         pager.setCurrentItem(position, false);
+    }
+
+    @Override
+    public IRoboSpiceAdapter getAdapter() {
+        return adapter;
     }
 
     @Override

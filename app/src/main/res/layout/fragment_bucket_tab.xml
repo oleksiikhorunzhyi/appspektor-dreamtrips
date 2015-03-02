@@ -22,7 +22,7 @@
         fab:pstsTextStyle="normal"
         fab:pstsUnderlineColor="@color/theme_main_darker" />
 
-    <android.support.v4.view.ViewPager
+    <com.worldventures.dreamtrips.view.custom.CustomViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

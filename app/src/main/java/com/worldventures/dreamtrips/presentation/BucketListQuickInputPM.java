@@ -51,7 +51,7 @@ public class BucketListQuickInputPM extends BasePresentation<BasePresentation.Vi
         BucketItem bucketItem =  new BucketItem();
         bucketItem.setName(title);
         db.addBucketItem(bucketItem, type);
-        data.add(bucketItem);
+        data.add(0, bucketItem);
         adapterController.reload();
     }
 }

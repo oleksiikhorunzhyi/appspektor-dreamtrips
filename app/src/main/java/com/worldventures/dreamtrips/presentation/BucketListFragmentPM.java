@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.snappydb.DB;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.ContentItem;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.SnappyUtils;
+import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class BucketListFragmentPM extends BasePresentation {
     private CollectionController<Object> adapterController;
@@ -52,6 +56,10 @@ public class BucketListFragmentPM extends BasePresentation {
     BucketListSelectionStorage bucketListSelectionStorage;
 
     List<BucketItem> cachedBucketListItems;
+
+    @Global
+    @Inject
+    EventBus eventBus;
 
     @Override
     public void init() {
@@ -94,6 +102,7 @@ public class BucketListFragmentPM extends BasePresentation {
 
             return result;
         });
+        eventBus.register(this);
     }
 
     private String getStringFromAsset(String fileName) {
@@ -113,6 +122,11 @@ public class BucketListFragmentPM extends BasePresentation {
         }
 */
         return "";
+    }
+
+    public void onEvent(DeleteBucketItemEvent event) {
+        db.deleteBucketItem(event.getBucketItem(), type.name());
+        adapterController.reload();
     }
 
     public CollectionController<Object> getAdapterController() {

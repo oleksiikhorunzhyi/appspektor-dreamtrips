@@ -97,6 +97,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super.init();
 
         this.tripsController = loaderFactory.create(0, (context, params) -> {
+            try {
                 if (needUpdate() || loadFromApi) {
                     this.loadFromApi = false;
                     this.data.clear();
@@ -105,14 +106,14 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                     prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
                 } else {
                     this.data.clear();
-                    try {
                         this.data.addAll(db.getTrips());
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             List<Trip> filteredData = performFiltering(data);
 
@@ -231,9 +232,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         activityRouter.openTripDetails(trip);
     }
 
-    public boolean needUpdate() {
+    public boolean needUpdate() throws ExecutionException, InterruptedException {
         long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA;
+        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
     }
 
     public static interface View extends BasePresentation.View {

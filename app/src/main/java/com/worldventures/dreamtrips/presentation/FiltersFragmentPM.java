@@ -93,30 +93,31 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
         this.regionController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate()) {
-                this.regions = this.loadRegion();
-                this.activities = this.dreamTripsApi.getActivities();
+            try {
+                if (needUpdate()) {
+                    this.regions = this.loadRegion();
+                    this.activities = this.dreamTripsApi.getActivities();
 
-                if (activities != null && activities.size() > 0) {
-                    db.putList(this.activities, SnappyRepository.ACTIVITIES, Activity.class);
-                    //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
-                    prefs.put(Prefs.ACTIVITIES_LOADED, true);
-                }
+                    if (activities != null && activities.size() > 0) {
+                        db.putList(this.activities, SnappyRepository.ACTIVITIES, Activity.class);
+                        //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
+                        prefs.put(Prefs.ACTIVITIES_LOADED, true);
+                    }
 
-                if (regions != null && regions.size() > 0) {
-                    db.putList(this.regions, SnappyRepository.REGIONS, Region.class);
-                 //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
-                    prefs.put(Prefs.REGIONS_LOADED, true);
-                }
-            } else {
-                try {
+                    if (regions != null && regions.size() > 0) {
+                        db.putList(this.regions, SnappyRepository.REGIONS, Region.class);
+                        //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
+                        prefs.put(Prefs.REGIONS_LOADED, true);
+                    }
+                } else {
                     this.regions = db.readList(SnappyRepository.REGIONS, Region.class);
                     this.activities = db.readList(SnappyRepository.ACTIVITIES, Activity.class);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             parentActivities = getParentActivities();
@@ -230,8 +231,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         return regionController;
     }
 
-    private boolean needUpdate() {
-        return !prefs.getBoolean(Prefs.REGIONS_LOADED) || !prefs.getBoolean(Prefs.ACTIVITIES_LOADED);
+    private boolean needUpdate() throws ExecutionException, InterruptedException {
+        return db.isEmpty(SnappyRepository.REGIONS) && db.isEmpty(SnappyRepository.ACTIVITIES);
     }
 
     public List<Region> loadRegion() {

@@ -30,8 +30,8 @@ public class SnappyRepository {
     public static final String REGIONS = "regions";
     public static final String ACTIVITIES = "activities";
 
-    private static final String TRIP_KEY = "trip";
-    private static final String BUCKET_KEY = "bucket";
+    public static final String TRIP_KEY = "trip";
+    public static final String BUCKET_KEY = "bucket";
 
 
     private Context context;
@@ -117,6 +117,20 @@ public class SnappyRepository {
         snappyDB.put(BUCKET_KEY + ":" + type + ":" + id, bucketItem);
     }
 
+    public Boolean isEmpty(String key) throws ExecutionException, InterruptedException {
+        Future<Boolean> future = executorService.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                DB snappyDb = DBFactory.open(context);
+                String[] keys = snappyDb.findKeys(key);
+                snappyDb.close();
+                return keys == null || keys.length == 0;
+            }
+        });
+        return future.get();
+
+    }
+
     public List<BucketItem> getBucketItems(String type) throws ExecutionException, InterruptedException {
         Future<List<BucketItem>> future = executorService.submit(new Callable<List<BucketItem>>() {
             @Override
@@ -138,6 +152,19 @@ public class SnappyRepository {
         });
         return future.get();
 
+    }
+
+    public void deleteBucketItem(BucketItem object, String type) {
+        executorService.execute(() -> {
+            DB snappyDb = null;
+            try {
+                snappyDb = DBFactory.open(context);
+                snappyDb.del(BUCKET_KEY + ":" + type + ":" + object.getId());
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 

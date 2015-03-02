@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -11,11 +13,13 @@ import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 
 import butterknife.InjectView;
 
@@ -23,6 +27,7 @@ import butterknife.InjectView;
  * Created by 1 on 26.02.15.
  */
 @Layout(R.layout.fragment_bucket__quick_input)
+@MenuResource(R.menu.menu_bucket_quick)
 public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickInputPM> {
 
     @InjectView(R.id.recyclerViewBucketItems)
@@ -40,7 +45,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
         this.recyclerView.setLayoutManager(layoutManager);
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.arrayListAdapter.registerCell(BucketItem.class, BucketItemCell.class);
+        this.arrayListAdapter.registerCell(BucketItem.class, BucketQuickCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -53,6 +58,23 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
                     return false;
                 }
         );
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                String text = editTextQuick.getText().toString();
+                if (!TextUtils.isEmpty(text)) {
+                    getPresentationModel().addToBucketList(text);
+                    editTextQuick.setText("");
+                } else {
+                    editTextQuick.requestFocus();
+                }
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

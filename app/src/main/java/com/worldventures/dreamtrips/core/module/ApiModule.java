@@ -128,12 +128,6 @@ public class ApiModule {
     }
 
     @Provides
-    @Singleton
-    DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
-        return new DreamSpiceManager(DreamSpiceService.class, injector);
-    }
-
-    @Provides
     OkHttpClient provideOkHttpClient(Context context) {
         OkHttpClient okHttpClient = new OkHttpClient();
         CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);

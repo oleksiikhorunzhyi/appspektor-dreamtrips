@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
@@ -43,6 +42,9 @@ public interface DreamTripsApi {
     @GET("/api/regions")/*TODO*/
     public List<Region> getRegions();
 
+    @GET("/api/activities")/*TODO*/
+    public List<Activity> getActivities();
+
     @GET("/api/photos")
     public ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
@@ -68,19 +70,17 @@ public interface DreamTripsApi {
     @DELETE("/api/photos/{id}/like")
     public JsonObject unlikePhoto(@Path("id") int photoId);
 
+    @POST("/api/trips/{id}/like")
+    public JsonObject likeTrip(@Path("id") int photoId);
+
+    @DELETE("/api/trips/{id}/like")
+    public JsonObject unlikeTrio(@Path("id") int photoId);
+
     @POST("/api/photos")
     public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
-    @POST("/api/trips/{id}/like")
-    public void likeTrip(@Path("id") int photoId, Callback<JsonObject> callback);
-
-    @DELETE("/api/trips/{id}/like")
-    public void unlikeTrio(@Path("id") int photoId, Callback<JsonObject> callback);
 
     @GET("/api/trips/{id}/details")
-    public void getDetails(@Path("id") int tripId, Callback<TripDetails> callback);
-
-    @GET("/api/activities")
-    public List<Activity> getActivities();
+    public TripDetails getDetails(@Path("id") int tripId);
 
 }

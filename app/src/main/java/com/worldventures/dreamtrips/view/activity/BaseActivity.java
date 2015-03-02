@@ -57,7 +57,7 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     protected void onStop() {
-        spiceManager.shouldStop();
+        if (spiceManager.isStarted()) spiceManager.shouldStop();
         super.onStop();
     }
 

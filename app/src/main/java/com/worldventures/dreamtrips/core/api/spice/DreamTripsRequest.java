@@ -6,7 +6,9 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
 
@@ -178,6 +180,67 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public JsonObject loadDataFromNetwork() throws Exception {
             return getService().unlikePhoto(photoId);
+        }
+    }
+
+    public static class LikeTrip extends DreamTripsRequest<JsonObject> {
+
+        private int photoId;
+
+        public LikeTrip(int photoId) {
+            super(JsonObject.class);
+            this.photoId = photoId;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() throws Exception {
+            return getService().likeTrip(photoId);
+        }
+    }
+
+    public static class UnlikeTrip extends DreamTripsRequest<JsonObject> {
+
+        private int photoId;
+
+        public UnlikeTrip(int photoId) {
+            super(JsonObject.class);
+            this.photoId = photoId;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() throws Exception {
+            return getService().unlikeTrio(photoId);
+        }
+    }
+
+    public static class GetDetails extends DreamTripsRequest<TripDetails> {
+
+        private int tripId;
+
+        public GetDetails(int tripId) {
+            super(TripDetails.class);
+            this.tripId = tripId;
+        }
+
+        @Override
+        public TripDetails loadDataFromNetwork() throws Exception {
+            return getService().getDetails(tripId);
+        }
+    }
+
+    public static class UploadTripPhoto extends DreamTripsRequest<Photo> {
+
+
+        private ImageUploadTask uploadTask;
+
+        public UploadTripPhoto(ImageUploadTask uploadTask) {
+            super(Photo.class);
+            this.uploadTask = uploadTask;
+        }
+
+        @Override
+        public Photo loadDataFromNetwork() throws Exception {
+            return getService().uploadTripPhoto(uploadTask);
         }
     }
 

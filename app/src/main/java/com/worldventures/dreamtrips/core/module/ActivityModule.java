@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
@@ -253,6 +254,13 @@ public class ActivityModule {
     @Singleton
     SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+
+    @Provides
+    @Singleton
+    DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
+        return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
 }

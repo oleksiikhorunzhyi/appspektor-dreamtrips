@@ -59,6 +59,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
                     appSessionHolder.put(userSession);
                     view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
                     view.avatarProgressVisible(false);
+                    eventBus.post(new UpdateUserInfoEvent());
                 }
             });
 

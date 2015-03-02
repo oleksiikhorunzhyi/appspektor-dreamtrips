@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
@@ -120,7 +119,6 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void success(JsonObject jsonObject, Response response) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(TripsIntentService.TRIP_EXTRA, trip);
                 eventBus.post(new TripLikedEvent(trip));
                 db.saveTrip(trip);
             }

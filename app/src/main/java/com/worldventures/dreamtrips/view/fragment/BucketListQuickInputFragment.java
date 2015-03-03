@@ -79,7 +79,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
     @Override
     protected BucketListQuickInputPM createPresentationModel(Bundle savedInstanceState) {
-        String type = getArguments().getString(BucketListEditActivity.EXTRA_TYPE);
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
         return new BucketListQuickInputPM(this, type);
     }
 }

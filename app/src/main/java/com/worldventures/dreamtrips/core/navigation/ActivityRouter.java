@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -67,9 +68,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
-    public void openBucketListEditActivity(String type) {
+    public void openBucketListEditActivity(BucketTabsFragment.Type type, State state) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, state);
         startActivity(BucketListEditActivity.class, bundle);
     }
 

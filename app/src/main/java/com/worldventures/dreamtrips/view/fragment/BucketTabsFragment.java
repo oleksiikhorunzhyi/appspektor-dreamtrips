@@ -95,6 +95,12 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
     }
 
 
+    @OnClick(R.id.fab_popular)
+    public void actionPopular(View view) {
+        getPresentationModel().addPopular(pager.getCurrentItem());
+        this.multipleActionsDown.collapse();
+    }
+
     public enum Type {
         LOCATIONS("bucket/bucket_list_locations.json", R.string.location),
         ACTIVITIES("bucket/bucket_list_activities.json", R.string.activity),

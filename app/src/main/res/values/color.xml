@@ -28,4 +28,7 @@
     <color name="contentItemBackground">#F7F7F7</color>
     <color name="contentItemTextColor">#8A8A8A</color>
 
+    <color name="bucket_button_selected">#005E92</color>
+    <color name="bucket_button_default">#404040</color>
+
 </resources>

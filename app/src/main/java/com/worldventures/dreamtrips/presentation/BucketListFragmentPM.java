@@ -47,9 +47,6 @@ public class BucketListFragmentPM extends BasePresentation {
     Context context;
 
     @Inject
-    Gson gson;
-
-    @Inject
     SnappyRepository db;
 
     @Inject

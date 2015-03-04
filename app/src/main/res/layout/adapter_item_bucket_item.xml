@@ -1,47 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_container"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/commonListItemStyle"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="wrap_content">
+    android:layout_height="48dp"
+    android:background="@drawable/bg_swipe_item_neutral">
 
-    <LinearLayout
-        android:background="@color/instabug_annotation_color_red"
-        android:id="@+id/bottom_wrapper"
-        android:layout_width="wrap_content"
-        android:weightSum="1"
-        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/delete"
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        tools:ignore="UselessParent">
+
+
+        <com.andexert.library.RippleView
+            android:layout_toEndOf="@+id/checkBox"
+            android:layout_toRightOf="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="16dp"
-            android:src="@drawable/ic_delete_white"/>
-    </LinearLayout>
+            ripple:rv_centered="true"
+            ripple:rv_color="#D3D3D3">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:padding="16dp"
-        android:layout_height="wrap_content"
-        >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true">
 
-        <CheckBox
-            android:id="@+id/checkBoxDone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                <View
+                    android:id="@+id/draggable"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </com.andexert.library.RippleView>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:id="@+id/tv_name"
-            android:textColor="@android:color/black" />
+            android:layout_toEndOf="@+id/checkBox"
+            android:layout_toRightOf="@+id/checkBox"
+            android:gravity="center_vertical"
+            tools:ignore="RtlHardcoded" />
 
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
-    </LinearLayout>
-
-
-</com.daimajia.swipe.SwipeLayout>
+</FrameLayout>

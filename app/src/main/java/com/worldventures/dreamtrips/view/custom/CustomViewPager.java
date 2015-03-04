@@ -1,9 +1,13 @@
 package com.worldventures.dreamtrips.view.custom;
 
 import android.content.Context;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.View;
 
 public class CustomViewPager extends ViewPager {
 
@@ -29,5 +33,15 @@ public class CustomViewPager extends ViewPager {
 
     public void setPagingEnabled(boolean b) {
         this.isPagingEnabled = b;
+    }
+
+    @Override
+    protected boolean canScroll(View v, boolean checkV, int dx, int x,
+                                int y) {
+        if (v instanceof RecyclerView) {
+            return(true);
+        }
+
+        return(super.canScroll(v, checkV, dx, x, y));
     }
 }

@@ -61,7 +61,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
         }
 
         pager.setAdapter(adapter);
-        pager.setPagingEnabled(false);
+        pager.setPagingEnabled(true);
         tabs.setViewPager(pager);
         swLiked.setChecked(getPresentationModel().isFilterEnabled());
         swLiked.setOncheckListener(b -> {

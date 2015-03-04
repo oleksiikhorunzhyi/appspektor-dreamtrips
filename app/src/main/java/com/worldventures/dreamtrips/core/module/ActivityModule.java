@@ -69,6 +69,7 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
@@ -222,6 +223,7 @@ import dagger.Provides;
                 BucketPopularCell.class,
 
                 BaseArrayListAdapter.class,
+                MyDraggableSwipeableItemAdapter.class,
                 FilterableArrayListAdapter.class,
                 UploadJob.class,
 

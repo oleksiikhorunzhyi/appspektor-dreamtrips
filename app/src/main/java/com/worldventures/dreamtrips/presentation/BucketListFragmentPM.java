@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class BucketListFragmentPM extends BasePresentation {
-    private CollectionController<Object> adapterController;
+    private CollectionController<BucketItem> adapterController;
     private BucketTabsFragment.Type type;
 
     public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
@@ -62,7 +62,7 @@ public class BucketListFragmentPM extends BasePresentation {
     public void init() {
         super.init();
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
-            ArrayList<Object> result = new ArrayList<>();
+            ArrayList<BucketItem> result = new ArrayList<>();
 
             try {
                 result.addAll(db.getBucketItems(type.name()));
@@ -126,7 +126,7 @@ public class BucketListFragmentPM extends BasePresentation {
         adapterController.reload();
     }
 
-    public CollectionController<Object> getAdapterController() {
+    public CollectionController<BucketItem> getAdapterController() {
         return adapterController;
     }
 

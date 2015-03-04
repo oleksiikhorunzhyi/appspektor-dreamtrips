@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListQuickInputFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
@@ -35,6 +36,7 @@ public enum State {
     MAP_INFO(FragmentMapTripInfo.class, 0),
     BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
     QUICK_INPUT(BucketListQuickInputFragment.class, R.string.bucket_list_my_title),
+    POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_my_title),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership, -1, R.drawable.ic_membership, 2),
     MAP(MapFragment.class, R.string.title_activity_main, -1, R.drawable.ic_dreamtrips, 0),
     DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, 0, R.drawable.ic_dreamtrips, 0),

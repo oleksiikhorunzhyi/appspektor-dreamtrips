@@ -20,7 +20,7 @@ public class BucketListQuickInputPM extends BasePresentation<BasePresentation.Vi
 
     private CollectionController<Object> adapterController;
     private List<BucketItem> data = new ArrayList<>();
-    private String type;
+    private BucketTabsFragment.Type type;
 
     @Inject
     LoaderFactory loaderFactory;
@@ -28,7 +28,7 @@ public class BucketListQuickInputPM extends BasePresentation<BasePresentation.Vi
     @Inject
     SnappyRepository db;
 
-    public BucketListQuickInputPM(View view, String type) {
+    public BucketListQuickInputPM(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
     }
@@ -50,7 +50,7 @@ public class BucketListQuickInputPM extends BasePresentation<BasePresentation.Vi
     public void addToBucketList(String title) {
         BucketItem bucketItem =  new BucketItem();
         bucketItem.setName(title);
-        db.addBucketItem(bucketItem, type);
+        db.addBucketItem(bucketItem, type.name());
         data.add(0, bucketItem);
         adapterController.reload();
     }

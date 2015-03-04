@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItDialogPM;
 import com.worldventures.dreamtrips.presentation.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
+import com.worldventures.dreamtrips.presentation.BucketListPopularPM;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
@@ -68,9 +69,11 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
@@ -87,6 +90,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoF
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookAlbumItem;
 import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListQuickInputFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
@@ -168,6 +172,7 @@ import dagger.Provides;
                 BucketListEditActivity.class,
                 BucketListEditActivityPM.class,
                 BaseFSViewPM.class,
+                BucketListPopularPM.class,
                 ImageUploadTaskPM.class,
                 LoginHelper.class,
 
@@ -185,6 +190,7 @@ import dagger.Provides;
                 TripImagesTabsFragment.class,
                 StaticInfoFragment.class,
                 FacebookAlbumFragment.class,
+                BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
                 StaticInfoFragment.BookItFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
@@ -214,8 +220,10 @@ import dagger.Provides;
                 SoldOutCell.class,
                 DateCell.class,
                 BucketQuickCell.class,
+                BucketPopularCell.class,
 
                 BaseArrayListAdapter.class,
+                MyDraggableSwipeableItemAdapter.class,
                 FilterableArrayListAdapter.class,
                 UploadJob.class,
 

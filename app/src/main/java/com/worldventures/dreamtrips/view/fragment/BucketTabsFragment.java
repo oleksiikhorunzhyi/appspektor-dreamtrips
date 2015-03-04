@@ -61,7 +61,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
         }
 
         pager.setAdapter(adapter);
-        pager.setPagingEnabled(false);
+        pager.setPagingEnabled(true);
         tabs.setViewPager(pager);
         swLiked.setChecked(getPresentationModel().isFilterEnabled());
         swLiked.setOncheckListener(b -> {
@@ -94,6 +94,12 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
         this.multipleActionsDown.collapse();
     }
 
+
+    @OnClick(R.id.fab_popular)
+    public void actionPopular(View view) {
+        getPresentationModel().addPopular(pager.getCurrentItem());
+        this.multipleActionsDown.collapse();
+    }
 
     public enum Type {
         LOCATIONS("bucket/bucket_list_locations.json", R.string.location),

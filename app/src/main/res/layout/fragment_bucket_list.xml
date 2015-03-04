@@ -19,8 +19,8 @@
             android:id="@+id/textViewEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.5"
             android:layout_marginTop="60dp"
+            android:alpha="0.5"
             android:padding="22dp"
             android:text="@string/bucket_list_create_message"
             android:textColor="@android:color/black"
@@ -28,12 +28,12 @@
 
         <TextView
             android:id="@+id/textViewEmptyAdd"
-            android:layout_below="@id/textViewEmpty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:alpha="0.8"
+            android:layout_below="@id/textViewEmpty"
             android:layout_marginTop="100dp"
+            android:alpha="0.8"
+            android:gravity="center"
             android:padding="22dp"
             android:text="@string/bucket_list_add"
             android:textColor="@android:color/black"
@@ -41,20 +41,13 @@
 
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
+
+    <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+        android:id="@+id/lv_items"
+        style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:visibility="visible">
+        android:padding="@dimen/margin_small" />
 
-        <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
-            android:id="@+id/lv_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/margin_small" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

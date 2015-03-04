@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -79,7 +80,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
     @Override
     protected BucketListQuickInputPM createPresentationModel(Bundle savedInstanceState) {
-        String type = getArguments().getString(BucketListEditActivity.EXTRA_TYPE);
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
         return new BucketListQuickInputPM(this, type);
     }
 }

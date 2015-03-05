@@ -1,10 +1,13 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
+import android.util.Log;
+
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.Session;
@@ -36,8 +39,9 @@ public class DreamSpiceManager extends SpiceManager {
         injector.inject(this);
     }
 
-
     public <T> void execute(final SpiceRequest<T> request, final RequestListener<T> requestListener) {
+        request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
+        Log.w("SpiceManagerThread", "manager started:" + isStarted() + "; execute:" + request.getClass().getSimpleName());
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {

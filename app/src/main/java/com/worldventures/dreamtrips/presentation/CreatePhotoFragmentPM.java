@@ -3,8 +3,15 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.service.ServiceActionRunner;
-import com.worldventures.dreamtrips.core.uploader.UploadingService;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.repository.Repository;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,6 +23,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> {
@@ -24,7 +33,8 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
     @Inject
-    ServiceActionRunner serviceActionRunner;
+    @Global
+    EventBus eventBus;
     private String date;
     private String time;
 
@@ -61,15 +71,34 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         if (view.getImageUri().toString().isEmpty()) {
             view.informUser("Wrong image");
         } else {
-            UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
-            action.setFileUri(view.getImageUri().toString());
-            action.setTitle(view.getTitle());
-            action.setTags(getParsedText(view.getTags()));
-            action.setLatitude(0);
-            action.setLongitude(0);
-            action.setLocationName(view.getLocation());
-            action.setShotAt(getParsedDateTime(view.getDate(), view.getTime()));
-            serviceActionRunner.from(UploadingService.class).run(action);
+            Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
+            ImageUploadTask ut = repository.create(new Repository.Consumer<ImageUploadTask>() {
+                @Override
+                public void consume(ImageUploadTask action) {
+                    action.setFileUri(view.getImageUri().toString());
+                    action.setTitle(view.getTitle());
+                    //   action.setTags(getParsedText(view.getTags()));
+                    action.setLatitude(0);
+                    action.setLongitude(0);
+                    action.setLocationName(view.getLocation());
+                    action.setShotAt(getParsedDateTime(view.getDate(), view.getTime()));
+
+                }
+            });
+            ImageUploadTask task = ImageUploadTask.copy(ut);
+            DreamTripsRequest.UploadTripPhoto uploadTripPhoto = new DreamTripsRequest.UploadTripPhoto(task);
+            view.inject(uploadTripPhoto);
+            dreamSpiceManager.execute(uploadTripPhoto, new RequestListener<Photo>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+
+                }
+
+                @Override
+                public void onRequestSuccess(Photo o) {
+
+                }
+            });
             view.end();
         }
     }
@@ -131,5 +160,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         void setDate(String format);
 
         void setTime(String format);
+
+        void inject(Object o);
     }
 }

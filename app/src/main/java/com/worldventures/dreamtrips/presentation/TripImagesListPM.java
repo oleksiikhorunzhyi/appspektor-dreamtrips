@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -41,35 +42,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     @Global
     EventBus eventBus;
     int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
-    /* private RequestListener<ArrayList<T>> cbNext = new RequestListener<ArrayList<T>>() {
-         @Override
-         public void onRequestFailure(SpiceException spiceException) {
-             view.finishLoading();
-         }
 
-         @Override
-         public void onRequestSuccess(ArrayList<T> objects) {
-             List<IFullScreenAvailableObject> list = new ArrayList<>(view.getPhotosFromAdapter());
-             list.addAll(objects);
-             eventBus.postSticky(FSUploadEvent.create(type, list));
-             view.finishLoading();
-         }
-     };
-     private RequestListener<ArrayList<T>> cbRefresh = new RequestListener<ArrayList<T>>() {
-         @Override
-         public void onRequestFailure(SpiceException spiceException) {
-             view.finishLoading();
-         }
-
-         @Override
-         public void onRequestSuccess(ArrayList<T> objects) {
-             ArrayList<IFullScreenAvailableObject> list = new ArrayList<>();
-             list.addAll(objects);
-             resetLazyLoadFields();
-             eventBus.postSticky(FSUploadEvent.create(type, list));
-             view.finishLoading();
-         }
-     };*/
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
@@ -112,11 +85,10 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     private void handleNewPhotoEvent(FSUploadEvent event) {
         new Handler().postDelayed(() -> {
-            if (type == event.getType()) {
+            if (type == event.getType() && view.getAdapter().getCount() == 0) {
                 view.clear();
                 view.addAll(event.getImages());
                 view.setSelection();
-
             }
         }, 100);
     }
@@ -133,17 +105,23 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         visibleItemCount = childCount;
         totalItemCount = itemCount;
         firstVisibleItem = firstVisibleItemPosition;
+        Log.v("LoadNext", "------------------------");
+        Log.v("LoadNext", "" + this.hashCode() + " " + view.hashCode());
+        Log.v("LoadNext", "in scrolled childCount:" + childCount + "; itemCount:" + itemCount + "; firstVisibleItemPosition: " + firstVisibleItemPosition);
+        Log.v("LoadNext", "previousTotal:" + previousTotal);
 
-        if (loading) {
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
-            }
+        Log.v("LoadNext", "is loading: " + loading);
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
         }
+        Log.i("LoadNext", "is loading: " + loading);
+
         int page = itemCount / PER_PAGE + 1;
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
             //   loadNext(page);
-            getAdapterRule().loadNext();
+            Log.w("LoadNext", "totalitem count:" + totalItemCount);
+            getAdapterContoller().loadNext();
             loading = true;
         }
     }
@@ -158,26 +136,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         eventBus.unregister(this);
     }
 
-    /*  public void reload() {
-          reload(PER_PAGE);
-      }
-
-      public void reload(int perPage) {
-          view.startLoading();
-          loadMore(perPage, 1, cbRefresh);
-      }
-
-      public void loadNext(int page) {
-          loadMore(PER_PAGE, page, cbNext);
-          Log.d("LOAD INFO", page + " " + PER_PAGE + " ");
-      }
-
-      private void loadMore(int perPage, int page, RequestListener<ArrayList<T>> callback) {
-          loadPhotos(perPage, page, callback);
-      }
-
-    public abstract void loadPhotos(int perPage, int page, RequestListener<ArrayList<T>> callback);
-*/
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
         List<IFullScreenAvailableObject> photos = new ArrayList<>();
@@ -195,7 +153,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void onEventMainThread(PhotoUploadStarted event) {
         if (type != Type.MY_IMAGES) {
-            getAdapterRule().reload();
+            getAdapterContoller().reload();
         } else {
             view.add(0, from(event.getUploadTask()));
         }
@@ -203,7 +161,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void onEventMainThread(PhotoUploadFinished event) {
         if (type != Type.MY_IMAGES) {
-            getAdapterRule().reload();
+            getAdapterContoller().reload();
         } else {
             new Handler().postDelayed(() -> {
                 for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
@@ -237,15 +195,18 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     }
 
 
-    private TripImagesRoboSpiceController getAdapterRule() {
-        roboSpiceAdapterController = getTripImagesRoboSpiceController();
-        roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
-        roboSpiceAdapterController.setAdapter(view.getAdapter());
+    private TripImagesRoboSpiceController getAdapterContoller() {
+        if (roboSpiceAdapterController == null) {
+            roboSpiceAdapterController = getTripImagesRoboSpiceController();
+
+            roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
+            roboSpiceAdapterController.setAdapter(view.getAdapter());
+        }
         return roboSpiceAdapterController;
     }
 
     public void reload() {
-        getAdapterRule().reload();
+        getAdapterContoller().reload();
     }
 
     public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {

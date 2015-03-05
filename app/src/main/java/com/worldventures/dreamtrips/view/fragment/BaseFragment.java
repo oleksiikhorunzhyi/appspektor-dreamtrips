@@ -53,20 +53,42 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void onStop() {
-        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
-        // ugly if statement.
+        stopSpiceManger();
+        super.onStop();
+    }
+
+    private void stopSpiceManger() {
         DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
-        super.onStop();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        DreamSpiceManager dreamSpiceManager = presentationModel.getDreamSpiceManager();
-        if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(getActivity());
+        if (needSpiceManager()) {
+            DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+
+            if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(getActivity());
+        }
+    }
+
+    protected boolean needSpiceManager() {
+        return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (needSpiceManager()) {
+            stopSpiceManager();
+        }
+        super.onDestroy();
+    }
+
+    private void stopSpiceManager() {
+        if (getPresentationModel() != null)
+            getPresentationModel().destroy();
     }
 
     @Override

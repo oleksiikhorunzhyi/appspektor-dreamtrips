@@ -27,6 +27,7 @@ public class ImageUploadTask extends RealmObject implements Serializable {
     private float longitude;
     private Date shotAt;
     private String originUrl;
+  //  private ArrayList<String> tags;
 
     /**
      * Temporary for fix RealmDB null object problem
@@ -140,6 +141,14 @@ public class ImageUploadTask extends RealmObject implements Serializable {
     public void setOriginUrl(String originUrl) {
         this.originUrl = originUrl;
     }
+
+  //  public void setTags(ArrayList<String> tags) {
+  //      this.tags = tags;
+  //  }
+
+ //   public ArrayList<String> getTags() {
+//        return tags;
+//    }
 
     public static class ImageUploadTaskFullscreen implements IFullScreenAvailableObject {
         private Image image;

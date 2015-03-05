@@ -44,7 +44,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     Toolbar toolbar;
     @InjectView(R.id.login_button)
     LoginButton loginButton;
-    BasePagerAdapter<FullScreenPhotoFragment> adapter;
+    BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
     TripImagesListFragment.Type type;
     private UiLifecycleHelper uiHelper;
@@ -176,7 +176,7 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         }
 
         if (adapter == null) {
-            adapter = new BasePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
+            adapter = new BaseStatePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
                 @Override
                 public void setArgs(int position, FullScreenPhotoFragment fragment) {
                     Bundle args = new Bundle();
@@ -237,9 +237,8 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-        getPresentationModel().destroy();
     }
 
     @Override

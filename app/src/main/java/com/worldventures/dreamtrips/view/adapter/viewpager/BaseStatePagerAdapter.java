@@ -52,7 +52,7 @@ public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePage
 
     @Override
     public void addItems(ArrayList baseItemClasses) {
-        throw new RuntimeException();
+        //in FullScreenPhotoFragment will be called FSUploadEvent, and items are added by activity method add all
     }
 
     @Override

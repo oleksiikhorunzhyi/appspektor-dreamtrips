@@ -98,12 +98,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         }
     }
 
-    @Override
-    public void onDestroy() {
-        if (getPresentationModel() != null)
-            getPresentationModel().destroy();
-        super.onDestroy();
-    }
+
 
     public void onEvent(ScreenOrientationChangeEvent event) {
         boolean landscape = event.isLandscape();

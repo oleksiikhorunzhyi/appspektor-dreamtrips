@@ -91,13 +91,16 @@ public class UploadingService extends InjectingService {
         Log.w(TAG, "onStartCommand");
         this.actionRouter.on(ImageUploadAction.class, (imageUploadParams) -> {
             new Handler().postDelayed(() -> {
-                ImageUploadTask uploadTask = repository.create((task) -> {
-                    task.setFileUri(imageUploadParams.fileUri);
-                    task.setLatitude(imageUploadParams.latitude);
-                    task.setLongitude(imageUploadParams.longitude);
-                    task.setLocationName(imageUploadParams.locationName);
-                    task.setShotAt(imageUploadParams.shotAt);
-                    task.setTitle(imageUploadParams.title);
+                ImageUploadTask uploadTask = repository.create(new Repository.Consumer<ImageUploadTask>() {
+                    @Override
+                    public void consume(ImageUploadTask task) {
+                        task.setFileUri(imageUploadParams.fileUri);
+                        task.setLatitude(imageUploadParams.latitude);
+                        task.setLongitude(imageUploadParams.longitude);
+                        task.setLocationName(imageUploadParams.locationName);
+                        task.setShotAt(imageUploadParams.shotAt);
+                        task.setTitle(imageUploadParams.title);
+                    }
                 });
                 Log.w(TAG, "addJob");
                 uploadJobManager.addJob(new UploadJob(uploadTask.getTaskId()));

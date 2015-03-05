@@ -7,10 +7,10 @@ import android.view.MotionEvent;
 
 import com.adobe.mobile.Config;
 import com.instabug.library.util.TouchEventDispatcher;
-import com.techery.spares.module.Annotations.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -30,9 +30,7 @@ public abstract class BaseActivity extends InjectingActivity {
     ActivityRouter router;
     @Inject
     UniversalImageLoader imageLoader;
-    @Inject
-    @ForActivity
-    DreamSpiceManager spiceManager;
+
 
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
 
@@ -50,17 +48,15 @@ public abstract class BaseActivity extends InjectingActivity {
         Config.collectLifecycleData(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Config.pauseCollectingLifecycleData();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!spiceManager.isStarted()) spiceManager.start(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (spiceManager.isStarted()) spiceManager.shouldStop();
     }
 
     @Override
@@ -115,10 +111,6 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Config.pauseCollectingLifecycleData();
-    }
+
 }
 

@@ -266,4 +266,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     public void informUser(String stringId) {
         super.informUser(stringId);
     }
+
+    @Override
+    protected boolean needSpiceManager() {
+        return false;
+    }
 }

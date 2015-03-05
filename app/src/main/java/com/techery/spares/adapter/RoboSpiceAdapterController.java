@@ -28,7 +28,7 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
     private RequestListener<ArrayList<BaseItemClass>> requestListener = new RequestListener<ArrayList<BaseItemClass>>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            onFinish(LoadType.RELOAD, null, spiceException);
+            onFinish(LoadType.APPEND, null, spiceException);
         }
 
         @Override
@@ -68,7 +68,10 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
 
     public void loadNext() {
         onStart(LoadType.RELOAD);
-        spiceManager.execute(getNextPageRequest(adapter.getCount()), requestListener);
+        SpiceRequest<ArrayList<BaseItemClass>> nextPageRequest = getNextPageRequest(adapter.getCount());
+        if (nextPageRequest != null) {
+            spiceManager.execute(nextPageRequest, requestListener);
+        }
     }
 
     public static enum LoadType {

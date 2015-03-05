@@ -37,6 +37,10 @@ public class BasePresentation<VT extends BasePresentation.View> {
 
     }
 
+    public void destroy() {
+
+    }
+
     public void resume() {
 
     }

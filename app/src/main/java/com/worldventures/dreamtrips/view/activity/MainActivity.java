@@ -8,12 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.presentation.AdapterView;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -166,11 +168,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     protected void initHockeyApp() {
         super.initHockeyApp();
         if (BuildConfig.DEBUG) {
@@ -181,5 +178,30 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @Override
     public void setTitle(int title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unbindDrawables(findViewById(R.id.drawer));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null)
+            view.getBackground().setCallback(null);
+
+        if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            imageView.setImageBitmap(null);
+        } else if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++)
+                unbindDrawables(viewGroup.getChildAt(i));
+
+            if (!(view instanceof AdapterView))
+                viewGroup.removeAllViews();
+        }
     }
 }

@@ -1,9 +1,16 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.amazonaws.event.ProgressListener;
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
+import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
@@ -12,13 +19,24 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
+import com.worldventures.dreamtrips.core.uploader.Constants;
+import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
+import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit.mime.TypedFile;
@@ -107,6 +125,8 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public ArrayList<Inspiration> loadDataFromNetwork() throws Exception {
+            Log.i("LoadNext", "per page: " + perPage + "; page:" + page);
+
             return getService().getInspirationsPhotos(perPage, page);
         }
     }
@@ -255,6 +275,18 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
     public static class UploadTripPhoto extends DreamTripsRequest<Photo> {
 
+        @Inject
+        transient TransferManager transferManager;
+        @Inject
+        transient UploadingFileManager uploadingFileManager;
+        @Inject
+        @Global
+        transient EventBus eventBus;
+        @Inject
+        transient Context context;
+
+        transient double byteTransferred;
+        transient int lastPercent;
 
         private ImageUploadTask uploadTask;
 
@@ -265,7 +297,48 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public Photo loadDataFromNetwork() throws Exception {
-            return getService().uploadTripPhoto(uploadTask);
+            eventBus.post(new PhotoUploadStarted(uploadTask));
+
+            File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFileUri());
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("");
+            Upload uploadHandler = transferManager.upload(
+                    Constants.BUCKET_NAME.toLowerCase(Locale.US),
+                    Constants.BUCKET_ROOT_PATH + file.getName(),
+                    new FileInputStream(file), metadata
+            );
+
+            ProgressListener progressListener = progressEvent -> {
+                byteTransferred += progressEvent.getBytesTransferred();
+                double l = byteTransferred / file.length() * 100;
+                if (l > lastPercent + 5 || l > 99) {
+                    lastPercent = (int) l;
+
+                    eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), (int) l));
+                }
+            };
+
+            uploadHandler.addProgressListener(progressListener);
+
+            UploadResult uploadResult = uploadHandler.waitForUploadResult();
+
+            uploadTask.setOriginUrl(getURLFromUploadResult(uploadResult));
+
+            eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
+
+            Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
+            ImageUploadTask cursor = repository.query().equalTo("taskId", uploadTask.getTaskId()).findFirst();
+            repository.remove(cursor);
+
+            Photo photo = getService().uploadTripPhoto(uploadTask);
+            photo.setTaskId(uploadTask.getTaskId());
+            eventBus.post(new PhotoUploadFinished(photo));
+            return photo;
+        }
+
+        private String getURLFromUploadResult(UploadResult uploadResult) {
+            return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
         }
     }
 

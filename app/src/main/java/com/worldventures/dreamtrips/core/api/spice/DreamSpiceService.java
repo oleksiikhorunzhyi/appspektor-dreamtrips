@@ -47,6 +47,10 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
         addRetrofitInterface(AuthApi.class);
     }
 
+    @Override
+    public CacheManager createCacheManager(Application application) throws CacheCreationException {
+        return super.createCacheManager(application);
+    }
 
     @Override
     protected String getServerUrl() {

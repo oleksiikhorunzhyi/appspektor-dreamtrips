@@ -142,5 +142,7 @@
     <string name="show_all">Show all</string>
     <string name="show_completed">Show completed</string>
     <string name="show_to_do">Show TO-DO</string>
+    <string name="rep_tools">Rep tools</string>
+    <string name="success_stores">Success stores</string>
 
 </resources>

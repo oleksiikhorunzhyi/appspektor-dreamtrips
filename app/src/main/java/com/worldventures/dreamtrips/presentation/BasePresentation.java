@@ -41,6 +41,8 @@ public class BasePresentation<VT extends BasePresentation.View> {
         Log.e(this.getClass().getSimpleName(), "", ex);
     }
 
+
+
     public interface View {
         void informUser(String stringId);
 

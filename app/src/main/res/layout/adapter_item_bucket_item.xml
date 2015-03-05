@@ -1,20 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/commonListItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@drawable/bg_swipe_item_neutral">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_name"
-        android:layout_weight="1"
-        android:textColor="@android:color/black" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/iv_like"
-        android:layout_marginLeft="30dp"
-        android:src="@drawable/ic_bucket_like" />
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        tools:ignore="UselessParent">
+
+
+        <com.andexert.library.RippleView
+            android:layout_toEndOf="@+id/checkBox"
+            android:layout_toRightOf="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ripple:rv_centered="true"
+            ripple:rv_color="#D3D3D3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true">
+
+                <View
+                    android:id="@+id/draggable"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </com.andexert.library.RippleView>
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/checkBox"
+            android:layout_toRightOf="@+id/checkBox"
+            android:gravity="center_vertical"
+            tools:ignore="RtlHardcoded" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+</FrameLayout>

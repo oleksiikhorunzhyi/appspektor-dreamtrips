@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.UploadingServiceInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Singleton;
@@ -87,6 +88,12 @@ public class DTModule {
     @Singleton
     AppSessionHolder provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new AppSessionHolder(simpleKeyValueStorage, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    SnappyRepository provideDB(Context context) {
+        return new SnappyRepository(context);
     }
 
     @Provides

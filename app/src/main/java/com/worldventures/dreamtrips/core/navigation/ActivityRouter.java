@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.EnrollActivity;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -68,6 +68,13 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
+    public void openBucketListEditActivity(BucketTabsFragment.Type type, State state) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, state);
+        startActivity(BucketListEditActivity.class, bundle);
+    }
+
     public void openTripDetails(Trip trip) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
@@ -76,12 +83,6 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openFacebookPhoto(Fragment fm) {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
-    }
-
-    public void startService(Bundle bundle) {
-        Intent intent = new Intent(getContext(), TripsIntentService.class);
-        intent.putExtras(bundle);
-        startServiceIntent(intent);
     }
 
     public void openShare(Intent share) {

@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
@@ -54,6 +56,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     protected void onResume() {
         super.onResume();
         makeActionBarTransparent(false);
+        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (code != ConnectionResult.SUCCESS) {
+            GooglePlayServicesUtil.getErrorDialog(code, this, 0).show();
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
+import com.snappydb.DB;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
@@ -13,6 +14,7 @@ import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
@@ -31,6 +33,7 @@ import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -49,6 +52,9 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     @Inject
     Prefs prefs;
+
+    @Inject
+    SnappyRepository db;
 
     @Inject
     @Global
@@ -87,24 +93,31 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
         this.regionController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate()) {
-                this.regions = this.loadRegion();
-                this.activities = this.dreamTripsApi.getActivities();
+            try {
+                if (needUpdate()) {
+                    this.regions = this.loadRegion();
+                    this.activities = this.dreamTripsApi.getActivities();
 
-                if (activities != null && activities.size() > 0) {
-                    SnappyUtils.saveActivities(context, this.activities);
-                    //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
-                    prefs.put(Prefs.ACTIVITIES_LOADED, true);
-                }
+                    if (activities != null && activities.size() > 0) {
+                        db.putList(this.activities, SnappyRepository.ACTIVITIES, Activity.class);
+                        //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
+                        prefs.put(Prefs.ACTIVITIES_LOADED, true);
+                    }
 
-                if (regions != null && regions.size() > 0) {
-                    SnappyUtils.saveRegions(context, this.regions);
-                 //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
-                    prefs.put(Prefs.REGIONS_LOADED, true);
+                    if (regions != null && regions.size() > 0) {
+                        db.putList(this.regions, SnappyRepository.REGIONS, Region.class);
+                        //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
+                        prefs.put(Prefs.REGIONS_LOADED, true);
+                    }
+                } else {
+                    this.regions = db.readList(SnappyRepository.REGIONS, Region.class);
+                    this.activities = db.readList(SnappyRepository.ACTIVITIES, Activity.class);
+
                 }
-            } else {
-                this.regions = SnappyUtils.getRegions(context);
-                this.activities = SnappyUtils.getActivities(context);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             parentActivities = getParentActivities();
@@ -218,8 +231,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         return regionController;
     }
 
-    private boolean needUpdate() {
-        return !prefs.getBoolean(Prefs.REGIONS_LOADED) || !prefs.getBoolean(Prefs.ACTIVITIES_LOADED);
+    private boolean needUpdate() throws ExecutionException, InterruptedException {
+        return db.isEmpty(SnappyRepository.REGIONS) && db.isEmpty(SnappyRepository.ACTIVITIES);
     }
 
     public List<Region> loadRegion() {

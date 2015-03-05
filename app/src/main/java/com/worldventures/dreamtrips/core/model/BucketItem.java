@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.core.model;
 
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 
-public class BucketItem extends BaseEntity {
+public class BucketItem extends BaseEntity implements Swipeable {
     String type;
     String created;
     String name;
@@ -18,6 +20,8 @@ public class BucketItem extends BaseEntity {
     String language;
     String nodeId;
     String publisherContent;
+
+    private boolean isPinned;
 
     public String getPublisherContent() {
         return publisherContent;
@@ -143,5 +147,23 @@ public class BucketItem extends BaseEntity {
         return Prefs.PREFIX + getId();
     }
 
+    @Override
+    public long getItemId() {
+        return getId();
+    }
 
+    @Override
+    public int getSwipeReactionType() {
+        return RecyclerViewSwipeManager.REACTION_CAN_SWIPE_LEFT | RecyclerViewSwipeManager.REACTION_CAN_NOT_SWIPE_RIGHT;
+    }
+
+    @Override
+    public void setPinnedToSwipeLeft(boolean pinned) {
+        this.isPinned = pinned;
+    }
+
+    @Override
+    public boolean isPinnedToSwipeLeft() {
+        return isPinned;
+    }
 }

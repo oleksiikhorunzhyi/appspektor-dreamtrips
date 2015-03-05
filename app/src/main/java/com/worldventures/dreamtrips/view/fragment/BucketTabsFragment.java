@@ -7,18 +7,23 @@ import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.view.custom.CustomViewPager;
+import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
-
+public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  implements FloatingActionsMenu.OnFloatingActionsMenuUpdateListener{
 
     @Override
     protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
@@ -30,7 +35,11 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
-    ViewPager pager;
+    CustomViewPager pager;
+    @InjectView(R.id.v_bg_holder)
+    View vBgHolder;
+    @InjectView(R.id.multiple_actions_down)
+    FloatingActionsMenu multipleActionsDown;
 
     BasePagerAdapter adapter;
 
@@ -42,10 +51,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
-                    Bundle args = new Bundle();
-                    Type type = Type.values()[position];
-                    args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
-                    fragment.setArguments(args);
+                    fragment.setArguments(getPresentationModel().getBundleForPosition(position));
                 }
             };
 
@@ -55,6 +61,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
         }
 
         pager.setAdapter(adapter);
+        pager.setPagingEnabled(true);
         tabs.setViewPager(pager);
         swLiked.setChecked(getPresentationModel().isFilterEnabled());
         swLiked.setOncheckListener(b -> {
@@ -67,18 +74,45 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> {
                 }
             }
         });
+        this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
+
+    }
+
+    @Override
+    public void onMenuExpanded() {
+        this.vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+    }
+
+    @Override
+    public void onMenuCollapsed() {
+        this.vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    }
+
+    @OnClick(R.id.fab_own)
+    public void actionGallery(View view) {
+        getPresentationModel().addOwn(pager.getCurrentItem());
+        this.multipleActionsDown.collapse();
+    }
+
+
+    @OnClick(R.id.fab_popular)
+    public void actionPopular(View view) {
+        getPresentationModel().addPopular(pager.getCurrentItem());
+        this.multipleActionsDown.collapse();
     }
 
     public enum Type {
-        LOCATIONS("bucket/bucket_list_locations.json"),
-        ACTIVITIES("bucket/bucket_list_activities.json"),
-        RESTAURANTS("bucket/bucket_list_restaurants.json");
+        LOCATIONS("bucket/bucket_list_locations.json", R.string.location),
+        ACTIVITIES("bucket/bucket_list_activities.json", R.string.activity),
+        RESTAURANTS("bucket/bucket_list_restaurants.json", R.string.dinning);
 
-        Type(String fileName) {
+        Type(String fileName, int res) {
             this.fileName = fileName;
+            this.res = res;
         }
 
         String fileName;
+        int res;
 
         public String getFileName() {
             return fileName;

@@ -7,13 +7,13 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
-import com.worldventures.dreamtrips.core.service.TripsIntentService;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
@@ -30,10 +30,15 @@ import de.greenrobot.event.EventBus;
  */
 public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmentPM.View> {
 
+    @Inject
+    DreamTripsApi dreamTripsApi;
 
     @Global
     @Inject
     EventBus eventBus;
+
+    @Inject
+    SnappyRepository db;
 
     private Trip trip;
     private List<Object> filteredImages;
@@ -100,6 +105,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             public void onRequestSuccess(TripDetails tripDetails) {
                 view.setContent(tripDetails.getContent());
                 AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
+
             }
         };
         dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(trip.getId()), callback);
@@ -107,7 +113,10 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
 
     public void actionLike() {
 
-        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
+        trip.setLiked(!trip.isLiked());
+        view.setLike(trip.isLiked());
+
+        RequestListener<JsonObject> callback2 = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
@@ -117,22 +126,14 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(TripsIntentService.TRIP_EXTRA, trip);
                 eventBus.post(new TripLikedEvent(trip));
-
-                activityRouter.startService(bundle);
+                db.saveTrip(trip);
             }
         };
-
-        trip.setLiked(!trip.isLiked());
-        view.setLike(trip.isLiked());
-
-
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback2);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback);
-
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(trip.getId()), callback2);
         }
     }
 

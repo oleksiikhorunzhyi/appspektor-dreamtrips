@@ -8,17 +8,15 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
-import com.techery.spares.module.Annotations.ForActivity;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.utils.SnappyUtils;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
@@ -27,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -43,6 +42,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Inject
     DreamTripsApi dreamTripsApi;
 
+
     @Inject
     Prefs prefs;
 
@@ -52,6 +52,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Inject
     @Global
     EventBus eventBus;
+
+    @Inject
+    SnappyRepository db;
 
     @Inject
     LoaderFactory loaderFactory;
@@ -79,15 +82,22 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super.init();
 
         this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate() || loadFromApi) {
-                this.loadFromApi = false;
-                this.data.clear();
-                this.data.addAll(this.loadTrips());
-                SnappyUtils.saveTrips(context, this.data);
-                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-            } else {
-                this.data.clear();
-                this.data.addAll(SnappyUtils.getTrips(context));
+            try {
+                if (needUpdate() || loadFromApi) {
+                    this.loadFromApi = false;
+                    this.data.clear();
+                    this.data.addAll(this.loadTrips());
+                    db.saveTrips(this.data);
+                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+                } else {
+                    this.data.clear();
+                    this.data.addAll(db.getTrips());
+
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             List<Trip> filteredData = performFiltering(data);
@@ -170,7 +180,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void onItemLike(Trip trip) {
-        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
+        RequestListener<JsonObject> callbak2 = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
@@ -180,15 +190,14 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
-                SnappyUtils.saveTrip(context, trip);
+                db.saveTrip(trip);
             }
         };
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callbak2);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callbak2);
         }
-
     }
 
     public void actionSearch(String query) {
@@ -206,9 +215,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         activityRouter.openTripDetails(trip);
     }
 
-    public boolean needUpdate() {
+    public boolean needUpdate() throws ExecutionException, InterruptedException {
         long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA;
+        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
     }
 
     public static interface View extends BasePresentation.View {

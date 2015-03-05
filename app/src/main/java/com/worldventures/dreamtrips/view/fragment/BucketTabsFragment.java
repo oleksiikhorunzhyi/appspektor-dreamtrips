@@ -63,17 +63,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
         pager.setAdapter(adapter);
         pager.setPagingEnabled(true);
         tabs.setViewPager(pager);
-        swLiked.setChecked(getPresentationModel().isFilterEnabled());
-        swLiked.setOncheckListener(b -> {
-            getPresentationModel().filterEnabled(b);
-            for (int i = 0; i < adapter.getCount(); i++) {
-                String id = "android:switcher:" + R.id.pager + ":" + i;
-                Fragment page = getChildFragmentManager().findFragmentByTag(id);
-                if (page != null) {
-                    ((BucketListFragment) page).requestReload();
-                }
-            }
-        });
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
 
     }

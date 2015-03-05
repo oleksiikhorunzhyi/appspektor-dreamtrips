@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 
+import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
@@ -18,8 +19,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import io.realm.Realm;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -29,6 +28,7 @@ public class SnappyRepository {
 
     public static final String REGIONS = "regions";
     public static final String ACTIVITIES = "activities";
+    public static final String BUCKET_LIST = "activities";
 
     public static final String TRIP_KEY = "trip";
     public static final String BUCKET_KEY = "bucket";
@@ -42,6 +42,21 @@ public class SnappyRepository {
         this.context = context;
         this.executorService = Executors.newSingleThreadExecutor();
     }
+
+    public Boolean isEmpty(String key) throws ExecutionException, InterruptedException {
+        Future<Boolean> future = executorService.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                DB snappyDb = DBFactory.open(context);
+                String[] keys = snappyDb.findKeys(key);
+                snappyDb.close();
+                return keys == null || keys.length == 0;
+            }
+        });
+        return future.get();
+
+    }
+
 
     public <T> void putList(List<T> list, String key, Class<T> clazz) {
         executorService.execute(() -> {
@@ -66,6 +81,24 @@ public class SnappyRepository {
             }
         });
         return future.get();
+    }
+
+    public void saveBucketList(List<BucketItem> items, String type) {
+        putList(items, BUCKET_LIST + ":" + type, BucketItem.class);
+    }
+
+    public List<BucketItem> readBucketList(String type) throws ExecutionException, InterruptedException {
+        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        Collections.sort(list, (lhs, rhs) -> {
+            if (lhs.isDone() == rhs.isDone()) {
+                return 0;
+            } else if (lhs.isDone() && !rhs.isDone()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        return list;
     }
 
     public void saveTrips(List<Trip> list) {
@@ -93,80 +126,6 @@ public class SnappyRepository {
             }
         });
     }
-
-    public void addBucketItem(BucketItem bucketItem, String type) {
-        executorService.execute(() -> {
-            try {
-                DB snappyDb = DBFactory.open(context);
-                String[] keys = snappyDb.findKeys(BUCKET_KEY + ":" + type);
-                if (keys == null || keys.length == 0) {
-                    addToBucket(snappyDb, bucketItem, 0, type);
-                } else {
-                    BucketItem lastBucketItem = snappyDb.get(keys[keys.length - 1], BucketItem.class);
-                    addToBucket(snappyDb, bucketItem, lastBucketItem.getId() + 1, type);
-                }
-                snappyDb.close();
-            } catch (SnappydbException e) {
-
-            }
-        });
-    }
-
-    private void addToBucket(DB snappyDB, BucketItem bucketItem, int id, String type) throws SnappydbException {
-        bucketItem.setId(id);
-        snappyDB.put(BUCKET_KEY + ":" + type + ":" + id, bucketItem);
-    }
-
-    public Boolean isEmpty(String key) throws ExecutionException, InterruptedException {
-        Future<Boolean> future = executorService.submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                DB snappyDb = DBFactory.open(context);
-                String[] keys = snappyDb.findKeys(key);
-                snappyDb.close();
-                return keys == null || keys.length == 0;
-            }
-        });
-        return future.get();
-
-    }
-
-    public List<BucketItem> getBucketItems(String type) throws ExecutionException, InterruptedException {
-        Future<List<BucketItem>> future = executorService.submit(new Callable<List<BucketItem>>() {
-            @Override
-            public List<BucketItem> call() throws Exception {
-                DB snappyDb = DBFactory.open(context);
-                List<BucketItem> bucketItems = new ArrayList<>();
-
-                try {
-                    String[] keys = snappyDb.findKeys(BUCKET_KEY + ":" + type);
-                    for (String key : keys) {
-                        bucketItems.add(snappyDb.get(key, BucketItem.class));
-                    }
-                } catch (SnappydbException e) {
-                    e.printStackTrace();
-                }
-                snappyDb.close();
-                return bucketItems;
-            }
-        });
-        return future.get();
-
-    }
-
-    public void deleteBucketItem(BucketItem object, String type) {
-        executorService.execute(() -> {
-            DB snappyDb = null;
-            try {
-                snappyDb = DBFactory.open(context);
-                snappyDb.del(BUCKET_KEY + ":" + type + ":" + object.getId());
-                snappyDb.close();
-            } catch (SnappydbException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
 
     public List<Trip> getTrips() throws ExecutionException, InterruptedException {
         Future<List<Trip>> future = executorService.submit(new Callable<List<Trip>>() {

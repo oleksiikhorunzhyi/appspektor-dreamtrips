@@ -95,6 +95,11 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
 
+        mAdapter.setEventListener((position) -> {
+            getPresentationModel().deleteItem(position);
+        });
+        mAdapter.setMoveListener(() -> getPresentationModel().itemMoved());
+
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
         mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 

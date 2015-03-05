@@ -37,7 +37,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     @InjectView(R.id.editTextQuickInput)
     EditText editTextQuick;
 
-    private BaseArrayListAdapter<Object> arrayListAdapter;
+    private BaseArrayListAdapter<BucketItem> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {

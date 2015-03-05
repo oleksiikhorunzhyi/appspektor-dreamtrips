@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 
 import javax.inject.Inject;
 
@@ -51,7 +53,12 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     protected void syncUIStateWithModel() {
-        tvName.setText(getModelObject().getName());
+        tvName.setText(getModelObject().getName() + " id =" + getModelObject().getItemId());
+        checkBoxDone.setChecked(getModelObject().isDone());
+        checkBoxDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                getModelObject().setDone(isChecked);
+                getEventBus().post(new MarkBucketItemDoneEvent(getModelObject()));
+        });
 
         // set background resource (target view ID: container)
         final int dragState = getDragStateFlags();
@@ -71,10 +78,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
             container.setBackgroundResource(bgResId);
         }
-
-        // set swiping properties
-        setSwipeItemSlideAmount(
-                getModelObject().isPinnedToSwipeLeft() ? RecyclerViewSwipeManager.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
     }
 
     @Override

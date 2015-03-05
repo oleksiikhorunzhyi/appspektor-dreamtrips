@@ -29,6 +29,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.util.AdapterUtils;
@@ -39,7 +40,8 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
         implements DraggableItemAdapter<BucketItemCell>,
         SwipeableItemAdapter<BucketItemCell> {
 
-    private EventListener mEventListener;
+    private DeleteListener deleteListener;
+    private MoveListener moveListener;
     private View.OnClickListener mItemViewOnClickListener;
 
     public MyDraggableSwipeableItemAdapter(Context context, Injector injector) {
@@ -66,8 +68,42 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
 
     @Override
     public ItemDraggableRange onGetItemDraggableRange(BucketItemCell bucketItemCell) {
-        return null;
+        boolean done = bucketItemCell.getModelObject().isDone();
+
+        int startPosition = getStartDragPosition(done);
+        int endPosition = getEndDragPosition(done);
+
+        return new ItemDraggableRange(startPosition, endPosition);
     }
+
+    private int getStartDragPosition(boolean done) {
+        if (done) {
+            for (int i = 0; i < getItemCount(); i++) {
+                BaseItemClass baseItemClass = getItem(i);
+                if (baseItemClass instanceof BucketItem) {
+                    if (((BucketItem) baseItemClass).isDone()) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int getEndDragPosition(boolean done) {
+        if (!done) {
+            for (int i = getItemCount() - 1; i >= 0; i--) {
+                BaseItemClass baseItemClass = getItem(i);
+                if (baseItemClass instanceof BucketItem) {
+                    if (!((BucketItem) baseItemClass).isDone()) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return getItemCount() - 1;
+    }
+
 
     @Override
     public void onMoveItem(int fromPosition, int toPosition) {
@@ -80,6 +116,10 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
         moveItem(fromPosition, toPosition);
 
         notifyItemMoved(fromPosition, toPosition);
+
+        if (moveListener != null) {
+            moveListener.onItemMoved();
+        }
     }
 
     @Override
@@ -129,31 +169,32 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
         if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM) {
             remove(position);
             notifyItemRemoved(position);
-            if (mEventListener != null) {
-                mEventListener.onItemRemoved(position);
+            if (deleteListener != null) {
+                deleteListener.onItemRemoved(position);
             }
 
         } else if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_MOVE_TO_SWIPED_DIRECTION) {
             item.setPinnedToSwipeLeft(true);
-            if (mEventListener != null) {
-                mEventListener.onItemPinned(position);
-            }
             notifyItemChanged(position);
         } else {
             item.setPinnedToSwipeLeft(false);
         }
     }
 
-    public void setEventListener(EventListener eventListener) {
-        mEventListener = eventListener;
+    public void setEventListener(DeleteListener eventListener) {
+        deleteListener = eventListener;
     }
 
-    public interface EventListener {
+    public void setMoveListener(MoveListener moveListener) {
+        this.moveListener = moveListener;
+    }
+
+    public interface DeleteListener {
         void onItemRemoved(int position);
+    }
 
-        void onItemPinned(int position);
-
-        void onItemViewClicked(View v, boolean pinned);
+    public interface MoveListener {
+        void onItemMoved();
     }
 
 }

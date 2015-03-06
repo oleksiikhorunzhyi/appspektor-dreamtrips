@@ -31,7 +31,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     private List<Class> viewTypes = new ArrayList<>();
 

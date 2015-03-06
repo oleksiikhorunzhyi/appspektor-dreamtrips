@@ -26,14 +26,17 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.BucketHeader;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
+import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.view.custom.SwipeDismissRecyclerViewTouchListener;
+import com.worldventures.dreamtrips.view.util.SwipingActionGuardManager;
 
 import java.util.List;
 
@@ -61,11 +64,10 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Global
     EventBus eventBus;
 
-    private MyDraggableSwipeableItemAdapter<BucketItem> mAdapter;
+    private MyDraggableSwipeableItemAdapter<Object> mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
-    private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
-    private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
+    private SwipingActionGuardManager mRecyclerViewTouchActionGuardManager;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -78,30 +80,19 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
         this.recyclerView.setEmptyView(emptyView);
 
-        // touch guard manager  (this class is required to suppress scrolling while swipe-dismiss animation is running)
-        mRecyclerViewTouchActionGuardManager = new RecyclerViewTouchActionGuardManager();
-        mRecyclerViewTouchActionGuardManager.setInterceptVerticalScrollingWhileAnimationRunning(true);
-        mRecyclerViewTouchActionGuardManager.setEnabled(true);
-
         // drag & drop manager
         mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
         mRecyclerViewDragDropManager.setDraggingItemShadowDrawable(
                 (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 
-
-        // swipe manager
-        mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
-
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
+        mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
-        mAdapter.setEventListener((position) -> {
-            getPresentationModel().deleteItem(position);
-        });
-        mAdapter.setMoveListener(() -> getPresentationModel().itemMoved());
+        mAdapter.setMoveListener((from, to) -> getPresentationModel().itemMoved(from, to));
 
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
-        mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
+//        mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 
         final GeneralItemAnimator animator = new SwipeDismissItemAnimator();
 
@@ -118,15 +109,10 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         }
         this.recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
 
-        // NOTE:
-        // The initialization order is very important! This order determines the priority of touch event handling.
-        //
-        // priority: TouchActionGuard > Swipe > DragAndDrop
-        mRecyclerViewTouchActionGuardManager.attachRecyclerView(this.recyclerView);
-        mRecyclerViewSwipeManager.attachRecyclerView(this.recyclerView);
+        //   mRecyclerViewSwipeManager.attachRecyclerView(this.recyclerView);
         mRecyclerViewDragDropManager.attachRecyclerView(this.recyclerView);
 
-        this.textViewEmptyAdd.setText(getString(R.string.bucket_list_add).replace("[bucket_category]", getString(type.res)));
+        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
 
         mAdapter.setContentLoader(getPresentationModel().getAdapterController());
     }
@@ -138,6 +124,12 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
                 View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
                 PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
                 popupMenu.inflate(R.menu.menu_bucket_filter);
+                popupMenu.setOnMenuItemClickListener((menuItem) -> {
+
+                    getPresentationModel().reloadWithFilter(menuItem.getItemId());
+
+                    return false;
+                });
                 popupMenu.show();
                 break;
         }
@@ -165,11 +157,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         if (mRecyclerViewDragDropManager != null) {
             mRecyclerViewDragDropManager.release();
             mRecyclerViewDragDropManager = null;
-        }
-
-        if (mRecyclerViewSwipeManager != null) {
-            mRecyclerViewSwipeManager.release();
-            mRecyclerViewSwipeManager = null;
         }
 
         if (mRecyclerViewTouchActionGuardManager != null) {

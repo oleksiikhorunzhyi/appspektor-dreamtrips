@@ -61,7 +61,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
         }
 
         pager.setAdapter(adapter);
-        pager.setPagingEnabled(true);
+        pager.setPagingEnabled(false);
         tabs.setViewPager(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
 

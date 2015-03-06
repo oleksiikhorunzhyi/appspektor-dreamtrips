@@ -29,27 +29,36 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.BaseEntity;
+import com.worldventures.dreamtrips.core.model.BucketHeader;
+import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.util.AdapterUtils;
 import com.worldventures.dreamtrips.view.util.ViewUtils;
 
-public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
+public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         extends BaseArrayListAdapter<BaseItemClass>
-        implements DraggableItemAdapter<BucketItemCell>,
-        SwipeableItemAdapter<BucketItemCell> {
+        implements DraggableItemAdapter<BucketItemCell>{
 
-    private EventListener mEventListener;
+    private DeleteListener deleteListener;
+    private MoveListener moveListener;
     private View.OnClickListener mItemViewOnClickListener;
 
     public MyDraggableSwipeableItemAdapter(Context context, Injector injector) {
         super(context, injector);
         setHasStableIds(true);
+        eventBus.register(this);
     }
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).getItemId();
+        BaseItemClass baseItemClass = getItem(position);
+        if (baseItemClass instanceof BaseEntity) {
+            return ((BaseEntity) baseItemClass).getId();
+        }
+        return 0;
     }
 
     @Override
@@ -66,8 +75,53 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
 
     @Override
     public ItemDraggableRange onGetItemDraggableRange(BucketItemCell bucketItemCell) {
-        return null;
+        int startPosition = getStartDragPosition(bucketItemCell.getPosition());
+        int endPosition = getEndDragPosition(bucketItemCell.getPosition());
+
+        return new ItemDraggableRange(startPosition, endPosition);
     }
+
+    private int getStartDragPosition(int position) {
+       Object item = getItem(position);
+
+        if (item instanceof BucketHeader) {
+            throw new IllegalStateException("section item is expected");
+        }
+
+        while (position > 0) {
+            Object prevItem = getItem(position - 1);
+
+            if (prevItem instanceof BucketHeader) {
+                break;
+            }
+
+            position -= 1;
+        }
+
+        return position;    }
+
+    private int getEndDragPosition(int position) {
+        Object item = getItem(position);
+
+        if (item instanceof BucketHeader) {
+            throw new IllegalStateException("section item is expected");
+        }
+
+        final int lastIndex = getItemCount() - 1;
+
+        while (position < lastIndex) {
+            Object nextItem = getItem(position + 1);
+
+            if (nextItem instanceof BucketHeader) {
+                break;
+            }
+
+            position += 1;
+        }
+
+        return position;
+    }
+
 
     @Override
     public void onMoveItem(int fromPosition, int toPosition) {
@@ -77,83 +131,49 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass extends Swipeable>
             return;
         }
 
+        BaseItemClass item = getItem(fromPosition);
+
+        if (item instanceof BucketItem) {
+            if (!((BucketItem) item).isDone()) {
+                if (moveListener != null) {
+                    moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
+                }
+            } else {
+                BaseItemClass firstItem = getItem(1);
+                if (firstItem instanceof BucketItem) {
+                    if (((BucketItem) firstItem).isDone()) {
+                        moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
+                    } else {
+                        moveListener.onItemMoved(fromPosition - 2, toPosition - 2);
+                    }
+                }
+            }
+        }
+
         moveItem(fromPosition, toPosition);
 
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    @Override
-    public int onGetSwipeReactionType(BucketItemCell bucketItemCell, int x, int y) {
-        if (onCheckCanStartDrag(bucketItemCell, x, y)) {
-            return RecyclerViewSwipeManager.REACTION_CAN_NOT_SWIPE_BOTH;
-        } else {
-            return items.get(bucketItemCell.getPosition()).getSwipeReactionType();
-        }
+    public void onEvent(DeleteBucketItemEvent event) {
+        remove(event.getPosition());
+        notifyItemRemoved(event.getPosition());
     }
 
-    @Override
-    public void onSetSwipeBackground(BucketItemCell holder, int type) {
-        int bgRes = 0;
-        switch (type) {
-            case RecyclerViewSwipeManager.DRAWABLE_SWIPE_NEUTRAL_BACKGROUND:
-                bgRes = R.drawable.bg_swipe_item_neutral;
-                break;
-            case RecyclerViewSwipeManager.DRAWABLE_SWIPE_LEFT_BACKGROUND:
-                bgRes = R.drawable.bg_swipe_item_left;
-                break;
-        }
-
-        holder.getContainerView().setBackgroundResource(bgRes);
+    public void setEventListener(DeleteListener eventListener) {
+        deleteListener = eventListener;
     }
 
-    @Override
-    public int onSwipeItem(BucketItemCell bucketItemCell, int result) {
-        switch (result) {
-            // swipe left --- remove
-            case RecyclerViewSwipeManager.RESULT_SWIPED_LEFT:
-                return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM;
-            // other --- do nothing
-            case RecyclerViewSwipeManager.RESULT_CANCELED:
-            default:
-                return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
-        }
+    public void setMoveListener(MoveListener moveListener) {
+        this.moveListener = moveListener;
     }
 
-    @Override
-    public void onPerformAfterSwipeReaction(BucketItemCell holder, int result, int reaction) {
-        Log.d("Swipe", "onPerformAfterSwipeReaction(result = " + result + ", reaction = " + reaction + ")");
-
-        final int position = holder.getPosition();
-        final Swipeable item = getItem(position);
-
-        if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM) {
-            remove(position);
-            notifyItemRemoved(position);
-            if (mEventListener != null) {
-                mEventListener.onItemRemoved(position);
-            }
-
-        } else if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_MOVE_TO_SWIPED_DIRECTION) {
-            item.setPinnedToSwipeLeft(true);
-            if (mEventListener != null) {
-                mEventListener.onItemPinned(position);
-            }
-            notifyItemChanged(position);
-        } else {
-            item.setPinnedToSwipeLeft(false);
-        }
-    }
-
-    public void setEventListener(EventListener eventListener) {
-        mEventListener = eventListener;
-    }
-
-    public interface EventListener {
+    public interface DeleteListener {
         void onItemRemoved(int position);
+    }
 
-        void onItemPinned(int position);
-
-        void onItemViewClicked(View v, boolean pinned);
+    public interface MoveListener {
+        void onItemMoved(int from, int to);
     }
 
 }

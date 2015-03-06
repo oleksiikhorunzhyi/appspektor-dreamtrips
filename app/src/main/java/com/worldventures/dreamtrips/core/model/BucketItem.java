@@ -1,51 +1,31 @@
 package com.worldventures.dreamtrips.core.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
+import com.google.common.base.Optional;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 
+@DefaultSerializer(TaggedFieldSerializer.class)
 public class BucketItem extends BaseEntity implements Swipeable {
-    String type;
-    String created;
-    String name;
-    String img_uri;
-    String description;
-    String featured;
-    String frequency;
-    String globalLikesCount;
-    String globalRatingCount;
-    String globalRatingCountAverage;
-    String globalSaveCount;
-    String globalSharesCount;
-    String language;
-    String nodeId;
-    String publisherContent;
+
+    @TaggedFieldSerializer.Tag(1)
+    private String name;
+
+    @TaggedFieldSerializer.Tag(2)
+    private boolean done;
+
+    @TaggedFieldSerializer.Tag(3)
+    private String description;
+
+    @TaggedFieldSerializer.Tag(4)
+    private String category;
+
+    @TaggedFieldSerializer.Tag(5)
+    private String friends;
 
     private boolean isPinned;
-
-    public String getPublisherContent() {
-        return publisherContent;
-    }
-
-    public void setPublisherContent(String publisherContent) {
-        this.publisherContent = publisherContent;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
 
     public String getName() {
         return name;
@@ -55,12 +35,20 @@ public class BucketItem extends BaseEntity implements Swipeable {
         this.name = name;
     }
 
-    public String getImg_uri() {
-        return img_uri;
+    public boolean isDone() {
+        return done;
     }
 
-    public void setImg_uri(String img_uri) {
-        this.img_uri = img_uri;
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getDescription() {
@@ -71,80 +59,16 @@ public class BucketItem extends BaseEntity implements Swipeable {
         this.description = description;
     }
 
-    public String getFeatured() {
-        return featured;
-    }
-
-    public void setFeatured(String featured) {
-        this.featured = featured;
-    }
-
-    public String getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
-    }
-
-    public String getGlobalLikesCount() {
-        return globalLikesCount;
-    }
-
-    public void setGlobalLikesCount(String globalLikesCount) {
-        this.globalLikesCount = globalLikesCount;
-    }
-
-    public String getGlobalRatingCount() {
-        return globalRatingCount;
-    }
-
-    public void setGlobalRatingCount(String globalRatingCount) {
-        this.globalRatingCount = globalRatingCount;
-    }
-
-    public String getGlobalRatingCountAverage() {
-        return globalRatingCountAverage;
-    }
-
-    public void setGlobalRatingCountAverage(String globalRatingCountAverage) {
-        this.globalRatingCountAverage = globalRatingCountAverage;
-    }
-
-    public String getGlobalSaveCount() {
-        return globalSaveCount;
-    }
-
-    public void setGlobalSaveCount(String globalSaveCount) {
-        this.globalSaveCount = globalSaveCount;
-    }
-
-    public String getGlobalSharesCount() {
-        return globalSharesCount;
-    }
-
-    public void setGlobalSharesCount(String globalSharesCount) {
-        this.globalSharesCount = globalSharesCount;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
-    }
-
     public String getSPName() {
         return Prefs.PREFIX + getId();
+    }
+
+    public String getFriends() {
+        return friends;
+    }
+
+    public void setFriends(String friends) {
+        this.friends = friends;
     }
 
     @Override

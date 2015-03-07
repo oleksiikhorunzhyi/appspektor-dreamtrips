@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -115,6 +116,7 @@ import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDra
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresTabFragment;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -197,7 +199,7 @@ import dagger.Provides;
                 FacebookAlbumFragment.class,
                 BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
-                StaticInfoFragment.BookItFragment.class,
+                StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
@@ -263,7 +265,13 @@ public class ActivityModule {
 
     @Provides
     public FragmentCompass provideFragmentCompass() {
-        return new FragmentCompass(baseActivity);
+        return new FragmentCompass(baseActivity, R.id.container);
+    }
+
+    @Provides
+    @Named("details")
+    public FragmentCompass provideFragmentCompassDetails() {
+        return new FragmentCompass(baseActivity, R.id.detail_container);
     }
 
     @Provides

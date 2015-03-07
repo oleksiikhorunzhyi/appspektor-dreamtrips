@@ -6,7 +6,7 @@ public class SuccessStory extends BaseEntity {
     String category = "cat";
     String locale;
     String published_date;
-    String url;
+    String url = "http://google.com.ua";
 
     public String getAuthor() {
         return author;

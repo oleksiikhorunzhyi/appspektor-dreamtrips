@@ -8,11 +8,21 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
+
+    private List<SuccessStory> items;
+
+    public SuccessStoryHeaderAdapter(List<SuccessStory> items) {
+
+        this.items = items;
+    }
 
     @Override
     public SuccessHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
@@ -23,12 +33,12 @@ public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessSt
 
     @Override
     public void onBindViewHolder(SuccessHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText("JOPA");
+        headerViewHolder.letter.setText(items.get(i).getCategory());
     }
 
     @Override
     public long getHeaderId(int i) {
-        return 0;
+        return items.get(i).getCategory().hashCode();
     }
 
 

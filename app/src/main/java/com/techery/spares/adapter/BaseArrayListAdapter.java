@@ -31,7 +31,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     private List<Class> viewTypes = new ArrayList<>();
 
@@ -74,8 +74,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     @Override
     public void onFinishLoading(List<BaseItemClass> result) {
-        this.items.clear();
-        this.items.addAll(result);
+        this.items = result;
         this.notifyDataSetChanged();
     }
 

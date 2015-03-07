@@ -129,7 +129,7 @@
     <string name="bucket_list_location_popular">Popular Bucket Lists Locations</string>
     <string name="bucket_list_activity_popular">Popular Bucket Lists Activities</string>
     <string name="bucket_list_dinning_popular">Popular Bucket Lists Dinnings</string>
-    <string name="bucket_list_add">Add [bucket_category] to your bucket list</string>
+    <string name="bucket_list_add">Add %s to your bucket list</string>
     <string name="bucket_list_create_message">Currently you have no Bucket List Items. You can choose from the popular Bucket List items or create your Bucket List from scratch.</string>
     <string name="bucket_list_choose">Choose From Popular Items</string>
     <string name="bucket_list_create_new">Create My Own List</string>
@@ -144,5 +144,8 @@
     <string name="show_to_do">Show TO-DO</string>
     <string name="rep_tools">Rep tools</string>
     <string name="success_stores">Success stores</string>
+
+    <string name="to_do">To-Do</string>
+    <string name="completed">Done</string>
 
 </resources>

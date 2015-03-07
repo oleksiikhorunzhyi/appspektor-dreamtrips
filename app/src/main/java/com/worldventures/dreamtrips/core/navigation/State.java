@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.navigation;
 
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,8 @@ public enum State {
     PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
     MAP_INFO(FragmentMapTripInfo.class, 0),
-    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
+    BOOK_IT(StaticInfoFragment.BookIt.class, R.string.title_book_it),
+    BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     QUICK_INPUT(BucketListQuickInputFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_my_title),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership, -1, R.drawable.ic_membership, 2),
@@ -44,6 +45,7 @@ public enum State {
     MEMBERSHIP(MemberShipFragment.class, R.string.membership, 2, R.drawable.ic_membership, 2),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, 3, R.drawable.ic_bucket_lists, 3),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile, 4, R.drawable.ic_profile, 4),
+    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, 4, R.drawable.ic_rep_tools, 4),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, 5, R.drawable.ic_terms, 5),
     FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, 5, R.drawable.ic_faq, 6),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, 5, R.drawable.ic_termsconditions, 7),

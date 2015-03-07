@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApiProxy;
 import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -43,6 +44,8 @@ import com.worldventures.dreamtrips.presentation.MapFragmentPM;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoresTabPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
@@ -82,6 +85,7 @@ import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
+import com.worldventures.dreamtrips.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
@@ -110,7 +114,10 @@ import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresTabFragment;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -193,7 +200,7 @@ import dagger.Provides;
                 FacebookAlbumFragment.class,
                 BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
-                StaticInfoFragment.BookItFragment.class,
+                StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
@@ -223,6 +230,11 @@ import dagger.Provides;
                 DateCell.class,
                 BucketQuickCell.class,
                 BucketPopularCell.class,
+                RepToolsFragment.class,
+                RepToolsFragmentPM.class,
+                SuccessStoryCell.class,
+                SuccessStoresTabFragment.class,
+                SuccessStoresTabPM.class,
 
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,
@@ -255,7 +267,13 @@ public class ActivityModule {
 
     @Provides
     public FragmentCompass provideFragmentCompass() {
-        return new FragmentCompass(baseActivity);
+        return new FragmentCompass(baseActivity, R.id.container);
+    }
+
+    @Provides
+    @Named("details")
+    public FragmentCompass provideFragmentCompassDetails() {
+        return new FragmentCompass(baseActivity, R.id.detail_container);
     }
 
     @Provides

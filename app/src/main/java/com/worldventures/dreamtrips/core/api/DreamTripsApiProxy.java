@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
@@ -99,6 +100,32 @@ public class DreamTripsApiProxy implements DreamTripsApi {
     @Override
     public void getYouShoulBeHerePhotos(@Path("per_page") int perPage, @Path("page") int page, Callback<List<Photo>> callback) {
         runApiMethodAsync(callback, proxyCallback -> dreamTripsApi.getYouShoulBeHerePhotos(perPage, page, proxyCallback));
+    }
+
+    @Override
+    public List<SuccessStory> getSuccessStores() {
+        ArrayList<SuccessStory> successStories = new ArrayList<>();
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        successStories.add(new SuccessStory());
+        return successStories;
+        //return runApiMethodSync(dreamTripsApi::getSuccessStores);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.worldventures.dreamtrips.view.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -67,6 +63,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
+
     @Layout(R.layout.fragment_webview)
     public static class FAQFragment extends StaticInfoFragment {
 
@@ -132,7 +129,11 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookItFragment extends StaticInfoFragment {
+    public static class BookIt extends BundleUrlFragment {
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class BundleUrlFragment extends StaticInfoFragment {
         public static final String URL_EXTRA = "URL_EXTRA";
         private String url;
 

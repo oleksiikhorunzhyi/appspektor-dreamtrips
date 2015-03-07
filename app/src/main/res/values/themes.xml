@@ -8,6 +8,9 @@
 
         <item name="colorControlActivated">@color/theme_main_darker</item>
         <item name="colorControlHighlight">@color/theme_main</item>
+
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
     </style>
 
     <style name="Theme.DreamTripsTheme.Translucent" parent="Theme.DreamTripsTheme">

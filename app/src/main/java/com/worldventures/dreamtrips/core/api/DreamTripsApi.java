@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
@@ -56,6 +57,9 @@ public interface DreamTripsApi {
 
     @GET("/api/ysbh_photos")
     public void getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+
+    @GET("/success_stories")
+    public List<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")

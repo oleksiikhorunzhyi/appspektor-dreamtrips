@@ -17,6 +17,7 @@
         android:fillViewport="false"
         android:textColor="@android:color/white"
         fab:pstsIndicatorColor="@color/theme_main_darker"
+        fab:pstsTextColorSelected="@android:color/white"
         fab:pstsTextSelectedStyle="normal"
         fab:pstsTextStyle="normal"
         fab:pstsUnderlineColor="@color/theme_main_darker" />
@@ -55,8 +56,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_facebook"
-            />
+            fab:fab_icon="@drawable/ic_fab_facebook" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_gallery"
@@ -65,8 +65,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_gallery"
-            />
+            fab:fab_icon="@drawable/ic_fab_gallery" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -75,8 +74,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_photo"
-            />
+            fab:fab_icon="@drawable/ic_fab_photo" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

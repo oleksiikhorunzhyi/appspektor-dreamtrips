@@ -3,19 +3,25 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 import android.util.Log;
 
+import com.amazonaws.services.s3.model.Bucket;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 import com.snappydb.DB;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.BucketHeader;
 import com.worldventures.dreamtrips.core.model.BucketItem;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
@@ -24,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -32,7 +40,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class BucketListFragmentPM extends BasePresentation {
-    private CollectionController<BucketItem> adapterController;
+    private CollectionController<Object> adapterController;
     private BucketTabsFragment.Type type;
 
     public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
@@ -49,84 +57,89 @@ public class BucketListFragmentPM extends BasePresentation {
     @Inject
     SnappyRepository db;
 
-    @Inject
-    BucketListSelectionStorage bucketListSelectionStorage;
-
-    List<BucketItem> cachedBucketListItems;
-
     @Global
     @Inject
     EventBus eventBus;
+
+    private boolean showToDO = true;
+    private boolean showCompleted = true;
+
+    private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
     @Override
     public void init() {
         super.init();
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
-            ArrayList<BucketItem> result = new ArrayList<>();
+            ArrayList<Object> result = new ArrayList<>();
 
             try {
-                result.addAll(db.getBucketItems(type.name()));
+                List temp = db.readBucketList(type.name());
+                bucketItems.clear();
+                bucketItems.addAll(temp);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            /* if (cachedBucketListItems == null) {
-                String stringFromAsset = getStringFromAsset(type.getFileName());
-
-                BucketListResponse response = gson.fromJson(stringFromAsset, BucketListResponse.class);
-
-                cachedBucketListItems = response.getData();
-            }
-
-            final BucketListSelectionStorage.BucketListSelection selection = bucketListSelectionStorage.getSelection();
-            if (selection.isFilterEnabled) {
-                List<BucketItem> filteredData = new ArrayList<BucketItem>();
-
-                final List<String> favoriteTrips = selection.favoriteTrips;
-
-                for (BucketItem bucketItem : cachedBucketListItems) {
-
-                    if (favoriteTrips.contains(bucketItem.getSPName())) {
-                        filteredData.add(bucketItem);
-                    }
+            if (bucketItems.size() > 0) {
+                Collection<BucketItem> toDo = Collections2.filter(bucketItems, (bucketItem) -> !bucketItem.isDone());
+                Collection<BucketItem> done = Collections2.filter(bucketItems, (bucketItem) -> bucketItem.isDone());
+                if (showToDO && toDo.size() > 0) {
+                    result.add(new BucketHeader(bucketItems.size() + 1, R.string.to_do));
+                    result.addAll(toDo);
                 }
-                result.addAll(filteredData);
-            } else {
-                result.addAll(cachedBucketListItems);
-            }*/
-
+                if (showCompleted && done.size() > 0) {
+                    result.add(new BucketHeader(bucketItems.size() + 2, R.string.completed));
+                    result.addAll(done);
+                }
+            }
             return result;
         });
         eventBus.register(this);
     }
 
-    private String getStringFromAsset(String fileName) {
-/*
-        try {
-            String str;
-            StringBuilder buf = new StringBuilder();
-            InputStream json = context.getAssets().open(fileName);
-            BufferedReader in = new BufferedReader(new InputStreamReader(json, "UTF-8"));
-            while ((str = in.readLine()) != null) {
-                buf.append(str);
-            }
-            in.close();
-            return buf.toString();
-        } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "", e);
-        }
-*/
-        return "";
-    }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        db.deleteBucketItem(event.getBucketItem(), type.name());
+        bucketItems.remove(event.getBucketItem());
+        db.saveBucketList(bucketItems, type.name());
+    }
+
+    public void itemMoved(int fromPosition, int toPosition) {
+        if (fromPosition == toPosition) {
+            return;
+        }
+
+        final BucketItem item = bucketItems.remove(fromPosition);
+        bucketItems.add(toPosition, item);
+
+        db.saveBucketList(bucketItems, type.name());
+    }
+
+    public void onEvent(MarkBucketItemDoneEvent markBucketItemDoneEvent) {
+        db.saveBucketList(bucketItems, type.name());
         adapterController.reload();
     }
 
-    public CollectionController<BucketItem> getAdapterController() {
+    public void reloadWithFilter(int filterId) {
+        switch (filterId) {
+            case R.id.action_show_all:
+                showToDO = true;
+                showCompleted = true;
+                break;
+            case R.id.action_show_to_do:
+                showToDO = true;
+                showCompleted = false;
+                break;
+            case R.id.action_show_completed:
+                showToDO = false;
+                showCompleted = true;
+                break;
+        }
+        adapterController.reload();
+    }
+
+    public CollectionController<Object> getAdapterController() {
         return adapterController;
     }
 

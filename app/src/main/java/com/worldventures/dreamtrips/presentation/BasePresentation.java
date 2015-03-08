@@ -53,6 +53,8 @@ public class BasePresentation<VT extends BasePresentation.View> {
         return dreamSpiceManager;
     }
 
+
+
     public interface View {
         void informUser(String stringId);
 

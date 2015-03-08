@@ -14,10 +14,10 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.application.BaseApplicationWithInjector;
-import com.techery.spares.module.Annotations.ForActivity;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
@@ -63,6 +63,8 @@ import com.worldventures.dreamtrips.presentation.MapFragmentPM;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoresTabPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
@@ -92,6 +94,7 @@ import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
+import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
@@ -101,6 +104,7 @@ import com.worldventures.dreamtrips.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.view.cell.SoldOutCell;
+import com.worldventures.dreamtrips.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
@@ -129,7 +133,10 @@ import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresTabFragment;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -213,7 +220,7 @@ import retrofit.RestAdapter;
                 FacebookAlbumFragment.class,
                 BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
-                StaticInfoFragment.BookItFragment.class,
+                StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
@@ -231,6 +238,7 @@ import retrofit.RestAdapter;
                 RegionCell.class,
                 TripCell.class,
                 PhotoItem.class,
+                BucketHeaderCell.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,
                 FiltersCell.class,
@@ -242,6 +250,11 @@ import retrofit.RestAdapter;
                 DateCell.class,
                 BucketQuickCell.class,
                 BucketPopularCell.class,
+                RepToolsFragment.class,
+                RepToolsFragmentPM.class,
+                SuccessStoryCell.class,
+                SuccessStoresTabFragment.class,
+                SuccessStoresTabPM.class,
 
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,
@@ -279,7 +292,13 @@ public class ActivityModule {
 
     @Provides
     public FragmentCompass provideFragmentCompass() {
-        return new FragmentCompass(baseActivity);
+        return new FragmentCompass(baseActivity, R.id.container);
+    }
+
+    @Provides
+    @Named("details")
+    public FragmentCompass provideFragmentCompassDetails() {
+        return new FragmentCompass(baseActivity, R.id.detail_container);
     }
 
     @Provides

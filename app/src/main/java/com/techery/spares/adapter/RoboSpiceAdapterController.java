@@ -10,6 +10,9 @@ import java.util.List;
 
 public abstract class RoboSpiceAdapterController<BaseItemClass> {
 
+    private SpiceManager spiceManager;
+    private IRoboSpiceAdapter<BaseItemClass> adapter;
+
     private RequestListener<ArrayList<BaseItemClass>> refreshListener = new RequestListener<ArrayList<BaseItemClass>>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -39,15 +42,17 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
         }
     };
 
-    private IRoboSpiceAdapter<BaseItemClass> adapter;
-
     public abstract SpiceRequest<ArrayList<BaseItemClass>> getRefreshRequest();
 
-    public abstract SpiceRequest<ArrayList<BaseItemClass>> getNextPageRequest(int currentCount);
+    public SpiceRequest<ArrayList<BaseItemClass>> getNextPageRequest(int currentCount) {
+        return null;
+    }
 
-    public abstract void onStart(LoadType loadType);
+    public void onStart(LoadType loadType) {
+    }
 
-    public abstract void onFinish(LoadType type, List<BaseItemClass> items, SpiceException spiceException);
+    public void onFinish(LoadType type, List<BaseItemClass> items, SpiceException spiceException) {
+    }
 
     public void setSpiceManager(SpiceManager spiceManager) {
         this.spiceManager = spiceManager;
@@ -58,16 +63,13 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
         this.adapter = adapter;
     }
 
-    SpiceManager spiceManager;
-
     public void reload() {
         onStart(LoadType.RELOAD);
-
         spiceManager.execute(getRefreshRequest(), refreshListener);
     }
 
     public void loadNext() {
-        onStart(LoadType.RELOAD);
+        onStart(LoadType.APPEND);
         SpiceRequest<ArrayList<BaseItemClass>> nextPageRequest = getNextPageRequest(adapter.getCount());
         if (nextPageRequest != null) {
             spiceManager.execute(nextPageRequest, requestListener);

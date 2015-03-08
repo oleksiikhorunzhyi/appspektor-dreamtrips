@@ -90,7 +90,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             // Set the drawer toggle as the DrawerListener
             drawerLayout.setDrawerListener(mDrawerToggle);
             this.drawerLayout.post(mDrawerToggle::syncState);
-
             //openLeftDrawer();
         }
 
@@ -167,6 +166,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.END)) {
             closeRightDrawer();
+        } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            closeLeftDrawer();
         } else {
             getPresentationModel().onBackPressed();
             super.onBackPressed();

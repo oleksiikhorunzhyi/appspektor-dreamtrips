@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.FileUtils;
-import com.worldventures.dreamtrips.utils.SnappyUtils;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;

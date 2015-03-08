@@ -63,7 +63,7 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
         String url = String.format(urlPrefix + URL_BASE, view.getTripId(), userSession.getUser().getUsername(),
                 userSession.getLegacyApiToken());
         Bundle bundle = new Bundle();
-        bundle.putString(StaticInfoFragment.BookItFragment.URL_EXTRA, url);
+        bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
         fragmentCompass.add(State.BOOK_IT, bundle);
     }
 

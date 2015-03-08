@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
@@ -21,9 +20,9 @@ public class FragmentCompass {
 
     private int containerId;
 
-    public FragmentCompass(BaseActivity activity) {
+    public FragmentCompass(BaseActivity activity, int containerId) {
         this.activity = activity;
-        setContainerId(R.id.container);//TODO temp
+        setContainerId(containerId);
     }
 
     public void setContainerId(int containerId) {
@@ -119,7 +118,7 @@ public class FragmentCompass {
     }
 
     public int getPreviousFragmentTitle() {
-       return getPreviousFragment().getTitle();
+        return getPreviousFragment().getTitle();
     }
 
     public State getPreviousFragment() {

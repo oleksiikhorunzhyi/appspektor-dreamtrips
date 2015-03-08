@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.repository.Repository;
@@ -270,6 +271,27 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public TripDetails loadDataFromNetwork() throws Exception {
             return getService().getDetails(tripId);
+        }
+    }
+
+    public static class GetSuccessStores extends DreamTripsRequest<ArrayList<SuccessStory>> {
+
+        public GetSuccessStores() {
+            super((Class<ArrayList<SuccessStory>>) new ArrayList<SuccessStory>().getClass());
+        }
+
+        @Override
+        public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
+        //    ArrayList<SuccessStory> successStores = getService().getSuccessStores();
+
+            ArrayList<SuccessStory> successStores = new ArrayList<>();
+            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());
+            return successStores;
         }
     }
 

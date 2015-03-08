@@ -98,7 +98,6 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
         if (this.presentationModel != null) {
             inject(this.presentationModel);
-            this.presentationModel.init();
         } else {
             throw new IllegalArgumentException("Presentation model can't be null");
         }
@@ -112,12 +111,10 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
 
         View view;
-        IgnoreRobobinding pmAnnotation = presentationModel.getClass().getAnnotation(IgnoreRobobinding.class);
-
         view = inflater.inflate(layout.value(), container, false);
 
         ButterKnife.inject(this, view);
-
+        this.presentationModel.init();
         afterCreateView(view);
 
         return view;

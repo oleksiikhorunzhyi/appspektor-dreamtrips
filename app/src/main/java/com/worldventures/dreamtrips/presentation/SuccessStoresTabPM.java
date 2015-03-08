@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.ContentLoader;
-import com.techery.spares.loader.LoaderFactory;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent
 import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemClickEvent;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,46 +24,53 @@ import javax.inject.Named;
 import de.greenrobot.event.EventBus;
 
 public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View> {
-    public SuccessStoresTabPM(View view) {
-        super(view);
-    }
 
-    @Inject
-    DreamTripsApi api;
-
-    @Inject
-    LoaderFactory loaderFactory;
     @Inject
     @Named("details")
     FragmentCompass detailsCompass;
-
     @Inject
     @Global
     EventBus eventBus;
 
+    RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
+        @Override
+        public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
+            return new DreamTripsRequest.GetSuccessStores();
+        }
+
+        @Override
+        public void onStart(LoadType loadType) {
+            view.startLoading();
+        }
+
+        @Override
+        public void onFinish(LoadType type, List<SuccessStory> items, SpiceException spiceException) {
+            view.finishLoading(items);
+        }
+    };
+
+    public SuccessStoresTabPM(View view) {
+        super(view);
+    }
+
     @Override
     public void resume() {
-        api.getSuccessStores();
+        adapterController.setSpiceManager(dreamSpiceManager);
+        adapterController.setAdapter(view.getAdapter());
+        adapterController.reload();
     }
-
-    public ContentLoader<List<SuccessStory>> getStoresLoader() {
-        return tripsController;
-    }
-
-    private CollectionController<SuccessStory> tripsController;
-
 
     @Override
     public void init() {
         super.init();
         eventBus.register(this);
-        this.tripsController = loaderFactory.create(0, (context, params) -> api.getSuccessStores());
         boolean isLandTablet = view.isLandscape() && view.isTablet();
         view.setDetailsContainerVisibility(isLandTablet);
+
     }
 
     public void reload() {
-        tripsController.reload();
+        adapterController.reload();
     }
 
     public void onEvent(OnSuccessStoryCellClickEvent event) {
@@ -86,6 +95,12 @@ public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View
         boolean isLandscape();
 
         void setDetailsContainerVisibility(boolean b);
+
+        IRoboSpiceAdapter<SuccessStory> getAdapter();
+
+        void finishLoading(List<SuccessStory> items);
+
+        void startLoading();
     }
 }
 

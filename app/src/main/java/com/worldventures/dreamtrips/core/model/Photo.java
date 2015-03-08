@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
@@ -194,5 +195,10 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     @Override
     public String getUserAvatar() {
         return user != null ? user.getAvatar().getThumb() : "";
+    }
+
+
+    public static class PList extends ArrayList<IFullScreenAvailableObject> {
+
     }
 }

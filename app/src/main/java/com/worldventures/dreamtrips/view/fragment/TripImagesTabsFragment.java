@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentat
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
-import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
@@ -47,14 +47,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @InjectView(R.id.fab_photo)
     FloatingActionButton fabPhoto;
 
-    BaseStatePagerAdapter adapter;
+    BasePagerAdapter adapter;
     PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (adapter == null) {
-            this.adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+            this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
@@ -80,7 +80,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void setFabVisibility(boolean facebookGallery) {
-        fabFacebook.setVisibility(facebookGallery ? View.VISIBLE: View.INVISIBLE);
+        fabFacebook.setVisibility(facebookGallery ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

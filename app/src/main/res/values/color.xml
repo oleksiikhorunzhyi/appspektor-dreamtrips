@@ -34,7 +34,6 @@
     <color name="bucket_text_done">#A0A0A0</color>
     <color name="bucket_text_to_do">#000000</color>
 
-    <color name="bg_swipe_item_neutral">#ffffffff</color>
     <color name="bg_item_normal_state">#fff0f0f0</color>
     <color name="bg_item_normal_pressed_state">#ffe0e0e0</color>
     <color name="bg_item_dragging_state">#ffffdddd</color>

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 import android.util.Log;
 
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
@@ -23,6 +24,9 @@ public class BasePresentation<VT extends BasePresentation.View> {
     @Inject
     protected AppSessionHolder appSessionHolder;
 
+    @Inject
+    protected DreamSpiceManager dreamSpiceManager;
+
     protected final VT view;
 
     public BasePresentation(VT view) {
@@ -33,12 +37,20 @@ public class BasePresentation<VT extends BasePresentation.View> {
 
     }
 
+    public void destroy() {
+
+    }
+
     public void resume() {
 
     }
 
     public void handleError(Exception ex) {
         Log.e(this.getClass().getSimpleName(), "", ex);
+    }
+
+    public DreamSpiceManager getDreamSpiceManager() {
+        return dreamSpiceManager;
     }
 
 

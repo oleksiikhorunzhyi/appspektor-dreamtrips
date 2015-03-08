@@ -87,6 +87,9 @@
 
         <meta-data android:name="com.crashlytics.ApiKey"
             android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f" />
+        <service
+            android:name=".core.api.spice.DreamSpiceService"
+            android:exported="false" />
     </application>
 
 </manifest>

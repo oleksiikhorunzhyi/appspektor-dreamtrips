@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
@@ -27,9 +30,6 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
     private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
     public static final int LIFE_DURATION = 30;
 
-    @Inject
-    DreamTripsApi dreamTripsApi;
-
     public BookItActivityPresentation(BookItActivityPresentation.View view) {
         super(view);
     }
@@ -40,15 +40,15 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             openBookIt();
         } else {
-            dreamTripsApi.getDetails(view.getTripId(), new Callback<TripDetails>() {
+            dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(view.getTripId()),new RequestListener<TripDetails>() {
                 @Override
-                public void success(TripDetails tripDetails, Response response) {
-                    openBookIt();
+                public void onRequestFailure(SpiceException spiceException) {
+                    Timber.e(spiceException, "");
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    Timber.e(error, "");
+                public void onRequestSuccess(TripDetails tripDetails) {
+                    openBookIt();
                 }
             });
         }

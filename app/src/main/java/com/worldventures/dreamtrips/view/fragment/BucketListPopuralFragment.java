@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
@@ -41,7 +42,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -50,7 +51,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(BucketPopularItem.class, BucketPopularCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 

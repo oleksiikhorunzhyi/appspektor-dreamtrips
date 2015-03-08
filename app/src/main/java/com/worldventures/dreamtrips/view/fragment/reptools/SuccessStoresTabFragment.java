@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.presentation.SuccessStoresTabPM;
@@ -39,7 +39,7 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
     @InjectView(R.id.detail_container)
     FrameLayout flDetailContainer;
 
-    BaseArrayListAdapter<SuccessStory> adapter;
+    BaseArrayListAdapter adapter;
 
     @Override
     protected SuccessStoresTabPM createPresentationModel(Bundle savedInstanceState) {
@@ -54,36 +54,11 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
 
         this.adapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
-        this.adapter.setContentLoader(getPresentationModel().getStoresLoader());
         this.adapter.setHasStableIds(true);
         this.recyclerView.setAdapter(adapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        getPresentationModel().getStoresLoader().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<SuccessStory>>() {
-            @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<SuccessStory> result) {
-                new Handler().postDelayed(() -> {
-                    refreshLayout.setRefreshing(false);
-                    if (isLandscape() && isTablet()) {
-                        if (!result.isEmpty()) {
-                            getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
-                        }
-                    }
-                }, 500);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
-            }
-        });
-
 
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
@@ -92,7 +67,6 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
                 .build();
 
         recyclerView.addItemDecoration(decoration);
-        getPresentationModel().reload();
     }
 
     @Override
@@ -113,6 +87,28 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
     @Override
     public void setDetailsContainerVisibility(boolean b) {
         flDetailContainer.setVisibility(b ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public IRoboSpiceAdapter<SuccessStory> getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void finishLoading(List<SuccessStory> result) {
+        new Handler().postDelayed(() -> {
+            refreshLayout.setRefreshing(false);
+            if (isLandscape() && isTablet()) {
+                if (!result.isEmpty()) {
+                    getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+                }
+            }
+        }, 500);
+    }
+
+    @Override
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
     }
 
 }

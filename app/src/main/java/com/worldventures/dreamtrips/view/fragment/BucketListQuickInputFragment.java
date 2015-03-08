@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -37,7 +38,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     @InjectView(R.id.editTextQuickInput)
     EditText editTextQuick;
 
-    private BaseArrayListAdapter<BucketItem> arrayListAdapter;
+    private LoaderRecycleAdapter<BucketItem> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -45,7 +46,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.recyclerView.setLayoutManager(layoutManager);
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(BucketItem.class, BucketQuickCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);

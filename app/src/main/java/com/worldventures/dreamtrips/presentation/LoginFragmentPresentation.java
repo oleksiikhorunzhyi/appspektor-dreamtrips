@@ -2,15 +2,11 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.LoginHelper;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import javax.inject.Inject;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFragmentPresentation.View> {
 
@@ -20,8 +16,6 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
     @Inject
     AppSessionHolder appSessionHolder;
 
-    @Inject
-    LoginHelper loginHelper;
 
     public LoginFragmentPresentation(View view) {
         super(view);
@@ -38,23 +32,15 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
             view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
             return;
         }
-
-        loginHelper.login(callback -> callback.success(null, null), new Callback<Object>() {
-            @Override
-            public void success(Object o, Response response) {
+        dreamSpiceManager.login((l, e) -> {
+            if (e != null) {
+                view.showLoginErrorMessage();
+            } else {
                 activityRouter.openMain();
                 activityRouter.finish();
                 view.showLoginSuccess();
             }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (error != null) {
-                    view.showLoginErrorMessage();
-                }
-            }
         }, username, userPassword);
-
         this.view.showProgressDialog();
     }
 

@@ -10,7 +10,6 @@ import com.path.android.jobqueue.config.Configuration;
 import com.path.android.jobqueue.di.DependencyInjector;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.api.LoginHelper;
 import com.worldventures.dreamtrips.core.module.ApiModule;
 import com.worldventures.dreamtrips.core.module.DTModule;
 import com.worldventures.dreamtrips.core.repository.Repository;

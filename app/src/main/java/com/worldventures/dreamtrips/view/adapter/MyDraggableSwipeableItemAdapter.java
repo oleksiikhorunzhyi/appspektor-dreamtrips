@@ -26,6 +26,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -39,7 +40,7 @@ import com.worldventures.dreamtrips.view.util.AdapterUtils;
 import com.worldventures.dreamtrips.view.util.ViewUtils;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>
-        extends BaseArrayListAdapter<BaseItemClass>
+        extends LoaderRecycleAdapter<BaseItemClass>
         implements DraggableItemAdapter<BucketItemCell>{
 
     private DeleteListener deleteListener;

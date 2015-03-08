@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 
@@ -42,6 +43,52 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.title("Alert").content(s).positiveText("Ok").show();
             }));
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStop() {
+        stopSpiceManger();
+        super.onStop();
+    }
+
+    private void stopSpiceManger() {
+        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (needSpiceManager()) {
+            DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+
+            if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(getActivity());
+        }
+    }
+
+    protected boolean needSpiceManager() {
+        return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (needSpiceManager()) {
+            stopSpiceManager();
+        }
+        super.onDestroy();
+    }
+
+    private void stopSpiceManager() {
+        if (getPresentationModel() != null)
+            getPresentationModel().destroy();
     }
 
     @Override

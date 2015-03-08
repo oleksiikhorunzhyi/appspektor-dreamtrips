@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
 import com.google.gson.JsonObject;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
@@ -24,15 +23,16 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
 
 
     public void onDeleteAction() {
-        dreamTripsApi.deletePhoto(photo.getId(), new Callback<JsonObject>() {
+        dreamSpiceManager.execute(new DreamTripsRequest.DeletePhoto(photo.getId()), new RequestListener<JsonObject>() {
             @Override
-            public void success(JsonObject jsonObject, Response response) {
-                view.informUser(context.getString(R.string.photo_deleted));
-                eventBus.postSticky(new PhotoDeletedEvent(photo.getId()));
+            public void onRequestFailure(SpiceException spiceException) {
+
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onRequestSuccess(JsonObject jsonObject) {
+                view.informUser(context.getString(R.string.photo_deleted));
+                eventBus.postSticky(new PhotoDeletedEvent(photo.getId()));
 
             }
         });
@@ -40,41 +40,45 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
 
     public void sendFlagAction(String title, String desc) {
         if (desc == null) desc = "";
-        dreamTripsApi.flagPhoto(photo.getId(), title + ". " + desc, new Callback<JsonObject>() {
+        dreamSpiceManager.execute(new DreamTripsRequest.FlagPhoto(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override
-            public void success(JsonObject jsonObject, Response response) {
-                view.informUser(context.getString(R.string.photo_flagged));
-                AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()));
+            public void onRequestFailure(SpiceException spiceException) {
+                handleError(spiceException);
+
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                handleError(error);
+            public void onRequestSuccess(JsonObject jsonObject) {
+                view.informUser(context.getString(R.string.photo_flagged));
+                AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()));
+
             }
         });
+
     }
 
     public void onLikeAction() {
-        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+        final RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
-            public void success(JsonObject jsonObject, Response response) {
+            public void onRequestFailure(SpiceException spiceException) {
+
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
                 boolean isLiked = photo.isLiked();
                 photo.setLiked(!isLiked);
                 view.setLiked(!isLiked);
                 eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
                 AdobeTrackingHelper.like(type, String.valueOf(photo.getId()));
             }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
         };
 
         if (!photo.isLiked()) {
-            dreamTripsApi.likePhoto(photo.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikePhoto(photo.getId()), callback);
         } else {
-            dreamTripsApi.unlikePhoto(photo.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(photo.getId()), callback);
+
         }
     }
 

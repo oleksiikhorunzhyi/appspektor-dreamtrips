@@ -1,49 +1,35 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Debug;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-import com.snappydb.SnappydbException;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
-import com.worldventures.dreamtrips.view.fragment.MapFragment;
-
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created by Edward on 19.01.15.
@@ -105,7 +91,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                     prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
                 } else {
                     this.data.clear();
-                        this.data.addAll(db.getTrips());
+                    this.data.addAll(db.getTrips());
 
                 }
             } catch (ExecutionException e) {
@@ -194,26 +180,24 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void onItemLike(Trip trip) {
-        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+        RequestListener<JsonObject> callbak2 = new RequestListener<JsonObject>() {
             @Override
-            public void success(JsonObject jsonObject, Response response) {
-                db.saveTrip(trip);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
+            public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
                 view.dataSetChanged();
                 view.showErrorMessage();
             }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                db.saveTrip(trip);
+            }
         };
-
         if (trip.isLiked()) {
-            dreamTripsApi.likeTrip(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callbak2);
         } else {
-            dreamTripsApi.unlikeTrio(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callbak2);
         }
-
     }
 
     public void actionSearch(String query) {

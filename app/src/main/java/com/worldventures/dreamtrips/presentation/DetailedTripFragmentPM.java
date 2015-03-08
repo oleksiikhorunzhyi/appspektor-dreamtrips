@@ -4,11 +4,12 @@ import android.os.Bundle;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
-import com.snappydb.DB;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.ContentItem;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
@@ -16,17 +17,12 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Edward on 19.01.15.
@@ -97,45 +93,47 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     }
 
     public void loadTripDetails() {
-        Callback<TripDetails> callback = new Callback<TripDetails>() {
-            @Override
-            public void success(TripDetails tripDetails, Response response) {
-                view.setContent(tripDetails.getContent());
-                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
-            }
 
+        RequestListener<TripDetails> callback = new RequestListener<TripDetails>() {
             @Override
-            public void failure(RetrofitError error) {
+            public void onRequestFailure(SpiceException spiceException) {
                 view.showErrorMessage();
                 view.setContent(null);
             }
+
+            @Override
+            public void onRequestSuccess(TripDetails tripDetails) {
+                view.setContent(tripDetails.getContent());
+                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
+
+            }
         };
-        dreamTripsApi.getDetails(trip.getId(), callback);
+        dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(trip.getId()), callback);
     }
 
     public void actionLike() {
-        final Callback<JsonObject> callback = new Callback<JsonObject>() {
-            @Override
-            public void success(JsonObject jsonObject, Response response) {
-                Bundle bundle = new Bundle();
-                eventBus.post(new TripLikedEvent(trip));
-                db.saveTrip(trip);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                trip.setLiked(!trip.isLiked());
-                view.showErrorMessage();
-            }
-        };
 
         trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
 
+        RequestListener<JsonObject> callback2 = new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                trip.setLiked(!trip.isLiked());
+                view.showErrorMessage();
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                Bundle bundle = new Bundle();
+                eventBus.post(new TripLikedEvent(trip));
+                db.saveTrip(trip);
+            }
+        };
         if (trip.isLiked()) {
-            dreamTripsApi.likeTrip(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback2);
         } else {
-            dreamTripsApi.unlikeTrio(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(trip.getId()), callback2);
         }
     }
 

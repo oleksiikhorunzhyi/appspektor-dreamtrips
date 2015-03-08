@@ -13,12 +13,14 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
@@ -230,9 +232,13 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     @Override
-    protected void onDestroy() {
+    public IRoboSpiceAdapter getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void onDestroy() {
         super.onDestroy();
-        getPresentationModel().destroy();
     }
 
     @Override

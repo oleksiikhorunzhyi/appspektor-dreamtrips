@@ -2,11 +2,15 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.snappydb.DB;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
@@ -44,28 +48,16 @@ import de.greenrobot.event.EventBus;
 public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> {
 
     @Inject
-    DreamTripsApi dreamTripsApi;
-
-    @Inject
-    LoaderFactory loaderFactory;
-
-    @Inject
-    Prefs prefs;
-
-    @Inject
     SnappyRepository db;
 
     @Inject
     @Global
     EventBus eventBus;
 
-    private List<Object> data = new ArrayList<>();
-    private List<Region> regions = new ArrayList<>();
-    private List<Activity> activities = new ArrayList<>();
+   // private List<Object> data = new ArrayList<>();
+    private List<Region> regions;
+    private List<Activity> activities;
     private List<Activity> parentActivities;
-
-
-    private CollectionController<Object> regionController;
 
     /**
      * variables for filtering
@@ -91,56 +83,69 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         dateFilterItem = new DateFilterItem();
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
-        this.regionController = loaderFactory.create(0, (context, params) -> {
-            try {
-                if (needUpdate()) {
-                    this.regions = this.loadRegion();
-                    this.activities = this.dreamTripsApi.getActivities();
-
-                    if (activities != null && activities.size() > 0) {
-                        db.putList(this.activities, SnappyRepository.ACTIVITIES, Activity.class);
-                        //FileUtils.saveJsonToCache(context, this.activities, FileUtils.ACTIVITIES);
-                        prefs.put(Prefs.ACTIVITIES_LOADED, true);
-                    }
-
-                    if (regions != null && regions.size() > 0) {
-                        db.putList(this.regions, SnappyRepository.REGIONS, Region.class);
-                        //   FileUtils.saveJsonToCache(context, this.regions, FileUtils.REGIONS);
-                        prefs.put(Prefs.REGIONS_LOADED, true);
-                    }
-                } else {
-                    this.regions = db.readList(SnappyRepository.REGIONS, Region.class);
-                    this.activities = db.readList(SnappyRepository.ACTIVITIES, Activity.class);
-
-                }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            parentActivities = getParentActivities();
-            fillData();
-            return data;
-        });
-
         eventBus.register(this);
     }
 
-    private void fillData() {
-        this.data.clear();
-        this.data.add(dateFilterItem);
-        this.data.add(filterModel);
-        if (!filterModel.isHide())
-            this.data.addAll(regions);
-        this.data.add(themeHeaderModel);
-        if (!themeHeaderModel.isHide())
-            this.data.addAll(parentActivities);
+    @Override
+    public void resume() {
+        super.resume();
+        loadFilters();
+    }
 
-        setRegionsChecked(filterModel.isChecked());
-        setThemesChecked(themeHeaderModel.isChecked());
+    private void loadFilters() {
+        view.startLoading();
+        dreamSpiceManager.execute(new DreamTripsRequest.GetActivitiesRequest(db), new RequestListener<ArrayList<Activity>>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
 
-        //this.data.add(soldOutModel);
+            }
+
+            @Override
+            public void onRequestSuccess(ArrayList<Activity> activities) {
+                FiltersFragmentPM.this.activities = activities;
+                parentActivities = getParentActivities();
+                if (regions != null && regions.size() != 0) {
+                    fillData();
+                }
+            }
+        });
+        dreamSpiceManager.execute(new DreamTripsRequest.GetRegionsRequest(db), new RequestListener<ArrayList<Region>>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+
+            }
+
+            @Override
+            public void onRequestSuccess(ArrayList<Region> regions) {
+                FiltersFragmentPM.this.regions = regions;
+                if (activities != null && activities.size() != 0) {
+                    fillData();
+                }
+
+            }
+        });
+
+    }
+
+    public void fillData() {
+        if (regions != null && activities != null) {
+            List<Object> data = new ArrayList<>();
+            view.finishLoading();
+            data.clear();
+            data.add(dateFilterItem);
+            data.add(filterModel);
+            if (!filterModel.isHide())
+                data.addAll(regions);
+            data.add(themeHeaderModel);
+            if (!themeHeaderModel.isHide())
+                data.addAll(parentActivities);
+
+            setRegionsChecked(filterModel.isChecked());
+            setThemesChecked(themeHeaderModel.isChecked());
+
+            view.getAdapter().clear();
+            view.getAdapter().addItems(data);
+        }
     }
 
     public void setRegionsChecked(boolean isChecked) {
@@ -226,16 +231,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         return themesList;
     }
 
-    public CollectionController<Object> getRegionController() {
-        return regionController;
-    }
-
     private boolean needUpdate() throws ExecutionException, InterruptedException {
         return db.isEmpty(SnappyRepository.REGIONS) && db.isEmpty(SnappyRepository.ACTIVITIES);
-    }
-
-    public List<Region> loadRegion() {
-        return dreamTripsApi.getRegions();
     }
 
     public void onEvent(RequestFilterDataEvent event) {
@@ -254,12 +251,12 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     public void onEvent(ToggleThemeVisibilityEvent event) {
         themeHeaderModel.setHide(!themeHeaderModel.isHide());
-        getRegionController().reload();
+        fillData();
     }
 
     public void onEvent(ToggleRegionVisibilityEvent event) {
         filterModel.setHide(!filterModel.isHide());
-        getRegionController().reload();
+        fillData();
     }
 
     public void onEvent(SoldOutEvent soldOutEvent) {
@@ -307,6 +304,9 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     public static interface View extends BasePresentation.View {
         void dataSetChanged();
+        void startLoading();
+        void finishLoading();
+        BaseArrayListAdapter getAdapter();
     }
 
 }

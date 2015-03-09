@@ -42,6 +42,8 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     private List<Trip> data = new ArrayList<>();
     private List<Trip> filteredData;
+
+
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -51,7 +53,6 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private List<Activity> acceptedThemes;
     private DateFilterItem dateFilterItem = new DateFilterItem();
 
-    private static Handler handler = new Handler();
     private String query;
 
     @Inject
@@ -61,11 +62,6 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Global
     EventBus eventBus;
 
-    @Inject
-    LoaderFactory loaderFactory;
-    private CollectionController<Trip> tripsController;
-
-
     public MapFragmentPM(MapFragmentPM.View view) {
         super(view);
     }
@@ -73,40 +69,20 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Override
     public void init() {
         super.init();
-        this.tripsController = loaderFactory.create(0, (context, params) -> {
-            try {
-                data.clear();
-                data.addAll(db.getTrips());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return data;
-        });
-
-        this.tripsController.getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
-            @Override
-            public void onStartLoading() {
-
-            }
-
-            @Override
-            public void onFinishLoading(List<Trip> result) {
-                setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
-                performFiltering();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-            }
-        });
-
     }
 
     public void onMapLoaded() {
         eventBus.registerSticky(this);
-        tripsController.reload();
+        data.clear();
+        try {
+            data.addAll(db.getTrips());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
+        performFiltering();
     }
 
     public void setFilters(FilterBusEvent event) {
@@ -126,7 +102,8 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
-            handler.postDelayed(() -> tripsController.reload(), 100);
+            setFilters(event);
+            performFiltering();
         }
     }
 

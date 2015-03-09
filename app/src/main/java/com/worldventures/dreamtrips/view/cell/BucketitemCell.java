@@ -31,10 +31,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     RelativeLayout container;
     @InjectView(R.id.textViewName)
     TextView tvName;
-    @InjectView(R.id.checkBox)
-    CheckBox checkBoxDone;
     @InjectView(R.id.button_cancel)
     ImageView buttonCancel;
+    @InjectView(R.id.drag_handle)
+    View drag_handle;
 
     @Inject
     Context context;
@@ -135,7 +135,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     }
 
     public View getDraggableView() {
-        return tvName;
+        return drag_handle;
     }
 
 }

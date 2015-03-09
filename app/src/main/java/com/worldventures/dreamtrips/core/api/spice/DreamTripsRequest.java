@@ -12,14 +12,19 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
+import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
+import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.Repository;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -31,9 +36,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -293,6 +300,95 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             successStores.add(new SuccessStory());
             return successStores;
         }
+    }
+
+    public static class GetRegionsRequest extends DreamTripsRequest<ArrayList<Region>> {
+
+        private SnappyRepository db;
+
+        public GetRegionsRequest(SnappyRepository snappyRepository) {
+            super((Class<ArrayList<Region>>) new ArrayList<Region>().getClass());
+            this.db = snappyRepository;
+        }
+
+        @Override
+        public ArrayList<Region> loadDataFromNetwork() throws Exception {
+            ArrayList<Region> data = new ArrayList<>();
+            if (db.isEmpty(SnappyRepository.REGIONS)) {
+                data.addAll(getService().getRegions());
+                db.putList(data, SnappyRepository.REGIONS, Region.class);
+
+            } else {
+                data.addAll(db.readList(SnappyRepository.REGIONS, Region.class));
+            }
+            return data;
+        }
+    }
+
+
+    public static class GetActivitiesRequest extends DreamTripsRequest<ArrayList<Activity>> {
+
+        private SnappyRepository db;
+
+        public GetActivitiesRequest(SnappyRepository snappyRepository) {
+            super((Class<ArrayList<Activity>>) new ArrayList<Activity>().getClass());
+            this.db = snappyRepository;
+        }
+
+        @Override
+        public ArrayList<Activity> loadDataFromNetwork() throws Exception {
+            ArrayList<Activity> data = new ArrayList<>();
+            if (db.isEmpty(SnappyRepository.ACTIVITIES)) {
+                data.addAll(getService().getActivities());
+                db.putList(data, SnappyRepository.ACTIVITIES, Activity.class);
+
+            } else {
+                data.addAll(db.readList(SnappyRepository.ACTIVITIES, Activity.class));
+            }
+            return data;
+        }
+    }
+
+    public static class GetTripsRequest extends DreamTripsRequest<ArrayList<Trip>> {
+        private static final long DELTA = 30 * 60 * 1000;
+
+        private SnappyRepository db;
+        private boolean fromApi;
+        private Prefs prefs;
+
+        public GetTripsRequest(SnappyRepository snappyRepository, Prefs prefs, boolean fromApi) {
+            super((Class<ArrayList<Trip>>) new ArrayList<Trip>().getClass());
+            this.fromApi = fromApi;
+            this.prefs = prefs;
+            this.db = snappyRepository;
+        }
+
+        @Override
+        public ArrayList<Trip> loadDataFromNetwork() throws Exception {
+            ArrayList<Trip> data = new ArrayList<>();
+            try {
+                if (needUpdate() || fromApi) {
+                    this.fromApi = false;
+                    data.addAll(getService().getTrips());
+                    db.saveTrips(data);
+                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+                } else {
+                    data.addAll(db.getTrips());
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        private boolean needUpdate() throws ExecutionException, InterruptedException {
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
+        }
+
     }
 
     public static class UploadTripPhoto extends DreamTripsRequest<Photo> {

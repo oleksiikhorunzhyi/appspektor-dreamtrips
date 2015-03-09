@@ -105,7 +105,6 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             public void onRequestSuccess(TripDetails tripDetails) {
                 view.setContent(tripDetails.getContent());
                 AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
-
             }
         };
         dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(trip.getId()), callback);

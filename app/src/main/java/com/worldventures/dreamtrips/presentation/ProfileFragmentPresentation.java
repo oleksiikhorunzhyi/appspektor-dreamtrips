@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
@@ -82,6 +83,12 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
 
     public ProfileFragmentPresentation(View view) {
         super(view);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        AdobeTrackingHelper.profile(getUserId());
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
@@ -97,6 +98,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     public void init() {
         super.init();
         eventBus.registerSticky(this);
+        AdobeTrackingHelper.dreamTrips(getUserId());
        // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
 

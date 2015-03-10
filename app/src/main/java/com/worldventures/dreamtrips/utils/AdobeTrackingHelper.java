@@ -27,10 +27,9 @@ public class AdobeTrackingHelper {
     private static final String SERVICE = "nav_menu:terms-service";
 
 
-    public static void login(String userId, String memberId) {
+    public static void login(String userId) {
         Map<String, Object> data = new HashMap<>();
         data.put("user_id", userId);
-        data.put("member_id", memberId);
         Analytics.trackAction(LOGIN, data);
     }
 

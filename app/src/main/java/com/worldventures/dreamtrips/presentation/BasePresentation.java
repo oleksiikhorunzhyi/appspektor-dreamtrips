@@ -53,6 +53,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
         return dreamSpiceManager;
     }
 
+    public String getUserId() {return appSessionHolder.get().get().getUser().getEmail();}
 
 
     public interface View {

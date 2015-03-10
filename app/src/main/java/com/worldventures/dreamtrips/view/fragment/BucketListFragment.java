@@ -73,8 +73,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BUNDLE_TYPE);
-
-        AdobeTrackingHelper.bucketList();
         eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 

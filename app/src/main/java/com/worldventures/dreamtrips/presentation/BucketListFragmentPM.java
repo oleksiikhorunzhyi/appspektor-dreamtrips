@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
@@ -69,6 +70,7 @@ public class BucketListFragmentPM extends BasePresentation {
     @Override
     public void init() {
         super.init();
+        AdobeTrackingHelper.bucketList(getUserId());
         this.adapterController = loaderFactory.create(type.ordinal(), (context, params) -> {
             ArrayList<Object> result = new ArrayList<>();
 

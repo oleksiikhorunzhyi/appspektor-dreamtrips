@@ -88,7 +88,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (photo != null) {
             getPresentationModel().setupPhoto((T) photo);
             getPresentationModel().setupType(type);
-            AdobeTrackingHelper.view(type, String.valueOf(photo.getId()));
         }
         getPresentationModel().setupActualViewState();
 

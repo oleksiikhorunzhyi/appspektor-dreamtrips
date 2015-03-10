@@ -56,7 +56,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void afterCreateView(View rootView) {
-        AdobeTrackingHelper.dreamTrips();
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));

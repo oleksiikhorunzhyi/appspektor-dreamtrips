@@ -23,6 +23,9 @@
     <dimen name="tripImageHeightDetailed">300dp</dimen>
     <dimen name="tripBookItPadding">15dp</dimen>
 
+    <dimen name="video_three_sixty_width">600dp</dimen>
+    <dimen name="video_three_sixty_height">300dp</dimen>
+
     <dimen name="pin_offset">40dp</dimen>
 
     <dimen name="map_offset_y">64dp</dimen>

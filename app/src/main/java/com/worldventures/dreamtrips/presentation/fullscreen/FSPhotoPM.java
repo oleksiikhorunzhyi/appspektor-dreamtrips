@@ -50,7 +50,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 view.informUser(context.getString(R.string.photo_flagged));
-                AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()));
+                AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()), getUserId());
 
             }
         });
@@ -70,7 +70,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
                 photo.setLiked(!isLiked);
                 view.setLiked(!isLiked);
                 eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
-                AdobeTrackingHelper.like(type, String.valueOf(photo.getId()));
+                AdobeTrackingHelper.like(type, String.valueOf(photo.getId()),getUserId());
             }
         };
 

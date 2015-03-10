@@ -60,12 +60,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         eventBus.register(this);
 
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-           this.recyclerView.setEmptyView(emptyView);
+        this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-        this.arrayListAdapter.registerCell(ImageUploadTask.ImageUploadTaskFullscreen.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
         this.refreshLayout.setOnRefreshListener(this);
@@ -83,8 +83,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
                 getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
-
-
     }
 
     @Override
@@ -97,7 +95,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
             });
         }
     }
-
 
 
     public void onEvent(ScreenOrientationChangeEvent event) {

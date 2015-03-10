@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
@@ -10,12 +11,15 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.response.LoginResponse;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 
 import org.apache.http.HttpStatus;
@@ -33,9 +37,11 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     @Global
     EventBus eventBus;
+    private Injector injector;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
+        this.injector = injector;
         injector.inject(this);
     }
 
@@ -120,6 +126,25 @@ public class DreamSpiceManager extends SpiceManager {
             }
         });
 
+    }
+
+
+    public void uploadPhoto(ImageUploadTask task) {
+        DreamTripsRequest.UploadTripPhoto request = new DreamTripsRequest.UploadTripPhoto(task);
+        injector.inject(request);
+        execute(request, new RequestListener<Photo>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                Log.e("Progress event", "onRequestFailure SpiceException" + spiceException);
+                new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
+
+            }
+
+            @Override
+            public void onRequestSuccess(Photo photo) {
+
+            }
+        });
     }
 
     public static interface OnLoginSuccess {

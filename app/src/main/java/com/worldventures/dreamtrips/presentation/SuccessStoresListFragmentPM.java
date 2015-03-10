@@ -23,7 +23,7 @@ import javax.inject.Named;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View> {
+public class SuccessStoresListFragmentPM extends BasePresentation<SuccessStoresListFragmentPM.View> {
 
     @Inject
     @Named("details")
@@ -49,7 +49,7 @@ public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View
         }
     };
 
-    public SuccessStoresTabPM(View view) {
+    public SuccessStoresListFragmentPM(View view) {
         super(view);
     }
 

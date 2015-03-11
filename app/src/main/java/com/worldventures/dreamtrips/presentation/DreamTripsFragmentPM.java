@@ -138,7 +138,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         }
     }
 
-
+    public void onEvent(TripLikedEvent event) {
+        adapterController.reload();
+    }
     private ArrayList<Trip> performFiltering(List<Trip> data) {
         ArrayList<Trip> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Collections2.filter(data, (input) ->

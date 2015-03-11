@@ -227,6 +227,7 @@ import retrofit.RestAdapter;
                 FacebookAlbumFragment.class,
                 BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
+                StaticInfoFragment.BookIt.class,
                 StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,

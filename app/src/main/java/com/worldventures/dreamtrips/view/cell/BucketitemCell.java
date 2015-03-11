@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.view.cell;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,7 +13,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.custom.Airy;
@@ -51,7 +50,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     protected void syncUIStateWithModel() {
-        tvName.setText(getModelObject().getName() + " id =" + getModelObject().getItemId());
+        tvName.setText(getModelObject().getName() + " id =" + getModelObject().getId());
 
         update();
 

@@ -132,7 +132,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         if (trip.isLiked()) {
             dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback2);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(trip.getId()), callback2);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback2);
         }
     }
 

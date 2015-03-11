@@ -170,12 +170,12 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading(List<Trip> items) {
-        refreshLayout.setRefreshing(false);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

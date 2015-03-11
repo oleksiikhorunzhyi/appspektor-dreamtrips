@@ -4,23 +4,20 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 
 import butterknife.InjectView;
@@ -30,7 +27,7 @@ import butterknife.InjectView;
  */
 @Layout(R.layout.fragment_bucket__quick_input)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickInputPM> {
+public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickInputPM> implements BucketListQuickInputPM.View {
 
     @InjectView(R.id.recyclerViewBucketItems)
     RecyclerView recyclerView;
@@ -38,7 +35,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     @InjectView(R.id.editTextQuickInput)
     EditText editTextQuick;
 
-    private LoaderRecycleAdapter<BucketItem> arrayListAdapter;
+    private BaseArrayListAdapter<BucketPostItem> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -46,12 +43,11 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.recyclerView.setLayoutManager(layoutManager);
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.arrayListAdapter.registerCell(BucketItem.class, BucketQuickCell.class);
+        this.arrayListAdapter = new BaseArrayListAdapter<BucketPostItem>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter.registerCell(BucketPostItem.class, BucketQuickCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getAdapterController());
         editTextQuick.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         getPresentationModel().addToBucketList(editTextQuick.getText().toString());
@@ -67,7 +63,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
         switch (item.getItemId()) {
             case R.id.action_done:
                 String text = editTextQuick.getText().toString();
-                if (!TextUtils.isEmpty(text)) {
+                if (!TextUtils.isEmpty(text.trim())) {
                     getPresentationModel().addToBucketList(text);
                     editTextQuick.setText("");
                 } else {
@@ -77,6 +73,11 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
     }
 
     @Override

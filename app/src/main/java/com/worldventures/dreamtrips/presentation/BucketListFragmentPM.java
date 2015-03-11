@@ -1,24 +1,14 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.amazonaws.services.s3.model.Bucket;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.gson.Gson;
-import com.snappydb.DB;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketHeader;
-import com.worldventures.dreamtrips.core.model.BucketItem;
-import com.worldventures.dreamtrips.core.model.ContentItem;
-import com.worldventures.dreamtrips.core.model.response.BucketListResponse;
-import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
@@ -26,13 +16,8 @@ import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 

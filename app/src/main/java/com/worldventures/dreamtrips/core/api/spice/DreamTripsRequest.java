@@ -8,8 +8,11 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
+import com.snappydb.SnappyDB;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
@@ -22,6 +25,8 @@ import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -31,6 +36,7 @@ import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,6 +88,59 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public Session loadDataFromNetwork() throws Exception {
             return getService().login(username, password);
+        }
+    }
+
+    public static class AddBucketItem extends DreamTripsRequest<BucketItem> {
+        private BucketPostItem bucketPostItem;
+
+        public AddBucketItem(BucketPostItem bucketPostItem) {
+            super(BucketItem.class);
+            this.bucketPostItem = bucketPostItem;
+        }
+
+        @Override
+        public BucketItem loadDataFromNetwork() {return getService().createItem(bucketPostItem);}
+    }
+
+    public static class GetBucketList extends DreamTripsRequest<ArrayList<BucketItem>> {
+
+        private BucketTabsFragment.Type type;
+        private boolean fromNetwork;
+        private SnappyRepository snappyRepository;
+
+        public GetBucketList(SnappyRepository snappyRepository, BucketTabsFragment.Type type, boolean fromNetwork) {
+            super((Class<ArrayList<BucketItem>>) new ArrayList<BucketItem>().getClass());
+            this.fromNetwork = fromNetwork;
+            this.type = type;
+            this.snappyRepository = snappyRepository;
+        }
+
+        @Override
+        public ArrayList<BucketItem> loadDataFromNetwork() throws Exception {
+            ArrayList<BucketItem> resultList = new ArrayList<>();
+
+            if (fromNetwork) {
+                ArrayList<BucketItem> list = getService().getBucketList();
+
+                ArrayList<BucketItem> activtyList = new ArrayList<>();
+                ArrayList<BucketItem> locationList = new ArrayList<>();
+
+                activtyList.addAll(Collections2.filter(list,
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.name())));
+                locationList.addAll(Collections2.filter(list,
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.name())));
+
+                snappyRepository.saveBucketList(activtyList, BucketTabsFragment.Type.ACTIVITIES.name());
+                snappyRepository.saveBucketList(activtyList, BucketTabsFragment.Type.LOCATIONS.name());
+
+                resultList.addAll(Collections2.filter(list,
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(type.name())));
+            } else {
+                resultList.addAll(snappyRepository.readBucketList(type.name()));
+            }
+
+            return resultList;
         }
     }
 

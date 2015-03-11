@@ -26,7 +26,7 @@ public class BucketPostItem {
 
     public BucketPostItem(String name, String type, Integer id, String status) {
         this.name = name;
-        this.type = type;
+        this.type = type.toLowerCase();
         this.id = id;
         this.status = status;
     }

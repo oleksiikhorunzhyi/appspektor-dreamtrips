@@ -49,7 +49,7 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
     }
 
     public void addToBucketList(String title) {
-        BucketPostItem bucketPostItem =  new BucketPostItem(type.name(), title, BucketItem.NEW);
+        BucketPostItem bucketPostItem =  new BucketPostItem(type.getName(), title, BucketItem.NEW);
 
         data.add(0, bucketPostItem);
         view.getAdapter().addItem(bucketPostItem);

@@ -91,20 +91,20 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
     }
 
     public enum Type {
-        LOCATIONS("bucket/bucket_list_locations.json", R.string.location),
-        ACTIVITIES("bucket/bucket_list_activities.json", R.string.activity),
-        RESTAURANTS("bucket/bucket_list_restaurants.json", R.string.dinning);
+        LOCATIONS("location", R.string.location),
+        ACTIVITIES("activity", R.string.activity),
+        RESTAURANTS("dinning", R.string.dinning);
 
-        Type(String fileName, int res) {
-            this.fileName = fileName;
+        Type(String name, int res) {
+            this.name = name;
             this.res = res;
         }
 
-        String fileName;
+        String name;
         int res;
 
-        public String getFileName() {
-            return fileName;
+        public String getName() {
+            return name;
         }
     }
 }

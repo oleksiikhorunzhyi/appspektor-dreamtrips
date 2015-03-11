@@ -38,7 +38,12 @@ public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessSt
 
     @Override
     public long getHeaderId(int i) {
-        return items.get(i).getCategory().hashCode();
+        String category = items.get(i).getCategory();
+        int index = 0;
+        for (int i1 = 0; i1 < category.length(); i1++) {
+            index += category.charAt(i1);
+        }
+        return index;
     }
 
 

@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 
-public class WebViewFragmentPresentation extends BasePresentation<BasePresentation.View> {
+public class WebViewFragmentPresentation<T extends BasePresentation.View> extends BasePresentation<T> {
 
-    public WebViewFragmentPresentation(View view) {
+    public WebViewFragmentPresentation(T view) {
         super(view);
     }
 

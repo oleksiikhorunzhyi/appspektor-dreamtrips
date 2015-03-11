@@ -60,7 +60,7 @@ public interface DreamTripsApi {
     @GET("/api/ysbh_photos")
     public ArrayList<Photo> getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
-    @GET("/success_stories")
+    @GET("/api/success_stories")
     public ArrayList<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded

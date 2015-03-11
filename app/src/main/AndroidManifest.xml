@@ -32,6 +32,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".view.activity.FBPickPhotoActivity"
             android:label="@string/title_activity_main" />
+        <activity android:name=".view.activity.ShareActivity"
+            android:label="@string/title_activity_main" />
         <activity android:name=".view.activity.CreatePhotoActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.core.model;
 
-public class SuccessStory extends BaseEntity {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SuccessStory extends BaseEntity implements Parcelable {
 
     String author = "aut";
     String category = "cat";
@@ -47,4 +50,42 @@ public class SuccessStory extends BaseEntity {
     public void setUrl(String url) {
         this.url = url;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.author);
+        dest.writeString(this.category);
+        dest.writeString(this.locale);
+        dest.writeString(this.published_date);
+        dest.writeString(this.url);
+        dest.writeInt(this.id);
+    }
+
+    public SuccessStory() {
+    }
+
+    private SuccessStory(Parcel in) {
+        this.author = in.readString();
+        this.category = in.readString();
+        this.locale = in.readString();
+        this.published_date = in.readString();
+        this.url = in.readString();
+        this.id = in.readInt();
+    }
+
+    public static final Creator<SuccessStory> CREATOR = new Creator<SuccessStory>() {
+        public SuccessStory createFromParcel(Parcel source) {
+            return new SuccessStory(source);
+        }
+
+        public SuccessStory[] newArray(int size) {
+            return new SuccessStory[size];
+        }
+    };
 }

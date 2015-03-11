@@ -18,6 +18,8 @@
         android:fillViewport="false"
         android:textColor="@android:color/white"
         fab:pstsIndicatorColor="@color/theme_main_darker"
+
+        fab:pstsTextColorSelected="@android:color/white"
         fab:pstsTextSelectedStyle="normal"
         fab:pstsTextStyle="normal"
         fab:pstsUnderlineColor="@color/theme_main_darker" />
@@ -26,9 +28,9 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ll"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tabs"
-        android:layout_above="@+id/ll"
         android:background="@android:color/white" />
 
     <View
@@ -81,8 +83,8 @@
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:visibility="gone"
-        android:padding="2dp">
+        android:padding="2dp"
+        android:visibility="gone">
 
         <com.gc.materialdesign.views.Switch
             android:id="@+id/sw_liked"

@@ -14,7 +14,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.presentation.SuccessStoresTabPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoresListFragmentPM;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
@@ -28,7 +28,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_success_stores)
-public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoresTabPM.View {
+public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFragmentPM> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoresListFragmentPM.View {
 
     @InjectView(R.id.recyclerViewTrips)
     EmptyRecyclerView recyclerView;
@@ -42,8 +42,8 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
     BaseArrayListAdapter adapter;
 
     @Override
-    protected SuccessStoresTabPM createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoresTabPM(this);
+    protected SuccessStoresListFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new SuccessStoresListFragmentPM(this);
     }
 
 
@@ -62,7 +62,7 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), true)
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), false)
                 .build();
 
         recyclerView.addItemDecoration(decoration);
@@ -96,10 +96,12 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
     @Override
     public void finishLoading(List<SuccessStory> result) {
         new Handler().postDelayed(() -> {
-            refreshLayout.setRefreshing(false);
-            if (isLandscape() && isTablet()) {
-                if (!result.isEmpty()) {
-                    getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+            if (getActivity() != null) {
+                refreshLayout.setRefreshing(false);
+                if (isLandscape() && isTablet()) {
+                    if (!result.isEmpty()) {
+                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+                    }
                 }
             }
         }, 500);
@@ -107,7 +109,7 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        new Handler().postDelayed(() -> refreshLayout.setRefreshing(true), 100);
     }
 
 }

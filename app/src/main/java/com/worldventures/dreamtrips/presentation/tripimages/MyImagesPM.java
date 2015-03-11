@@ -23,12 +23,16 @@ public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
         return new TripImagesRoboSpiceController() {
             @Override
             public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getRefreshRequest() {
-                return new DreamTripsRequest.GetMyPhotos(context, user.getId(), PER_PAGE, 1);
+                DreamTripsRequest.GetMyPhotos getMyPhotos = new DreamTripsRequest.GetMyPhotos(user.getId(), PER_PAGE, 1);
+                view.inject(getMyPhotos);
+                return getMyPhotos;
             }
 
             @Override
             public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getNextPageRequest(int currentCount) {
-                return new DreamTripsRequest.GetMyPhotos(context, user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
+                DreamTripsRequest.GetMyPhotos getMyPhotos = new DreamTripsRequest.GetMyPhotos(user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
+                view.inject(getMyPhotos);
+                return getMyPhotos;
             }
         };
     }

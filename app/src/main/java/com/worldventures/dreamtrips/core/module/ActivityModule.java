@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.regions.Regions;
 import com.path.android.jobqueue.JobManager;
 import com.path.android.jobqueue.config.Configuration;
 import com.path.android.jobqueue.di.DependencyInjector;
@@ -24,15 +21,9 @@ import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
-import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
-import com.worldventures.dreamtrips.core.uploader.Constants;
-import com.worldventures.dreamtrips.core.uploader.ImageUploadsRepository;
 import com.worldventures.dreamtrips.core.uploader.Logger;
 import com.worldventures.dreamtrips.core.uploader.UploadingAPI;
-import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItDialogPM;
@@ -64,7 +55,9 @@ import com.worldventures.dreamtrips.presentation.MembershipPM;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
-import com.worldventures.dreamtrips.presentation.SuccessStoresTabPM;
+import com.worldventures.dreamtrips.presentation.ShareActivityPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoresListFragmentPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
@@ -92,6 +85,7 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
@@ -139,14 +133,14 @@ import com.worldventures.dreamtrips.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
-import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresTabFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresDetails;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresListFragment;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 import retrofit.RestAdapter;
 
 @Module(
@@ -158,6 +152,7 @@ import retrofit.RestAdapter;
                 BookItActivity.class,
                 FullScreenPhotoActivity.class,
                 FullScreenTripImageActivity.class,
+                ShareActivity.class,
                 DetailTripActivity.class,
                 FBPickPhotoActivity.class,
                 CreatePhotoActivity.class,
@@ -209,6 +204,7 @@ import retrofit.RestAdapter;
                 BaseFSViewPM.class,
                 BucketListPopularPM.class,
                 ImageUploadTaskPM.class,
+                ShareActivityPM.class,
 
                 NavigationDrawerFragment.class,
                 FragmentMapTripInfo.class,
@@ -238,6 +234,7 @@ import retrofit.RestAdapter;
                 BucketListFragment.class,
                 DetailedImagePagerFragment.class,
                 MapFragment.class,
+                SuccessStoresDetails.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,
@@ -263,14 +260,14 @@ import retrofit.RestAdapter;
                 RepToolsFragment.class,
                 RepToolsFragmentPM.class,
                 SuccessStoryCell.class,
-                SuccessStoresTabFragment.class,
-                SuccessStoresTabPM.class,
+                SuccessStoresListFragment.class,
+                SuccessStoresListFragmentPM.class,
+                SuccessStoryDetailsPM.class,
 
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,
                 FilterableArrayListAdapter.class,
-                UploadJob.class,
-
+                DreamTripsRequest.GetMyPhotos.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
 
@@ -335,22 +332,6 @@ public class ActivityModule {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
-    @Provides
-    CognitoCachingCredentialsProvider provideCredProvider(Context context) {
-        return new CognitoCachingCredentialsProvider(
-                context,
-                Constants.AWS_ACCOUNT_ID,
-                Constants.COGNITO_POOL_ID,
-                Constants.COGNITO_ROLE_UNAUTH,
-                null,
-                Regions.US_EAST_1);
-    }
-
-    @Provides
-    @Singleton
-    TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
-        return new TransferManager(credentialsProvider);
-    }
 
     @Provides
     DependencyInjector provideDependencyInjector(@InjectingServiceModule.Service Injector injector) {
@@ -376,15 +357,6 @@ public class ActivityModule {
         return new JobManager(context, configuration);
     }
 
-    @Provides
-    UploadingFileManager provideUploadingFileManager(Context context) {
-        return new UploadingFileManager(context);
-    }
-
-    @Provides
-    Repository<ImageUploadTask> provideImageUploadRepository(Realm realm) {
-        return new ImageUploadsRepository(realm);
-    }
 
     @Provides
     UploadingAPI provideUploadingAPI(RestAdapter adapter) {

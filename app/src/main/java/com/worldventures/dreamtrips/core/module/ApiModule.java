@@ -6,19 +6,15 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.techery.spares.application.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.PersistentCookieStore;
-import com.worldventures.dreamtrips.utils.RealmGsonExlusionStrategy;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -86,7 +82,6 @@ public class ApiModule {
     @Provides
     Gson provideGson() {
         return new GsonBuilder()
-                .setExclusionStrategies(new RealmGsonExlusionStrategy())
                 .setDateFormat("yyyy-MM-dd")
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();

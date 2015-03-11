@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemClickEvent;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import javax.inject.Named;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View> {
+public class SuccessStoresListFragmentPM extends BasePresentation<SuccessStoresListFragmentPM.View> {
 
     @Inject
     @Named("details")
@@ -49,7 +50,7 @@ public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View
         }
     };
 
-    public SuccessStoresTabPM(View view) {
+    public SuccessStoresListFragmentPM(View view) {
         super(view);
     }
 
@@ -79,12 +80,12 @@ public class SuccessStoresTabPM extends BasePresentation<SuccessStoresTabPM.View
 
     private void handleClick(SuccessStory successStory, int position) {
         Bundle bundle = new Bundle();
-        bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, successStory.getUrl());
+        bundle.putParcelable(SuccessStoresDetails.STORY, successStory);
         if (view.isLandscape() && view.isTablet()) {
-            detailsCompass.replace(State.BUNDLE_URL_WEB, bundle);
+            detailsCompass.replace(State.SUCCESS_STORES_DETAILS, bundle);
             eventBus.post(new SuccessStoryItemClickEvent(position));
         } else {
-            fragmentCompass.add(State.BUNDLE_URL_WEB, bundle);
+            fragmentCompass.add(State.SUCCESS_STORES_DETAILS, bundle);
         }
     }
 

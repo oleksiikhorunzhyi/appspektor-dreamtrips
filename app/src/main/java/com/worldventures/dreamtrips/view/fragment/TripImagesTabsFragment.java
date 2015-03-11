@@ -153,7 +153,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void onPageSelected(int position) {
         getPresentationModel().trackState(position);
 
-        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()) {
+        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal() || position == Type.VIDEO_360.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
         } else {
             multipleActionsDown.setVisibility(View.VISIBLE);

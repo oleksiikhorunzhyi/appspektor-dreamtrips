@@ -110,6 +110,7 @@ import com.worldventures.dreamtrips.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
 import com.worldventures.dreamtrips.view.cell.Video360Cell;
+import com.worldventures.dreamtrips.view.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
@@ -255,6 +256,7 @@ import retrofit.RestAdapter;
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,
+                Video360SmallCell.class,
                 BucketQuickCell.class,
                 BucketPopularCell.class,
                 RepToolsFragment.class,

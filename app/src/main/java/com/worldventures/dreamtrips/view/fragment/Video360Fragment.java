@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.Video360;
 import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
 import com.worldventures.dreamtrips.view.cell.Video360Cell;
+import com.worldventures.dreamtrips.view.cell.Video360SmallCell;
 
 import butterknife.InjectView;
 
@@ -43,7 +44,7 @@ public class Video360Fragment extends BaseFragment<Video360FragmentPM> implement
         adapterRecent = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
 
         adapterFeatured.registerCell(Video360.class, Video360Cell.class);
-        adapterRecent.registerCell(Video360.class, Video360Cell.class);
+        adapterRecent.registerCell(Video360.class, Video360SmallCell.class);
 
         recyclerViewFeatured.setAdapter(adapterFeatured);
         recyclerViewRecent.setAdapter(adapterRecent);

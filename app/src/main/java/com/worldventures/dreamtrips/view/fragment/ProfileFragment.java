@@ -85,7 +85,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        AdobeTrackingHelper.profile();
         layoutConfiguration();
     }
 

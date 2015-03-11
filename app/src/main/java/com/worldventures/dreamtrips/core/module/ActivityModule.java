@@ -60,6 +60,7 @@ import com.worldventures.dreamtrips.presentation.SuccessStoresListFragmentPM;
 import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
 import com.worldventures.dreamtrips.presentation.fullscreen.FSInspireMePM;
@@ -83,6 +84,7 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
+import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
@@ -101,6 +103,8 @@ import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.cell.TripCell;
+import com.worldventures.dreamtrips.view.cell.Video360Cell;
+import com.worldventures.dreamtrips.view.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookAlbumFragment;
@@ -125,6 +129,7 @@ import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
+import com.worldventures.dreamtrips.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
@@ -192,6 +197,7 @@ import retrofit.RestAdapter;
                 BucketListFragmentPM.class,
                 MapFragmentPM.class,
                 FSPhotoPM.class,
+                Video360FragmentPM.class,
                 FSInspireMePM.class,
                 BucketListEditActivity.class,
                 BucketListEditActivityPM.class,
@@ -213,9 +219,11 @@ import retrofit.RestAdapter;
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
                 StaticInfoFragment.class,
+                Video360Fragment.class,
                 FacebookAlbumFragment.class,
                 BucketListPopuralFragment.class,
                 FacebookPhotoFragment.class,
+                StaticInfoFragment.BookIt.class,
                 StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,
@@ -240,11 +248,13 @@ import retrofit.RestAdapter;
                 PhotoUploadCell.class,
                 FiltersCell.class,
                 VideoCell.class,
+                Video360Cell.class,
                 ActivityCell.class,
                 BucketItemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,
+                Video360SmallCell.class,
                 BucketQuickCell.class,
                 BucketPopularCell.class,
                 RepToolsFragment.class,
@@ -263,6 +273,7 @@ import retrofit.RestAdapter;
 
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
+                SimpleStreamPlayerActivity.class,
                 DreamTripsRequest.UploadTripPhoto.class
         },
         complete = false,

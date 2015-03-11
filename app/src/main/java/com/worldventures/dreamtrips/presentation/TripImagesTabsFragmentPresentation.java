@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.io.File;
 
@@ -24,6 +26,17 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
             activityRouter.openCreatePhoto(fragment, Uri.parse(image.getFilePathOriginal()));
         }
     };
+
+    public void trackState(int position) {
+        if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
+            AdobeTrackingHelper.mine(getUserId());
+        } else if (position == TripImagesListFragment.Type.YOU_SHOULD_BE_HERE.ordinal()) {
+            AdobeTrackingHelper.ysbh(getUserId());
+        } else if (position == TripImagesListFragment.Type.MEMBER_IMAGES.ordinal()) {
+            AdobeTrackingHelper.all(getUserId());
+        }
+
+    }
 
     public TripImagesTabsFragmentPresentation(View view) {
         super(view);

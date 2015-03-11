@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
@@ -55,7 +56,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
     @Override
     public void afterCreateView(View rootView) {
-        AdobeTrackingHelper.dreamTrips();
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
@@ -64,30 +64,11 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(Trip.class, TripCell.class);
-        this.adapter.setContentLoader(getPresentationModel().getTripsController());
 
         this.recyclerView.setAdapter(adapter);
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-
-        getPresentationModel().getTripsController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
-            @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<Trip> result) {
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
-                showErrorMessage();
-            }
-        });
     }
 
     @Override
@@ -99,11 +80,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     public boolean onQueryTextChange(String s) {
         adapter.setFilter(s);
         return false;
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
     }
 
     private void setupLayoutManager(boolean landscape) {
@@ -175,14 +151,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         getEventBus().post(new ResetFiltersEvent());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (this.adapter.getItemCount() == 0) {
-            this.refreshLayout.post(() -> getPresentationModel().getTripsController().reload());
-        }
-    }
-
 
     @Override
     public void onDestroyView() {
@@ -200,5 +168,18 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         return new DreamTripsFragmentPM(this);
     }
 
+    @Override
+    public void startLoading() {
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+    }
 
+    @Override
+    public void finishLoading(List<Trip> items) {
+        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+    }
+
+    @Override
+    public IRoboSpiceAdapter<Trip> getAdapter() {
+        return adapter;
+    }
 }

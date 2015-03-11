@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
 
     public void setupType(Type type) {
         this.type = type;
+        AdobeTrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
+
     }
 
     public T providePhoto() {

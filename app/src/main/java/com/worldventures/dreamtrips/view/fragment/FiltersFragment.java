@@ -44,7 +44,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @InjectView(R.id.progressBarFilters)
     ProgressBar progressBar;
 
-    LoaderRecycleAdapter<Object> arrayListAdapter;
+    BaseArrayListAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -53,32 +53,13 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         this.recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Region.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);
         this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
         //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
-
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());
-        getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
-            @Override
-            public void onStartLoading() {
-                if (arrayListAdapter.getItemCount() == 0)
-                    progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
 
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
@@ -107,12 +88,26 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         arrayListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void startLoading() {
+        if (arrayListAdapter.getItemCount() == 0)
+            progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
+    }
+
     public void refresh() {
-        if (this.arrayListAdapter.getItemCount() == 0) {
-            this.recyclerView.post(() ->
-                            getPresentationModel().getRegionController().reload()
-            );
-        }
+        this.recyclerView.post(() ->
+                        getPresentationModel().fillData()
+        );
     }
 
     @Override

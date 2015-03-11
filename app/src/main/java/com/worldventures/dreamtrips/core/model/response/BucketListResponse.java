@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.model.response;
 
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 
 import java.util.List;
 

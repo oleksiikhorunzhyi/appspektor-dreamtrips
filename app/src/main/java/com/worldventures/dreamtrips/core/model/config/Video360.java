@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.core.model.config;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.utils.DateUtils;
 
-public class Video {
+public class Video360 {
     @SerializedName("Order")
     private Number order;
     @SerializedName("Thumbnail")
@@ -11,6 +12,8 @@ public class Video {
     private String title;
     @SerializedName("URL")
     private String uRL;
+    @SerializedName("duration")
+    private int duration;
 
     public Number getOrder() {
         return this.order;
@@ -42,5 +45,9 @@ public class Video {
 
     public void setURL(String uRL) {
         this.uRL = uRL;
+    }
+
+    public String getDuration() {
+        return duration != 0 ? DateUtils.convertSecondsToString(duration) : "";
     }
 }

@@ -56,7 +56,6 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.arrayListAdapter.setContentLoader(getPresentationModel().getAdapterController());
-        AdobeTrackingHelper.video();
 
         getPresentationModel().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
             @Override

@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
             if (e != null) {
                 view.showLoginErrorMessage();
             } else {
+                AdobeTrackingHelper.login(l.getSession().getUser().getEmail());
                 activityRouter.openMain();
                 activityRouter.finish();
                 view.showLoginSuccess();

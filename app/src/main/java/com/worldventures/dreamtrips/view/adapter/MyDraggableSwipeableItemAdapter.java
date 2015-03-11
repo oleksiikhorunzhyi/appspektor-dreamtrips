@@ -23,20 +23,13 @@ import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
-import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
-import com.worldventures.dreamtrips.core.model.BucketHeader;
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
-import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.view.util.AdapterUtils;
 import com.worldventures.dreamtrips.view.util.ViewUtils;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>

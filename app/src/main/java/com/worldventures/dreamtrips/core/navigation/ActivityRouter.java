@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
@@ -54,6 +55,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putInt(FullScreenPhotoActivity.EXTRA_POSITION, position);
         bundle.putSerializable(FullScreenPhotoActivity.EXTRA_TYPE, type);
         startActivity(FullScreenPhotoActivity.class, bundle);
+    }
+
+    public void open360Activity(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
+        startActivity(SimpleStreamPlayerActivity.class, bundle);
     }
 
     public void openFullScreenTrip(List<Object> photoList, int position) {

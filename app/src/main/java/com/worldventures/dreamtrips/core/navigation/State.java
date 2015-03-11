@@ -47,11 +47,11 @@ public enum State {
     MEMBERSHIP(MemberShipFragment.class, R.string.membership, 2, R.drawable.ic_membership, 2),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, 3, R.drawable.ic_bucket_lists, 3),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile, 4, R.drawable.ic_profile, 4),
-    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, 4, R.drawable.ic_rep_tools, 4),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, 5, R.drawable.ic_terms, 5),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, 5, R.drawable.ic_faq, 6),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, 5, R.drawable.ic_termsconditions, 7),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, 5, R.drawable.ic_cookie, 8);
+    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, 5, R.drawable.ic_rep_tools, 5),
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, 6, R.drawable.ic_terms, 6),
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, 6, R.drawable.ic_faq, 7),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, 6, R.drawable.ic_termsconditions, 8),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, 6, R.drawable.ic_cookie, 9);
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;

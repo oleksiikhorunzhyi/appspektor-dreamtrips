@@ -33,115 +33,151 @@ public class AdobeTrackingHelper {
         Analytics.trackAction(LOGIN, data);
     }
 
-    public static void dreamTrips() {
-        Analytics.trackAction(DREAMTRIPS, null);
+    public static void dreamTrips(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(DREAMTRIPS, data);
     }
 
-    public static void trip(String id) {
+    public static void trip(String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
         data.put("view_trip", id);
+        data.put("member_id", memberId);
         Analytics.trackAction(DREAMTRIPS, data);
     }
 
-    public static void tripInfo(String id) {
+    public static void tripInfo(String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
         data.put("trip_info", id);
+        data.put("member_id", memberId);
         Analytics.trackAction(DREAMTRIPS, data);
     }
 
-    public static void bookIt(String id) {
+    public static void bookIt(String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
         data.put("book_it", id);
         Analytics.trackAction(DREAMTRIPS, data);
     }
 
 
-    public static void ysbh() {
-        Analytics.trackAction(PHOTOS_YSBH, null);
+    public static void ysbh(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(PHOTOS_YSBH, data);
     }
 
-    public static void view(TripImagesListFragment.Type type, String id) {
+    public static void view(TripImagesListFragment.Type type, String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
         if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
+            data.put("member_id", memberId);
             data.put("view_ysbh_photo", id);
             Analytics.trackAction(PHOTOS_YSBH, data);
         } else if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("view_user_photo", id);
             Analytics.trackAction(PHOTOS_ALL_USERS, data);
         } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("view_user_photo", id);
             Analytics.trackAction(PHOTOS_MINE, data);
         }
     }
 
-    public static void like(TripImagesListFragment.Type type, String id) {
+    public static void like(TripImagesListFragment.Type type, String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
         if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
+            data.put("member_id", memberId);
             data.put("like_ysbh_photo", id);
             Analytics.trackAction(PHOTOS_YSBH, data);
         } else if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("like_user_photo", id);
             Analytics.trackAction(PHOTOS_ALL_USERS, data);
         } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("like_user_photo", id);
             Analytics.trackAction(PHOTOS_MINE, data);
         }
     }
 
-    public static void flag(TripImagesListFragment.Type type, String id) {
+    public static void flag(TripImagesListFragment.Type type, String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
         if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("flag_user_photo", id);
             Analytics.trackAction(PHOTOS_ALL_USERS, data);
         } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
+            data.put("member_id", memberId);
             data.put("flag_user_photo", id);
             Analytics.trackAction(PHOTOS_MINE, data);
         }
     }
 
-    public static void all() {
-        Analytics.trackAction(PHOTOS_ALL_USERS, null);
-    }
-
-    public static void mine() {
-        Analytics.trackAction(PHOTOS_MINE, null);
-    }
-
-    public static void video() {
-        Analytics.trackAction(MEMBERSHIP, null);
-    }
-
-    public static void playVideo(String name) {
+    public static void all(String memberId) {
         Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(PHOTOS_ALL_USERS, data);
+    }
+
+    public static void mine(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(PHOTOS_MINE, data);
+    }
+
+    public static void video(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(MEMBERSHIP, data);
+    }
+
+    public static void playVideo(String name, String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
         data.put("play_video", name);
         Analytics.trackAction(MEMBERSHIP, data);
     }
 
-    public static void enroll() {
-        Analytics.trackAction(ENROLL, null);
+    public static void enroll(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(ENROLL, data);
     }
 
-    public static void profile() {
-        Analytics.trackAction(PROFILE, null);
+    public static void profile(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(PROFILE, data);
     }
 
-    public static void bucketList() {
-        Analytics.trackAction(BUCKET_LIST, null);
+    public static void bucketList(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(BUCKET_LIST, data);
     }
 
-    public static void faq() {
-        Analytics.trackAction(FAQ, null);
+    public static void faq(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(FAQ, data);
     }
 
-    public static void privacy() {
-        Analytics.trackAction(PRIVACY, null);
+    public static void privacy(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(PRIVACY, data);
     }
 
-    public static void cookie() {
-        Analytics.trackAction(COOKIE, null);
+    public static void cookie(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(COOKIE, data);
     }
 
-    public static void service() {
-        Analytics.trackAction(SERVICE, null);
+    public static void service(String memberId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("member_id", memberId);
+        Analytics.trackAction(SERVICE, data);
     }
 }

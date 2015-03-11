@@ -62,7 +62,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     }
 
     public void onCreate() {
-        AdobeTrackingHelper.trip(String.valueOf(trip.getId()));
+        AdobeTrackingHelper.trip(String.valueOf(trip.getId()), getUserId());
 
         view.setName(trip.getName());
         view.setDates(trip.getAvailabilityDates().toString());
@@ -88,7 +88,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
     }
 
     public void actionBookIt() {
-        AdobeTrackingHelper.bookIt(String.valueOf(trip.getId()));
+        AdobeTrackingHelper.bookIt(String.valueOf(trip.getId()), getUserId());
         activityRouter.openBookItActivity(trip.getId());
     }
 
@@ -104,8 +104,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             @Override
             public void onRequestSuccess(TripDetails tripDetails) {
                 view.setContent(tripDetails.getContent());
-                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()));
-
+                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
             }
         };
         dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(trip.getId()), callback);
@@ -133,7 +132,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         if (trip.isLiked()) {
             dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback2);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(trip.getId()), callback2);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback2);
         }
     }
 

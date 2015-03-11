@@ -17,28 +17,20 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimat
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
-import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketHeader;
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.view.custom.SwipeDismissRecyclerViewTouchListener;
 import com.worldventures.dreamtrips.view.util.SwipingActionGuardManager;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -73,8 +65,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BUNDLE_TYPE);
-
-        AdobeTrackingHelper.bucketList();
         eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 

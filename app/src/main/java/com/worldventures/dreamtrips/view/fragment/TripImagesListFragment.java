@@ -181,6 +181,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     public static enum Type {
-        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME
+        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360
     }
 }

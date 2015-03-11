@@ -11,7 +11,7 @@ public class Videos360 {
     @SerializedName("Title")
     private String title;
     @SerializedName("Videos")
-    private List<Video> videos;
+    private List<Video360> videos;
 
     public Number getOrder() {
         return this.order;
@@ -29,11 +29,11 @@ public class Videos360 {
         this.title = title;
     }
 
-    public List<Video> getVideos() {
+    public List<Video360> getVideos() {
         return this.videos;
     }
 
-    public void setVideos(List<Video> videos) {
+    public void setVideos(List<Video360> videos) {
         this.videos = videos;
     }
 }

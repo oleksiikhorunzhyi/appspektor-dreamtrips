@@ -4,12 +4,11 @@ import android.content.Context;
 
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
-import com.worldventures.dreamtrips.core.model.BucketPopularItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPopularItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 

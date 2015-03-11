@@ -63,9 +63,24 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
     @Override
     protected void onPause() {
         super.onPause();
-        pfAsset.stop();
+        if (pfAsset != null) {
+            pfAsset.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         pfAsset.release();
         pfView.release();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (pfAsset.getStatus().equals(PFAssetStatus.PAUSED)) {
+            pfAsset.play();
+        }
     }
 
     /**

@@ -2,16 +2,14 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ButtonFlat;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.techery.spares.ui.view.cell.BaseCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketPopularItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPopularItem;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
 import javax.inject.Inject;

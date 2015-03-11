@@ -1,4 +1,6 @@
-package com.worldventures.dreamtrips.core.model;
+package com.worldventures.dreamtrips.core.model.bucket;
+
+import com.worldventures.dreamtrips.core.model.BaseEntity;
 
 /**
  * Created by 1 on 06.03.15.

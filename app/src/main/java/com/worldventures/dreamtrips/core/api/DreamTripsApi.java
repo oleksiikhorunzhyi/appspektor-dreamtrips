@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
@@ -10,6 +11,7 @@ import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -87,4 +89,9 @@ public interface DreamTripsApi {
     @GET("/api/trips/{id}/details")
     public TripDetails getDetails(@Path("id") int tripId);
 
+    @POST("/api/bucket_list_items")
+    public BucketItem createItem(@Body BucketPostItem bucketItem);
+
+    @GET("/api/bucket_list_items")
+    public ArrayList<BucketItem> getBucketList();
 }

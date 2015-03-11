@@ -10,8 +10,12 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -59,7 +63,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.service();
+            getPresentationModel().track(State.TERMS_OF_SERVICE);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
@@ -69,7 +73,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.faq();
+            getPresentationModel().track(State.FAQ);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
         }
     }
@@ -79,7 +83,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.privacy();
+            getPresentationModel().track(State.PRIVACY_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
         }
     }
@@ -123,7 +127,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.cookie();
+            getPresentationModel().track(State.COOKIE_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
         }
     }

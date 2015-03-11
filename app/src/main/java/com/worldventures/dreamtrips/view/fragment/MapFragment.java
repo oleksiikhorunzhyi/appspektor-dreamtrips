@@ -68,8 +68,6 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         return v;
     }
 
-
-
     private void initMap() {
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;

@@ -11,6 +11,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
+import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
@@ -35,6 +36,9 @@ public class VideoCell extends AbstractCell<Video> {
     @Inject
     UniversalImageLoader universalImageLoader;
 
+    @Inject
+    AppSessionHolder appSessionHolder;
+
 
     public VideoCell(View view) {
         super(view);
@@ -50,7 +54,7 @@ public class VideoCell extends AbstractCell<Video> {
     public void onPlayClick() {
         Intent intent = new Intent(context, PlayerActivity.class)
                 .setData(Uri.parse(getModelObject().getMp4Url()));
-        AdobeTrackingHelper.playVideo(getModelObject().getVideoName());
+        AdobeTrackingHelper.playVideo(getModelObject().getVideoName(), appSessionHolder.get().get().getUser().getEmail());
         context.startActivity(intent);
     }
 

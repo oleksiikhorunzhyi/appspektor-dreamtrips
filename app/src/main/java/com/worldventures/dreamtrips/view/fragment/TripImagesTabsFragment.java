@@ -16,6 +16,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
@@ -57,10 +58,12 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
-                    Bundle args = new Bundle();
-                    Type type = Type.values()[position];
-                    args.putSerializable(BUNDLE_TYPE, type);
-                    fragment.setArguments(args);
+                    if (fragment instanceof TripImagesListFragment) {
+                        Bundle args = new Bundle();
+                        Type type = Type.values()[position];
+                        args.putSerializable(BUNDLE_TYPE, type);
+                        fragment.setArguments(args);
+                    }
                 }
             };
 
@@ -68,6 +71,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
+            this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
 
         }
         this.pager.setAdapter(adapter);
@@ -147,15 +151,9 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageSelected(int position) {
-        if (position == Type.MY_IMAGES.ordinal()) {
-            AdobeTrackingHelper.mine();
-        } else if (position == Type.YOU_SHOULD_BE_HERE.ordinal()) {
-            AdobeTrackingHelper.ysbh();
-        } else if (position == Type.MEMBER_IMAGES.ordinal()) {
-            AdobeTrackingHelper.all();
-        }
+        getPresentationModel().trackState(position);
 
-        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()) {
+        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal() || position == Type.VIDEO_360.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
         } else {
             multipleActionsDown.setVisibility(View.VISIBLE);

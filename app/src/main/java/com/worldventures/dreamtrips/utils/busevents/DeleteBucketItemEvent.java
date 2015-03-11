@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 
 /**
  * Created by 1 on 02.03.15.

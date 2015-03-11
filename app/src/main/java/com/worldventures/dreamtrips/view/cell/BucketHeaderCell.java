@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketHeader;
+import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 
 import butterknife.InjectView;
 

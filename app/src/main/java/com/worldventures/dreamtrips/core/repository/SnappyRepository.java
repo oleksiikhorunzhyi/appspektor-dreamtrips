@@ -2,11 +2,10 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 
-import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.model.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 
 import java.util.ArrayList;

@@ -49,7 +49,6 @@ public class SuccessStoresTabFragment extends BaseFragment<SuccessStoresTabPM> i
 
     @Override
     public void afterCreateView(View rootView) {
-        AdobeTrackingHelper.dreamTrips();
         super.afterCreateView(rootView);
 
         this.adapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());

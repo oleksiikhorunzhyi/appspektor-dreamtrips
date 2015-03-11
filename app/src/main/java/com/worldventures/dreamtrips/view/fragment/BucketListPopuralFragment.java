@@ -7,18 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketItem;
-import com.worldventures.dreamtrips.core.model.BucketPopularItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPopularItem;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListPopularPM;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 

@@ -1,24 +1,33 @@
 package com.worldventures.dreamtrips.view.cell;
 
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.BucketItem;
-import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.utils.busevents.RefreshBucketItemEvent;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_item_quick)
-public class BucketQuickCell extends AbstractCell<BucketItem> {
+public class BucketQuickCell extends AbstractCell<BucketPostItem> {
 
     @InjectView(R.id.tv_name)
     TextView tvName;
+
+    @InjectView(R.id.imageViewRefresh)
+    ImageView imageViewRestart;
+
+    @InjectView(R.id.progressBar)
+    ProgressBar progressBar;
 
     public BucketQuickCell(View view) {
         super(view);
@@ -27,6 +36,23 @@ public class BucketQuickCell extends AbstractCell<BucketItem> {
     @Override
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName());
+        if (getModelObject().isLoaded()) {
+            progressBar.setVisibility(View.GONE);
+            imageViewRestart.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            imageViewRestart.setVisibility(View.GONE);
+        }
+
+        if (getModelObject().isError()) {
+            progressBar.setVisibility(View.GONE);
+            imageViewRestart.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.imageViewRefresh)
+    void onRefresh() {
+        getEventBus().post(new RefreshBucketItemEvent(getModelObject()));
     }
 
     @Override

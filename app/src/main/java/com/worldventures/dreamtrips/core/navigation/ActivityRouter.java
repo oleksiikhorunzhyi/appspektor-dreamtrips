@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
@@ -84,6 +85,23 @@ public class ActivityRouter extends ActivityBoundRouter {
     public void openFacebookPhoto(Fragment fm) {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
+
+    public void openShareFacebook(String url, String text) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.FB);
+        startActivity(ShareActivity.class, bundle);
+    }
+
+    public void openShareTwitter(String url, String text) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
+        startActivity(ShareActivity.class, bundle);
+    }
+
 
     public void openShare(Intent share) {
         startActivityIntent(share);

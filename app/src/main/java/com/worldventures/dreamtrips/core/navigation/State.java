@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresDetails;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public enum State {
     PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
     MAP_INFO(FragmentMapTripInfo.class, 0),
     BOOK_IT(StaticInfoFragment.BookIt.class, R.string.title_book_it),
+    SUCCESS_STORES_DETAILS(SuccessStoresDetails.class, R.string.success_stores),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     QUICK_INPUT(BucketListQuickInputFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_my_title),

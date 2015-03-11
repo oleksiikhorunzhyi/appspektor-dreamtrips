@@ -1,12 +1,6 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
-import android.net.Uri;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Inspiration;
@@ -16,7 +10,6 @@ import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -94,19 +87,12 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     }
 
     public void onFbShare(FullScreenPhotoActivity activity) {
-        activity.shareFBDialog(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
+        activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
     }
 
     public void onTwitterShare(FullScreenPhotoActivity activity) {
-        File file = DiskCacheUtils.findInCache(photo.getFSImage().getMedium().getUrl(), ImageLoader.getInstance().getDiskCache());
-        //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
-        if (file != null) {
-            Uri parse = Uri.fromFile(file);
-            activity.shareTwitterDialog(parse, photo.getFsShareText());
-        } else {
-            view.informUser(context.getString(R.string.error_image_not_loaded));
-        }
 
+        activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

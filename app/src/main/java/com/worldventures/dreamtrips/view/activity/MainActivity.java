@@ -187,6 +187,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         getSupportActionBar().setTitle(title);
     }
 
+    public void setToolBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

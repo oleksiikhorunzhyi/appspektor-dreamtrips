@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -9,21 +10,24 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPresentation> {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> extends BaseFragment<T> {
 
     @InjectView(R.id.web_view)
     WebView webView;
 
     @Override
-    protected WebViewFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new WebViewFragmentPresentation(this);
+    protected T createPresentationModel(Bundle savedInstanceState) {
+        return (T) new WebViewFragmentPresentation(this);
     }
 
     @Override
@@ -85,7 +89,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollFragment extends StaticInfoFragment {
+    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresentation> {
         @InjectView(R.id.progressBarWeb)
         ProgressBar progressBarWeb;
 
@@ -132,8 +136,9 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
     public static class BookIt extends BundleUrlFragment {
     }
 
+
     @Layout(R.layout.fragment_webview)
-    public static class BundleUrlFragment extends StaticInfoFragment {
+    public static class BundleUrlFragment<T extends WebViewFragmentPresentation> extends StaticInfoFragment<T> {
         public static final String URL_EXTRA = "URL_EXTRA";
         private String url;
 

@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 
 
-public class WebViewFragmentPresentation extends BasePresentation<BasePresentation.View> {
+public class WebViewFragmentPresentation<T extends BasePresentation.View> extends BasePresentation<T> {
 
-    public WebViewFragmentPresentation(View view) {
+    public WebViewFragmentPresentation(T view) {
         super(view);
     }
 

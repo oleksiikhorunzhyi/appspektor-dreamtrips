@@ -63,7 +63,7 @@ public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFra
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), true)
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), false)
                 .build();
 
         recyclerView.addItemDecoration(decoration);
@@ -97,10 +97,12 @@ public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFra
     @Override
     public void finishLoading(List<SuccessStory> result) {
         new Handler().postDelayed(() -> {
-            refreshLayout.setRefreshing(false);
-            if (isLandscape() && isTablet()) {
-                if (!result.isEmpty()) {
-                    getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+            if (getActivity() != null) {
+                refreshLayout.setRefreshing(false);
+                if (isLandscape() && isTablet()) {
+                    if (!result.isEmpty()) {
+                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+                    }
                 }
             }
         }, 500);
@@ -108,7 +110,7 @@ public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFra
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        new Handler().postDelayed(() -> refreshLayout.setRefreshing(true), 100);
     }
 
 }

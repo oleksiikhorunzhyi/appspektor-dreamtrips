@@ -158,5 +158,7 @@
     <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
+    <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
 
 </resources>

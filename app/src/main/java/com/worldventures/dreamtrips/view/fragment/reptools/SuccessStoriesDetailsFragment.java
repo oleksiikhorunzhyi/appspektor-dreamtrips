@@ -30,12 +30,15 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     ProgressBar progressBarWeb;
     public static final String STORY = "STORY";
     private SuccessStory story;
-    private MenuItem item;
+    private MenuItem favoriteMenuItem;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        item = menu.findItem(R.id.action_like);
+        favoriteMenuItem = menu.findItem(R.id.action_like);
+        favoriteMenuItem.setIcon(story.isLiked() ? R.drawable.ic_success_heart_normal :
+                R.drawable.ic_success_heart_selected);
+
     }
 
     @Override
@@ -105,7 +108,11 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     public void likeRequestSuccess() {
         boolean isLike = !story.isLiked();
         story.setLiked(isLike);
-        item.setIcon(isLike ? R.drawable.ic_success_heart_normal : R.drawable.ic_success_heart_selected);
-        informUser("Success story has been added to favorites");
+        favoriteMenuItem.setIcon(isLike ? R.drawable.ic_success_heart_normal : R.drawable.ic_success_heart_selected);
+        if (isLike) {
+            informUser(getString(R.string.ss_has_been_added_to_favorites));
+        } else {
+            informUser(getString(R.string.ss_has_been_removed_from_favorites));
+        }
     }
 }

@@ -2,9 +2,11 @@ package com.worldventures.dreamtrips.view.fragment.reptools;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -14,28 +16,36 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsFragmentPM;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_success_stores)
-public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetailsPM> implements SuccessStoryDetailsPM.View {
-
+public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPM> implements SuccessStoryDetailsFragmentPM.View {
 
 
     @InjectView(R.id.progressBarWeb)
     ProgressBar progressBarWeb;
     public static final String STORY = "STORY";
     private SuccessStory story;
+    private MenuItem favoriteMenuItem;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        favoriteMenuItem = menu.findItem(R.id.action_like);
+        favoriteMenuItem.setIcon(story.isLiked() ? R.drawable.ic_success_heart_normal :
+                R.drawable.ic_success_heart_selected);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_like:
-                getPresentationModel().like();
+                getPresentationModel().like(story);
                 break;
             case R.id.action_share:
                 getPresentationModel().share();
@@ -47,13 +57,12 @@ public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetails
     @Override
     public void afterCreateView(View rootView) {
         story = getArguments().getParcelable(STORY);
-        ((MainActivity) getActivity()).setToolBarTitle(story.getAuthor());
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
         super.afterCreateView(rootView);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setUseWideViewPort(true);
 
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -77,8 +86,8 @@ public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetails
     }
 
     @Override
-    protected SuccessStoryDetailsPM createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsPM(this);
+    protected SuccessStoryDetailsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new SuccessStoryDetailsFragmentPM(this);
     }
 
     @Override
@@ -93,5 +102,17 @@ public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetails
                         getPresentationModel().onTwitterShare(story);
                     }
                 }).show();
+    }
+
+    @Override
+    public void likeRequestSuccess() {
+        boolean isLike = !story.isLiked();
+        story.setLiked(isLike);
+        favoriteMenuItem.setIcon(isLike ? R.drawable.ic_success_heart_normal : R.drawable.ic_success_heart_selected);
+        if (isLike) {
+            informUser(getString(R.string.ss_has_been_added_to_favorites));
+        } else {
+            informUser(getString(R.string.ss_has_been_removed_from_favorites));
+        }
     }
 }

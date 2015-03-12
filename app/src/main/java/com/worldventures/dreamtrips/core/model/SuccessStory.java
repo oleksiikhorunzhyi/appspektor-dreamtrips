@@ -5,11 +5,29 @@ import android.os.Parcelable;
 
 public class SuccessStory extends BaseEntity implements Parcelable {
 
-    String author = "aut";
-    String category = "cat";
+    String author;
+    String category;
     String locale;
     String published_date;
-    String url = "http://google.com.ua";
+    String url;
+    String sharingUrl = "";
+    boolean liked;
+
+    public String getSharingUrl() {
+        return sharingUrl;
+    }
+
+    public void setSharingUrl(String sharingUrl) {
+        this.sharingUrl = sharingUrl;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
 
     public String getAuthor() {
         return author;

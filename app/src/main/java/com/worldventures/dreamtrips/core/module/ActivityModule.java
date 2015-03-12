@@ -56,8 +56,9 @@ import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.presentation.ProfileFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
 import com.worldventures.dreamtrips.presentation.ShareActivityPM;
-import com.worldventures.dreamtrips.presentation.SuccessStoresListFragmentPM;
-import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoriesListFragmentPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsActivityPM;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsFragmentPM;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
 import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
@@ -84,8 +85,9 @@ import com.worldventures.dreamtrips.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
@@ -133,8 +135,8 @@ import com.worldventures.dreamtrips.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
-import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresDetails;
-import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoresListFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
+import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesListFragment;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -156,6 +158,8 @@ import retrofit.RestAdapter;
                 DetailTripActivity.class,
                 FBPickPhotoActivity.class,
                 CreatePhotoActivity.class,
+                SuccessStoryDetailsActivity.class,
+                SuccessStoryDetailsActivityPM.class,
                 LaunchActivityPresentation.class,
                 BucketListQuickInputPM.class,
                 LoginActivityPresentation.class,
@@ -234,7 +238,7 @@ import retrofit.RestAdapter;
                 BucketListFragment.class,
                 DetailedImagePagerFragment.class,
                 MapFragment.class,
-                SuccessStoresDetails.class,
+                SuccessStoriesDetailsFragment.class,
 
                 CreatePhotoFragment.class,
                 FacebookAlbumItem.class,
@@ -260,9 +264,9 @@ import retrofit.RestAdapter;
                 RepToolsFragment.class,
                 RepToolsFragmentPM.class,
                 SuccessStoryCell.class,
-                SuccessStoresListFragment.class,
-                SuccessStoresListFragmentPM.class,
-                SuccessStoryDetailsPM.class,
+                SuccessStoriesListFragment.class,
+                SuccessStoriesListFragmentPM.class,
+                SuccessStoryDetailsFragmentPM.class,
 
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,

@@ -37,6 +37,7 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     @Global
     EventBus eventBus;
+
     private Injector injector;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
@@ -114,4 +116,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivityIntent(share);
     }
 
+    public void openSuccessStoryDetails(SuccessStory successStory) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY,successStory);
+        startActivity(SuccessStoryDetailsActivity.class, bundle);
+
+    }
 }

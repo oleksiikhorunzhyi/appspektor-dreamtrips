@@ -37,7 +37,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsFragmentPM> implement
                 }
             };
 
-            this.adapter.add(new FragmentItem(SuccessStoresListFragment.class, getString(R.string.success_stores)));
+            this.adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
 
         }
         this.pager.setAdapter(adapter);

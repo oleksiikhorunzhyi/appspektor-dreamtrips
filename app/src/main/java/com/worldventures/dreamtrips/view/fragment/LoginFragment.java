@@ -68,8 +68,12 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     }
 
     public void showLocalErrors(int userNameError, int passwordError) {
-        etUsername.setError(getString(userNameError));
-        etPassword.setError(getString(passwordError));
+        if (userNameError != 0) {
+            etUsername.setError(getString(userNameError));
+        }
+        if (passwordError != 0) {
+            etPassword.setError(getString(passwordError));
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
@@ -91,6 +92,12 @@ public interface DreamTripsApi {
 
     @POST("/api/bucket_list_items")
     public BucketItem createItem(@Body BucketPostItem bucketItem);
+
+    @PATCH("/api/bucket_list_items")
+    public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
+
+    @DELETE("/api/bucket_list_items")
+    public JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")
     public ArrayList<BucketItem> getBucketList();

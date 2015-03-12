@@ -104,6 +104,37 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
     }
 
+    public static class MarkBucketItem extends DreamTripsRequest<BucketItem> {
+        private BucketPostItem bucketPostItem;
+        private int id;
+
+        public MarkBucketItem(int id, BucketPostItem bucketPostItem) {
+            super(BucketItem.class);
+            this.bucketPostItem = bucketPostItem;
+            this.id = id;
+        }
+
+        @Override
+        public BucketItem loadDataFromNetwork() {
+            return getService().markItem(id, bucketPostItem);
+        }
+    }
+
+    public static class DeleteBucketItem extends DreamTripsRequest<JsonObject> {
+        private int id;
+
+        public DeleteBucketItem(int id) {
+            super(JsonObject.class);
+            this.id = id;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() {
+            return getService().deleteItem(id);
+        }
+    }
+
+
     public static class GetBucketList extends DreamTripsRequest<ArrayList<BucketItem>> {
 
         private BucketTabsFragment.Type type;
@@ -147,8 +178,9 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
-            long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+         //   long current = Calendar.getInstance().getTimeInMillis();
+         //   return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+            return true;
         }
 
     }
@@ -534,6 +566,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
         }
     }
+
 
 
 }

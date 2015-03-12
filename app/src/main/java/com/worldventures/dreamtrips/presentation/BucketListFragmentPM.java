@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 
 import com.google.common.collect.Collections2;
+import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -113,8 +114,21 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        bucketItems.remove(event.getBucketItem());
-        db.saveBucketList(bucketItems, type.name());
+        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            bucketItems.remove(event.getBucketItem());
+            dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+
+                }
+
+                @Override
+                public void onRequestSuccess(JsonObject jsonObject) {
+
+                }
+            });
+            db.saveBucketList(bucketItems, type.name());
+        }
     }
 
     public void itemMoved(int fromPosition, int toPosition) {
@@ -128,9 +142,11 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         db.saveBucketList(bucketItems, type.name());
     }
 
-    public void onEvent(MarkBucketItemDoneEvent markBucketItemDoneEvent) {
-        db.saveBucketList(bucketItems, type.name());
-        fillWithItems();
+    public void onEvent(MarkBucketItemDoneEvent event) {
+        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            db.saveBucketList(bucketItems, type.name());
+            fillWithItems();
+        }
     }
 
     public void reloadWithFilter(int filterId) {

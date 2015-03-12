@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
@@ -116,18 +117,16 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     public void onEvent(DeleteBucketItemEvent event) {
         if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             bucketItems.remove(event.getBucketItem());
+            db.saveBucketList(bucketItems, type.name());
             dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-
                 }
 
                 @Override
                 public void onRequestSuccess(JsonObject jsonObject) {
-
                 }
             });
-            db.saveBucketList(bucketItems, type.name());
         }
     }
 
@@ -145,6 +144,20 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             db.saveBucketList(bucketItems, type.name());
+
+            BucketPostItem bucketPostItem = new BucketPostItem();
+            bucketPostItem.setStatus(event.getBucketItem().getStatus());
+            dreamSpiceManager.execute(new DreamTripsRequest.MarkBucketItem(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                }
+
+                @Override
+                public void onRequestSuccess(BucketItem jsonObject) {
+
+                }
+            });
+
             fillWithItems();
         }
     }

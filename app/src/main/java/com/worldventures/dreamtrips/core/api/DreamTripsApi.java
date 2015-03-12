@@ -99,10 +99,10 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items")
     public BucketItem createItem(@Body BucketPostItem bucketItem);
 
-    @PATCH("/api/bucket_list_items")
+    @PATCH("/api/bucket_list_items/{id}")
     public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
 
-    @DELETE("/api/bucket_list_items")
+    @DELETE("/api/bucket_list_items/{id}")
     public JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")

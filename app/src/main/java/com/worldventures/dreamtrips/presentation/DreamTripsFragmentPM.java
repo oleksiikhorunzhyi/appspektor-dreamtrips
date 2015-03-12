@@ -70,7 +70,12 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
         @Override
         public SpiceRequest<ArrayList<Trip>> getRefreshRequest() {
-            return getTripsRequest;
+            return new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
+                @Override
+                public ArrayList<Trip> loadDataFromNetwork() throws Exception {
+                    return performFiltering(super.loadDataFromNetwork());
+                }
+            };
         }
 
         @Override
@@ -82,13 +87,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         public void onFinish(LoadType type, List<Trip> items, SpiceException spiceException) {
             loadFromApi = false;
             view.finishLoading(items);
-        }
-    };
-
-    private DreamTripsRequest.GetTripsRequest getTripsRequest = new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
-        @Override
-        public ArrayList<Trip> loadDataFromNetwork() throws Exception {
-            return performFiltering(super.loadDataFromNetwork());
         }
     };
 

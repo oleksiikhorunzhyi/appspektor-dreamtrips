@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.amazonaws.event.ProgressListener;
@@ -51,6 +53,8 @@ import de.greenrobot.event.EventBus;
 import retrofit.mime.TypedFile;
 
 public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, DreamTripsApi> {
+    private static final long DELTA = 30 * 60 * 1000;
+
     public DreamTripsRequest(Class<T> clazz) {
         super(clazz, DreamTripsApi.class);
     }
@@ -105,40 +109,48 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         private BucketTabsFragment.Type type;
         private boolean fromNetwork;
         private SnappyRepository snappyRepository;
+        private Prefs prefs;
 
-        public GetBucketList(SnappyRepository snappyRepository, BucketTabsFragment.Type type, boolean fromNetwork) {
+        public GetBucketList(Prefs prefs, SnappyRepository snappyRepository, BucketTabsFragment.Type type, boolean fromNetwork) {
             super((Class<ArrayList<BucketItem>>) new ArrayList<BucketItem>().getClass());
             this.fromNetwork = fromNetwork;
             this.type = type;
             this.snappyRepository = snappyRepository;
+            this.prefs = prefs;
         }
 
         @Override
         public ArrayList<BucketItem> loadDataFromNetwork() throws Exception {
             ArrayList<BucketItem> resultList = new ArrayList<>();
 
-            if (fromNetwork) {
+            if (needUpdate() || fromNetwork) {
                 ArrayList<BucketItem> list = getService().getBucketList();
 
                 ArrayList<BucketItem> activtyList = new ArrayList<>();
                 ArrayList<BucketItem> locationList = new ArrayList<>();
 
                 activtyList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.name())));
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.getName())));
                 locationList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.name())));
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.getName())));
 
                 snappyRepository.saveBucketList(activtyList, BucketTabsFragment.Type.ACTIVITIES.name());
-                snappyRepository.saveBucketList(activtyList, BucketTabsFragment.Type.LOCATIONS.name());
+                snappyRepository.saveBucketList(locationList, BucketTabsFragment.Type.LOCATIONS.name());
 
                 resultList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(type.name())));
+                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(type.getName())));
             } else {
                 resultList.addAll(snappyRepository.readBucketList(type.name()));
             }
 
             return resultList;
         }
+
+        private boolean needUpdate() throws ExecutionException, InterruptedException {
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+        }
+
     }
 
 
@@ -405,7 +417,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
     }
 
     public static class GetTripsRequest extends DreamTripsRequest<ArrayList<Trip>> {
-        private static final long DELTA = 30 * 60 * 1000;
 
         private SnappyRepository db;
         private boolean fromApi;

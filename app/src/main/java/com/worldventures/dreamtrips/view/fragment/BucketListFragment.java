@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -18,6 +21,7 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Annotations.Global;
@@ -39,7 +43,7 @@ import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BasePresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BucketListFragmentPM.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -82,7 +86,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter.setMoveListener((from, to) -> getPresentationModel().itemMoved(from, to));
 
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
-//        mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 
         final GeneralItemAnimator animator = new SwipeDismissItemAnimator();
 
@@ -103,8 +106,12 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mRecyclerViewDragDropManager.attachRecyclerView(this.recyclerView);
 
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
+    }
 
-        mAdapter.setContentLoader(getPresentationModel().getAdapterController());
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().setProgressBarVisibility(true);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -131,7 +138,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         super.onResume();
         if (this.mAdapter.getItemCount() == 0) {
             this.recyclerView.post(() -> {
-                getPresentationModel().getAdapterController().reload();
+                getPresentationModel().loadBucketItems(false);
             });
         }
     }
@@ -171,7 +178,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onRefresh() {
-        getPresentationModel().getAdapterController().reload();
+        getPresentationModel().loadBucketItems(true);
     }
 
     @Override
@@ -180,8 +187,18 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         return new BucketListFragmentPM(this, type);
     }
 
-    public void requestReload() {
-        getPresentationModel().getAdapterController().reload();
+    @Override
+    public void startLoading() {
+       // recyclerView.post(()->swipeRefreshLayout.setRefreshing(true));
     }
 
+    @Override
+    public void finishLoading() {
+       // recyclerView.post(()->swipeRefreshLayout.setRefreshing(false));
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return mAdapter;
+    }
 }

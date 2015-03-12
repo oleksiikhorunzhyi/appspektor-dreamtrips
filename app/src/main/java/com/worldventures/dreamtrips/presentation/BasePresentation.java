@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
@@ -55,6 +57,12 @@ public class BasePresentation<VT extends BasePresentation.View> {
 
     public String getUserId() {return appSessionHolder.get().get().getUser().getEmail();}
 
+    public boolean isConnected() {
+        ConnectivityManager conMgr = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        return i != null && i.isConnected() && i.isAvailable();
+    }
 
     public interface View {
         void informUser(String stringId);

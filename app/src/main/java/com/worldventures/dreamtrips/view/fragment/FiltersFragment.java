@@ -63,6 +63,8 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
 
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
+
+        getPresentationModel().loadFilters();
     }
 
     @OnClick(R.id.textViewApplyFilter)
@@ -80,7 +82,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @Override
     public void onResume() {
         super.onResume();
-        refresh();
+      //  refresh();
     }
 
     @Override

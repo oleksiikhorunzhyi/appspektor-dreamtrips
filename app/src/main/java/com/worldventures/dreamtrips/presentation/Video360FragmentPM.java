@@ -21,19 +21,28 @@ public class Video360FragmentPM extends BasePresentation<Video360FragmentPM.View
         super.resume();
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 
-        List<Video360> featuredVideos = globalConfig.get(0).getVideos();
-        view.getFeaturedAdapter().clear();
-        view.getFeaturedAdapter().addItems(featuredVideos);
-
         List<Video360> recentVideos = globalConfig.get(1).getVideos();
-        view.getRecentAdapter().clear();
-        view.getRecentAdapter().addItems(recentVideos);
+        List<Video360> featuredVideos = globalConfig.get(0).getVideos();
 
+        if (view.getFeaturedAdapter() != null) {
+            view.getFeaturedAdapter().clear();
+            view.getFeaturedAdapter().addItems(featuredVideos);
+
+            view.getRecentAdapter().clear();
+            view.getRecentAdapter().addItems(recentVideos);
+        }
+        if (view.getAllAdapter() != null) {
+            view.getAllAdapter().clear();
+            view.getAllAdapter().addItems(featuredVideos);
+            view.getAllAdapter().addItems(recentVideos);
+        }
     }
 
     public interface View extends BasePresentation.View {
         BaseArrayListAdapter getFeaturedAdapter();
 
         BaseArrayListAdapter getRecentAdapter();
+
+        BaseArrayListAdapter getAllAdapter();
     }
 }

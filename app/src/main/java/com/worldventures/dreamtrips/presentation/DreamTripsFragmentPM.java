@@ -67,14 +67,10 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     private List<Activity> acceptedThemes;
 
     private RoboSpiceAdapterController<Trip> adapterController = new RoboSpiceAdapterController<Trip>() {
+
         @Override
         public SpiceRequest<ArrayList<Trip>> getRefreshRequest() {
-            return new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
-                @Override
-                public ArrayList<Trip> loadDataFromNetwork() throws Exception {
-                    return performFiltering(super.loadDataFromNetwork());
-                }
-            };
+            return getTripsRequest;
         }
 
         @Override
@@ -89,6 +85,12 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         }
     };
 
+    private DreamTripsRequest.GetTripsRequest getTripsRequest = new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
+        @Override
+        public ArrayList<Trip> loadDataFromNetwork() throws Exception {
+            return performFiltering(super.loadDataFromNetwork());
+        }
+    };
 
     public DreamTripsFragmentPM(View view) {
         super(view);

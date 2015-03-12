@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -128,8 +129,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     public void openRightDrawer() {
         drawerLayout.openDrawer(Gravity.END);
         enableRightDrawer();
-        FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
-        filtersFragment.refresh();
+        //FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
+        //filtersFragment.refresh();
     }
 
     public void closeRightDrawer() {

@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
 import android.app.Application;
+import android.content.Context;
 
+import com.octo.android.robospice.networkstate.NetworkStateChecker;
 import com.octo.android.robospice.persistence.CacheManager;
 import com.octo.android.robospice.persistence.binary.InFileBitmapObjectPersister;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
@@ -36,6 +38,20 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     @Inject
     GsonConverter gsonConverter;
 
+    @Override
+    protected NetworkStateChecker getNetworkStateChecker() {
+        return new NetworkStateChecker() {
+            @Override
+            public boolean isNetworkAvailable(Context context) {
+                return true;
+            }
+
+            @Override
+            public void checkPermissions(Context context) {
+
+            }
+        };
+    }
 
     @Override
     public void onCreate() {

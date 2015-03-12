@@ -86,13 +86,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
         eventBus.register(this);
     }
 
-    @Override
-    public void resume() {
-        super.resume();
-        loadFilters();
-    }
-
-    private void loadFilters() {
+    public void loadFilters() {
         view.startLoading();
         dreamSpiceManager.execute(new DreamTripsRequest.GetActivitiesRequest(db), new RequestListener<ArrayList<Activity>>() {
             @Override
@@ -124,7 +118,6 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
             }
         });
-
     }
 
     public void fillData() {

@@ -38,7 +38,7 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
 
     PFView pfView;
     PFAsset pfAsset;
-    PFNavigationMode _currentNavigationMode = PFNavigationMode.TOUCH;
+    PFNavigationMode _currentNavigationMode = PFNavigationMode.MOTION;
 
     @InjectView(R.id.framecontainer)
     ViewGroup frameContainer;

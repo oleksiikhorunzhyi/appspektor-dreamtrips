@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.service.TripsIntentService;
 import com.worldventures.dreamtrips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.view.activity.EnrollActivity;
@@ -19,6 +19,10 @@ import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.view.activity.LoginActivity;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.view.activity.SuccessStoryDetailsActivity;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -55,6 +59,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FullScreenPhotoActivity.class, bundle);
     }
 
+    public void open360Activity(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
+        startActivity(SimpleStreamPlayerActivity.class, bundle);
+    }
+
     public void openFullScreenTrip(List<Object> photoList, int position) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(FullScreenTripImageActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
@@ -68,6 +78,13 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
+    public void openBucketListEditActivity(BucketTabsFragment.Type type, State state) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, state);
+        startActivity(BucketListEditActivity.class, bundle);
+    }
+
     public void openTripDetails(Trip trip) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
@@ -78,14 +95,31 @@ public class ActivityRouter extends ActivityBoundRouter {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
-    public void startService(Bundle bundle) {
-        Intent intent = new Intent(getContext(), TripsIntentService.class);
-        intent.putExtras(bundle);
-        startServiceIntent(intent);
+    public void openShareFacebook(String url, String text) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.FB);
+        startActivity(ShareActivity.class, bundle);
     }
+
+    public void openShareTwitter(String url, String text) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
+        startActivity(ShareActivity.class, bundle);
+    }
+
 
     public void openShare(Intent share) {
         startActivityIntent(share);
     }
 
+    public void openSuccessStoryDetails(SuccessStory successStory) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY,successStory);
+        startActivity(SuccessStoryDetailsActivity.class, bundle);
+
+    }
 }

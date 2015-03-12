@@ -28,4 +28,11 @@
     <style name="menu_labels_style">
         <item name="android:textColor">@color/white</item>
     </style>
+    <style name="myRecyclerViewStyle">
+        <item name="android:clipChildren">false</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+    <style name="commonListItemStyle"></style>
 </resources>

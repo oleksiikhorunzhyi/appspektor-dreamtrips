@@ -1,12 +1,8 @@
 package com.worldventures.dreamtrips.view.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -14,20 +10,20 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPresentation> {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> extends BaseFragment<T> {
 
     @InjectView(R.id.web_view)
-    WebView webView;
+    protected WebView webView;
 
     @Override
-    protected WebViewFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new WebViewFragmentPresentation(this);
+    protected T createPresentationModel(Bundle savedInstanceState) {
+        return (T) new WebViewFragmentPresentation(this);
     }
 
     @Override
@@ -63,16 +59,17 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.service();
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.TERMS_OF_SERVICE);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
+
     @Layout(R.layout.fragment_webview)
     public static class FAQFragment extends StaticInfoFragment {
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.faq();
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.FAQ);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
         }
     }
@@ -82,13 +79,13 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.privacy();
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.PRIVACY_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
         }
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollFragment extends StaticInfoFragment {
+    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresentation> {
         @InjectView(R.id.progressBarWeb)
         ProgressBar progressBarWeb;
 
@@ -126,13 +123,17 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            AdobeTrackingHelper.cookie();
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.COOKIE_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
         }
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookItFragment extends StaticInfoFragment {
+    public static class BookIt extends BundleUrlFragment {
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class BundleUrlFragment extends StaticInfoFragment {
         public static final String URL_EXTRA = "URL_EXTRA";
         private String url;
 

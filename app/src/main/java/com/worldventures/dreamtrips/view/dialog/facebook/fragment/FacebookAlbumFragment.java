@@ -54,7 +54,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPM>
         super.afterCreateView(rootView);
         adapter = new BaseRecycleAdapter();
 
-        toolbar.setTitle("Select Album");
+        toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> getPresentationModel().backAction());
 

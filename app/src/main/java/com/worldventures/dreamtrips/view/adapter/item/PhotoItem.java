@@ -40,7 +40,7 @@ public class PhotoItem implements ItemWrapper<Photo> {
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder h = ((ViewHolder) holder);
-        universalImageLoader.loadImage(photo.getImages().getMedium().getUrl(), h.ivBg, null, new SimpleImageLoadingListener());
+        universalImageLoader.loadImage(photo.getImages().getThumb().getUrl(), h.ivBg, null, new SimpleImageLoadingListener());
     }
 
     @Override

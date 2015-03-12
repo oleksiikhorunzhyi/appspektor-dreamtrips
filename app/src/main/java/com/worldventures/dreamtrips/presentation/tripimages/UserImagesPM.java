@@ -1,24 +1,32 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
+import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 
-import org.robobinding.annotation.PresentationModel;
+import java.util.ArrayList;
 
-import java.util.List;
+import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
-import retrofit.Callback;
-
-import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.*;
-
-@PresentationModel
 public class UserImagesPM extends TripImagesListPM<Photo> {
     public UserImagesPM(View view) {
         super(view, Type.MEMBER_IMAGES);
     }
 
     @Override
-    public void loadPhotos(int perPage,int page,Callback<List<Photo>> callback) {
-        dreamTripsApi.getUserPhotos(perPage, page,callback);
+    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
+        return new TripImagesRoboSpiceController() {
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
+                return new DreamTripsRequest.GetUserPhotos(PER_PAGE, 1);
+            }
+
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getNextPageRequest(int currentCount) {
+                return new DreamTripsRequest.GetUserPhotos(PER_PAGE, currentCount / PER_PAGE + 1);
+            }
+        };
     }
+
 }

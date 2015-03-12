@@ -6,19 +6,24 @@ import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.Session;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
@@ -29,61 +34,79 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/sessions")
-    public void login(@Field("username") String username, @Field("password") String password, Callback<Session> callback);
-
-    @FormUrlEncoded
-    @POST("/api/sessions")
     public Session login(@Field("username") String username, @Field("password") String password);
 
     @POST("/api/profile/avatar")
     @Multipart
-    public void uploadAvatar(@Part("avatar") TypedFile image, Callback<User> callback);
+    public User uploadAvatar(@Part("avatar") TypedFile image);
 
-    @GET("/api/trips")
+    @GET("/api/trips")/*TODO*/
     public List<Trip> getTrips();
 
-    @GET("/api/regions")
+    @GET("/api/regions")/*TODO*/
     public List<Region> getRegions();
 
+    @GET("/api/activities")/*TODO*/
+    public List<Activity> getActivities();
+
     @GET("/api/photos")
-    public void getUserPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{id}/photos")
-    public void getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int Query, @Query("page") int page);
 
     @GET("/api/inspirations")
-    public void getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Inspiration>> callback);
+    public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/ysbh_photos")
-    public void getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page, Callback<List<Photo>> callback);
+    public ArrayList<Photo> getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+
+    @GET("/api/success_stories")
+    public ArrayList<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
-    public void flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason, Callback<JsonObject> callback);
+    public JsonObject flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason);
 
     @DELETE("/api/photos/{id}")
-    public void deletePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject deletePhoto(@Path("id") int photoId);
 
     @POST("/api/photos/{id}/like")
-    public void likePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject likePhoto(@Path("id") int photoId);
 
     @DELETE("/api/photos/{id}/like")
-    public void unlikePhoto(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject unlikePhoto(@Path("id") int photoId);
 
-    @POST("/api/photos")
-    @Multipart
-    public void postPhoto(@Body Photo photo);
+    @POST("/api/success_stories/{id}/like")
+    public JsonObject likeSS(@Path("id") int photoId);
+
+    @DELETE("/api/success_stories/{id}/like")
+    public JsonObject unlikeSS(@Path("id") int photoId);
 
     @POST("/api/trips/{id}/like")
-    public void likeTrip(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject likeTrip(@Path("id") int photoId);
 
     @DELETE("/api/trips/{id}/like")
-    public void unlikeTrio(@Path("id") int photoId, Callback<JsonObject> callback);
+    public JsonObject unlikeTrio(@Path("id") int photoId);
+
+    @POST("/api/photos")
+    public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
+
 
     @GET("/api/trips/{id}/details")
-    public void getDetails(@Path("id") int tripId, Callback<TripDetails> callback);
+    public TripDetails getDetails(@Path("id") int tripId);
 
-    @GET("/api/activities")
-    public List<Activity> getActivities();
+    @POST("/api/bucket_list_items")
+    public BucketItem createItem(@Body BucketPostItem bucketItem);
+
+    @PATCH("/api/bucket_list_items/{id}")
+    public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
+
+    @DELETE("/api/bucket_list_items/{id}")
+    public JsonObject deleteItem(@Path("id") int id);
+
+    @GET("/api/bucket_list_items")
+    public ArrayList<BucketItem> getBucketList();
+
 
 }

@@ -69,6 +69,12 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Optional
     @InjectView(R.id.sv)
     ScrollView sv;
+    @InjectView(R.id.et_user_id)
+    DTEditText etUserId;
+    @InjectView(R.id.et_from)
+    DTEditText etFrom;
+    @InjectView(R.id.et_live_in)
+    DTEditText etLiveIn;
 
     @Optional
     @InjectView(R.id.v_top_strip)
@@ -79,7 +85,6 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        AdobeTrackingHelper.profile();
         layoutConfiguration();
     }
 
@@ -124,7 +129,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     @OnClick(R.id.user_photo)
     public void onPhotoClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select avatar");
+        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
         this.pid.show();
     }
@@ -154,10 +159,40 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
         progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void setDateOfBirth(String format) {
+        dateOfBirth.setText(format);
+    }
+
+    @Override
+    public void setFrom(String location) {
+        etFrom.setText(location);
+    }
+
+    @Override
+    public void setUserName(String username) {
+        userName.setText(username);
+    }
+
+    @Override
+    public void setUserEmail(String email) {
+        userEmail.setText(email);
+    }
+
+    @Override
+    public void setUserId(String username) {
+        etUserId.setText(username);
+    }
+
+    @Override
+    public void setLivesIn(String liveIn) {
+        etLiveIn.setText(liveIn);
+    }
+
     @OnClick(R.id.user_cover)
     public void onCoverClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("Select cover");
+        this.pid.setTitle(getString(R.string.profile_select_cover_header));
         this.pid.setCallback(getPresentationModel().provideCoverChooseCallback());
         this.pid.show();
     }

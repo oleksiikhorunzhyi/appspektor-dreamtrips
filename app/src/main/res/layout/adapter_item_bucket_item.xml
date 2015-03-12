@@ -1,21 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/commonListItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@drawable/bg_swipe_item_neutral">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tv_name"
-        android:layout_weight="1"
-        android:textColor="@android:color/black" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/iv_like"
-        android:layout_marginLeft="30dp"
-        android:src="@drawable/ic_bucket_like" />
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bucket_item_selector"
+        android:clickable="true"
+        tools:ignore="UselessParent">
+
+        <View
+            android:id="@+id/drag_handle"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#20000000" />
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/drag_handle"
+            android:layout_toRightOf="@+id/drag_handle"
+            android:duplicateParentState="true"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:textSize="18sp"
+            android:layout_toLeftOf="@+id/button_cancel"
+            android:gravity="center_vertical"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_cancel_grey"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

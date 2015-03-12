@@ -12,7 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,6 +48,8 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
 
     @InjectView(R.id.map)
     ToucheableMapView mapView;
+    @InjectView(R.id.container_no_google)
+    FrameLayout frameLayoutNoGoogle;
 
     GoogleMap googleMap;
     private LatLng lastClickedLocation;
@@ -53,12 +58,15 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         MapsInitializer.initialize(getActivity());
-        mapView.onCreate(savedInstanceState);
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) != ConnectionResult.SUCCESS) {
+            mapView.setVisibility(View.GONE);
+            frameLayoutNoGoogle.setVisibility(View.VISIBLE);
+        } else {
+            mapView.onCreate(savedInstanceState);
+        }
         initMap();
         return v;
     }
-
-
 
     private void initMap() {
         mapView.getMapAsync((googleMap) -> {

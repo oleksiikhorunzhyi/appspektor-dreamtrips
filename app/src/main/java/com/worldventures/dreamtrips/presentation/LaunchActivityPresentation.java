@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
-import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
-@PresentationModel
 public class LaunchActivityPresentation extends BasePresentation<BasePresentation.View> {
 
     @Inject

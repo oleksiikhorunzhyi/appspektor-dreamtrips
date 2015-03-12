@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.worldventures.dreamtrips">
+    package="com.worldventures.dreamtrips" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,7 +21,7 @@
         android:icon="@drawable/ic_dt_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.DreamTripsTheme"
-        tools:replace="android:icon">
+        tools:replace="android:icon" >
         <activity
             android:name=".view.activity.EnrollActivity"
             android:configChanges="orientation|screenSize" />
@@ -38,7 +38,17 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />
         <activity
+            android:name=".view.activity.BucketListEditActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".view.activity.SimpleStreamPlayerActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".view.activity.FBPickPhotoActivity"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".view.activity.ShareActivity"
             android:label="@string/title_activity_main" />
         <activity
             android:name=".view.activity.CreatePhotoActivity"
@@ -47,7 +57,7 @@
         <activity
             android:name=".view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,10 +68,8 @@
         <service
             android:name=".core.uploader.UploadingService"
             android:enabled="true"
-            android:exported="true">
-
+            android:exported="true" >
         </service>
-        <service android:name=".core.service.TripsIntentService" />
 
         <activity
             android:name="com.facebook.LoginActivity"
@@ -76,7 +84,6 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_full_screen_photo" />
         <activity android:name=".view.activity.DetailTripActivity" />
-
         <activity
             android:name=".view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
@@ -90,15 +97,17 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU" />
+            android:value="AIzaSyBEAplf65kSFB7FZSB4xPbAdWktPPBNuXA" />
 
         <activity
             android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
             android:windowSoftInputMode="adjustPan" />
-        <service android:name="com.instabug.library.network.UploadCacheService"></service>
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
+
+        <service android:name="com.instabug.library.network.UploadCacheService" />
+
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
@@ -114,7 +123,15 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f" />
+
+        <service
+            android:name=".core.api.spice.DreamSpiceService"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.activity.SuccessStoryDetailsActivity"
+            android:label="@string/title_activity_success_story_details" >
+        </activity>
     </application>
 
 </manifest>
-

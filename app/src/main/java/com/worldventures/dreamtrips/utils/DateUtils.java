@@ -30,5 +30,10 @@ public class DateUtils {
         return simpleDateFormat.format(date);
     }
 
+    public static String convertSecondsToString(int seconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("mm:ss");
+        return formatter.format(new Date(seconds * 1000L));
+    }
+
 
 }

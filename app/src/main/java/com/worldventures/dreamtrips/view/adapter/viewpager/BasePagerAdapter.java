@@ -3,14 +3,15 @@ package com.worldventures.dreamtrips.view.adapter.viewpager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
+public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter implements IRoboSpiceAdapter {
     private List<FragmentItem<? extends T>> fragmentItems = new ArrayList<>();
 
     public BasePagerAdapter(FragmentManager fm) {
@@ -49,6 +50,16 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragmentItems.size();
+    }
+
+    @Override
+    public void clear() {
+        fragmentItems.clear();
+    }
+
+    @Override
+    public void addItems(ArrayList baseItemClasses) {
+     //in FullScreenPhotoFragment will be called FSUploadEvent, and items are added by activity method add all
     }
 
     @Override

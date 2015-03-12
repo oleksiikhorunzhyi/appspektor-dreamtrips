@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.presentation;
 import android.net.Uri;
 import android.util.Log;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
-
-import org.robobinding.annotation.PresentationModel;
-import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
-import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -23,30 +23,9 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
-@PresentationModel
-public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> implements HasPresentationModelChangeSupport {
-
-    public static final String FROM = "from";
-    public static final String LIVE_IN = "livesIn";
-    public static final String DATE_OF_BIRTH = "dateOfBirth";
-    public static final String USER_ID = "userId";
-    public static final String USER_NOTE = "userName";
-    public static final String USER_EMAIL = "userEmail";
-
-    private final PresentationModelChangeSupport changeSupport;
-
-    protected View view;
-    protected String from;
-    protected String livesIn;
-    protected String dateOfBirth;
-    protected String userId;
-    protected String userName;
-    protected String userEmail;
+public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> {
 
     @Inject
     protected Prefs prefs;
@@ -55,34 +34,33 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     @Global
     protected EventBus eventBus;
 
-    @Inject
-    DreamTripsApi dreamTripsApi;
-
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
             final File file = new File(image.getFileThumbnail());
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
-            dreamTripsApi.uploadAvatar(typedFile, new Callback<User>() {
+            dreamSpiceManager.execute(new DreamTripsRequest.UploadAvatarRequest(typedFile), new RequestListener<User>() {
                 @Override
-                public void success(User userResponse, Response response) {
+                public void onRequestFailure(SpiceException spiceException) {
+                    view.avatarProgressVisible(false);
+                    handleError(spiceException);
+                    view.informUser(context.getString(R.string.error_internal_server));
+                }
+
+                @Override
+                public void onRequestSuccess(User obj) {
                     UserSession userSession = appSessionHolder.get().get();
                     User user = userSession.getUser();
-                    user.setAvatar(userResponse.getAvatar());
+                    user.setAvatar(obj.getAvatar());
 
                     appSessionHolder.put(userSession);
                     view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
                     view.avatarProgressVisible(false);
                     eventBus.post(new UpdateUserInfoEvent());
                 }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    view.avatarProgressVisible(false);
-                    handleError(error);
-                    view.informUser("Internal server error");
-                }
             });
+
+
         } else {
             Log.e(ProfileFragmentPresentation.class.getSimpleName(), error);
         }
@@ -105,8 +83,12 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
 
     public ProfileFragmentPresentation(View view) {
         super(view);
-        this.view = view;
-        this.changeSupport = new PresentationModelChangeSupport(this);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        AdobeTrackingHelper.profile(getUserId());
     }
 
     @Override
@@ -114,77 +96,17 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         super.resume();
 
         User user = this.appSessionHolder.get().get().getUser();
-        setUserName(user.getUsername());
-        setUserEmail(user.getEmail());
-        setUserId(user.getUsername());
-        setLivesIn(user.getLocation());
-        setFrom(user.getLocation());
-        changeSupport.firePropertyChange(FROM);
-        changeSupport.firePropertyChange(LIVE_IN);
-        changeSupport.firePropertyChange(DATE_OF_BIRTH);
-        changeSupport.firePropertyChange(USER_ID);
-        changeSupport.firePropertyChange(USER_NOTE);
-        changeSupport.firePropertyChange(USER_EMAIL);
+        view.setUserName(user.getUsername());
+        view.setUserEmail(user.getEmail());
+        view.setUserId(user.getUsername());
+        view.setLivesIn(user.getLocation());
+        view.setFrom(user.getLocation());
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
     }
 
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    @Override
-    public PresentationModelChangeSupport getPresentationModelChangeSupport() {
-        return changeSupport;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getLivesIn() {
-        return livesIn;
-    }
-
-    public void setLivesIn(String livesIn) {
-        this.livesIn = livesIn;
-    }
-
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public void logout() {
-        this.prefs.clear();
         this.appSessionHolder.destroy();
         activityRouter.finish();
         activityRouter.openLogin();
@@ -193,8 +115,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     public void onDataSet(int year, int month, int day) {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
         Calendar calendar = new GregorianCalendar(year, month, day);
-        setDateOfBirth(sdf.format(calendar.getTime()));
-        changeSupport.firePropertyChange(DATE_OF_BIRTH);
+        view.setDateOfBirth(sdf.format(calendar.getTime()));
     }
 
     //don't use of get PREFIX
@@ -213,5 +134,17 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         public void setCoverImage(Uri uri);
 
         void avatarProgressVisible(boolean visible);
+
+        void setDateOfBirth(String format);
+
+        void setFrom(String location);
+
+        void setUserName(String username);
+
+        void setUserEmail(String email);
+
+        void setUserId(String username);
+
+        void setLivesIn(String location);
     }
 }

@@ -1,13 +1,6 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
-import android.content.Intent;
-import android.net.Uri;
-
-import com.facebook.widget.FacebookDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.Inspiration;
@@ -15,9 +8,9 @@ import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,8 +21,6 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 
 public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresentation<BaseFSViewPM.View> {
 
-    @Inject
-    DreamTripsApi dreamTripsApi;
     @Inject
     @Global
     EventBus eventBus;
@@ -49,6 +40,8 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
 
     public void setupType(Type type) {
         this.type = type;
+        AdobeTrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
+
     }
 
     public T providePhoto() {
@@ -97,19 +90,12 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     }
 
     public void onFbShare(FullScreenPhotoActivity activity) {
-        activity.shareFBDialog(photo.getFSImage().getOriginal().getUrl(), photo.getFsShareText());
+        activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
     }
 
     public void onTwitterShare(FullScreenPhotoActivity activity) {
-        File file = DiskCacheUtils.findInCache(photo.getFSImage().getOriginal().getUrl(), ImageLoader.getInstance().getDiskCache());
-        //  String file = ImageDownloader.Scheme.FILE.wrap(((Photo) photo).getImages().getOriginal().getUrl());
-        if (file != null) {
-            Uri parse = Uri.fromFile(file);
-            activity.shareTwitterDialog(parse, photo.getFsShareText());
-          } else {
-            view.informUser("Image is not loaded yet");
-        }
 
+        activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

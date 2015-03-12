@@ -37,7 +37,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="THE MAGIC OF IRELAND"
                     android:textColor="@color/tripNameColor"
                     android:textSize="16sp" />
 
@@ -49,7 +48,6 @@
                     android:drawableLeft="@drawable/ic_location"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
-                    android:text="Kilkenny Island"
                     android:textColor="@color/tripPlaceColor" />
             </LinearLayout>
 
@@ -59,7 +57,6 @@
                 android:layout_height="match_parent"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
-                android:text="$299"
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -90,7 +87,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
-                    android:text="Jul 10 - 15 2015"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />

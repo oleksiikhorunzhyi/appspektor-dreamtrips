@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
+import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 
 public abstract class PresentationModelDrivenActivity<PM extends BasePresentation> extends BaseActivity implements BasePresentation.View {
@@ -38,5 +39,27 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
             builder.title("Alert").content(s).positiveText("Ok").show();
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        if (getPresentationModel() != null)
+            getPresentationModel().destroy();
+        super.onDestroy();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+        if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+        if (dreamSpiceManager.isStarted()) dreamSpiceManager.shouldStop();
     }
 }

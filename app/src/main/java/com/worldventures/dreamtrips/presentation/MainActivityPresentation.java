@@ -4,13 +4,11 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
 
-import org.robobinding.annotation.PresentationModel;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-@PresentationModel
 public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
 
     private State currentState;
@@ -39,7 +37,7 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
 
     public void onBackPressed() {
         currentState = fragmentCompass.getPreviousFragment();
-        String title = currentState.getTitle();
+        int title = currentState.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
     }
@@ -52,6 +50,6 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
     }
 
     public static interface View extends BasePresentation.View {
-        void setTitle(String title);
+        void setTitle(int title);
     }
 }

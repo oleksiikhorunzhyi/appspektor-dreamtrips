@@ -2,11 +2,13 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
 import com.google.gson.reflect.TypeToken;
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
@@ -15,20 +17,18 @@ import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
-import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
-import org.robobinding.annotation.PresentationModel;
-
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -38,11 +38,12 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 27.01.15.
  * presentation model to control map view
  */
-@PresentationModel
 public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
-    private List<Trip> data;
+    private List<Trip> data = new ArrayList<>();
     private List<Trip> filteredData;
+
+
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -52,17 +53,14 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private List<Activity> acceptedThemes;
     private DateFilterItem dateFilterItem = new DateFilterItem();
 
-    private static Handler handler = new Handler();
     private String query;
+
+    @Inject
+    SnappyRepository db;
 
     @Inject
     @Global
     EventBus eventBus;
-
-    @Inject
-    LoaderFactory loaderFactory;
-    private CollectionController<Trip> tripsController;
-
 
     public MapFragmentPM(MapFragmentPM.View view) {
         super(view);
@@ -71,32 +69,20 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     @Override
     public void init() {
         super.init();
-        this.tripsController = loaderFactory.create(0, (context, params) -> FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-        }.getType(), FileUtils.TRIPS));
-
-        this.tripsController.getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Trip>>() {
-            @Override
-            public void onStartLoading() {
-
-            }
-
-            @Override
-            public void onFinishLoading(List<Trip> result) {
-                data = result;
-                setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
-                performFiltering();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-            }
-        });
-
     }
 
     public void onMapLoaded() {
         eventBus.registerSticky(this);
-        tripsController.reload();
+        data.clear();
+        try {
+            data.addAll(db.getTrips());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
+        performFiltering();
     }
 
     public void setFilters(FilterBusEvent event) {
@@ -116,7 +102,8 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
-            handler.postDelayed(() -> tripsController.reload(), 100);
+            setFilters(event);
+            performFiltering();
         }
     }
 

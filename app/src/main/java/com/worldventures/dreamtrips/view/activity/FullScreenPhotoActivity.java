@@ -8,12 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
@@ -37,23 +37,17 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
     public static final String OUT_STATE_POSITION = "OUT_STATE_POSITION";
-
-    private UiLifecycleHelper uiHelper;
-
     @InjectView(R.id.pager)
     ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     @InjectView(R.id.login_button)
     LoginButton loginButton;
-
-
     BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
-
     TripImagesListFragment.Type type;
+    private UiLifecycleHelper uiHelper;
     private int position;
-
 
     @Override
     protected void onResume() {
@@ -96,62 +90,6 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         outState.putSerializable(OUT_STATE_IMAGES, photoList);
         outState.putSerializable(OUT_STATE_POSITION, pager.getCurrentItem());
     }
-
-    public void shareFBDialog(String url, String text) {
-        if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
-                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                    .setLink(url)
-                    .setCaption(text)
-                    .setApplicationName("DreamTrips")
-                    .build();
-            uiHelper.trackPendingDialogCall(shareDialog.present());
-        } else {
-            publishFeedDialog(url, text, "DreamTrips");
-        }
-    }
-
-    private void publishFeedDialog(String picture, String text, String appName) {
-        Session session = Session.getActiveSession();
-        if (session != null && session.isOpened()) {
-            Bundle params = new Bundle();
-            params.putString("name", appName);
-            params.putString("caption", text);
-            params.putString("picture", picture);
-            WebDialog feedDialog = (
-                    new WebDialog.FeedDialogBuilder(this,
-                            Session.getActiveSession(),
-                            params))
-                    .build();
-            feedDialog.setOnCompleteListener((bundle, e) -> {
-                if (feedDialog != null) {
-                    if (e == null) {
-                        informUser("Successfully posted to facebook");
-                    }
-                    feedDialog.dismiss();
-                }
-            });
-
-            feedDialog.show();
-        } else {
-            loginButton.setReadPermissions("user_photos");
-            loginButton.setSessionStatusCallback((s, state, exception) -> {
-                if (session != null && session.isOpened()) {
-                    publishFeedDialog(picture, text, appName);
-                }
-            });
-            loginButton.performClick();
-        }
-
-    }
-
-    public void shareTwitterDialog(Uri url, String text) {
-        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                .text(text)
-                .image(url);
-        builder.show();
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,13 +140,10 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
             }
 
             public void onPageSelected(int position) {
-                if (adapter.getCount() - 2 == position) {
-                    getPresentationModel().loadNext(photoList.size() / TripImagesListPM.PER_PAGE + 1);
-                }
-
+                FullScreenPhotoActivity.this.position = position;
+                getPresentationModel().scrolled(1, adapter.getCount(), position);
             }
         });
-        getPresentationModel().reload(Math.max(position + 2, 15));
     }
 
     public TripImagesListFragment.Type getType() {
@@ -235,8 +170,18 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
     }
 
     @Override
-    public void firstLoadFinish() {
+    public void setSelection() {
         pager.setCurrentItem(position, false);
+    }
+
+    @Override
+    public IRoboSpiceAdapter getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -260,7 +205,10 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
 
     @Override
     public void clear() {
-
+        photoList.clear();
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        pager.setAdapter(adapter);
     }
 
     @Override

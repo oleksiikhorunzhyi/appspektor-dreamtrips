@@ -2,9 +2,12 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -12,12 +15,11 @@ import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
+import com.worldventures.dreamtrips.utils.busevents.FSUploadEvent;
+import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
-
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,95 +27,99 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.*;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
-@PresentationModel
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
     @Inject
-    protected DreamTripsApi dreamTripsApi;
-
-    @Inject
     protected Context context;
-
+    protected Type type;
     @Inject
     @Global
     EventBus eventBus;
-
-    protected Type type;
-    private Callback<List<T>> cbNext;
-    private Callback<List<T>> cbRefresh;
-    private Callback<List<T>> cbPrev;
-
-
-    public TripImagesListPM(View view, Type type) {
-        super(view);
-        this.type = type;
-        cbNext = new Callback<List<T>>() {
-            @Override
-            public void success(List<T> objects, Response response) {
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.finishLoading();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                view.finishLoading();
-            }
-        };
-        cbRefresh = new Callback<List<T>>() {
-            @Override
-            public void success(List<T> objects, Response response) {
-                view.clear();//PullTORefresh
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.firstLoadFinish();
-                view.finishLoading();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                view.finishLoading();
-            }
-        };
-        cbPrev = new Callback<List<T>>() {
-            @Override
-            public void success(List<T> objects, Response response) {
-                view.addAll((List<IFullScreenAvailableObject>) objects);
-                view.finishLoading();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                view.finishLoading();
-            }
-        };
-    }
+    int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
 
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
+    private TripImagesRoboSpiceController roboSpiceAdapterController;
+
+    public TripImagesListPM(View view, Type type) {
+        super(view);
+        this.type = type;
+    }
+
+    public static TripImagesListPM create(Type type, View view) {
+        switch (type) {
+            case MEMBER_IMAGES:
+                return new UserImagesPM(view);
+            case MY_IMAGES:
+                return new MyImagesPM(view);
+            case YOU_SHOULD_BE_HERE:
+                return new YSBHPM(view);
+            case INSPIRE_ME:
+                return new InspireMePM(view);
+        }
+        return null;
+    }
+
+    public void onEventMainThread(FSUploadEvent.InspireMeImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.YSBHImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.MyImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    public void onEventMainThread(FSUploadEvent.MemberImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+
+    private void handleNewPhotoEvent(FSUploadEvent event) {
+        new Handler().postDelayed(() -> {
+            if (type == event.getType() && view.getAdapter().getCount() == 0) {
+                view.clear();
+                view.addAll(event.getImages());
+                view.setSelection();
+            }
+        }, 100);
+    }
+
+    private void resetLazyLoadFields() {
+        firstVisibleItem = 0;
+        visibleItemCount = 0;
+        totalItemCount = 0;
+        previousTotal = 0;
+        loading = false;
+    }
 
     public void scrolled(int childCount, int itemCount, int firstVisibleItemPosition) {
         visibleItemCount = childCount;
         totalItemCount = itemCount;
         firstVisibleItem = firstVisibleItemPosition;
+        Log.v("LoadNext", "------------------------");
+        Log.v("LoadNext", "" + this.hashCode() + " " + view.hashCode());
+        Log.v("LoadNext", "in scrolled childCount:" + childCount + "; itemCount:" + itemCount + "; firstVisibleItemPosition: " + firstVisibleItemPosition);
+        Log.v("LoadNext", "previousTotal:" + previousTotal);
 
-        if (loading) {
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
-            }
+        Log.v("LoadNext", "is loading: " + loading);
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
         }
-        if (!loading && (totalItemCount - visibleItemCount)
-                <= (firstVisibleItem + visibleThreshold)) {
-            loadNext(itemCount / PER_PAGE + 1);
+        Log.i("LoadNext", "is loading: " + loading);
+
+        int page = itemCount / PER_PAGE + 1;
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
+            //   loadNext(page);
+            Log.w("LoadNext", "totalitem count:" + totalItemCount);
+            getAdapterContoller().loadNext();
             loading = true;
         }
     }
@@ -121,75 +127,39 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
+        eventBus.registerSticky(this);
     }
 
-    public void reload() {
-        reload(PER_PAGE);
+    public void destroy() {
+        eventBus.unregister(this);
     }
-
-    public void reload(int perPage) {
-        view.startLoading();
-        loadMore(perPage, 1, cbRefresh);
-    }
-
-    public void loadNext(int page) {
-        loadMore(PER_PAGE, page, cbNext);
-    }
-
-    public void loadPrev(int page) {
-        loadMore(PER_PAGE, page, cbPrev);
-    }
-
-    private void loadMore(int perPage, int page, Callback<List<T>> callback) {
-        loadPhotos(perPage, page, callback);
-    }
-
-    public abstract void loadPhotos(int perPage, int page, Callback<List<T>> callback);
-
 
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
-        List<IFullScreenAvailableObject> photos = new ArrayList<>();
-        for (Object o : objects) {
-            if (o instanceof IFullScreenAvailableObject) {
-                photos.add((IFullScreenAvailableObject) o);
-            } else if (o instanceof ImageUploadTask) {
-                photos.add(from((ImageUploadTask) o));
-            }
-        }
-        if (objects.get(position) instanceof IFullScreenAvailableObject) {
+        IFullScreenAvailableObject obj = objects.get(position);
+        if (obj instanceof ImageUploadTask && ((ImageUploadTask) obj).isFailed()) {
+            dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+        } else {
             this.activityRouter.openFullScreenPhoto(position, type);
         }
     }
 
-    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
-        List<IFullScreenAvailableObject> getPhotosFromAdapter();
-
-        void startLoading();
-
-        void finishLoading();
-
-        void firstLoadFinish();
-    }
-
-
-    public void onEventMainThread(PhotoUploadStarted event) {
+    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
         if (type != Type.MY_IMAGES) {
-            reload();
+            getAdapterContoller().reload();
         } else {
-            view.add(0, from(event.getUploadTask()));
+            view.add(0, event.getUploadTask());
         }
     }
 
     public void onEventMainThread(PhotoUploadFinished event) {
         if (type != Type.MY_IMAGES) {
-            reload();
+            getAdapterContoller().reload();
         } else {
             new Handler().postDelayed(() -> {
                 for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
                     Object item = view.getPhotosFromAdapter().get(i);
-                    if (item instanceof ImageUploadTaskFullscreen && ((ImageUploadTaskFullscreen) item).getTask().getTaskId().equals(event.getPhoto().getTaskId())) {
+                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                         view.replace(i, event.getPhoto());
                         break;
                     }
@@ -217,18 +187,76 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         }
     }
 
-    public static TripImagesListPM create(Type type, View view) {
-        switch (type) {
-            case MEMBER_IMAGES:
-                return new UserImagesPM(view);
-            case MY_IMAGES:
-                return new MyImagesPM(view);
-            case YOU_SHOULD_BE_HERE:
-                return new YSBHPM(view);
-            case INSPIRE_ME:
-                return new InspireMePM(view);
+
+    private TripImagesRoboSpiceController getAdapterContoller() {
+        if (roboSpiceAdapterController == null) {
+            roboSpiceAdapterController = getTripImagesRoboSpiceController();
+
+            roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
+            roboSpiceAdapterController.setAdapter(view.getAdapter());
         }
-        return null;
+        return roboSpiceAdapterController;
     }
+
+    public void reload() {
+        getAdapterContoller().reload();
+    }
+
+    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
+        List<IFullScreenAvailableObject> getPhotosFromAdapter();
+
+        void startLoading();
+
+        void finishLoading();
+
+        void setSelection();
+
+        IRoboSpiceAdapter getAdapter();
+
+        void inject(Object getMyPhotos);
+    }
+
+    public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
+
+    public abstract class TripImagesRoboSpiceController extends RoboSpiceAdapterController<T> {
+
+        @Override
+        public void onStart(LoadType loadType) {
+            if (loadType == LoadType.RELOAD) {
+                view.startLoading();
+            }
+        }
+
+        @Override
+        public void onFinish(RoboSpiceAdapterController.LoadType
+                                     loadType, List<T> items, SpiceException spiceException) {
+
+            if (spiceException == null) {
+                List<IFullScreenAvailableObject> list;
+                if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
+                    list = new ArrayList<>();
+                    list.addAll(items);
+                    resetLazyLoadFields();
+
+                } else {
+                    list = new ArrayList<>(view.getPhotosFromAdapter());
+                    list.addAll(items);
+                }
+                eventBus.postSticky(FSUploadEvent.create(type, list));
+
+
+                for (T item : items) {
+                    if (item instanceof ImageUploadTask) {
+                        if (((ImageUploadTask) item).isFailed()) {
+                            dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
+                        }
+                    }
+                }
+            }
+            view.finishLoading();
+        }
+
+    }
+
 
 }

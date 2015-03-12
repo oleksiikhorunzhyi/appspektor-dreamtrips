@@ -16,6 +16,8 @@
         android:background="@color/theme_main"
         android:fillViewport="false"
         android:textColor="@android:color/white"
+        fab:pstsTextColorSelected="@android:color/white"
+
         fab:pstsIndicatorColor="@color/theme_main_darker"
         fab:pstsTextSelectedStyle="normal"
         fab:pstsTextStyle="normal"

@@ -3,12 +3,10 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.techery.spares.service.ServiceActionRunner;
-import com.worldventures.dreamtrips.core.uploader.UploadingService;
-
-import org.robobinding.annotation.PresentationModel;
-import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
-import org.robobinding.presentationmodel.PresentationModelChangeSupport;
+import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,76 +15,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-@PresentationModel
-public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> implements HasPresentationModelChangeSupport {
+public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> {
     public static final String TIME = "time";
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
-    private final PresentationModelChangeSupport changeSupport;
     @Inject
-    ServiceActionRunner serviceActionRunner;
+    @Global
+    EventBus eventBus;
+    private String date;
+    private String time;
 
-    String title;
-    String location;
-    String date;
-    String time;
-    String tags;
-    private Uri imageUri;
+
+    @Inject
+    SnappyRepository db;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
-        this.changeSupport = new PresentationModelChangeSupport(this);
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        changeSupport.firePropertyChange("title");
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-        changeSupport.firePropertyChange("location");
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-        changeSupport.firePropertyChange("date");
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-        changeSupport.firePropertyChange("time");
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     public void onDataSet(int year, int month, int day) {
@@ -99,7 +51,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         calendar.set(Calendar.DAY_OF_MONTH, day);
         Date date = calendar.getTime();
         String format = sim.format(date);
-        setDate(format);
+        view.setDate(format);
     }
 
     public void onTimeSet(int h, int m) {
@@ -110,27 +62,28 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         calendar.set(Calendar.MINUTE, m);
         Date date = calendar.getTime();
         String format = sim.format(date);
-        setTime(format);
+        view.setTime(format);
     }
 
-    @Override
-    public PresentationModelChangeSupport getPresentationModelChangeSupport() {
-        return changeSupport;
-    }
 
     public void saveAction() {
-        if (imageUri.toString().isEmpty()) {
+        if (view.getImageUri().toString().isEmpty()) {
             view.informUser("Wrong image");
         } else {
-            UploadingService.ImageUploadAction action = new UploadingService.ImageUploadAction();
-            action.setFileUri(imageUri.toString());
-            action.setTitle(getTitle());
-            action.setTags(getParsedText(getTags()));
+
+            ImageUploadTask action = new ImageUploadTask();
+            action.setFileUri(view.getImageUri().toString());
+            action.setTitle(view.getTitle());
+            action.setTags(getParsedText(view.getTags()));
             action.setLatitude(0);
             action.setLongitude(0);
-            action.setLocationName(getLocation());
-            action.setShotAt(getParsedDateTime(getDate(), getTime()));
-            serviceActionRunner.from(UploadingService.class).run(action);
+            action.setLocationName(view.getLocation());
+            action.setShotAt(getParsedDateTime(view.getDate(), view.getTime()));
+            action.setTaskId(UUID.randomUUID().toString());
+            db.saveUploadImageTask(action);
+
+            eventBus.post(new InsertNewImageUploadTaskEvent(action));
+            dreamSpiceManager.uploadPhoto(action);
             view.end();
         }
     }
@@ -140,7 +93,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         String[] trimed = new String[split.length];
         for (int i = 0; i < trimed.length; i++)
             trimed[i] = split[i].trim();
-        return new ArrayList<String>(Arrays.asList(trimed));
+        return new ArrayList<>(Arrays.asList(trimed));
     }
 
     public Date getParsedDateTime(String dateS, String timeS) {
@@ -174,16 +127,25 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         return result;
     }
 
-    public Uri getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
-    }
-
-
     public interface View extends BasePresentation.View {
         void end();
+
+        public Uri getImageUri();
+
+        String getLocation();
+
+        String getTags();
+
+        String getTitle();
+
+        String getDate();
+
+        String getTime();
+
+        void setDate(String format);
+
+        void setTime(String format);
+
+        void inject(Object o);
     }
 }

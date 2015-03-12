@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.uploader.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
@@ -8,14 +9,10 @@ import com.worldventures.dreamtrips.core.model.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import io.realm.RealmObject;
-import io.realm.annotations.Index;
 
-public class ImageUploadTask extends RealmObject implements Serializable {
+public class ImageUploadTask implements Serializable, IFullScreenAvailableObject, Parcelable {
 
-    @Index
     private String taskId;
 
     private String fileUri;
@@ -27,47 +24,8 @@ public class ImageUploadTask extends RealmObject implements Serializable {
     private float longitude;
     private Date shotAt;
     private String originUrl;
-
-    /**
-     * Temporary for fix RealmDB null object problem
-     */
-    public static ImageUploadTask copy(ImageUploadTask obj) {
-        ImageUploadTask t = new ImageUploadTask();
-        t.setTaskId(obj.getTaskId());
-        t.setFileUri(obj.getFileUri());
-        t.setProgress(obj.getProgress());
-        t.setTitle(obj.getTitle());
-        t.setLocationName(obj.getLocationName());
-        t.setLatitude(obj.getLatitude());
-        t.setLongitude(obj.getLongitude());
-        t.setShotAt(obj.getShotAt());
-        t.setOriginUrl(obj.getOriginUrl());
-        return t;
-    }
-
-    public static List<ImageUploadTask> copy(List<ImageUploadTask> lst) {
-        List<ImageUploadTask> result = new ArrayList<>();
-        for (ImageUploadTask uploadTask : lst) {
-            result.add(copy(uploadTask));
-        }
-        return result;
-    }
-
-    public static List<IFullScreenAvailableObject> from(List<ImageUploadTask> lst) {
-        List<IFullScreenAvailableObject> result = new ArrayList<>();
-        for (ImageUploadTask uploadTask : lst) {
-            result.add(from(uploadTask));
-        }
-        return result;
-    }
-
-
-    public static IFullScreenAvailableObject from(ImageUploadTask task) {
-        ImageUploadTaskFullscreen result = new ImageUploadTaskFullscreen();
-        result.setImageUploadTask(copy(task));
-        return result;
-    }
-
+    private ArrayList<String> tags;
+    private boolean failed;
 
     public String getTaskId() {
         return taskId;
@@ -141,114 +99,118 @@ public class ImageUploadTask extends RealmObject implements Serializable {
         this.originUrl = originUrl;
     }
 
-    public static class ImageUploadTaskFullscreen implements IFullScreenAvailableObject {
-        private Image image;
-        private String title;
-        private String description;
-        private String shareText;
-        private String location;
-        private ImageUploadTask task;
-        private String taskId;
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
+    }
 
-        public void setImageUploadTask(ImageUploadTask imageUploadTask) {
-            this.task = imageUploadTask;
+    public ArrayList<String> getTags() {
+        return tags;
+    }
 
-            image = new Image();
-            Image.ImageVersion version = new Image.ImageVersion();
-            version.setUrl(task.getFileUri());
-            image.setMedium(version);
-            image.setOriginal(version);
-            image.setThumb(version);
-            title = task.getTitle();
-            location = task.getLocationName();
-            description = "";
-            shareText = task.getTitle();
-            taskId = task.getTaskId();
+    @Override
+    public Image getFSImage() {
+        Image image = new Image();
+        Image.ImageVersion version = new Image.ImageVersion();
+        version.setUrl(getFileUri());
+        image.setMedium(version);
+        image.setOriginal(version);
+        image.setThumb(version);
+        return image;
+    }
+
+    @Override
+    public String getFSTitle() {
+        return title;
+    }
+
+    @Override
+    public String getFsDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFsShareText() {
+        return "";
+    }
+
+    @Override
+    public String getPhotoLocation() {
+        return "";
+    }
+
+    @Override
+    public String getUserName() {
+        return "";
+    }
+
+    @Override
+    public String getUserLocation() {
+        return "";
+    }
+
+    @Override
+    public String getUserAvatar() {
+        return "";
+    }
+
+
+    @Override
+    public int getId() {
+        return taskId.hashCode();
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.taskId);
+        dest.writeString(this.fileUri);
+        dest.writeFloat(this.progress);
+        dest.writeString(this.title);
+        dest.writeString(this.locationName);
+        dest.writeFloat(this.latitude);
+        dest.writeFloat(this.longitude);
+        dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
+        dest.writeString(this.originUrl);
+        dest.writeSerializable(this.tags);
+    }
+
+    public ImageUploadTask() {
+    }
+
+    private ImageUploadTask(Parcel in) {
+        this.taskId = in.readString();
+        this.fileUri = in.readString();
+        this.progress = in.readFloat();
+        this.title = in.readString();
+        this.locationName = in.readString();
+        this.latitude = in.readFloat();
+        this.longitude = in.readFloat();
+        long tmpShotAt = in.readLong();
+        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
+        this.originUrl = in.readString();
+        this.tags = (ArrayList<String>) in.readSerializable();
+    }
+
+    public static final Creator<ImageUploadTask> CREATOR = new Creator<ImageUploadTask>() {
+        public ImageUploadTask createFromParcel(Parcel source) {
+            return new ImageUploadTask(source);
         }
 
-        public ImageUploadTask getTask() {
-            return task;
+        public ImageUploadTask[] newArray(int size) {
+            return new ImageUploadTask[size];
         }
+    };
 
-        public ImageUploadTaskFullscreen() {
-        }
+    public boolean isFailed() {
+        return failed;
+    }
 
-        @Override
-        public Image getFSImage() {
-
-            return image;
-        }
-
-        @Override
-        public String getFSTitle() {
-            return title;
-        }
-
-        @Override
-        public String getFsDescription() {
-            return description;
-        }
-
-        @Override
-        public String getFsShareText() {
-            return shareText;
-        }
-
-        @Override
-        public String getPhotoLocation() {
-            return "";
-        }
-
-        @Override
-        public String getUserName() {
-            return "";
-        }
-
-        @Override
-        public String getUserLocation() {
-            return "";
-        }
-
-        @Override
-        public String getUserAvatar() {
-            return "";
-        }
-
-        @Override
-        public int getId() {
-            return taskId.hashCode();
-        }
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeParcelable(this.image, 0);
-            dest.writeString(this.title);
-            dest.writeString(this.description);
-            dest.writeString(this.shareText);
-        }
-
-        private ImageUploadTaskFullscreen(Parcel in) {
-            this.image = in.readParcelable(Image.class.getClassLoader());
-            this.title = in.readString();
-            this.description = in.readString();
-            this.shareText = in.readString();
-        }
-
-        public static final Creator<IFullScreenAvailableObject> CREATOR = new Creator<IFullScreenAvailableObject>() {
-            public IFullScreenAvailableObject createFromParcel(Parcel source) {
-                return new ImageUploadTaskFullscreen(source);
-            }
-
-            public ImageUploadTaskFullscreen[] newArray(int size) {
-                return new ImageUploadTaskFullscreen[size];
-            }
-        };
-
+    public void setFailed(boolean failed) {
+        this.failed = failed;
     }
 }

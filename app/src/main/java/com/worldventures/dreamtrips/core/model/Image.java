@@ -70,7 +70,7 @@ public class Image extends BaseEntity implements Parcelable{
     public ImageVersion getThumb() {
         return thumb;
     }
-
+//thumb medium
     public void setThumb(ImageVersion thumb) {
         this.thumb = thumb;
     }

@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 
 import javax.inject.Inject;
@@ -55,7 +54,7 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
             this.user_name.setText(getModelObject().getUserName());
             this.universalImageLoader.loadImage(getModelObject().getUserAvatar(), this.imageViewUser, null, new SimpleImageLoadingListener());
         }
-        this.universalImageLoader.loadImage(getModelObject().getFSImage().getMedium().getUrl(), this.imageView, null, new SimpleImageLoadingListener());
+        this.universalImageLoader.loadImage(getModelObject().getFSImage().getThumb().getUrl(), this.imageView, UniversalImageLoader.OP_TRIP_PHOTO, new SimpleImageLoadingListener());
     }
 
     @Override

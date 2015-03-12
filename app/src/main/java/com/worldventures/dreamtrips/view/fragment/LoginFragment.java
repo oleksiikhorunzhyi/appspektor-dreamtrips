@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.presentation.LoginFragmentPresentation;
 import com.worldventures.dreamtrips.view.custom.DTEditText;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 import static com.worldventures.dreamtrips.utils.ViewUtils.getMinSideSize;
 
@@ -55,7 +56,7 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     @Override
     public void showLoginErrorMessage() {
         dismissProgressDialog();
-        informUser("Invalid username or password");
+        informUser(getString(R.string.error_log_in));
     }
 
     private void dismissProgressDialog() {
@@ -66,9 +67,34 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
         }, 50);
     }
 
-    public void showLocalErrors(String userNameError, String passwordError) {
-        etUsername.setError(userNameError);
-        etPassword.setError(passwordError);
+    public void showLocalErrors(int userNameError, int passwordError) {
+        if (userNameError != 0) {
+            etUsername.setError(getString(userNameError));
+        }
+        if (passwordError != 0) {
+            etPassword.setError(getString(passwordError));
+        }
+    }
+
+    @Override
+    public String getUsername() {
+        return etUsername.getText().toString();
+    }
+
+    @Override
+    public String getUserPassword() {
+        return etPassword.getText().toString();
+    }
+
+    @Override
+    public void setUsername(String name) {
+        etUsername.setText(name);
+    }
+
+
+    @Override
+    public void setUserPassword(String pass) {
+        etPassword.setText(pass);
     }
 
     @Override
@@ -79,5 +105,15 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     private void layoutConfiguration() {
         int minSideSize = getMinSideSize(getActivity());
         vgContentContainer.getLayoutParams().width = minSideSize;
+    }
+
+    @OnClick(R.id.iv_title)
+    public void onTitleClick() {
+        getPresentationModel().fillDataAction();
+    }
+
+    @OnClick(R.id.btn_login)
+    public void onLoginClick() {
+        getPresentationModel().loginAction();
     }
 }

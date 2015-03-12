@@ -4,12 +4,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePagerAdapter {
+public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePagerAdapter implements IRoboSpiceAdapter<T> {
     private List<FragmentItem<? extends T>> fragmentItems = new ArrayList<>();
 
     public BaseStatePagerAdapter(FragmentManager fm) {
@@ -44,6 +46,14 @@ public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePage
         return getFragment(i);
     }
 
+    public void clear() {
+        fragmentItems.clear();
+    }
+
+    @Override
+    public void addItems(ArrayList baseItemClasses) {
+        //in FullScreenPhotoFragment will be called FSUploadEvent, and items are added by activity method add all
+    }
 
     @Override
     public int getCount() {

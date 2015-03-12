@@ -27,18 +27,24 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    signingConfigs {
+        debug {
+            storeFile file("../eddebug.keystore")
+        }
+    }
+
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 19
-        versionName "0.1.19"
+        versionCode 27
+        versionName "0.1.27"
         multiDexEnabled true
 
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-        buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp.worldventures.biz"'
+        buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
 
     }
@@ -62,41 +68,49 @@ android {
 
 
     productFlavors {
-        dev {
+        /*dev {
             applicationId "com.worldventures.dreamtrips.dev"
             buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
 
-            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
-            buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
-            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
-            buildConfigField 'String', 'BUCKET_NAME' , '"dtapp"'
-            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
-        }
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+        }*/
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
-            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
-            buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
-            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
-            buildConfigField 'String', 'BUCKET_NAME' , '"dtapp"'
-            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
         }
         preprod {
             applicationId "com.worldventures.dreamtrips.preprod"
             buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz"'
 
-            buildConfigField 'String', 'AWS_ACCOUNT_ID' , '"503446126408"'
-            buildConfigField 'String', 'COGNITO_POOL_ID' , '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
-            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH' , '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
-            buildConfigField 'String', 'BUCKET_NAME' , '"dtappprd"'
-            buildConfigField 'String', 'BUCKET_ROOT_PATH' , '"dtuploads/"'
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
         }
         prod {
             applicationId "com.worldventures.dreamtrips"
-            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
         }
     }
 
@@ -112,6 +126,8 @@ android {
     packagingOptions {
         exclude 'LICENSE.txt'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 }
 
@@ -123,16 +139,15 @@ apply plugin: 'android-unit-test'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     compile project(':ijkmediaplayer')
     compile project(':ijkmediawidget')
-    compile 'com.android.support:multidex:1.0.0'
 
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile "com.android.support:appcompat-v7:21.0.3"
-    compile("org.robobinding:robobinding:${robobindingVersion}:with-aop")
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-    apt "org.robobinding:codegen:$robobindingVersion"
-    compile 'com.squareup.retrofit:retrofit:1.8.0'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.jakewharton:butterknife:6.0.0'
     testCompile 'junit:junit:4.11'
@@ -140,19 +155,26 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
 
     compile 'com.path:android-priority-jobqueue:1.1.2'
-    compile 'io.realm:realm-android:0.76.0'
     compile 'com.jakewharton.timber:timber:2.5.0'
+    compile 'com.snappydb:snappydb-lib:0.5.0'
+    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+
+    compile 'com.octo.android.robospice:robospice:+'
+    compile 'com.google.code.gson:gson:+'
+    compile 'com.octo.android.robospice:robospice-retrofit:+'
+
 //SDK
     compile 'com.instabug.library:instabugsupport:1.2.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
     compile 'com.facebook.android:facebook-android-sdk:3.22.0'
+
 //UI
     compile 'com.rengwuxian.materialedittext:library:1.6.0'
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
     compile 'com.afollestad:material-dialogs:0.4.7'
     compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
-    compile 'com.jpardogo.materialtabstrip:library:1.0.8'
+    compile 'com.jpardogo.materialtabstrip:library:1.0.9'
     compile 'com.kbeanie:image-chooser-library:+@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'de.hdodenhof:circleimageview:1.2.1'
@@ -169,9 +191,12 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     compile 'com.ms-square:expandableTextView:0.1.3'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
+    compile "com.daimajia.swipelayout:library:1.1.8@aar"
     compile 'com.joooonho:selectableroundedimageview:1.0.0'
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.2'
     compile('com.twitter.sdk.android:twitter:1.3.0@aar') {
         transitive = true;
     }
+    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
 }
 

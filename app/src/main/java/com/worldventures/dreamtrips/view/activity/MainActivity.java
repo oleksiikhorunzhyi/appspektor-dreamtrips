@@ -8,12 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.presentation.AdapterView;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
@@ -52,6 +57,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     protected void onResume() {
         super.onResume();
         makeActionBarTransparent(false);
+        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (code != ConnectionResult.SUCCESS) {
+            GooglePlayServicesUtil.getErrorDialog(code, this, 0).show();
+        }
     }
 
     @Override
@@ -82,7 +91,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
             // Set the drawer toggle as the DrawerListener
             drawerLayout.setDrawerListener(mDrawerToggle);
             this.drawerLayout.post(mDrawerToggle::syncState);
-
             //openLeftDrawer();
         }
 
@@ -92,6 +100,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @Override
     public void onNavigationDrawerItemSelected(State state) {
         closeLeftDrawer();
+        makeActionBarTransparent(false);
         getPresentationModel().selectItem(state);
         getSupportActionBar().setTitle(state.getTitle());
     }
@@ -120,8 +129,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     public void openRightDrawer() {
         drawerLayout.openDrawer(Gravity.END);
         enableRightDrawer();
-        FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
-        filtersFragment.refresh();
+        //FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
+        //filtersFragment.refresh();
     }
 
     public void closeRightDrawer() {
@@ -159,15 +168,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.END)) {
             closeRightDrawer();
+        } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            closeLeftDrawer();
         } else {
             getPresentationModel().onBackPressed();
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -179,7 +185,36 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     }
 
     @Override
-    public void setTitle(String title) {
+    public void setTitle(int title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    public void setToolBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unbindDrawables(findViewById(R.id.drawer));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null)
+            view.getBackground().setCallback(null);
+
+        if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            imageView.setImageBitmap(null);
+        } else if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++)
+                unbindDrawables(viewGroup.getChildAt(i));
+
+            if (!(view instanceof AdapterView))
+                viewGroup.removeAllViews();
+        }
     }
 }

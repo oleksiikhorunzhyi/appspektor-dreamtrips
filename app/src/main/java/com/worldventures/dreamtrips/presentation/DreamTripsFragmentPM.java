@@ -1,73 +1,62 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
+import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.utils.FileUtils;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
-import com.worldventures.dreamtrips.view.fragment.MapFragment;
-
-import org.robobinding.annotation.PresentationModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Edward on 19.01.15.
  * presentation model for fragment with list of the trips
  */
-@PresentationModel
 public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.View> {
-
-    private static final long DELTA = 30 * 60 * 1000;
-
-    @Inject
-    DreamTripsApi dreamTripsApi;
-
 
     @Inject
     Prefs prefs;
-
-    @Inject
-    Context context;
 
     @Inject
     @Global
     EventBus eventBus;
 
     @Inject
-    LoaderFactory loaderFactory;
-    private CollectionController<Trip> tripsController;
+    SnappyRepository db;
 
     private boolean loadFromApi;
 
-    private ArrayList<Trip> data = new ArrayList<>();
-
+    /**
+     * filters
+     */
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -77,6 +66,30 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     private List<Integer> acceptedRegions;
     private List<Activity> acceptedThemes;
 
+    private RoboSpiceAdapterController<Trip> adapterController = new RoboSpiceAdapterController<Trip>() {
+
+        @Override
+        public SpiceRequest<ArrayList<Trip>> getRefreshRequest() {
+            return new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
+                @Override
+                public ArrayList<Trip> loadDataFromNetwork() throws Exception {
+                    return performFiltering(super.loadDataFromNetwork());
+                }
+            };
+        }
+
+        @Override
+        public void onStart(LoadType loadType) {
+            view.startLoading();
+        }
+
+        @Override
+        public void onFinish(LoadType type, List<Trip> items, SpiceException spiceException) {
+            loadFromApi = false;
+            view.finishLoading(items);
+        }
+    };
+
     public DreamTripsFragmentPM(View view) {
         super(view);
     }
@@ -84,46 +97,27 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     @Override
     public void init() {
         super.init();
-
-        this.tripsController = loaderFactory.create(0, (context, params) -> {
-            if (needUpdate() || loadFromApi) {
-                this.loadFromApi = false;
-                this.data.clear();
-                this.data.addAll(this.loadTrips());
-
-                FileUtils.saveJsonToCache(context, this.data, FileUtils.TRIPS);
-
-                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-            } else {
-                this.data = FileUtils.parseJsonFromCache(context, new TypeToken<List<Trip>>() {
-                }.getType(), FileUtils.TRIPS);
-            }
-
-            List<Trip> filteredData = performFiltering(data);
-
-            return filteredData;
-        });
-
         eventBus.registerSticky(this);
-        onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
+        AdobeTrackingHelper.dreamTrips(getUserId());
+       // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
+    }
+
+    @Override
+    public void resume() {
+        if (view.getAdapter().getCount() == 0) {
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
+        }
     }
 
     public void onPause() {
         eventBus.unregister(this);
     }
 
-
-    public void requestFiltering() {
-        eventBus.post(new RequestFilterDataEvent());
-    }
-
-    public CollectionController<Trip> getTripsController() {
-        return tripsController;
-    }
-
     public void reload() {
         loadFromApi = true;
-        tripsController.reload();
+        adapterController.reload();
     }
 
     public void onEvent(FilterBusEvent event) {
@@ -140,11 +134,13 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                 acceptedThemes = event.getAcceptedActivities();
                 showSoldOut = event.isShowSoldOut();
             }
-            tripsController.reload();
+            adapterController.reload();
         }
     }
 
-
+    public void onEvent(TripLikedEvent event) {
+        adapterController.reload();
+    }
     private ArrayList<Trip> performFiltering(List<Trip> data) {
         ArrayList<Trip> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Collections2.filter(data, (input) ->
@@ -169,61 +165,49 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         dateFilterItem.reset();
     }
 
-    public void onEvent(TripLikedEvent trip) {
-        for (Trip temp : data) {
-            if (temp.getId() == trip.getTrip().getId()) {
-                temp.setLiked(trip.getTrip().isLiked());
-            }
-        }
-        view.dataSetChanged();
-    }
-
     public void onItemLike(Trip trip) {
-        final Callback<JsonObject> callback = new Callback<JsonObject>() {
+        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
-            public void success(JsonObject jsonObject, Response response) {
-                FileUtils.saveJsonToCache(context, data, FileUtils.TRIPS);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
+            public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
                 view.dataSetChanged();
                 view.showErrorMessage();
             }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                db.saveTrip(trip);
+            }
         };
-
         if (trip.isLiked()) {
-            dreamTripsApi.likeTrip(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback);
         } else {
-            dreamTripsApi.unlikeTrio(trip.getId(), callback);
+            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback);
         }
-
     }
 
-    public void actionSearch(String query){}
+    public void actionSearch(String query) {
+    }
 
     public void actionMap() {
         fragmentCompass.replace(State.MAP, null);
-    }
-
-    public List<Trip> loadTrips() {
-        return dreamTripsApi.getTrips();
     }
 
     public void onItemClick(Trip trip) {
         activityRouter.openTripDetails(trip);
     }
 
-    public boolean needUpdate() {
-        long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA;
-    }
 
     public static interface View extends BasePresentation.View {
         void dataSetChanged();
 
         void showErrorMessage();
+
+        void startLoading();
+
+        void finishLoading(List<Trip> items);
+
+        IRoboSpiceAdapter<Trip> getAdapter();
     }
 
 }

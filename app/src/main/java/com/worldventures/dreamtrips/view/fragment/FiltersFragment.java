@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
@@ -60,27 +61,10 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
 
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getRegionController());
-        getPresentationModel().getRegionController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
-            @Override
-            public void onStartLoading() {
-                if (arrayListAdapter.getItemCount() == 0)
-                    progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
+
+        getPresentationModel().loadFilters();
     }
 
     @OnClick(R.id.textViewApplyFilter)
@@ -98,7 +82,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @Override
     public void onResume() {
         super.onResume();
-        refresh();
+      //  refresh();
     }
 
     @Override
@@ -106,12 +90,26 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         arrayListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void startLoading() {
+        if (arrayListAdapter.getItemCount() == 0)
+            progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
+    }
+
     public void refresh() {
-        if (this.arrayListAdapter.getItemCount() == 0) {
-            this.recyclerView.post(() ->
-                            getPresentationModel().getRegionController().reload()
-            );
-        }
+        this.recyclerView.post(() ->
+                        getPresentationModel().fillData()
+        );
     }
 
     @Override

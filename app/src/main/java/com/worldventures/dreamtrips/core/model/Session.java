@@ -4,7 +4,15 @@ public class Session extends BaseEntity {
     String token;
     User user;
     Session session;
+    String sso_token;
 
+    public String getSso_token() {
+        return sso_token;
+    }
+
+    public void setSso_token(String sso_token) {
+        this.sso_token = sso_token;
+    }
 
     public Session getSession() {
         return session;

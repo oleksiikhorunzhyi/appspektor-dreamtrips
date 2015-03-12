@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.core.model.TripImage;
 
-import org.robobinding.annotation.PresentationModel;
 
 /**
  * Created by 1 on 23.01.15.
  */
-@PresentationModel
 public class DetailedImagePagerFragmentPresentation extends BasePresentation<BasePresentation.View> {
 
     TripImage photo;

@@ -72,22 +72,18 @@
                                 android:id="@+id/user_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jason Gordon"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textColor="@color/theme_main"
                                 android:textSize="20sp"
-                                android:textStyle="bold"
-                                bind:text="{userName}" />
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/user_email"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="jason@gamil.com"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                 android:textColor="@color/theme_main"
-                                android:textSize="16sp"
-                                bind:text="{userEmail}" />
+                                android:textSize="16sp" />
 
                             <include layout="@layout/include_profile_info" />
 

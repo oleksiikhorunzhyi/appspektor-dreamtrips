@@ -1,28 +1,35 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import android.os.Bundle;
 
-import org.robobinding.annotation.PresentationModel;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
+import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
+
 
 import javax.inject.Inject;
 
-@PresentationModel
 public class BucketTabsFragmentPM extends BasePresentation {
-    public static final String BUCKET_FILTER_ENABLED = "BUCKET_FILTER_ENABLED";
-
-    @Inject
-    SimpleKeyValueStorage storage;
 
 
     public BucketTabsFragmentPM(View view) {
         super(view);
     }
 
-    public void filterEnabled(boolean isEnabled) {
-        storage.put(BUCKET_FILTER_ENABLED, String.valueOf(isEnabled));
+    public void addOwn(int position) {
+        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], State.QUICK_INPUT);
     }
 
-    public boolean isFilterEnabled() {
-        return Boolean.valueOf(storage.get(BucketTabsFragmentPM.BUCKET_FILTER_ENABLED));
+    public void addPopular(int position) {
+        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], State.POPULAR_BUCKET);
+    }
+
+    public Bundle getBundleForPosition(int position) {
+        Bundle args = new Bundle();
+        BucketTabsFragment.Type type = BucketTabsFragment.Type.values()[position];
+        args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
+        return args;
     }
 }

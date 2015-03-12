@@ -88,7 +88,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (photo != null) {
             getPresentationModel().setupPhoto((T) photo);
             getPresentationModel().setupType(type);
-            AdobeTrackingHelper.view(type, String.valueOf(photo.getId()));
         }
         getPresentationModel().setupActualViewState();
 
@@ -96,8 +95,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @Override
     public void loadImage(Image images) {
-        String medium = images.getMedium().getUrl();
-        String original = images.getOriginal().getUrl();
+        String medium = images.getThumb().getUrl();
+        String original = images.getMedium().getUrl();
         originalCallback = new SimpleImageLoadingListener() {
 
             @Override
@@ -148,10 +147,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @OnClick(R.id.iv_delete)
     public void actionDelete() {
         new MaterialDialog.Builder(getActivity())
-                .title("Delete photo")
-                .content("Are you sure you want to delete this photo?")
-                .positiveText("Delete")
-                .negativeText("Cancel")
+                .title(R.string.delete_photo_title)
+                .content(R.string.delete_photo_text)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.delete_photo_negative)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -186,12 +185,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     public void showFlagConfirmDialog(String reason, String desc) {
-        String content = "WorldVentures personnel will be notified review this image for " + reason.toLowerCase() + ". Do you want continue?";
+        String content = getString(R.string.flag_photo_first) + reason.toLowerCase() + R.string.flag_photo_second;
         new MaterialDialog.Builder(getActivity())
-                .title("Confirm")
+                .title(R.string.flag_photo_title)
                 .content(content)
-                .positiveText("Send")
-                .negativeText("Cancel")
+                .positiveText(R.string.flag_photo_positive)
+                .negativeText(R.string.flag_photo_negative)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -203,10 +202,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     public void showFlagDescription(String reason) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title("Flag")
+                .title(R.string.flag_description_title)
                 .customView(R.layout.dialog_flag_description)
-                .positiveText("Accept")
-                .negativeText("Cancel")
+                .positiveText(R.string.flag_description_positive)
+                .negativeText(R.string.flag_description_negative)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -265,5 +264,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @Override
     public void informUser(String stringId) {
         super.informUser(stringId);
+    }
+
+    @Override
+    protected boolean needSpiceManager() {
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.view.cell;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,12 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.uploader.job.UploadJob;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailed;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
 
 import javax.inject.Inject;
@@ -24,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_photo_upload)
-public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTaskFullscreen> {
+public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @InjectView(R.id.iv_bg)
     public ImageView imageView;
@@ -44,6 +46,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTas
     @Inject
     UniversalImageLoader universalImageLoader;
 
+    @Inject
+    SnappyRepository db;
+
     public PhotoUploadCell(View view) {
         super(view);
     }
@@ -53,11 +58,16 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTas
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
-        universalImageLoader.loadImage(getModelObject().getTask().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
+        universalImageLoader.loadImage(getModelObject().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
+
+        if (getModelObject().isFailed()) {
+            setupViewAsFailed();
+        }
     }
 
     @Override
     public void prepareForReuse() {
+        Log.d("Progress event", "prepareForReuse");
         imageView.setImageBitmap(null);
         pb.setProgress(0);
         pb.setVisibility(View.VISIBLE);
@@ -75,17 +85,39 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTas
         //TODO
     }
 
+    public void onEventMainThread(PhotoUploadStarted event) {
+        if (getModelObject().getTaskId().equalsIgnoreCase(event.getUploadTask().getTaskId())) {
+            pb.setProgress(0);
+            pb.setVisibility(View.VISIBLE);
+            ivResult.setBackgroundResource(R.drawable.circle_blue);
+            btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
+        }
+    }
+
     public void onEventMainThread(UploadProgressUpdateEvent event) {
-        if (getModelObject().getTask().getTaskId().equalsIgnoreCase(event.getTaskId())) {
+        if (getModelObject().getTaskId().equalsIgnoreCase(event.getTaskId())) {
             Log.d("Progress event", event.getProgress() + "");
             if (event.getProgress() <= 100) {
                 if (event.getProgress() > pb.getProgress())
                     pb.setProgress(event.getProgress());
+                Log.i("Progress event", "set progress:" + event.getProgress());
+
             }
         }
     }
 
-    public void onEventMainThread(PhotoUploadFailed event) {
+    public void onEventMainThread(PhotoUploadFailedEvent event) {
+        if (event.getTaskId().equals(getModelObject().getTaskId())) {
+            new Handler().postDelayed(() -> {
+                Log.i("Progress event", "PhotoUploadFailed");
+                getModelObject().setFailed(true);
+                db.saveUploadImageTask(getModelObject());
+                setupViewAsFailed();
+            }, 300);
+        }
+    }
+
+    private void setupViewAsFailed() {
         pb.setProgress(0);
         pb.setVisibility(View.INVISIBLE);
         ivResult.setBackgroundResource(R.drawable.circle_red);
@@ -94,8 +126,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask.ImageUploadTas
 
 
     public void onEventMainThread(PhotoUploadFinished event) {
-        Log.w(UploadJob.TAG + "_PUC", "public void onEventMainThread(PhotoUploadFinished event): " + this.hashCode());
-        if (event.getPhoto().getTaskId().equals(getModelObject().getTask().getTaskId())) {
+        Log.i("Progress event", "PhotoUploadFinished");
+
+        if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
             pb.setVisibility(View.INVISIBLE);
             ivResult.setBackgroundResource(R.drawable.circle_green);
             btnCancelUpload.setImageResource(R.drawable.ic_upload_done);

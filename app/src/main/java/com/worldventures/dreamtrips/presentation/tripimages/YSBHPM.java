@@ -1,26 +1,32 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
+import com.octo.android.robospice.request.SpiceRequest;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
 
-import org.robobinding.annotation.PresentationModel;
-
-import java.util.List;
-
-import retrofit.Callback;
+import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
-@PresentationModel
 public class YSBHPM extends TripImagesListPM<Photo> {
     public YSBHPM(View view) {
         super(view, Type.YOU_SHOULD_BE_HERE);
     }
 
     @Override
-    public void loadPhotos(int perPage, int page, Callback<List<Photo>> callback) {
-        dreamTripsApi.getYouShoulBeHerePhotos(perPage, page, callback);
+    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
+        return new TripImagesRoboSpiceController() {
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
+                return new DreamTripsRequest.GetYSBHPhotos(PER_PAGE, 1);
+            }
+
+            @Override
+            public SpiceRequest<ArrayList<Photo>> getNextPageRequest(int currentCount) {
+                return new DreamTripsRequest.GetYSBHPhotos(PER_PAGE, currentCount / PER_PAGE + 1);
+            }
+        };
     }
-
-
 }

@@ -30,10 +30,13 @@ public class ActivityBoundRouter extends BaseRouter {
     }
 
     protected void startForResult(Fragment from, Class<? extends InjectingActivity> activityClass, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(getContext(), activityClass);
-        if (bundle != null) {
-            intent.putExtra(EXTRA_BUNDLE, bundle);
+        if (from.isAdded()) {
+            Intent intent = new Intent(getContext(), activityClass);
+
+            if (bundle != null) {
+                intent.putExtra(EXTRA_BUNDLE, bundle);
+            }
+            from.startActivityForResult(intent, requestCode);
         }
-        from.startActivityForResult(intent, requestCode);
     }
 }

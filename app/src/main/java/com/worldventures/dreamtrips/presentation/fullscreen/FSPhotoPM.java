@@ -78,7 +78,6 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
             dreamSpiceManager.execute(new DreamTripsRequest.LikePhoto(photo.getId()), callback);
         } else {
             dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(photo.getId()), callback);
-
         }
     }
 

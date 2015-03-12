@@ -357,6 +357,37 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
     }
 
+
+    public static class LikeSS extends DreamTripsRequest<JsonObject> {
+        private int ssId;
+
+        public LikeSS(int ssId) {
+            super(JsonObject.class);
+            this.ssId = ssId;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() throws Exception {
+            return getService().likeSS(ssId);
+        }
+    }
+
+
+    public static class UnlikeSS extends DreamTripsRequest<JsonObject> {
+
+        private int ssId;
+
+        public UnlikeSS(int ssId) {
+            super(JsonObject.class);
+            this.ssId = ssId;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() throws Exception {
+            return getService().unlikeSS(ssId);
+        }
+    }
+
     public static class GetRegionsRequest extends DreamTripsRequest<ArrayList<Region>> {
 
         private SnappyRepository db;

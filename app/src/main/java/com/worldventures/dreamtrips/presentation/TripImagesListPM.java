@@ -16,10 +16,10 @@ import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
 import com.worldventures.dreamtrips.utils.busevents.FSUploadEvent;
+import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,6 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.ImageUploadTaskFullscreen;
-import static com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask.from;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type;
 
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
@@ -138,24 +136,19 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
-        List<IFullScreenAvailableObject> photos = new ArrayList<>();
-        for (Object o : objects) {
-            if (o instanceof IFullScreenAvailableObject) {
-                photos.add((IFullScreenAvailableObject) o);
-            } else if (o instanceof ImageUploadTask) {
-                photos.add(from((ImageUploadTask) o));
-            }
-        }
-        if (objects.get(position) instanceof IFullScreenAvailableObject) {
+        IFullScreenAvailableObject obj = objects.get(position);
+        if (obj instanceof ImageUploadTask && ((ImageUploadTask) obj).isFailed()) {
+            dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+        } else {
             this.activityRouter.openFullScreenPhoto(position, type);
         }
     }
 
-    public void onEventMainThread(PhotoUploadStarted event) {
+    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
         if (type != Type.MY_IMAGES) {
             getAdapterContoller().reload();
         } else {
-            view.add(0, from(event.getUploadTask()));
+            view.add(0, event.getUploadTask());
         }
     }
 
@@ -166,7 +159,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             new Handler().postDelayed(() -> {
                 for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
                     Object item = view.getPhotosFromAdapter().get(i);
-                    if (item instanceof ImageUploadTaskFullscreen && ((ImageUploadTaskFullscreen) item).getTask().getTaskId().equals(event.getPhoto().getTaskId())) {
+                    if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                         view.replace(i, event.getPhoto());
                         break;
                     }
@@ -219,6 +212,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         void setSelection();
 
         IRoboSpiceAdapter getAdapter();
+
+        void inject(Object getMyPhotos);
     }
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
@@ -248,6 +243,15 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                     list.addAll(items);
                 }
                 eventBus.postSticky(FSUploadEvent.create(type, list));
+
+
+                for (T item : items) {
+                    if (item instanceof ImageUploadTask) {
+                        if (((ImageUploadTask) item).isFailed()) {
+                            dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
+                        }
+                    }
+                }
             }
             view.finishLoading();
         }

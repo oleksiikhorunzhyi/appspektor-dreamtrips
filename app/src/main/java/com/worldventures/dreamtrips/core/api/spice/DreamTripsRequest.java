@@ -8,11 +8,9 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.snappydb.SnappyDB;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
@@ -28,11 +26,11 @@ import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.repository.Repository;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
 import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
@@ -41,7 +39,6 @@ import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +48,6 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import io.realm.Realm;
-import io.realm.RealmResults;
 import retrofit.mime.TypedFile;
 
 public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, DreamTripsApi> {
@@ -100,7 +95,9 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
 
         @Override
-        public BucketItem loadDataFromNetwork() {return getService().createItem(bucketPostItem);}
+        public BucketItem loadDataFromNetwork() {
+            return getService().createItem(bucketPostItem);
+        }
     }
 
     public static class GetBucketList extends DreamTripsRequest<ArrayList<BucketItem>> {
@@ -200,14 +197,16 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
     public static class GetMyPhotos extends DreamTripsRequest<ArrayList<IFullScreenAvailableObject>> {
 
-        private Context context;
+
+        @Inject
+        SnappyRepository db;
+
         private int currentUserId;
         int perPage;
         int page;
 
-        public GetMyPhotos(Context context, int currentUserId, int perPage, int page) {
+        public GetMyPhotos(int currentUserId, int perPage, int page) {
             super((Class<ArrayList<IFullScreenAvailableObject>>) new ArrayList<IFullScreenAvailableObject>().getClass());
-            this.context = context;
             this.currentUserId = currentUserId;
             this.perPage = perPage;
             this.page = page;
@@ -218,17 +217,14 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             ArrayList<Photo> myPhotos = getService().getMyPhotos(currentUserId, perPage, page);
             List<ImageUploadTask> uploadTasks = getUploadTasks();
             ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
-            result.addAll(ImageUploadTask.from(uploadTasks));
+            result.addAll(uploadTasks);
             result.addAll(myPhotos);
             return result;
         }
 
         private List<ImageUploadTask> getUploadTasks() {
-            Repository<ImageUploadTask> repository = new Repository<>(Realm.getInstance(context), ImageUploadTask.class);
-            RealmResults<ImageUploadTask> all = repository.query().findAll();
-            List<ImageUploadTask> list = Arrays.asList(all.toArray(new ImageUploadTask[all.size()]));
-            Collections.reverse(ImageUploadTask.copy(list));
-
+            List<ImageUploadTask> list = db.getAllImageUploadTask();
+            Collections.reverse(list);
             return list;
         }
     }
@@ -348,15 +344,15 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
-        //    ArrayList<SuccessStory> successStores = getService().getSuccessStores();
+            ArrayList<SuccessStory> successStores = getService().getSuccessStores();
 
-            ArrayList<SuccessStory> successStores = new ArrayList<>();
+           /* ArrayList<SuccessStory> successStores = new ArrayList<>();
             successStores.add(new SuccessStory());
             successStores.add(new SuccessStory());
             successStores.add(new SuccessStory());
             successStores.add(new SuccessStory());
             successStores.add(new SuccessStory());
-            successStores.add(new SuccessStory());
+            successStores.add(new SuccessStory());*/
             return successStores;
         }
     }
@@ -472,46 +468,55 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             this.uploadTask = uploadTask;
         }
 
+        @Inject
+        SnappyRepository db;
+
         @Override
-        public Photo loadDataFromNetwork() throws Exception {
-            eventBus.post(new PhotoUploadStarted(uploadTask));
+        public Photo loadDataFromNetwork() {
+            try {
+                eventBus.post(new PhotoUploadStarted(uploadTask));
 
-            File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFileUri());
+                File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFileUri());
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType("");
-            Upload uploadHandler = transferManager.upload(
-                    Constants.BUCKET_NAME.toLowerCase(Locale.US),
-                    Constants.BUCKET_ROOT_PATH + file.getName(),
-                    new FileInputStream(file), metadata
-            );
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType("");
+                Upload uploadHandler = transferManager.upload(
+                        Constants.BUCKET_NAME.toLowerCase(Locale.US),
+                        Constants.BUCKET_ROOT_PATH + file.getName(),
+                        new FileInputStream(file), metadata
+                );
 
-            ProgressListener progressListener = progressEvent -> {
-                byteTransferred += progressEvent.getBytesTransferred();
-                double l = byteTransferred / file.length() * 100;
-                if (l > lastPercent + 5 || l > 99) {
-                    lastPercent = (int) l;
+                ProgressListener progressListener = progressEvent -> {
+                    byteTransferred += progressEvent.getBytesTransferred();
+                    double l = byteTransferred / file.length() * 100;
+                    if (l > lastPercent + 5 || l > 99) {
+                        lastPercent = (int) l;
+                        Log.v("Progress event", "send UploadProgressUpdateEvent:" + l);
+                        eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), (int) l));
+                    }
+                };
 
-                    eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), (int) l));
-                }
-            };
+                uploadHandler.addProgressListener(progressListener);
 
-            uploadHandler.addProgressListener(progressListener);
+                UploadResult uploadResult = null;
 
-            UploadResult uploadResult = uploadHandler.waitForUploadResult();
+                uploadResult = uploadHandler.waitForUploadResult();
 
-            uploadTask.setOriginUrl(getURLFromUploadResult(uploadResult));
 
-            eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
+                uploadTask.setOriginUrl(getURLFromUploadResult(uploadResult));
 
-            Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
-            ImageUploadTask cursor = repository.query().equalTo("taskId", uploadTask.getTaskId()).findFirst();
-            repository.remove(cursor);
+                eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
 
-            Photo photo = getService().uploadTripPhoto(uploadTask);
-            photo.setTaskId(uploadTask.getTaskId());
-            eventBus.post(new PhotoUploadFinished(photo));
-            return photo;
+                db.removeImageUploadTask(uploadTask);
+
+                Photo photo = getService().uploadTripPhoto(uploadTask);
+                photo.setTaskId(uploadTask.getTaskId());
+                eventBus.post(new PhotoUploadFinished(photo));
+                return photo;
+            } catch (Exception e) {
+                eventBus.post(new PhotoUploadFailedEvent(uploadTask.getTaskId()));
+            }
+            return null;
         }
 
         private String getURLFromUploadResult(UploadResult uploadResult) {

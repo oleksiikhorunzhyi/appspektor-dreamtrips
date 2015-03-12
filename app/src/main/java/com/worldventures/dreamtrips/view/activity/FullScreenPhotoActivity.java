@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;
-import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
@@ -91,62 +90,6 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
         outState.putSerializable(OUT_STATE_IMAGES, photoList);
         outState.putSerializable(OUT_STATE_POSITION, pager.getCurrentItem());
     }
-
-    public void shareFBDialog(String url, String text) {
-        if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
-                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                    .setLink(url)
-                    .setCaption(text)
-                    .setApplicationName("DreamTrips")
-                    .build();
-            uiHelper.trackPendingDialogCall(shareDialog.present());
-        } else {
-            publishFeedDialog(url, text, "DreamTrips");
-        }
-    }
-
-    private void publishFeedDialog(String picture, String text, String appName) {
-        Session session = Session.getActiveSession();
-        if (session != null && session.isOpened()) {
-            Bundle params = new Bundle();
-            params.putString("name", appName);
-            params.putString("caption", text);
-            params.putString("picture", picture);
-            WebDialog feedDialog = (
-                    new WebDialog.FeedDialogBuilder(this,
-                            Session.getActiveSession(),
-                            params))
-                    .build();
-            feedDialog.setOnCompleteListener((bundle, e) -> {
-                if (feedDialog != null) {
-                    if (e == null) {
-                        informUser(getString(R.string.fab_posted));
-                    }
-                    feedDialog.dismiss();
-                }
-            });
-
-            feedDialog.show();
-        } else {
-            loginButton.setReadPermissions("user_photos");
-            loginButton.setSessionStatusCallback((s, state, exception) -> {
-                if (session != null && session.isOpened()) {
-                    publishFeedDialog(picture, text, appName);
-                }
-            });
-            loginButton.performClick();
-        }
-
-    }
-
-    public void shareTwitterDialog(Uri url, String text) {
-        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                .text(text)
-                .image(url);
-        builder.show();
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

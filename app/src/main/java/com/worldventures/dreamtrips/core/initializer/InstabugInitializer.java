@@ -20,7 +20,6 @@ public class InstabugInitializer implements AppInitializer {
         injector.inject(this);
         if (!BuildConfig.FLAVOR.equals("prod")) {
             Instabug.initialize(context)
-                    .setCrashReportingEnabled(false)
                     .setAnnotationActivityClass(InstabugAnnotationActivity.class)
                     .setShowIntroDialog(true)
                     .setEnableOverflowMenuItem(true);

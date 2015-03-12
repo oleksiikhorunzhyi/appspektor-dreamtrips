@@ -11,23 +11,19 @@ import android.widget.ProgressBar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPresentation> {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> extends BaseFragment<T> {
 
     @InjectView(R.id.web_view)
-    WebView webView;
+    protected WebView webView;
 
     @Override
-    protected WebViewFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new WebViewFragmentPresentation(this);
+    protected T createPresentationModel(Bundle savedInstanceState) {
+        return (T) new WebViewFragmentPresentation(this);
     }
 
     @Override
@@ -63,7 +59,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            getPresentationModel().track(State.TERMS_OF_SERVICE);
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.TERMS_OF_SERVICE);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
@@ -73,7 +69,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            getPresentationModel().track(State.FAQ);
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.FAQ);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
         }
     }
@@ -83,13 +79,13 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            getPresentationModel().track(State.PRIVACY_POLICY);
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.PRIVACY_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
         }
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollFragment extends StaticInfoFragment {
+    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresentation> {
         @InjectView(R.id.progressBarWeb)
         ProgressBar progressBarWeb;
 
@@ -127,7 +123,7 @@ public abstract class StaticInfoFragment extends BaseFragment<WebViewFragmentPre
 
         @Override
         protected String getURL() {
-            getPresentationModel().track(State.COOKIE_POLICY);
+            ((WebViewFragmentPresentation) getPresentationModel()).track(State.COOKIE_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
         }
     }

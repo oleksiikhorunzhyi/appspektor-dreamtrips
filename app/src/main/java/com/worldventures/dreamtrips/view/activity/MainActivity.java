@@ -99,6 +99,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     @Override
     public void onNavigationDrawerItemSelected(State state) {
         closeLeftDrawer();
+        makeActionBarTransparent(false);
         getPresentationModel().selectItem(state);
         getSupportActionBar().setTitle(state.getTitle());
     }
@@ -184,6 +185,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     @Override
     public void setTitle(int title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    public void setToolBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
 

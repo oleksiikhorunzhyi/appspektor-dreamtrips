@@ -28,12 +28,12 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_more_ss" />
     </LinearLayout>
-
+<!--
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="14dp"
-        android:background="#ff929292" />
+        android:background="#ff929292" />-->
 
 
 </LinearLayout>

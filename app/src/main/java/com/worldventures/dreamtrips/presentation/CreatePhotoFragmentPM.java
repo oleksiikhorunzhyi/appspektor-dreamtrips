@@ -3,15 +3,10 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.net.Uri;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
-import com.techery.spares.service.ServiceActionRunner;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.core.repository.Repository;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import io.realm.Realm;
 import timber.log.Timber;
 
 public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> {
@@ -37,6 +32,10 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     EventBus eventBus;
     private String date;
     private String time;
+
+
+    @Inject
+    SnappyRepository db;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
@@ -71,34 +70,20 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         if (view.getImageUri().toString().isEmpty()) {
             view.informUser("Wrong image");
         } else {
-            Repository<ImageUploadTask> repository = new Repository<ImageUploadTask>(Realm.getInstance(context), ImageUploadTask.class);
-            ImageUploadTask ut = repository.create(new Repository.Consumer<ImageUploadTask>() {
-                @Override
-                public void consume(ImageUploadTask action) {
-                    action.setFileUri(view.getImageUri().toString());
-                    action.setTitle(view.getTitle());
-                    //   action.setTags(getParsedText(view.getTags()));
-                    action.setLatitude(0);
-                    action.setLongitude(0);
-                    action.setLocationName(view.getLocation());
-                    action.setShotAt(getParsedDateTime(view.getDate(), view.getTime()));
 
-                }
-            });
-            ImageUploadTask task = ImageUploadTask.copy(ut);
-            DreamTripsRequest.UploadTripPhoto uploadTripPhoto = new DreamTripsRequest.UploadTripPhoto(task);
-            view.inject(uploadTripPhoto);
-            dreamSpiceManager.execute(uploadTripPhoto, new RequestListener<Photo>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
+            ImageUploadTask action = new ImageUploadTask();
+            action.setFileUri(view.getImageUri().toString());
+            action.setTitle(view.getTitle());
+            action.setTags(getParsedText(view.getTags()));
+            action.setLatitude(0);
+            action.setLongitude(0);
+            action.setLocationName(view.getLocation());
+            action.setShotAt(getParsedDateTime(view.getDate(), view.getTime()));
+            action.setTaskId(UUID.randomUUID().toString());
+            db.saveUploadImageTask(action);
 
-                }
-
-                @Override
-                public void onRequestSuccess(Photo o) {
-
-                }
-            });
+            eventBus.post(new InsertNewImageUploadTaskEvent(action));
+            dreamSpiceManager.uploadPhoto(action);
             view.end();
         }
     }
@@ -108,7 +93,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         String[] trimed = new String[split.length];
         for (int i = 0; i < trimed.length; i++)
             trimed[i] = split[i].trim();
-        return new ArrayList<String>(Arrays.asList(trimed));
+        return new ArrayList<>(Arrays.asList(trimed));
     }
 
     public Date getParsedDateTime(String dateS, String timeS) {

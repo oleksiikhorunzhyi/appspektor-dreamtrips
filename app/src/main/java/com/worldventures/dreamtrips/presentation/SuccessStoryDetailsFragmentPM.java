@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 
-public class SuccessStoryDetailsPM extends WebViewFragmentPresentation<SuccessStoryDetailsPM.View> {
-    public SuccessStoryDetailsPM(View view) {
+public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<SuccessStoryDetailsFragmentPM.View> {
+    public SuccessStoryDetailsFragmentPM(View view) {
         super(view);
     }
 

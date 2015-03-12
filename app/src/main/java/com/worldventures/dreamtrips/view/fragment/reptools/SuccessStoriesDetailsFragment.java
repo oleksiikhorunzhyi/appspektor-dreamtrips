@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.fragment.reptools;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -14,16 +15,14 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsPM;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsFragmentPM;
 import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_success_stores)
-public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetailsPM> implements SuccessStoryDetailsPM.View {
-
+public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPM> implements SuccessStoryDetailsFragmentPM.View {
 
 
     @InjectView(R.id.progressBarWeb)
@@ -47,13 +46,12 @@ public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetails
     @Override
     public void afterCreateView(View rootView) {
         story = getArguments().getParcelable(STORY);
-        ((MainActivity) getActivity()).setToolBarTitle(story.getAuthor());
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
         super.afterCreateView(rootView);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setUseWideViewPort(true);
 
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -77,8 +75,8 @@ public class SuccessStoresDetails extends StaticInfoFragment<SuccessStoryDetails
     }
 
     @Override
-    protected SuccessStoryDetailsPM createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsPM(this);
+    protected SuccessStoryDetailsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new SuccessStoryDetailsFragmentPM(this);
     }
 
     @Override

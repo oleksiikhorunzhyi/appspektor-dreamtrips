@@ -14,8 +14,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.presentation.SuccessStoresListFragmentPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.presentation.SuccessStoriesListFragmentPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.view.adapter.SuccessStoryHeaderAdapter;
@@ -27,8 +26,8 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_success_stores)
-public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFragmentPM> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoresListFragmentPM.View {
+@Layout(R.layout.fragment_success_stories)
+public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListFragmentPM> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListFragmentPM.View {
 
     @InjectView(R.id.recyclerViewTrips)
     EmptyRecyclerView recyclerView;
@@ -42,8 +41,8 @@ public class SuccessStoresListFragment extends BaseFragment<SuccessStoresListFra
     BaseArrayListAdapter adapter;
 
     @Override
-    protected SuccessStoresListFragmentPM createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoresListFragmentPM(this);
+    protected SuccessStoriesListFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new SuccessStoriesListFragmentPM(this);
     }
 
 

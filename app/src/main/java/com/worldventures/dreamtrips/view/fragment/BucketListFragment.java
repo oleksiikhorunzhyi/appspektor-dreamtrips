@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
@@ -55,6 +56,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @InjectView(R.id.textViewEmptyAdd)
     TextView textViewEmptyAdd;
+
+    @InjectView(R.id.progressBar)
+    ProgressBar progressBar;
 
     @Inject
     @Global
@@ -189,11 +193,13 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void startLoading() {
+        progressBar.setVisibility(View.VISIBLE);
        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
+        progressBar.setVisibility(View.GONE);
        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(false));
     }
 

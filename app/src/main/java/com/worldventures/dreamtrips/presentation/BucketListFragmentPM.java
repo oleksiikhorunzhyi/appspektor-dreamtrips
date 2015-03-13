@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
@@ -70,7 +71,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void loadBucketItems(boolean fromNetwork) {
-        if (isConnected())
+        if (isConnected()) {
+            view.startLoading();
             dreamSpiceManager.execute(new DreamTripsRequest.GetBucketList(prefs, db, type, fromNetwork), new RequestListener<ArrayList<BucketItem>>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
@@ -81,9 +83,10 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 public void onRequestSuccess(ArrayList<BucketItem> bucketItems) {
                     BucketListFragmentPM.this.bucketItems = bucketItems;
                     fillWithItems();
+                    view.finishLoading();
                 }
             });
-        else {
+        } else {
             try {
                 this.bucketItems = db.readBucketList(type.name());
                 fillWithItems();
@@ -93,7 +96,6 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 e.printStackTrace();
             }
         }
-
     }
 
     private void fillWithItems() {
@@ -112,6 +114,15 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         }
         view.getAdapter().clear();
         view.getAdapter().addItems(result);
+    }
+
+    public void onEvent(BucketItemAddedEvent event) {
+        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            bucketItems.add(event.getBucketItem());
+            view.getAdapter().addItem(1, event.getBucketItem());
+            view.getAdapter().notifyDataSetChanged();
+
+        }
     }
 
     public void onEvent(DeleteBucketItemEvent event) {

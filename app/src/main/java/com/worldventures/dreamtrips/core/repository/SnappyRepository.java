@@ -77,9 +77,15 @@ public class SnappyRepository {
             @Override
             public List<T> call() throws Exception {
                 DB db = DBFactory.open(context);
-                T[] result = db.getObjectArray(key, clazz);
+                List<T> result = new ArrayList<T>();
+                if (db.exists(key)){
+                    T[] array = db.getObjectArray(key, clazz);
+                    db.close();
+                    return Arrays.asList(array);
+                }
                 db.close();
-                return Arrays.asList(result);
+                return result;
+
             }
         });
         return future.get();

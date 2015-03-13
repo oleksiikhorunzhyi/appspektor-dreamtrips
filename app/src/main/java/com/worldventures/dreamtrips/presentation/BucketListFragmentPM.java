@@ -186,5 +186,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         void startLoading();
 
         void finishLoading();
+
+        //void isTabletLandscape();
     }
 }

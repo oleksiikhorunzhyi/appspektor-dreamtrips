@@ -13,6 +13,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.custom.CustomViewPager;
@@ -23,7 +24,7 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  implements FloatingActionsMenu.OnFloatingActionsMenuUpdateListener{
+public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener{
 
     @Override
     protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
@@ -88,6 +89,11 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM>  impl
     public void actionPopular(View view) {
         getPresentationModel().addPopular(pager.getCurrentItem());
         this.multipleActionsDown.collapse();
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     public enum Type {

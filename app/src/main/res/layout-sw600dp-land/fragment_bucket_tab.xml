@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:fillViewport="false"
+        fab:pstsIndicatorColor="@color/theme_main_darker"
+        fab:pstsTextColorSelected="@android:color/black"
+        fab:pstsTextSelectedStyle="normal"
+        fab:pstsTextStyle="normal"
+        fab:pstsUnderlineColor="@color/theme_main_darker" />
+
+    <com.worldventures.dreamtrips.view.custom.CustomViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tabs"
+        android:background="@android:color/white" />
+
+    <View
+        android:id="@+id/v_bg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pager"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="@color/theme_main_darker"
+        fab:fab_colorNormal="@color/theme_main"
+        fab:fab_colorPressed="@color/theme_main_darker"
+        fab:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_popular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/list"
+            fab:fab_title="@string/bucket_list_choose" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_own"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/create"
+            fab:fab_title="@string/bucket_list_create_new" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <FrameLayout
+        android:id="@+id/container_child"
+        android:layout_below="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:visibility="gone">
+
+        <com.gc.materialdesign.views.Switch
+            android:id="@+id/sw_liked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/theme_main"
+            materialdesign:check="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bucket_show_favorites" />
+    </LinearLayout>
+
+</RelativeLayout>

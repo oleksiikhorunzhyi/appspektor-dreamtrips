@@ -3,20 +3,7 @@ box: man4ik/android
 build:
   # The steps that will be executed on build
   steps:
-    - script:
-        name: show base information
-        code: |
-          android list targets
-          android list sdk --all --extended
-          gradle -v
-          echo $ANDROID_HOME
-          echo $ANDROID_BUILD_TOOLS
-          echo $ANDROID_UPDATE_FILTER
-          keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
-#   - setup-android-emulator:
-#       target: 1
-    - setup-android-emulator:		
-        target: 1
+    - wercker/setup-android-emulator@0.0.8
     - script:
         name: run gradle connectedCheck
         code: |
@@ -25,10 +12,6 @@ build:
         name: run gradle build
         code: |
           gradle build --stacktrace --info --no-color -q
-#    - script:
-#         name: run gradle connectedCheck
-#         code: |
-#           gradle test --stacktrace --info --no-color -q
   after-steps:
     # Use the build results
     - script:

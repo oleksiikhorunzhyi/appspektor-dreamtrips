@@ -1,18 +1,22 @@
-box: wercker/android
+box: man4ik/android
+# Build definition
 build:
+  # The steps that will be executed on build
   steps:
     - script:
         name: show base information
         code: |
+          android list targets
+          android list sdk --all --extended
           gradle -v
           echo $ANDROID_HOME
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
-    # A step that executes `gradle build` command
+          keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
     - script:
-        name: run gradle
+        name: run gradle build
         code: |
-          gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build
+          gradle build --stacktrace --info --no-color -q
   after-steps:
     # Use the build results
     - script:
@@ -30,6 +34,7 @@ deploy:
        name: hockeyapp
        code: >
         ls -la;
+
         RESULT=$(
         curl
         -F status=2
@@ -39,7 +44,9 @@ deploy:
         -F ipa=@app/build/outputs/apk/app-debug.apk
         -H "X-HockeyAppToken: 1b806ddf85974542bf9e5120617b3a26"
         https://rink.hockeyapp.net/api/2/apps/c271311c8e47372fb375a43f8bc5a30f/app_versions/upload)
+
         echo $RESULT;
+
         if [[ $RESULT == *"appsize"* ]]; then
         echo "Apk file has been successfully uploaded";
         else

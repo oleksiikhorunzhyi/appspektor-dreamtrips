@@ -2,7 +2,7 @@ box: wercker/android
 build:
   steps:
     - wercker/setup-android-emulator@0.0.8:
-        target: android-18
+        target: android-21
     - script:
         name: show base information
         code: |

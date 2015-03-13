@@ -10,8 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
-import com.worldventures.dreamtrips.utils.busevents.RefreshBucketItemEvent;
-
+import com.worldventures.dreamtrips.utils.busevents.BucketItemReloadEvent;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
@@ -52,7 +51,7 @@ public class BucketQuickCell extends AbstractCell<BucketPostItem> {
 
     @OnClick(R.id.imageViewRefresh)
     void onRefresh() {
-        getEventBus().post(new RefreshBucketItemEvent(getModelObject()));
+        getEventBus().post(new BucketItemReloadEvent(getModelObject()));
     }
 
     @Override

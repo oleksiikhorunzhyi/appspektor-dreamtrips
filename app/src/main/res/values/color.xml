@@ -36,8 +36,8 @@
 
     <color name="bg_item_normal_state">#fff0f0f0</color>
     <color name="bg_item_normal_pressed_state">#ffe0e0e0</color>
-    <color name="bg_item_dragging_state">#ffffdddd</color>
-    <color name="bg_item_dragging_active_state">#ffff9999</color>
+    <color name="bg_item_dragging_state">#e1f0fb</color>
+    <color name="bg_item_dragging_active_state">#c0e2fb</color>
     <color name="bg_item_swiping_state">#ffddddff</color>
     <color name="bg_item_swiping_active_state">#ff9999ff</color>
     <color name="bg_group_item_normal_state">#ffddffdd</color>

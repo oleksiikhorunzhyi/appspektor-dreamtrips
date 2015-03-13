@@ -54,6 +54,7 @@ import retrofit.mime.TypedFile;
 
 public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, DreamTripsApi> {
     private static final long DELTA = 30 * 60 * 1000;
+    private static final long DELTA_BUCKET = 3 * 60 * 1000;
 
     public DreamTripsRequest(Class<T> clazz) {
         super(clazz, DreamTripsApi.class);
@@ -178,9 +179,8 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
-         //   long current = Calendar.getInstance().getTimeInMillis();
-         //   return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
-            return true;
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
         }
 
     }

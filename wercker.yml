@@ -3,6 +3,7 @@ build:
   steps:
     - wercker/setup-android-emulator@0.0.8:
         target: android-21
+        abi: x86
     - script:
         name: show base information
         code: |

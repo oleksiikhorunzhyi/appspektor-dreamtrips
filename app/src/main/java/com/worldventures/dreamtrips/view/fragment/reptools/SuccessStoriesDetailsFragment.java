@@ -34,9 +34,10 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
         favoriteMenuItem = menu.findItem(R.id.action_like);
-        favoriteMenuItem.setIcon(story.isLiked() ? R.drawable.ic_success_heart_normal :
-                R.drawable.ic_success_heart_selected);
+        favoriteMenuItem.setIcon(story.isLiked() ? R.drawable.ic_success_heart_selected :
+                R.drawable.ic_success_heart_normal);
 
     }
 
@@ -107,7 +108,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     public void likeRequestSuccess() {
         boolean isLike = !story.isLiked();
         story.setLiked(isLike);
-        favoriteMenuItem.setIcon(isLike ? R.drawable.ic_success_heart_normal : R.drawable.ic_success_heart_selected);
+        favoriteMenuItem.setIcon(isLike ? R.drawable.ic_success_heart_selected : R.drawable.ic_success_heart_normal);
         if (isLike) {
             informUser(getString(R.string.ss_has_been_added_to_favorites));
         } else {

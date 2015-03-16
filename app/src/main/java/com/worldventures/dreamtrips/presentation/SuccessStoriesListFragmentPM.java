@@ -7,12 +7,14 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemClickEvent;
+import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemSelectedEvent;
+import com.worldventures.dreamtrips.utils.busevents.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
 
 import java.util.ArrayList;
@@ -32,10 +34,18 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
     @Global
     EventBus eventBus;
 
+
+    boolean onlyFavorites = false;
+
     RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
         @Override
         public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
-            return new DreamTripsRequest.GetSuccessStores();
+            return new DreamTripsRequest.GetSuccessStores() {
+                @Override
+                public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
+                    return performFiltering(super.loadDataFromNetwork());
+                }
+            };
         }
 
         @Override
@@ -48,6 +58,18 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
             view.finishLoading(items);
         }
     };
+
+    private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
+        ArrayList<SuccessStory> result = new ArrayList<>();
+        if (isFilterFavorites()) {
+            for (SuccessStory successStory : successStories) {
+                if (successStory.isLiked()) result.add(successStory);
+            }
+        } else {
+            result.addAll(successStories);
+        }
+        return result;
+    }
 
     public SuccessStoriesListFragmentPM(View view) {
         super(view);
@@ -74,18 +96,39 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
     }
 
     public void onEvent(OnSuccessStoryCellClickEvent event) {
-        handleClick(event.getModelObject(), event.getPosition());
+        handleListItemClick(event.getModelObject(), event.getPosition());
     }
 
-    private void handleClick(SuccessStory successStory, int position) {
+    public void onEvent(SuccessStoryLikedEvent event) {
+        reload();
+    }
+
+
+    private void handleListItemClick(SuccessStory successStory, int position) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoriesDetailsFragment.STORY, successStory);
         if (view.isLandscape() && view.isTablet()) {
             detailsCompass.replace(State.SUCCESS_STORES_DETAILS, bundle);
-            eventBus.post(new SuccessStoryItemClickEvent(position));
+            eventBus.post(new SuccessStoryItemSelectedEvent(position));
         } else {
             activityRouter.openSuccessStoryDetails(successStory);
         }
+    }
+
+    public void reloadWithFilter(int filterId) {
+        switch (filterId) {
+            case R.id.action_show_all:
+                onlyFavorites = false;
+                break;
+            case R.id.action_show_favorites:
+                onlyFavorites = true;
+                break;
+        }
+        reload();
+    }
+
+    public boolean isFilterFavorites() {
+        return onlyFavorites;
     }
 
     public static interface View extends BasePresentation.View {
@@ -101,6 +144,8 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
         void finishLoading(List<SuccessStory> items);
 
         void startLoading();
+
+        void showOnlyFavorites(boolean onlyFavorites);
     }
 }
 

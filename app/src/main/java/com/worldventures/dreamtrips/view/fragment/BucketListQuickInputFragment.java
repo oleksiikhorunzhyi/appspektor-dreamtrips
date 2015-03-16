@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toolbar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
@@ -21,6 +24,8 @@ import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 /**
  * Created by 1 on 26.02.15.
@@ -34,6 +39,10 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
     @InjectView(R.id.editTextQuickInput)
     EditText editTextQuick;
+
+    @Optional
+    @InjectView(R.id.done)
+    ImageView imageViewDone;
 
     private BaseArrayListAdapter<BucketPostItem> arrayListAdapter;
 
@@ -50,8 +59,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
         editTextQuick.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        getPresentationModel().addToBucketList(editTextQuick.getText().toString());
-                        editTextQuick.setText("");
+                        addItem();
                     }
                     return false;
                 }
@@ -59,20 +67,44 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (imageViewDone != null)
+            setHasOptionsMenu(false);
+    }
+
+    @Optional
+    @OnClick(R.id.mainFrame)
+    void onClick() {
+        getPresentationModel().frameClicked();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                String text = editTextQuick.getText().toString();
-                if (!TextUtils.isEmpty(text.trim())) {
-                    getPresentationModel().addToBucketList(text);
-                    editTextQuick.setText("");
-                } else {
-                    editTextQuick.requestFocus();
-                }
+                addItem();
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void addItem() {
+        String text = editTextQuick.getText().toString();
+        if (!TextUtils.isEmpty(text.trim())) {
+            getPresentationModel().addToBucketList(text);
+            editTextQuick.setText("");
+        } else {
+            editTextQuick.requestFocus();
+        }
+    }
+
+    @Optional
+    @OnClick(R.id.done)
+    void onDone() {
+        addItem();
     }
 
     @Override

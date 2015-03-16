@@ -5,10 +5,13 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.utils.busevents.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
@@ -16,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by 1 on 26.02.15.
@@ -29,6 +34,10 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
 
     @Inject
     SnappyRepository db;
+
+    @Global
+    @Inject
+    EventBus eventBus;
 
     public BucketListQuickInputPM(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -46,6 +55,15 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        eventBus.register(this);
+    }
+
+    public void onEvent(BucketItemReloadEvent event) {
+        loadBucketItem(event.getBucketPostItem());
+    }
+
+    public void frameClicked() {
+        fragmentCompass.pop();
     }
 
     public void addToBucketList(String title) {
@@ -53,10 +71,15 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
 
         data.add(0, bucketPostItem);
         view.getAdapter().addItem(bucketPostItem);
+        view.getAdapter().notifyDataSetChanged();
         loadBucketItem(bucketPostItem);
     }
 
     public void loadBucketItem(BucketPostItem bucketPostItem) {
+        bucketPostItem.setLoaded(false);
+        bucketPostItem.setError(false);
+        view.getAdapter().notifyDataSetChanged();
+
         dreamSpiceManager.execute(new DreamTripsRequest.AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -68,6 +91,7 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
             @Override
             public void onRequestSuccess(BucketItem bucketItem) {
                 bucketPostItem.setLoaded(true);
+                eventBus.post(new BucketItemAddedEvent(bucketItem));
                 view.getAdapter().notifyDataSetChanged();
                 realData.add(0, bucketItem);
                 db.saveBucketList(realData, type.name());

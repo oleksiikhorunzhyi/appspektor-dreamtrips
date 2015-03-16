@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/center_view"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="60dp"
             android:alpha="0.5"
             android:padding="22dp"
@@ -35,9 +36,10 @@
 
         <TextView
             android:id="@+id/textViewEmptyAdd"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/center_view"
+            android:layout_centerHorizontal="true"
             android:alpha="0.8"
             android:gravity="center"
             android:padding="22dp"
@@ -48,10 +50,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewEmptyAdd"
-            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/center_view"
+            android:layout_toEndOf="@+id/textViewEmptyAdd"
+            android:layout_toRightOf="@+id/textViewEmptyAdd"
             android:paddingLeft="50dp"
-            android:src="@drawable/arrow" />
+            android:src="@drawable/arrow_big"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
@@ -62,6 +66,7 @@
         android:visibility="gone"
         android:layout_centerInParent="true"/>
 
+
     <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
         android:id="@+id/lv_items"
         style="@style/myRecyclerViewStyle"
@@ -69,5 +74,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/margin_small"
         android:visibility="visible" />
+
+
 
 </RelativeLayout>

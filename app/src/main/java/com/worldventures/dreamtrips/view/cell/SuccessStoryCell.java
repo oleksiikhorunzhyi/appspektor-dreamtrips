@@ -10,7 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemClickEvent;
+import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemSelectedEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -36,7 +36,7 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
     }
 
 
-    public void onEventMainThread(SuccessStoryItemClickEvent event) {
+    public void onEventMainThread(SuccessStoryItemSelectedEvent event) {
         if (getPosition() == event.getPosition()) {
             vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.selected_success_story));
         } else {

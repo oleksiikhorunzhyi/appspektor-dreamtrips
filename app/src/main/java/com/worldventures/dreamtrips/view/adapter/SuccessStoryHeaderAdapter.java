@@ -33,7 +33,7 @@ public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessSt
 
     @Override
     public void onBindViewHolder(SuccessHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText(items.get(i).getCategory());
+        headerViewHolder.letter.setText(items.get(i).getCategory().toUpperCase());
     }
 
     @Override

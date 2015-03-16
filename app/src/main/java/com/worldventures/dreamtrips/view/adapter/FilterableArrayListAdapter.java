@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdapter<BaseItemClass> {
 
-    private List<BaseItemClass> cashedItems = new ArrayList<>();
+    protected List<BaseItemClass> cashedItems = new ArrayList<>();
 
     public FilterableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);

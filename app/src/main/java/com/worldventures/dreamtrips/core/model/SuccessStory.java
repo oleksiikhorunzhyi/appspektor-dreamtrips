@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.core.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SuccessStory extends BaseEntity implements Parcelable {
+import com.worldventures.dreamtrips.view.util.Filterable;
+
+public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
 
     String author;
     String category;
@@ -70,6 +72,15 @@ public class SuccessStory extends BaseEntity implements Parcelable {
     }
 
 
+    public SuccessStory() {
+    }
+
+
+    @Override
+    public boolean containsQuery(String query) {
+        return query == null || author.toLowerCase().contains(query);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -82,10 +93,9 @@ public class SuccessStory extends BaseEntity implements Parcelable {
         dest.writeString(this.locale);
         dest.writeString(this.published_date);
         dest.writeString(this.url);
+        dest.writeString(this.sharingUrl);
+        dest.writeByte(liked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.id);
-    }
-
-    public SuccessStory() {
     }
 
     private SuccessStory(Parcel in) {
@@ -94,6 +104,8 @@ public class SuccessStory extends BaseEntity implements Parcelable {
         this.locale = in.readString();
         this.published_date = in.readString();
         this.url = in.readString();
+        this.sharingUrl = in.readString();
+        this.liked = in.readByte() != 0;
         this.id = in.readInt();
     }
 

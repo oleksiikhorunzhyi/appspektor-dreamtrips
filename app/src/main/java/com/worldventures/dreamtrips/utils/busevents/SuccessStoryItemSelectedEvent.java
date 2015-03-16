@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
-public class SuccessStoryItemClickEvent {
+public class SuccessStoryItemSelectedEvent {
 
     int position;
 
-    public SuccessStoryItemClickEvent(int position) {
+    public SuccessStoryItemSelectedEvent(int position) {
         this.position = position;
     }
 

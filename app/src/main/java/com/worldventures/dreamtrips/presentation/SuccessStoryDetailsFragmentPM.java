@@ -58,11 +58,11 @@ public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<S
 
 
     public void onFbShare(SuccessStory successStory) {
-        activityRouter.openShareFacebook(null, successStory.getSharingUrl());
+        activityRouter.openShareFacebook(null, successStory.getSharingUrl(), null);
     }
 
     public void onTwitterShare(SuccessStory successStory) {
-        activityRouter.openShareTwitter(null, successStory.getSharingUrl());
+        activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
     }
 
 }

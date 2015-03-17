@@ -95,17 +95,25 @@ public class ActivityRouter extends ActivityBoundRouter {
         startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
-    public void openShareFacebook(String url, String text) {
+    public void openShareFacebook(String imageUrl, String shareLink, String text) {
+        if (imageUrl == null) imageUrl = "";
+        if (shareLink == null) shareLink = "";
+        if (text == null) text = "";
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
         bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.FB);
         startActivity(ShareActivity.class, bundle);
     }
 
-    public void openShareTwitter(String url, String text) {
+    public void openShareTwitter(String imageUrl, String shareLink, String text) {
+        if (imageUrl == null) imageUrl = "";
+        if (shareLink == null) shareLink = "";
+        if (text == null) text = "";
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_URL, url);
+        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
+        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
         bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
         startActivity(ShareActivity.class, bundle);
@@ -118,7 +126,7 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openSuccessStoryDetails(SuccessStory successStory) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY,successStory);
+        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
         startActivity(SuccessStoryDetailsActivity.class, bundle);
 
     }

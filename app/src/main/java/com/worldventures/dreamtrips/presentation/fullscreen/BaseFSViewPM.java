@@ -90,12 +90,11 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     }
 
     public void onFbShare(FullScreenPhotoActivity activity) {
-        activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
+        activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
     }
 
     public void onTwitterShare(FullScreenPhotoActivity activity) {
-
-        activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), photo.getFsShareText());
+        activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
     }
 
     public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {

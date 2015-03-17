@@ -25,7 +25,8 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
     public static final String FB = "fb";
     public static final String TW = "tw";
 
-    public static final String BUNDLE_URL = "BUNDLE_URL";
+    public static final String BUNDLE_IMAGE_URL = "BUNDLE_IMAGE_URL";
+    public static final String BUNDLE_SHARE_URL = "BUNDLE_SHARE_URL";
     public static final String BUNDLE_TEXT = "BUNDLE_TEXT";
     public static final String BUNDLE_SHARE_TYPE = "BUNDLE_SHARE_TYPE";
     @InjectView(R.id.login_button)
@@ -34,7 +35,8 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
     private Session.StatusCallback callback = (session, state, exception) -> {
         // onSessionStateChange(session, state, exception);
     };
-    private String url;
+    private String imageUrl;
+    private String shareUrl;
     private String text;
     private String type;
 
@@ -54,10 +56,11 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
         if (bundleExtra == null) {
             finish();
         } else {
-            url = bundleExtra.getString(BUNDLE_URL);
+            imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL);
+            shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL);
             text = bundleExtra.getString(BUNDLE_TEXT);
             type = bundleExtra.getString(BUNDLE_SHARE_TYPE);
-            getPresentationModel().create(url, text, type);
+            getPresentationModel().create(imageUrl, shareUrl, text, type);
             getIntent().removeExtra(ActivityRouter.EXTRA_BUNDLE);
         }
         AppEventsLogger.activateApp(this); //facebook SDK event logger. Really needed?
@@ -89,26 +92,28 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
     }
 
 
-    public void shareFBDialog(String url, String text) {
+    public void shareFBDialog(String url, String link, String text) {
         if (FacebookDialog.canPresentShareDialog(getApplicationContext(), FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
             FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                    .setLink(url)
+                    .setLink(link)
+                    .setPicture(url)
                     .setCaption(text)
                     .setApplicationName("DreamTrips")
                     .build();
             uiHelper.trackPendingDialogCall(shareDialog.present());
         } else {
-            publishFeedDialog(url, text, "DreamTrips");
+            publishFeedDialog(url, link, text, "DreamTrips");
         }
     }
 
 
-    private void publishFeedDialog(String picture, String text, String appName) {
+    private void publishFeedDialog(String picture, String link, String text, String appName) {
         Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
             Bundle params = new Bundle();
             params.putString("name", appName);
             params.putString("caption", text);
+            params.putString("link", link);
             params.putString("picture", picture);
             WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this, Session.getActiveSession(), params)).build();
             feedDialog.setOnCompleteListener((bundle, e) -> {
@@ -126,7 +131,7 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 if (session != null && session.isOpened()) {
-                    publishFeedDialog(picture, text, appName);
+                    publishFeedDialog(picture, link, text, appName);
                 }
             });
             loginButton.performClick();
@@ -134,10 +139,14 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
 
     }
 
-    public void shareTwitterDialog(Uri url, String text) {
-        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                .text(text);
-        if (url != null) builder.image(url);
+    public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
+        if (shareUrl == null) shareUrl = "";
+        if (!shareUrl.isEmpty()) shareUrl += "\n";
+        if (text == null) text = "";
+
+        TweetComposer.Builder builder = new TweetComposer.Builder(this);
+        builder.text(shareUrl + text);
+        if (imageUrl != null) builder.image(imageUrl);
         builder.show();
     }
 }

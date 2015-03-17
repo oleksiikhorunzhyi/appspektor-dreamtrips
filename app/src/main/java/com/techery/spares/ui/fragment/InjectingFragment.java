@@ -59,8 +59,8 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     private void setupMenuIfNeed() {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
-        setHasOptionsMenu(menuResource != null);
+        //MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        setHasOptionsMenu(true);
     }
 
     @Override

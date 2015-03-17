@@ -143,7 +143,7 @@
     <string name="location">location</string>
     <string name="activity">activity</string>
     <string name="dinning">dinning</string>
-    
+
     <string name="show_all">Show all</string>
     <string name="show_completed">Show completed</string>
     <string name="show_to_do">Show TO-DO</string>
@@ -161,5 +161,7 @@
     <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
     <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
     <string name="show_favorites">Show Favorites</string>
+    <string name="other_travel">Other Travel</string>
+    <string name="training_videos">Training Videos</string>
 
 </resources>

@@ -16,6 +16,7 @@ public class S3GlobalConfig {
     @SerializedName("facebook_gallery_enabled")
     boolean facebook_gallery_enabled;
 
+
     public FlagList getFlagContent() {
         return this.flagContent;
     }

@@ -45,6 +45,20 @@ public class URLS {
         @SerializedName("UserGeneratedContentAPIBaseUrl")
         private String userGeneratedContentAPIBaseUrl;
 
+        @SerializedName("OTAPageBaseURL")
+        private String oTAPageBaseURL;
+
+        @SerializedName("TrainingVideosURL")
+        private String trainingVideosURL;
+
+        public void setoTAPageBaseURL(String oTAPageBaseURL) {
+            this.oTAPageBaseURL = oTAPageBaseURL;
+        }
+
+        public void setTrainingVideosURL(String trainingVideosURL) {
+            this.trainingVideosURL = trainingVideosURL;
+        }
+
         public String getAPIBaseURL() {
             return this.aPIBaseURL;
         }
@@ -91,6 +105,14 @@ public class URLS {
 
         public void setUserGeneratedContentAPIBaseUrl(String userGeneratedContentAPIBaseUrl) {
             this.userGeneratedContentAPIBaseUrl = userGeneratedContentAPIBaseUrl;
+        }
+
+        public String getoTAPageBaseURL() {
+            return oTAPageBaseURL;
+        }
+
+        public String getTrainingVideosURL() {
+            return trainingVideosURL;
         }
     }
 

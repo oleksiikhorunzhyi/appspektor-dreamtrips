@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
 import butterknife.InjectView;
 
@@ -37,6 +38,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsFragmentPM> implement
                 }
             };
 
+            this.adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
             this.adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
 
         }

@@ -13,24 +13,24 @@ public class ShareActivityPM extends BasePresentation<ShareActivityPM.View> {
         super(view);
     }
 
-    public void create(String url, String text, String type) {
+    public void create(String imageUrl, String shareLink, String text, String type) {
         if (type.equals(ShareActivity.FB)) {
-            view.shareFBDialog(url, text);
+            view.shareFBDialog(imageUrl, shareLink, text);
         } else if (type.equals(ShareActivity.TW)) {
-            File file = DiskCacheUtils.findInCache(url, ImageLoader.getInstance().getDiskCache());
+            File file = DiskCacheUtils.findInCache(imageUrl, ImageLoader.getInstance().getDiskCache());
             Uri parse = null;
             if (file != null) {
-                Uri.fromFile(file);
+                parse = Uri.fromFile(file);
             }
-            view.shareTwitterDialog(parse, text);
+            view.shareTwitterDialog(parse, shareLink, text);
         }
     }
 
 
     public static interface View extends BasePresentation.View {
-        public void shareFBDialog(String url, String text);
+        public void shareFBDialog(String url, String link, String text);
 
-        public void shareTwitterDialog(Uri url, String text);
+        public void shareTwitterDialog(Uri url, String link, String text);
 
     }
 }

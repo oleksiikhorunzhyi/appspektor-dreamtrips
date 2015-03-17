@@ -9,7 +9,10 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
+import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 
@@ -125,6 +128,51 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
         protected String getURL() {
             ((WebViewFragmentPresentation) getPresentationModel()).track(State.COOKIE_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class OtaFragment extends StaticInfoFragment {
+        @InjectView(R.id.progressBarWeb)
+        ProgressBar progressBarWeb;
+
+        @Override
+        protected String getURL() {
+            S3GlobalConfig config = ((WebViewFragmentPresentation) getPresentationModel()).getConfig();
+            URLS urls = config.getUrls();
+            URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+            return configs.getoTAPageBaseURL();
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    progressBarWeb.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    progressBarWeb.setVisibility(View.GONE);
+                }
+            });
+
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class TrainingVideosFragment extends StaticInfoFragment {
+        @Override
+        protected String getURL() {
+            S3GlobalConfig config = ((WebViewFragmentPresentation) getPresentationModel()).getConfig();
+            URLS urls = config.getUrls();
+            URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+            return configs.getTrainingVideosURL();
         }
     }
 

@@ -44,7 +44,6 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
     public MyDraggableSwipeableItemAdapter(Context context, Injector injector) {
         super(context, injector);
         setHasStableIds(true);
-        eventBus.register(this);
     }
 
     @Override
@@ -148,11 +147,6 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         moveItem(fromPosition, toPosition);
 
         notifyItemMoved(fromPosition, toPosition);
-    }
-
-    public void onEvent(DeleteBucketItemEvent event) {
-        remove(event.getPosition());
-        notifyItemRemoved(event.getPosition());
     }
 
     public void setEventListener(DeleteListener eventListener) {

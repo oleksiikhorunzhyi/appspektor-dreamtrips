@@ -78,4 +78,6 @@ public class BucketItem extends BaseEntity {
     public void setType(String type) {
         this.type = type;
     }
+
+
 }

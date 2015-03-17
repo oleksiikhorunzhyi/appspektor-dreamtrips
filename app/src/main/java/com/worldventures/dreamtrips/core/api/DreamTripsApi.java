@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -107,6 +108,12 @@ public interface DreamTripsApi {
 
     @GET("/api/bucket_list_items")
     public ArrayList<BucketItem> getBucketList();
+
+    @GET("/api/bucket_list/locations")
+    public ArrayList<PopularBucketItem> getPopularLocations();
+
+    @GET("/api/bucket_list/activities")
+    public ArrayList<PopularBucketItem> getPopularActivities();
 
 
 }

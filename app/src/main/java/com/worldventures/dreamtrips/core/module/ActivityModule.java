@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.presentation.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.presentation.BucketListPopularPM;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
+import com.worldventures.dreamtrips.presentation.BucketPopularTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.presentation.CreatePhotoFragmentPM;
@@ -116,6 +117,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.view.FacebookPhotoItem;
 import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListQuickInputFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedImagePagerFragment;
@@ -188,6 +190,7 @@ import retrofit.RestAdapter;
                 FacebookPhotoFragmentPM.class,
                 EnrollActivity.class,
                 EnrollActivityPresentation.class,
+                BucketPopularTabsFragmentPM.class,
                 FiltersFragmentPM.class,
                 BucketListQuickInputFragment.class,
                 DetailedImagePagerFragmentPresentation.class,
@@ -235,6 +238,7 @@ import retrofit.RestAdapter;
                 StaticInfoFragment.FAQFragment.class,
                 BookItDialogFragment.class,
                 BucketTabsFragment.class,
+                BucketPopularTabsFragment.class,
                 BucketListFragment.class,
                 DetailedImagePagerFragment.class,
                 MapFragment.class,

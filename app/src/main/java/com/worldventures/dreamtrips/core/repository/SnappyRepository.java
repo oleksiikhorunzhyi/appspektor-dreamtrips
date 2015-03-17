@@ -29,7 +29,7 @@ public class SnappyRepository {
 
     public static final String REGIONS = "regions";
     public static final String ACTIVITIES = "activities";
-    public static final String BUCKET_LIST = "activities";
+    public static final String BUCKET_LIST = "buckets";
 
     public static final String TRIP_KEY = "trip";
     public static final String BUCKET_KEY = "bucket";

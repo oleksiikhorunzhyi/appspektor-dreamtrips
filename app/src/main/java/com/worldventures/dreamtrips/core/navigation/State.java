@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.view.dialog.facebook.fragment.FacebookPhotoF
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketListQuickInputFragment;
+import com.worldventures.dreamtrips.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.view.fragment.DetailedTripFragment;
@@ -39,7 +40,8 @@ public enum State {
     SUCCESS_STORES_DETAILS(SuccessStoriesDetailsFragment.class, R.string.success_stories),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     QUICK_INPUT(BucketListQuickInputFragment.class, R.string.bucket_list_my_title),
-    POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_my_title),
+    POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_location_popular),
+    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     MAP(MapFragment.class, R.string.title_activity_main),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
     DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, R.drawable.ic_dreamtrips, 0),

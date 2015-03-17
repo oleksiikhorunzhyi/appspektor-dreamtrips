@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.BucketListEditActivityPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import butterknife.InjectView;
@@ -53,6 +54,10 @@ public class BucketListEditActivity extends PresentationModelDrivenActivity<Buck
             getSupportActionBar().setTitle(R.string.bucket_list_my_title);
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
+    }
+
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
     }
 
     @Override

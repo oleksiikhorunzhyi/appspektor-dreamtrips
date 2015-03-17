@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
@@ -180,7 +181,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
             long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
         }
 
     }
@@ -203,8 +204,35 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
     }
 
-    public static class GetYSBHPhotos extends DreamTripsRequest<ArrayList<Photo>> {
+    public static class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
 
+        private BucketTabsFragment.Type type;
+
+        public GetPopularLocation(BucketTabsFragment.Type type) {
+            super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
+            this.type = type;
+        }
+
+        @Override
+        public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
+            ArrayList<PopularBucketItem> list = new ArrayList<>();
+
+            if (type.equals(BucketTabsFragment.Type.LOCATIONS)) {
+                list.addAll(getService().getPopularLocations());
+            } else {
+                list.addAll(getService().getPopularActivities());
+            }
+
+            if (list.size() > 0)
+                for (PopularBucketItem popularBucketItem : list) {
+                    popularBucketItem.setType(type.getName());
+                }
+
+            return list;
+        }
+    }
+
+    public static class GetYSBHPhotos extends DreamTripsRequest<ArrayList<Photo>> {
         int perPage;
         int page;
 
@@ -515,7 +543,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
             long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA || db.isEmpty(SnappyRepository.TRIP_KEY);
         }
 
     }
@@ -597,7 +625,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
         }
     }
-
 
 
 }

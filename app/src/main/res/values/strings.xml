@@ -72,7 +72,7 @@
     <string name="bucket_show_favorites">Show favorites only</string>
     <string name="bucket_locations">Locations</string>
     <string name="bucket_activities">Activities</string>
-    <string name="bucket_restaurants">Dinning</string>
+    <string name="bucket_restaurants">Dining</string>
 
     <string name="photo_what">What</string>
     <string name="photo_what_hint">Give a title to the image</string>
@@ -131,7 +131,7 @@
     <string name="password_not_valid">Password is not valid</string>
 
     <string name="bucket_list_my_title">Add items to Bucket List</string>
-    <string name="bucket_list_location_popular">Popular Bucket Lists Locations</string>
+    <string name="bucket_list_location_popular">Popular Bucket Lists</string>
     <string name="bucket_list_activity_popular">Popular Bucket Lists Activities</string>
     <string name="bucket_list_dinning_popular">Popular Bucket Lists Dinnings</string>
     <string name="bucket_list_add">Add %s to your bucket list</string>

@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
@@ -200,6 +201,25 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public ArrayList<Photo> loadDataFromNetwork() throws Exception {
             return getService().getUserPhotos(perPage, page);
+        }
+    }
+
+    public static class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
+
+        private BucketTabsFragment.Type type;
+
+        public GetPopularLocation(BucketTabsFragment.Type type) {
+            super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
+            this.type = type;
+        }
+
+        @Override
+        public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
+            if (type.equals(BucketTabsFragment.Type.LOCATIONS)) {
+                return getService().getPopularLocations();
+            } else {
+                return getService().getPopularActivities();
+            }
         }
     }
 

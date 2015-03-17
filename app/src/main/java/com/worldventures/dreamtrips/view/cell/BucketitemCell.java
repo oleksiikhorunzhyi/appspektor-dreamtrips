@@ -2,11 +2,13 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
@@ -24,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_item)
-public class BucketItemCell extends AbstractCell<BucketItem> implements DraggableItemViewHolder {
+public class BucketItemCell extends AbstractCell<BucketItem> implements DraggableItemViewHolder, SwipeLayout.SwipeListener {
 
     @InjectView(R.id.container)
     RelativeLayout container;
@@ -34,6 +36,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     ImageView buttonCancel;
     @InjectView(R.id.drag_handle)
     View drag_handle;
+    @InjectView(R.id.swipeLayout)
+    SwipeLayout swipeLayout;
 
     @Inject
     Context context;
@@ -52,8 +56,16 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName() + " id =" + getModelObject().getId());
 
+        //set show mode.
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+
+        //set drag edge.
+        swipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
+        swipeLayout.removeSwipeListener(this);
+        swipeLayout.addSwipeListener(this);
         update();
 
+/*
         Airy airy = new Airy(context) {
             @Override
             public void onGesture(View pView, int pGestureId) {
@@ -73,6 +85,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         };
 
         container.setOnTouchListener(airy);
+*/
 
         // set background resource (target view ID: container)
         final int dragState = getDragStateFlags();
@@ -105,15 +118,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     }
 
-    @OnClick(R.id.button_cancel)
-    void delete() {
-        if (getModelObject().isDone()) {
-            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
-        } else {
-
-        }
-    }
-
     @Override
     public void prepareForReuse() {
 
@@ -135,6 +139,45 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     public View getDraggableView() {
         return drag_handle;
+    }
+
+    private int lastOffset;
+
+    @Override
+    public void onStartOpen(SwipeLayout swipeLayout) {
+
+    }
+
+    @Override
+    public void onOpen(SwipeLayout swipeLayout) {
+
+    }
+
+    @Override
+    public void onStartClose(SwipeLayout swipeLayout) {
+        Log.d("TAG", "OnStartClose = ");
+
+    }
+
+    @Override
+    public void onClose(SwipeLayout swipeLayout) {
+        Log.d("TAG", "OnClose = ");
+    }
+
+    @Override
+    public void onUpdate(SwipeLayout swipeLayout, int leftOffset, int topOffset) {
+        lastOffset = leftOffset;
+    }
+
+    @Override
+    public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
+        if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
+            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
+        } else if (lastOffset > swipeLayout.getWidth() / 3) {
+            getModelObject().setDone(true);
+            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject()));
+        }
+        swipeLayout.close();
     }
 
 }

@@ -1,18 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+<com.daimajia.swipe.SwipeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/commonListItemStyle"
+    android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="@drawable/bg_swipe_item_neutral">
 
+    <LinearLayout
+        android:background="#66ddff00"
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="match_parent"
+        android:weightSum="1"
+        android:layout_height="match_parent">
+        <!--What you want to show-->
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bucket_item_selector"
-        android:clickable="true"
         tools:ignore="UselessParent">
 
         <View
@@ -49,4 +56,4 @@
 
     </RelativeLayout>
 
-</FrameLayout>
+</com.daimajia.swipe.SwipeLayout>

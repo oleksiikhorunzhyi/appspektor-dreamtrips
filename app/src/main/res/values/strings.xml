@@ -72,7 +72,7 @@
     <string name="bucket_show_favorites">Show favorites only</string>
     <string name="bucket_locations">Locations</string>
     <string name="bucket_activities">Activities</string>
-    <string name="bucket_restaurants">Dinning</string>
+    <string name="bucket_restaurants">Dining</string>
 
     <string name="photo_what">What</string>
     <string name="photo_what_hint">Give a title to the image</string>

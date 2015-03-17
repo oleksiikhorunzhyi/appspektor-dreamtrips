@@ -66,8 +66,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     private MyDraggableSwipeableItemAdapter<Object> mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
-    private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
-    private SwipingActionGuardManager mRecyclerViewTouchActionGuardManager;
+    //  private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -79,9 +78,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         this.recyclerView.setEmptyView(emptyView);
 
         // drag & drop manager
-        mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
-        mRecyclerViewDragDropManager.setDraggingItemShadowDrawable(
-                (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
+        //   mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
+        //   mRecyclerViewDragDropManager.setDraggingItemShadowDrawable(
+        //           (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
@@ -89,13 +88,10 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
         mAdapter.setMoveListener((from, to) -> getPresentationModel().itemMoved(from, to));
 
-        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
-
-        final GeneralItemAnimator animator = new SwipeDismissItemAnimator();
+        //mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
 
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
-        this.recyclerView.setItemAnimator(animator);
+        this.recyclerView.setAdapter(mAdapter);  // requires *wrapped* adapter
 
         // additional decorations
         //noinspection StatementWithEmptyBody
@@ -106,8 +102,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         }
         this.recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
 
-        //   mRecyclerViewSwipeManager.attachRecyclerView(this.recyclerView);
-        mRecyclerViewDragDropManager.attachRecyclerView(this.recyclerView);
+        //mRecyclerViewSwipeManager.attachRecyclerView(this.recyclerView);
+        //mRecyclerViewDragDropManager.attachRecyclerView(this.recyclerView);
 
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
     }
@@ -149,22 +145,18 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onPause() {
-        mRecyclerViewDragDropManager.cancelDrag();
+        //  mRecyclerViewDragDropManager.cancelDrag();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
+/*
         if (mRecyclerViewDragDropManager != null) {
             mRecyclerViewDragDropManager.release();
             mRecyclerViewDragDropManager = null;
         }
-
-        if (mRecyclerViewTouchActionGuardManager != null) {
-            mRecyclerViewTouchActionGuardManager.release();
-            mRecyclerViewTouchActionGuardManager = null;
-        }
-
+*/
         if (recyclerView != null) {
             recyclerView.setItemAnimator(null);
             recyclerView.setAdapter(null);
@@ -194,13 +186,13 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void startLoading() {
         progressBar.setVisibility(View.VISIBLE);
-       // recyclerView.post(()->swipeRefreshLayout.setRefreshing(true));
+        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
         progressBar.setVisibility(View.GONE);
-       // recyclerView.post(()->swipeRefreshLayout.setRefreshing(false));
+        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(false));
     }
 
     @Override

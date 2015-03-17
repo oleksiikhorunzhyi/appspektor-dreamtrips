@@ -117,11 +117,17 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void onEvent(BucketItemAddedEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            bucketItems.add(event.getBucketItem());
-            view.getAdapter().addItem(1, event.getBucketItem());
-            view.getAdapter().notifyDataSetChanged();
-
+        if (!bucketItems.contains(event.getBucketItem())
+                && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            if (event.getBucketItem().isDone()) {
+                bucketItems.add(bucketItems.size(), event.getBucketItem());
+                view.getAdapter().addItem(view.getAdapter().getCount(), event.getBucketItem());
+                view.getAdapter().notifyItemInserted(view.getAdapter().getCount());
+            } else {
+                bucketItems.add(0, event.getBucketItem());
+                view.getAdapter().addItem(1, event.getBucketItem());
+                view.getAdapter().notifyItemInserted(1);
+            }
         }
     }
 

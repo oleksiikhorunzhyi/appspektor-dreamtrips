@@ -87,27 +87,42 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/selected_gray"/>
+                android:background="@color/selected_gray" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="end">
+                android:gravity="end"
+                android:orientation="horizontal">
 
-                <com.gc.materialdesign.views.ButtonFlat
+                <TextView
                     android:id="@+id/buttonAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/bucket_button_default"
-                    android:text="Add" />
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/add_1"
+                    android:drawablePadding="5dp"
+                    android:padding="15dp"
+                    android:text="ADD"
+                    android:textColor="@color/selector_action_button_popular" />
 
-                <com.gc.materialdesign.views.ButtonFlat
+                <TextView
                     android:id="@+id/buttonDone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/bucket_button_default"
-                    android:text="Done" />
+                    android:layout_marginRight="25dp"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/done_1"
+                    android:drawablePadding="5dp"
+                    android:padding="15dp"
+                    android:text="DONE"
+                    android:textColor="@color/selector_action_button_popular" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

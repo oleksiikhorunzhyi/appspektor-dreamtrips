@@ -278,7 +278,9 @@ import retrofit.RestAdapter;
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
                 SimpleStreamPlayerActivity.class,
-                DreamTripsRequest.UploadTripPhoto.class
+                DreamTripsRequest.UploadTripPhoto.class,
+                StaticInfoFragment.OtaFragment.class,
+                StaticInfoFragment.TrainingVideosFragment.class
         },
         complete = false,
         library = true

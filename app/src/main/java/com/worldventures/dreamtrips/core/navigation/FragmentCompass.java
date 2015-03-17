@@ -154,6 +154,10 @@ public class FragmentCompass {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
+    public State getCurrentState() {
+        return State.restoreByClass(getCurrentFragment().getClass().getName());
+    }
+
     protected void clearBackStack() {
         try {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();

@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,7 +21,6 @@ import com.worldventures.dreamtrips.presentation.AdapterView;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
-import com.worldventures.dreamtrips.view.fragment.FiltersFragment;
 
 import net.hockeyapp.android.UpdateManager;
 
@@ -51,6 +49,13 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPresentationModel().create();
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        getPresentationModel().restoreInstanceState();
     }
 
     @Override
@@ -102,7 +107,7 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         closeLeftDrawer();
         makeActionBarTransparent(false);
         getPresentationModel().selectItem(state);
-        getSupportActionBar().setTitle(state.getTitle());
+        setTitle(state.getTitle());
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {
@@ -186,10 +191,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     @Override
     public void setTitle(int title) {
-        getSupportActionBar().setTitle(title);
-    }
-
-    public void setToolBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
 

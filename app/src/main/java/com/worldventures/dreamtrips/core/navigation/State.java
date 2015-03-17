@@ -43,6 +43,7 @@ public enum State {
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership, -1, R.drawable.ic_membership, 2),
     MAP(MapFragment.class, R.string.title_activity_main, -1, R.drawable.ic_dreamtrips, 0),
     DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, 0, R.drawable.ic_dreamtrips, 0),
+    OTA(StaticInfoFragment.OtaFragment.class, R.string.other_travel, 1, R.drawable.ic_other_travel, 1),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, 1, R.drawable.ic_trip_images, 1),
     MEMBERSHIP(MemberShipFragment.class, R.string.membership, 2, R.drawable.ic_membership, 2),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, 3, R.drawable.ic_bucket_lists, 3),

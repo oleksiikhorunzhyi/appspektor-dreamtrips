@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
@@ -14,20 +15,20 @@ public class WebViewFragmentPresentation<T extends BasePresentation.View> extend
     }
 
     public void track(State state) {
-    switch (state) {
-        case TERMS_OF_SERVICE:
-            AdobeTrackingHelper.service(getUserId());
-            break;
-        case FAQ:
-            AdobeTrackingHelper.faq(getUserId());
-            break;
-        case COOKIE_POLICY:
-            AdobeTrackingHelper.cookie(getUserId());
-            break;
-        case PRIVACY_POLICY:
-            AdobeTrackingHelper.privacy(getUserId());
-            break;
-    }
+        switch (state) {
+            case TERMS_OF_SERVICE:
+                AdobeTrackingHelper.service(getUserId());
+                break;
+            case FAQ:
+                AdobeTrackingHelper.faq(getUserId());
+                break;
+            case COOKIE_POLICY:
+                AdobeTrackingHelper.cookie(getUserId());
+                break;
+            case PRIVACY_POLICY:
+                AdobeTrackingHelper.privacy(getUserId());
+                break;
+        }
     }
 
     public String etEnrollUrl() {
@@ -40,6 +41,9 @@ public class WebViewFragmentPresentation<T extends BasePresentation.View> extend
     }
 
 
+    public S3GlobalConfig getConfig() {
+        return appSessionHolder.get().get().getGlobalConfig();
+    }
 
 
 }

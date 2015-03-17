@@ -59,14 +59,6 @@ android {
         }
     }
 
-    sourceSets {
-        unitTest {
-            res.srcDirs = ['src/main/res']
-            resources.srcDirs = ['src/main/res']
-        }
-    }
-
-
     productFlavors {
         /*dev {
             applicationId "com.worldventures.dreamtrips.dev"
@@ -135,8 +127,6 @@ ext {
     robobindingVersion = 'latest.integration'
 }
 
-apply plugin: 'android-unit-test'
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -150,8 +140,6 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.jakewharton:butterknife:6.0.0'
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.robolectric:robolectric:2.4'
     compile 'de.greenrobot:eventbus:2.4.0'
 
     compile 'com.path:android-priority-jobqueue:1.1.2'

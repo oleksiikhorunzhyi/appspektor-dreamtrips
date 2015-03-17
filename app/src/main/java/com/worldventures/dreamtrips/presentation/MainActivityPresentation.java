@@ -4,7 +4,6 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
 
-
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
@@ -40,6 +39,10 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
         int title = currentState.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
+    }
+
+    public void restoreInstanceState() {
+        view.setTitle(fragmentCompass.getCurrentState().getTitle());
     }
 
     public void selectItem(State state) {

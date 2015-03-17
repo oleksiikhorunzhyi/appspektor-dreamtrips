@@ -40,24 +40,23 @@ public enum State {
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     QUICK_INPUT(BucketListQuickInputFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_my_title),
-    ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership, -1, R.drawable.ic_membership, 2),
-    MAP(MapFragment.class, R.string.title_activity_main, -1, R.drawable.ic_dreamtrips, 0),
-    DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, 0, R.drawable.ic_dreamtrips, 0),
-    OTA(StaticInfoFragment.OtaFragment.class, R.string.other_travel, 1, R.drawable.ic_other_travel, 1),
-    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, 1, R.drawable.ic_trip_images, 1),
-    MEMBERSHIP(MemberShipFragment.class, R.string.membership, 2, R.drawable.ic_membership, 2),
-    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, 3, R.drawable.ic_bucket_lists, 3),
-    MY_PROFILE(ProfileFragment.class, R.string.my_profile, 4, R.drawable.ic_profile, 4),
-    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, 5, R.drawable.ic_rep_tools, 5),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, 6, R.drawable.ic_terms, 6),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, 6, R.drawable.ic_faq, 7),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, 6, R.drawable.ic_termsconditions, 8),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, 6, R.drawable.ic_cookie, 9);
+    MAP(MapFragment.class, R.string.title_activity_main),
+    ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
+    DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, R.drawable.ic_dreamtrips, 0),
+    OTA(StaticInfoFragment.OtaFragment.class, R.string.other_travel, R.drawable.ic_other_travel, 1),
+    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, R.drawable.ic_trip_images, 2),
+    MEMBERSHIP(MemberShipFragment.class, R.string.membership, R.drawable.ic_membership, 3),
+    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, R.drawable.ic_bucket_lists, 4),
+    MY_PROFILE(ProfileFragment.class, R.string.my_profile, R.drawable.ic_profile, 5),
+    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, R.drawable.ic_rep_tools, 6),
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, R.drawable.ic_terms, 7),
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 8),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, R.drawable.ic_termsconditions, 9),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, R.drawable.ic_cookie, 10);
 
     private static ArrayList<State> menuItemsArray;
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;
-    private int menuWeight;
     private int drawableId;
     private int position;
 
@@ -66,13 +65,12 @@ public enum State {
     }
 
     State(Class<? extends BaseFragment> fragmentClass, int title) {
-        this(fragmentClass, title, -1, -1, -1);
+        this(fragmentClass, title, -1, -1);
     }
 
-    State(Class<? extends BaseFragment> fragmentClass, int title, int weight, int imageID, int position) {
+    State(Class<? extends BaseFragment> fragmentClass, int title, int imageID, int position) {
         this.fragmentClass = fragmentClass;
         this.titleRes = title;
-        this.menuWeight = weight;
         this.drawableId = imageID;
         this.position = position;
     }
@@ -82,7 +80,7 @@ public enum State {
         List<State> states = Arrays.asList(State.values());
         Collections.sort(states, new MenuComparator());
         for (State v : states) {
-            if (v.menuWeight >= 0)
+            if (v.position >= 0)
                 menuItemsArray.add(v);
         }
     }
@@ -119,13 +117,9 @@ public enum State {
         return drawableId;
     }
 
-    public int getMenuWeight() {
-        return menuWeight;
-    }
-
     static class MenuComparator implements Comparator<State> {
         public int compare(State strA, State strB) {
-            return strA.getMenuWeight() - strB.getMenuWeight();
+            return strA.getPosition() - strB.getPosition();
         }
     }
 

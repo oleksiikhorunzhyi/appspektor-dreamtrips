@@ -16,16 +16,13 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_header_bucket)
 public class BucketHeaderCell extends AbstractCell<BucketHeader> {
 
-    @InjectView(R.id.textViewHeader)
-    TextView textViewHeader;
-
     public BucketHeaderCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        textViewHeader.setText(getModelObject().getHeaderResource());
+        //textViewHeader.setText(getModelObject().getHeaderResource());
     }
 
     @Override

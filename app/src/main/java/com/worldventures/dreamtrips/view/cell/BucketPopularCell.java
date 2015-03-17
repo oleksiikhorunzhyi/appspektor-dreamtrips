@@ -47,9 +47,6 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
     @Inject
     Context context;
 
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
-
     public BucketPopularCell(View view) {
         super(view);
     }

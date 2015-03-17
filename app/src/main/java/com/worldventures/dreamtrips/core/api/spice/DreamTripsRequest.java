@@ -215,11 +215,20 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
+            ArrayList<PopularBucketItem> list = new ArrayList<>();
+
             if (type.equals(BucketTabsFragment.Type.LOCATIONS)) {
-                return getService().getPopularLocations();
+                list.addAll(getService().getPopularLocations());
             } else {
-                return getService().getPopularActivities();
+                list.addAll(getService().getPopularActivities());
             }
+
+            if (list.size() > 0)
+                for (PopularBucketItem popularBucketItem : list) {
+                    popularBucketItem.setType(type.getName());
+                }
+
+            return list;
         }
     }
 

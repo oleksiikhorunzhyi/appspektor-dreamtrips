@@ -125,13 +125,9 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             if (event.getBucketItem().isDone()) {
                 bucketItems.add(0, event.getBucketItem());
                 fillWithItems();
-                //view.getAdapter().addItem(view.getAdapter().getCount(), event.getBucketItem());
-                //view.getAdapter().notifyItemInserted(view.getAdapter().getCount());
             } else {
                 bucketItems.add(0, event.getBucketItem());
                 fillWithItems();
-                //view.getAdapter().addItem(1, event.getBucketItem());
-                //view.getAdapter().notifyItemInserted(1);
             }
             eventBus.cancelEventDelivery(event);
         }
@@ -175,6 +171,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             dreamSpiceManager.execute(new DreamTripsRequest.MarkBucketItem(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
+
                 }
 
                 @Override

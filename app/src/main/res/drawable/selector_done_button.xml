@@ -5,7 +5,7 @@
     <item android:drawable="@drawable/done_2" android:state_focused="true" />
     <!-- pressed -->
     /> <!-- focused -->
-    <item android:drawable="@drawable/add_2" />
+    <item android:drawable="@drawable/done_1" />
     <!-- pressed -->
     /> <!-- default -->
 </selector>

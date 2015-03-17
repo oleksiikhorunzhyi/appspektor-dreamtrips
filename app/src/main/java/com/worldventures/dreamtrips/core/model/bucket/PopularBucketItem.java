@@ -15,6 +15,7 @@ public class PopularBucketItem extends BaseEntity {
     private String short_description;
     private String url;
 
+    private transient String type;
     private transient boolean loading = false;
 
     public PopularBucketItem() {
@@ -76,6 +77,14 @@ public class PopularBucketItem extends BaseEntity {
 
     public void setShort_description(String short_description) {
         this.short_description = short_description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean isLoading() {

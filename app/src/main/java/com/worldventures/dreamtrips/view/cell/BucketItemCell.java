@@ -72,7 +72,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     @Override
     protected void syncUIStateWithModel() {
         tvName.setText(getModelObject().getName() + " id =" + getModelObject().getId());
-        swipeLayout.close();
+
         update();
 
         // set background resource (target view ID: container)
@@ -138,24 +138,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
-        if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
-            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
-        } else if (lastOffset > swipeLayout.getWidth() / 3) {
-            getModelObject().setDone(!getModelObject().isDone());
-            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject()));
-        }
-        swipeLayout.close();
     }
 
     @Override
     public void onStartClose(SwipeLayout swipeLayout) {
-        Log.d("TAG", "OnStartClose = ");
-
     }
 
     @Override
     public void onClose(SwipeLayout swipeLayout) {
-        Log.d("TAG", "OnClose = ");
     }
 
     @Override
@@ -174,9 +164,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
             getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
         } else if (lastOffset > swipeLayout.getWidth() / 3) {
             getModelObject().setDone(!getModelObject().isDone());
-            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject()));
+            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
         }
-        swipeLayout.close(false);
+        //swipeLayout.close(false);
     }
-
 }

@@ -181,7 +181,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
             long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET && snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+            return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
         }
 
     }
@@ -224,7 +224,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
     }
 
     public static class GetYSBHPhotos extends DreamTripsRequest<ArrayList<Photo>> {
-
         int perPage;
         int page;
 
@@ -535,7 +534,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         private boolean needUpdate() throws ExecutionException, InterruptedException {
             long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA && db.isEmpty(SnappyRepository.TRIP_KEY);
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA || db.isEmpty(SnappyRepository.TRIP_KEY);
         }
 
     }
@@ -617,7 +616,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
         }
     }
-
 
 
 }

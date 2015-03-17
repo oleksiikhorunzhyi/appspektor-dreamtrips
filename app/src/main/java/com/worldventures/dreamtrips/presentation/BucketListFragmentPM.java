@@ -67,6 +67,9 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         super.init();
         AdobeTrackingHelper.bucketList(getUserId());
         eventBus.register(this);
+    }
+
+    public void onCreate() {
         loadBucketItems(false);
     }
 
@@ -120,14 +123,17 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         if (!bucketItems.contains(event.getBucketItem())
                 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             if (event.getBucketItem().isDone()) {
-                bucketItems.add(bucketItems.size(), event.getBucketItem());
-                view.getAdapter().addItem(view.getAdapter().getCount(), event.getBucketItem());
-                view.getAdapter().notifyItemInserted(view.getAdapter().getCount());
+                bucketItems.add(0, event.getBucketItem());
+                fillWithItems();
+                //view.getAdapter().addItem(view.getAdapter().getCount(), event.getBucketItem());
+                //view.getAdapter().notifyItemInserted(view.getAdapter().getCount());
             } else {
                 bucketItems.add(0, event.getBucketItem());
-                view.getAdapter().addItem(1, event.getBucketItem());
-                view.getAdapter().notifyItemInserted(1);
+                fillWithItems();
+                //view.getAdapter().addItem(1, event.getBucketItem());
+                //view.getAdapter().notifyItemInserted(1);
             }
+            eventBus.cancelEventDelivery(event);
         }
     }
 
@@ -144,6 +150,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 public void onRequestSuccess(JsonObject jsonObject) {
                 }
             });
+            eventBus.cancelEventDelivery(event);
+            fillWithItems();
         }
     }
 
@@ -175,6 +183,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 }
             });
 
+            eventBus.cancelEventDelivery(event);
             fillWithItems();
         }
     }

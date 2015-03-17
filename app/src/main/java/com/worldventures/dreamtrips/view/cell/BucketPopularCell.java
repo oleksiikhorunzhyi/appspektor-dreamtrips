@@ -83,15 +83,15 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
     }
 
     private void hideButtons() {
-        buttonFlatAdd.setVisibility(View.GONE);
-        buttonFlatDone.setVisibility(View.GONE);
+        buttonFlatAdd.setVisibility(View.INVISIBLE);
+        buttonFlatDone.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     private void showButtons() {
         buttonFlatAdd.setVisibility(View.VISIBLE);
         buttonFlatDone.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override

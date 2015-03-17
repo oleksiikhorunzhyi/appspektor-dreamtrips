@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.presentation.BucketListPopularPM;
+import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
@@ -24,7 +26,6 @@ import butterknife.InjectView;
  * Created by 1 on 03.03.15.
  */
 @Layout(R.layout.fragment_bucket_popular)
-@MenuResource(R.menu.menu_bucket_quick)
 public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM> implements BucketListPopularPM.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.recyclerViewBuckets)
@@ -41,7 +42,13 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+
+        RecyclerView.LayoutManager layoutManager;
+        if (isTabletLandscape()) {
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        } else {
+            layoutManager = new LinearLayoutManager(getActivity());
+        }
 
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
@@ -71,6 +78,10 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     @Override
     public void onRefresh() {
         getPresentationModel().reload();
+    }
+
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     @Override

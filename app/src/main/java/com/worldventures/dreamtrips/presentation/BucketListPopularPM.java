@@ -45,6 +45,8 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
 
     private List<BucketItem> realData = new ArrayList<>();
 
+    private int lastId = 0;
+
     RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
@@ -95,24 +97,27 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
     }
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
-        BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
-                popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
-        dreamSpiceManager.execute(new DreamTripsRequest.AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                popularBucketItem.setLoading(false);
-                view.getAdapter().notifyDataSetChanged();
-            }
+        if (lastId != popularBucketItem.getId()) {
+            lastId = popularBucketItem.getId();
+            BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
+                    popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
+            dreamSpiceManager.execute(new DreamTripsRequest.AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    popularBucketItem.setLoading(false);
+                    view.getAdapter().notifyDataSetChanged();
+                }
 
-            @Override
-            public void onRequestSuccess(BucketItem bucketItem) {
-                view.getAdapter().remove(popularBucketItem);
-                view.getAdapter().notifyItemRemoved(position);
-                eventBus.post(new BucketItemAddedEvent(bucketItem));
-                realData.add(0, bucketItem);
-                db.saveBucketList(realData, type.name());
-            }
-        });
+                @Override
+                public void onRequestSuccess(BucketItem bucketItem) {
+                    view.getAdapter().remove(popularBucketItem);
+                    view.getAdapter().notifyItemRemoved(position);
+                    eventBus.post(new BucketItemAddedEvent(bucketItem));
+                    realData.add(0, bucketItem);
+                    db.saveBucketList(realData, type.name());
+                }
+            });
+        }
     }
 
     public void reload() {

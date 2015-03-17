@@ -33,7 +33,7 @@ public class BucketTabsFragmentPM extends BasePresentation<BucketTabsFragmentPM.
     }
 
     public void addPopular(int position) {
-        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], State.POPULAR_BUCKET);
+        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], State.POPULAR_TAB_BUCKER);
     }
 
     public Bundle getBundleForPosition(int position) {

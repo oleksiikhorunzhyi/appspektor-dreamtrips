@@ -39,6 +39,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
     LoaderRecycleAdapter<Object> arrayListAdapter;
 
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);

@@ -134,17 +134,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
-        if (!requestWasSent)
-            if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
-                requestWasSent = true;
-                swipeLayout.post(() -> getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition())));
-            } else if (lastOffset > swipeLayout.getWidth() / 3) {
-                requestWasSent = true;
-                getModelObject().setDone(!getModelObject().isDone());
-                update();
-                swipeLayout.post(() -> getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition())));
-            }
-
+        onCancel();
         swipeLayout.close();
     }
 
@@ -158,6 +148,15 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onUpdate(SwipeLayout swipeLayout, int leftOffset, int topOffset) {
+        onUpdate(leftOffset);
+    }
+
+    @Override
+    public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
+        onCancel();
+    }
+
+    private void onUpdate(int leftOffset) {
         lastOffset = leftOffset;
         if (leftOffset > swipeLayout.getWidth() * 2 / 3) {
             imageViewStatus.setImageResource(R.drawable.close_red);
@@ -166,18 +165,18 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         }
     }
 
-    @Override
-    public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
+    private void onCancel() {
         if (!requestWasSent)
             if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
                 requestWasSent = true;
+                Log.d("TAG_BucketListPM", "Sending delete event");
                 swipeLayout.post(() -> getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition())));
             } else if (lastOffset > swipeLayout.getWidth() / 3) {
+                Log.d("TAG_BucketListPM", "Sending complete event");
                 requestWasSent = true;
                 getModelObject().setDone(!getModelObject().isDone());
                 update();
                 swipeLayout.post(() -> getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition())));
             }
-        //swipeLayout.close(false);
     }
 }

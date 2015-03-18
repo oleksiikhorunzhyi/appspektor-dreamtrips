@@ -12,10 +12,5 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_refresg"
-        android:title="@string/action_settings"
-        android:icon="@drawable/ic_refresh_black"
-        app:showAsAction="ifRoom" />
 
 </menu>

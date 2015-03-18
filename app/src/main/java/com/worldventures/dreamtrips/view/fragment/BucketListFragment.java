@@ -16,6 +16,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cocosw.undobar.UndoBarController;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -97,6 +98,18 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private UndoBarController.UndoBar undoBarController;
+
+    @Override
+    public void showUndoBar(UndoBarController.AdvancedUndoListener undoListener) {
+        if (undoBarController != null) {
+            undoBarController.clear();
+        }
+        undoBarController = new UndoBarController.UndoBar(getActivity()).message(R.string.delete_photo_text)
+                .duration(4000).listener(undoListener);
+        undoBarController.show(true);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -119,11 +132,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void onResume() {
         super.onResume();
-        if (this.mAdapter.getItemCount() == 0) {
-            this.recyclerView.post(() -> {
-                getPresentationModel().loadBucketItems(false);
-            });
-        }
+        this.recyclerView.post(() -> {
+            getPresentationModel().loadBucketItems(false);
+        });
     }
 
     @Override

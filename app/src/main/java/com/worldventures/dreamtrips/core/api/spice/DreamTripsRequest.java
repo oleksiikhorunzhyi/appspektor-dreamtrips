@@ -174,6 +174,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
                 resultList.addAll(Collections2.filter(list,
                         (bucketItem) -> bucketItem.getType().equalsIgnoreCase(type.getName())));
+                prefs.put(Prefs.LAST_SYNC_BUCKET, Calendar.getInstance().getTimeInMillis());
             } else {
                 resultList.addAll(snappyRepository.readBucketList(type.name()));
             }

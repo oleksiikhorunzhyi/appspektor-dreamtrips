@@ -6,22 +6,25 @@
     android:layout_height="48dp"
     android:background="@drawable/bg_swipe_item_neutral">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="end"
-        android:orientation="vertical">
+        android:weightSum="1"
+        android:orientation="horizontal">
         <!--What you want to show-->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
         <ImageView
             android:id="@+id/imageViewStatus"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_weight="1"
             android:padding="10dp"
             android:src="@drawable/done_green" />
-    </FrameLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/container"

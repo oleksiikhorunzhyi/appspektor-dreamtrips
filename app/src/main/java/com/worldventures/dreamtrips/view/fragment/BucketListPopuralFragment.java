@@ -86,9 +86,9 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
         getPresentationModel().destroy();
+        super.onDestroy();
     }
 
     @Override

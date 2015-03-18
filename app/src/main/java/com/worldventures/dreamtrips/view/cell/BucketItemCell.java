@@ -56,6 +56,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private float mSwipeAmount;
 
     private boolean requestWasSent = false;
+    private boolean handRelease = false;
 
     public BucketItemCell(View view) {
         super(view);
@@ -133,11 +134,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
         requestWasSent = false;
+        handRelease = false;
     }
 
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
-        onCancel();
         swipeLayout.close();
     }
 
@@ -147,6 +148,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onClose(SwipeLayout swipeLayout) {
+        onCancel();
     }
 
     @Override
@@ -156,11 +158,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
-        onCancel();
+        handRelease = true;
+        swipeLayout.close();
     }
 
     private void onUpdate(int leftOffset) {
-        lastOffset = leftOffset;
+        if (!handRelease)
+            lastOffset = leftOffset;
+
         if (leftOffset > swipeLayout.getWidth() * 2 / 3f) {
             imageViewStatus.setImageResource(R.drawable.delete);
             linearLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_red));

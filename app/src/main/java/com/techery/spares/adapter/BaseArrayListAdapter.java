@@ -129,7 +129,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
     public void clear() {
         this.items.clear();
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -138,6 +138,11 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
             this.items.addAll(baseItemClasses);
             this.notifyDataSetChanged();
         }
+    }
+
+    public void setItems(List<BaseItemClass> baseItemClasses) {
+        this.items = baseItemClasses;
+        this.notifyDataSetChanged();
     }
 
     public List<BaseItemClass> getItems() {

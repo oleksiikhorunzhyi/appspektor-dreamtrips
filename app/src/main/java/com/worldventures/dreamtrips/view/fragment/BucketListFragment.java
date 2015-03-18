@@ -64,7 +64,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Global
     EventBus eventBus;
 
-    private MyDraggableSwipeableItemAdapter<Object> mAdapter;
+    private BaseArrayListAdapter<Object> mAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -78,8 +78,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
-
-        mAdapter.setMoveListener((from, to) -> getPresentationModel().itemMoved(from, to));
 
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setAdapter(mAdapter);  // requires *wrapped* adapter

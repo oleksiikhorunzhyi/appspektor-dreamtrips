@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
@@ -60,6 +63,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     private boolean showToDO = true;
     private boolean showCompleted = true;
 
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
     @Override
@@ -67,10 +72,6 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         super.init();
         AdobeTrackingHelper.bucketList(getUserId());
         eventBus.register(this);
-    }
-
-    public void onCreate() {
-        loadBucketItems(false);
     }
 
     public void loadBucketItems(boolean fromNetwork) {
@@ -83,15 +84,17 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 }
 
                 @Override
-                public void onRequestSuccess(ArrayList<BucketItem> bucketItems) {
-                    BucketListFragmentPM.this.bucketItems = bucketItems;
+                public void onRequestSuccess(ArrayList<BucketItem> result) {
+                    bucketItems.clear();
+                    bucketItems.addAll(result);
                     fillWithItems();
                     view.finishLoading();
                 }
             });
         } else {
             try {
-                this.bucketItems = db.readBucketList(type.name());
+                this.bucketItems.clear();
+                this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -107,16 +110,15 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             Collection<BucketItem> toDo = Collections2.filter(bucketItems, (bucketItem) -> !bucketItem.isDone());
             Collection<BucketItem> done = Collections2.filter(bucketItems, (bucketItem) -> bucketItem.isDone());
             if (showToDO && toDo.size() > 0) {
-                result.add(new BucketHeader(bucketItems.size() + 1, R.string.to_do));
+                result.add(new BucketHeader(0, R.string.to_do));
                 result.addAll(toDo);
             }
             if (showCompleted && done.size() > 0) {
-                result.add(new BucketHeader(bucketItems.size() + 2, R.string.completed));
+                result.add(new BucketHeader(0, R.string.completed));
                 result.addAll(done);
             }
         }
-        view.getAdapter().clear();
-        view.getAdapter().addItems(result);
+        view.getAdapter().setItems(result);
     }
 
     public void onEvent(BucketItemAddedEvent event) {
@@ -135,19 +137,25 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
 
     public void onEvent(DeleteBucketItemEvent event) {
         if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
             bucketItems.remove(event.getBucketItem());
             db.saveBucketList(bucketItems, type.name());
+
+            view.getAdapter().remove(event.getBucketItem());
+            view.getAdapter().notifyItemRemoved(event.getPosition());
+
             dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
+                    view.alert(spiceException.getMessage());
+                    Log.d("TAG_BucketListPM", spiceException.getMessage());
                 }
 
                 @Override
                 public void onRequestSuccess(JsonObject jsonObject) {
+                    Log.d("TAG_BucketListPM", "Item deleted");
                 }
             });
-            eventBus.cancelEventDelivery(event);
-            fillWithItems();
         }
     }
 
@@ -164,24 +172,34 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
 
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
+            BucketItem bucketItem = event.getBucketItem();
+            bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(bucketItem.isDone());
             db.saveBucketList(bucketItems, type.name());
 
+            if (event.getBucketItem().isDone()) {
+                view.getAdapter().moveItem(event.getPosition(), view.getAdapter().getCount() - 1);
+                view.getAdapter().notifyItemMoved(event.getPosition(), view.getAdapter().getCount() - 1);
+            } else {
+                view.getAdapter().moveItem(event.getPosition(), 0);
+                view.getAdapter().notifyItemMoved(event.getPosition(), 0);
+            }
+
             BucketPostItem bucketPostItem = new BucketPostItem();
-            bucketPostItem.setStatus(event.getBucketItem().getStatus());
+            bucketPostItem.setStatus(bucketItem.getStatus());
+
             dreamSpiceManager.execute(new DreamTripsRequest.MarkBucketItem(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-
+                    view.alert(spiceException.getMessage());
+                    Log.d("TAG_BucketListPM", spiceException.getMessage());
                 }
 
                 @Override
                 public void onRequestSuccess(BucketItem jsonObject) {
-
+                    Log.d("TAG_BucketListPM", "Item marked as done");
                 }
             });
-
-            eventBus.cancelEventDelivery(event);
-            fillWithItems();
         }
     }
 

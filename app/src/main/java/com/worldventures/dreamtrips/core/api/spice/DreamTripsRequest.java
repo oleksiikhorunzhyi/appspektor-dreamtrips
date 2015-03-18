@@ -118,6 +118,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public BucketItem loadDataFromNetwork() {
+            Log.d("TAG_BucketListPM", "Sending mark as done item event");
             return getService().markItem(id, bucketPostItem);
         }
     }
@@ -132,6 +133,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Override
         public JsonObject loadDataFromNetwork() {
+            Log.d("TAG_BucketListPM", "Sending delete item event");
             return getService().deleteItem(id);
         }
     }

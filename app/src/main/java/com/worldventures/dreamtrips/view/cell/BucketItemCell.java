@@ -52,21 +52,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private int mAfterSwipeReaction = RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
     private float mSwipeAmount;
 
+    private boolean requestWasSent = false;
+
     public BucketItemCell(View view) {
         super(view);
-    }
-
-    @Override
-    protected void initialUISetup() {
-        super.initialUISetup();
-        //set show mode.
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-
-        //set drag edge.
-        swipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
-        swipeLayout.removeSwipeListener(this);
-        swipeLayout.addSwipeListener(this);
-
     }
 
     @Override
@@ -108,7 +97,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void prepareForReuse() {
+        //set show mode.
+        swipeLayout.close(false);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
+        //set drag edge.
+        swipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
+        swipeLayout.removeSwipeListener(this);
+        swipeLayout.addSwipeListener(this);
     }
 
     @Override
@@ -133,11 +129,23 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
-
+        requestWasSent = false;
     }
 
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
+        if (!requestWasSent)
+            if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
+                requestWasSent = true;
+                swipeLayout.post(() -> getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition())));
+            } else if (lastOffset > swipeLayout.getWidth() / 3) {
+                requestWasSent = true;
+                getModelObject().setDone(!getModelObject().isDone());
+                update();
+                swipeLayout.post(() -> getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition())));
+            }
+
+        swipeLayout.close();
     }
 
     @Override
@@ -160,12 +168,16 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
-        if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
-            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
-        } else if (lastOffset > swipeLayout.getWidth() / 3) {
-            getModelObject().setDone(!getModelObject().isDone());
-            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
-        }
+        if (!requestWasSent)
+            if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
+                requestWasSent = true;
+                swipeLayout.post(() -> getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition())));
+            } else if (lastOffset > swipeLayout.getWidth() / 3) {
+                requestWasSent = true;
+                getModelObject().setDone(!getModelObject().isDone());
+                update();
+                swipeLayout.post(() -> getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition())));
+            }
         //swipeLayout.close(false);
     }
 }

@@ -6,28 +6,27 @@
     android:layout_height="48dp"
     android:background="@drawable/bg_swipe_item_neutral">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="end"
-        android:orientation="vertical"
-        android:weightSum="1">
+        android:orientation="vertical">
         <!--What you want to show-->
         <ImageView
             android:id="@+id/imageViewStatus"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="end"
             android:layout_weight="1"
             android:padding="10dp"
             android:src="@drawable/done_green" />
-    </LinearLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:background="@drawable/bucket_item_selector"
         tools:ignore="UselessParent">
 

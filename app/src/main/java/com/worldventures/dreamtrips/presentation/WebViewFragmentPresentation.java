@@ -2,9 +2,11 @@ package com.worldventures.dreamtrips.presentation;
 
 
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 
 
@@ -45,5 +47,9 @@ public class WebViewFragmentPresentation<T extends BasePresentation.View> extend
         return appSessionHolder.get().get().getGlobalConfig();
     }
 
+
+    public UserSession getCurrentUser() {
+        return appSessionHolder.get().get();
+    }
 
 }

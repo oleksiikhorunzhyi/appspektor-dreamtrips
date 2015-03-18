@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 
 import butterknife.InjectView;
@@ -141,12 +142,21 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
             S3GlobalConfig config = ((WebViewFragmentPresentation) getPresentationModel()).getConfig();
             URLS urls = config.getUrls();
             URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-            return configs.getoTAPageBaseURL();
+            String s = configs.getoTAPageBaseURL();
+            s += "?user=%s&token=%s&appMode=true#/";
+            UserSession userSession = ((WebViewFragmentPresentation) getPresentationModel()).getCurrentUser();
+            String url = String.format(s, userSession.getUsername(), userSession.getLegacyApiToken());
+            return url;
         }
 
         @Override
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
+            webView.getSettings().setAppCacheEnabled(true);
+            webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
             webView.setWebViewClient(new WebViewClient() {
 
                 @Override

@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Image;
 import com.worldventures.dreamtrips.core.model.config.Flag;
 import com.worldventures.dreamtrips.presentation.fullscreen.BaseFSViewPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.FullScreenPhotoActivity;
@@ -185,7 +184,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     public void showFlagConfirmDialog(String reason, String desc) {
-        String content = getString(R.string.flag_photo_first) + reason.toLowerCase() + R.string.flag_photo_second;
+        String content = getString(R.string.flag_photo_first) + " " + reason.toLowerCase() + " " + getString(R.string.flag_photo_second);
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.flag_photo_title)
                 .content(content)
@@ -266,8 +265,4 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         super.informUser(stringId);
     }
 
-    @Override
-    protected boolean needSpiceManager() {
-        return false;
-    }
 }

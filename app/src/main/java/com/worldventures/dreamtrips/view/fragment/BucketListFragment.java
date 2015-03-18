@@ -94,7 +94,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().setProgressBarVisibility(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -145,6 +144,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onDestroyView() {
+        getPresentationModel().destroy();
         super.onDestroyView();
     }
 

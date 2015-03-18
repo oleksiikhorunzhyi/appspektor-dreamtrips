@@ -140,7 +140,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             eventBus.cancelEventDelivery(event);
 
             Log.d("TAG_BucketListPM", "Receivent delete event");
@@ -182,19 +182,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         }
     }
 
-    public void itemMoved(int fromPosition, int toPosition) {
-        if (fromPosition == toPosition) {
-            return;
-        }
-
-        final BucketItem item = bucketItems.remove(fromPosition);
-        bucketItems.add(toPosition, item);
-
-        db.saveBucketList(bucketItems, type.name());
-    }
-
     public void onEvent(MarkBucketItemDoneEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
@@ -238,6 +227,23 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 break;
         }
         fillWithItems();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        eventBus.unregister(this);
+    }
+
+    public void itemMoved(int fromPosition, int toPosition) {
+        if (fromPosition == toPosition) {
+            return;
+        }
+
+        final BucketItem item = bucketItems.remove(fromPosition);
+        bucketItems.add(toPosition, item);
+
+        db.saveBucketList(bucketItems, type.name());
     }
 
     public interface View extends BasePresentation.View {

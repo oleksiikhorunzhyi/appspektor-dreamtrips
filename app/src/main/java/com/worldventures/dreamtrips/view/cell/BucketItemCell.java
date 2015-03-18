@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @InjectView(R.id.container)
     RelativeLayout container;
+    @InjectView(R.id.bottom_wrapper)
+    LinearLayout linearLayout;
     @InjectView(R.id.textViewName)
     TextView tvName;
     @InjectView(R.id.button_cancel)
@@ -158,20 +161,22 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     private void onUpdate(int leftOffset) {
         lastOffset = leftOffset;
-        if (leftOffset > swipeLayout.getWidth() * 2 / 3) {
-            imageViewStatus.setImageResource(R.drawable.close_red);
+        if (leftOffset > swipeLayout.getWidth() * 2 / 3f) {
+            imageViewStatus.setImageResource(R.drawable.delete);
+            linearLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_red));
         } else {
-            imageViewStatus.setImageResource(R.drawable.done_green);
+            imageViewStatus.setImageResource(R.drawable.done);
+            linearLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
         }
     }
 
     private void onCancel() {
         if (!requestWasSent)
-            if (lastOffset > swipeLayout.getWidth() * 2 / 3) {
+            if (lastOffset > swipeLayout.getWidth() * 2 / 3f) {
                 requestWasSent = true;
                 Log.d("TAG_BucketListPM", "Sending delete event");
                 swipeLayout.post(() -> getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition())));
-            } else if (lastOffset > swipeLayout.getWidth() / 3) {
+            } else if (lastOffset > swipeLayout.getWidth() / 3f) {
                 Log.d("TAG_BucketListPM", "Sending complete event");
                 requestWasSent = true;
                 getModelObject().setDone(!getModelObject().isDone());

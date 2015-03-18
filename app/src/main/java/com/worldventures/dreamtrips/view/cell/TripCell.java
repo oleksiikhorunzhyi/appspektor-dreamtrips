@@ -65,9 +65,10 @@ public class TripCell extends AbstractCell<Trip> {
             textViewFeatured.setVisibility(View.GONE);
         }
 
-        if (getModelObject().getRewardsLimit() > 0)
+        if (getModelObject().getRewardsLimit() > 0) {
             textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
-        else
+            pointsCountLayout.setVisibility(View.VISIBLE);
+        } else
             pointsCountLayout.setVisibility(View.GONE);
 
         imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);

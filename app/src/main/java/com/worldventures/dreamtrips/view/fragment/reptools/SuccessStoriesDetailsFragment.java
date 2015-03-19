@@ -17,7 +17,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.presentation.SuccessStoryDetailsFragmentPM;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 
 import butterknife.InjectView;
 
@@ -82,7 +82,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     protected String getURL() {
-        return story.getUrl();
+        return story.getUrl()+"?appMode=true";
     }
 
     @Override

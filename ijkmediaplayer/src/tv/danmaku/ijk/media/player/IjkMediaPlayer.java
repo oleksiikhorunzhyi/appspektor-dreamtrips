@@ -458,7 +458,7 @@ public final class IjkMediaPlayer extends SimpleMediaPlayer {
         try {
             mediaInfo.mMeta = IjkMediaMeta.parse(_getMediaMeta());
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("","",e);
         }
         return mediaInfo;
     }

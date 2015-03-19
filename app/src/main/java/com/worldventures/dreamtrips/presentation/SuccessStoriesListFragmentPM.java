@@ -127,6 +127,12 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
         reload();
     }
 
+    @Override
+    public void destroyView() {
+        eventBus.unregister(this);
+        super.destroyView();
+    }
+
     public boolean isFilterFavorites() {
         return onlyFavorites;
     }

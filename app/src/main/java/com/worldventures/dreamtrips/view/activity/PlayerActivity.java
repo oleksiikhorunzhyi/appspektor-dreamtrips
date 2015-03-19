@@ -42,7 +42,6 @@ public class PlayerActivity extends BaseActivity {
 
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
-            e.printStackTrace();
         }
 
         videoView.requestFocus();

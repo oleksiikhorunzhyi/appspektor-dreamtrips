@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -106,8 +107,10 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     public void onNavigationDrawerItemSelected(State state) {
         closeLeftDrawer();
         makeActionBarTransparent(false);
-        getPresentationModel().selectItem(state);
-        setTitle(state.getTitle());
+        new Handler().postDelayed(() -> {
+            getPresentationModel().selectItem(state);
+            setTitle(state.getTitle());
+        }, 150);
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {

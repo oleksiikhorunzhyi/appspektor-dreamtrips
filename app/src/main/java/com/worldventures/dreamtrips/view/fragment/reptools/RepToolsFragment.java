@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.presentation.RepToolsFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 
 import butterknife.InjectView;
 

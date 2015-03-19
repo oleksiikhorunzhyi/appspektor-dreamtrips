@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.presentation;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 
 /**
  * Created by 1 on 26.02.15.

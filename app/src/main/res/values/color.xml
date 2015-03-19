@@ -56,4 +56,7 @@
     <color name="snackbar_action_color_done">#ffccccff</color>
     <color name="selected_success_story">#ffe6e6e6</color>
 
+    <color name="bucket_green">#3fec5b</color>
+    <color name="bucket_red">#fe5353</color>
+
 </resources>

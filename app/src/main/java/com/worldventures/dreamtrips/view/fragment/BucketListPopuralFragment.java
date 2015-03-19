@@ -39,6 +39,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
     LoaderRecycleAdapter<Object> arrayListAdapter;
 
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -82,6 +83,12 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
     public boolean isTabletLandscape() {
         return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
+    }
+
+    @Override
+    public void onDestroyView() {
+        getPresentationModel().destroy();
+        super.onDestroy();
     }
 
     @Override

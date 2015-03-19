@@ -24,18 +24,16 @@ import android.view.View;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.util.ViewUtils;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         extends BaseArrayListAdapter<BaseItemClass>
-        implements DraggableItemAdapter<BucketItemCell>{
+        implements DraggableItemAdapter<BucketItemCellOld>{
 
     private DeleteListener deleteListener;
     private MoveListener moveListener;
@@ -56,7 +54,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
     }
 
     @Override
-    public boolean onCheckCanStartDrag(BucketItemCell bucketItemCell, int x, int y) {
+    public boolean onCheckCanStartDrag(BucketItemCellOld bucketItemCell, int x, int y) {
         // x, y --- relative from the itemView's top-left
         final View containerView = bucketItemCell.getContainerView();
         final View dragHandleView = bucketItemCell.getDraggableView();
@@ -68,7 +66,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
     }
 
     @Override
-    public ItemDraggableRange onGetItemDraggableRange(BucketItemCell bucketItemCell) {
+    public ItemDraggableRange onGetItemDraggableRange(BucketItemCellOld bucketItemCell) {
         int startPosition = getStartDragPosition(bucketItemCell.getPosition());
         int endPosition = getEndDragPosition(bucketItemCell.getPosition());
 

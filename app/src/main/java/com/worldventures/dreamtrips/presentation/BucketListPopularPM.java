@@ -88,14 +88,14 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
         }
     }
 
-    public void onEvent(AddPressedEvent event) {
+    public void onEventMainThread(AddPressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), false, event.getPosition());
             eventBus.cancelEventDelivery(event);
         }
     }
 
-    public void onEvent(DonePressedEvent event) {
+    public void onEventMainThread(DonePressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), true, event.getPosition());
             eventBus.cancelEventDelivery(event);
@@ -121,6 +121,12 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
                 db.saveBucketList(realData, type.name());
             }
         });
+    }
+
+    @Override
+    public void destroy() {
+        eventBus.unregister(this);
+        super.destroy();
     }
 
     public void reload() {

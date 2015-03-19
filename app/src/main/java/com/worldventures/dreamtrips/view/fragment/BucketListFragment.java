@@ -11,17 +11,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
+import com.cocosw.undobar.UndoBarController;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -29,13 +25,12 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.view.util.SwipingActionGuardManager;
 
 import javax.inject.Inject;
 
@@ -64,7 +59,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Global
     EventBus eventBus;
 
-    private MyDraggableSwipeableItemAdapter<Object> mAdapter;
+    private BaseArrayListAdapter<Object> mAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -78,8 +73,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
-
-        mAdapter.setMoveListener((from, to) -> getPresentationModel().itemMoved(from, to));
 
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setAdapter(mAdapter);  // requires *wrapped* adapter
@@ -95,8 +88,19 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().setProgressBarVisibility(true);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private UndoBarController.UndoBar undoBarController;
+
+    @Override
+    public void showUndoBar(UndoBarController.AdvancedUndoListener undoListener) {
+        if (undoBarController != null) {
+            undoBarController.clear();
+        }
+        undoBarController = new UndoBarController.UndoBar(getActivity()).message(R.string.delete_photo_text)
+                .duration(4000).listener(undoListener);
+        undoBarController.show(true);
     }
 
     @Override
@@ -121,11 +125,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public void onResume() {
         super.onResume();
-        if (this.mAdapter.getItemCount() == 0) {
-            this.recyclerView.post(() -> {
-                getPresentationModel().loadBucketItems(false);
-            });
-        }
+        this.recyclerView.post(() -> {
+            getPresentationModel().loadBucketItems(false);
+        });
     }
 
     @Override
@@ -136,6 +138,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onDestroyView() {
+        getPresentationModel().destroy();
         super.onDestroyView();
     }
 

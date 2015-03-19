@@ -1,7 +1,14 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.cocosw.undobar.UndoBarController;
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -60,6 +67,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     private boolean showToDO = true;
     private boolean showCompleted = true;
 
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
     @Override
@@ -67,10 +76,6 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         super.init();
         AdobeTrackingHelper.bucketList(getUserId());
         eventBus.register(this);
-    }
-
-    public void onCreate() {
-        loadBucketItems(false);
     }
 
     public void loadBucketItems(boolean fromNetwork) {
@@ -83,15 +88,17 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 }
 
                 @Override
-                public void onRequestSuccess(ArrayList<BucketItem> bucketItems) {
-                    BucketListFragmentPM.this.bucketItems = bucketItems;
+                public void onRequestSuccess(ArrayList<BucketItem> result) {
+                    bucketItems.clear();
+                    bucketItems.addAll(result);
                     fillWithItems();
                     view.finishLoading();
                 }
             });
         } else {
             try {
-                this.bucketItems = db.readBucketList(type.name());
+                this.bucketItems.clear();
+                this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -107,16 +114,15 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             Collection<BucketItem> toDo = Collections2.filter(bucketItems, (bucketItem) -> !bucketItem.isDone());
             Collection<BucketItem> done = Collections2.filter(bucketItems, (bucketItem) -> bucketItem.isDone());
             if (showToDO && toDo.size() > 0) {
-                result.add(new BucketHeader(bucketItems.size() + 1, R.string.to_do));
+                result.add(new BucketHeader(0, R.string.to_do));
                 result.addAll(toDo);
             }
             if (showCompleted && done.size() > 0) {
-                result.add(new BucketHeader(bucketItems.size() + 2, R.string.completed));
+                result.add(new BucketHeader(0, R.string.completed));
                 result.addAll(done);
             }
         }
-        view.getAdapter().clear();
-        view.getAdapter().addItems(result);
+        view.getAdapter().setItems(result);
     }
 
     public void onEvent(BucketItemAddedEvent event) {
@@ -134,53 +140,73 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
+
+            Log.d("TAG_BucketListPM", "Receivent delete event");
+
+            int index = bucketItems.indexOf(event.getBucketItem());
             bucketItems.remove(event.getBucketItem());
-            db.saveBucketList(bucketItems, type.name());
-            dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
+            fillWithItems();
+
+            view.showUndoBar(new UndoBarController.AdvancedUndoListener() {
                 @Override
-                public void onRequestFailure(SpiceException spiceException) {
+                public void onHide(@Nullable Parcelable parcelable) {
+                    dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
+                        @Override
+                        public void onRequestFailure(SpiceException spiceException) {
+                            view.alert(spiceException.getMessage());
+                            Log.d("TAG_BucketListPM", spiceException.getMessage());
+                        }
+
+                        @Override
+                        public void onRequestSuccess(JsonObject jsonObject) {
+                            Log.d("TAG_BucketListPM", "Item deleted");
+                        }
+                    });
+                    db.saveBucketList(bucketItems, type.name());
                 }
 
                 @Override
-                public void onRequestSuccess(JsonObject jsonObject) {
+                public void onClear(@NonNull Parcelable[] parcelables) {
+
+                }
+
+                @Override
+                public void onUndo(@Nullable Parcelable parcelable) {
+                    bucketItems.add(index, event.getBucketItem());
+                    fillWithItems();
                 }
             });
-            eventBus.cancelEventDelivery(event);
-            fillWithItems();
+
         }
-    }
-
-    public void itemMoved(int fromPosition, int toPosition) {
-        if (fromPosition == toPosition) {
-            return;
-        }
-
-        final BucketItem item = bucketItems.remove(fromPosition);
-        bucketItems.add(toPosition, item);
-
-        db.saveBucketList(bucketItems, type.name());
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            db.saveBucketList(bucketItems, type.name());
+        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
+            BucketItem bucketItem = event.getBucketItem();
 
             BucketPostItem bucketPostItem = new BucketPostItem();
-            bucketPostItem.setStatus(event.getBucketItem().getStatus());
+            bucketPostItem.setStatus(bucketItem.getStatus());
+
+            Log.d("TAG_BucketListPM", "Receivent mark as done event");
+
             dreamSpiceManager.execute(new DreamTripsRequest.MarkBucketItem(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-
+                    view.alert(spiceException.getMessage());
+                    Log.d("TAG_BucketListPM", spiceException.getMessage());
                 }
 
                 @Override
                 public void onRequestSuccess(BucketItem jsonObject) {
-
+                    Log.d("TAG_BucketListPM", "Item marked as done");
                 }
             });
 
-            eventBus.cancelEventDelivery(event);
+            bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(bucketItem.isDone());
+            db.saveBucketList(bucketItems, type.name());
             fillWithItems();
         }
     }
@@ -203,13 +229,30 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         fillWithItems();
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        eventBus.unregister(this);
+    }
+
+    public void itemMoved(int fromPosition, int toPosition) {
+        if (fromPosition == toPosition) {
+            return;
+        }
+
+        final BucketItem item = bucketItems.remove(fromPosition);
+        bucketItems.add(toPosition, item);
+
+        db.saveBucketList(bucketItems, type.name());
+    }
+
     public interface View extends BasePresentation.View {
         BaseArrayListAdapter getAdapter();
+
+        void showUndoBar(UndoBarController.AdvancedUndoListener undoListener);
 
         void startLoading();
 
         void finishLoading();
-
-        //void isTabletLandscape();
     }
 }

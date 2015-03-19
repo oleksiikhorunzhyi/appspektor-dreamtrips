@@ -39,8 +39,6 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
     @Inject
     EventBus eventBus;
 
-    private int lastId = 0;
-
     public BucketListQuickInputPM(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
@@ -72,7 +70,7 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);
 
         data.add(0, bucketPostItem);
-        view.getAdapter().addItem(bucketPostItem);
+        view.getAdapter().addItem(0, bucketPostItem);
         view.getAdapter().notifyDataSetChanged();
         loadBucketItem(bucketPostItem);
     }
@@ -92,14 +90,11 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
 
             @Override
             public void onRequestSuccess(BucketItem bucketItem) {
-                if (lastId != bucketItem.getId()) {
-                    lastId = bucketItem.getId();
-                    bucketPostItem.setLoaded(true);
-                    eventBus.post(new BucketItemAddedEvent(bucketItem));
-                    view.getAdapter().notifyDataSetChanged();
-                    realData.add(0, bucketItem);
-                    db.saveBucketList(realData, type.name());
-                }
+                bucketPostItem.setLoaded(true);
+                eventBus.post(new BucketItemAddedEvent(bucketItem));
+                view.getAdapter().notifyDataSetChanged();
+                realData.add(0, bucketItem);
+                db.saveBucketList(realData, type.name());
             }
         });
     }

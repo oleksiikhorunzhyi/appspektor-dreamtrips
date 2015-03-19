@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -119,7 +120,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
             //   loadNext(page);
             Log.w("LoadNext", "totalitem count:" + totalItemCount);
-            getAdapterContoller().loadNext();
+            getAdapterController().loadNext();
             loading = true;
         }
     }
@@ -146,15 +147,17 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
         if (type != Type.MY_IMAGES) {
-            getAdapterContoller().reload();
+            getAdapterController().reload();
         } else {
             view.add(0, event.getUploadTask());
         }
+        eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
+
     }
 
     public void onEventMainThread(PhotoUploadFinished event) {
         if (type != Type.MY_IMAGES) {
-            getAdapterContoller().reload();
+            getAdapterController().reload();
         } else {
             new Handler().postDelayed(() -> {
                 for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
@@ -188,7 +191,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     }
 
 
-    private TripImagesRoboSpiceController getAdapterContoller() {
+    private TripImagesRoboSpiceController getAdapterController() {
         if (roboSpiceAdapterController == null) {
             roboSpiceAdapterController = getTripImagesRoboSpiceController();
 
@@ -199,7 +202,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     }
 
     public void reload() {
-        getAdapterContoller().reload();
+        getAdapterController().reload();
     }
 
     public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
@@ -240,6 +243,12 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
                 } else {
                     list = new ArrayList<>(view.getPhotosFromAdapter());
+                    for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
+                        T item = iterator.next();
+                        if (list.contains(item)) {
+                            iterator.remove();
+                        }
+                    }
                     list.addAll(items);
                 }
                 eventBus.postSticky(FSUploadEvent.create(type, list));

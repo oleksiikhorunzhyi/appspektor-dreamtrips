@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
@@ -45,19 +44,36 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
         webView.loadUrl(getURL());
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        webView.loadUrl("about:blank");
+        webView.stopLoading();
+        webView.setWebChromeClient(null);
+        webView.setWebViewClient(null);
+        webView.destroy();
+        webView = null;
+    }
+
+
     abstract protected String getURL();
 
     @Override
     public void onResume() {
         super.onResume();
         webView.onResume();
+        webView.resumeTimers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         webView.onPause();
+        webView.pauseTimers();
+        webView.destroy();
     }
+
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {

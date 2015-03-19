@@ -16,8 +16,6 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.TripImagesTabsFragmentPresentation;
-import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
@@ -94,12 +92,12 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onMenuExpanded() {
-        this.vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+        this.vBgHolder.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onMenuCollapsed() {
-        this.vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        this.vBgHolder.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.fab_facebook)

@@ -265,7 +265,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public ArrayList<Inspiration> loadDataFromNetwork() throws Exception {
             Log.i("LoadNext", "per page: " + perPage + "; page:" + page);
-
             return getService().getInspirationsPhotos(perPage, page);
         }
     }

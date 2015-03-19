@@ -1,21 +1,17 @@
 package com.worldventures.dreamtrips.view.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
-import com.facebook.widget.WebDialog;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -125,6 +121,15 @@ public class FullScreenPhotoActivity extends PresentationModelDrivenActivity<Tri
                     Bundle args = new Bundle();
                     args.putInt(FullScreenPhotoFragment.EXTRA_POSITION, position);
                     fragment.setArguments(args);
+                }
+
+                @Override
+                public void addItems(ArrayList baseItemClasses) {
+
+                    photoList.addAll(baseItemClasses);
+                    for (Object item : baseItemClasses) {
+                        adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
+                    }
                 }
             };
         }

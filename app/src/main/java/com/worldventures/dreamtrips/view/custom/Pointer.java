@@ -23,30 +23,30 @@ public class Pointer {
     private long mDownTime;
 
     // The x coordinate (in pixels) where this Pointer went down.
-    private float mDownX;
+    private double mDownX;
 
     // The y coordinate (in pixels) where this Pointer went down.
-    private float mDownY;
+    private double mDownY;
 
     // The time (in milliseconds) when this Pointer went up.
     private long mUpTime;
 
     // The x coordinate (in pixels) where this Pointer went up.
-    private float mUpX;
+    private double mUpX;
 
     // The y coordinate (in pixels) where this Pointer went up.
-    private float mUpY;
+    private double mUpY;
 
     // Limits for identifying taps and swipes.
-    private float mUpXUpperLimit;
-    private float mUpXLowerLimit;
-    private float mUpYUpperLimit;
-    private float mUpYLowerLimit;
+    private double mUpXUpperLimit;
+    private double mUpXLowerLimit;
+    private double mUpYUpperLimit;
+    private double mUpYLowerLimit;
 
     public Pointer(int pId,
                    long pDownTime,
-                   float pDownX, float pDownY,
-                   float pMovementLimitPx) {
+                   double pDownX, double pDownY,
+                   double pMovementLimitPx) {
 
         mId = pId;
         mDownTime = pDownTime;
@@ -63,11 +63,11 @@ public class Pointer {
         mUpTime = pUpTime;
     }
 
-    public void setUpX(float pUpX) {
+    public void setUpX(double pUpX) {
         mUpX = pUpX;
     }
 
-    public void setUpY(float pUpY) {
+    public void setUpY(double pUpY) {
         mUpY = pUpY;
     }
 
@@ -75,19 +75,19 @@ public class Pointer {
         return mId;
     }
 
-    public float getDownX() {
+    public double getDownX() {
         return mDownX;
     }
 
-    public float getDownY() {
+    public double getDownY() {
         return mDownY;
     }
 
-    public float getUpX() {
+    public double getUpX() {
         return mUpX;
     }
 
-    public float getUpY() {
+    public double getUpY() {
         return mUpY;
     }
 
@@ -132,12 +132,12 @@ public class Pointer {
         return Math.sqrt(Math.pow(pXI - pXII, 2) + Math.pow(pYI - pYII, 2));
     }
 
-    public boolean pinchedIn(Pointer pPointer, float pMovementLimitPx) {
+    public boolean pinchedIn(Pointer pPointer, double pMovementLimitPx) {
         return distanceFormula(mDownX, mDownY, pPointer.getDownX(), pPointer.getDownY()) + pMovementLimitPx <=
             distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
     }
 
-    public boolean pinchedOut(Pointer pPointer, float pMovementLimitPx) {
+    public boolean pinchedOut(Pointer pPointer, double pMovementLimitPx) {
         return distanceFormula(mDownX, mDownY, pPointer.getDownX(), pPointer.getDownY()) - pMovementLimitPx >=
             distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
     }

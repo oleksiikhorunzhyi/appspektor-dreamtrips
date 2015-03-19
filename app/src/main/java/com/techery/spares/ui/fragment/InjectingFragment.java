@@ -53,7 +53,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
         super.onResume();
         try {
             this.eventBus.registerSticky(this);
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
 
         }
     }

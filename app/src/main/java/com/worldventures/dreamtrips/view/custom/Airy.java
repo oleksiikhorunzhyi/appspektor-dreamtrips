@@ -52,7 +52,7 @@ public class Airy implements OnTouchListener {
     public static final int TWO_FINGER_PINCH_OUT = 11;
 
     // The amount of distance (in pixels) a Pointer has to move, to trigger a gesture.
-    private float mMovementLimitPx;
+    private double mMovementLimitPx;
 
     // A list of Pointers involved in a gesture.
     private ArrayList<Pointer> mPointers;
@@ -61,12 +61,12 @@ public class Airy implements OnTouchListener {
         DisplayMetrics mDisplayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(mDisplayMetrics);
-        float mDisplayDensity = mDisplayMetrics.density;
+        double mDisplayDensity = mDisplayMetrics.density;
 
         mMovementLimitPx = MOVEMENT_LIMIT_DP * mDisplayDensity;
     }
 
-    public Airy(float pDisplayDensity) {
+    public Airy(double pDisplayDensity) {
         mMovementLimitPx = MOVEMENT_LIMIT_DP * pDisplayDensity;
     }
 
@@ -144,8 +144,8 @@ public class Airy implements OnTouchListener {
 
         int mPointerId = pMotionEvent.getPointerId(mActionIndex);
         long mEventTime = pMotionEvent.getEventTime();
-        float mX = pMotionEvent.getX(mActionIndex);
-        float mY = pMotionEvent.getY(mActionIndex);
+        double mX = pMotionEvent.getX(mActionIndex);
+        double mY = pMotionEvent.getY(mActionIndex);
 
         switch (pMotionEvent.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:

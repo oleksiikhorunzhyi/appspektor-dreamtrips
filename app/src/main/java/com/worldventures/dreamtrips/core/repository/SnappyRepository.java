@@ -6,8 +6,8 @@ import android.util.Log;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -156,7 +156,7 @@ public class SnappyRepository {
                         trips.add(db.get(key, Trip.class));
                     }
                 } catch (SnappydbException e) {
-                    e.printStackTrace();
+                    Log.e(SnappyRepository.class.getSimpleName(), "", e);
                 }
                 db.close();
 

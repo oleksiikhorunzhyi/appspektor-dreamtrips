@@ -16,10 +16,9 @@
 
 package tv.danmaku.ijk.media.player.pragma;
 
-import java.util.Locale;
-
-
 import android.util.Log;
+
+import java.util.Locale;
 
 public class DebugLog {
     public static final boolean ENABLE_ERROR = Pragma.ENABLE_VERBOSE;
@@ -155,7 +154,7 @@ public class DebugLog {
 
     public static void printStackTrace(Throwable e) {
         if (ENABLE_WARN) {
-            e.printStackTrace();
+            Log.e("", "", e);
         }
     }
 

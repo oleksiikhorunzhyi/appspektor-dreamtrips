@@ -40,16 +40,16 @@ import java.util.List;
  * dismissable. {@link ListView} is given special treatment because by default it handles touches
  * for its list items... i.e. it's in charge of drawing the pressed state (the list selector),
  * handling list item clicks, etc.
- *
+ * <p>
  * <p>After creating the listener, the caller should also call
  * {@link ListView#setOnScrollListener(AbsListView.OnScrollListener)}, passing
  * in the scroll listener returned by {@link #makeScrollListener()}. If a scroll listener is
  * already assigned, the caller should still pass scroll changes through to this listener. This will
  * ensure that this {@link SwipeDismissRecyclerViewTouchListener} is paused during list view
  * scrolling.</p>
- *
+ * <p>
  * <p>Example usage:</p>
- *
+ * <p>
  * <pre>
  * SwipeDismissRecyclerViewTouchListener touchListener =
  *         new SwipeDismissRecyclerViewTouchListener(
@@ -65,10 +65,10 @@ import java.util.List;
  * listView.setOnTouchListener(touchListener);
  * listView.setOnScrollListener(touchListener.makeScrollListener());
  * </pre>
- *
+ * <p>
  * <p>This class Requires API level 12 or later due to use of {@link
  * ViewPropertyAnimator}.</p>
- *
+ * <p>
  * <p>For a generalized {@link View.OnTouchListener} that makes any view dismissable,
  * see {@link SwipeDismissTouchListener}.</p>
  *
@@ -112,7 +112,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
          * Called when the user has indicated they she would like to dismiss one or more list item
          * positions.
          *
-         * @param recyclerView               The originating {@link ListView}.
+         * @param recyclerView           The originating {@link ListView}.
          * @param reverseSortedPositions An array of positions to dismiss, sorted in descending
          *                               order for convenience.
          */
@@ -122,9 +122,9 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given list view.
      *
-     * @param recyclerView  The list view whose items should be dismissable.
-     * @param callbacks The callback to trigger when the user has indicated that she would like to
-     *                  dismiss one or more list items.
+     * @param recyclerView The list view whose items should be dismissable.
+     * @param callbacks    The callback to trigger when the user has indicated that she would like to
+     *                     dismiss one or more list items.
      */
     public SwipeDismissRecyclerViewTouchListener(RecyclerView recyclerView, DismissCallbacks callbacks) {
         ViewConfiguration vc = ViewConfiguration.get(recyclerView.getContext());
@@ -297,8 +297,8 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                 }
 
                 mVelocityTracker.addMovement(motionEvent);
-                float deltaX = motionEvent.getRawX() - mDownX;
-                float deltaY = motionEvent.getRawY() - mDownY;
+                double deltaX = motionEvent.getRawX() - mDownX;
+                double deltaY = motionEvent.getRawY() - mDownY;
                 if (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2) {
                     mSwiping = true;
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
@@ -314,9 +314,8 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                 }
 
                 if (mSwiping) {
-                    mDownView.setTranslationX(deltaX - mSwipingSlop);
-                    mDownView.setAlpha(Math.max(0f, Math.min(1f,
-                            1f - 2f * Math.abs(deltaX) / mViewWidth)));
+                    mDownView.setTranslationX((float) (deltaX - mSwipingSlop));
+                    mDownView.setAlpha((float) Math.max(0f, Math.min(1f, 1f - 2f * Math.abs(deltaX) / mViewWidth)));
                     return true;
                 }
                 break;
@@ -338,6 +337,26 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
         public int compareTo(PendingDismissData other) {
             // Sort by descending position
             return other.position - position;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PendingDismissData that = (PendingDismissData) o;
+
+            if (position != that.position) return false;
+            if (view != null ? !view.equals(that.view) : that.view != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = position;
+            result = 31 * result + (view != null ? view.hashCode() : 0);
+            return result;
         }
     }
 
@@ -365,7 +384,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
                     mCallbacks.onDismiss(mRecyclerView, dismissPositions);
-                    
+
                     // Reset mDownPosition to avoid MotionEvent.ACTION_UP trying to start a dismiss 
                     // animation with a stale position
                     mDownPosition = ListView.INVALID_POSITION;

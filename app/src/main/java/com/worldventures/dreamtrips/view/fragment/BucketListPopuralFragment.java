@@ -86,12 +86,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     }
 
     @Override
-    public void onDestroyView() {
-        getPresentationModel().destroy();
-        super.onDestroy();
-    }
-
-    @Override
     protected BucketListPopularPM createPresentationModel(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
         return new BucketListPopularPM(this, type);

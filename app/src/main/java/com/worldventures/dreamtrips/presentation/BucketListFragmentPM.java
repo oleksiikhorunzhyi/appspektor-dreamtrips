@@ -3,13 +3,8 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.View;
 
-import com.cocosw.undobar.UndoBarController;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
@@ -30,13 +25,11 @@ import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
-import com.worldventures.dreamtrips.utils.busevents.QuickAddItemEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -99,10 +92,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 this.bucketItems.clear();
                 this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.e(BucketListFragmentPM.class.getSimpleName(), "", e);
             }
         }
     }
@@ -225,8 +216,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void destroyView() {
+        super.destroyView();
         eventBus.unregister(this);
     }
 

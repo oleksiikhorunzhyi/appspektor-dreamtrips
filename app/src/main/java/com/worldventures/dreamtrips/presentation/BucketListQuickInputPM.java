@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
+import android.util.Log;
+
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -50,10 +52,8 @@ public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInpu
         super.init();
         try {
             realData.addAll(db.readBucketList(type.name()));
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(BucketListQuickInputPM.class.getSimpleName(), "", e);
         }
         eventBus.register(this);
     }

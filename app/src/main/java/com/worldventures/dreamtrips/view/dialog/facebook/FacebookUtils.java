@@ -65,11 +65,11 @@ public class FacebookUtils {
 
     public static Boolean getPropertyBoolean(GraphObject graphObject, String property) {
         if (graphObject == null) {
-            return null;
+            return false;
         }
         Object value = graphObject.getProperty(property);
         if (value == null || value.equals(EMPTY)) {
-            return null;
+            return false;
         }
         return Boolean.valueOf(String.valueOf(value));
     }

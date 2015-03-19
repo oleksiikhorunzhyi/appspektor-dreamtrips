@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.core.api.spice;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.amazonaws.event.ProgressListener;
@@ -283,7 +281,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public ArrayList<Inspiration> loadDataFromNetwork() throws Exception {
             Log.i("LoadNext", "per page: " + perPage + "; page:" + page);
-
             return getService().getInspirationsPhotos(perPage, page);
         }
     }
@@ -553,12 +550,9 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
                 } else {
                     data.addAll(db.getTrips());
                 }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.e(DreamTripsRequest.class.getSimpleName(), "", e);
             }
-
             return data;
         }
 

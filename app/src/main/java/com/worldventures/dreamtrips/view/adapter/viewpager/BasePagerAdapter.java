@@ -66,4 +66,10 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter i
     public CharSequence getPageTitle(int position) {
         return fragmentItems.get(position).title;
     }
+
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 }

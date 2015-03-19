@@ -13,7 +13,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
-import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
 
 import butterknife.ButterKnife;
 
@@ -79,16 +78,9 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     }
 
     @Override
-    public void onDestroy() {
-        if (needSpiceManager()) {
-            stopSpiceManager();
-        }
-        super.onDestroy();
-    }
-
-    private void stopSpiceManager() {
-        if (getPresentationModel() != null)
-            getPresentationModel().destroy();
+    public void onDestroyView() {
+        getPresentationModel().destroyView();
+        super.onDestroyView();
     }
 
     @Override

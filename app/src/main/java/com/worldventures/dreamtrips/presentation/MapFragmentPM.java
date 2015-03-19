@@ -1,31 +1,22 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.common.collect.Collections2;
-import com.google.gson.reflect.TypeToken;
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-import com.snappydb.SnappydbException;
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.ContentLoader;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.FileUtils;
 import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
 import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -76,10 +67,8 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         data.clear();
         try {
             data.addAll(db.getTrips());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(MapFragmentPM.class.getSimpleName(), "", e);
         }
         setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();

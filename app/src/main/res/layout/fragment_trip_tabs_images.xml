@@ -16,9 +16,9 @@
         android:background="@color/theme_main"
         android:fillViewport="false"
         android:textColor="@android:color/white"
-        fab:pstsTextColorSelected="@android:color/white"
-
         fab:pstsIndicatorColor="@color/theme_main_darker"
+
+        fab:pstsTextColorSelected="@android:color/white"
         fab:pstsTextSelectedStyle="normal"
         fab:pstsTextStyle="normal"
         fab:pstsUnderlineColor="@color/theme_main_darker" />
@@ -33,8 +33,11 @@
 
     <View
         android:id="@+id/v_bg_holder"
+        android:background="@color/black_semi_transparent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true" />
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_down"

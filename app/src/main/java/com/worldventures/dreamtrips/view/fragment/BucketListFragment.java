@@ -201,12 +201,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     }
 
     @Override
-    public void onDestroyView() {
-        getPresentationModel().destroy();
-        super.onDestroyView();
-    }
-
-    @Override
     public void onRefresh() {
         getPresentationModel().loadBucketItems(true);
     }

@@ -5,21 +5,15 @@ import android.os.Bundle;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 /**

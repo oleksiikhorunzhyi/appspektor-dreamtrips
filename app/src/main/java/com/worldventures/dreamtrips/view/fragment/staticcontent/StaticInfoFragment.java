@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.view.fragment;
+package com.worldventures.dreamtrips.view.fragment.staticcontent;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.presentation.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 
@@ -44,19 +44,36 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
         webView.loadUrl(getURL());
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        webView.loadUrl("about:blank");
+        webView.stopLoading();
+        webView.setWebChromeClient(null);
+        webView.setWebViewClient(null);
+        webView.destroy();
+        webView = null;
+    }
+
+
     abstract protected String getURL();
 
     @Override
     public void onResume() {
         super.onResume();
         webView.onResume();
+        webView.resumeTimers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         webView.onPause();
+        webView.pauseTimers();
+        webView.destroy();
     }
+
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {
@@ -132,48 +149,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
         }
     }
 
-    @Layout(R.layout.fragment_webview)
-    public static class OtaFragment extends StaticInfoFragment {
-        @InjectView(R.id.progressBarWeb)
-        ProgressBar progressBarWeb;
-
-        @Override
-        protected String getURL() {
-            S3GlobalConfig config = ((WebViewFragmentPresentation) getPresentationModel()).getConfig();
-            URLS urls = config.getUrls();
-            URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-            String s = configs.getoTAPageBaseURL();
-            s += "?user=%s&token=%s&appMode=true#/";
-            UserSession userSession = ((WebViewFragmentPresentation) getPresentationModel()).getCurrentUser();
-            String url = String.format(s, userSession.getUsername(), userSession.getLegacyApiToken());
-            return url;
-        }
-
-        @Override
-        public void afterCreateView(View rootView) {
-            super.afterCreateView(rootView);
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
-            webView.getSettings().setAppCacheEnabled(true);
-            webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-
-            webView.setWebViewClient(new WebViewClient() {
-
-                @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
-                    progressBarWeb.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    progressBarWeb.setVisibility(View.GONE);
-                }
-            });
-
-        }
-    }
 
     @Layout(R.layout.fragment_webview)
     public static class TrainingVideosFragment extends StaticInfoFragment {

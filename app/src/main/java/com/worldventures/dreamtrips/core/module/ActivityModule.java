@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.uploader.Logger;
 import com.worldventures.dreamtrips.core.uploader.UploadingAPI;
+import com.worldventures.dreamtrips.presentation.ActualTokenStaticInfoFragmentPM;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItDialogPM;
@@ -131,7 +132,6 @@ import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.Video360Fragment;
@@ -140,6 +140,9 @@ import com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDra
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesListFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.ActualTokenStaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.OtaFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -285,7 +288,9 @@ import retrofit.RestAdapter;
                 IRoboSpiceAdapter.class,
                 SimpleStreamPlayerActivity.class,
                 DreamTripsRequest.UploadTripPhoto.class,
-                StaticInfoFragment.OtaFragment.class,
+                OtaFragment.class,
+                ActualTokenStaticInfoFragment.class,
+                ActualTokenStaticInfoFragmentPM.class,
                 StaticInfoFragment.TrainingVideosFragment.class
         },
         complete = false,

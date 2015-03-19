@@ -26,6 +26,10 @@ public class ShareActivityPM extends BasePresentation<ShareActivityPM.View> {
         }
     }
 
+    public void openShareActivity(String picture, String link, String text) {
+        activityRouter.openShareFacebook(picture, link, text);
+    }
+
 
     public static interface View extends BasePresentation.View {
         public void shareFBDialog(String url, String link, String text);

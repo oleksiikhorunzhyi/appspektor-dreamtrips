@@ -6,8 +6,8 @@ import android.util.Log;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class SnappyRepository {
             public List<T> call() throws Exception {
                 DB db = DBFactory.open(context);
                 List<T> result = new ArrayList<T>();
-                if (db.exists(key)){
+                if (db.exists(key)) {
                     T[] array = db.getObjectArray(key, clazz);
                     db.close();
                     return Arrays.asList(array);
@@ -148,7 +148,7 @@ public class SnappyRepository {
                         trips.add(db.get(key, Trip.class));
                     }
                 } catch (SnappydbException e) {
-                    e.printStackTrace();
+                    Log.e(SnappyRepository.class.getSimpleName(), "", e);
                 }
                 db.close();
 

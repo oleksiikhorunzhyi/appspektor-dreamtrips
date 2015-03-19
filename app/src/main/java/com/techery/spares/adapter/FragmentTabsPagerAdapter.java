@@ -3,6 +3,7 @@ package com.techery.spares.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class FragmentTabsPagerAdapter extends FragmentPagerAdapter {
         try {
             return (Fragment) this.tabs.get(position).getFragmentClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            Log.e("", "", e);
         }
         return null;
     }

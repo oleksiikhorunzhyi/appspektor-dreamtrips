@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.kbeanie.imagechooser.api.ChooserType;
@@ -71,7 +72,7 @@ public class PickImageDialog implements ImageChooserListener {
         try {
             filePath = imageChooserManager.choose();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(PickImageDialog.class.getSimpleName(), "",e);
         }
     }
 
@@ -82,7 +83,7 @@ public class PickImageDialog implements ImageChooserListener {
         try {
             filePath = imageChooserManager.choose();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(PickImageDialog.class.getSimpleName(), "",e);
         }
     }
 

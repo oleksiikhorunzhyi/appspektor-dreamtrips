@@ -100,10 +100,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 this.bucketItems.clear();
                 this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.e(BucketListFragmentPM.class.getSimpleName(), "",e);
             }
         }
     }

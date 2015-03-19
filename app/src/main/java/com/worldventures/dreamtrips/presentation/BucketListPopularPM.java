@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -70,10 +71,8 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
         eventBus.register(this);
         try {
             realData.addAll(db.readBucketList(type.name()));
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(BucketListPopularPM.class.getSimpleName(), "", e);
         }
 
     }

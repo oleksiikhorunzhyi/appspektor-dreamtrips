@@ -1,5 +1,6 @@
 package com.techery.spares.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class AdapterHelper {
             cellObject = (AbstractCell)constructor.newInstance(cellView);
 
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            Log.e(AdapterHelper.class.getSimpleName(),"", e);
         }
 
         return cellObject;

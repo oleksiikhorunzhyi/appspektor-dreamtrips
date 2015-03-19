@@ -17,11 +17,11 @@ import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
-import com.worldventures.dreamtrips.view.fragment.staticcontent.OtaFragment;
-import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.OtaFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,7 +57,7 @@ public enum State {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, R.drawable.ic_termsconditions, 9),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, R.drawable.ic_cookie, 10);
 
-    private static ArrayList<State> menuItemsArray;
+    private static ArrayList<State> menuItemsArray = new ArrayList<>();
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;
     private int drawableId;
@@ -79,7 +79,7 @@ public enum State {
     }
 
     private static void generateSideMenuFields() {
-        menuItemsArray = new ArrayList<>();
+
         List<State> states = Arrays.asList(State.values());
         Collections.sort(states, new MenuComparator());
         for (State v : states) {

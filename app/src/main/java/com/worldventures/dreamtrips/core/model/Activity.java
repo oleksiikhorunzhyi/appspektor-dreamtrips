@@ -9,7 +9,7 @@ public class Activity extends BaseEntity {
     int position;
     String icon;
     String name;
-    
+
     private transient boolean isChecked = true;
     private transient boolean shouldBeGone = true;
 

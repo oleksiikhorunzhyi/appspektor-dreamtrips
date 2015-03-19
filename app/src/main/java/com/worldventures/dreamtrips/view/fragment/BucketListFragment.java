@@ -136,7 +136,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
-
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();

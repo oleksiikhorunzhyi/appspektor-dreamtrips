@@ -338,6 +338,26 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
             // Sort by descending position
             return other.position - position;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PendingDismissData that = (PendingDismissData) o;
+
+            if (position != that.position) return false;
+            if (view != null ? !view.equals(that.view) : that.view != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = position;
+            result = 31 * result + (view != null ? view.hashCode() : 0);
+            return result;
+        }
     }
 
     private void performDismiss(final View dismissView, final int dismissPosition) {

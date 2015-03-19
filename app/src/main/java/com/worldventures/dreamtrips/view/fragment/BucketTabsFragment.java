@@ -24,7 +24,7 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener{
+public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View{
 
     @Override
     protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
@@ -39,8 +39,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
     CustomViewPager pager;
     @InjectView(R.id.v_bg_holder)
     View vBgHolder;
-    @InjectView(R.id.multiple_actions_down)
-    FloatingActionsMenu multipleActionsDown;
 
     BasePagerAdapter adapter;
 
@@ -64,31 +62,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
         tabs.setViewPager(pager);
-        this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
-
-    }
-
-    @Override
-    public void onMenuExpanded() {
-        this.vBgHolder.setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
-    }
-
-    @Override
-    public void onMenuCollapsed() {
-        this.vBgHolder.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-    }
-
-    @OnClick(R.id.fab_own)
-    public void actionGallery(View view) {
-        getPresentationModel().addOwn(pager.getCurrentItem());
-        this.multipleActionsDown.collapse();
-    }
-
-
-    @OnClick(R.id.fab_popular)
-    public void actionPopular(View view) {
-        getPresentationModel().addPopular(pager.getCurrentItem());
-        this.multipleActionsDown.collapse();
     }
 
     @Override

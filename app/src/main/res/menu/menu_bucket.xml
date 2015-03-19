@@ -3,14 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_filter"
-        android:title="@string/action_filter"
-        android:icon="@drawable/ic_filters"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_share"
+        android:id="@+id/action_quick"
+        android:icon="@drawable/add_item"
         android:title="@string/action_settings"
-        android:icon="@drawable/ic_share"
+        app:actionLayout="@layout/add_new_item_layout"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/action_popular"
+        android:icon="@drawable/popular"
+        android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/filters"
+        android:title="@string/action_filter"
+        app:showAsAction="ifRoom" />
+
 
 </menu>

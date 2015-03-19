@@ -1,26 +1,36 @@
 package com.worldventures.dreamtrips.view.fragment;
 
+import android.app.Activity;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.cocosw.undobar.UndoBarController;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -32,7 +42,6 @@ import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
 import javax.inject.Inject;
@@ -42,7 +51,7 @@ import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BucketListFragmentPM.View, SwipeRefreshLayout.OnRefreshListener {
+public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BucketListFragmentPM.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -85,7 +94,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
         mAdapter.setMoveListener((from, to) -> {
-                getPresentationModel().itemMoved(from, to);
+            getPresentationModel().itemMoved(from, to);
         });
 
         mWrappedAdapter = mDragDropManager.createWrappedAdapter(mAdapter);
@@ -107,20 +116,49 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onQueryTextSubmit(String s) {
+        if (!TextUtils.isEmpty(s))
+            getPresentationModel().addToBucketList(s);
+        return true;
     }
 
-    private UndoBarController.UndoBar undoBarController;
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
+    }
 
     @Override
-    public void showUndoBar(UndoBarController.AdvancedUndoListener undoListener) {
-        if (undoBarController != null) {
-            undoBarController.clear();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_quick);
+        View view = MenuItemCompat.getActionView(searchItem);
+        EditText searchView = (EditText) view.findViewById(R.id.editTextQuickInput);
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        view.setLayoutParams(params);
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnEditorActionListener((v, actionId, event) -> {
+            String s = v.getText().toString();
+            if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
+                getPresentationModel().addToBucketList(s);
+            }
+            return false;
+        });
+    }
+
+    private SnackBar snackBar;
+
+    @Override
+    public void showUndoBar(View.OnClickListener undoListener, SnackBar.OnHideListener onHideListener) {
+        if (snackBar != null && snackBar.isShowing()) {
+            snackBar.hide();
         }
-        undoBarController = new UndoBarController.UndoBar(getActivity()).message(R.string.delete_photo_text)
-                .duration(4000).listener(undoListener);
-        undoBarController.show(true);
+        snackBar = new SnackBar(getActivity(), getString(R.string.bucket_delete_undo),
+                getString(R.string.undo), undoListener);
+        snackBar.setDismissTimer(1500);
+        snackBar.setOnhideListener(onHideListener);
+        snackBar.show();
     }
 
     @Override
@@ -138,6 +176,12 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
                 });
                 popupMenu.show();
                 break;
+            case R.id.action_popular:
+                getPresentationModel().addPopular();
+                break;
+            case android.R.id.home:
+                hideSoftKeyboard();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -152,7 +196,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onPause() {
-        //  mRecyclerViewDragDropManager.cancelDrag();
+        mDragDropManager.cancelDrag();
         super.onPause();
     }
 
@@ -189,4 +233,10 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public BaseArrayListAdapter getAdapter() {
         return mAdapter;
     }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
+
 }

@@ -14,7 +14,6 @@
         android:layout_alignParentTop="false"
         android:visibility="gone">
 
-
         <TextView
             android:id="@+id/textViewEmpty"
             android:layout_width="wrap_content"
@@ -45,13 +44,6 @@
             android:textColor="@android:color/black"
             android:textSize="18dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewEmptyAdd"
-            android:layout_centerHorizontal="true"
-            android:paddingLeft="50dp"
-            android:src="@drawable/arrow" />
 
     </RelativeLayout>
 
@@ -66,6 +58,7 @@
         android:id="@+id/lv_items"
         style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"
+        android:layout_below="@+id/editTextQuickInput"
         android:layout_height="match_parent"
         android:padding="@dimen/margin_small"
         android:visibility="visible" />

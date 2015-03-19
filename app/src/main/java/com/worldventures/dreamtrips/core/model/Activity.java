@@ -9,7 +9,7 @@ public class Activity extends BaseEntity {
     int position;
     String icon;
     String name;
-
+    
     private transient boolean isChecked = true;
     private transient boolean shouldBeGone = true;
 
@@ -61,18 +61,24 @@ public class Activity extends BaseEntity {
         this.shouldBeGone = shouldBeGone;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Activity)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Activity activity = (Activity) o;
 
-        return id == activity.id;
+        if (id != activity.id) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result = super.hashCode();
+        result = 31 * result + id;
+        return result;
     }
 }

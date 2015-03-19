@@ -27,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_item)
-public class BucketItemCell extends AbstractCell<BucketItem> implements DraggableItemViewHolder, SwipeLayout.SwipeListener {
+public class BucketItemCellOld extends AbstractCell<BucketItem> implements DraggableItemViewHolder, SwipeLayout.SwipeListener {
 
     @InjectView(R.id.container)
     RelativeLayout container;
@@ -58,7 +58,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private boolean requestWasSent = false;
     private boolean handRelease = false;
 
-    public BucketItemCell(View view) {
+    public BucketItemCellOld(View view) {
         super(view);
     }
 

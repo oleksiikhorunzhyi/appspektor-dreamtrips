@@ -11,18 +11,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cocosw.undobar.UndoBarController;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -30,13 +25,11 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.view.util.SwipingActionGuardManager;
 
 import javax.inject.Inject;
 
@@ -77,7 +70,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         this.recyclerView.setEmptyView(emptyView);
 
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
+        mAdapter.registerCell(BucketItem.class, BucketItemCellOld.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
         this.recyclerView.setLayoutManager(layoutManager);

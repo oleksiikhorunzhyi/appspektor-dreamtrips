@@ -139,6 +139,8 @@
     <string name="bucket_list_choose">Choose From Popular Items</string>
     <string name="bucket_list_create_new">Create My Own List</string>
     <string name="bucket_quick_input_title">Title</string>
+    <string name="bucket_delete_undo">Item was deleted</string>
+    <string name="undo">UNDO</string>
 
     <string name="location">location</string>
     <string name="activity">activity</string>
@@ -163,5 +165,7 @@
     <string name="show_favorites">Show Favorites</string>
     <string name="other_travel">Other Travel</string>
     <string name="training_videos">Training Videos</string>
+
+    <string name="error_while_sync">Something went wrong</string>
 
 </resources>

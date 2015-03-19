@@ -3,12 +3,9 @@ package com.worldventures.dreamtrips.presentation;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.cocosw.undobar.UndoBarController;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -19,7 +16,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
@@ -27,7 +26,6 @@ import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,7 +93,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
                 this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
             } catch (Exception e) {
-                Log.e(BucketListFragmentPM.class.getSimpleName(), "",e);
+                Log.e(BucketListFragmentPM.class.getSimpleName(), "", e);
             }
         }
     }
@@ -131,6 +129,10 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         }
     }
 
+    public void addPopular() {
+        activityRouter.openBucketListEditActivity(type, State.POPULAR_TAB_BUCKER);
+    }
+
     public void onEvent(DeleteBucketItemEvent event) {
         if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             eventBus.cancelEventDelivery(event);
@@ -141,37 +143,29 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             bucketItems.remove(event.getBucketItem());
             fillWithItems();
 
-            view.showUndoBar(new UndoBarController.AdvancedUndoListener() {
-                @Override
-                public void onHide(@Nullable Parcelable parcelable) {
-                    dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(event.getBucketItem().getId()), new RequestListener<JsonObject>() {
-                        @Override
-                        public void onRequestFailure(SpiceException spiceException) {
-                            view.alert(spiceException.getMessage());
-                            Log.d("TAG_BucketListPM", spiceException.getMessage());
-                        }
-
-                        @Override
-                        public void onRequestSuccess(JsonObject jsonObject) {
-                            Log.d("TAG_BucketListPM", "Item deleted");
-                        }
-                    });
-                    db.saveBucketList(bucketItems, type.name());
-                }
-
-                @Override
-                public void onClear(@NonNull Parcelable[] parcelables) {
-
-                }
-
-                @Override
-                public void onUndo(@Nullable Parcelable parcelable) {
-                    bucketItems.add(index, event.getBucketItem());
-                    fillWithItems();
-                }
-            });
-
+            view.showUndoBar((v) -> undo(event.getBucketItem(), index), () -> hiden(event.getBucketItem().getId()));
         }
+    }
+
+    private void hiden(int id) {
+        dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(id), new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                view.alert(spiceException.getMessage());
+                Log.d("TAG_BucketListPM", spiceException.getMessage());
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                Log.d("TAG_BucketListPM", "Item deleted");
+            }
+        });
+        db.saveBucketList(bucketItems, type.name());
+    }
+
+    private void undo(BucketItem bucketItem, int index) {
+        bucketItems.add(index, bucketItem);
+        fillWithItems();
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
@@ -236,12 +230,51 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         bucketItems.add(toPosition, item);
 
         db.saveBucketList(bucketItems, type.name());
+        syncPosition(item, toPosition);
+    }
+
+    private void syncPosition(BucketItem bucketItem, int to) {
+        BucketOrderModel orderModel = new BucketOrderModel();
+        orderModel.setId(bucketItem.getId());
+        orderModel.setPosition(to);
+        dreamSpiceManager.execute(new DreamTripsRequest.ReorderBucketItem(orderModel), new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                view.informUser(context.getString(R.string.smth_went_wrong));
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+            }
+        });
+    }
+
+    public void addToBucketList(String title) {
+        BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);
+        loadBucketItem(bucketPostItem);
+    }
+
+    public void loadBucketItem(BucketPostItem bucketPostItem) {
+        dreamSpiceManager.execute(new DreamTripsRequest.AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+            }
+
+            @Override
+            public void onRequestSuccess(BucketItem bucketItem) {
+                bucketItems.add(0, bucketItem);
+                db.saveBucketList(bucketItems, type.name());
+
+                view.getAdapter().addItem(0, bucketItem);
+                view.getAdapter().notifyDataSetChanged();
+            }
+        });
     }
 
     public interface View extends BasePresentation.View {
         BaseArrayListAdapter getAdapter();
 
-        void showUndoBar(UndoBarController.AdvancedUndoListener undoListener);
+        void showUndoBar(android.view.View.OnClickListener clickListener, SnackBar.OnHideListener onHideListener);
 
         void startLoading();
 

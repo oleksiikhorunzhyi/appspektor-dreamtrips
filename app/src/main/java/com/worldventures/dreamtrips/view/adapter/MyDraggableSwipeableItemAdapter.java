@@ -18,22 +18,25 @@ package com.worldventures.dreamtrips.view.adapter;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.util.ViewUtils;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         extends BaseArrayListAdapter<BaseItemClass>
-        implements DraggableItemAdapter<BucketItemCellOld>{
+        implements DraggableItemAdapter<BucketItemCell>{
 
     private DeleteListener deleteListener;
     private MoveListener moveListener;
@@ -54,7 +57,14 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
     }
 
     @Override
-    public boolean onCheckCanStartDrag(BucketItemCellOld bucketItemCell, int x, int y) {
+    public boolean onCheckCanStartDrag(BucketItemCell bucketItemCell, int x, int y) {
+        if (!bucketItemCell.isLongPressed()) {
+            return false;
+        } else {
+            return true;
+        }
+
+/*
         // x, y --- relative from the itemView's top-left
         final View containerView = bucketItemCell.getContainerView();
         final View dragHandleView = bucketItemCell.getDraggableView();
@@ -63,10 +73,11 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
 
         return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
+*/
     }
 
     @Override
-    public ItemDraggableRange onGetItemDraggableRange(BucketItemCellOld bucketItemCell) {
+    public ItemDraggableRange onGetItemDraggableRange(BucketItemCell bucketItemCell) {
         int startPosition = getStartDragPosition(bucketItemCell.getPosition());
         int endPosition = getEndDragPosition(bucketItemCell.getPosition());
 
@@ -132,7 +143,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
                 }
             } else {
                 BaseItemClass firstItem = getItem(1);
-                if (firstItem instanceof BucketItem) {
+                if (firstItem instanceof BucketItem && moveListener != null) {
                     if (((BucketItem) firstItem).isDone()) {
                         moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
                     } else {

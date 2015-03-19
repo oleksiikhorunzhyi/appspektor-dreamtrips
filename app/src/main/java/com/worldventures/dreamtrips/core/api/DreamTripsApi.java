@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
@@ -26,6 +27,7 @@ import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -115,5 +117,7 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/activities")
     public ArrayList<PopularBucketItem> getPopularActivities();
 
+    @PUT("/api/bucket_list_order")
+    public JsonObject changeOrder(@Body List<BucketOrderModel> items);
 
 }

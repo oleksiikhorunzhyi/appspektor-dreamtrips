@@ -38,9 +38,6 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFra
     @InjectView(R.id.v_bg_holder)
     View vBgHolder;
 
-    @InjectView(R.id.multiple_actions_down)
-    FloatingActionsMenu multipleActionsDown;
-
     BasePagerAdapter adapter;
 
     @Override
@@ -67,8 +64,6 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFra
         tabs.setViewPager(pager);
 
         pager.setCurrentItem(type.ordinal());
-
-        this.multipleActionsDown.setVisibility(View.GONE);
     }
 
 }

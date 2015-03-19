@@ -109,10 +109,18 @@ public class SnappyRepository {
         return list;
     }
 
+    public void clearTrips(DB snappyDb) throws SnappydbException{
+        String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
+        for (String key : tripKeys) {
+            snappyDb.del(key);
+        }
+    }
+
     public void saveTrips(List<Trip> list) {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
+                clearTrips(snappyDb);
                 for (Trip trip : list) {
                     snappyDb.put(TRIP_KEY + trip.getId(), trip);
                 }

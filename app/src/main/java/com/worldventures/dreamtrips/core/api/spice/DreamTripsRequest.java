@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -118,6 +119,23 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         public BucketItem loadDataFromNetwork() {
             Log.d("TAG_BucketListPM", "Sending mark as done item event");
             return getService().markItem(id, bucketPostItem);
+        }
+    }
+
+    public static class ReorderBucketItem extends DreamTripsRequest<JsonObject> {
+        private BucketOrderModel bucketOrderModel;
+
+        public ReorderBucketItem(BucketOrderModel bucketOrderModel) {
+            super(JsonObject.class);
+            this.bucketOrderModel = bucketOrderModel;
+        }
+
+        @Override
+        public JsonObject loadDataFromNetwork() {
+            Log.d("TAG_BucketListPM", "Sending delete item event");
+            List<BucketOrderModel> list = new ArrayList<>();
+            list.add(bucketOrderModel);
+            return getService().changeOrder(list);
         }
     }
 

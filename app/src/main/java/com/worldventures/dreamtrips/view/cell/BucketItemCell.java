@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
+import android.os.Vibrator;
 import android.support.annotation.IntDef;
+import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -26,6 +30,8 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnLongClick;
+import butterknife.OnTouch;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.utils.ViewUtils.dpFromPx;
@@ -64,6 +70,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
 
+    private boolean longPressed;
+
     public BucketItemCell(View view) {
         super(view);
         swipeVelocityTrigger = ViewConfiguration.get(view.getContext()).getScaledMinimumFlingVelocity();
@@ -94,6 +102,25 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         }
     }
 
+    @OnTouch(R.id.swipeLayout)
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0)
+                    longPressed = false;
+                break;
+        }
+        return swipeLayout.onTouchEvent(event);
+    }
+
+    @OnLongClick(R.id.swipeLayout)
+    boolean onLongClick(View v) {
+        v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        longPressed = true;
+        return false;
+    }
+
     private void render() {
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
@@ -104,7 +131,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
             crossing.setVisibility(View.INVISIBLE);
             buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         }
-
     }
 
     @Override
@@ -117,8 +143,13 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         swipeLayout.addSwipeListener(this);
     }
 
+    public boolean isLongPressed() {
+        return longPressed;
+    }
+
     /**
      * Drag handling
+     *
      * @see DraggableItemViewHolder
      */
 
@@ -133,11 +164,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     }
 
     public View getContainerView() {
-        return container;
+        return swipeLayout;
     }
 
     public View getDraggableView() {
-        return drag_handle;
+        return container;
     }
 
     /**
@@ -203,7 +234,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
             case ACTION_NONE:
                 imageViewStatusDone.setVisibility(View.VISIBLE);
                 imageViewStatusClose.setVisibility(View.INVISIBLE);
-                bottomContainer.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+                bottomContainer.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
                 break;
             case ACTION_SETTLING:
                 imageViewStatusDone.setVisibility(View.INVISIBLE);
@@ -245,7 +276,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @IntDef({ACTION_DEL, ACTION_DONE, ACTION_SETTLING, ACTION_NONE})
     @Retention(RetentionPolicy.SOURCE)
-    @interface SwipeAction {}
+    @interface SwipeAction {
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Additional helpers

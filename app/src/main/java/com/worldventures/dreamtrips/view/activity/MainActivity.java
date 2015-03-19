@@ -196,10 +196,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         unbindDrawables(findViewById(R.id.drawer));
-        System.gc();
+        super.onDestroy();
     }
 
     private void unbindDrawables(View view) {

@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -244,6 +245,13 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         bucketItems.add(toPosition, item);
 
         db.saveBucketList(bucketItems, type.name());
+    }
+
+    private void syncPosition(BucketItem bucketItem, int to) {
+        BucketOrderModel orderModel = new BucketOrderModel();
+        orderModel.setId(bucketItem.getId());
+        orderModel.setPosition(to);
+       // dreamSpiceManager.execute();
     }
 
     public interface View extends BasePresentation.View {

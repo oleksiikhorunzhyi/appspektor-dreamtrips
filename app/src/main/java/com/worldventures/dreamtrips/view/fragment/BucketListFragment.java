@@ -16,8 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cocosw.undobar.UndoBarController;
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -59,7 +62,10 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Global
     EventBus eventBus;
 
-    private BaseArrayListAdapter<Object> mAdapter;
+    private MyDraggableSwipeableItemAdapter<Object> mAdapter;
+    private RecyclerView.Adapter mWrappedAdapter;
+
+    private RecyclerViewDragDropManager mDragDropManager;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -70,18 +76,32 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
         this.recyclerView.setEmptyView(emptyView);
 
+        mDragDropManager = new RecyclerViewDragDropManager();
+        mDragDropManager.setDraggingItemShadowDrawable(
+                (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
+
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
+        mAdapter.setMoveListener((from, to) -> {
+                getPresentationModel().itemMoved(from, to);
+        });
+
+        mWrappedAdapter = mDragDropManager.createWrappedAdapter(mAdapter);
+        final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
+
+        this.recyclerView.setItemAnimator(animator);
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setAdapter(mAdapter);  // requires *wrapped* adapter
+        this.recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
 
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
         } else {
             this.recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z1)));
         }
         this.recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+
+        mDragDropManager.attachRecyclerView(recyclerView);
 
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
     }

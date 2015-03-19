@@ -94,6 +94,7 @@ import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter
 import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
@@ -259,6 +260,7 @@ import retrofit.RestAdapter;
                 Video360Cell.class,
                 ActivityCell.class,
                 BucketItemCellOld.class,
+                BucketItemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
                 DateCell.class,

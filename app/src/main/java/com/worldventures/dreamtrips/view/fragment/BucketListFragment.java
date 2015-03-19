@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.presentation.BucketListFragmentPM;
 import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
+import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
@@ -70,7 +71,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         this.recyclerView.setEmptyView(emptyView);
 
         mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        mAdapter.registerCell(BucketItem.class, BucketItemCellOld.class);
+        mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
         this.recyclerView.setLayoutManager(layoutManager);

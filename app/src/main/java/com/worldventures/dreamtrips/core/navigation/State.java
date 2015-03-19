@@ -17,7 +17,8 @@ import com.worldventures.dreamtrips.view.fragment.LoginFragment;
 import com.worldventures.dreamtrips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.view.fragment.ProfileFragment;
-import com.worldventures.dreamtrips.view.fragment.StaticInfoFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.OtaFragment;
+import com.worldventures.dreamtrips.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.view.fragment.TripImagesTabsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.RepToolsFragment;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
@@ -45,7 +46,7 @@ public enum State {
     MAP(MapFragment.class, R.string.title_activity_main),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
     DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, R.drawable.ic_dreamtrips, 0),
-    OTA(StaticInfoFragment.OtaFragment.class, R.string.other_travel, R.drawable.ic_other_travel, 1),
+    OTA(OtaFragment.class, R.string.other_travel, R.drawable.ic_other_travel, 1),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, R.drawable.ic_trip_images, 2),
     MEMBERSHIP(MemberShipFragment.class, R.string.membership, R.drawable.ic_membership, 3),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, R.drawable.ic_bucket_lists, 4),

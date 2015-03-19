@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -45,7 +46,6 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
         super.onCreate(savedInstanceState);
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -77,7 +77,6 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
-        finish();
     }
 
     @Override
@@ -94,13 +93,14 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
 
     public void shareFBDialog(String url, String link, String text) {
         if (FacebookDialog.canPresentShareDialog(getApplicationContext(), FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                    .setLink(link)
-                    .setPicture(url)
-                    .setCaption(text)
-                    .setApplicationName("DreamTrips")
-                    .build();
-            uiHelper.trackPendingDialogCall(shareDialog.present());
+            FacebookDialog.ShareDialogBuilder shareDialog = new FacebookDialog.ShareDialogBuilder(this);
+            if (!TextUtils.isEmpty(url)) shareDialog.setPicture(url);
+            if (TextUtils.isEmpty(link) && !TextUtils.isEmpty(url)) shareDialog.setLink(url);
+            if (!TextUtils.isEmpty(link)) shareDialog.setLink(link);
+            if (!TextUtils.isEmpty(text)) shareDialog.setDescription(text);
+            // shareDialog.setApplicationName("DreamTrips");
+
+            uiHelper.trackPendingDialogCall(shareDialog.build().present());
         } else {
             publishFeedDialog(url, link, text, "DreamTrips");
         }
@@ -131,7 +131,8 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 if (session != null && session.isOpened()) {
-                    publishFeedDialog(picture, link, text, appName);
+                    getPresentationModel().openShareActivity(picture, link, text);
+                   // publishFeedDialog(picture, link, text, appName);
                 }
             });
             loginButton.performClick();

@@ -5,12 +5,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class BasePresentation<VT extends BasePresentation.View> {
 
@@ -29,6 +32,10 @@ public class BasePresentation<VT extends BasePresentation.View> {
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
 
+    @Inject
+    @Global
+    EventBus eventBus;
+
     protected final VT view;
 
     public BasePresentation(VT view) {
@@ -40,7 +47,6 @@ public class BasePresentation<VT extends BasePresentation.View> {
     }
 
     public void destroy() {
-
     }
 
     public void resume() {
@@ -55,7 +61,9 @@ public class BasePresentation<VT extends BasePresentation.View> {
         return dreamSpiceManager;
     }
 
-    public String getUserId() {return appSessionHolder.get().get().getUser().getEmail();}
+    public String getUserId() {
+        return appSessionHolder.get().get().getUser().getEmail();
+    }
 
     public boolean isConnected() {
         ConnectivityManager conMgr = (ConnectivityManager) context

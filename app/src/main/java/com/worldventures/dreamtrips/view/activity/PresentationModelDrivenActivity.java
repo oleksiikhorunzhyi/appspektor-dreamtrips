@@ -44,7 +44,7 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
     @Override
     public void onDestroy() {
         if (getPresentationModel() != null)
-            getPresentationModel().destroy();
+            getPresentationModel().destroyView();
         super.onDestroy();
     }
 

@@ -79,7 +79,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void onDestroyView() {
-        getPresentationModel().destroy();
+        getPresentationModel().destroyView();
         super.onDestroyView();
     }
 

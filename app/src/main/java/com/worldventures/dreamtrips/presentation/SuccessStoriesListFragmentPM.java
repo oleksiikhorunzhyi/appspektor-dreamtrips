@@ -128,9 +128,9 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
     }
 
     @Override
-    public void destroy() {
+    public void destroyView() {
         eventBus.unregister(this);
-        super.destroy();
+        super.destroyView();
     }
 
     public boolean isFilterFavorites() {

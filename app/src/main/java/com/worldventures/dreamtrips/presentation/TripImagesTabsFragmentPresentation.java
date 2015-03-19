@@ -38,6 +38,15 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
 
     }
 
+    public void destroy() {
+        eventBus.removeAllStickyEvents();
+    }
+
+    @Override
+    public void destroyView() {
+        super.destroyView();
+    }
+
     public TripImagesTabsFragmentPresentation(View view) {
         super(view);
     }
@@ -61,5 +70,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
 
     public interface View extends BasePresentation.View {
         void setFabVisibility(boolean visibility);
+
+
     }
 }

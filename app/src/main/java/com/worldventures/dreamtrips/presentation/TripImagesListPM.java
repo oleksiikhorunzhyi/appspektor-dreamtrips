@@ -131,7 +131,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         eventBus.registerSticky(this);
     }
 
-    public void destroy() {
+    public void destroyView() {
         eventBus.unregister(this);
     }
 

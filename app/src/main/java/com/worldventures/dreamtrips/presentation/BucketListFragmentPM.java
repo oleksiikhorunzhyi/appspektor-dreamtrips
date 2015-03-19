@@ -12,12 +12,8 @@ import com.cocosw.undobar.UndoBarController;
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
@@ -30,14 +26,12 @@ import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
-import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -228,8 +222,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void destroyView() {
+        super.destroyView();
         eventBus.unregister(this);
     }
 

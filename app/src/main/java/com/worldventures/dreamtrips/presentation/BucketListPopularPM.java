@@ -123,9 +123,9 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
     }
 
     @Override
-    public void destroy() {
+    public void destroyView() {
         eventBus.unregister(this);
-        super.destroy();
+        super.destroyView();
     }
 
     public void reload() {

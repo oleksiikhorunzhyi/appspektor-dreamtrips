@@ -1,30 +1,39 @@
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeLayout"
     style="@style/commonListItemStyle"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@drawable/bg_swipe_item_neutral">
+    android:background="@drawable/bg_swipe_item_neutral"
+    app:show_mode="pull_out"
+    app:drag_edge="left"
+    >
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp">
         <!--What you want to show-->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <ImageView
-            android:id="@+id/imageViewStatus"
+            android:id="@+id/imageViewStatusDone"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:padding="10dp"
-            android:src="@drawable/done_green" />
-    </LinearLayout>
+            android:src="@drawable/done" />
+
+        <ImageView
+            android:id="@+id/imageViewStatusClose"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:src="@drawable/delete"
+            android:visibility="invisible"
+            />
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/container"
@@ -63,13 +72,12 @@
             <View
                 android:id="@+id/crossing"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone"
                 android:layout_height="1px"
-                android:background="@color/bucket_text_done"/>
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:background="@color/bucket_text_done" />
 
         </FrameLayout>
-
 
         <ImageView
             android:id="@+id/button_cancel"

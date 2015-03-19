@@ -125,7 +125,6 @@
     <orderEntry type="library" exported="" name="panframe-1.9" level="project" />
     <orderEntry type="library" exported="" name="circleimageview-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
-    <orderEntry type="library" exported="" name="library-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="circleindicator-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="HockeySDK-3.5.0-b.4" level="project" />
     <orderEntry type="library" exported="" name="expandableTextView-0.1.3" level="project" />
@@ -143,7 +142,6 @@
     <orderEntry type="library" exported="" name="tweet-composer-0.7.3" level="project" />
     <orderEntry type="library" exported="" name="library-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.1.3" level="project" />
-    <orderEntry type="library" exported="" name="1_library-1.1.3" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="robospice-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="library-1.1.8" level="project" />
@@ -168,6 +166,7 @@
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="commons-io-1.3.2" level="project" />
     <orderEntry type="library" exported="" name="advrecyclerview-0.6.2" level="project" />
+    <orderEntry type="library" exported="" name="undobar-1.7.1" level="project" />
     <orderEntry type="library" exported="" name="instabugcore-1.2.7" level="project" />
     <orderEntry type="library" exported="" name="digits-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />

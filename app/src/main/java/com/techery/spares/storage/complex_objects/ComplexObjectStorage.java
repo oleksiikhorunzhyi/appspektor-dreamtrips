@@ -1,6 +1,5 @@
 package com.techery.spares.storage.complex_objects;
 
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.techery.spares.storage.ObjectStorage;
 import com.techery.spares.storage.preferences.ObjectPreferenceStorage;

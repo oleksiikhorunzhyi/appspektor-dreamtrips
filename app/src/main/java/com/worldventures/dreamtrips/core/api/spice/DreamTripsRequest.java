@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;

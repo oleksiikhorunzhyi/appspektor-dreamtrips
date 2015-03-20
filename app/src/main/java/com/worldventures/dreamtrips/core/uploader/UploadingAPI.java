@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.uploader;
 
 import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 
 import retrofit.http.Body;
 import retrofit.http.POST;

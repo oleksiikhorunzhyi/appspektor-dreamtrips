@@ -8,7 +8,7 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;

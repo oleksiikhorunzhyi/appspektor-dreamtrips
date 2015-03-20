@@ -187,5 +187,6 @@ dependencies {
         transitive = true;
     }
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
+    compile 'com.android.support:support-annotations:20.0.0'
 }
 

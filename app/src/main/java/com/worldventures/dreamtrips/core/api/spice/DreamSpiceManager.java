@@ -129,7 +129,6 @@ public class DreamSpiceManager extends SpiceManager {
 
     }
 
-
     public void uploadPhoto(ImageUploadTask task) {
         DreamTripsRequest.UploadTripPhoto request = new DreamTripsRequest.UploadTripPhoto(task);
         injector.inject(request);

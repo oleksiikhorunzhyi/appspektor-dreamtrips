@@ -35,4 +35,7 @@
         <item name="android:scrollbars">vertical</item>
     </style>
     <style name="commonListItemStyle"></style>
+    <style name="myCustomMenuTextApearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/selector_action_button_popular</item>
+    </style>
 </resources>

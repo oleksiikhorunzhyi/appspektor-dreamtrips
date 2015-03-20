@@ -163,7 +163,7 @@
     <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
     <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
     <string name="show_favorites">Show Favorites</string>
-    <string name="other_travel">Other Travel</string>
+    <string name="other_travel">Book other travel</string>
     <string name="training_videos">Training Videos</string>
 
     <string name="error_while_sync">Something went wrong</string>

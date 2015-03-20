@@ -76,6 +76,12 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
                 super.onPageFinished(view, url);
                 progressBarWeb.setVisibility(View.GONE);
             }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                view.loadUrl(view.getUrl());
+            }
+
         });
 
     }

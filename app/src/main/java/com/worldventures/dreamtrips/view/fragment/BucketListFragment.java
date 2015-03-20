@@ -132,10 +132,25 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         return false;
     }
 
+    private boolean expand = false;
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                expand = true;
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                expand = false;
+                return false;
+            }
+        });
         View view = MenuItemCompat.getActionView(searchItem);
         EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
@@ -173,28 +188,30 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
+                if (!expand) {
+                    View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
 
-                PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
-                popupMenu.inflate(R.menu.menu_bucket_filter);
+                    PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
+                    popupMenu.inflate(R.menu.menu_bucket_filter);
 
-                boolean showCompleted = getPresentationModel().isShowCompleted();
-                boolean showToDO = getPresentationModel().isShowToDO();
+                    boolean showCompleted = getPresentationModel().isShowCompleted();
+                    boolean showToDO = getPresentationModel().isShowToDO();
 
-                if (showCompleted && showToDO)
-                    popupMenu.getMenu().getItem(0).setChecked(true);
-                else if (showCompleted)
-                    popupMenu.getMenu().getItem(1).setChecked(true);
-                else
-                    popupMenu.getMenu().getItem(2).setChecked(true);
+                    if (showCompleted && showToDO)
+                        popupMenu.getMenu().getItem(0).setChecked(true);
+                    else if (showCompleted)
+                        popupMenu.getMenu().getItem(1).setChecked(true);
+                    else
+                        popupMenu.getMenu().getItem(2).setChecked(true);
 
-                popupMenu.setOnMenuItemClickListener((menuItem) -> {
-                    getPresentationModel().reloadWithFilter(menuItem.getItemId());
+                    popupMenu.setOnMenuItemClickListener((menuItem) -> {
+                        getPresentationModel().reloadWithFilter(menuItem.getItemId());
 
-                    return false;
-                });
+                        return false;
+                    });
 
-                popupMenu.show();
+                    popupMenu.show();
+                }
                 break;
             case R.id.action_popular:
                 getPresentationModel().addPopular();

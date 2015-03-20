@@ -79,7 +79,6 @@ public enum State {
     }
 
     private static void generateSideMenuFields() {
-
         List<State> states = Arrays.asList(State.values());
         Collections.sort(states, new MenuComparator());
         for (State v : states) {
@@ -100,7 +99,6 @@ public enum State {
     }
 
     public static ArrayList<State> getMenuItemsArray() {
-        generateSideMenuFields();
         return menuItemsArray;
     }
 

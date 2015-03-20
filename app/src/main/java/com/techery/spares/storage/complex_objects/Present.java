@@ -18,10 +18,10 @@ package com.techery.spares.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
+import com.worldventures.dreamtrips.utils.ValidationUtils;
+
 import java.util.Collections;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation of an {@link Optional} containing a reference.
@@ -45,19 +45,19 @@ final class Present<T> extends Optional<T> {
 
     @Override
     public T or(T defaultValue) {
-        checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+        ValidationUtils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
         return reference;
     }
 
     @Override
     public Optional<T> or(Optional<? extends T> secondChoice) {
-        checkNotNull(secondChoice);
+        ValidationUtils.checkNotNull(secondChoice);
         return this;
     }
 
     @Override
     public T or(Supplier<? extends T> supplier) {
-        checkNotNull(supplier);
+        ValidationUtils.checkNotNull(supplier);
         return reference;
     }
 
@@ -73,7 +73,7 @@ final class Present<T> extends Optional<T> {
 
     @Override
     public <V> Optional<V> transform(Function<? super T, V> function) {
-        return new Present<V>(checkNotNull(function.apply(reference),
+        return new Present<V>(ValidationUtils.checkNotNull(function.apply(reference),
                 "the Function passed to Optional.transform() must not return null."));
     }
 

@@ -38,10 +38,9 @@ android {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 33
-        versionName "0.1.33"
+        versionCode 34
+        versionName "0.1.34"
         multiDexEnabled true
-
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
@@ -133,8 +132,6 @@ dependencies {
     compile project(':ijkmediaplayer')
     compile project(':ijkmediawidget')
 
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile "com.android.support:appcompat-v7:21.0.3"
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
@@ -150,7 +147,8 @@ dependencies {
     compile 'com.octo.android.robospice:robospice:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.octo.android.robospice:robospice-retrofit:+'
-
+    compile 'com.innahema:collections-query:0.2.8'
+    
 //SDK
     compile 'com.instabug.library:instabugsupport:1.2.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
@@ -173,14 +171,13 @@ dependencies {
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.nineoldandroids:library:2.4.+'
+  //  compile 'com.nineoldandroids:library:2.4.+'
     compile 'me.relex:circleindicator:1.0.0@aar'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     compile 'com.ms-square:expandableTextView:0.1.3'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
     compile "com.daimajia.swipelayout:library:1.1.8@aar"
-    compile 'com.cocosw:undobar:1.+@aar'
     compile 'com.joooonho:selectableroundedimageview:1.0.0'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.2'
     compile('com.twitter.sdk.android:twitter:1.3.0@aar') {
@@ -188,5 +185,6 @@ dependencies {
     }
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'com.android.support:support-annotations:20.0.0'
+    compile 'com.android.support:multidex:1.0.0'
 }
 

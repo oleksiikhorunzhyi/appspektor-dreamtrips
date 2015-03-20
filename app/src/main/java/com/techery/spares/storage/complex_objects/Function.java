@@ -18,7 +18,6 @@ package com.techery.spares.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
-import com.google.common.annotations.GwtCompatible;
 
 /**
  * Determines an output value based on an input value.
@@ -31,7 +30,6 @@ import com.google.common.annotations.GwtCompatible;
  * @author Kevin Bourrillion
  * @since 2.0 (imported from Google Collections Library)
  */
-@GwtCompatible
 public interface Function<F, T> {
   /**
    * Returns the result of applying this function to {@code input}. This method is <i>generally

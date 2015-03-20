@@ -18,11 +18,11 @@ package com.techery.spares.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
+import com.worldventures.dreamtrips.utils.ValidationUtils;
+
 import java.util.Collections;
 import java.util.Set;
 
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation of an {@link Optional} not containing a reference.
@@ -50,18 +50,18 @@ final class Absent<T> extends Optional<T> {
 
     @Override
     public T or(T defaultValue) {
-        return checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+        return ValidationUtils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
     }
 
     @SuppressWarnings("unchecked") // safe covariant cast
     @Override
     public Optional<T> or(Optional<? extends T> secondChoice) {
-        return (Optional<T>) checkNotNull(secondChoice);
+        return (Optional<T>) ValidationUtils.checkNotNull(secondChoice);
     }
 
     @Override
     public T or(Supplier<? extends T> supplier) {
-        return checkNotNull(supplier.get(),
+        return ValidationUtils.checkNotNull(supplier.get(),
                 "use Optional.orNull() instead of a Supplier that returns null");
     }
 
@@ -78,7 +78,7 @@ final class Absent<T> extends Optional<T> {
 
     @Override
     public <V> Optional<V> transform(Function<? super T, V> function) {
-        checkNotNull(function);
+        ValidationUtils.checkNotNull(function);
         return Optional.absent();
     }
 

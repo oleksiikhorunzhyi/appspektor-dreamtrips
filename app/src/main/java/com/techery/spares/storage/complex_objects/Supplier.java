@@ -16,7 +16,6 @@
 
 package com.techery.spares.storage.complex_objects;
 
-import com.google.common.annotations.GwtCompatible;
 
 /**
  * A class that can supply objects of a single type.  Semantically, this could
@@ -26,7 +25,6 @@ import com.google.common.annotations.GwtCompatible;
  * @author Harry Heymann
  * @since 2.0 (imported from Google Collections Library)
  */
-@GwtCompatible
 public interface Supplier<T> {
   /**
    * Retrieves an instance of the appropriate type. The returned object may or

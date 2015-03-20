@@ -18,6 +18,8 @@ package com.techery.spares.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
+import com.worldventures.dreamtrips.utils.ValidationUtils;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
@@ -77,7 +79,7 @@ public abstract class Optional<T> implements Serializable {
      * Returns an {@code Optional} instance containing the given non-null reference.
      */
     public static <T> Optional<T> of(T reference) {
-        return new Present<T>(checkNotNull(reference));
+        return new Present<T>(ValidationUtils.checkNotNull(reference));
     }
 
     /**
@@ -207,13 +209,13 @@ public abstract class Optional<T> implements Serializable {
      */
     public static <T> Iterable<T> presentInstances(
             final Iterable<? extends Optional<? extends T>> optionals) {
-        checkNotNull(optionals);
+        ValidationUtils.checkNotNull(optionals);
         return new Iterable<T>() {
             @Override
             public Iterator<T> iterator() {
                 return new AbstractIterator<T>() {
                     private final Iterator<? extends Optional<? extends T>> iterator =
-                            checkNotNull(optionals.iterator());
+                            ValidationUtils.checkNotNull(optionals.iterator());
 
                     @Override
                     protected T computeNext() {
@@ -228,13 +230,6 @@ public abstract class Optional<T> implements Serializable {
                 };
             }
         };
-    }
-
-    private static <T> T checkNotNull(T reference) {
-        if (reference == null) {
-            throw new NullPointerException();
-        }
-        return reference;
     }
 
     private static final long serialVersionUID = 0;

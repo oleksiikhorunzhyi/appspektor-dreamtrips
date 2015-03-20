@@ -157,7 +157,6 @@
     <orderEntry type="library" exported="" name="picasso-2.3.2" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="twitter-1.3.0" level="project" />
-    <orderEntry type="library" exported="" name="guava-18.0" level="project" />
     <orderEntry type="library" exported="" name="robospice-cache-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.15" level="project" />
     <orderEntry type="library" exported="" name="linearlistview-1.0.1" level="project" />
@@ -166,7 +165,6 @@
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="commons-io-1.3.2" level="project" />
     <orderEntry type="library" exported="" name="advrecyclerview-0.6.2" level="project" />
-    <orderEntry type="library" exported="" name="undobar-1.7.1" level="project" />
     <orderEntry type="library" exported="" name="instabugcore-1.2.7" level="project" />
     <orderEntry type="library" exported="" name="digits-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
@@ -174,6 +172,7 @@
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="collections-query-0.2.8" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="armeabi" level="project" />

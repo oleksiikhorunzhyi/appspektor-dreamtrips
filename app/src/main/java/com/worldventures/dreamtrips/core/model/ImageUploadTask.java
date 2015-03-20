@@ -1,10 +1,7 @@
-package com.worldventures.dreamtrips.core.uploader.model;
+package com.worldventures.dreamtrips.core.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.core.model.Image;
 
 import java.io.Serializable;
 import java.util.ArrayList;

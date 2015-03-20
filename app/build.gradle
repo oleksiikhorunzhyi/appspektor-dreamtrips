@@ -38,10 +38,9 @@ android {
         applicationId "com.worldventures.dreamtrips"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 33
-        versionName "0.1.33"
+        versionCode 34
+        versionName "0.1.34"
         multiDexEnabled true
-
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
@@ -133,8 +132,6 @@ dependencies {
     compile project(':ijkmediaplayer')
     compile project(':ijkmediawidget')
 
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile "com.android.support:appcompat-v7:21.0.3"
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
@@ -174,7 +171,7 @@ dependencies {
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.nineoldandroids:library:2.4.+'
+  //  compile 'com.nineoldandroids:library:2.4.+'
     compile 'me.relex:circleindicator:1.0.0@aar'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
@@ -187,5 +184,7 @@ dependencies {
         transitive = true;
     }
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
+    compile 'com.android.support:support-annotations:20.0.0'
+    compile 'com.android.support:multidex:1.0.0'
 }
 

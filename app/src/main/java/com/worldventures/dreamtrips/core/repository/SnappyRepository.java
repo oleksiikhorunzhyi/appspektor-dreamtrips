@@ -6,9 +6,9 @@ import android.util.Log;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class SnappyRepository {
         return list;
     }
 
-    public void clearTrips(DB snappyDb) throws SnappydbException{
+    public void clearTrips(DB snappyDb) throws SnappydbException {
         String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
         for (String key : tripKeys) {
             snappyDb.del(key);

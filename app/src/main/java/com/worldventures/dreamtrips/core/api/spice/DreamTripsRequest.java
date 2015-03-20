@@ -15,6 +15,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Region;
@@ -31,7 +32,6 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.Constants;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
 import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
@@ -309,7 +309,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
     public static class GetMyPhotos extends DreamTripsRequest<ArrayList<IFullScreenAvailableObject>> {
 
-
         @Inject
         SnappyRepository db;
 
@@ -563,17 +562,17 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public ArrayList<Trip> loadDataFromNetwork() throws Exception {
             ArrayList<Trip> data = new ArrayList<>();
-            try {
-                if (needUpdate() || fromApi) {
-                    this.fromApi = false;
-                    data.addAll(getService().getTrips());
+            if (needUpdate() || fromApi) {
+                this.fromApi = false;
+                data.addAll(getService().getTrips());
+                try {
                     db.saveTrips(data);
-                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-                } else {
-                    data.addAll(db.getTrips());
+                } catch (Exception e) {
+                    Log.e("", "", e);
                 }
-            } catch (Exception e) {
-                Log.e(DreamTripsRequest.class.getSimpleName(), "", e);
+                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+            } else {
+                data.addAll(db.getTrips());
             }
             return data;
         }

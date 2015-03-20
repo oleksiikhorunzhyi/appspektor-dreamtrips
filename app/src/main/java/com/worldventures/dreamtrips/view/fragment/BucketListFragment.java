@@ -144,10 +144,12 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        quickInputEditText.setShowSoftInputOnFocus(true);
         quickInputEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    quickInputEditText.setFocusable(true);
                     hideSoftKeyboard(v);
                 }
             }
@@ -175,7 +177,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                if (!expand) {
+                View v = getActivity().findViewById(R.id.editTextQuickInput);
+                if (v == null) {
                     View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
 
                     PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);

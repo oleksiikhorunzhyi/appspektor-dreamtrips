@@ -17,6 +17,8 @@
     <string name="cookie">Cookie policy</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_quick_input">Add quick</string>
+    <string name="action_popular_string">Add from popular</string>
     <string name="action_done">Done</string>
     <string name="action_enroll">Enroll</string>
     <string name="action_filter">Filter</string>

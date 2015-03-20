@@ -63,17 +63,6 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         } else {
             return true;
         }
-
-/*
-        // x, y --- relative from the itemView's top-left
-        final View containerView = bucketItemCell.getContainerView();
-        final View dragHandleView = bucketItemCell.getDraggableView();
-
-        final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
-        final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
-
-        return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
-*/
     }
 
     @Override

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.common.collect.Collections2;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
@@ -111,7 +111,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private void performFiltering() {
         if (data != null) {
             filteredData = new ArrayList<>();
-            filteredData.addAll(Collections2.filter(data, (input) ->
+            filteredData.addAll(Queryable.from(data).filter((input) ->
                     input.getPrice().getAmount() <= maxPrice
                             && input.getAvailabilityDates().check(dateFilterItem)
                             && input.getPrice().getAmount() >= minPrice
@@ -120,7 +120,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
                             && input.getDuration() <= maxNights
                             && (showSoldOut || input.isAvailable())
                             && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
-                            && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
+                            && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))).toList());
             reloadPins();
         }
     }

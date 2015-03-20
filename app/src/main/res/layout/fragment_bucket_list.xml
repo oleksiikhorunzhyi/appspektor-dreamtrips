@@ -58,6 +58,7 @@
         android:id="@+id/lv_items"
         style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"
+        android:overScrollMode="never"
         android:layout_height="match_parent"
         android:padding="@dimen/margin_small"
         android:visibility="visible" />

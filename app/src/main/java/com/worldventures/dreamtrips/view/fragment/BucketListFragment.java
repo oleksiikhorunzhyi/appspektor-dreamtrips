@@ -109,6 +109,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
             this.recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z1)));
         }
         this.recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        this.recyclerView.setScrollbarFadingEnabled(false);
+        this.recyclerView.setFadingEdgeLength(0);
 
         mDragDropManager.attachRecyclerView(recyclerView);
 

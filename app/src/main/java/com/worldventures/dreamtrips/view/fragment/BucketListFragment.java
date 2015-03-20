@@ -138,19 +138,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                expand = true;
-                return false;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                expand = false;
-                return false;
-            }
-        });
         View view = MenuItemCompat.getActionView(searchItem);
         EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();

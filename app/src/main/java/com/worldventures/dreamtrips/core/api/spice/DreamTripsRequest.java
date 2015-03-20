@@ -163,7 +163,7 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e(DreamTripsRequest.class.getName(), "", e);
             }
 
             if (isCanceled) {

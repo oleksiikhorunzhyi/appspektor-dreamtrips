@@ -9,7 +9,6 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="stageDebug" />
-        <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleStageDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileStageDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugAndroidTest" />
@@ -119,8 +118,8 @@
     <orderEntry type="library" exported="" name="robospice-retrofit-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="objenesis-2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="mimecraft-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="mimecraft-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="aws-android-sdk-2.1.7-s3" level="project" />
     <orderEntry type="library" exported="" name="panframe-1.9" level="project" />
     <orderEntry type="library" exported="" name="circleimageview-1.2.1" level="project" />
@@ -149,8 +148,8 @@
     <orderEntry type="library" exported="" name="ijkmediaplayer-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="kryo-2.24.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.2.0" level="project" />
+    <orderEntry type="library" exported="" name="kryo-2.24.0" level="project" />
     <orderEntry type="library" exported="" name="library-0.0.2" level="project" />
     <orderEntry type="library" exported="" name="floatingactionbutton-1.5.1" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
@@ -172,11 +171,11 @@
     <orderEntry type="library" exported="" name="digits-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="materialrangebar-0.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
-    <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="collections-query-0.2.8" level="project" />
-    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="armeabi" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.2" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.22.0" level="project" />

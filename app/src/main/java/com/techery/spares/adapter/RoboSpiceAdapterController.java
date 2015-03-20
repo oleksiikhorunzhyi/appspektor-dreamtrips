@@ -1,6 +1,5 @@
 package com.techery.spares.adapter;
 
-import com.google.common.collect.Collections2;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;

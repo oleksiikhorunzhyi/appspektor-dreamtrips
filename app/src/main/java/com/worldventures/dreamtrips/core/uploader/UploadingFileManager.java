@@ -9,6 +9,7 @@ import android.webkit.MimeTypeMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +19,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Date;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UploadingFileManager {
     private static final String TAG = UploadingFileManager.class.getSimpleName();
@@ -30,13 +30,13 @@ public class UploadingFileManager {
     }
 
     public File copyFileIfNeed(String filePath) {
-        checkNotNull(filePath);
+        ValidationUtils.checkNotNull(filePath);
 
         File file = null;
 
         Uri uri = Uri.parse(filePath);
 
-        checkNotNull(uri);
+        ValidationUtils.checkNotNull(uri);
 
         ContentResolver resolver = context.getContentResolver();
         InputStream in = null;
@@ -44,7 +44,7 @@ public class UploadingFileManager {
 
         String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
 
-        checkNotNull(extension);
+        ValidationUtils.checkNotNull(extension);
 
         HashFunction hf = Hashing.md5();
 

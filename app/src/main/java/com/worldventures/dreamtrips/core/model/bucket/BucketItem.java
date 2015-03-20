@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.model.bucket;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.google.common.base.Optional;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
 import com.worldventures.dreamtrips.core.preference.Prefs;

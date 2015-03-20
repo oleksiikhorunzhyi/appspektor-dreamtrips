@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.content.Context;
 
-import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -141,9 +141,10 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     public void onEvent(TripLikedEvent event) {
         adapterController.reload();
     }
+
     private ArrayList<Trip> performFiltering(List<Trip> data) {
         ArrayList<Trip> filteredTrips = new ArrayList<>();
-        filteredTrips.addAll(Collections2.filter(data, (input) ->
+        filteredTrips.addAll(Queryable.from(data).filter((input) ->
                 input.getPrice().getAmount() <= maxPrice
                         && input.getAvailabilityDates().check(dateFilterItem)
                         && input.getPrice().getAmount() >= minPrice
@@ -151,10 +152,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
                         && input.getDuration() <= maxNights
                         && (showSoldOut || input.isAvailable())
                         && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
-                        && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))));
+                        && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))).toList());
         return filteredTrips;
     }
-
     public void resetFilters() {
         this.maxNights = Integer.MAX_VALUE;
         this.maxPrice = Double.MAX_VALUE;

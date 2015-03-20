@@ -6,8 +6,8 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.gc.materialdesign.widgets.SnackBar;
-import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -101,8 +101,8 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     private void fillWithItems() {
         ArrayList<Object> result = new ArrayList<>();
         if (bucketItems.size() > 0) {
-            Collection<BucketItem> toDo = Collections2.filter(bucketItems, (bucketItem) -> !bucketItem.isDone());
-            Collection<BucketItem> done = Collections2.filter(bucketItems, (bucketItem) -> bucketItem.isDone());
+            Collection<BucketItem> toDo = Queryable.from(bucketItems).filter((bucketItem) -> !bucketItem.isDone()).toList();
+            Collection<BucketItem> done = Queryable.from(bucketItems).filter((bucketItem) -> bucketItem.isDone()).toList();
             if (showToDO && toDo.size() > 0) {
                 result.add(new BucketHeader(0, R.string.to_do));
                 result.addAll(toDo);
@@ -230,7 +230,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         bucketItems.add(toPosition, item);
 
         db.saveBucketList(bucketItems, type.name());
-        syncPosition(item, toPosition);
+        //syncPosition(item, toPosition);
     }
 
     private void syncPosition(BucketItem bucketItem, int to) {

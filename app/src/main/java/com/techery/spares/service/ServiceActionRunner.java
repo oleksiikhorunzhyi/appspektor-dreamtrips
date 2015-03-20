@@ -5,14 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.gson.Gson;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ServiceActionRunner {
     private final Context context;
 
     public ServiceActionRunner(Context context) {
-        checkNotNull(context, "Context is required");
+        ValidationUtils.checkNotNull(context, "Context is required");
         this.context = context;
     }
 
@@ -24,12 +24,12 @@ public class ServiceActionRunner {
         private final Class<T> clazz;
 
         public Runner(Class<T> clazz) {
-            checkNotNull(clazz, "Class is required");
+            ValidationUtils.checkNotNull(clazz, "Class is required");
             this.clazz = clazz;
         }
 
         public void run(Object action) {
-            checkNotNull(action, "Action is required to run service action");
+            ValidationUtils.checkNotNull(action, "Action is required to run service action");
 
             Intent intent = new Intent(context, this.clazz);
 

@@ -9,7 +9,6 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="stageDebug" />
-        <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleStageDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileStageDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugTest" />
@@ -110,8 +109,8 @@
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="instabugsupport-1.2.7" level="project" />
-    <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="aws-android-sdk-2.1.7-core" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-stickyheaders-0.5.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.4" level="project" />
@@ -130,8 +129,8 @@
     <orderEntry type="library" exported="" name="expandableTextView-0.1.3" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.4" level="project" />
     <orderEntry type="library" exported="" name="selectableroundedimageview-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-maps-6.5.87" level="project" />
     <orderEntry type="library" exported="" name="image-chooser-library-1.4.3" level="project" />
+    <orderEntry type="library" exported="" name="play-services-maps-6.5.87" level="project" />
     <orderEntry type="library" exported="" name="library-1.2.3" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.2.0" level="project" />
     <orderEntry type="library" exported="" name="eventbus-2.4.0" level="project" />
@@ -166,7 +165,6 @@
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="commons-io-1.3.2" level="project" />
     <orderEntry type="library" exported="" name="advrecyclerview-0.6.2" level="project" />
-    <orderEntry type="library" exported="" name="undobar-1.7.1" level="project" />
     <orderEntry type="library" exported="" name="instabugcore-1.2.7" level="project" />
     <orderEntry type="library" exported="" name="digits-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
@@ -174,6 +172,7 @@
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="collections-query-0.2.8" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="armeabi" level="project" />

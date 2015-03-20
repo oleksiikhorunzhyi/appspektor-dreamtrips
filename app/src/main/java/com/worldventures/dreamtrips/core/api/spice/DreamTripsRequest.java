@@ -8,8 +8,8 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -176,19 +176,20 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
             if (needUpdate() || fromNetwork) {
                 ArrayList<BucketItem> list = getService().getBucketList();
 
-                ArrayList<BucketItem> activtyList = new ArrayList<>();
+                ArrayList<BucketItem> activityList = new ArrayList<>();
                 ArrayList<BucketItem> locationList = new ArrayList<>();
 
-                activtyList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.getName())));
-                locationList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.getName())));
+                activityList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
+                        .equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.getName())).toList());
+                locationList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
+                        .equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.getName())).toList());
 
-                snappyRepository.saveBucketList(activtyList, BucketTabsFragment.Type.ACTIVITIES.name());
+                snappyRepository.saveBucketList(activityList, BucketTabsFragment.Type.ACTIVITIES.name());
                 snappyRepository.saveBucketList(locationList, BucketTabsFragment.Type.LOCATIONS.name());
 
-                resultList.addAll(Collections2.filter(list,
-                        (bucketItem) -> bucketItem.getType().equalsIgnoreCase(type.getName())));
+                resultList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
+                        .equalsIgnoreCase(type.getName())).toList());
+
                 prefs.put(Prefs.LAST_SYNC_BUCKET, Calendar.getInstance().getTimeInMillis());
             } else {
                 resultList.addAll(snappyRepository.readBucketList(type.name()));

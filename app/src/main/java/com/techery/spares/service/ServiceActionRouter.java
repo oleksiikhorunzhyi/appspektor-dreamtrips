@@ -3,11 +3,10 @@ package com.techery.spares.service;
 import android.content.Intent;
 
 import com.google.gson.Gson;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ServiceActionRouter {
 
@@ -41,15 +40,15 @@ public class ServiceActionRouter {
     }
 
     public void on(String action, ActionHandler body) {
-        checkNotNull(action);
-        checkNotNull(body);
+        ValidationUtils.checkNotNull(action);
+        ValidationUtils.checkNotNull(body);
 
         actionsMap.put(action, body);
     }
 
     public <T> void on(String action, Class<T> clazz, ActionHandlerWithPayload<T> body) {
-        checkNotNull(action);
-        checkNotNull(body);
+        ValidationUtils.checkNotNull(action);
+        ValidationUtils.checkNotNull(body);
 
         actionsMap.put(action, (intent) -> {
             String jsonPayload = intent.getStringExtra(InjectingService.EXTRA_PAYLOAD);

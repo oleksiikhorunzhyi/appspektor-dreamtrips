@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.presentation;
 
-import com.google.common.collect.Collections2;
+import com.google.gson.reflect.TypeToken;
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -182,7 +183,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     private List<Activity> getParentActivities() {
         List<Activity> parentActivities = new ArrayList<>();
-        parentActivities.addAll(Collections2.filter(activities, (input) -> input.getParent_id() == 0));
+        parentActivities.addAll(Queryable.from(activities).filter((input) -> input.getParent_id() == 0).toList());
         return parentActivities;
     }
 
@@ -207,8 +208,8 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
             themesList = new ArrayList<>();
             for (Activity activity : parentActivities) {
                 if (activity.isChecked()) {
-                    themesList.addAll(Collections2.filter(activities, (input) -> input.getParent_id()
-                            == activity.getId()));
+                    themesList.addAll(Queryable.from(activities).filter((input) -> input.getParent_id()
+                            == activity.getId()).toList());
                 }
             }
         }

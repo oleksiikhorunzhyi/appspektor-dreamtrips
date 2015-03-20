@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.model;
 
-import com.google.common.collect.Collections2;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.view.util.Filterable;
 
 import java.util.ArrayList;
@@ -149,8 +149,8 @@ public class Trip extends BaseEntity implements Filterable {
 
     public List<Object> getFilteredImages() {
         List<Object> filteredImages = new ArrayList<>();
-        filteredImages.addAll(Collections2.filter(images, (input) ->
-                input.getType().equals("RETINA")));
+        filteredImages.addAll(Queryable.from(images).filter((input) ->
+                input.getType().equals("RETINA")).toList());
         return filteredImages;
     }
 

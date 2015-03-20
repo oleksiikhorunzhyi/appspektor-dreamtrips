@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
-import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -56,8 +55,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         this.trip = trip;
         images = trip.getImages();
         filteredImages = new ArrayList<>();
-        filteredImages.addAll(Collections2.filter(images, (input) ->
-                input.getType().equals("RETINA")));
+        filteredImages.addAll(trip.getFilteredImages());
 
     }
 

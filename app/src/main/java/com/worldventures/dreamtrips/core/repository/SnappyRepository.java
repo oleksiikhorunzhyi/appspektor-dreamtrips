@@ -9,6 +9,7 @@ import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,11 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * Created by 1 on 27.02.15.
- */
 public class SnappyRepository {
 
     public static final String REGIONS = "regions";
@@ -40,7 +36,7 @@ public class SnappyRepository {
     private ExecutorService executorService;
 
     public SnappyRepository(Context context) {
-        checkNotNull(context);
+        ValidationUtils.checkNotNull(context);
         this.context = context;
         this.executorService = Executors.newSingleThreadExecutor();
     }

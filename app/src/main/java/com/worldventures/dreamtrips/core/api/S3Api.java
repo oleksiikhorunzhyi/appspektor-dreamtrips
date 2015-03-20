@@ -10,5 +10,4 @@ public interface S3Api {
 
     @GET("/config/settings_v2.json")
     public S3GlobalConfig getConfig();
-
 }

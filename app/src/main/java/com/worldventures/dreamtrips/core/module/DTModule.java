@@ -37,10 +37,10 @@ import de.greenrobot.event.EventBus;
                 DreamTripsApplication.class,
                 InstabugInitializer.class,
                 ImageLoaderInitializer.class,
+                FabricInitializer.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
                 DreamTripsRequest.UploadTripPhoto.class
-
         },
         includes = {
                 InjectingApplicationModule.class,

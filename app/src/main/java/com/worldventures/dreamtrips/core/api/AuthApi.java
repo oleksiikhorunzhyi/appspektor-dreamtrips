@@ -13,5 +13,4 @@ public interface AuthApi {
     @Headers("\"Content-Type\":\"application/json\"")
     @POST("/AuthenticateByUserName")
     public void authenticateByUserName(@Body String body, Callback<Object> callback);
-
 }

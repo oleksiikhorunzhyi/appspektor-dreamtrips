@@ -25,6 +25,18 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     @Inject
     GsonConverter gsonConverter;
 
+    @Inject
+    DreamTripsApi dreamTripsApi;
+
+    @Inject
+    SharedServicesApi sharedServicesApi;
+
+    @Inject
+    S3Api s3Api;
+
+    @Inject
+    AuthApi authApi;
+
     @Override
     protected NetworkStateChecker getNetworkStateChecker() {
         return new NetworkStateChecker() {
@@ -62,7 +74,17 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
 
     @SuppressWarnings("unchecked")
     protected <T> T getRetrofitService(Class<T> serviceClass) {
-        return ((DreamTripsApplication) getApplicationContext()).getObjectGraph().get(serviceClass);
+        T t = null;
+        if (serviceClass == DreamTripsApi.class) {
+            t = (T) dreamTripsApi;
+        } else if (serviceClass == SharedServicesApi.class) {
+            t = (T) sharedServicesApi;
+        } else if (serviceClass == S3Api.class) {
+            t = (T) s3Api;
+        } else if (serviceClass == AuthApi.class) {
+            t = (T) authApi;
+        }
+        return t;
     }
 
     @Override

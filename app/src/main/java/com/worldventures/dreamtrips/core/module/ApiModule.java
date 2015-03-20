@@ -6,13 +6,13 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.PersistentCookieStore;
 
@@ -59,12 +59,12 @@ public class ApiModule {
     }
 
     @Provides
-    DefaultErrorHandler provideDefaultErrorHandler(AppSessionHolder appSessionHolder) {
+    DefaultErrorHandler provideDefaultErrorHandler(SessionHolder<UserSession> appSessionHolder) {
         return new DefaultErrorHandler(appSessionHolder);
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(AppSessionHolder appSessionHolder) {
+    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.presentation.BucketListPopularPM;

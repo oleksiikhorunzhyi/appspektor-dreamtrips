@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,16 +10,13 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Activity;
-import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
+import com.worldventures.dreamtrips.utils.events.ThemeSetChangedEvent;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by 1 on 23.01.15.
- */
 @Layout(R.layout.adapter_item_region)
 public class ActivityCell extends AbstractCell<Activity> {
 

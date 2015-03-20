@@ -3,15 +3,21 @@ package com.worldventures.dreamtrips.core.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class Location implements Serializable, Parcelable {
 
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        public Location createFromParcel(Parcel source) {
+            return new Location(source);
+        }
+
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
     String name;
     double lat;
-
     double lng;
 
     public Location() {
@@ -56,15 +62,5 @@ public class Location implements Serializable, Parcelable {
         dest.writeDouble(this.lat);
         dest.writeDouble(this.lng);
     }
-
-    public static final Creator<Location> CREATOR = new Creator<Location>() {
-        public Location createFromParcel(Parcel source) {
-            return new Location(source);
-        }
-
-        public Location[] newArray(int size) {
-            return new Location[size];
-        }
-    };
 
 }

@@ -7,15 +7,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
-import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.presentation.FiltersFragmentPM;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
@@ -23,11 +20,8 @@ import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
 import com.worldventures.dreamtrips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.view.cell.RegionCell;
-import com.worldventures.dreamtrips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
-
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -82,7 +76,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     @Override
     public void onResume() {
         super.onResume();
-      //  refresh();
+        //  refresh();
     }
 
     @Override

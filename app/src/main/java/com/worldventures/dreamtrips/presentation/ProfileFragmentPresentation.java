@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.dialog.ImagePickCallback;
 
 import java.io.File;

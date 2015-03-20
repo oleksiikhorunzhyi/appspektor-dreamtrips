@@ -21,8 +21,8 @@ import timber.log.Timber;
  */
 public class BookItActivityPresentation extends BasePresentation<BookItActivityPresentation.View> {
 
-    private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
     public static final int LIFE_DURATION = 30;
+    private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
 
     public BookItActivityPresentation(BookItActivityPresentation.View view) {
         super(view);
@@ -34,7 +34,7 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             openBookIt();
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(view.getTripId()),new RequestListener<TripDetails>() {
+            dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(view.getTripId()), new RequestListener<TripDetails>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     Timber.e(spiceException, "");

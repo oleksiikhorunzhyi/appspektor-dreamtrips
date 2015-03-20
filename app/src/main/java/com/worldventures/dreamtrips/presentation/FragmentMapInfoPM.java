@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
-import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
-import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
-
+import com.worldventures.dreamtrips.utils.events.InfoWindowSizeEvent;
+import com.worldventures.dreamtrips.utils.events.ShowInfoWindowEvent;
+import com.worldventures.dreamtrips.utils.events.TripLikedEvent;
 
 import javax.inject.Inject;
 
@@ -17,11 +16,10 @@ import de.greenrobot.event.EventBus;
  */
 public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> {
 
-    private Trip trip;
-
     @Global
     @Inject
     EventBus eventBus;
+    private Trip trip;
 
     public FragmentMapInfoPM(View view) {
         super(view);

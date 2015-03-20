@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
-import android.os.Vibrator;
 import android.support.annotation.IntDef;
-import android.util.AttributeSet;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +19,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
-import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
+import com.worldventures.dreamtrips.utils.events.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.utils.events.MarkBucketItemDoneEvent;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -39,6 +37,11 @@ import static com.worldventures.dreamtrips.utils.ViewUtils.dpFromPx;
 @Layout(R.layout.adapter_item_bucket_cell)
 public class BucketItemCell extends AbstractCell<BucketItem> implements DraggableItemViewHolder, SwipeLayout.SwipeListener {
 
+    static final int ACTION_DEL = 0;
+    static final int ACTION_DONE = 1;
+    //
+    static final int ACTION_NONE = -1;
+    static final int ACTION_SETTLING = -2;
     @InjectView(R.id.container)
     RelativeLayout container;
     @InjectView(R.id.bottom_wrapper)
@@ -57,20 +60,21 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     ImageView imageViewStatusClose;
     @InjectView(R.id.crossing)
     View crossing;
-
     @Inject
     Context context;
-
     private int mDragStateFlags;
     private int mSwipeStateFlags;
     private int mSwipeResult = RecyclerViewSwipeManager.RESULT_NONE;
     private int mAfterSwipeReaction = RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
     private float mSwipeAmount;
-
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
-
     private boolean longPressed;
+    /**
+     * Swipe handling, @see SwipeListener
+     */
+
+    private int lastOffset;
 
     public BucketItemCell(View view) {
         super(view);
@@ -147,6 +151,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         return longPressed;
     }
 
+    @Override
+    public int getDragStateFlags() {
+        return mDragStateFlags;
+    }
+
     /**
      * Drag handling
      *
@@ -158,11 +167,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         mDragStateFlags = flags;
     }
 
-    @Override
-    public int getDragStateFlags() {
-        return mDragStateFlags;
-    }
-
     public View getContainerView() {
         return swipeLayout;
     }
@@ -170,12 +174,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     public View getDraggableView() {
         return container;
     }
-
-    /**
-     * Swipe handling, @see SwipeListener
-     */
-
-    private int lastOffset;
 
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
@@ -185,6 +183,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Swipe action handling
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onStartClose(SwipeLayout swipeLayout) {
@@ -214,10 +216,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         itemView.postDelayed(() -> swipeLayout.close(true, false), closeDelay);
         itemView.postDelayed(() -> processAction(action), 300);
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Swipe action handling
-    ///////////////////////////////////////////////////////////////////////////
 
     private void renderAction(@SwipeAction int action) {
         switch (action) {
@@ -268,23 +266,17 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         else return ACTION_NONE;
     }
 
-    static final int ACTION_DEL = 0;
-    static final int ACTION_DONE = 1;
-    //
-    static final int ACTION_NONE = -1;
-    static final int ACTION_SETTLING = -2;
-
-    @IntDef({ACTION_DEL, ACTION_DONE, ACTION_SETTLING, ACTION_NONE})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface SwipeAction {
+    private boolean isFling(float velocity) {
+        return dpFromPx(context, velocity) > swipeVelocityTrigger;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Additional helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    private boolean isFling(float velocity) {
-        return dpFromPx(context, velocity) > swipeVelocityTrigger;
+    @IntDef({ACTION_DEL, ACTION_DONE, ACTION_SETTLING, ACTION_NONE})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface SwipeAction {
     }
 
 }

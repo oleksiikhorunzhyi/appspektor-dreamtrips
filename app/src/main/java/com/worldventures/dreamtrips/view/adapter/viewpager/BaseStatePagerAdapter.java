@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.view.fragment.FullScreenPhotoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class BaseStatePagerAdapter<T extends Fragment> extends FragmentStatePage
 
     @Override
     public void addItems(ArrayList baseItemClasses) {
-     //Overrided inFullScreenPhotoActivity
+        //Overrided inFullScreenPhotoActivity
     }
 
     @Override

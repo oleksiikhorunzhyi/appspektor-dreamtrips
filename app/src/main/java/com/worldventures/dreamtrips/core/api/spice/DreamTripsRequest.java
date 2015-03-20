@@ -12,6 +12,7 @@ import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
@@ -29,13 +30,12 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.uploader.Constants;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadStarted;
+import com.worldventures.dreamtrips.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.io.File;
@@ -154,7 +154,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
     }
 
-
     public static class GetBucketList extends DreamTripsRequest<ArrayList<BucketItem>> {
 
         private BucketTabsFragment.Type type;
@@ -204,7 +203,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         }
 
     }
-
 
     public static class GetUserPhotos extends DreamTripsRequest<ArrayList<Photo>> {
 
@@ -290,10 +288,9 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         @Inject
         SnappyRepository db;
-
-        private int currentUserId;
         int perPage;
         int page;
+        private int currentUserId;
 
         public GetMyPhotos(int currentUserId, int perPage, int page) {
             super((Class<ArrayList<IFullScreenAvailableObject>>) new ArrayList<IFullScreenAvailableObject>().getClass());
@@ -577,16 +574,14 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
         transient double byteTransferred;
         transient int lastPercent;
-
+        @Inject
+        SnappyRepository db;
         private ImageUploadTask uploadTask;
 
         public UploadTripPhoto(ImageUploadTask uploadTask) {
             super(Photo.class);
             this.uploadTask = uploadTask;
         }
-
-        @Inject
-        SnappyRepository db;
 
         @Override
         public Photo loadDataFromNetwork() {
@@ -598,8 +593,8 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentType("");
                 Upload uploadHandler = transferManager.upload(
-                        Constants.BUCKET_NAME.toLowerCase(Locale.US),
-                        Constants.BUCKET_ROOT_PATH + file.getName(),
+                        BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
+                        BuildConfig.BUCKET_ROOT_PATH + file.getName(),
                         new FileInputStream(file), metadata
                 );
 

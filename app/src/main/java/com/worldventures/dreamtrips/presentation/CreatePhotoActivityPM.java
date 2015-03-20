@@ -16,15 +16,15 @@ public class CreatePhotoActivityPM extends BasePresentation<BasePresentation.Vie
 
     public void onCreate() {
         Bundle b = new Bundle();
-        b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI,imageUri);
-        fragmentCompass.add(State.CREATE_PHOTO,b);
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
+        b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
+        fragmentCompass.add(State.CREATE_PHOTO, b);
     }
 
     public Uri getImageUri() {
         return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 }

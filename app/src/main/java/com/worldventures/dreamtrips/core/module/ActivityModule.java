@@ -20,10 +20,6 @@ import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.repository.BucketListSelectionStorage;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
-import com.worldventures.dreamtrips.core.uploader.Logger;
-import com.worldventures.dreamtrips.core.uploader.UploadingAPI;
 import com.worldventures.dreamtrips.presentation.ActualTokenStaticInfoFragmentPM;
 import com.worldventures.dreamtrips.presentation.BaseActivityPresentation;
 import com.worldventures.dreamtrips.presentation.BookItActivityPresentation;
@@ -96,7 +92,6 @@ import com.worldventures.dreamtrips.view.adapter.item.PhotoItem;
 import com.worldventures.dreamtrips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
 import com.worldventures.dreamtrips.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.view.cell.BucketQuickCell;
 import com.worldventures.dreamtrips.view.cell.DateCell;
@@ -149,7 +144,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.RestAdapter;
 
 @Module(
         injects = {
@@ -262,7 +256,6 @@ import retrofit.RestAdapter;
                 VideoCell.class,
                 Video360Cell.class,
                 ActivityCell.class,
-                BucketItemCellOld.class,
                 BucketItemCell.class,
                 ThemeHeaderCell.class,
                 SoldOutCell.class,
@@ -333,16 +326,9 @@ public class ActivityModule {
 
     @Provides
     @Singleton
-    BucketListSelectionStorage provideBucketListSelectionStorage(SimpleKeyValueStorage simpleKeyValueStorage, AppSessionHolder appSessionHolder) {
-        return new BucketListSelectionStorage(simpleKeyValueStorage, appSessionHolder.get().get().getUsername());
-    }
-
-    @Provides
-    @Singleton
     SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
-
 
     @Provides
     DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
@@ -358,7 +344,6 @@ public class ActivityModule {
     @Provides
     Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector) {
         return new Configuration.Builder(context)
-                .customLogger(new Logger())
                 .injector(injector)
                 .minConsumerCount(1)
                 .maxConsumerCount(5)
@@ -372,12 +357,6 @@ public class ActivityModule {
     @Singleton
     JobManager provideJobManager(Context context, Configuration configuration) {
         return new JobManager(context, configuration);
-    }
-
-
-    @Provides
-    UploadingAPI provideUploadingAPI(RestAdapter adapter) {
-        return adapter.create(UploadingAPI.class);
     }
 
 }

@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.core.initializer;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

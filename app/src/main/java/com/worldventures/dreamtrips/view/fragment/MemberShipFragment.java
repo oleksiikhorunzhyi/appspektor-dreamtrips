@@ -16,9 +16,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.MembershipPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
+import com.worldventures.dreamtrips.utils.events.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.view.cell.VideoCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
 
@@ -45,7 +44,7 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-          this.recyclerView.setEmptyView(emptyView);
+        this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);

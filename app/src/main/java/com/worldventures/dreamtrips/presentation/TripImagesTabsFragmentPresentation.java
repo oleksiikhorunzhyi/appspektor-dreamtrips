@@ -27,6 +27,10 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
         }
     };
 
+    public TripImagesTabsFragmentPresentation(View view) {
+        super(view);
+    }
+
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
             AdobeTrackingHelper.mine(getUserId());
@@ -45,10 +49,6 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
     @Override
     public void destroyView() {
         super.destroyView();
-    }
-
-    public TripImagesTabsFragmentPresentation(View view) {
-        super(view);
     }
 
     public void onCreate() {

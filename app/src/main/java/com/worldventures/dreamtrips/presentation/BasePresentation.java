@@ -6,16 +6,19 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
 public class BasePresentation<VT extends BasePresentation.View> {
+
+    protected final VT view;
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -27,7 +30,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
     protected ActivityRouter activityRouter;
 
     @Inject
-    protected AppSessionHolder appSessionHolder;
+    protected SessionHolder<UserSession> appSessionHolder;
 
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
@@ -35,8 +38,6 @@ public class BasePresentation<VT extends BasePresentation.View> {
     @Inject
     @Global
     EventBus eventBus;
-
-    protected final VT view;
 
     public BasePresentation(VT view) {
         this.view = view;

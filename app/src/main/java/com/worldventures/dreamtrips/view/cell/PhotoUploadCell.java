@@ -13,12 +13,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadStarted;
-import com.worldventures.dreamtrips.utils.busevents.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadStarted;
+import com.worldventures.dreamtrips.utils.events.UploadProgressUpdateEvent;
 
 import javax.inject.Inject;
 

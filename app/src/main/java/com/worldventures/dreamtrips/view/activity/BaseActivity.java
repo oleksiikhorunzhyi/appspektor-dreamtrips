@@ -3,14 +3,11 @@ package com.worldventures.dreamtrips.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 import com.adobe.mobile.Config;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;

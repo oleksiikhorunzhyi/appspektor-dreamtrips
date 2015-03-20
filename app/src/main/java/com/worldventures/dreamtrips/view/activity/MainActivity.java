@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.presentation.AdapterView;
 import com.worldventures.dreamtrips.presentation.MainActivityPresentation;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.ScreenOrientationChangeEvent;
+import com.worldventures.dreamtrips.utils.events.ScreenOrientationChangeEvent;
 
 import net.hockeyapp.android.UpdateManager;
 

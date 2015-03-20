@@ -33,6 +33,20 @@ public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
 
     }
 
+    public static FacebookPhotoItem convert(Injector injector, FacebookPhoto photo) {
+        return new FacebookPhotoItem(injector, photo);
+    }
+
+    public static List<FacebookPhotoItem> convert(Injector injector, List<FacebookPhoto> photos) {
+        List<FacebookPhotoItem> result = new ArrayList<>();
+        if (photos != null) {
+            for (FacebookPhoto p : photos) {
+                result.add(convert(injector, p));
+            }
+        }
+        return result;
+    }
+
     @Override
     public RecyclerView.ViewHolder getBaseRecycleItem(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_item_photo, parent, false);
@@ -63,21 +77,6 @@ public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
             super(v);
             ButterKnife.inject(this, v);
         }
-    }
-
-
-    public static FacebookPhotoItem convert(Injector injector, FacebookPhoto photo) {
-        return new FacebookPhotoItem(injector, photo);
-    }
-
-    public static List<FacebookPhotoItem> convert(Injector injector, List<FacebookPhoto> photos) {
-        List<FacebookPhotoItem> result = new ArrayList<>();
-        if (photos != null) {
-            for (FacebookPhoto p : photos) {
-                result.add(convert(injector, p));
-            }
-        }
-        return result;
     }
 
 }

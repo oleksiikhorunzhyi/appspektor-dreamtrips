@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.presentation.tripimages;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.presentation.TripImagesListPM;

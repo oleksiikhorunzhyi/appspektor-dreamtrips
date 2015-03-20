@@ -59,7 +59,7 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter i
 
     @Override
     public void addItems(ArrayList baseItemClasses) {
-     //in FullScreenPhotoFragment will be called FSUploadEvent, and items are added by activity method add all
+        //in FullScreenPhotoFragment will be called FSUploadEvent, and items are added by activity method add all
     }
 
     @Override

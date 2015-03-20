@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
@@ -29,6 +28,20 @@ public class PhotoItem implements ItemWrapper<Photo> {
 
     public PhotoItem(Photo photo) {
         this.photo = photo;
+    }
+
+    public static PhotoItem convert(Photo photo) {
+        return new PhotoItem(photo);
+    }
+
+    public static List<PhotoItem> convert(List<Photo> photos) {
+        List<PhotoItem> result = new ArrayList<>();
+        if (photos != null) {
+            for (Photo p : photos) {
+                result.add(convert(p));
+            }
+        }
+        return result;
     }
 
     @Override
@@ -61,20 +74,6 @@ public class PhotoItem implements ItemWrapper<Photo> {
             super(v);
             ButterKnife.inject(this, v);
         }
-    }
-
-    public static PhotoItem convert(Photo photo) {
-        return new PhotoItem(photo);
-    }
-
-    public static List<PhotoItem> convert(List<Photo> photos) {
-        List<PhotoItem> result = new ArrayList<>();
-        if (photos != null) {
-            for (Photo p : photos) {
-                result.add(convert(p));
-            }
-        }
-        return result;
     }
 
 }

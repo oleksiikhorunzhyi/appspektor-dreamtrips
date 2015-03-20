@@ -8,21 +8,19 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.FilterModel;
-import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
-import com.worldventures.dreamtrips.utils.busevents.RangeBarDurationEvent;
-import com.worldventures.dreamtrips.utils.busevents.RangeBarPriceEvent;
-import com.worldventures.dreamtrips.utils.busevents.ToggleRegionVisibilityEvent;
-import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
+import com.worldventures.dreamtrips.utils.events.CheckBoxAllPressedEvent;
+import com.worldventures.dreamtrips.utils.events.RangeBarDurationEvent;
+import com.worldventures.dreamtrips.utils.events.RangeBarPriceEvent;
+import com.worldventures.dreamtrips.utils.events.ToggleRegionVisibilityEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
  * Created by Edward on 22.01.15.
- *
  */
 @Layout(R.layout.adapter_item_filters)
-public class FiltersCell extends AbstractCell<FilterModel>{
+public class FiltersCell extends AbstractCell<FilterModel> {
 
     @InjectView(R.id.rangeBarDay)
     RangeBar rangeBarDay;

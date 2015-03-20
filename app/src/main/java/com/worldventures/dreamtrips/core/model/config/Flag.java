@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Flag {
     @SerializedName("Code")
     private String code;
+
     @SerializedName("Description")
     private boolean description;
 

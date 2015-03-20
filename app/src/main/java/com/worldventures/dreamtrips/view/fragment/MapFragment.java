@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.graphics.Point;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -23,18 +21,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.MapFragmentPM;
-import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.custom.ToucheableMapView;
-
-import java.util.ArrayList;
 
 import butterknife.InjectView;
 
@@ -94,7 +87,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnCloseListener(()-> {
+        searchView.setOnCloseListener(() -> {
             getPresentationModel().applySearch(null);
             return false;
         });

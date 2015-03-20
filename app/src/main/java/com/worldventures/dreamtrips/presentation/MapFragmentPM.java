@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
-import com.worldventures.dreamtrips.utils.busevents.InfoWindowSizeEvent;
-import com.worldventures.dreamtrips.utils.busevents.ShowInfoWindowEvent;
+import com.worldventures.dreamtrips.utils.events.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.events.InfoWindowSizeEvent;
+import com.worldventures.dreamtrips.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
@@ -31,10 +31,13 @@ import de.greenrobot.event.EventBus;
  */
 public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
+    @Inject
+    SnappyRepository db;
+    @Inject
+    @Global
+    EventBus eventBus;
     private List<Trip> data = new ArrayList<>();
     private List<Trip> filteredData;
-
-
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -43,15 +46,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
     private List<Integer> acceptedRegions;
     private List<Activity> acceptedThemes;
     private DateFilterItem dateFilterItem = new DateFilterItem();
-
     private String query;
-
-    @Inject
-    SnappyRepository db;
-
-    @Inject
-    @Global
-    EventBus eventBus;
 
     public MapFragmentPM(MapFragmentPM.View view) {
         super(view);

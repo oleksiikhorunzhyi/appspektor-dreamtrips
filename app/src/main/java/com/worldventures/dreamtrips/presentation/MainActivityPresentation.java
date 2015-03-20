@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
+import com.worldventures.dreamtrips.utils.events.UpdateSelectionEvent;
 
 import javax.inject.Inject;
 
@@ -10,11 +10,10 @@ import de.greenrobot.event.EventBus;
 
 public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
 
-    private State currentState;
-
     @Global
     @Inject
     EventBus eventBus;
+    private State currentState;
 
     public MainActivityPresentation(View view) {
         super(view);

@@ -9,23 +9,22 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemSelectedEvent;
+import com.worldventures.dreamtrips.utils.events.OnSuccessStoryCellClickEvent;
+import com.worldventures.dreamtrips.utils.events.SuccessStoryItemSelectedEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_success_story)
 public class SuccessStoryCell extends AbstractCell<SuccessStory> {
+    @InjectView(R.id.tv_title)
+    TextView tvTitle;
+    @InjectView(R.id.vg_parent)
+    ViewGroup vgParent;
+
     public SuccessStoryCell(View view) {
         super(view);
     }
-
-    @InjectView(R.id.tv_title)
-    TextView tvTitle;
-
-    @InjectView(R.id.vg_parent)
-    ViewGroup vgParent;
 
     @Override
     protected void syncUIStateWithModel() {

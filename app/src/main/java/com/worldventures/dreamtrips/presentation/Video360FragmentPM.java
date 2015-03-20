@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.Video360;
 import com.worldventures.dreamtrips.core.model.config.Videos360;
 

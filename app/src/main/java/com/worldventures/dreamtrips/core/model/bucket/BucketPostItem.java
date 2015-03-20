@@ -31,22 +31,6 @@ public class BucketPostItem {
         this.status = status;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public boolean isLoaded() {
         return isLoaded;
     }
@@ -59,16 +43,32 @@ public class BucketPostItem {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean isError() {

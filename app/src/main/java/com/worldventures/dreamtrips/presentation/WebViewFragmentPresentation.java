@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
 import com.worldventures.dreamtrips.core.navigation.State;

@@ -5,10 +5,8 @@ import android.content.Context;
 
 import com.octo.android.robospice.networkstate.NetworkStateChecker;
 import com.octo.android.robospice.persistence.CacheManager;
-import com.octo.android.robospice.persistence.binary.InFileBitmapObjectPersister;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.persistence.memory.LruCacheBitmapObjectPersister;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.DreamTripsApplication;
@@ -24,17 +22,6 @@ import retrofit.converter.GsonConverter;
 
 public class DreamSpiceService extends RetrofitGsonSpiceService {
 
-    @Inject
-    DreamTripsApi dreamTripsApi;
-
-    @Inject
-    SharedServicesApi sharedServicesApi;
-
-    @Inject
-    S3Api s3Api;
-
-    @Inject
-    AuthApi authApi;
     @Inject
     GsonConverter gsonConverter;
 
@@ -75,22 +62,12 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
 
     @SuppressWarnings("unchecked")
     protected <T> T getRetrofitService(Class<T> serviceClass) {
-        T t = null;
-        if (serviceClass == DreamTripsApi.class) {
-            t = (T) dreamTripsApi;
-        } else if (serviceClass == SharedServicesApi.class) {
-            t = (T) sharedServicesApi;
-        } else if (serviceClass == S3Api.class) {
-            t = (T) s3Api;
-        } else if (serviceClass == AuthApi.class) {
-            t = (T) authApi;
-        }
-        return t;
+        return ((DreamTripsApplication) getApplicationContext()).getObjectGraph().get(serviceClass);
     }
 
     @Override
     public int getThreadCount() {
-        return 8;
+        return 4;
     }
 
     @Override

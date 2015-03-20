@@ -141,6 +141,10 @@ public class SwipingActionGuardManager {
         mGuarding = false;
     }
 
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
     public void setEnabled(boolean enabled) {
         if (mEnabled == enabled) {
             return;
@@ -150,10 +154,6 @@ public class SwipingActionGuardManager {
         if (!mEnabled) {
             handleActionUpOrCancel();
         }
-    }
-
-    public boolean isEnabled() {
-        return mEnabled;
     }
 
 }

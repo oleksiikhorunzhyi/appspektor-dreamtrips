@@ -222,10 +222,6 @@ public class FacebookPhoto {
             mValue = value;
         }
 
-        public String getValue() {
-            return mValue;
-        }
-
         public static BackDatetimeGranularity fromValue(String value) {
             for (BackDatetimeGranularity granularityEnum : values()) {
                 if (granularityEnum.mValue.equals(value)) {
@@ -233,6 +229,10 @@ public class FacebookPhoto {
                 }
             }
             return BackDatetimeGranularity.NONE;
+        }
+
+        public String getValue() {
+            return mValue;
         }
     }
 

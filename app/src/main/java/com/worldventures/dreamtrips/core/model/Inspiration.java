@@ -5,9 +5,28 @@ import android.os.Parcelable;
 
 public class Inspiration extends BaseEntity implements IFullScreenAvailableObject, Parcelable {
 
+    public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
+        public Inspiration createFromParcel(Parcel source) {
+            return new Inspiration(source);
+        }
+
+        public Inspiration[] newArray(int size) {
+            return new Inspiration[size];
+        }
+    };
     Image images;
     String quote;
     String author;
+
+    public Inspiration() {
+    }
+
+    private Inspiration(Parcel in) {
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.quote = in.readString();
+        this.author = in.readString();
+        this.id = in.readInt();
+    }
 
     public Image getImages() {
         return images;
@@ -53,10 +72,6 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         return getFsDescription() + " " + getFSTitle();
     }
 
-
-    public Inspiration() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -69,23 +84,6 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         dest.writeString(this.author);
         dest.writeInt(this.id);
     }
-
-    private Inspiration(Parcel in) {
-        this.images = in.readParcelable(Image.class.getClassLoader());
-        this.quote = in.readString();
-        this.author = in.readString();
-        this.id = in.readInt();
-    }
-
-    public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
-        public Inspiration createFromParcel(Parcel source) {
-            return new Inspiration(source);
-        }
-
-        public Inspiration[] newArray(int size) {
-            return new Inspiration[size];
-        }
-    };
 
     @Override
     public String getPhotoLocation() {

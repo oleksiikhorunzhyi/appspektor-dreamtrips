@@ -168,10 +168,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
     @Layout(R.layout.fragment_webview)
     public static class BundleUrlFragment extends StaticInfoFragment {
         public static final String URL_EXTRA = "URL_EXTRA";
-        private String url;
-
         @InjectView(R.id.progressBarWeb)
         ProgressBar progressBarWeb;
+        private String url;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {

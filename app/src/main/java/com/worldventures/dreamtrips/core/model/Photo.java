@@ -5,12 +5,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
 
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        public Photo createFromParcel(Parcel source) {
+            return new Photo(source);
+        }
+
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
     String title;
     String shotAt;
     Location location;
@@ -21,6 +29,24 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     String taskId;
     User user;
 
+    public Photo() {
+    }
+
+
+    private Photo(Parcel in) {
+        this.title = in.readString();
+        this.shotAt = in.readString();
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.tags = new ArrayList<String>();
+        in.readList(this.tags, String.class.getClassLoader());
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.liked = in.readByte() != 0;
+        this.likeCount = in.readInt();
+        this.taskId = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.id = in.readInt();
+    }
+
     public User getUser() {
         return user;
     }
@@ -28,7 +54,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     public void setUser(User user) {
         this.user = user;
     }
-
 
     public List<String> getTags() {
         return tags;
@@ -101,18 +126,13 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
                 '}';
     }
 
-    public Photo() {
-    }
-
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
     public String getTaskId() {
         return taskId;
     }
 
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
     @Override
     public int describeContents() {
@@ -132,30 +152,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         dest.writeParcelable(this.user, 0);
         dest.writeInt(this.id);
     }
-
-    private Photo(Parcel in) {
-        this.title = in.readString();
-        this.shotAt = in.readString();
-        this.location = in.readParcelable(Location.class.getClassLoader());
-        this.tags = new ArrayList<String>();
-        in.readList(this.tags, String.class.getClassLoader());
-        this.images = in.readParcelable(Image.class.getClassLoader());
-        this.liked = in.readByte() != 0;
-        this.likeCount = in.readInt();
-        this.taskId = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.id = in.readInt();
-    }
-
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        public Photo createFromParcel(Parcel source) {
-            return new Photo(source);
-        }
-
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
 
     @Override
     public Image getFSImage() {

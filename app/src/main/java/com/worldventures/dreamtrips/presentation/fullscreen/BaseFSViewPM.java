@@ -21,17 +21,25 @@ import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.
 
 public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresentation<BaseFSViewPM.View> {
 
+    protected Type type;
+    protected User user;
     @Inject
     @Global
     EventBus eventBus;
-
     T photo;
-    protected Type type;
-    protected User user;
 
     public BaseFSViewPM(View view) {
         super(view);
 
+    }
+
+    public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {
+        if (photo instanceof Photo) {
+            return new FSPhotoPM(view);
+        } else if (photo instanceof Inspiration) {
+            return new FSInspireMePM(view);
+        }
+        return new ImageUploadTaskPM(view);
     }
 
     public void setupPhoto(T photo) {
@@ -95,15 +103,6 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
 
     public void onTwitterShare(FullScreenPhotoActivity activity) {
         activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
-    }
-
-    public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {
-        if (photo instanceof Photo) {
-            return new FSPhotoPM(view);
-        } else if (photo instanceof Inspiration) {
-            return new FSInspireMePM(view);
-        }
-        return new ImageUploadTaskPM(view);
     }
 
     public List<Flag> getFlagContent() {

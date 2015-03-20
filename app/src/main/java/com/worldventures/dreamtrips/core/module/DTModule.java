@@ -10,18 +10,20 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
-import com.worldventures.dreamtrips.core.uploader.Constants;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
 
 import javax.inject.Singleton;
@@ -79,10 +81,15 @@ public class DTModule {
         return new LoggingInitializer();
     }
 
+    @Provides(type = Provides.Type.SET)
+    AppInitializer provideFabricInitializer() {
+        return new FabricInitializer();
+    }
+
     @Provides
     @Singleton
-    AppSessionHolder provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
-        return new AppSessionHolder(simpleKeyValueStorage, eventBus);
+    SessionHolder<UserSession> provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
+        return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
     }
 
     @Provides
@@ -102,9 +109,9 @@ public class DTModule {
     CognitoCachingCredentialsProvider provideCredProvider(Context context) {
         return new CognitoCachingCredentialsProvider(
                 context,
-                Constants.AWS_ACCOUNT_ID,
-                Constants.COGNITO_POOL_ID,
-                Constants.COGNITO_ROLE_UNAUTH,
+                BuildConfig.AWS_ACCOUNT_ID,
+                BuildConfig.COGNITO_POOL_ID,
+                BuildConfig.COGNITO_ROLE_UNAUTH,
                 null,
                 Regions.US_EAST_1);
     }

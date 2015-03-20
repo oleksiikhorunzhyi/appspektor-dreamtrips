@@ -15,16 +15,16 @@ public class DateFilterItem {
         reset();
     }
 
+    public DateFilterItem(Date startDate, Date endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public void reset() {
         startDate = Calendar.getInstance().getTime();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, 1);
         endDate = calendar.getTime();
-    }
-
-    public DateFilterItem(Date startDate, Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public Date getStartDate() {

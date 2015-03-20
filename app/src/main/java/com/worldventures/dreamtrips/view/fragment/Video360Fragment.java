@@ -11,16 +11,12 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.Video360;
 import com.worldventures.dreamtrips.presentation.Video360FragmentPM;
-import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.cell.Video360Cell;
 import com.worldventures.dreamtrips.view.cell.Video360SmallCell;
 
 import butterknife.InjectView;
 import butterknife.Optional;
 
-/**
- * Created by 1 on 10.03.15.
- */
 @Layout(R.layout.fragment_360_videos)
 public class Video360Fragment extends BaseFragment<Video360FragmentPM> implements Video360FragmentPM.View {
 
@@ -79,7 +75,6 @@ public class Video360Fragment extends BaseFragment<Video360FragmentPM> implement
     public BaseArrayListAdapter getRecentAdapter() {
         return adapterRecent;
     }
-
 
     @Override
     public BaseArrayListAdapter getAllAdapter() {

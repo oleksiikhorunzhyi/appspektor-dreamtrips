@@ -10,16 +10,16 @@ import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.presentation.tripimages.InspireMePM;
 import com.worldventures.dreamtrips.presentation.tripimages.MyImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.UserImagesPM;
 import com.worldventures.dreamtrips.presentation.tripimages.YSBHPM;
-import com.worldventures.dreamtrips.utils.busevents.FSUploadEvent;
-import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFinished;
+import com.worldventures.dreamtrips.utils.events.FSUploadEvent;
+import com.worldventures.dreamtrips.utils.events.InsertNewImageUploadTaskEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoDeletedEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFinished;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -205,6 +205,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         getAdapterController().reload();
     }
 
+    public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
+
     public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
         List<IFullScreenAvailableObject> getPhotosFromAdapter();
 
@@ -218,8 +220,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
         void inject(Object getMyPhotos);
     }
-
-    public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
     public abstract class TripImagesRoboSpiceController extends RoboSpiceAdapterController<T> {
 

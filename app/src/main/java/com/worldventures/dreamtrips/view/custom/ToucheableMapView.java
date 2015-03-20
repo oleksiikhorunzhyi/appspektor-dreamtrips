@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.view.custom;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -10,8 +9,8 @@ import com.google.android.gms.maps.MapView;
 
 public class ToucheableMapView extends MapView {
 
-    private long lastTouched = 0;
     private static final long SCROLL_TIME = 200L; // 200 Milliseconds, but you can adjust that to your liking
+    private long lastTouched = 0;
     private MapTouchListener mapTouchListener;
 
     public ToucheableMapView(Context context) {

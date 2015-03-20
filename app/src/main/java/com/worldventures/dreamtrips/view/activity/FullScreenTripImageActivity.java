@@ -27,9 +27,8 @@ public class FullScreenTripImageActivity extends PresentationModelDrivenActivity
     ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
-
-    private BaseStatePagerAdapter<DetailedImagePagerFragment> adapter;
     ArrayList<Serializable> photoList;
+    private BaseStatePagerAdapter<DetailedImagePagerFragment> adapter;
 
     @Override
     protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {

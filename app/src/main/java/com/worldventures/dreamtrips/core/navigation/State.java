@@ -120,13 +120,13 @@ public enum State {
         return drawableId;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     static class MenuComparator implements Comparator<State> {
         public int compare(State strA, State strB) {
             return strA.getPosition() - strB.getPosition();
         }
-    }
-
-    public int getPosition() {
-        return position;
     }
 }

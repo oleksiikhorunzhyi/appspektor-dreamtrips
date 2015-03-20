@@ -11,16 +11,16 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.response.LoginResponse;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.utils.events.UpdateUserInfoEvent;
 
 import org.apache.http.HttpStatus;
 
@@ -32,7 +32,7 @@ import retrofit.RetrofitError;
 public class DreamSpiceManager extends SpiceManager {
 
     @Inject
-    AppSessionHolder appSessionHolder;
+    SessionHolder<UserSession> appSessionHolder;
 
     @Inject
     @Global
@@ -148,10 +148,6 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
-    public static interface OnLoginSuccess {
-        void result(LoginResponse loginResponse, SpiceException exception);
-    }
-
     private boolean isCredentialExist() {
         UserSession userSession = appSessionHolder.get().get();
         return userSession.getUsername() != null && userSession.getUserPassword() != null;
@@ -163,6 +159,10 @@ public class DreamSpiceManager extends SpiceManager {
             return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
         }
         return false;
+    }
+
+    public static interface OnLoginSuccess {
+        void result(LoginResponse loginResponse, SpiceException exception);
     }
 
 }

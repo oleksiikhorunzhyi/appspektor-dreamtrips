@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,15 +16,13 @@ import android.view.ViewGroup;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DreamTripsFragmentPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
-import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
-import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
+import com.worldventures.dreamtrips.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.utils.events.ResetFiltersEvent;
+import com.worldventures.dreamtrips.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.view.activity.MainActivity;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.cell.TripCell;
@@ -126,7 +123,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnCloseListener(()-> {
+        searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;
         });

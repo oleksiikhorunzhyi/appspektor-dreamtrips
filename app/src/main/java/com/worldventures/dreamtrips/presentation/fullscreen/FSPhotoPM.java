@@ -7,20 +7,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
-import com.worldventures.dreamtrips.utils.busevents.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.utils.busevents.PhotoLikeEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoDeletedEvent;
+import com.worldventures.dreamtrips.utils.events.PhotoLikeEvent;
 
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-@IgnoreRobobinding
 public class FSPhotoPM extends BaseFSViewPM<Photo> {
     public FSPhotoPM(View view) {
         super(view);
     }
-
 
     public void onDeleteAction() {
         dreamSpiceManager.execute(new DreamTripsRequest.DeletePhoto(photo.getId()), new RequestListener<JsonObject>() {
@@ -54,7 +51,6 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
 
             }
         });
-
     }
 
     public void onLikeAction() {
@@ -70,7 +66,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
                 photo.setLiked(!isLiked);
                 view.setLiked(!isLiked);
                 eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
-                AdobeTrackingHelper.like(type, String.valueOf(photo.getId()),getUserId());
+                AdobeTrackingHelper.like(type, String.valueOf(photo.getId()), getUserId());
             }
         };
 

@@ -7,6 +7,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'retrolambda'
@@ -27,6 +28,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     signingConfigs {
         debug {
             storeFile file("../eddebug.keystore")
@@ -60,16 +62,6 @@ android {
     }
 
     productFlavors {
-        /*dev {
-            applicationId "com.worldventures.dreamtrips.dev"
-            buildConfigField 'String', 'DreamTripsApi', '"http://54.201.166.182:8000"'
-
-            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
-            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
-            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
-            buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
-            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
-        }*/
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
@@ -121,10 +113,6 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
-}
-
-ext {
-    robobindingVersion = 'latest.integration'
 }
 
 dependencies {

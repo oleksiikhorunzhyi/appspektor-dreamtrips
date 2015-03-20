@@ -15,12 +15,12 @@ public class DetailedImagePagerFragmentPresentation extends BasePresentation<Bas
         super(view);
     }
 
-    public void setPhoto(TripImage photo) {
-        this.photo = photo;
-    }
-
     public TripImage getPhoto() {
         return photo;
+    }
+
+    public void setPhoto(TripImage photo) {
+        this.photo = photo;
     }
 
 }

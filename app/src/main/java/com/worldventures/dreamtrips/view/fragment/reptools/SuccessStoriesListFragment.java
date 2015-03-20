@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.presentation.SuccessStoriesListFragmentPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
+import com.worldventures.dreamtrips.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.view.cell.SuccessStoryCell;

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.view.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.view.util.Filterable;
@@ -11,10 +10,6 @@ import com.worldventures.dreamtrips.view.util.Filterable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Edward on 08.02.15.
- * adapter that could filter items
- */
 public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdapter<BaseItemClass> {
 
     protected List<BaseItemClass> cashedItems = new ArrayList<>();

@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +28,6 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -75,6 +72,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     private RecyclerView.Adapter mWrappedAdapter;
 
     private RecyclerViewDragDropManager mDragDropManager;
+    private SnackBar snackBar;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -145,8 +143,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
             return false;
         });
     }
-
-    private SnackBar snackBar;
 
     @Override
     public void showUndoBar(View.OnClickListener undoListener, SnackBar.OnHideListener onHideListener) {

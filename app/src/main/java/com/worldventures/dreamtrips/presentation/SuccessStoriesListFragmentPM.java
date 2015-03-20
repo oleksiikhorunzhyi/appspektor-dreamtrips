@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.utils.busevents.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryItemSelectedEvent;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryLikedEvent;
+import com.worldventures.dreamtrips.utils.events.OnSuccessStoryCellClickEvent;
+import com.worldventures.dreamtrips.utils.events.SuccessStoryItemSelectedEvent;
+import com.worldventures.dreamtrips.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.view.fragment.reptools.SuccessStoriesDetailsFragment;
 
 import java.util.ArrayList;
@@ -59,6 +59,10 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
         }
     };
 
+    public SuccessStoriesListFragmentPM(View view) {
+        super(view);
+    }
+
     private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
         ArrayList<SuccessStory> result = new ArrayList<>();
         if (isFilterFavorites()) {
@@ -69,10 +73,6 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
             result.addAll(successStories);
         }
         return result;
-    }
-
-    public SuccessStoriesListFragmentPM(View view) {
-        super(view);
     }
 
     @Override

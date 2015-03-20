@@ -3,7 +3,8 @@ package com.worldventures.dreamtrips.core.api;
 import android.database.DatabaseErrorHandler;
 import android.util.Log;
 
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import org.apache.http.HttpStatus;
 
@@ -11,9 +12,9 @@ import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 
 public class DefaultErrorHandler implements ErrorHandler {
-    private final AppSessionHolder appSessionHolder;
+    private final SessionHolder<UserSession> appSessionHolder;
 
-    public DefaultErrorHandler(AppSessionHolder appSessionHolder) {
+    public DefaultErrorHandler(SessionHolder<UserSession> appSessionHolder) {
         this.appSessionHolder = appSessionHolder;
     }
 

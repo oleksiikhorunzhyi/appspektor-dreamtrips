@@ -5,8 +5,8 @@ import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.busevents.InsertNewImageUploadTaskEvent;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.utils.events.InsertNewImageUploadTaskEvent;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,12 +30,10 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
     @Inject
     @Global
     EventBus eventBus;
-    private String date;
-    private String time;
-
-
     @Inject
     SnappyRepository db;
+    private String date;
+    private String time;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
@@ -140,9 +138,9 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
 
         String getDate();
 
-        String getTime();
-
         void setDate(String format);
+
+        String getTime();
 
         void setTime(String format);
 

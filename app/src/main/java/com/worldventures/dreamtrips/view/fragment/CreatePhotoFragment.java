@@ -157,13 +157,13 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
     }
 
     @Override
-    public String getTime() {
-        return etTime.getText().toString();
+    public void setDate(String format) {
+        etDate.setText(format);
     }
 
     @Override
-    public void setDate(String format) {
-        etDate.setText(format);
+    public String getTime() {
+        return etTime.getText().toString();
     }
 
     @Override

@@ -5,15 +5,13 @@ import android.util.Log;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.utils.busevents.BucketItemReloadEvent;
+import com.worldventures.dreamtrips.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.utils.events.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
@@ -29,17 +27,14 @@ import de.greenrobot.event.EventBus;
  */
 public class BucketListQuickInputPM extends BasePresentation<BucketListQuickInputPM.View> {
 
-    private BucketTabsFragment.Type type;
-
-    private List<BucketPostItem> data = new ArrayList<>();
-    private List<BucketItem> realData = new ArrayList<>();
-
     @Inject
     SnappyRepository db;
-
     @Global
     @Inject
     EventBus eventBus;
+    private BucketTabsFragment.Type type;
+    private List<BucketPostItem> data = new ArrayList<>();
+    private List<BucketItem> realData = new ArrayList<>();
 
     public BucketListQuickInputPM(View view, BucketTabsFragment.Type type) {
         super(view);

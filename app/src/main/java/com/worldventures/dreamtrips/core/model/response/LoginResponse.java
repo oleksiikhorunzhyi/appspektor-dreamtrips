@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 
 public class LoginResponse {
-   S3GlobalConfig config;
+    S3GlobalConfig config;
     Session session;
 
     public S3GlobalConfig getConfig() {

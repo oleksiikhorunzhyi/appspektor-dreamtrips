@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.presentation;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;
-import com.worldventures.dreamtrips.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 public class BucketPopularTabsFragmentPM extends BasePresentation<BasePresentation.View> {

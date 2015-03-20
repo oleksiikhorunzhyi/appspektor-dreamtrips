@@ -42,36 +42,36 @@ public class UserSession {
         this.legacyApiToken = legacyApiToken;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
     public String getUserPassword() {
         return userPassword;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setLastUpdate(long lastUpdate) {
-        this.lastUpdate = lastUpdate;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setGlobalConfig(S3GlobalConfig globalConfig) {
-        this.globalConfig = globalConfig;
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     public S3GlobalConfig getGlobalConfig() {
         return globalConfig;
+    }
+
+    public void setGlobalConfig(S3GlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
     }
 
     public List<Header> getHeaderList() {

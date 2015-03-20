@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.Video;
 
 import java.util.List;
-import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.http.GET;

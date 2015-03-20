@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,14 +9,11 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toolbar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.presentation.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.view.activity.BucketListEditActivity;

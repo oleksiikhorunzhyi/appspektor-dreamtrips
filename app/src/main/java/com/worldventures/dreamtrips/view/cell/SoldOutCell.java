@@ -7,7 +7,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
-import com.worldventures.dreamtrips.utils.busevents.SoldOutEvent;
+import com.worldventures.dreamtrips.utils.events.SoldOutEvent;
 
 import butterknife.InjectView;
 
@@ -28,9 +28,9 @@ public class SoldOutCell extends AbstractCell<SoldOutModel> {
     @Override
     protected void syncUIStateWithModel() {
         checkBoxSold.setChecked(getModelObject().isShowSoldOut());
-        checkBoxSold.setOnCheckedChangeListener( (buttonView,  isChecked) -> {
-                getModelObject().setShowSoldOut(isChecked);
-                getEventBus().post(new SoldOutEvent(isChecked));
+        checkBoxSold.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getModelObject().setShowSoldOut(isChecked);
+            getEventBus().post(new SoldOutEvent(isChecked));
         });
     }
 

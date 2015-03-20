@@ -5,7 +5,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.utils.busevents.SuccessStoryLikedEvent;
+import com.worldventures.dreamtrips.utils.events.SuccessStoryLikedEvent;
 
 import javax.inject.Inject;
 
@@ -49,20 +49,18 @@ public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<S
         view.showShareDialog();
     }
 
-
-    public static interface View extends BasePresentation.View {
-        void showShareDialog();
-
-        void likeRequestSuccess();
-    }
-
-
     public void onFbShare(SuccessStory successStory) {
         activityRouter.openShareFacebook(null, successStory.getSharingUrl(), null);
     }
 
     public void onTwitterShare(SuccessStory successStory) {
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
+    }
+
+    public static interface View extends BasePresentation.View {
+        void showShareDialog();
+
+        void likeRequestSuccess();
     }
 
 }

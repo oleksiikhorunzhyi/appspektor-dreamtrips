@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -17,11 +16,9 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_book_it)
 public class BookItActivity extends PresentationModelDrivenActivity<BookItActivityPresentation> implements BookItActivityPresentation.View {
     public static final String EXTRA_TRIP_ID = "TRIP_ID";
-
-    private int tripId;
-
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    private int tripId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,9 +25,9 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_success_stores)
 public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPM> implements SuccessStoryDetailsFragmentPM.View {
 
+    public static final String STORY = "STORY";
     @InjectView(R.id.progressBarWeb)
     ProgressBar progressBarWeb;
-    public static final String STORY = "STORY";
     private SuccessStory story;
     private MenuItem favoriteMenuItem;
 
@@ -82,7 +82,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     protected String getURL() {
-        return story.getUrl()+"?appMode=true";
+        return story.getUrl() + "?appMode=true";
     }
 
     @Override

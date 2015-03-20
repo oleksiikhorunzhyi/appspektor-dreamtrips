@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.core.model.bucket;
 
-import com.gc.materialdesign.views.ButtonFlat;
-import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
 
 /**

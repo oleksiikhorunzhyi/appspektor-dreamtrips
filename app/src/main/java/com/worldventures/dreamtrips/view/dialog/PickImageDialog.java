@@ -72,7 +72,7 @@ public class PickImageDialog implements ImageChooserListener {
         try {
             filePath = imageChooserManager.choose();
         } catch (Exception e) {
-            Log.e(PickImageDialog.class.getSimpleName(), "",e);
+            Log.e(PickImageDialog.class.getSimpleName(), "", e);
         }
     }
 
@@ -83,7 +83,7 @@ public class PickImageDialog implements ImageChooserListener {
         try {
             filePath = imageChooserManager.choose();
         } catch (Exception e) {
-            Log.e(PickImageDialog.class.getSimpleName(), "",e);
+            Log.e(PickImageDialog.class.getSimpleName(), "", e);
         }
     }
 

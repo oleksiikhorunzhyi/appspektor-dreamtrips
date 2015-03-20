@@ -17,26 +17,21 @@
 package com.worldventures.dreamtrips.view.adapter;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
 import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.view.cell.BucketItemCellOld;
-import com.worldventures.dreamtrips.view.util.ViewUtils;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         extends BaseArrayListAdapter<BaseItemClass>
-        implements DraggableItemAdapter<BucketItemCell>{
+        implements DraggableItemAdapter<BucketItemCell> {
 
     private DeleteListener deleteListener;
     private MoveListener moveListener;
@@ -85,7 +80,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
     }
 
     private int getStartDragPosition(int position) {
-       Object item = getItem(position);
+        Object item = getItem(position);
 
         if (item instanceof BucketHeader) {
             throw new IllegalStateException("section item is expected");
@@ -101,7 +96,8 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
             position -= 1;
         }
 
-        return position;    }
+        return position;
+    }
 
     private int getEndDragPosition(int position) {
         Object item = getItem(position);

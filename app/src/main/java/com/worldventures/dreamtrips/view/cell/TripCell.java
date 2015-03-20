@@ -11,8 +11,8 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.LikeTripEvent;
-import com.worldventures.dreamtrips.utils.busevents.TouchTripEvent;
+import com.worldventures.dreamtrips.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.utils.events.TouchTripEvent;
 
 import javax.inject.Inject;
 

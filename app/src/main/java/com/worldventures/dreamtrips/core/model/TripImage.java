@@ -20,12 +20,12 @@ public class TripImage extends BaseEntity {
         return url;
     }
 
-    public String getUrl(int width, int height) {
-        return url + String.format(PATTERN, width, height);
-    }
-
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getUrl(int width, int height) {
+        return url + String.format(PATTERN, width, height);
     }
 
     public String getType() {

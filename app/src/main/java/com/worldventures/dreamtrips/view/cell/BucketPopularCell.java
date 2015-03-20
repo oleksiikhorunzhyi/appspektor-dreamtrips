@@ -6,15 +6,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.gc.materialdesign.views.ButtonFlat;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.AddPressedEvent;
-import com.worldventures.dreamtrips.utils.busevents.DonePressedEvent;
+import com.worldventures.dreamtrips.utils.events.AddPressedEvent;
+import com.worldventures.dreamtrips.utils.events.DonePressedEvent;
 
 import javax.inject.Inject;
 

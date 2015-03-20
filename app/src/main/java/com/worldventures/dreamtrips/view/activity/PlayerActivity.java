@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.view.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.gc.materialdesign.widgets.ProgressDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;

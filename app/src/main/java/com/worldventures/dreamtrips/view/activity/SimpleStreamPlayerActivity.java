@@ -10,24 +10,22 @@
 
 package com.worldventures.dreamtrips.view.activity;
 
-import java.util.*;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
-import com.panframe.android.lib.*;
+import com.panframe.android.lib.PFAsset;
+import com.panframe.android.lib.PFAssetObserver;
+import com.panframe.android.lib.PFAssetStatus;
+import com.panframe.android.lib.PFNavigationMode;
+import com.panframe.android.lib.PFObjectFactory;
+import com.panframe.android.lib.PFView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.database.Cursor;
-import android.support.v4.app.*;
-import android.util.Log;
-import android.view.*;
-import android.view.View.*;
-import android.widget.*;
-import android.widget.AdapterView.*;
-import android.widget.SeekBar.*;
 
 import butterknife.InjectView;
 

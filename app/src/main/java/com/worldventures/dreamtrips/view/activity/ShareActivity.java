@@ -132,7 +132,7 @@ public class ShareActivity extends PresentationModelDrivenActivity<ShareActivity
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 if (session != null && session.isOpened()) {
                     getPresentationModel().openShareActivity(picture, link, text);
-                   // publishFeedDialog(picture, link, text, appName);
+                    // publishFeedDialog(picture, link, text, appName);
                 }
             });
             loginButton.performClick();

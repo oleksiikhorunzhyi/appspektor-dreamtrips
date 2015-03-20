@@ -14,9 +14,9 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.busevents.AddPressedEvent;
-import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.utils.busevents.DonePressedEvent;
+import com.worldventures.dreamtrips.utils.events.AddPressedEvent;
+import com.worldventures.dreamtrips.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
@@ -32,22 +32,14 @@ import de.greenrobot.event.EventBus;
  */
 public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.View> {
 
-    private BucketTabsFragment.Type type;
-
     @Inject
     Context context;
-
     @Global
     @Inject
     EventBus eventBus;
-
     @Inject
     SnappyRepository db;
-
-    private List<BucketItem> realData = new ArrayList<>();
-
-    private int lastId = 0;
-
+    private BucketTabsFragment.Type type;
     RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
@@ -64,6 +56,13 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
             view.finishLoading();
         }
     };
+    private List<BucketItem> realData = new ArrayList<>();
+    private int lastId = 0;
+
+    public BucketListPopularPM(View view, BucketTabsFragment.Type type) {
+        super(view);
+        this.type = type;
+    }
 
     @Override
     public void init() {
@@ -130,11 +129,6 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
 
     public void reload() {
         adapterController.reload();
-    }
-
-    public BucketListPopularPM(View view, BucketTabsFragment.Type type) {
-        super(view);
-        this.type = type;
     }
 
     public interface View extends BasePresentation.View {

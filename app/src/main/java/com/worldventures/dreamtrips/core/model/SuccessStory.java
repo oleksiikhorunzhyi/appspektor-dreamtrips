@@ -7,6 +7,15 @@ import com.worldventures.dreamtrips.view.util.Filterable;
 
 public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
 
+    public static final Creator<SuccessStory> CREATOR = new Creator<SuccessStory>() {
+        public SuccessStory createFromParcel(Parcel source) {
+            return new SuccessStory(source);
+        }
+
+        public SuccessStory[] newArray(int size) {
+            return new SuccessStory[size];
+        }
+    };
     String author;
     String category;
     String locale;
@@ -14,6 +23,20 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
     String url;
     String sharingUrl = "";
     boolean liked;
+
+    public SuccessStory() {
+    }
+
+    private SuccessStory(Parcel in) {
+        this.author = in.readString();
+        this.category = in.readString();
+        this.locale = in.readString();
+        this.published_date = in.readString();
+        this.url = in.readString();
+        this.sharingUrl = in.readString();
+        this.liked = in.readByte() != 0;
+        this.id = in.readInt();
+    }
 
     public String getSharingUrl() {
         return sharingUrl;
@@ -71,11 +94,6 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         this.url = url;
     }
 
-
-    public SuccessStory() {
-    }
-
-
     @Override
     public boolean containsQuery(String query) {
         return query == null || author.toLowerCase().contains(query);
@@ -97,25 +115,4 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         dest.writeByte(liked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.id);
     }
-
-    private SuccessStory(Parcel in) {
-        this.author = in.readString();
-        this.category = in.readString();
-        this.locale = in.readString();
-        this.published_date = in.readString();
-        this.url = in.readString();
-        this.sharingUrl = in.readString();
-        this.liked = in.readByte() != 0;
-        this.id = in.readInt();
-    }
-
-    public static final Creator<SuccessStory> CREATOR = new Creator<SuccessStory>() {
-        public SuccessStory createFromParcel(Parcel source) {
-            return new SuccessStory(source);
-        }
-
-        public SuccessStory[] newArray(int size) {
-            return new SuccessStory[size];
-        }
-    };
 }

@@ -1,21 +1,20 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.utils.busevents.ServerConfigError;
+import com.worldventures.dreamtrips.utils.events.ServerConfigError;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
 public class BaseActivityPresentation<VT extends BasePresentation.View> extends BasePresentation<VT> {
-    public BaseActivityPresentation(VT view) {
-        super(view);
-    }
-
     @Inject
     @Global
     EventBus eventBus;
 
+    public BaseActivityPresentation(VT view) {
+        super(view);
+    }
 
     public void init() {
         super.init();

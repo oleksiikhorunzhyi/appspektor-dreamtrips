@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.model;
 
 public class Video extends BaseEntity {
+
     String Caption1;
     String Caption1LanguageUrl;
     String Caption2;

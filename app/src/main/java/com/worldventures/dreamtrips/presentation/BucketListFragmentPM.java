@@ -22,9 +22,9 @@ import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.utils.busevents.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.utils.busevents.DeleteBucketItemEvent;
-import com.worldventures.dreamtrips.utils.busevents.MarkBucketItemDoneEvent;
+import com.worldventures.dreamtrips.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.utils.events.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 
 import java.util.ArrayList;
@@ -36,32 +36,25 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.View> {
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+    @Inject
+    Context context;
+    @Inject
+    SnappyRepository db;
+    @Global
+    @Inject
+    EventBus eventBus;
+    @Inject
+    Prefs prefs;
     private BucketTabsFragment.Type type;
+    private boolean showToDO = true;
+    private boolean showCompleted = true;
+    private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
     public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
     }
-
-    @Inject
-    Context context;
-
-    @Inject
-    SnappyRepository db;
-
-    @Global
-    @Inject
-    EventBus eventBus;
-
-    @Inject
-    Prefs prefs;
-
-    private boolean showToDO = true;
-    private boolean showCompleted = true;
-
-    private static final Handler handler = new Handler(Looper.getMainLooper());
-
-    private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
     @Override
     public void init() {

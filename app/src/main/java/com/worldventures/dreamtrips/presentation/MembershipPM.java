@@ -25,6 +25,7 @@ public class MembershipPM extends BasePresentation<BasePresentation.View> {
     @Inject
     SharedServicesApi sp;
     private List<Video> objects;
+    private CollectionController<Object> adapterController;
 
     public MembershipPM(View view) {
         super(view);
@@ -33,8 +34,6 @@ public class MembershipPM extends BasePresentation<BasePresentation.View> {
     public void onItemClick(int position) {
 
     }
-
-    private CollectionController<Object> adapterController;
 
     public ContentLoader<List<Object>> getAdapterController() {
         return adapterController;

@@ -51,14 +51,6 @@ public class URLS {
         @SerializedName("TrainingVideosURL")
         private String trainingVideosURL;
 
-        public void setoTAPageBaseURL(String oTAPageBaseURL) {
-            this.oTAPageBaseURL = oTAPageBaseURL;
-        }
-
-        public void setTrainingVideosURL(String trainingVideosURL) {
-            this.trainingVideosURL = trainingVideosURL;
-        }
-
         public String getAPIBaseURL() {
             return this.aPIBaseURL;
         }
@@ -111,8 +103,16 @@ public class URLS {
             return oTAPageBaseURL;
         }
 
+        public void setoTAPageBaseURL(String oTAPageBaseURL) {
+            this.oTAPageBaseURL = oTAPageBaseURL;
+        }
+
         public String getTrainingVideosURL() {
             return trainingVideosURL;
+        }
+
+        public void setTrainingVideosURL(String trainingVideosURL) {
+            this.trainingVideosURL = trainingVideosURL;
         }
     }
 

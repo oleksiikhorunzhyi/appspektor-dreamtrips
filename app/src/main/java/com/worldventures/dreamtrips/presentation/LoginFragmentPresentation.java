@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.presentation;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
@@ -13,10 +11,6 @@ public class LoginFragmentPresentation extends BaseActivityPresentation<LoginFra
 
     @Inject
     DreamTripsApi dreamTripsApi;
-
-    @Inject
-    AppSessionHolder appSessionHolder;
-
 
     public LoginFragmentPresentation(View view) {
         super(view);

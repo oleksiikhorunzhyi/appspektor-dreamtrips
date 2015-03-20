@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.presentation.fullscreen;
 
-import com.worldventures.dreamtrips.utils.anotation.IgnoreRobobinding;
-
-@IgnoreRobobinding
 public class ImageUploadTaskPM extends BaseFSViewPM {
     public ImageUploadTaskPM(View view) {
         super(view);

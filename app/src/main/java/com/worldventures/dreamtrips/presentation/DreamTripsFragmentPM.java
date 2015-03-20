@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.presentation;
 
-import android.content.Context;
-
 import com.google.common.collect.Collections2;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -9,28 +7,21 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
-import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.navigation.State;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
-import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
-import com.worldventures.dreamtrips.utils.busevents.TripLikedEvent;
+import com.worldventures.dreamtrips.utils.events.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.events.TripLikedEvent;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -53,19 +44,6 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     SnappyRepository db;
 
     private boolean loadFromApi;
-
-    /**
-     * filters
-     */
-    private double maxPrice = Double.MAX_VALUE;
-    private double minPrice = 0.0d;
-    private int maxNights = Integer.MAX_VALUE;
-    private int minNights = 0;
-    private boolean showSoldOut;
-    private DateFilterItem dateFilterItem = new DateFilterItem();
-    private List<Integer> acceptedRegions;
-    private List<Activity> acceptedThemes;
-
     private RoboSpiceAdapterController<Trip> adapterController = new RoboSpiceAdapterController<Trip>() {
 
         @Override
@@ -89,6 +67,17 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             view.finishLoading(items);
         }
     };
+    /**
+     * filters
+     */
+    private double maxPrice = Double.MAX_VALUE;
+    private double minPrice = 0.0d;
+    private int maxNights = Integer.MAX_VALUE;
+    private int minNights = 0;
+    private boolean showSoldOut;
+    private DateFilterItem dateFilterItem = new DateFilterItem();
+    private List<Integer> acceptedRegions;
+    private List<Activity> acceptedThemes;
 
     public DreamTripsFragmentPM(View view) {
         super(view);
@@ -99,7 +88,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
         super.init();
         eventBus.registerSticky(this);
         AdobeTrackingHelper.dreamTrips(getUserId());
-       // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
+        // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
 
     @Override
@@ -141,6 +130,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     public void onEvent(TripLikedEvent event) {
         adapterController.reload();
     }
+
     private ArrayList<Trip> performFiltering(List<Trip> data) {
         ArrayList<Trip> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Collections2.filter(data, (input) ->

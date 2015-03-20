@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.view.fragment;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -16,9 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.TripImage;
 import com.worldventures.dreamtrips.presentation.DetailedImagePagerFragmentPresentation;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
-
-import java.util.Calendar;
+import com.worldventures.dreamtrips.utils.events.TripImageClickedEvent;
 
 import javax.inject.Inject;
 

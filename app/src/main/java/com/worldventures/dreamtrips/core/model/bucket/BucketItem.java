@@ -2,11 +2,7 @@ package com.worldventures.dreamtrips.core.model.bucket;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.google.common.base.Optional;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.worldventures.dreamtrips.core.model.BaseEntity;
-import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.view.adapter.item.Swipeable;
 
 import java.util.Date;
 
@@ -14,14 +10,11 @@ import java.util.Date;
 public class BucketItem extends BaseEntity {
 
     public static final String NEW = "new";
-    public static final String COMPLETED = "completed";
-
-    @TaggedFieldSerializer.Tag(1)
-    private String name;
-
     @TaggedFieldSerializer.Tag(2)
     private String status = NEW;
-
+    public static final String COMPLETED = "completed";
+    @TaggedFieldSerializer.Tag(1)
+    private String name;
     @TaggedFieldSerializer.Tag(3)
     private Date target_date;
 

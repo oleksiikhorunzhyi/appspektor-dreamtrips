@@ -4,7 +4,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-public interface IFullScreenAvailableObject extends Serializable, Parcelable{
+public interface IFullScreenAvailableObject extends Serializable, Parcelable {
 
     public Image getFSImage();
 
@@ -17,8 +17,11 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable{
     public int getId();
 
     public String getUserName();
+
     public String getUserLocation();
+
     public String getUserAvatar();
+
     public String getPhotoLocation();
 
 }

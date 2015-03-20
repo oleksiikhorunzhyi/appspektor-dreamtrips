@@ -8,7 +8,7 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,14 +46,11 @@ public class SnappyRepository {
     }
 
     public Boolean isEmpty(String key) throws ExecutionException, InterruptedException {
-        Future<Boolean> future = executorService.submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                DB snappyDb = DBFactory.open(context);
-                String[] keys = snappyDb.findKeys(key);
-                snappyDb.close();
-                return keys == null || keys.length == 0;
-            }
+        Future<Boolean> future = executorService.submit(() -> {
+            DB snappyDb = DBFactory.open(context);
+            String[] keys = snappyDb.findKeys(key);
+            snappyDb.close();
+            return keys == null || keys.length == 0;
         });
         return future.get();
 
@@ -109,7 +106,7 @@ public class SnappyRepository {
         return list;
     }
 
-    public void clearTrips(DB snappyDb) throws SnappydbException{
+    public void clearTrips(DB snappyDb) throws SnappydbException {
         String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
         for (String key : tripKeys) {
             snappyDb.del(key);

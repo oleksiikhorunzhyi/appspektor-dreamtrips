@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.view.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.presentation.DetailTripActivityPM;
-
-import butterknife.InjectView;
 
 /**
  * Created by Edward on 19.01.15.

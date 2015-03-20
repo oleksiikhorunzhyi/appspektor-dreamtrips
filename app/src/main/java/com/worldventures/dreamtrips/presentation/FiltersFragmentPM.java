@@ -1,15 +1,10 @@
 package com.worldventures.dreamtrips.presentation;
 
 import com.google.common.collect.Collections2;
-import com.google.gson.reflect.TypeToken;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.snappydb.DB;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
@@ -17,22 +12,19 @@ import com.worldventures.dreamtrips.core.model.FilterModel;
 import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
-import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.utils.FileUtils;
-import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllPressedEvent;
-import com.worldventures.dreamtrips.utils.busevents.CheckBoxAllThemePressedEvent;
-import com.worldventures.dreamtrips.utils.busevents.FilterBusEvent;
-import com.worldventures.dreamtrips.utils.busevents.RangeBarDurationEvent;
-import com.worldventures.dreamtrips.utils.busevents.RangeBarPriceEvent;
-import com.worldventures.dreamtrips.utils.busevents.RegionSetChangedEvent;
-import com.worldventures.dreamtrips.utils.busevents.RequestFilterDataEvent;
-import com.worldventures.dreamtrips.utils.busevents.ResetFiltersEvent;
-import com.worldventures.dreamtrips.utils.busevents.SoldOutEvent;
-import com.worldventures.dreamtrips.utils.busevents.ThemeSetChangedEvent;
-import com.worldventures.dreamtrips.utils.busevents.ToggleRegionVisibilityEvent;
-import com.worldventures.dreamtrips.utils.busevents.ToggleThemeVisibilityEvent;
-
+import com.worldventures.dreamtrips.utils.events.CheckBoxAllPressedEvent;
+import com.worldventures.dreamtrips.utils.events.CheckBoxAllThemePressedEvent;
+import com.worldventures.dreamtrips.utils.events.FilterBusEvent;
+import com.worldventures.dreamtrips.utils.events.RangeBarDurationEvent;
+import com.worldventures.dreamtrips.utils.events.RangeBarPriceEvent;
+import com.worldventures.dreamtrips.utils.events.RegionSetChangedEvent;
+import com.worldventures.dreamtrips.utils.events.RequestFilterDataEvent;
+import com.worldventures.dreamtrips.utils.events.ResetFiltersEvent;
+import com.worldventures.dreamtrips.utils.events.SoldOutEvent;
+import com.worldventures.dreamtrips.utils.events.ThemeSetChangedEvent;
+import com.worldventures.dreamtrips.utils.events.ToggleRegionVisibilityEvent;
+import com.worldventures.dreamtrips.utils.events.ToggleThemeVisibilityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +46,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     @Global
     EventBus eventBus;
 
-   // private List<Object> data = new ArrayList<>();
+    // private List<Object> data = new ArrayList<>();
     private List<Region> regions;
     private List<Activity> activities;
     private List<Activity> parentActivities;
@@ -297,8 +289,11 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     public static interface View extends BasePresentation.View {
         void dataSetChanged();
+
         void startLoading();
+
         void finishLoading();
+
         BaseArrayListAdapter getAdapter();
     }
 

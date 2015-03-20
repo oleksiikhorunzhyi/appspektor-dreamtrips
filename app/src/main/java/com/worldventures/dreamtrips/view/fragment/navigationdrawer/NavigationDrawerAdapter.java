@@ -27,12 +27,10 @@ import static com.worldventures.dreamtrips.utils.UniversalImageLoader.OP_COVER;
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    @Inject
-    UniversalImageLoader universalImageLoader;
-
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-
+    @Inject
+    UniversalImageLoader universalImageLoader;
     private int headerSize = 0;
 
     private List<State> mData;

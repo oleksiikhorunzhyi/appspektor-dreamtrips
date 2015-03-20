@@ -63,14 +63,6 @@ public class Pointer {
         mUpTime = pUpTime;
     }
 
-    public void setUpX(double pUpX) {
-        mUpX = pUpX;
-    }
-
-    public void setUpY(double pUpY) {
-        mUpY = pUpY;
-    }
-
     public int getId() {
         return mId;
     }
@@ -87,8 +79,16 @@ public class Pointer {
         return mUpX;
     }
 
+    public void setUpX(double pUpX) {
+        mUpX = pUpX;
+    }
+
     public double getUpY() {
         return mUpY;
+    }
+
+    public void setUpY(double pUpY) {
+        mUpY = pUpY;
     }
 
     public boolean existedWithinTimeLimit(int pTimeLimit) {
@@ -97,33 +97,33 @@ public class Pointer {
 
     public boolean tapped() {
         return mUpX < mUpXUpperLimit &&
-            mUpX > mUpXLowerLimit &&
-            mUpY < mUpYUpperLimit &&
-            mUpY > mUpYLowerLimit;
+                mUpX > mUpXLowerLimit &&
+                mUpY < mUpYUpperLimit &&
+                mUpY > mUpYLowerLimit;
     }
 
     public boolean swipedUp() {
         return mUpX < mUpXUpperLimit &&
-            mUpX > mUpXLowerLimit &&
-            mUpY <= mUpYLowerLimit;
+                mUpX > mUpXLowerLimit &&
+                mUpY <= mUpYLowerLimit;
     }
 
     public boolean swipedDown() {
         return mUpX < mUpXUpperLimit &&
-            mUpX > mUpXLowerLimit &&
-            mUpY >= mUpYUpperLimit;
+                mUpX > mUpXLowerLimit &&
+                mUpY >= mUpYUpperLimit;
     }
 
     public boolean swipedLeft() {
         return mUpX <= mUpXLowerLimit &&
-            mUpY < mUpYUpperLimit &&
-            mUpY > mUpYLowerLimit;
+                mUpY < mUpYUpperLimit &&
+                mUpY > mUpYLowerLimit;
     }
 
     public boolean swipedRight() {
         return mUpX >= mUpXUpperLimit &&
-            mUpY < mUpYUpperLimit &&
-            mUpY > mUpYLowerLimit;
+                mUpY < mUpYUpperLimit &&
+                mUpY > mUpYLowerLimit;
     }
 
     private double distanceFormula(double pXI, double pYI,
@@ -134,11 +134,11 @@ public class Pointer {
 
     public boolean pinchedIn(Pointer pPointer, double pMovementLimitPx) {
         return distanceFormula(mDownX, mDownY, pPointer.getDownX(), pPointer.getDownY()) + pMovementLimitPx <=
-            distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
+                distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
     }
 
     public boolean pinchedOut(Pointer pPointer, double pMovementLimitPx) {
         return distanceFormula(mDownX, mDownY, pPointer.getDownX(), pPointer.getDownY()) - pMovementLimitPx >=
-            distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
+                distanceFormula(mUpX, mUpY, pPointer.getUpX(), pPointer.getUpY());
     }
 }

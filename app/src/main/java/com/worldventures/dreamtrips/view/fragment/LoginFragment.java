@@ -82,15 +82,14 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     }
 
     @Override
-    public String getUserPassword() {
-        return etPassword.getText().toString();
-    }
-
-    @Override
     public void setUsername(String name) {
         etUsername.setText(name);
     }
 
+    @Override
+    public String getUserPassword() {
+        return etPassword.getText().toString();
+    }
 
     @Override
     public void setUserPassword(String pass) {

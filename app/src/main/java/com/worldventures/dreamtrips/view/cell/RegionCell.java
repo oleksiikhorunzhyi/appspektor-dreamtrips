@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.view.cell;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +10,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Region;
-import com.worldventures.dreamtrips.utils.busevents.RegionSetChangedEvent;
+import com.worldventures.dreamtrips.utils.events.RegionSetChangedEvent;
 
 import javax.inject.Inject;
 

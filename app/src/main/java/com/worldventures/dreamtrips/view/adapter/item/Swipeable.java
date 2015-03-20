@@ -9,9 +9,9 @@ public interface Swipeable {
 
     public int getSwipeReactionType();
 
-    public void setPinnedToSwipeLeft(boolean pinned);
-
     public boolean isPinnedToSwipeLeft();
+
+    public void setPinnedToSwipeLeft(boolean pinned);
 
 
 }

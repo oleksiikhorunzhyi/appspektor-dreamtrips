@@ -18,12 +18,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.presentation.DetailedTripFragmentPM;
-import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.utils.busevents.TripImageClickedEvent;
+import com.worldventures.dreamtrips.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.ContentAdapter;
+import com.worldventures.dreamtrips.view.adapter.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 
 import java.io.Serializable;
@@ -90,6 +89,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
+
     @OnClick(R.id.layoutBookIt)
     public void bookIt() {
         getPresentationModel().actionBookIt();

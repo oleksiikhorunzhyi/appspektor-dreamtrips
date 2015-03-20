@@ -10,17 +10,18 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.presentation.BasePresentation;
 import com.worldventures.dreamtrips.presentation.NavigationDrawerPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
-import com.worldventures.dreamtrips.utils.busevents.UpdateSelectionEvent;
-import com.worldventures.dreamtrips.utils.busevents.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.utils.events.UpdateSelectionEvent;
+import com.worldventures.dreamtrips.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.view.fragment.BaseFragment;
 
 import java.io.File;
@@ -43,16 +44,13 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     EventBus eventBus;
 
     @Inject
-    AppSessionHolder appSessionHolder;
+    SessionHolder<UserSession> appSessionHolder;
 
     @Inject
     FragmentCompass fragmentCompass;
-
-    private NavigationDrawerListener navigationDrawerListener;
-
     @InjectView(R.id.drawerList)
     RecyclerView drawerList;
-
+    private NavigationDrawerListener navigationDrawerListener;
     private State savedState = State.DREAMTRIPS;
     private NavigationDrawerAdapter adapter;
 
@@ -149,7 +147,6 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         }
         savedState = state;
     }
-
 
 
     @Override

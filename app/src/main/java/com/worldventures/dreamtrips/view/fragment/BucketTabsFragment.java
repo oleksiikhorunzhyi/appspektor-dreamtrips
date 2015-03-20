@@ -2,34 +2,23 @@ package com.worldventures.dreamtrips.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.presentation.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.utils.ViewUtils;
 import com.worldventures.dreamtrips.view.adapter.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.view.adapter.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.view.custom.CustomViewPager;
-import com.worldventures.dreamtrips.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View{
-
-    @Override
-    protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
-        return new BucketTabsFragmentPM(this);
-    }
+public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View {
 
     @InjectView(R.id.sw_liked)
     Switch swLiked;
@@ -39,8 +28,12 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
     CustomViewPager pager;
     @InjectView(R.id.v_bg_holder)
     View vBgHolder;
-
     BasePagerAdapter adapter;
+
+    @Override
+    protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new BucketTabsFragmentPM(this);
+    }
 
     @Override
     public void afterCreateView(View rootView) {
@@ -73,14 +66,12 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
         LOCATIONS("location", R.string.location),
         ACTIVITIES("activity", R.string.activity),
         RESTAURANTS("dinning", R.string.dinning);
-
+        String name;
+        int res;
         Type(String name, int res) {
             this.name = name;
             this.res = res;
         }
-
-        String name;
-        int res;
 
         public String getName() {
             return name;

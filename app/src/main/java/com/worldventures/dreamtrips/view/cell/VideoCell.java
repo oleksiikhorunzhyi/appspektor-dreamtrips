@@ -8,10 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.core.session.AppSessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.view.activity.PlayerActivity;
@@ -37,7 +38,7 @@ public class VideoCell extends AbstractCell<Video> {
     UniversalImageLoader universalImageLoader;
 
     @Inject
-    AppSessionHolder appSessionHolder;
+    SessionHolder<UserSession> appSessionHolder;
 
 
     public VideoCell(View view) {

@@ -16,10 +16,6 @@
  */
 package com.worldventures.dreamtrips.utils;
 
-import java.util.Stack;
-
-import org.xml.sax.XMLReader;
-
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -27,13 +23,23 @@ import android.text.style.BulletSpan;
 import android.text.style.LeadingMarginSpan;
 import android.util.Log;
 
+import org.xml.sax.XMLReader;
+
+import java.util.Stack;
+
 /**
  * Implements support for ordered and unordered lists in to Android TextView.
- *
+ * <p>
  * Some code taken from inner class android.text.Html.HtmlToSpannedConverter. If you find this code useful,
  * please vote my answer at <a href="http://stackoverflow.com/a/17365740/262462">StackOverflow</a> up.
  */
 public class HtmlTagHandler implements Html.TagHandler {
+    /**
+     * List indentation in pixels. Nested lists use multiple of this.
+     */
+    private static final int indent = 10;
+    private static final int listItemIndent = indent * 2;
+    private static final BulletSpan bullet = new BulletSpan(indent);
     /**
      * Keeps track of lists (ol, ul). On bottom of Stack is the outermost list
      * and on top of Stack is the most nested list
@@ -44,12 +50,45 @@ public class HtmlTagHandler implements Html.TagHandler {
      * we can continue with correct index of outer list
      */
     Stack<Integer> olNextIndex = new Stack<Integer>();
+
     /**
-     * List indentation in pixels. Nested lists use multiple of this.
+     * @see android.text.Html
      */
-    private static final int indent = 10;
-    private static final int listItemIndent = indent * 2;
-    private static final BulletSpan bullet = new BulletSpan(indent);
+    private static void start(Editable text, Object mark) {
+        int len = text.length();
+        text.setSpan(mark, len, len, Spanned.SPAN_MARK_MARK);
+    }
+
+    /**
+     * Modified from {@link android.text.Html}
+     */
+    private static void end(Editable text, Class<?> kind, Object... replaces) {
+        int len = text.length();
+        Object obj = getLast(text, kind);
+        int where = text.getSpanStart(obj);
+        text.removeSpan(obj);
+        if (where != len) {
+            for (Object replace : replaces) {
+                text.setSpan(replace, where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return;
+    }
+
+    /**
+     * @see android.text.Html
+     */
+    private static Object getLast(Spanned text, Class<?> kind) {
+        /*
+		 * This knows that the last returned object from getSpans()
+		 * will be the most recently added.
+		 */
+        Object[] objs = text.getSpans(0, text.length(), kind);
+        if (objs.length == 0) {
+            return null;
+        }
+        return objs[objs.length - 1];
+    }
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
@@ -82,13 +121,13 @@ public class HtmlTagHandler implements Html.TagHandler {
                 }
             } else {
                 if (lists.peek().equalsIgnoreCase("ul")) {
-                    if ( output.length() > 0 && output.charAt(output.length() - 1) != '\n' ) {
+                    if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                         output.append("\n");
                     }
                     // Nested BulletSpans increases distance between bullet and text, so we must prevent it.
                     int bulletMargin = indent;
                     if (lists.size() > 1) {
-                        bulletMargin = indent-bullet.getLeadingMargin(true);
+                        bulletMargin = indent - bullet.getLeadingMargin(true);
                         if (lists.size() > 2) {
                             // This get's more complicated when we add a LeadingMarginSpan into the same line:
                             // we have also counter it's effect to BulletSpan
@@ -101,7 +140,7 @@ public class HtmlTagHandler implements Html.TagHandler {
                             new LeadingMarginSpan.Standard(listItemIndent * (lists.size() - 1)),
                             newBullet);
                 } else if (lists.peek().equalsIgnoreCase("ol")) {
-                    if ( output.length() > 0 && output.charAt(output.length() - 1) != '\n' ) {
+                    if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                         output.append("\n");
                     }
                     int numberMargin = listItemIndent * (lists.size() - 1);
@@ -119,40 +158,10 @@ public class HtmlTagHandler implements Html.TagHandler {
         }
     }
 
-    /** @see android.text.Html */
-    private static void start(Editable text, Object mark) {
-        int len = text.length();
-        text.setSpan(mark, len, len, Spanned.SPAN_MARK_MARK);
+    private static class Ul {
     }
 
-    /** Modified from {@link android.text.Html} */
-    private static void end(Editable text, Class<?> kind, Object... replaces) {
-        int len = text.length();
-        Object obj = getLast(text, kind);
-        int where = text.getSpanStart(obj);
-        text.removeSpan(obj);
-        if (where != len) {
-            for (Object replace: replaces) {
-                text.setSpan(replace, where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-        return;
+    private static class Ol {
     }
-
-    /** @see android.text.Html */
-    private static Object getLast(Spanned text, Class<?> kind) {
-		/*
-		 * This knows that the last returned object from getSpans()
-		 * will be the most recently added.
-		 */
-        Object[] objs = text.getSpans(0, text.length(), kind);
-        if (objs.length == 0) {
-            return null;
-        }
-        return objs[objs.length - 1];
-    }
-
-    private static class Ul { }
-    private static class Ol { }
 
 }

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -19,6 +20,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -40,6 +42,8 @@ import com.worldventures.dreamtrips.view.adapter.MyDraggableSwipeableItemAdapter
 import com.worldventures.dreamtrips.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.view.custom.EmptyRecyclerView;
+
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 
@@ -133,12 +137,20 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
         View view = MenuItemCompat.getActionView(searchItem);
-        EditText searchView = (EditText) view.findViewById(R.id.editTextQuickInput);
+        EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnEditorActionListener((v, actionId, event) -> {
+        quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        quickInputEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideSoftKeyboard(v);
+                }
+            }
+        });
+        quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
                 getPresentationModel().addToBucketList(s);
@@ -148,14 +160,12 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     }
 
     @Override
-    public void showUndoBar(View.OnClickListener undoListener, SnackBar.OnHideListener onHideListener) {
+    public void showUndoBar(View.OnClickListener undoListener) {
         if (snackBar != null && snackBar.isShowing()) {
             snackBar.hide();
         }
         snackBar = new SnackBar(getActivity(), getString(R.string.bucket_delete_undo),
                 getString(R.string.undo), undoListener);
-        snackBar.setDismissTimer(1500);
-        snackBar.setOnhideListener(onHideListener);
         snackBar.show();
     }
 
@@ -164,21 +174,30 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         switch (item.getItemId()) {
             case R.id.action_filter:
                 View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
+
                 PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
                 popupMenu.inflate(R.menu.menu_bucket_filter);
-                popupMenu.setOnMenuItemClickListener((menuItem) -> {
 
+                boolean showCompleted = getPresentationModel().isShowCompleted();
+                boolean showToDO = getPresentationModel().isShowToDO();
+
+                if (showCompleted && showToDO)
+                    popupMenu.getMenu().getItem(0).setChecked(true);
+                else if (showCompleted)
+                    popupMenu.getMenu().getItem(1).setChecked(true);
+                else
+                    popupMenu.getMenu().getItem(2).setChecked(true);
+
+                popupMenu.setOnMenuItemClickListener((menuItem) -> {
                     getPresentationModel().reloadWithFilter(menuItem.getItemId());
 
                     return false;
                 });
+
                 popupMenu.show();
                 break;
             case R.id.action_popular:
                 getPresentationModel().addPopular();
-                break;
-            case android.R.id.home:
-                hideSoftKeyboard();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -200,7 +219,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onDestroyView() {
-        hideSoftKeyboard();
         super.onDestroyView();
     }
 
@@ -232,9 +250,14 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         return mAdapter;
     }
 
-    public void hideSoftKeyboard() {
+    public void hideSoftKeyboard(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    private enum BucketFilter {
+        ALL, TO_DO, COMPLETED
+
     }
 
 }

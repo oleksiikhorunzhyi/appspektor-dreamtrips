@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/action_show_all"
-        android:title="@string/show_all" />
-    <item
-        android:id="@+id/action_show_completed"
-        android:title="@string/show_completed" />
+    <group
+        android:id="@+id/bucket_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_show_all"
+            android:checked="true"
+            android:title="@string/show_all" />
+        <item
+            android:id="@+id/action_show_completed"
+            android:title="@string/show_completed" />
 
-    <item
-        android:id="@+id/action_show_to_do"
-        android:title="@string/show_to_do" />
-
+        <item
+            android:id="@+id/action_show_to_do"
+            android:title="@string/show_to_do" />
+    </group>
 </menu>

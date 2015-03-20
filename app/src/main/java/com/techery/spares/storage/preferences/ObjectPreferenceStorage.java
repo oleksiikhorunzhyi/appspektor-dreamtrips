@@ -1,7 +1,7 @@
 package com.techery.spares.storage.preferences;
 
-import com.google.common.base.Optional;
 import com.techery.spares.storage.ObjectStorage;
+import com.techery.spares.storage.complex_objects.Optional;
 
 public class ObjectPreferenceStorage implements ObjectStorage<String> {
     private final SimpleKeyValueStorage simpleKeyValueStorage;

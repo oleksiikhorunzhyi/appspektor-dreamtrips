@@ -1,6 +1,5 @@
 package com.techery.spares.application;
 
-import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 import com.techery.spares.module.Injector;

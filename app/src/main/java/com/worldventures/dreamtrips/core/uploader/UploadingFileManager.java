@@ -6,9 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.google.common.hash.HashCode;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import com.worldventures.dreamtrips.utils.ValidationUtils;
 
 import java.io.File;
@@ -17,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 
@@ -46,13 +45,10 @@ public class UploadingFileManager {
 
         ValidationUtils.checkNotNull(extension);
 
-        HashFunction hf = Hashing.md5();
 
         String fileKey = filePath + new Date().toString();
 
-        HashCode hashCode = hf.hashString(fileKey, Charset.defaultCharset());
-
-        String fileKeyHash = hashCode.toString();
+        String fileKeyHash = md5(fileKey);
 
         try {
             if (uri.getScheme().startsWith("http")) {
@@ -92,5 +88,31 @@ public class UploadingFileManager {
         }
 
         return file;
+    }
+
+
+    public static final String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("", "", e);
+        }
+        return "";
     }
 }

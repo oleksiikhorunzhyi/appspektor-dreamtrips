@@ -30,6 +30,9 @@ import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -136,27 +139,30 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
             bucketItems.remove(event.getBucketItem());
             fillWithItems();
 
-            view.showUndoBar((v) -> undo(event.getBucketItem(), index), () -> hiden(event.getBucketItem().getId()));
+            DreamTripsRequest.DeleteBucketItem request = hiden(event.getBucketItem().getId());
+            view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
     }
 
-    private void hiden(int id) {
-        dreamSpiceManager.execute(new DreamTripsRequest.DeleteBucketItem(id), new RequestListener<JsonObject>() {
+    private DreamTripsRequest.DeleteBucketItem hiden(int id) {
+        DreamTripsRequest.DeleteBucketItem request = new DreamTripsRequest.DeleteBucketItem(id, 3500);
+        dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-                view.alert(spiceException.getMessage());
                 Log.d("TAG_BucketListPM", spiceException.getMessage());
             }
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 Log.d("TAG_BucketListPM", "Item deleted");
+                db.saveBucketList(bucketItems, type.name());
             }
         });
-        db.saveBucketList(bucketItems, type.name());
+        return request;
     }
 
-    private void undo(BucketItem bucketItem, int index) {
+    private void undo(BucketItem bucketItem, int index, DreamTripsRequest.DeleteBucketItem request) {
+        request.setCanceled(true);
         bucketItems.add(index, bucketItem);
         fillWithItems();
     }
@@ -264,10 +270,18 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         });
     }
 
+    public boolean isShowToDO() {
+        return showToDO;
+    }
+
+    public boolean isShowCompleted() {
+        return showCompleted;
+    }
+
     public interface View extends BasePresentation.View {
         BaseArrayListAdapter getAdapter();
 
-        void showUndoBar(android.view.View.OnClickListener clickListener, SnackBar.OnHideListener onHideListener);
+        void showUndoBar(android.view.View.OnClickListener clickListener);
 
         void startLoading();
 

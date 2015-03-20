@@ -48,12 +48,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        webView.loadUrl("about:blank");
-        webView.stopLoading();
-        webView.setWebChromeClient(null);
-        webView.setWebViewClient(null);
-        webView.destroy();
-        webView = null;
+
     }
 
 
@@ -71,9 +66,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
         super.onPause();
         webView.onPause();
         webView.pauseTimers();
-        webView.destroy();
     }
 
+    @Override
+    public void onDestroyView() {
+        webView.destroy();
+        super.onDestroyView();
+    }
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {

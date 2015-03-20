@@ -141,16 +141,37 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
 
     public static class DeleteBucketItem extends DreamTripsRequest<JsonObject> {
         private int id;
+        private long delay;
+        private boolean isCanceled = false;
 
-        public DeleteBucketItem(int id) {
+        public DeleteBucketItem(int id, long delay) {
             super(JsonObject.class);
+            this.delay = delay;
             this.id = id;
+        }
+
+        public boolean isCanceled() {
+            return isCanceled;
+        }
+
+        public void setCanceled(boolean isCanceled) {
+            this.isCanceled = isCanceled;
         }
 
         @Override
         public JsonObject loadDataFromNetwork() {
-            Log.d("TAG_BucketListPM", "Sending delete item event");
-            return getService().deleteItem(id);
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (isCanceled) {
+                return new JsonObject();
+            } else {
+                Log.d("TAG_BucketListPM", "Sending delete item event");
+                return getService().deleteItem(id);
+            }
         }
     }
 
@@ -285,7 +306,6 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
     }
 
     public static class GetMyPhotos extends DreamTripsRequest<ArrayList<IFullScreenAvailableObject>> {
-
 
         @Inject
         SnappyRepository db;
@@ -539,17 +559,17 @@ public abstract class DreamTripsRequest<T> extends RetrofitSpiceRequest<T, Dream
         @Override
         public ArrayList<Trip> loadDataFromNetwork() throws Exception {
             ArrayList<Trip> data = new ArrayList<>();
-            try {
-                if (needUpdate() || fromApi) {
-                    this.fromApi = false;
-                    data.addAll(getService().getTrips());
+            if (needUpdate() || fromApi) {
+                this.fromApi = false;
+                data.addAll(getService().getTrips());
+                try {
                     db.saveTrips(data);
-                    prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
-                } else {
-                    data.addAll(db.getTrips());
+                } catch (Exception e) {
+                    Log.e("", "", e);
                 }
-            } catch (Exception e) {
-                Log.e(DreamTripsRequest.class.getSimpleName(), "", e);
+                prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
+            } else {
+                data.addAll(db.getTrips());
             }
             return data;
         }

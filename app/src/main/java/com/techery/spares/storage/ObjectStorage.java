@@ -1,6 +1,7 @@
 package com.techery.spares.storage;
 
-import com.google.common.base.Optional;
+
+import com.techery.spares.storage.complex_objects.Optional;
 
 public interface ObjectStorage<T> {
     Optional<T> get();

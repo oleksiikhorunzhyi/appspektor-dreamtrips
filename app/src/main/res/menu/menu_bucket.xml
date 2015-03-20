@@ -5,14 +5,14 @@
     <item
         android:id="@+id/action_quick"
         android:icon="@drawable/add_item"
-        android:title="@string/action_settings"
+        android:title="@string/action_quick_input"
         app:actionLayout="@layout/add_new_item_layout"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/action_popular"
         android:icon="@drawable/popular"
-        android:title="@string/action_settings"
+        android:title="@string/action_popular_string"
         app:showAsAction="ifRoom" />
 
     <item

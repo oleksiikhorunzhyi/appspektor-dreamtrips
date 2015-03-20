@@ -138,29 +138,18 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                expand = true;
-                return false;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                expand = false;
-                return false;
-            }
-        });
         View view = MenuItemCompat.getActionView(searchItem);
         EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        quickInputEditText.setShowSoftInputOnFocus(true);
         quickInputEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    quickInputEditText.setFocusable(true);
                     hideSoftKeyboard(v);
                 }
             }
@@ -188,7 +177,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                if (!expand) {
+                View v = getActivity().findViewById(R.id.editTextQuickInput);
+                if (v == null) {
                     View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
 
                     PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);

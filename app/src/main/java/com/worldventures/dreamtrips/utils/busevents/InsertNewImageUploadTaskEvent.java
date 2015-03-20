@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.utils.busevents;
 
-import com.worldventures.dreamtrips.core.uploader.model.ImageUploadTask;
+import com.worldventures.dreamtrips.core.model.ImageUploadTask;
 
 public class InsertNewImageUploadTaskEvent {
 

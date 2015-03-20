@@ -22,6 +22,8 @@ public class InspireMePM extends TripImagesListPM<Inspiration> {
 
             @Override
             public SpiceRequest<ArrayList<Inspiration>> getRefreshRequest() {
+                //   Class<ArrayList<Inspiration>> aClass = (Class<ArrayList<Inspiration>>) new ArrayList<Inspiration>().getClass();
+                //   return new PostDelayRequest<>(aClass,new DreamTripsRequest.GetInspireMePhotos(PER_PAGE, 1), 222);
                 return new DreamTripsRequest.GetInspireMePhotos(PER_PAGE, 1);
             }
 

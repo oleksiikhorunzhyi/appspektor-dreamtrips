@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 
 import butterknife.InjectView;
@@ -21,7 +21,7 @@ import butterknife.InjectView;
  * Created by Edward on 29.01.15.
  */
 @Layout(R.layout.fragment_webview)
-public class BookItDialogFragment extends BaseDialogFragment<BookItDialogPM> implements BookItDialogPM.View {
+public class BookItDialogFragment extends BaseDialogFragment<BookItDialogPresenter> implements BookItDialogPresenter.View {
 
     public static final String EXTRA_TRIP_ID = "TRIP_ID";
 
@@ -70,7 +70,7 @@ public class BookItDialogFragment extends BaseDialogFragment<BookItDialogPM> imp
     }
 
     @Override
-    protected BookItDialogPM createPresentationModel(Bundle savedInstanceState) {
-        return new BookItDialogPM(this);
+    protected BookItDialogPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new BookItDialogPresenter(this);
     }
 }

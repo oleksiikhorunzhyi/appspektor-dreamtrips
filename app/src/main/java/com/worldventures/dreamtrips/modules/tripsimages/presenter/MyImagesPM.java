@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotos;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -22,16 +22,16 @@ public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
         return new TripImagesRoboSpiceController() {
             @Override
             public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getRefreshRequest() {
-                GetMyPhotos getMyPhotos = new GetMyPhotos(user.getId(), PER_PAGE, 1);
-                view.inject(getMyPhotos);
-                return getMyPhotos;
+                GetMyPhotosQuery getMyPhotosQuery = new GetMyPhotosQuery(user.getId(), PER_PAGE, 1);
+                view.inject(getMyPhotosQuery);
+                return getMyPhotosQuery;
             }
 
             @Override
             public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getNextPageRequest(int currentCount) {
-                GetMyPhotos getMyPhotos = new GetMyPhotos(user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
-                view.inject(getMyPhotos);
-                return getMyPhotos;
+                GetMyPhotosQuery getMyPhotosQuery = new GetMyPhotosQuery(user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
+                view.inject(getMyPhotosQuery);
+                return getMyPhotosQuery;
             }
         };
     }

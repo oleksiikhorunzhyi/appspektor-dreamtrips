@@ -12,9 +12,9 @@ import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.modules.auth.api.Login;
-import com.worldventures.dreamtrips.modules.common.api.ConfigRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhoto;
+import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
+import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -104,7 +104,7 @@ public class DreamSpiceManager extends SpiceManager {
 
     public void login(OnLoginSuccess onLoginSuccess, String username, String userPassword) {
 
-        DreamSpiceManager.super.execute(new ConfigRequest.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
+        DreamSpiceManager.super.execute(new GlobalConfigQuery.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 onLoginSuccess.result(null, spiceException);
@@ -112,7 +112,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             @Override
             public void onRequestSuccess(S3GlobalConfig s3GlobalConfig) {
-                DreamSpiceManager.super.execute(new Login(username, userPassword), new RequestListener<Session>() {
+                DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
                         onLoginSuccess.result(null, spiceException);
@@ -133,7 +133,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void uploadPhoto(ImageUploadTask task) {
-        UploadTripPhoto request = new UploadTripPhoto(task);
+        UploadTripPhotoCommand request = new UploadTripPhotoCommand(task);
         injector.inject(request);
         execute(request, new RequestListener<Photo>() {
             @Override

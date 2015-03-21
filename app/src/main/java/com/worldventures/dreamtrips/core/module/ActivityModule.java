@@ -17,8 +17,15 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotos;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhoto;
+import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
@@ -90,13 +97,6 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragm
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesListFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripFragmentPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.FiltersFragmentPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPM;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPM;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
@@ -173,9 +173,9 @@ import dagger.Provides;
                 MyImagesPM.class,
                 UserImagesPM.class,
                 YSBHPM.class,
-                DreamTripsFragmentPM.class,
-                DetailedTripFragmentPM.class,
-                DetailTripActivityPM.class,
+                DreamTripsFragmentPresenter.class,
+                DetailedTripPresenter.class,
+                DetailTripActivityPresenter.class,
                 FullScreenActivityPM.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoActivityPM.class,
@@ -185,18 +185,18 @@ import dagger.Provides;
                 EnrollActivity.class,
                 EnrollActivityPresenter.class,
                 BucketPopularTabsFragmentPM.class,
-                FiltersFragmentPM.class,
+                FiltersPresenter.class,
                 BucketListQuickInputFragment.class,
                 DetailedImagePagerFragmentPresenter.class,
-                FragmentMapInfoPM.class,
-                BookItDialogPM.class,
+                FragmentMapInfoPresenter.class,
+                BookItDialogPresenter.class,
 
                 NavigationDrawerFragment.class,
                 FiltersFragment.class,
                 MembershipPM.class,
                 BucketTabsFragmentPM.class,
                 BucketListFragmentPM.class,
-                MapFragmentPM.class,
+                MapFragmentPresenter.class,
                 FSPhotoPM.class,
                 Video360FragmentPM.class,
                 FSInspireMePM.class,
@@ -268,14 +268,14 @@ import dagger.Provides;
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,
                 FilterableArrayListAdapter.class,
-                GetMyPhotos.class,
+                GetMyPhotosQuery.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
 
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
                 SimpleStreamPlayerActivity.class,
-                UploadTripPhoto.class,
+                UploadTripPhotoCommand.class,
                 OtaFragment.class,
                 ActualTokenStaticInfoFragment.class,
                 ActualTokenStaticInfoFragmentPM.class,

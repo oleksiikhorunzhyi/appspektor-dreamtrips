@@ -13,7 +13,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * kind of info window for map pin
  */
 @Layout(R.layout.fragment_trip_pin)
-public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> implements FragmentMapInfoPM.View {
+public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> implements FragmentMapInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
@@ -155,7 +155,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
     }
 
     @Override
-    protected FragmentMapInfoPM createPresenter(Bundle savedInstanceState) {
-        return new FragmentMapInfoPM(this);
+    protected FragmentMapInfoPresenter createPresenter(Bundle savedInstanceState) {
+        return new FragmentMapInfoPresenter(this);
     }
 }

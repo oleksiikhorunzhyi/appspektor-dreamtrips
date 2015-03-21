@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
-import com.worldventures.dreamtrips.core.api.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 

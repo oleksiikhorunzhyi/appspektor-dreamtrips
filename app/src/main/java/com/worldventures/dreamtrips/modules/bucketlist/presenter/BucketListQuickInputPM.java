@@ -6,7 +6,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -76,7 +76,7 @@ public class BucketListQuickInputPM extends BasePresenter<BucketListQuickInputPM
         bucketPostItem.setError(false);
         view.getAdapter().notifyDataSetChanged();
 
-        dreamSpiceManager.execute(new AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 bucketPostItem.setError(true);

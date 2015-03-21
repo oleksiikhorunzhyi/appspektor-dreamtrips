@@ -12,11 +12,11 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketList;
-import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
+import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -70,7 +70,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
     public void loadBucketItems(boolean fromNetwork) {
         if (isConnected()) {
             view.startLoading();
-            dreamSpiceManager.execute(new GetBucketList(prefs, db, type, fromNetwork), new RequestListener<ArrayList<BucketItem>>() {
+            dreamSpiceManager.execute(new GetBucketListQuery(prefs, db, type, fromNetwork), new RequestListener<ArrayList<BucketItem>>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     view.alert(spiceException.getMessage());
@@ -140,13 +140,13 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
             bucketItems.remove(event.getBucketItem());
             fillWithItems();
 
-            DeleteBucketItem request = hiden(event.getBucketItem().getId());
+            DeleteBucketItemCommand request = hiden(event.getBucketItem().getId());
             view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
     }
 
-    private DeleteBucketItem hiden(int id) {
-        DeleteBucketItem request = new DeleteBucketItem(id, 3500);
+    private DeleteBucketItemCommand hiden(int id) {
+        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, 3500);
         dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -162,7 +162,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
         return request;
     }
 
-    private void undo(BucketItem bucketItem, int index, DeleteBucketItem request) {
+    private void undo(BucketItem bucketItem, int index, DeleteBucketItemCommand request) {
         request.setCanceled(true);
         bucketItems.add(index, bucketItem);
         fillWithItems();
@@ -178,7 +178,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
 
             Log.d("TAG_BucketListPM", "Receivent mark as done event");
 
-            dreamSpiceManager.execute(new MarkBucketItem(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
+            dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     view.alert(spiceException.getMessage());
@@ -237,7 +237,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
         BucketOrderModel orderModel = new BucketOrderModel();
         orderModel.setId(bucketItem.getId());
         orderModel.setPosition(to);
-        dreamSpiceManager.execute(new ReorderBucketItem(orderModel), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new ReorderBucketItemCommand(orderModel), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 view.informUser(context.getString(R.string.smth_went_wrong));
@@ -255,7 +255,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
     }
 
     public void loadBucketItem(BucketPostItem bucketPostItem) {
-        dreamSpiceManager.execute(new AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
             }

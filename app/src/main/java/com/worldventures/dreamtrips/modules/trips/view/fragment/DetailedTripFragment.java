@@ -17,7 +17,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripFragmentPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedImagePagerFragment;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
@@ -43,7 +43,7 @@ import me.relex.circleindicator.CircleIndicator;
  */
 @Layout(R.layout.fragment_detailed_trip)
 @MenuResource(R.menu.menu_detailed_trip)
-public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> implements DetailedTripFragmentPM.View {
+public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> implements DetailedTripPresenter.View {
 
     @InjectView(R.id.textViewName)
     TextView textViewName;
@@ -88,8 +88,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     MenuItem likeItem;
 
     @Override
-    protected DetailedTripFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new DetailedTripFragmentPM(this);
+    protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
+        return new DetailedTripPresenter(this);
     }
 
     @OnClick(R.id.layoutBookIt)

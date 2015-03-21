@@ -18,7 +18,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
@@ -36,7 +36,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> implements DreamTripsFragmentPM.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)
     EmptyRecyclerView recyclerView;
@@ -162,8 +162,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     }
 
     @Override
-    protected DreamTripsFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new DreamTripsFragmentPM(this);
+    protected DreamTripsFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new DreamTripsFragmentPresenter(this);
     }
 
     @Override

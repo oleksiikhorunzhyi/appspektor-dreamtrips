@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
@@ -23,7 +23,7 @@ public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<Ac
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             view.loadContent();
         } else {
-            dreamSpiceManager.execute(new FlagPhoto(-1, ""), new RequestListener() {
+            dreamSpiceManager.execute(new FlagPhotoCommand(-1, ""), new RequestListener() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     Timber.e(spiceException, "");

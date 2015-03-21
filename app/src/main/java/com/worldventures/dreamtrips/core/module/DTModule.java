@@ -15,7 +15,7 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.ApiModule;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
@@ -41,7 +41,7 @@ import de.greenrobot.event.EventBus;
                 FabricInitializer.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
-                UploadTripPhoto.class
+                UploadTripPhotoCommand.class
         },
         includes = {
                 InjectingApplicationModule.class,

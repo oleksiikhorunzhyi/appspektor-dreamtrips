@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -38,7 +38,7 @@ import butterknife.InjectView;
  */
 @Layout(R.layout.fragment_map)
 @MenuResource(R.menu.menu_map)
-public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragmentPM.View, SearchView.OnQueryTextListener {
+public class MapFragment extends BaseFragment<MapFragmentPresenter> implements MapFragmentPresenter.View, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.map)
     ToucheableMapView mapView;
@@ -143,8 +143,8 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     }
 
     @Override
-    protected MapFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new MapFragmentPM(this);
+    protected MapFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new MapFragmentPresenter(this);
     }
 
     @Override

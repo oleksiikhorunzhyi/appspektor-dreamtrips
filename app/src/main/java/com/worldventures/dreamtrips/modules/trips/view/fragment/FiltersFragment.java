@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
 import com.worldventures.dreamtrips.modules.trips.model.Region;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.FiltersFragmentPM;
+import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.DateCell;
@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * filters fragment for right side nav drawer
  */
 @Layout(R.layout.layout_filters)
-public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements FiltersFragmentPM.View {
+public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
     @InjectView(R.id.recyclerViewRegions)
     EmptyRecyclerView recyclerView;
@@ -108,7 +108,7 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
     }
 
     @Override
-    protected FiltersFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new FiltersFragmentPM(this);
+    protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
+        return new FiltersPresenter(this);
     }
 }

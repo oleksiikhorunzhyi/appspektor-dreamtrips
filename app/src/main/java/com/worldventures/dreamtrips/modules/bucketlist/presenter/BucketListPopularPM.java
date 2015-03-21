@@ -9,7 +9,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -105,7 +105,7 @@ public class BucketListPopularPM extends BasePresenter<BucketListPopularPM.View>
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
                 popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
-        dreamSpiceManager.execute(new AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 popularBucketItem.setLoading(false);

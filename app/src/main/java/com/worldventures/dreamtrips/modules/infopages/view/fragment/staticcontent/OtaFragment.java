@@ -5,9 +5,9 @@ import android.widget.ProgressBar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
 import com.worldventures.dreamtrips.modules.infopages.model.URLS;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 
 import butterknife.InjectView;
 

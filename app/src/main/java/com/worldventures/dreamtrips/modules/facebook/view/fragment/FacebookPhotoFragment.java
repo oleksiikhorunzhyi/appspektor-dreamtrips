@@ -15,14 +15,14 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoFragmentPM;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoFragmentPM;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoItem;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,14 +8,14 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 
 import java.util.ArrayList;

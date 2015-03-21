@@ -4,12 +4,12 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 
 import javax.inject.Inject;
 

@@ -8,12 +8,12 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsFragmentPM;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
 import butterknife.InjectView;
 
@@ -69,6 +69,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
         RESTAURANTS("dinning", R.string.dinning);
         String name;
         int res;
+
         Type(String name, int res) {
             this.name = name;
             this.res = res;

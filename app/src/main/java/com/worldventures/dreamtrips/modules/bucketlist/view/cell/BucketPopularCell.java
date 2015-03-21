@@ -9,10 +9,10 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 
 import javax.inject.Inject;
 

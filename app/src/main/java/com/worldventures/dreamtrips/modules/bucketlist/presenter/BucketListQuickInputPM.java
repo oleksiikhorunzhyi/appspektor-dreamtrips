@@ -6,14 +6,14 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import java.util.ArrayList;
 import java.util.List;

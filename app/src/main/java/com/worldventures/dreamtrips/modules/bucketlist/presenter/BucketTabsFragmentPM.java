@@ -4,10 +4,10 @@ import android.os.Bundle;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.QuickAddItemEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import javax.inject.Inject;
 

@@ -8,19 +8,19 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
+import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.model.Activity;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,6 +143,7 @@ public class DreamTripsFragmentPresenter extends BasePresenter<DreamTripsFragmen
                         && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))).toList());
         return filteredTrips;
     }
+
     public void resetFilters() {
         this.maxNights = Integer.MAX_VALUE;
         this.maxPrice = Double.MAX_VALUE;

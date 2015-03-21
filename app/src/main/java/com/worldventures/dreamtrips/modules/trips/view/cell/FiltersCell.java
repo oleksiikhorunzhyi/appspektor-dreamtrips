@@ -7,11 +7,11 @@ import com.appyvet.rangebar.RangeBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.RangeBarDurationEvent;
 import com.worldventures.dreamtrips.core.utils.events.RangeBarPriceEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
+import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

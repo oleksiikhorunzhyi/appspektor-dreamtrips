@@ -7,13 +7,13 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.io.File;

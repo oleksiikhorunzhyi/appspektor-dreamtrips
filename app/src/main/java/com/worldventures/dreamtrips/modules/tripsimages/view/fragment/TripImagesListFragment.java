@@ -13,18 +13,18 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 
 import java.util.List;
 

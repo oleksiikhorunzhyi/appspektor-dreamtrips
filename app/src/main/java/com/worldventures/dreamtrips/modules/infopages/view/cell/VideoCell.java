@@ -11,11 +11,11 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
+import com.worldventures.dreamtrips.modules.infopages.model.Video;
 
 import javax.inject.Inject;
 

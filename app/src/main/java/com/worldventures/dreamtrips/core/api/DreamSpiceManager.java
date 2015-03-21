@@ -12,18 +12,18 @@ import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
-import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
-import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
+import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import org.apache.http.HttpStatus;
 
@@ -51,7 +51,6 @@ public class DreamSpiceManager extends SpiceManager {
 
     public <T> void execute(final SpiceRequest<T> request, final RequestListener<T> requestListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
-        Log.w("SpiceManagerThread", "manager started:" + isStarted() + "; execute:" + request.getClass().getSimpleName());
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
@@ -59,13 +58,13 @@ public class DreamSpiceManager extends SpiceManager {
                     String username = appSessionHolder.get().get().getUsername();
                     String userPassword = appSessionHolder.get().get().getUserPassword();
 
-                    login((l, e) -> {
+                    login(userPassword, username, (l, e) -> {
                         if (l != null) {
                             DreamSpiceManager.super.execute(request, requestListener);
                         } else {
                             requestListener.onRequestFailure(error);
                         }
-                    }, username, userPassword);
+                    });
                 } else {
                     requestListener.onRequestFailure(error);
                 }
@@ -102,7 +101,7 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    public void login(OnLoginSuccess onLoginSuccess, String username, String userPassword) {
+    public void login(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
 
         DreamSpiceManager.super.execute(new GlobalConfigQuery.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
             @Override
@@ -140,7 +139,6 @@ public class DreamSpiceManager extends SpiceManager {
             public void onRequestFailure(SpiceException spiceException) {
                 Log.e("Progress event", "onRequestFailure SpiceException" + spiceException);
                 new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
-
             }
 
             @Override

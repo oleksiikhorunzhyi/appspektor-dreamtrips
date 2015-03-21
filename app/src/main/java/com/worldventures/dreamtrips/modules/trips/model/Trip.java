@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.util.ArrayList;
 import java.util.List;

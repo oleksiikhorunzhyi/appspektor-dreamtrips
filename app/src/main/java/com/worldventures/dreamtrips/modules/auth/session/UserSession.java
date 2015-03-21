@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.auth.session;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 
 public class DetailedImagePagerFragmentPresenter extends BasePresenter<BasePresenter.View> {

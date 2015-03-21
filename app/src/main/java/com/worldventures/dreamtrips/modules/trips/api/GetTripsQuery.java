@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.trips.api;
 import android.util.Log;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
 
 import java.util.ArrayList;
 import java.util.Calendar;

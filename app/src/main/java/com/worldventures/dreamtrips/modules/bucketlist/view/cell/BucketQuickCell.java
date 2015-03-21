@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

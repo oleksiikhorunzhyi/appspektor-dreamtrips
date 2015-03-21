@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.auth.model;
 
-import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.Session;
 
 public class LoginResponse {
     S3GlobalConfig config;

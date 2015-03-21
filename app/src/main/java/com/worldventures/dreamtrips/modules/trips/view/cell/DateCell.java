@@ -7,9 +7,9 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateUtils;
+import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 
 import java.util.Calendar;
 

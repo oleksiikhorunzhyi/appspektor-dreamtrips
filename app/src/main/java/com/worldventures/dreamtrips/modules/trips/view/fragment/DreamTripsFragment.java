@@ -17,17 +17,17 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import java.util.List;
 

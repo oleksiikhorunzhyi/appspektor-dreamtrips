@@ -15,8 +15,8 @@ import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoActivityPM;
 import com.worldventures.dreamtrips.modules.common.presenter.ShareActivityPM;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoActivityPM;
 
 import butterknife.InjectView;
 

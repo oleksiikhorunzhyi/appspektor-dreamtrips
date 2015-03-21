@@ -4,14 +4,14 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.LikePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UnlikePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;

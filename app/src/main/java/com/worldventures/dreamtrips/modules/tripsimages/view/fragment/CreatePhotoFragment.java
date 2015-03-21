@@ -13,12 +13,12 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoFragmentPM;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 import java.util.Calendar;
 import java.util.Date;

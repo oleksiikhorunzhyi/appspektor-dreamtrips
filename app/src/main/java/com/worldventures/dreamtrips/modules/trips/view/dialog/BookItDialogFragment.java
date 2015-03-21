@@ -12,8 +12,8 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
+import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
 
 import butterknife.InjectView;
 

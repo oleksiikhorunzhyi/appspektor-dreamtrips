@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class TripImagesTabsFragmentPresenter extends BasePresenter<TripImagesTab
     }
 
     public void destroy() {
-         eventBus.removeAllStickyEvents();
+        eventBus.removeAllStickyEvents();
     }
 
     @Override

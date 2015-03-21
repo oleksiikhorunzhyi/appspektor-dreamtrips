@@ -8,11 +8,11 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsFragmentPM;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsFragmentPM;
 
 import butterknife.InjectView;
 

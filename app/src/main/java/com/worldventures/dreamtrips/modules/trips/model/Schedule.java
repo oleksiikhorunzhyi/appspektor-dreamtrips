@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

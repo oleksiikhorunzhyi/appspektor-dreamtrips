@@ -7,9 +7,9 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.infopages.model.Video360;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.modules.infopages.model.Video360;
 
 import javax.inject.Inject;
 

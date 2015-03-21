@@ -16,15 +16,15 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListFragmentPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
-import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListFragmentPM;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
 

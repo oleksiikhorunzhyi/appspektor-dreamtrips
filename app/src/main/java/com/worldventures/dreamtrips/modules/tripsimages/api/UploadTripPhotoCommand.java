@@ -11,14 +11,14 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.io.File;
 import java.io.FileInputStream;

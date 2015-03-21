@@ -25,10 +25,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import butterknife.InjectView;
 

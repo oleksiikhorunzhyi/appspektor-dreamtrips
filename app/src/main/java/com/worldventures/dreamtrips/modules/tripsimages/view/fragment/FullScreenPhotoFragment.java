@@ -21,15 +21,15 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BaseFSViewPM;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BaseFSViewPM;
+import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 
 import java.util.List;
 

@@ -6,8 +6,8 @@ import android.widget.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.utils.events.SoldOutEvent;
+import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 
 import butterknife.InjectView;
 

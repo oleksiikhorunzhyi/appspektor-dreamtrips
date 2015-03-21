@@ -36,9 +36,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListFragmentPM;
-import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -74,6 +74,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     private RecyclerViewDragDropManager mDragDropManager;
     private SnackBar snackBar;
+    private boolean expand = false;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -128,8 +129,6 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public boolean onQueryTextChange(String s) {
         return false;
     }
-
-    private boolean expand = false;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

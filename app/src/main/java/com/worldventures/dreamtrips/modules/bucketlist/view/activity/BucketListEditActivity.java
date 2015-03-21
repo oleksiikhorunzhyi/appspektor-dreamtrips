@@ -7,10 +7,10 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
 
 import butterknife.InjectView;
 

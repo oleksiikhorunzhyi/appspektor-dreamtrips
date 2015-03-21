@@ -11,11 +11,11 @@ import android.widget.ProgressBar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
-import com.worldventures.dreamtrips.modules.infopages.model.URLS;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.infopages.model.URLS;
+import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 
 import butterknife.InjectView;
 

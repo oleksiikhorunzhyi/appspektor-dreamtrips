@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-
 import java.util.List;
 
 public class BucketListResponse {

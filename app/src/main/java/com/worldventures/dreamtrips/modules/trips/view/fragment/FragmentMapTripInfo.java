@@ -12,11 +12,11 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
 
 import javax.inject.Inject;
 

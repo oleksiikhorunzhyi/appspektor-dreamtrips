@@ -18,10 +18,10 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
-import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
 
 import net.hockeyapp.android.UpdateManager;
 

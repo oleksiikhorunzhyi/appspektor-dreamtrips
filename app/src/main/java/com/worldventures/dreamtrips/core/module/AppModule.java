@@ -15,7 +15,6 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.ApiModule;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
@@ -25,6 +24,7 @@ import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import javax.inject.Singleton;
@@ -50,10 +50,10 @@ import de.greenrobot.event.EventBus;
         library = true,
         complete = false
 )
-public class DTModule {
+public class AppModule {
     App app;
 
-    public DTModule(App app) {
+    public AppModule(App app) {
         this.app = app;
     }
 
@@ -105,7 +105,6 @@ public class DTModule {
         return new Prefs(sharedPreferences);
     }
 
-
     @Provides
     CognitoCachingCredentialsProvider provideCredProvider(Context context) {
         return new CognitoCachingCredentialsProvider(
@@ -122,7 +121,6 @@ public class DTModule {
     TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
         return new TransferManager(credentialsProvider);
     }
-
 
     @Provides
     UploadingFileManager provideUploadingFileManager(Context context) {

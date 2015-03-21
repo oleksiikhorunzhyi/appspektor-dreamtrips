@@ -15,13 +15,13 @@ import com.facebook.widget.LoginButton;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumFragmentPM;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumItem;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

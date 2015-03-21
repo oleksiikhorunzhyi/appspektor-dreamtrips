@@ -9,9 +9,9 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedImagePagerFragment;
 
 import java.io.Serializable;

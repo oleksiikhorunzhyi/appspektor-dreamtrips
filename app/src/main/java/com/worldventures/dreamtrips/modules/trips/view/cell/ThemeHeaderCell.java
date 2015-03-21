@@ -6,9 +6,9 @@ import android.widget.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
+import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

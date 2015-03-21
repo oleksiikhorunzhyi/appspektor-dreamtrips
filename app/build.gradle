@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'retrolambda'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-apt'
 
 repositories {
@@ -36,19 +36,21 @@ android {
         }
     }
 
-
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
+
         minSdkVersion 14
         targetSdkVersion 21
+
         versionCode 34
         versionName "0.1.34"
+
         multiDexEnabled true
+
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
-
     }
 
     buildTypes {
@@ -67,13 +69,11 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
-
             buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
             buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
             buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
             buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
-
         }
         preprod {
             applicationId "com.worldventures.dreamtrips.preprod"

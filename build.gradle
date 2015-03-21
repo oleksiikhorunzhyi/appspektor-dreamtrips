@@ -9,16 +9,14 @@ buildscript {
         }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'http://archiva.instabug.com/repository/release' }
-
-
     }
     dependencies {
         repositories {
             mavenCentral()
         }
         classpath 'com.android.tools.build:gradle:1.1.0'
-        classpath 'me.tatarka:gradle-retrolambda:2.4.1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
         classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.0.2'
     }
 }

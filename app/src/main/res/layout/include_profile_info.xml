@@ -28,7 +28,7 @@
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
-            <com.worldventures.dreamtrips.view.custom.DTEditText
+            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                 android:id="@+id/et_from"
                 style="@style/profile_fragment_edit_text"
                 android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
-            <com.worldventures.dreamtrips.view.custom.DTEditText
+            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                 android:id="@+id/et_live_in"
                 style="@style/profile_fragment_edit_text"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
-            <com.worldventures.dreamtrips.view.custom.DTEditText
+            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                 android:id="@+id/et_date_of_birth"
                 style="@style/profile_fragment_edit_text"
                 android:clickable="false"
@@ -160,7 +160,7 @@
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
-            <com.worldventures.dreamtrips.view.custom.DTEditText
+            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                 android:id="@+id/et_user_id"
                 style="@style/profile_fragment_edit_text"
                 android:clickable="false"

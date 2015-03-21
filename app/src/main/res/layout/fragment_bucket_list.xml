@@ -52,7 +52,7 @@
         android:visibility="gone"
         android:layout_centerInParent="true"/>
 
-    <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
         android:id="@+id/lv_items"
         style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"

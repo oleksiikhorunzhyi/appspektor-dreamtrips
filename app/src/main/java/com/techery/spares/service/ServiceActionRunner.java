@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.gson.Gson;
-import com.worldventures.dreamtrips.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.utils.ValidationUtils;
 
 
 public class ServiceActionRunner {

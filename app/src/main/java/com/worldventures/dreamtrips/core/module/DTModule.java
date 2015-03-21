@@ -12,8 +12,8 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
 
 @Module(
         injects = {
-                DreamTripsApplication.class,
+                App.class,
                 InstabugInitializer.class,
                 ImageLoaderInitializer.class,
                 FabricInitializer.class,
@@ -50,14 +50,14 @@ import de.greenrobot.event.EventBus;
         complete = false
 )
 public class DTModule {
-    DreamTripsApplication app;
+    App app;
 
-    public DTModule(DreamTripsApplication app) {
+    public DTModule(App app) {
         this.app = app;
     }
 
     @Provides
-    DreamTripsApplication provideApplication() {
+    App provideApplication() {
         return app;
     }
 

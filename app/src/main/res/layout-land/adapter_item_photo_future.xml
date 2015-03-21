@@ -54,7 +54,7 @@ card_view:cardCornerRadius="4dp">
 
     </LinearLayout>
 
-    <com.worldventures.dreamtrips.view.custom.SquareRelativeLayout
+    <com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -66,7 +66,7 @@ card_view:cardCornerRadius="4dp">
             android:layout_gravity="center_horizontal"
             android:scaleType="centerCrop" />
 
-    </com.worldventures.dreamtrips.view.custom.SquareRelativeLayout>
+    </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

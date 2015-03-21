@@ -5,8 +5,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.view.activity.LoginActivity;
-import com.worldventures.dreamtrips.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 
 import org.junit.Before;
 import org.junit.Test;

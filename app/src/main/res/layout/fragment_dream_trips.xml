@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
     android:orientation="vertical"
-    tools:context="com.worldventures.dreamtrips.view.fragment.DreamTripsFragment">
+    tools:context="com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:visibility="visible">
 
-            <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+            <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
                 android:id="@+id/recyclerViewTrips"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

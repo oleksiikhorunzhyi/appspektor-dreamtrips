@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.model.config;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.utils.DateUtils;
+import com.worldventures.dreamtrips.core.utils.DateUtils;
 
 public class Video360 {
     @SerializedName("Order")

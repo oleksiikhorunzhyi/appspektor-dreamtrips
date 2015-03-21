@@ -33,7 +33,7 @@
     </LinearLayout>
 
 
-    <com.worldventures.dreamtrips.view.custom.ExpandableTextViewCallable
+    <com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable
         xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
         android:id="@+id/textViewContent"
         android:layout_width="match_parent"
@@ -58,6 +58,6 @@
             android:layout_gravity="right|bottom"
             android:layout_margin="16dp"
             android:background="@android:color/transparent" />
-    </com.worldventures.dreamtrips.view.custom.ExpandableTextViewCallable>
+    </com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable>
 
 </LinearLayout>

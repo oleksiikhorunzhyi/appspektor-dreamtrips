@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 public class BaseRouter {
     public static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";

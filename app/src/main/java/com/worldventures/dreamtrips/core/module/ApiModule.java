@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.utils.PersistentCookieStore;
+import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;

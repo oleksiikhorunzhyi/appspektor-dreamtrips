@@ -16,46 +16,46 @@
         android:required="true" />
 
     <application
-        android:name=".DreamTripsApplication"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/ic_dt_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.DreamTripsTheme"
         tools:replace="android:icon" >
         <activity
-            android:name=".view.activity.EnrollActivity"
+            android:name=".modules.infopages.view.activity.EnrollActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".view.activity.LoginActivity"
+            android:name=".modules.auth.view.LoginActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".modules.common.view.activity.MainActivity"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.BookItActivity"
+            android:name=".modules.trips.view.activity.BookItActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.BucketListEditActivity"
+            android:name=".modules.bucketlist.view.activity.BucketListEditActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.SimpleStreamPlayerActivity"
+            android:name=".modules.common.view.activity.SimpleStreamPlayerActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".view.activity.FBPickPhotoActivity"
+            android:name=".modules.facebook.view.activity.FBPickPhotoActivity"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.ShareActivity"
+            android:name=".modules.common.view.activity.ShareActivity"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.CreatePhotoActivity"
+            android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".view.activity.LaunchActivity"
+            android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -76,16 +76,16 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".view.activity.FullScreenPhotoActivity"
+            android:name=".modules.tripsimages.view.activity.FullScreenPhotoActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_full_screen_photo" />
         <activity
-            android:name=".view.activity.FullScreenTripImageActivity"
+            android:name=".modules.tripsimages.view.activity.FullScreenTripImageActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_full_screen_photo" />
-        <activity android:name=".view.activity.DetailTripActivity" />
+        <activity android:name=".modules.trips.view.activity.DetailTripActivity" />
         <activity
-            android:name=".view.activity.PlayerActivity"
+            android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
@@ -129,7 +129,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".view.activity.SuccessStoryDetailsActivity"
+            android:name=".modules.reptools.view.activity.SuccessStoryDetailsActivity"
             android:label="@string/title_activity_success_story_details" >
         </activity>
     </application>

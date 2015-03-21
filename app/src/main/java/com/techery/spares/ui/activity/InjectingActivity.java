@@ -80,7 +80,7 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
         try {
             this.eventBus.registerSticky(this);
         } catch (Exception e) {
-
+            //Ignored
         }
     }
 

@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.response.LoginResponse;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.utils.events.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 
 import org.apache.http.HttpStatus;
 

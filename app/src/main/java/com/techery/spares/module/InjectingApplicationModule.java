@@ -15,7 +15,6 @@ import dagger.Provides;
 
 @Module(
         includes = {
-                AndroidServicesModule.class,
                 EventBusModule.class,
                 AndroidServicesModule.class,
                 ConcurentModule.class,

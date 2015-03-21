@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.worldventures.dreamtrips.view.custom.ToucheableMapView
+    <com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

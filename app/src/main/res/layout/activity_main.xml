@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/fragment_drawer"
-        android:name="com.worldventures.dreamtrips.view.fragment.navigationdrawer.NavigationDrawerFragment"
+        android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/fragment_filters"
-        android:name="com.worldventures.dreamtrips.view.fragment.FiltersFragment"
+        android:name="com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment"
         android:layout_width="@dimen/navigation_drawer_width_filter"
         android:layout_height="match_parent"
         android:layout_gravity="end"

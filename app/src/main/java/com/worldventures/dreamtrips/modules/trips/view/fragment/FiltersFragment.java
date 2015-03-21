@@ -1,0 +1,114 @@
+package com.worldventures.dreamtrips.modules.trips.view.fragment;
+
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.annotations.Layout;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.core.model.DateFilterItem;
+import com.worldventures.dreamtrips.core.model.FilterModel;
+import com.worldventures.dreamtrips.core.model.Region;
+import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.presenter.FiltersFragmentPM;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.DateCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.FiltersCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
+import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+
+import butterknife.InjectView;
+import butterknife.OnClick;
+
+/**
+ * Created by Edward on 22.01.15.
+ * filters fragment for right side nav drawer
+ */
+@Layout(R.layout.layout_filters)
+public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements FiltersFragmentPM.View {
+
+    @InjectView(R.id.recyclerViewRegions)
+    EmptyRecyclerView recyclerView;
+    @InjectView(R.id.progressBarFilters)
+    ProgressBar progressBar;
+
+    BaseArrayListAdapter<Object> arrayListAdapter;
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        this.recyclerView.setLayoutManager(layoutManager);
+
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter.registerCell(Region.class, RegionCell.class);
+        this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
+        this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);
+        this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
+        //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
+        this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+
+        this.recyclerView.setHasFixedSize(false);
+        this.recyclerView.setAdapter(this.arrayListAdapter);
+
+        getPresentationModel().loadFilters();
+    }
+
+    @OnClick(R.id.textViewApplyFilter)
+    void applyFilter() {
+        ((MainActivity) getActivity()).closeRightDrawer();
+        getPresentationModel().acceptFilters();
+    }
+
+    @OnClick(R.id.textViewResetFilter)
+    void resetFilter() {
+        ((MainActivity) getActivity()).closeRightDrawer();
+        getPresentationModel().resetFilters();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //  refresh();
+    }
+
+    @Override
+    public void dataSetChanged() {
+        arrayListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void startLoading() {
+        if (arrayListAdapter.getItemCount() == 0)
+            progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
+    }
+
+    public void refresh() {
+        this.recyclerView.post(() ->
+                        getPresentationModel().fillData()
+        );
+    }
+
+    @Override
+    protected FiltersFragmentPM createPresentationModel(Bundle savedInstanceState) {
+        return new FiltersFragmentPM(this);
+    }
+}

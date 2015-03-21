@@ -8,8 +8,8 @@ import com.octo.android.robospice.persistence.CacheManager;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
+import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.DreamTripsApplication;
 import com.worldventures.dreamtrips.core.api.AuthApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.S3Api;
@@ -54,7 +54,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
 
     @Override
     public void onCreate() {
-        ((DreamTripsApplication) getApplicationContext()).inject(this);
+        ((App) getApplicationContext()).inject(this);
         super.onCreate();
         addRetrofitInterface(DreamTripsApi.class);
         addRetrofitInterface(SharedServicesApi.class);

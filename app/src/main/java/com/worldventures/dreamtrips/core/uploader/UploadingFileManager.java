@@ -6,14 +6,13 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.worldventures.dreamtrips.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.utils.ValidationUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;

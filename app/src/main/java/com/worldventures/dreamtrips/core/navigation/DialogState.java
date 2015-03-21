@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation;
 
-import com.worldventures.dreamtrips.view.dialog.BaseDialogFragment;
-import com.worldventures.dreamtrips.view.dialog.BookItDialogFragment;
+import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
+import com.worldventures.dreamtrips.modules.trips.view.dialog.BookItDialogFragment;
 
 public enum DialogState {
 

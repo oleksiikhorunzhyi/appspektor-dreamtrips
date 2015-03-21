@@ -62,7 +62,7 @@
                 android:layout_height="match_parent"
                 android:visibility="visible">
 
-                <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
                     android:id="@+id/recyclerViewTrips"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

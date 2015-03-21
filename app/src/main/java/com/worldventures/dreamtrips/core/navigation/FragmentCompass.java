@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.view.dialog.BaseDialogFragment;
-import com.worldventures.dreamtrips.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import timber.log.Timber;
 

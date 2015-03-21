@@ -32,11 +32,11 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.core.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.utils.events.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.utils.events.PhotoUploadFinished;
-import com.worldventures.dreamtrips.utils.events.PhotoUploadStarted;
-import com.worldventures.dreamtrips.utils.events.UploadProgressUpdateEvent;
-import com.worldventures.dreamtrips.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
+import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
+import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 
 import java.io.File;
 import java.io.FileInputStream;

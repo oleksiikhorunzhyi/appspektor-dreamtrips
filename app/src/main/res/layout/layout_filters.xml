@@ -16,13 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.worldventures.dreamtrips.view.custom.EmptyRecyclerView
+        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/recyclerViewRegions"
             android:layout_above="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </com.worldventures.dreamtrips.view.custom.EmptyRecyclerView>
+        </com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView>
 
         <RelativeLayout
             android:id="@+id/footer"

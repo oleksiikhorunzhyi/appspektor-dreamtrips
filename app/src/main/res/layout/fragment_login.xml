@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:context="com.worldventures.dreamtrips.view.activity.LoginActivity"
+    tools:context="com.worldventures.dreamtrips.modules.auth.view.LoginActivity"
     tools:ignore="MissingPrefix">
 
     <RelativeLayout
@@ -58,7 +58,7 @@
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ic_ready_for_your_experience" />
 
-                <com.worldventures.dreamtrips.view.custom.DTEditText
+                <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     app:primaryColor="@android:color/white"
                     bind:text="${username}" />
 
-                <com.worldventures.dreamtrips.view.custom.DTEditText
+                <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

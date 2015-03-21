@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.model;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.view.util.Filterable;
+import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
 import java.util.List;

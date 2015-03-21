@@ -5,7 +5,7 @@ import com.techery.spares.module.Injector;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-import com.worldventures.dreamtrips.DreamTripsApplication;
+import com.worldventures.dreamtrips.App;
 
 import javax.inject.Inject;
 
@@ -17,7 +17,7 @@ public class FabricInitializer implements AppInitializer {
     private static final String TWITTER_SECRET = "OflDXDujTfJiqMkdFk5z5eDV1woeNxOvWszXRLonpVbURF4hx1";
 
     @Inject
-    DreamTripsApplication application;
+    App application;
 
     @Override
     public void initialize(Injector injector) {

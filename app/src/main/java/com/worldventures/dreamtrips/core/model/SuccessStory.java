@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.view.util.Filterable;
+import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
 

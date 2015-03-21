@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public enum State {
+public enum Route {
     LOGIN(LoginFragment.class, R.string.log_in),
     WEB_STATIC(StaticInfoFragment.class, R.string.web_title),
     CREATE_PHOTO(CreatePhotoFragment.class, R.string.new_photo),
@@ -57,7 +57,7 @@ public enum State {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, R.drawable.ic_termsconditions, 9),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, R.drawable.ic_cookie, 10);
 
-    private static ArrayList<State> menuItemsArray = new ArrayList<>();
+    private static ArrayList<Route> menuItemsArray = new ArrayList<>();
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;
     private int drawableId;
@@ -67,11 +67,11 @@ public enum State {
         generateSideMenuFields();
     }
 
-    State(Class<? extends BaseFragment> fragmentClass, int title) {
+    Route(Class<? extends BaseFragment> fragmentClass, int title) {
         this(fragmentClass, title, -1, -1);
     }
 
-    State(Class<? extends BaseFragment> fragmentClass, int title, int imageID, int position) {
+    Route(Class<? extends BaseFragment> fragmentClass, int title, int imageID, int position) {
         this.fragmentClass = fragmentClass;
         this.titleRes = title;
         this.drawableId = imageID;
@@ -79,30 +79,30 @@ public enum State {
     }
 
     private static void generateSideMenuFields() {
-        List<State> states = Arrays.asList(State.values());
-        Collections.sort(states, new MenuComparator());
-        for (State v : states) {
+        List<Route> routes = Arrays.asList(Route.values());
+        Collections.sort(routes, new MenuComparator());
+        for (Route v : routes) {
             if (v.position >= 0)
                 menuItemsArray.add(v);
         }
     }
 
-    public static State restoreByClass(String clazzName) {
-        State result = State.DREAMTRIPS;
-        for (State state : values()) {
-            if (state.getClazzName().equals(clazzName)) {
-                result = state;
+    public static Route restoreByClass(String clazzName) {
+        Route result = Route.DREAMTRIPS;
+        for (Route route : values()) {
+            if (route.getClazzName().equals(clazzName)) {
+                result = route;
                 break;
             }
         }
         return result;
     }
 
-    public static ArrayList<State> getMenuItemsArray() {
+    public static ArrayList<Route> getMenuItemsArray() {
         return menuItemsArray;
     }
 
-    public static State findByKey(int i) {
+    public static Route findByKey(int i) {
         return menuItemsArray.get(i);
     }
 
@@ -122,8 +122,8 @@ public enum State {
         return position;
     }
 
-    static class MenuComparator implements Comparator<State> {
-        public int compare(State strA, State strB) {
+    static class MenuComparator implements Comparator<Route> {
+        public int compare(Route strA, Route strB) {
             return strA.getPosition() - strB.getPosition();
         }
     }

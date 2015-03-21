@@ -73,29 +73,29 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
         int hour = cal.get(Calendar.HOUR);
         int minute = cal.get(Calendar.MINUTE);
 
-        getPresentationModel().onDataSet(year, month, day);
-        getPresentationModel().onTimeSet(hour, minute);
+        getPresenter().onDataSet(year, month, day);
+        getPresenter().onTimeSet(hour, minute);
     }
 
     @Override
-    protected CreatePhotoFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected CreatePhotoFragmentPM createPresenter(Bundle savedInstanceState) {
         return new CreatePhotoFragmentPM(this);
     }
 
 
     @OnClick(R.id.btn_save)
     public void onActionSave(View v) {
-        getPresentationModel().saveAction();
+        getPresenter().saveAction();
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int min) {
-        getPresentationModel().onTimeSet(hour, min);
+        getPresenter().onTimeSet(hour, min);
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        getPresentationModel().onDataSet(year, month, day);
+        getPresenter().onDataSet(year, month, day);
     }
 
     @Override

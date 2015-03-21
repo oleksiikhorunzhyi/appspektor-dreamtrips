@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api.request.photos;
 
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;

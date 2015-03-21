@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.api.request.profile.UploadAvatarRequest
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import retrofit.mime.TypedFile;
 
-public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmentPresentation.View> {
+public class ProfilePresenter extends BasePresenter<ProfilePresenter.View> {
 
     @Inject
     protected Prefs prefs;
@@ -61,9 +61,8 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
                 }
             });
 
-
         } else {
-            Log.e(ProfileFragmentPresentation.class.getSimpleName(), error);
+            Log.e(ProfilePresenter.class.getSimpleName(), error);
         }
     };
 
@@ -82,7 +81,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
         }
     };
 
-    public ProfileFragmentPresentation(View view) {
+    public ProfilePresenter(View view) {
         super(view);
     }
 
@@ -129,7 +128,7 @@ public class ProfileFragmentPresentation extends BasePresentation<ProfileFragmen
     }
 
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         public void setAvatarImage(Uri uri);
 
         public void setCoverImage(Uri uri);

@@ -88,13 +88,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     MenuItem likeItem;
 
     @Override
-    protected DetailedTripFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected DetailedTripFragmentPM createPresenter(Bundle savedInstanceState) {
         return new DetailedTripFragmentPM(this);
     }
 
     @OnClick(R.id.layoutBookIt)
     public void bookIt() {
-        getPresentationModel().actionBookIt();
+        getPresenter().actionBookIt();
     }
 
     @Override
@@ -109,14 +109,14 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
-        getPresentationModel().menuPrepared();
+        getPresenter().menuPrepared();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_like:
-                getPresentationModel().actionLike();
+                getPresenter().actionLike();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -137,14 +137,14 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
             toolbarLanscape.getBackground().setAlpha(255);
         }
 
-        getPresentationModel().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
-        getPresentationModel().onCreate();
+        getPresenter().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
+        getPresenter().onCreate();
 
         BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();
-                Object photo = getPresentationModel().getFilteredImages().get(position);
+                Object photo = getPresenter().getFilteredImages().get(position);
                 if (photo instanceof Serializable) {
                     args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
                 }
@@ -152,7 +152,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
             }
         };
 
-        for (Object photo : getPresentationModel().getFilteredImages()) {
+        for (Object photo : getPresenter().getFilteredImages()) {
             adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
         }
 
@@ -162,7 +162,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     }
 
     public void onEvent(TripImageClickedEvent event) {
-        getPresentationModel().onItemClick(viewPagerGallery.getCurrentItem());
+        getPresenter().onItemClick(viewPagerGallery.getCurrentItem());
     }
 
     @Override
@@ -225,7 +225,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripFragmentPM> i
     void onReloadClicked() {
         textViewReloadTripDetails.setVisibility(View.GONE);
         progressBarDetailLoading.setVisibility(View.VISIBLE);
-        getPresentationModel().loadTripDetails();
+        getPresenter().loadTripDetails();
     }
 
     @Override

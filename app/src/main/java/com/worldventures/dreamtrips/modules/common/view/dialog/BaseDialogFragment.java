@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingDialogFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import butterknife.ButterKnife;
 
 /**
  * Created by 1 on 29.01.15.
  */
-public abstract class BaseDialogFragment<PM extends BasePresentation> extends InjectingDialogFragment implements BasePresentation.View {
+public abstract class BaseDialogFragment<PM extends BasePresenter> extends InjectingDialogFragment implements BasePresenter.View {
 
     private PM presentationModel;
 

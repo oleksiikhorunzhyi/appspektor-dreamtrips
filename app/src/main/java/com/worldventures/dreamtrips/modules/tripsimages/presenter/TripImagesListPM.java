@@ -11,7 +11,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -28,7 +28,7 @@ import de.greenrobot.event.EventBus;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresentation<TripImagesListPM.View> {
+public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends BasePresenter<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
     @Inject
@@ -204,7 +204,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
-    public static interface View extends BasePresentation.View, AdapterView<IFullScreenAvailableObject> {
+    public static interface View extends BasePresenter.View, AdapterView<IFullScreenAvailableObject> {
         List<IFullScreenAvailableObject> getPhotosFromAdapter();
 
         void startLoading();

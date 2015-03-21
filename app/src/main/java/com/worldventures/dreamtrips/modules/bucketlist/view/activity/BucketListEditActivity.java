@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -32,14 +32,14 @@ public class BucketListEditActivity extends PresentationModelDrivenActivity<Buck
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
-        State state = (State) bundleExtra.getSerializable(EXTRA_STATE);
+        Route route = (Route) bundleExtra.getSerializable(EXTRA_STATE);
 
-        getPresentationModel().onCreate(bundleExtra, state);
+        getPresentationModel().onCreate(bundleExtra, route);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (state.equals(State.POPULAR_BUCKET))
+        if (route.equals(Route.POPULAR_BUCKET))
             switch (type) {
                 case LOCATIONS:
                     getSupportActionBar().setTitle(R.string.bucket_list_location_popular);

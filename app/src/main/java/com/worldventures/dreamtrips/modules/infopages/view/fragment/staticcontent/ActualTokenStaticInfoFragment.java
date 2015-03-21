@@ -40,12 +40,12 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
             }
         });
 
-        getPresentationModel().loadUrl();
+        getPresenter().loadUrl();
     }
 
 
     @Override
-    protected ActualTokenStaticInfoFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected ActualTokenStaticInfoFragmentPM createPresenter(Bundle savedInstanceState) {
         return new ActualTokenStaticInfoFragmentPM(this);
     }
 

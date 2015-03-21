@@ -12,16 +12,16 @@ import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseFragment<PM extends BasePresentation> extends InjectingFragment implements BasePresentation.View {
+public abstract class BaseFragment<PM extends BasePresenter> extends InjectingFragment implements BasePresenter.View {
 
-    private PM presentationModel;
+    private PM presenter;
 
-    public PM getPresentationModel() {
-        return presentationModel;
+    public PM getPresenter() {
+        return presenter;
     }
 
     @Override
@@ -37,17 +37,12 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void alert(String s) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
             getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.title("Alert").content(s).positiveText("Ok").show();
             }));
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        }
     }
 
     @Override
@@ -57,7 +52,7 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     }
 
     private void stopSpiceManger() {
-        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+        DreamSpiceManager dreamSpiceManager = getPresenter().getDreamSpiceManager();
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
@@ -67,9 +62,11 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     public void onStart() {
         super.onStart();
         if (needSpiceManager()) {
-            DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
+            DreamSpiceManager dreamSpiceManager = getPresenter().getDreamSpiceManager();
 
-            if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(getActivity());
+            if (!dreamSpiceManager.isStarted()) {
+                dreamSpiceManager.start(getActivity());
+            }
         }
     }
 
@@ -79,21 +76,20 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
 
     @Override
     public void onDestroyView() {
-        getPresentationModel().destroyView();
+        getPresenter().destroyView();
         super.onDestroyView();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        this.presentationModel = createPresentationModel(savedInstanceState);
+        this.presenter = createPresenter(savedInstanceState);
 
-        if (this.presentationModel != null) {
-            inject(this.presentationModel);
-        } else {
-            throw new IllegalArgumentException("Presentation model can't be null");
+        if (this.presenter == null) {
+            throw new IllegalArgumentException("Presenter can't be null");
         }
 
+        inject(this.presenter);
 
         Layout layout = this.getClass().getAnnotation(Layout.class);
 
@@ -101,12 +97,10 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
 
-
-        View view;
-        view = inflater.inflate(layout.value(), container, false);
-
+        View view = inflater.inflate(layout.value(), container, false);
         ButterKnife.inject(this, view);
-        this.presentationModel.init();
+
+        this.presenter.init();
         afterCreateView(view);
 
         return view;
@@ -115,18 +109,17 @@ public abstract class BaseFragment<PM extends BasePresentation> extends Injectin
     @Override
     public void onResume() {
         super.onResume();
-        getPresentationModel().resume();
+        getPresenter().resume();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (this.presentationModel != null) {
-            inject(this.presentationModel);
+        if (this.presenter != null) {
+            inject(this.presenter);
         }
-
     }
 
-    abstract protected PM createPresentationModel(Bundle savedInstanceState);
+    abstract protected PM createPresenter(Bundle savedInstanceState);
 }

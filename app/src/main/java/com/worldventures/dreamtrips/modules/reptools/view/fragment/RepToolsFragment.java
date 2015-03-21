@@ -49,7 +49,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsFragmentPM> implement
     }
 
     @Override
-    protected RepToolsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected RepToolsFragmentPM createPresenter(Bundle savedInstanceState) {
         return new RepToolsFragmentPM(this);
     }
 

@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.model.Region;
 import com.worldventures.dreamtrips.core.model.SoldOutModel;
 import com.worldventures.dreamtrips.core.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -39,7 +39,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by 1 on 22.01.15.
  */
-public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> {
+public class FiltersFragmentPM extends BasePresenter<FiltersFragmentPM.View> {
 
     @Inject
     SnappyRepository db;
@@ -289,7 +289,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
     }
 
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void dataSetChanged();
 
         void startLoading();

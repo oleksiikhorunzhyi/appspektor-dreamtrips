@@ -55,7 +55,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListF
 
 
     @Override
-    protected SuccessStoriesListFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected SuccessStoriesListFragmentPM createPresenter(Bundle savedInstanceState) {
         return new SuccessStoriesListFragmentPM(this);
     }
 
@@ -64,10 +64,10 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListF
         View menuItemView = getActivity().findViewById(R.id.iv_filter);
         PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
         popupMenu.inflate(R.menu.menu_success_stories_filter);
-        boolean isFavorites = getPresentationModel().isFilterFavorites();
+        boolean isFavorites = getPresenter().isFilterFavorites();
         popupMenu.getMenu().getItem(isFavorites ? 1 : 0).setChecked(true);
         popupMenu.setOnMenuItemClickListener((menuItem) -> {
-            getPresentationModel().reloadWithFilter(menuItem.getItemId());
+            getPresenter().reloadWithFilter(menuItem.getItemId());
             return false;
         });
         popupMenu.show();
@@ -112,7 +112,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListF
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresenter().reload();
     }
 
     @Override

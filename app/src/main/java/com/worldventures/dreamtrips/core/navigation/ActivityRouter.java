@@ -78,10 +78,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
-    public void openBucketListEditActivity(BucketTabsFragment.Type type, State state) {
+    public void openBucketListEditActivity(BucketTabsFragment.Type type, Route route) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, state);
+        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, route);
         startActivity(BucketListEditActivity.class, bundle);
     }
 

@@ -46,7 +46,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
         adapter = new BaseRecycleAdapter();
         toolbar.setTitle(R.string.fab_select_photo);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(v -> getPresentationModel().onBackAction());
+        toolbar.setNavigationOnClickListener(v -> getPresenter().onBackAction());
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
@@ -62,7 +62,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
                         image.setFileThumbnail(item.getPicture());
                         image.setFileThumbnailSmall(item.getPicture());
                     }
-                    getPresentationModel().onPhotoChosen(image);
+                    getPresenter().onPhotoChosen(image);
                 })
         );
         lvItems.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -88,7 +88,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
     }
 
     @Override
-    protected FacebookPhotoFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected FacebookPhotoFragmentPM createPresenter(Bundle savedInstanceState) {
         return new FacebookPhotoFragmentPM(this);
     }
 

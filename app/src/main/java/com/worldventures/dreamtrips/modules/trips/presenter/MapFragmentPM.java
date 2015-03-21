@@ -9,9 +9,9 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
@@ -30,7 +30,7 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 27.01.15.
  * presentation model to control map view
  */
-public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
+public class MapFragmentPM extends BasePresenter<MapFragmentPM.View> {
 
     @Inject
     SnappyRepository db;
@@ -156,7 +156,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(FragmentMapTripInfo.EXTRA_TRIP, resultTrip);
-        fragmentCompass.add(State.MAP_INFO, bundle);
+        fragmentCompass.add(Route.MAP_INFO, bundle);
     }
 
     public void onCameraChanged() {
@@ -169,7 +169,7 @@ public class MapFragmentPM extends BasePresentation<MapFragmentPM.View> {
         fragmentCompass.pop();
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         public void addPin(LatLng latLng, int id);
 
         public void clearMap();

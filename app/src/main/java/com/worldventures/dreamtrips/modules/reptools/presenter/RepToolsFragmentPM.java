@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
-public class RepToolsFragmentPM extends BasePresentation {
+public class RepToolsFragmentPM extends BasePresenter {
     public RepToolsFragmentPM(View view) {
         super(view);
     }

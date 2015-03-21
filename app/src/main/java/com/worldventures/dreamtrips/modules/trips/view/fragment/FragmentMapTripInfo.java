@@ -61,7 +61,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
     @Override
     public void afterCreateView(final View rootView) {
         super.afterCreateView(rootView);
-        getPresentationModel().setTrip((Trip) getArguments().getSerializable(EXTRA_TRIP));
+        getPresenter().setTrip((Trip) getArguments().getSerializable(EXTRA_TRIP));
         ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -71,12 +71,12 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
                 if (ViewUtils.isLandscapeOrientation(getActivity())) {
                     int offset = fragmentHeight / 2;
                     offset += getResources().getDimensionPixelSize(R.dimen.pin_offset);
-                    getPresentationModel().sendOffset(offset);
+                    getPresenter().sendOffset(offset);
                 } else {
                     int centerY = rootView.getHeight() / 2;
                     int resultY = fragmentHeight + getResources().getDimensionPixelSize(R.dimen.pin_offset);
                     int offset = resultY - centerY;
-                    getPresentationModel().sendOffset(offset);
+                    getPresenter().sendOffset(offset);
                 }
 
                 ViewTreeObserver obs = rootView.getViewTreeObserver();
@@ -151,11 +151,11 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPM> impleme
 
     @OnClick(R.id.itemLayout)
     void onClick() {
-        getPresentationModel().onClick();
+        getPresenter().onClick();
     }
 
     @Override
-    protected FragmentMapInfoPM createPresentationModel(Bundle savedInstanceState) {
+    protected FragmentMapInfoPM createPresenter(Bundle savedInstanceState) {
         return new FragmentMapInfoPM(this);
     }
 }

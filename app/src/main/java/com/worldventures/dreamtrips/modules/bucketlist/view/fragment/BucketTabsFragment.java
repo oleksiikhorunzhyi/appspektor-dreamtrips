@@ -32,7 +32,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
     BasePagerAdapter adapter;
 
     @Override
-    protected BucketTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected BucketTabsFragmentPM createPresenter(Bundle savedInstanceState) {
         return new BucketTabsFragmentPM(this);
     }
 
@@ -44,7 +44,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
-                    fragment.setArguments(getPresentationModel().getBundleForPosition(position));
+                    fragment.setArguments(getPresenter().getBundleForPosition(position));
                 }
             };
 

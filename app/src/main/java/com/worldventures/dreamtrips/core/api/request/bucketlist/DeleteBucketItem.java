@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.api.request.bucketlist;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 
 public class DeleteBucketItem extends DreamTripsRequest<JsonObject> {
     private int id;

@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresentation;
+import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
 
 import butterknife.InjectView;
@@ -15,7 +15,7 @@ import butterknife.InjectView;
  * Created by 1 on 23.01.15.
  */
 @Layout(R.layout.activity_book_it)
-public class BookItActivity extends PresentationModelDrivenActivity<BookItActivityPresentation> implements BookItActivityPresentation.View {
+public class BookItActivity extends PresentationModelDrivenActivity<BookItActivityPresenter> implements BookItActivityPresenter.View {
     public static final String EXTRA_TRIP_ID = "TRIP_ID";
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -39,7 +39,7 @@ public class BookItActivity extends PresentationModelDrivenActivity<BookItActivi
     }
 
     @Override
-    protected BookItActivityPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new BookItActivityPresentation(this);
+    protected BookItActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new BookItActivityPresenter(this);
     }
 }

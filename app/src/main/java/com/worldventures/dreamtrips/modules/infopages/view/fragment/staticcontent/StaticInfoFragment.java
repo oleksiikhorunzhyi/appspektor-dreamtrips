@@ -13,21 +13,21 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> extends BaseFragment<T> {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T> {
 
     @InjectView(R.id.web_view)
     protected WebView webView;
 
     @Override
-    protected T createPresentationModel(Bundle savedInstanceState) {
-        return (T) new WebViewFragmentPresentation(this);
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new WebViewFragmentPresenter(this);
     }
 
     @Override
@@ -79,7 +79,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
 
         @Override
         protected String getURL() {
-            ((WebViewFragmentPresentation) getPresentationModel()).track(State.TERMS_OF_SERVICE);
+            ((WebViewFragmentPresenter) getPresenter()).track(Route.TERMS_OF_SERVICE);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
         }
     }
@@ -89,7 +89,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
 
         @Override
         protected String getURL() {
-            ((WebViewFragmentPresentation) getPresentationModel()).track(State.FAQ);
+            ((WebViewFragmentPresenter) getPresenter()).track(Route.FAQ);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
         }
     }
@@ -99,19 +99,19 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
 
         @Override
         protected String getURL() {
-            ((WebViewFragmentPresentation) getPresentationModel()).track(State.PRIVACY_POLICY);
+            ((WebViewFragmentPresenter) getPresenter()).track(Route.PRIVACY_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
         }
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresentation> {
+    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
         @InjectView(R.id.progressBarWeb)
         ProgressBar progressBarWeb;
 
         @Override
         protected String getURL() {
-            return getPresentationModel().etEnrollUrl();
+            return getPresenter().etEnrollUrl();
         }
 
         @Override
@@ -143,7 +143,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
 
         @Override
         protected String getURL() {
-            ((WebViewFragmentPresentation) getPresentationModel()).track(State.COOKIE_POLICY);
+            ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
             return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
         }
     }
@@ -153,7 +153,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresentation> 
     public static class TrainingVideosFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            S3GlobalConfig config = ((WebViewFragmentPresentation) getPresentationModel()).getConfig();
+            S3GlobalConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
             URLS urls = config.getUrls();
             URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
             return configs.getTrainingVideosURL();

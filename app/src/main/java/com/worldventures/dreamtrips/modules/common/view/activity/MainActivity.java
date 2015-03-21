@@ -17,9 +17,9 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
-import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
 
@@ -29,7 +29,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.activity_main)
-public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresentation> implements MainActivityPresentation.View, NavigationDrawerListener {
+public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresenter> implements MainActivityPresenter.View, NavigationDrawerListener {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -42,8 +42,8 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     DrawerLayout drawerLayout;
 
     @Override
-    protected MainActivityPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new MainActivityPresentation(this);
+    protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new MainActivityPresenter(this);
     }
 
     @Override
@@ -104,12 +104,12 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(State state) {
+    public void onNavigationDrawerItemSelected(Route route) {
         closeLeftDrawer();
         makeActionBarTransparent(false);
         new Handler().postDelayed(() -> {
-            getPresentationModel().selectItem(state);
-            setTitle(state.getTitle());
+            getPresentationModel().selectItem(route);
+            setTitle(route.getTitle());
         }, 150);
     }
 

@@ -15,7 +15,7 @@ import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
@@ -31,7 +31,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_trip_tabs_images)
-public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresentation> implements TripImagesTabsFragmentPresentation.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
+public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresenter> implements TripImagesTabsFragmentPresenter.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
@@ -79,7 +79,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
-        getPresentationModel().onCreate();
+        getPresenter().onCreate();
     }
 
     @Override
@@ -88,8 +88,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     }
 
     @Override
-    protected TripImagesTabsFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new TripImagesTabsFragmentPresentation(this);
+    protected TripImagesTabsFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripImagesTabsFragmentPresenter(this);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @OnClick(R.id.fab_facebook)
     public void actionFacebook(View view) {
-        getPresentationModel().onFacebookAction(this);
+        getPresenter().onFacebookAction(this);
         this.multipleActionsDown.collapse();
     }
 
@@ -112,7 +112,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void actionGallery(View view) {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle("");
-        this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
+        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
         this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.show();
         this.multipleActionsDown.collapse();
@@ -122,7 +122,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void actionPhoto(View view) {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle("");
-        this.pid.setCallback(getPresentationModel().providePhotoChooseCallback());
+        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
         this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
         this.pid.show();
         this.multipleActionsDown.collapse();
@@ -136,7 +136,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         }
         if (resultCode == Activity.RESULT_OK && requestCode == FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
             ChosenImage image = new Gson().fromJson(data.getStringExtra(FBPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-            getPresentationModel().provideFbCallback().onResult(this, image, null);
+            getPresenter().provideFbCallback().onResult(this, image, null);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
             pager.setCurrentItem(1, false);
@@ -151,7 +151,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageSelected(int position) {
-        getPresentationModel().trackState(position);
+        getPresenter().trackState(position);
 
         if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal() || position == Type.VIDEO_360.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
@@ -167,7 +167,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onDestroy() {
-        getPresentationModel().destroy();
+        getPresenter().destroy();
         super.onDestroy();
     }
 }

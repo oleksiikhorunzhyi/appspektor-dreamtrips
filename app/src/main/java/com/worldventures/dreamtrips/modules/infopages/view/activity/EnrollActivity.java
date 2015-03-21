@@ -5,9 +5,9 @@ import android.support.v7.widget.Toolbar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
-import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresentation;
+import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 
 import butterknife.InjectView;
 
@@ -15,7 +15,7 @@ import butterknife.InjectView;
  * Created by 1 on 06.02.15.
  */
 @Layout(R.layout.activity_book_it)
-public class EnrollActivity extends PresentationModelDrivenActivity<EnrollActivityPresentation> implements BasePresentation.View {
+public class EnrollActivity extends PresentationModelDrivenActivity<EnrollActivityPresenter> implements BasePresenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -31,7 +31,7 @@ public class EnrollActivity extends PresentationModelDrivenActivity<EnrollActivi
     }
 
     @Override
-    protected EnrollActivityPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new EnrollActivityPresentation(this);
+    protected EnrollActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new EnrollActivityPresenter(this);
     }
 }

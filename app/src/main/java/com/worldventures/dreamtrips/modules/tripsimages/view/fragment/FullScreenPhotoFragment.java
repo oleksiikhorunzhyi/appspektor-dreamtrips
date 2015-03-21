@@ -78,16 +78,16 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         type = activity.getType();
         IFullScreenAvailableObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
 
-        getPresentationModel().onCreate();
+        getPresenter().onCreate();
 
         ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()), ViewUtils.getScreenHeight(getActivity()));
         ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
 
         if (photo != null) {
-            getPresentationModel().setupPhoto((T) photo);
-            getPresentationModel().setupType(type);
+            getPresenter().setupPhoto((T) photo);
+            getPresenter().setupType(type);
         }
-        getPresentationModel().setupActualViewState();
+        getPresenter().setupActualViewState();
 
     }
 
@@ -123,7 +123,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
-    protected BaseFSViewPM createPresentationModel(Bundle savedInstanceState) {
+    protected BaseFSViewPM createPresenter(Bundle savedInstanceState) {
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         int position = getArguments().getInt(EXTRA_POSITION);
         IFullScreenAvailableObject photo = activity.getPhoto(position);
@@ -134,12 +134,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.iv_twitter)
     public void twitterShare() {
-        getPresentationModel().onTwitterShare(((FullScreenPhotoActivity) getActivity()));
+        getPresenter().onTwitterShare(((FullScreenPhotoActivity) getActivity()));
     }
 
     @OnClick(R.id.iv_facebook)
     public void fbShare() {
-        getPresentationModel().onFbShare(((FullScreenPhotoActivity) getActivity()));
+        getPresenter().onFbShare(((FullScreenPhotoActivity) getActivity()));
     }
 
     @OnClick(R.id.iv_delete)
@@ -152,7 +152,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        getPresentationModel().onDeleteAction();
+                        getPresenter().onDeleteAction();
                     }
 
                     @Override
@@ -164,19 +164,19 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.iv_like)
     public void actionLike() {
-        getPresentationModel().onLikeAction();
+        getPresenter().onLikeAction();
     }
 
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
         PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        List<Flag> values = getPresentationModel().getFlagContent();
+        List<Flag> values = getPresenter().getFlagContent();
         for (int i = 0; i < values.size(); i++) {
             Flag flagContent = values.get(i);
             popup.getMenu().add(0, i, i, flagContent.getCode());
         }
         popup.setOnMenuItemClickListener(item -> {
-            getPresentationModel().showFlagAction(item.getItemId());
+            getPresenter().showFlagAction(item.getItemId());
             return true;
         });
         popup.show();
@@ -192,7 +192,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        getPresentationModel().sendFlagAction(reason, desc);
+                        getPresenter().sendFlagAction(reason, desc);
                     }
                 })
                 .show();

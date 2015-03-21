@@ -56,13 +56,13 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPM>
 
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(v -> getPresentationModel().backAction());
+        toolbar.setNavigationOnClickListener(v -> getPresenter().backAction());
 
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
                     String facebookId = ((FacebookAlbum) adapter.getItem(position).getItem()).getId();
-                    getPresentationModel().onItemClick(facebookId);
+                    getPresenter().onItemClick(facebookId);
                 })
 
         );
@@ -82,12 +82,12 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumFragmentPM>
             loginButton.performClick();
             tryToOpenSession = true;
         } else {
-            getPresentationModel().backAction();
+            getPresenter().backAction();
         }
     }
 
     @Override
-    protected FacebookAlbumFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected FacebookAlbumFragmentPM createPresenter(Bundle savedInstanceState) {
         return new FacebookAlbumFragmentPM(this);
     }
 

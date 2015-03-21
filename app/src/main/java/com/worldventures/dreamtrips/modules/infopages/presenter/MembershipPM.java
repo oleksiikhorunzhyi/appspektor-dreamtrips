@@ -7,7 +7,7 @@ import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MembershipPM extends BasePresentation<BasePresentation.View> {
+public class MembershipPM extends BasePresenter<BasePresenter.View> {
 
     @Inject
     LoaderFactory loaderFactory;

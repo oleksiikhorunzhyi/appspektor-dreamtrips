@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 
-public class CreatePhotoActivityPM extends BasePresentation<BasePresentation.View> {
+public class CreatePhotoActivityPM extends BasePresenter<BasePresenter.View> {
 
     private Uri imageUri;
 
@@ -18,7 +18,7 @@ public class CreatePhotoActivityPM extends BasePresentation<BasePresentation.Vie
     public void onCreate() {
         Bundle b = new Bundle();
         b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
-        fragmentCompass.add(State.CREATE_PHOTO, b);
+        fragmentCompass.add(Route.CREATE_PHOTO, b);
     }
 
     public Uri getImageUri() {

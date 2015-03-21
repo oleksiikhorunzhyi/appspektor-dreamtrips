@@ -19,7 +19,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.profile.presenter.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
@@ -39,8 +39,8 @@ import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
-public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
-        implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfileFragmentPresentation.View {
+public class ProfileFragment extends BaseFragment<ProfilePresenter>
+        implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfilePresenter.View {
 
     @InjectView(R.id.user_cover)
     ImageView userCover;
@@ -122,15 +122,15 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     }
 
     @Override
-    protected ProfileFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new ProfileFragmentPresentation(this);
+    protected ProfilePresenter createPresenter(Bundle savedInstanceState) {
+        return new ProfilePresenter(this);
     }
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresentationModel().provideAvatarChooseCallback());
+        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
         this.pid.show();
     }
 
@@ -193,7 +193,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
     public void onCoverClick(ImageView iv) {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_cover_header));
-        this.pid.setCallback(getPresentationModel().provideCoverChooseCallback());
+        this.pid.setCallback(getPresenter().provideCoverChooseCallback());
         this.pid.show();
     }
 
@@ -228,7 +228,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        getPresentationModel().logout();
+                        getPresenter().logout();
                     }
                 })
                 .show();
@@ -236,7 +236,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresentation>
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        getPresentationModel().onDataSet(year, month, day);
+        getPresenter().onDataSet(year, month, day);
     }
 
     @Override

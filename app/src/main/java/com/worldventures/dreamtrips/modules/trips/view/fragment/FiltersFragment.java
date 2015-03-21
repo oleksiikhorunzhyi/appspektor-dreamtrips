@@ -59,19 +59,19 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
-        getPresentationModel().loadFilters();
+        getPresenter().loadFilters();
     }
 
     @OnClick(R.id.textViewApplyFilter)
     void applyFilter() {
         ((MainActivity) getActivity()).closeRightDrawer();
-        getPresentationModel().acceptFilters();
+        getPresenter().acceptFilters();
     }
 
     @OnClick(R.id.textViewResetFilter)
     void resetFilter() {
         ((MainActivity) getActivity()).closeRightDrawer();
-        getPresentationModel().resetFilters();
+        getPresenter().resetFilters();
     }
 
     @Override
@@ -103,12 +103,12 @@ public class FiltersFragment extends BaseFragment<FiltersFragmentPM> implements 
 
     public void refresh() {
         this.recyclerView.post(() ->
-                        getPresentationModel().fillData()
+                        getPresenter().fillData()
         );
     }
 
     @Override
-    protected FiltersFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected FiltersFragmentPM createPresenter(Bundle savedInstanceState) {
         return new FiltersFragmentPM(this);
     }
 }

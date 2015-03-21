@@ -7,15 +7,15 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.request.successstories.LikeSuccessStory;
 import com.worldventures.dreamtrips.core.api.request.successstories.UnlikeSuccessStory;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
-import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<SuccessStoryDetailsFragmentPM.View> {
+public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresenter<SuccessStoryDetailsFragmentPM.View> {
 
     @Inject
     @Global
@@ -58,7 +58,7 @@ public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<S
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();

@@ -29,7 +29,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFra
     BasePagerAdapter adapter;
 
     @Override
-    protected BucketPopularTabsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected BucketPopularTabsFragmentPM createPresenter(Bundle savedInstanceState) {
         return new BucketPopularTabsFragmentPM(this);
     }
 
@@ -43,7 +43,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFra
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
-                    fragment.setArguments(getPresentationModel().getBundleForPosition(position));
+                    fragment.setArguments(getPresenter().getBundleForPosition(position));
                 }
             };
 

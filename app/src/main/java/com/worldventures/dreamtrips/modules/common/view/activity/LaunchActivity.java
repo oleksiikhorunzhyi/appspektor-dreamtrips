@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 
-public class LaunchActivity extends PresentationModelDrivenActivity<LaunchActivityPresentation> {
+public class LaunchActivity extends PresentationModelDrivenActivity<LaunchActivityPresenter> {
 
     @Override
-    protected LaunchActivityPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new LaunchActivityPresentation(this);
+    protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new LaunchActivityPresenter(this);
     }
 
     @Override

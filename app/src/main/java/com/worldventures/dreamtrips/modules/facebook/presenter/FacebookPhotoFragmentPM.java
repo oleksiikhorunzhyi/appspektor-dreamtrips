@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 
-public class FacebookPhotoFragmentPM extends BasePresentation<FacebookPhotoFragmentPM.View> {
+public class FacebookPhotoFragmentPM extends BasePresenter<FacebookPhotoFragmentPM.View> {
     public FacebookPhotoFragmentPM(View view) {
         super(view);
     }
@@ -17,7 +17,7 @@ public class FacebookPhotoFragmentPM extends BasePresentation<FacebookPhotoFragm
         view.preFinishProcessing(image);
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void preFinishProcessing(ChosenImage image);
     }
 }

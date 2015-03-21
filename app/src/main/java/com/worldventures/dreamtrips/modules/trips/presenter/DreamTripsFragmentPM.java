@@ -14,10 +14,10 @@ import com.worldventures.dreamtrips.core.api.request.trips.UnlikeTrip;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 19.01.15.
  * presentation model for fragment with list of the trips
  */
-public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.View> {
+public class DreamTripsFragmentPM extends BasePresenter<DreamTripsFragmentPM.View> {
 
     @Inject
     Prefs prefs;
@@ -182,7 +182,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
     public void actionMap() {
-        fragmentCompass.replace(State.MAP, null);
+        fragmentCompass.replace(Route.MAP, null);
     }
 
     public void onItemClick(Trip trip) {
@@ -190,7 +190,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
     }
 
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void dataSetChanged();
 
         void showErrorMessage();

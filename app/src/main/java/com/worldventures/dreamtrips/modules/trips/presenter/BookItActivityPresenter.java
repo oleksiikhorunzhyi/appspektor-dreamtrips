@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.request.trips.GetTripDetails;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.config.URLS;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import java.util.concurrent.TimeUnit;
@@ -20,12 +20,12 @@ import timber.log.Timber;
 /**
  * Created by Edward on 23.01.15.
  */
-public class BookItActivityPresentation extends BasePresentation<BookItActivityPresentation.View> {
+public class BookItActivityPresenter extends BasePresenter<BookItActivityPresenter.View> {
 
     public static final int LIFE_DURATION = 30;
     private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
 
-    public BookItActivityPresentation(BookItActivityPresentation.View view) {
+    public BookItActivityPresenter(BookItActivityPresenter.View view) {
         super(view);
     }
 
@@ -59,10 +59,10 @@ public class BookItActivityPresentation extends BasePresentation<BookItActivityP
                 userSession.getLegacyApiToken());
         Bundle bundle = new Bundle();
         bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
-        fragmentCompass.add(State.BOOK_IT, bundle);
+        fragmentCompass.add(Route.BOOK_IT, bundle);
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         int getTripId();
     }
 

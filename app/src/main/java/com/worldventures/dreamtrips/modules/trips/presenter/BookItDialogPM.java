@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 /**
  * Created by 1 on 29.01.15.
  */
-public class BookItDialogPM extends BasePresentation<BookItDialogPM.View> {
+public class BookItDialogPM extends BasePresenter<BookItDialogPM.View> {
 
     private static final String URL_BASE = "https://www.dreamtrips.com/trips/details/%d?user=%s&token=%s&appMode=true#/book";
 
@@ -30,7 +30,7 @@ public class BookItDialogPM extends BasePresentation<BookItDialogPM.View> {
                 appSessionHolder.get().get().getLegacyApiToken());
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
 
     }
 

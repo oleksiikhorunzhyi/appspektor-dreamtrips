@@ -4,20 +4,20 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 import com.worldventures.dreamtrips.core.model.config.URLS;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 
 
-public class WebViewFragmentPresentation<T extends BasePresentation.View> extends BasePresentation<T> {
+public class WebViewFragmentPresenter<T extends BasePresenter.View> extends BasePresenter<T> {
 
-    public WebViewFragmentPresentation(T view) {
+    public WebViewFragmentPresenter(T view) {
         super(view);
     }
 
-    public void track(State state) {
-        switch (state) {
+    public void track(Route route) {
+        switch (route) {
             case TERMS_OF_SERVICE:
                 AdobeTrackingHelper.service(getUserId());
                 break;

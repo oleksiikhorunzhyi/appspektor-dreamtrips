@@ -18,12 +18,12 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
 
     @Override
     protected String getURL() {
-        S3GlobalConfig config = getPresentationModel().getConfig();
+        S3GlobalConfig config = getPresenter().getConfig();
         URLS urls = config.getUrls();
         URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
         String s = configs.getoTAPageBaseURL();
         s += "?user=%s&token=%s&appMode=true#/";
-        UserSession userSession = getPresentationModel().getCurrentUser();
+        UserSession userSession = getPresenter().getCurrentUser();
         String url = String.format(s, userSession.getUsername(), userSession.getLegacyApiToken());
         return url;
     }

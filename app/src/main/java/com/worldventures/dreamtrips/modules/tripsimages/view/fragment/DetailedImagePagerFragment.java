@@ -13,7 +13,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresentation;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -27,7 +27,7 @@ import butterknife.OnClick;
  * Created by 1 on 23.01.15.
  */
 @Layout(R.layout.fragment_image_detailed)
-public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresentation> implements DetailedImagePagerFragmentPresentation.View {
+public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
 
@@ -46,7 +46,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
         Object photo = getArguments().getSerializable(EXTRA_PHOTO);
 
         if (photo instanceof TripImage) {
-            getPresentationModel().setPhoto((TripImage) photo);
+            getPresenter().setPhoto((TripImage) photo);
         }
 
 
@@ -68,7 +68,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
     }
 
     private void loadImage(int width, int height) {
-        imageLoader.loadImage(getPresentationModel().getPhoto().getUrl(width, height), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
+        imageLoader.loadImage(getPresenter().getPhoto().getUrl(width, height), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -94,7 +94,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
     }
 
     @Override
-    protected DetailedImagePagerFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new DetailedImagePagerFragmentPresentation(this);
+    protected DetailedImagePagerFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new DetailedImagePagerFragmentPresenter(this);
     }
 }

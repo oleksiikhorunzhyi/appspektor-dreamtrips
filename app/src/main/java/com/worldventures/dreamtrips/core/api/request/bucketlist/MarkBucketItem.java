@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.api.request.bucketlist;
 
 import android.util.Log;
 
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 

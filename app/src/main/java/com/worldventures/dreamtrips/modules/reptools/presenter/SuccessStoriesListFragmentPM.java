@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.successstories.GetSuccessStories;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStoriesListFragmentPM.View> {
+public class SuccessStoriesListFragmentPM extends BasePresenter<SuccessStoriesListFragmentPM.View> {
 
     @Inject
     @Named("details")
@@ -109,7 +109,7 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoriesDetailsFragment.STORY, successStory);
         if (view.isLandscape() && view.isTablet()) {
-            detailsCompass.replace(State.SUCCESS_STORES_DETAILS, bundle);
+            detailsCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
             eventBus.post(new SuccessStoryItemSelectedEvent(position));
         } else {
             activityRouter.openSuccessStoryDetails(successStory);
@@ -138,7 +138,7 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
         return onlyFavorites;
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
 
         boolean isTablet();
 

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import java.io.File;
 
-public class TripImagesTabsFragmentPresentation extends BasePresentation<TripImagesTabsFragmentPresentation.View> {
+public class TripImagesTabsFragmentPresenter extends BasePresenter<TripImagesTabsFragmentPresenter.View> {
 
     ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -28,7 +28,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
         }
     };
 
-    public TripImagesTabsFragmentPresentation(View view) {
+    public TripImagesTabsFragmentPresenter(View view) {
         super(view);
     }
 
@@ -68,7 +68,7 @@ public class TripImagesTabsFragmentPresentation extends BasePresentation<TripIma
         return fbCallback;
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         void setFabVisibility(boolean visibility);
 
 

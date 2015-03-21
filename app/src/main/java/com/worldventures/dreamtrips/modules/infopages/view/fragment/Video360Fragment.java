@@ -84,7 +84,7 @@ public class Video360Fragment extends BaseFragment<Video360FragmentPM> implement
 
 
     @Override
-    protected Video360FragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected Video360FragmentPM createPresenter(Bundle savedInstanceState) {
         return new Video360FragmentPM(this);
     }
 }

@@ -21,10 +21,10 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
@@ -39,7 +39,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.View> {
+public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.View> {
     private static final Handler handler = new Handler(Looper.getMainLooper());
     @Inject
     Context context;
@@ -127,7 +127,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
     }
 
     public void addPopular() {
-        activityRouter.openBucketListEditActivity(type, State.POPULAR_TAB_BUCKER);
+        activityRouter.openBucketListEditActivity(type, Route.POPULAR_TAB_BUCKER);
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
@@ -279,7 +279,7 @@ public class BucketListFragmentPM extends BasePresentation<BucketListFragmentPM.
         return showCompleted;
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         BaseArrayListAdapter getAdapter();
 
         void showUndoBar(android.view.View.OnClickListener clickListener);

@@ -14,7 +14,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.Video;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -28,7 +28,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_membership)
-public class MemberShipFragment extends BaseFragment<MembershipPM> implements BasePresentation.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipPM> implements BasePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -55,9 +55,9 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        this.arrayListAdapter.setContentLoader(getPresentationModel().getAdapterController());
+        this.arrayListAdapter.setContentLoader(getPresenter().getAdapterController());
 
-        getPresentationModel().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
+        getPresenter().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
             @Override
             public void onStartLoading() {
                 refreshLayout.setRefreshing(true);
@@ -78,7 +78,7 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
-        getPresentationModel().actionEnroll();
+        getPresenter().actionEnroll();
     }
 
     @Override
@@ -87,18 +87,18 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
 
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
-                getPresentationModel().getAdapterController().reload();
+                getPresenter().getAdapterController().reload();
             });
         }
     }
 
     @Override
     public void onRefresh() {
-        getPresentationModel().getAdapterController().reload();
+        getPresenter().getAdapterController().reload();
     }
 
     @Override
-    protected MembershipPM createPresentationModel(Bundle savedInstanceState) {
+    protected MembershipPM createPresenter(Bundle savedInstanceState) {
         return new MembershipPM(this);
     }
 

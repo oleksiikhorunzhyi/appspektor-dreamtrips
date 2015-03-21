@@ -65,14 +65,14 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     private void initMap() {
         mapView.getMapAsync((googleMap) -> {
             this.googleMap = googleMap;
-            getPresentationModel().onMapLoaded();
+            getPresenter().onMapLoaded();
             this.googleMap.setOnMarkerClickListener((marker) -> {
-                getPresentationModel().onMarkerClick(marker.getSnippet());
+                getPresenter().onMarkerClick(marker.getSnippet());
                 lastClickedLocation = marker.getPosition();
                 return true;
             });
 
-            this.mapView.setMapTouchListener(() -> getPresentationModel().onCameraChanged());
+            this.mapView.setMapTouchListener(() -> getPresenter().onCameraChanged());
             this.googleMap.setMyLocationEnabled(true);
         });
     }
@@ -89,7 +89,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnCloseListener(() -> {
-            getPresentationModel().applySearch(null);
+            getPresenter().applySearch(null);
             return false;
         });
         searchView.setOnQueryTextListener(this);
@@ -97,13 +97,13 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        getPresentationModel().onCameraChanged();
+        getPresenter().onCameraChanged();
         switch (item.getItemId()) {
             case R.id.action_filter:
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
             case R.id.action_list:
-                getPresentationModel().actionList();
+                getPresenter().actionList();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -125,7 +125,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getPresentationModel().onPause();
+        getPresenter().onPause();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
     }
 
     @Override
-    protected MapFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected MapFragmentPM createPresenter(Bundle savedInstanceState) {
         return new MapFragmentPM(this);
     }
 
@@ -172,7 +172,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
 
     @Override
     public boolean onQueryTextChange(String s) {
-        getPresentationModel().applySearch(s);
+        getPresenter().applySearch(s);
         return false;
     }
 
@@ -189,7 +189,7 @@ public class MapFragment extends BaseFragment<MapFragmentPM> implements MapFragm
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                getPresentationModel().markerReady();
+                getPresenter().markerReady();
             }
 
             @Override

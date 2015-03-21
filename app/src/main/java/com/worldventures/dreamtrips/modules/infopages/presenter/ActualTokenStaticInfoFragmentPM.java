@@ -4,13 +4,13 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.api.request.photos.FlagPhoto;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresentation<ActualTokenStaticInfoFragmentPM.View> {
+public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<ActualTokenStaticInfoFragmentPM.View> {
     public static final int LIFE_DURATION = 30;
 
     public ActualTokenStaticInfoFragmentPM(View view) {
@@ -37,7 +37,7 @@ public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresentation
         }
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void loadContent();
     }
 

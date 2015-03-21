@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
 import com.worldventures.dreamtrips.core.model.TripImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 
@@ -30,7 +30,7 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 19.01.15.
  * presentation model for DetailedTripFragment
  */
-public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmentPM.View> {
+public class DetailedTripFragmentPM extends BasePresenter<DetailedTripFragmentPM.View> {
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -143,7 +143,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
         }
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void setContent(List<ContentItem> contentItems);
 
         void setName(String text);

@@ -45,10 +45,10 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_like:
-                getPresentationModel().like(story);
+                getPresenter().like(story);
                 break;
             case R.id.action_share:
-                getPresentationModel().share();
+                getPresenter().share();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -92,7 +92,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     }
 
     @Override
-    protected SuccessStoryDetailsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected SuccessStoryDetailsFragmentPM createPresenter(Bundle savedInstanceState) {
         return new SuccessStoryDetailsFragmentPM(this);
     }
 
@@ -103,9 +103,9 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
                 .items(R.array.share_dialog_items)
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
-                        getPresentationModel().onFbShare(story);
+                        getPresenter().onFbShare(story);
                     } else {
-                        getPresentationModel().onTwitterShare(story);
+                        getPresenter().onTwitterShare(story);
                     }
                 }).show();
     }

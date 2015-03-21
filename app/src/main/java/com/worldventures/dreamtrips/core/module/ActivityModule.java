@@ -15,14 +15,14 @@ import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.photos.GetMyPhotos;
-import com.worldventures.dreamtrips.core.api.request.photos.UploadTripPhoto;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
+import com.worldventures.dreamtrips.core.api.request.photos.GetMyPhotos;
+import com.worldventures.dreamtrips.core.api.request.photos.UploadTripPhoto;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.modules.auth.presenter.LoginActivityPresentation;
-import com.worldventures.dreamtrips.modules.auth.presenter.LoginFragmentPresentation;
+import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.modules.auth.presenter.LoginFragmentPresenter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
@@ -41,9 +41,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListP
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListQuickInputFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BaseActivityPresentation;
-import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresentation;
-import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BaseActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPM;
 import com.worldventures.dreamtrips.modules.common.presenter.ShareActivityPM;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -52,6 +52,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumFragmentPM;
@@ -63,10 +65,10 @@ import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoItem
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
-import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresentation;
+import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipPM;
 import com.worldventures.dreamtrips.modules.infopages.presenter.Video360FragmentPM;
-import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresentation;
+import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360SmallCell;
@@ -76,7 +78,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Frag
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.ActualTokenStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.profile.presenter.ProfileFragmentPresentation;
+import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsFragmentPM;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListFragmentPM;
@@ -87,7 +89,7 @@ import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesListFragment;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresentation;
+import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPM;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPM;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripFragmentPM;
@@ -112,11 +114,11 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripI
 import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoActivityPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoFragmentPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresentation;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresentation;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BaseFSViewPM;
@@ -134,9 +136,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedIm
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -159,17 +158,16 @@ import dagger.Provides;
                 CreatePhotoActivity.class,
                 SuccessStoryDetailsActivity.class,
                 SuccessStoryDetailsActivityPM.class,
-                LaunchActivityPresentation.class,
+                LaunchActivityPresenter.class,
                 BucketListQuickInputPM.class,
-                LoginActivityPresentation.class,
-                LoginFragmentPresentation.class,
-                WebViewFragmentPresentation.class,
-                BaseActivityPresentation.class,
-                ProfileFragmentPresentation.class,
-                MainActivityPresentation.class,
+                LoginFragmentPresenter.class,
+                WebViewFragmentPresenter.class,
+                BaseActivityPresenter.class,
+                ProfilePresenter.class,
+                MainActivityPresenter.class,
                 FacebookPickPhotoActivityPM.class,
                 NavigationDrawerAdapter.class,
-                TripImagesTabsFragmentPresentation.class,
+                TripImagesTabsFragmentPresenter.class,
                 TripImagesListPM.class,
                 InspireMePM.class,
                 MyImagesPM.class,
@@ -185,11 +183,11 @@ import dagger.Provides;
                 FacebookAlbumFragmentPM.class,
                 FacebookPhotoFragmentPM.class,
                 EnrollActivity.class,
-                EnrollActivityPresentation.class,
+                EnrollActivityPresenter.class,
                 BucketPopularTabsFragmentPM.class,
                 FiltersFragmentPM.class,
                 BucketListQuickInputFragment.class,
-                DetailedImagePagerFragmentPresentation.class,
+                DetailedImagePagerFragmentPresenter.class,
                 FragmentMapInfoPM.class,
                 BookItDialogPM.class,
 
@@ -213,7 +211,7 @@ import dagger.Provides;
                 FragmentMapTripInfo.class,
                 MemberShipFragment.class,
                 ProfileFragment.class,
-                BookItActivityPresentation.class,
+                BookItActivityPresenter.class,
                 DreamTripsFragment.class,
                 StaticInfoFragment.EnrollFragment.class,
                 DetailedTripFragment.class,
@@ -332,7 +330,6 @@ public class ActivityModule {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
-
     @Provides
     DependencyInjector provideDependencyInjector(@InjectingServiceModule.Service Injector injector) {
         return injector::inject;
@@ -355,5 +352,4 @@ public class ActivityModule {
     JobManager provideJobManager(Context context, Configuration configuration) {
         return new JobManager(context, configuration);
     }
-
 }

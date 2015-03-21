@@ -93,7 +93,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
         mAdapter.setMoveListener((from, to) -> {
-            getPresentationModel().itemMoved(from, to);
+            getPresenter().itemMoved(from, to);
         });
 
         mWrappedAdapter = mDragDropManager.createWrappedAdapter(mAdapter);
@@ -120,7 +120,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     @Override
     public boolean onQueryTextSubmit(String s) {
         if (!TextUtils.isEmpty(s))
-            getPresentationModel().addToBucketList(s);
+            getPresenter().addToBucketList(s);
         return true;
     }
 
@@ -154,7 +154,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
-                getPresentationModel().addToBucketList(s);
+                getPresenter().addToBucketList(s);
             }
             return false;
         });
@@ -181,8 +181,8 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
                     PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
                     popupMenu.inflate(R.menu.menu_bucket_filter);
 
-                    boolean showCompleted = getPresentationModel().isShowCompleted();
-                    boolean showToDO = getPresentationModel().isShowToDO();
+                    boolean showCompleted = getPresenter().isShowCompleted();
+                    boolean showToDO = getPresenter().isShowToDO();
 
                     if (showCompleted && showToDO)
                         popupMenu.getMenu().getItem(0).setChecked(true);
@@ -192,7 +192,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
                         popupMenu.getMenu().getItem(2).setChecked(true);
 
                     popupMenu.setOnMenuItemClickListener((menuItem) -> {
-                        getPresentationModel().reloadWithFilter(menuItem.getItemId());
+                        getPresenter().reloadWithFilter(menuItem.getItemId());
 
                         return false;
                     });
@@ -201,7 +201,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
                 }
                 break;
             case R.id.action_popular:
-                getPresentationModel().addPopular();
+                getPresenter().addPopular();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -211,7 +211,7 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     public void onResume() {
         super.onResume();
         this.recyclerView.post(() -> {
-            getPresentationModel().loadBucketItems(false);
+            getPresenter().loadBucketItems(false);
         });
     }
 
@@ -228,11 +228,11 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
 
     @Override
     public void onRefresh() {
-        getPresentationModel().loadBucketItems(true);
+        getPresenter().loadBucketItems(true);
     }
 
     @Override
-    protected BucketListFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected BucketListFragmentPM createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BUNDLE_TYPE);
         return new BucketListFragmentPM(this, type);
     }

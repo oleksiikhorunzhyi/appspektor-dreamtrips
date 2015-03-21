@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BasePresentation<VT extends BasePresentation.View> {
+public class BasePresenter<VT extends BasePresenter.View> {
 
     protected final VT view;
 
@@ -40,7 +40,7 @@ public class BasePresentation<VT extends BasePresentation.View> {
     protected
     EventBus eventBus;
 
-    public BasePresentation(VT view) {
+    public BasePresenter(VT view) {
         this.view = view;
     }
 

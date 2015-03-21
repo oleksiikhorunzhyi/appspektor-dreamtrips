@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.facebook.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 
-public class FacebookAlbumFragmentPM extends BasePresentation<BasePresentation.View> {
+public class FacebookAlbumFragmentPM extends BasePresenter<BasePresenter.View> {
     public FacebookAlbumFragmentPM(View view) {
         super(view);
     }
@@ -18,6 +18,6 @@ public class FacebookAlbumFragmentPM extends BasePresentation<BasePresentation.V
     public void onItemClick(String fbAlbumId) {
         Bundle b = new Bundle();
         b.putString(FacebookPhotoFragment.BUNDLE_ALBUM_ID, fbAlbumId);
-        fragmentCompass.add(State.PICK_FB_PHOTO, b);
+        fragmentCompass.add(Route.PICK_FB_PHOTO, b);
     }
 }

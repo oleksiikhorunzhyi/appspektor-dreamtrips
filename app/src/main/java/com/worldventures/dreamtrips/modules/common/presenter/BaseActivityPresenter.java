@@ -7,12 +7,12 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BaseActivityPresentation<VT extends BasePresentation.View> extends BasePresentation<VT> {
+public class BaseActivityPresenter<VT extends BasePresenter.View> extends BasePresenter<VT> {
     @Inject
     @Global
     EventBus eventBus;
 
-    public BaseActivityPresentation(VT view) {
+    public BaseActivityPresenter(VT view) {
         super(view);
     }
 

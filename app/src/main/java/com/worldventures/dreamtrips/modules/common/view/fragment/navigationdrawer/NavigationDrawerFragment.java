@@ -15,9 +15,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateSelectionEvent;
@@ -33,10 +33,8 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_navigation_drawer)
-public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> implements BasePresentation.View, NavigationDrawerListener {
+public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> implements BasePresenter.View, NavigationDrawerListener {
 
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-    private static final String PREFERENCES_FILE = "my_app_settings"; //TODO: change this to your file
     private static final String STATE_SELECTED_STATE = "selected_navigation_drawer_state";
 
     @Inject
@@ -50,8 +48,9 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     FragmentCompass fragmentCompass;
     @InjectView(R.id.drawerList)
     RecyclerView drawerList;
+
     private NavigationDrawerListener navigationDrawerListener;
-    private State savedState = State.DREAMTRIPS;
+    private Route savedRoute = Route.DREAMTRIPS;
     private NavigationDrawerAdapter adapter;
 
     private boolean instanceSaved = false;
@@ -66,16 +65,16 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         super.onActivityCreated(savedInstanceState);
         navigationDrawerListener = (NavigationDrawerListener) getActivity();
         if (savedInstanceState != null) {
-            savedState = (State) savedInstanceState.getSerializable(STATE_SELECTED_STATE);
+            savedRoute = (Route) savedInstanceState.getSerializable(STATE_SELECTED_STATE);
             instanceSaved = true;
         }
         adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
-                savedState.getPosition() : savedState.getPosition() + 1);
-        selectItem(savedState);
+                savedRoute.getPosition() : savedRoute.getPosition() + 1);
+        selectItem(savedRoute);
     }
 
     @Override
-    protected NavigationDrawerPM createPresentationModel(Bundle savedInstanceState) {
+    protected NavigationDrawerPM createPresenter(Bundle savedInstanceState) {
         return new NavigationDrawerPM(this);
     }
 
@@ -112,11 +111,11 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     }
 
     public void onEvent(UpdateSelectionEvent event) {
-        State state = fragmentCompass.getPreviousFragment();
+        Route route = fragmentCompass.getPreviousFragment();
         instanceSaved = true;
-        savedState = state;
+        savedRoute = route;
         adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
-                state.getPosition() : state.getPosition() + 1);
+                route.getPosition() : route.getPosition() + 1);
     }
 
     public void onEvent(UpdateUserInfoEvent event) {
@@ -136,27 +135,27 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
         this.navigationDrawerListener = null;
     }
 
-    public List<State> getMenu() {
-        return State.getMenuItemsArray();
+    public List<Route> getMenu() {
+        return Route.getMenuItemsArray();
     }
 
-    void selectItem(State state) {
-        if ((!instanceSaved || !state.equals(savedState)) && this.navigationDrawerListener != null) {
-            this.navigationDrawerListener.onNavigationDrawerItemSelected(state);
+    void selectItem(Route route) {
+        if ((!instanceSaved || !route.equals(savedRoute)) && this.navigationDrawerListener != null) {
+            this.navigationDrawerListener.onNavigationDrawerItemSelected(route);
             instanceSaved = false;
         }
-        savedState = state;
+        savedRoute = route;
     }
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(STATE_SELECTED_STATE, savedState);
+        outState.putSerializable(STATE_SELECTED_STATE, savedRoute);
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(State state) {
-        selectItem(state);
+    public void onNavigationDrawerItemSelected(Route route) {
+        selectItem(route);
     }
 }

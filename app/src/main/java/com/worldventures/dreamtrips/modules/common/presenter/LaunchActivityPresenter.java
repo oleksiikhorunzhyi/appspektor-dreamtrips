@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 
-public class LaunchActivityPresentation extends BasePresentation<BasePresentation.View> {
+public class LaunchActivityPresenter extends BasePresenter<BasePresenter.View> {
 
-    public LaunchActivityPresentation(View view) {
+    public LaunchActivityPresenter(View view) {
         super(view);
     }
 

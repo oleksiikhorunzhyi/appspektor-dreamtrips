@@ -6,7 +6,7 @@ import android.net.Uri;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 
 import java.text.DateFormat;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentPM.View> {
+public class CreatePhotoFragmentPM extends BasePresenter<CreatePhotoFragmentPM.View> {
     public static final String TIME = "time";
     public static final String DATE = "date";
     public static final String DATE_FORMAT = "MMM dd, yyyy";
@@ -126,7 +126,7 @@ public class CreatePhotoFragmentPM extends BasePresentation<CreatePhotoFragmentP
         return result;
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         void end();
 
         public Uri getImageUri();

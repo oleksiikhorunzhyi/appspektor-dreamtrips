@@ -103,11 +103,11 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     }
 
     public void onEvent(LikeTripEvent likeTripEvent) {
-        getPresentationModel().onItemLike(likeTripEvent.getTrip());
+        getPresenter().onItemLike(likeTripEvent.getTrip());
     }
 
     public void onEvent(TouchTripEvent event) {
-        getPresentationModel().onItemClick(event.getTrip());
+        getPresenter().onItemClick(event.getTrip());
     }
 
     @Override
@@ -138,7 +138,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
             case R.id.action_map:
-                getPresentationModel().actionMap();
+                getPresenter().actionMap();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -153,16 +153,16 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPM> imple
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getPresentationModel().onPause();
+        getPresenter().onPause();
     }
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresenter().reload();
     }
 
     @Override
-    protected DreamTripsFragmentPM createPresentationModel(Bundle savedInstanceState) {
+    protected DreamTripsFragmentPM createPresenter(Bundle savedInstanceState) {
         return new DreamTripsFragmentPM(this);
     }
 

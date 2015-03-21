@@ -3,14 +3,14 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.model.config.Video360;
 import com.worldventures.dreamtrips.core.model.config.Videos360;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import java.util.List;
 
 /**
  * Created by 1 on 10.03.15.
  */
-public class Video360FragmentPM extends BasePresentation<Video360FragmentPM.View> {
+public class Video360FragmentPM extends BasePresenter<Video360FragmentPM.View> {
 
     public Video360FragmentPM(View view) {
         super(view);
@@ -38,7 +38,7 @@ public class Video360FragmentPM extends BasePresentation<Video360FragmentPM.View
         }
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         BaseArrayListAdapter getFeaturedAdapter();
 
         BaseArrayListAdapter getRecentAdapter();

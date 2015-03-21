@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
@@ -32,7 +32,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by 1 on 03.03.15.
  */
-public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.View> {
+public class BucketListPopularPM extends BasePresenter<BucketListPopularPM.View> {
 
     @Inject
     Context context;
@@ -133,7 +133,7 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
         adapterController.reload();
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         BaseArrayListAdapter<PopularBucketItem> getAdapter();
 
         void startLoading();

@@ -78,7 +78,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresenter().reload();
     }
 
     public boolean isTabletLandscape() {
@@ -86,7 +86,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
     }
 
     @Override
-    protected BucketListPopularPM createPresentationModel(Bundle savedInstanceState) {
+    protected BucketListPopularPM createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
         return new BucketListPopularPM(this, type);
     }

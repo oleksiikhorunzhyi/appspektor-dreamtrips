@@ -6,9 +6,9 @@ import android.os.Bundle;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
-public abstract class PresentationModelDrivenActivity<PM extends BasePresentation> extends BaseActivity implements BasePresentation.View {
+public abstract class PresentationModelDrivenActivity<PM extends BasePresenter> extends BaseActivity implements BasePresenter.View {
     private PM presentationModel;
 
     public PM getPresentationModel() {
@@ -22,10 +22,6 @@ public abstract class PresentationModelDrivenActivity<PM extends BasePresentatio
         this.presentationModel = createPresentationModel(savedInstanceState);
         inject(this.presentationModel);
         this.presentationModel.init();
-    }
-
-    public void handleError(Exception e) {
-        getPresentationModel().handleError(e);
     }
 
     public void informUser(String st) {

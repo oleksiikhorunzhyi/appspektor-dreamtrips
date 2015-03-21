@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.os.Bundle;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.QuickAddItemEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BucketTabsFragmentPM extends BasePresentation<BucketTabsFragmentPM.View> {
+public class BucketTabsFragmentPM extends BasePresenter<BucketTabsFragmentPM.View> {
 
     @Global
     @Inject
@@ -28,7 +28,7 @@ public class BucketTabsFragmentPM extends BasePresentation<BucketTabsFragmentPM.
     }
 
     public void addPopular(int position) {
-        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], State.POPULAR_TAB_BUCKER);
+        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], Route.POPULAR_TAB_BUCKER);
     }
 
     public Bundle getBundleForPosition(int position) {
@@ -38,7 +38,7 @@ public class BucketTabsFragmentPM extends BasePresentation<BucketTabsFragmentPM.
         return args;
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         boolean isTabletLandscape();
     }
 

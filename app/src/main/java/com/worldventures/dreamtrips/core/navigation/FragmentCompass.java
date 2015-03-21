@@ -37,27 +37,27 @@ public class FragmentCompass {
         showDialog(state, bundle);
     }
 
-    public void add(State state) {
-        add(state, null);
+    public void add(Route route) {
+        add(route, null);
     }
 
-    public void add(State state, Bundle bundle) {
-        action(Action.ADD, state, bundle);
+    public void add(Route route, Bundle bundle) {
+        action(Action.ADD, route, bundle);
     }
 
-    public void replace(State state) {
-        replace(state, null);
+    public void replace(Route route) {
+        replace(route, null);
     }
 
-    public void replace(State state, Bundle bundle) {
-        action(Action.REPLACE, state, bundle);
+    public void replace(Route route, Bundle bundle) {
+        action(Action.REPLACE, route, bundle);
     }
 
-    protected void action(Action action, State state, Bundle bundle) {
+    protected void action(Action action, Route route, Bundle bundle) {
         if (validateState()) {
             try {
                 FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
-                String clazzName = state.getClazzName();
+                String clazzName = route.getClazzName();
 
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
                 setArgsToFragment(fragment, bundle);
@@ -66,7 +66,7 @@ public class FragmentCompass {
                     case REPLACE:
                         fragmentTransaction.replace(containerId, fragment);
                         if (onTransactionListener != null) {
-                            onTransactionListener.onTransactionDone(state, Action.REPLACE);
+                            onTransactionListener.onTransactionDone(route, Action.REPLACE);
                         }
                         break;
                     case ADD:
@@ -121,15 +121,15 @@ public class FragmentCompass {
         return getPreviousFragment().getTitle();
     }
 
-    public State getPreviousFragment() {
+    public Route getPreviousFragment() {
         FragmentManager fm = activity.getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 2) {
             FragmentManager.BackStackEntry backEntry =
                     fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 2);
             String str = backEntry.getName();
-            return State.restoreByClass(str);
+            return Route.restoreByClass(str);
         }
-        return State.DREAMTRIPS;
+        return Route.DREAMTRIPS;
 
     }
 
@@ -137,13 +137,13 @@ public class FragmentCompass {
         fragment.setArguments(bundle);
     }
 
-    public void switchBranch(final State state) {
-        switchBranch(state, null);
+    public void switchBranch(final Route route) {
+        switchBranch(route, null);
     }
 
-    public void switchBranch(final State state, final Bundle args) {
+    public void switchBranch(final Route route, final Bundle args) {
         clearBackStack();
-        replace(state, args);
+        replace(route, args);
     }
 
     private boolean validateState() {
@@ -154,8 +154,8 @@ public class FragmentCompass {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
-    public State getCurrentState() {
-        return State.restoreByClass(getCurrentFragment().getClass().getName());
+    public Route getCurrentState() {
+        return Route.restoreByClass(getCurrentFragment().getClass().getName());
     }
 
     protected void clearBackStack() {
@@ -192,6 +192,6 @@ public class FragmentCompass {
     }
 
     public static interface OnTransactionListener {
-        public void onTransactionDone(State state, Action action);
+        public void onTransactionDone(Route route, Action action);
     }
 }

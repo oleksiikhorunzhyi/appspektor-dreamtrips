@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api.request.profile;
 
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.User;
 
 import retrofit.mime.TypedFile;

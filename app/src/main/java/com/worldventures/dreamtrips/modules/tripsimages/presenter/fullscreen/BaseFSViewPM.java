@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.model.Inspiration;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.User;
 import com.worldventures.dreamtrips.core.model.config.Flag;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 
@@ -19,7 +19,7 @@ import de.greenrobot.event.EventBus;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresentation<BaseFSViewPM.View> {
+public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresenter<BaseFSViewPM.View> {
 
     protected Type type;
     protected User user;
@@ -109,7 +109,7 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
         return appSessionHolder.get().get().getGlobalConfig().getFlagContent().getDefault();
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void setTitle(String title);
 
         void setInspireDescription(String desc);

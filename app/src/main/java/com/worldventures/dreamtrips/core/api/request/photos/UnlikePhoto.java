@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.api.request.photos;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 
 public class UnlikePhoto extends DreamTripsRequest<JsonObject> {
 

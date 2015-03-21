@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api.request.successstories;
 
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.base.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 
 import java.util.ArrayList;

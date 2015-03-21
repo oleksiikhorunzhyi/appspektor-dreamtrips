@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 
 import java.io.File;
 
-public class ShareActivityPM extends BasePresentation<ShareActivityPM.View> {
+public class ShareActivityPM extends BasePresenter<ShareActivityPM.View> {
     public ShareActivityPM(View view) {
         super(view);
     }
@@ -31,7 +31,7 @@ public class ShareActivityPM extends BasePresentation<ShareActivityPM.View> {
     }
 
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         public void shareFBDialog(String url, String link, String text);
 
         public void shareTwitterDialog(Uri url, String link, String text);

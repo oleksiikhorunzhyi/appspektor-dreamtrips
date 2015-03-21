@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 
 import java.util.List;
@@ -29,17 +29,19 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+
     @Inject
     UniversalImageLoader universalImageLoader;
+
     private int headerSize = 0;
 
-    private List<State> mData;
+    private List<Route> mData;
     private NavigationDrawerListener mNavigationDrawerListener;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
     private NavigationHeader navigationHeader;
 
-    public NavigationDrawerAdapter(List<State> data, Injector injector) {
+    public NavigationDrawerAdapter(List<Route> data, Injector injector) {
         injector.inject(this);
         mData = data;
     }
@@ -65,7 +67,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof ItemHolder) {
             ItemHolder holder = (ItemHolder) viewHolder;
-            State item = getItem(i);
+            Route item = getItem(i);
             if (holder.itemName != null)
                 holder.itemName.setText(item.getTitle());
             holder.sectionIcon.setImageResource(item.getDrawableId());
@@ -89,20 +91,19 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             holder.itemView.setOnClickListener(v -> {
                 selectPosition(i);
-                if (mNavigationDrawerListener != null)
+                if (mNavigationDrawerListener != null) {
                     mNavigationDrawerListener.onNavigationDrawerItemSelected(mData.get(i - headerSize));
+                }
+
             });
 
-            if (mSelectedPosition == i || mTouchedPosition == i) {
-                if (holder.itemName != null)
-                    holder.itemName.setSelected(true);
-                holder.sectionIcon.setSelected(true);
-            } else {
-                if (holder.itemName != null)
-                    holder.itemName.setSelected(false);
-                holder.sectionIcon.setSelected(false);
+            final boolean isSelected = mSelectedPosition == i || mTouchedPosition == i;
 
+            if (holder.itemName != null) {
+                holder.itemName.setSelected(isSelected);
             }
+
+            holder.sectionIcon.setSelected(isSelected);
 
         } else if (viewHolder instanceof HeaderHolder) {
             HeaderHolder holder = (HeaderHolder) viewHolder;
@@ -117,10 +118,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private void touchPosition(int position) {
         int lastPosition = mTouchedPosition;
         mTouchedPosition = position;
-        if (lastPosition >= 0)
+        if (lastPosition >= 0) {
             notifyItemChanged(lastPosition);
-        if (position >= 0)
+        }
+
+        if (position >= 0) {
             notifyItemChanged(position);
+        }
     }
 
     public void selectPosition(int position) {
@@ -137,8 +141,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
+        if (isPositionHeader(position)) {
             return TYPE_HEADER;
+        }
 
         return TYPE_ITEM;
     }
@@ -147,7 +152,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         return navigationHeader != null && position == 0;
     }
 
-    public State getItem(int position) {
+    public Route getItem(int position) {
         return mData.get(navigationHeader != null ? position - 1 : position);
     }
 
@@ -156,11 +161,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         headerSize = 1;
     }
 
-
     public static class ItemHolder extends RecyclerView.ViewHolder {
+
         @Optional
         @InjectView(R.id.item_name)
         TextView itemName;
+
         @InjectView(R.id.section_icon)
         ImageView sectionIcon;
 

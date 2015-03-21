@@ -1,21 +1,21 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.navigation.State;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.UpdateSelectionEvent;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class MainActivityPresentation extends BaseActivityPresentation<MainActivityPresentation.View> {
+public class MainActivityPresenter extends BaseActivityPresenter<MainActivityPresenter.View> {
 
     @Global
     @Inject
     EventBus eventBus;
-    private State currentState;
+    private Route currentRoute;
 
-    public MainActivityPresentation(View view) {
+    public MainActivityPresenter(View view) {
         super(view);
     }
 
@@ -34,8 +34,8 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
     }
 
     public void onBackPressed() {
-        currentState = fragmentCompass.getPreviousFragment();
-        int title = currentState.getTitle();
+        currentRoute = fragmentCompass.getPreviousFragment();
+        int title = currentRoute.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
     }
@@ -44,14 +44,14 @@ public class MainActivityPresentation extends BaseActivityPresentation<MainActiv
         view.setTitle(fragmentCompass.getCurrentState().getTitle());
     }
 
-    public void selectItem(State state) {
-        if (!state.equals(currentState)) {
-            currentState = state;
-            fragmentCompass.replace(state);
+    public void selectItem(Route route) {
+        if (!route.equals(currentRoute)) {
+            currentRoute = route;
+            fragmentCompass.replace(route);
         }
     }
 
-    public static interface View extends BasePresentation.View {
+    public static interface View extends BasePresenter.View {
         void setTitle(int title);
     }
 }

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.api.request;
+package com.worldventures.dreamtrips.core.api.request.base;
 
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;

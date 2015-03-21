@@ -73,7 +73,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresentationModel().onItemClick(position))
+                new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresenter().onItemClick(position))
         );
         this.recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -81,7 +81,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
                 int childCount = recyclerView.getChildCount();
                 int itemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
+                getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
     }
@@ -92,7 +92,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
 
         if (this.arrayListAdapter.getItemCount() == 0) {
             this.refreshLayout.post(() -> {
-                getPresentationModel().reload();
+                getPresenter().reload();
             });
         }
     }
@@ -111,11 +111,11 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresenter().reload();
     }
 
     @Override
-    protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
+    protected TripImagesListPM createPresenter(Bundle savedInstanceState) {
         type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return TripImagesListPM.create(type, this);
     }

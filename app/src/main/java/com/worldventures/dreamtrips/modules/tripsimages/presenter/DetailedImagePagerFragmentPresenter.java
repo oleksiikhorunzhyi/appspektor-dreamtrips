@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.worldventures.dreamtrips.core.model.TripImage;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 
-public class DetailedImagePagerFragmentPresentation extends BasePresentation<BasePresentation.View> {
+public class DetailedImagePagerFragmentPresenter extends BasePresenter<BasePresenter.View> {
 
     TripImage photo;
 
 
-    public DetailedImagePagerFragmentPresentation(View view) {
+    public DetailedImagePagerFragmentPresenter(View view) {
         super(view);
     }
 

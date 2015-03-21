@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.auth.presenter.LoginFragmentPresentation;
+import com.worldventures.dreamtrips.modules.auth.presenter.LoginFragmentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -21,7 +21,7 @@ import butterknife.OnClick;
 import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_login)
-public class LoginFragment extends BaseFragment<LoginFragmentPresentation> implements LoginFragmentPresentation.View {
+public class LoginFragment extends BaseFragment<LoginFragmentPresenter> implements LoginFragmentPresenter.View {
 
     @InjectView(R.id.btn_login)
     Button loginButton;
@@ -98,8 +98,8 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
     }
 
     @Override
-    protected LoginFragmentPresentation createPresentationModel(Bundle savedInstanceState) {
-        return new LoginFragmentPresentation(this);
+    protected LoginFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new LoginFragmentPresenter(this);
     }
 
     private void layoutConfiguration() {
@@ -109,11 +109,11 @@ public class LoginFragment extends BaseFragment<LoginFragmentPresentation> imple
 
     @OnClick(R.id.iv_title)
     public void onTitleClick() {
-        getPresentationModel().fillDataAction();
+        getPresenter().fillDataAction();
     }
 
     @OnClick(R.id.btn_login)
     public void onLoginClick() {
-        getPresentationModel().loginAction();
+        getPresenter().loginAction();
     }
 }

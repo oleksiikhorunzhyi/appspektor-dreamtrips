@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
@@ -15,7 +15,7 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 28.01.15.
  * presentation model for fragmentMapTripInfo
  */
-public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> {
+public class FragmentMapInfoPM extends BasePresenter<FragmentMapInfoPM.View> {
 
     @Global
     @Inject
@@ -77,7 +77,7 @@ public class FragmentMapInfoPM extends BasePresentation<FragmentMapInfoPM.View> 
         activityRouter.openTripDetails(trip);
     }
 
-    public interface View extends BasePresentation.View {
+    public interface View extends BasePresenter.View {
         void setName(String name);
 
         void setDate(String вфе);

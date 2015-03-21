@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
-import com.worldventures.dreamtrips.core.navigation.State;
-import com.worldventures.dreamtrips.modules.common.presenter.BaseActivityPresentation;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.BaseActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 
-public class FacebookPickPhotoActivityPM extends BasePresentation<BaseActivityPresentation.View> {
+public class FacebookPickPhotoActivityPM extends BasePresenter<BaseActivityPresenter.View> {
 
     public FacebookPickPhotoActivityPM(View view) {
         super(view);
     }
 
     public void create() {
-        fragmentCompass.add(State.PICK_FB_ALBUM);
+        fragmentCompass.add(Route.PICK_FB_ALBUM);
     }
 
 }

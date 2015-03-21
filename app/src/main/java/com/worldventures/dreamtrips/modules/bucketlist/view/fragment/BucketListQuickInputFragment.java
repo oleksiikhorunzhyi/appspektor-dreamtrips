@@ -73,7 +73,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     @Optional
     @OnClick(R.id.mainFrame)
     void onClick() {
-        getPresentationModel().frameClicked();
+        getPresenter().frameClicked();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     public void addItem() {
         String text = editTextQuick.getText().toString();
         if (!TextUtils.isEmpty(text.trim())) {
-            getPresentationModel().addToBucketList(text);
+            getPresenter().addToBucketList(text);
             editTextQuick.setText("");
         } else {
             editTextQuick.requestFocus();
@@ -110,7 +110,7 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
     }
 
     @Override
-    protected BucketListQuickInputPM createPresentationModel(Bundle savedInstanceState) {
+    protected BucketListQuickInputPM createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
         return new BucketListQuickInputPM(this, type);
     }

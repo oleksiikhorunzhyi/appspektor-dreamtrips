@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.facebook.model;
 import android.os.Bundle;
 
 import com.facebook.model.GraphObject;
-import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 
 

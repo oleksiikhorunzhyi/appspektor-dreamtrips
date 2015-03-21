@@ -13,7 +13,7 @@ import com.facebook.widget.LoginButton;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;

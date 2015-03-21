@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 
 import java.util.ArrayList;
 import java.util.List;

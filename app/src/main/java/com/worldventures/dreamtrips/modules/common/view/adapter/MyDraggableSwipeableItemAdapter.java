@@ -24,9 +24,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.model.BaseEntity;
-import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
-import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 
 public class MyDraggableSwipeableItemAdapter<BaseItemClass>

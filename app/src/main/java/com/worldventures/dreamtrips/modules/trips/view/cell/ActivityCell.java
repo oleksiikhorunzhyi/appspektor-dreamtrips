@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.Activity;
 import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 
 import javax.inject.Inject;

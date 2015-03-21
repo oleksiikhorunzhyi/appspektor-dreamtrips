@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
 
 import retrofit.http.GET;
 

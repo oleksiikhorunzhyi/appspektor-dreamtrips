@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.api.request.photos.GetMyPhotos;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.core.model.User;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotos;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 

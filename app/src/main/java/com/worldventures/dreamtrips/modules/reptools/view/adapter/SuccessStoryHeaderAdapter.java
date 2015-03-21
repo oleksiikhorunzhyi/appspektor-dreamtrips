@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 import java.util.List;
 

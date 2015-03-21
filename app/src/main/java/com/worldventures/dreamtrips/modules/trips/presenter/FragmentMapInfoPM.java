@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;

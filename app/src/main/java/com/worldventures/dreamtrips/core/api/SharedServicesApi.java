@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.core.model.Video;
+import com.worldventures.dreamtrips.modules.infopages.model.Video;
 
 import java.util.List;
 

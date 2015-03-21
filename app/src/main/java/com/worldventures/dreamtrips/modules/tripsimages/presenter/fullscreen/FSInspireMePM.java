@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.worldventures.dreamtrips.core.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 public class FSInspireMePM extends BaseFSViewPM<Inspiration> {
     public FSInspireMePM(View view) {

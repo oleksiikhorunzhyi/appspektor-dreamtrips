@@ -5,11 +5,11 @@ import android.os.Bundle;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.request.trips.GetTripDetails;
-import com.worldventures.dreamtrips.core.model.TripDetails;
-import com.worldventures.dreamtrips.core.model.config.URLS;
+import com.worldventures.dreamtrips.modules.trips.api.GetTripDetails;
+import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
+import com.worldventures.dreamtrips.modules.infopages.model.URLS;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 

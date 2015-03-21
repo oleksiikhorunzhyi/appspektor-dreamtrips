@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.core.model.Image;
-import com.worldventures.dreamtrips.core.model.Inspiration;
-import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.core.model.User;
-import com.worldventures.dreamtrips.core.model.config.Flag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;

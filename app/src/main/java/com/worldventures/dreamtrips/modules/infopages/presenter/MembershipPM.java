@@ -6,7 +6,7 @@ import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.model.Video;
+import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 

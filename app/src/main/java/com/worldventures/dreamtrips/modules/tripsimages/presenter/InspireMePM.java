@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.util.Log;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.api.request.photos.GetInspireMePhotos;
-import com.worldventures.dreamtrips.core.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotos;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 import java.util.ArrayList;
 

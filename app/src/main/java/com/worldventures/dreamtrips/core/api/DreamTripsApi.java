@@ -1,20 +1,20 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.core.model.Activity;
-import com.worldventures.dreamtrips.core.model.Inspiration;
-import com.worldventures.dreamtrips.core.model.Photo;
-import com.worldventures.dreamtrips.core.model.Region;
-import com.worldventures.dreamtrips.core.model.Session;
-import com.worldventures.dreamtrips.core.model.SuccessStory;
-import com.worldventures.dreamtrips.core.model.Trip;
-import com.worldventures.dreamtrips.core.model.TripDetails;
-import com.worldventures.dreamtrips.core.model.User;
-import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
-import com.worldventures.dreamtrips.core.model.bucket.BucketOrderModel;
-import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
-import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
-import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.trips.model.Region;
+import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
 import java.util.List;

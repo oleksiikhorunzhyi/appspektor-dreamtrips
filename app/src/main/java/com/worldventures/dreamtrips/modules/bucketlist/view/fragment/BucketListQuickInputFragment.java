@@ -14,7 +14,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketQuickCell;

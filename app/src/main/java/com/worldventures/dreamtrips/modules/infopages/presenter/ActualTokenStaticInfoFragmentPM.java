@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.core.api.request.photos.FlagPhoto;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhoto;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 
 import java.util.concurrent.TimeUnit;

@@ -5,7 +5,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.bucket.BucketHeader;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 
 /**
  * Created by 1 on 05.03.15.

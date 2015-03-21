@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.core.model.Activity;
-import com.worldventures.dreamtrips.core.model.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 
 import java.util.ArrayList;
 import java.util.List;

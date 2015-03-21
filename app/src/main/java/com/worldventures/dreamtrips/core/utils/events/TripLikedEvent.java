@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
 
 /**
  * Created by 1 on 13.02.15.

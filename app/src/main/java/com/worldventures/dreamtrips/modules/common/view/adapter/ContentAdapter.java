@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.ContentItem;
+import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.core.utils.HtmlTagHandler;
 import com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable;
 

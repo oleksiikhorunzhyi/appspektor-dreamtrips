@@ -17,7 +17,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
 import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPM;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;

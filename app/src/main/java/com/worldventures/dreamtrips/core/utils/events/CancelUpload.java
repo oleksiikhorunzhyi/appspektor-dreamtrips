@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
 
-import com.worldventures.dreamtrips.core.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 public class CancelUpload {
     private final ImageUploadTask uploadTask;

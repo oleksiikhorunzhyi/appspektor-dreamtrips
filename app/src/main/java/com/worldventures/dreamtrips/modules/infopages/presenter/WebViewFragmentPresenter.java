@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
-import com.worldventures.dreamtrips.core.model.config.URLS;
+import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.infopages.model.URLS;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 

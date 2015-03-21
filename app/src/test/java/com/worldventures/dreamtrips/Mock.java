@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips;
 
-import com.worldventures.dreamtrips.core.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
 
 import java.util.ArrayList;
 import java.util.List;

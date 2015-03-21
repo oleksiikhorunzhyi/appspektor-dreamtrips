@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.core.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 public class OnSuccessStoryCellClickEvent {
     private SuccessStory modelObject;

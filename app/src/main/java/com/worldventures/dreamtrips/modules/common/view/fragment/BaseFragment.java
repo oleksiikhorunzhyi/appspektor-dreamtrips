@@ -11,7 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
 
 import butterknife.ButterKnife;

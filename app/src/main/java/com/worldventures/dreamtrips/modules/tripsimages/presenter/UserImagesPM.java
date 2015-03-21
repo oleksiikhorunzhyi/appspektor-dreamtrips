@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.photos.GetUserPhotos;
 import com.worldventures.dreamtrips.core.model.Photo;
 
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ public class UserImagesPM extends TripImagesListPM<Photo> {
         return new TripImagesRoboSpiceController() {
             @Override
             public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
-                return new DreamTripsRequest.GetUserPhotos(PER_PAGE, 1);
+                return new GetUserPhotos(PER_PAGE, 1);
             }
 
             @Override
             public SpiceRequest<ArrayList<Photo>> getNextPageRequest(int currentCount) {
-                return new DreamTripsRequest.GetUserPhotos(PER_PAGE, currentCount / PER_PAGE + 1);
+                return new GetUserPhotos(PER_PAGE, currentCount / PER_PAGE + 1);
             }
         };
     }

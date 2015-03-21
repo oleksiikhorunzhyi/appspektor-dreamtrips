@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.api.request.successstories.LikeSuccessStory;
+import com.worldventures.dreamtrips.core.api.request.successstories.UnlikeSuccessStory;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresentation;
@@ -12,9 +14,6 @@ import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-
-import static com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest.LikeSS;
-import static com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest.UnlikeSS;
 
 public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<SuccessStoryDetailsFragmentPM.View> {
 
@@ -41,9 +40,9 @@ public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresentation<S
             }
         };
         if (successStory.isLiked()) {
-            dreamSpiceManager.execute(new UnlikeSS(successStory.getId()), callback);
+            dreamSpiceManager.execute(new UnlikeSuccessStory(successStory.getId()), callback);
         } else {
-            dreamSpiceManager.execute(new LikeSS(successStory.getId()), callback);
+            dreamSpiceManager.execute(new LikeSuccessStory(successStory.getId()), callback);
         }
     }
 

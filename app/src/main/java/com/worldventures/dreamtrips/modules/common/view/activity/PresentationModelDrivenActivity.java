@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePresentation;
 
 public abstract class PresentationModelDrivenActivity<PM extends BasePresentation> extends BaseActivity implements BasePresentation.View {

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.api.spice;
+package com.worldventures.dreamtrips.core.api;
 
 import android.os.Handler;
 import android.util.Log;
@@ -12,6 +12,9 @@ import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.api.request.auth.Login;
+import com.worldventures.dreamtrips.core.api.request.config.ConfigRequest;
+import com.worldventures.dreamtrips.core.api.request.photos.UploadTripPhoto;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.model.Session;
 import com.worldventures.dreamtrips.core.model.User;
@@ -101,7 +104,7 @@ public class DreamSpiceManager extends SpiceManager {
 
     public void login(OnLoginSuccess onLoginSuccess, String username, String userPassword) {
 
-        DreamSpiceManager.super.execute(new S3Request.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
+        DreamSpiceManager.super.execute(new ConfigRequest.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 onLoginSuccess.result(null, spiceException);
@@ -109,7 +112,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             @Override
             public void onRequestSuccess(S3GlobalConfig s3GlobalConfig) {
-                DreamSpiceManager.super.execute(new DreamTripsRequest.Login(username, userPassword), new RequestListener<Session>() {
+                DreamSpiceManager.super.execute(new Login(username, userPassword), new RequestListener<Session>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
                         onLoginSuccess.result(null, spiceException);
@@ -130,7 +133,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void uploadPhoto(ImageUploadTask task) {
-        DreamTripsRequest.UploadTripPhoto request = new DreamTripsRequest.UploadTripPhoto(task);
+        UploadTripPhoto request = new UploadTripPhoto(task);
         injector.inject(request);
         execute(request, new RequestListener<Photo>() {
             @Override

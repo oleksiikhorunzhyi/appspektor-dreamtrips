@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.photos.DeletePhoto;
+import com.worldventures.dreamtrips.core.api.request.photos.FlagPhoto;
+import com.worldventures.dreamtrips.core.api.request.photos.LikePhoto;
+import com.worldventures.dreamtrips.core.api.request.photos.UnlikePhoto;
 import com.worldventures.dreamtrips.core.model.Photo;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -20,7 +23,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
     }
 
     public void onDeleteAction() {
-        dreamSpiceManager.execute(new DreamTripsRequest.DeletePhoto(photo.getId()), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new DeletePhoto(photo.getId()), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 
@@ -37,7 +40,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
 
     public void sendFlagAction(String title, String desc) {
         if (desc == null) desc = "";
-        dreamSpiceManager.execute(new DreamTripsRequest.FlagPhoto(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new FlagPhoto(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 handleError(spiceException);
@@ -71,9 +74,9 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
         };
 
         if (!photo.isLiked()) {
-            dreamSpiceManager.execute(new DreamTripsRequest.LikePhoto(photo.getId()), callback);
+            dreamSpiceManager.execute(new LikePhoto(photo.getId()), callback);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikePhoto(photo.getId()), callback);
+            dreamSpiceManager.execute(new UnlikePhoto(photo.getId()), callback);
         }
     }
 

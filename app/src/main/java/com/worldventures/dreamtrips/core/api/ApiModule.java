@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.module;
+package com.worldventures.dreamtrips.core.api;
 
 import android.content.Context;
 
@@ -8,11 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.AuthApi;
-import com.worldventures.dreamtrips.core.api.DefaultErrorHandler;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.S3Api;
-import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 
@@ -40,27 +35,20 @@ public class ApiModule {
 
     }
 
-
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {
         return adapter.create(DreamTripsApi.class);
     }
 
     @Provides
-    RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, OkClient okClient, DefaultErrorHandler defaultErrorHandler) {
+    RestAdapter provideRestAdapter(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, OkClient okClient) {
         return new RestAdapter.Builder()
                 .setEndpoint(BuildConfig.DreamTripsApi)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
                 .setClient(okClient)
                 .setRequestInterceptor(requestInterceptor)
-                        //.setErrorHandler(defaultErrorHandler)
                 .build();
-    }
-
-    @Provides
-    DefaultErrorHandler provideDefaultErrorHandler(SessionHolder<UserSession> appSessionHolder) {
-        return new DefaultErrorHandler(appSessionHolder);
     }
 
     @Provides
@@ -89,32 +77,21 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    AuthApi provideAuthApi() {
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(AuthApi.DEFAULT_URL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-        return adapter.create(AuthApi.class);
+    ConfigApi provideS3Api() {
+        return createRestAdapter(BuildConfig.S3Api).create(ConfigApi.class);
     }
 
-    @Provides
-    @Singleton
-    S3Api provideS3Api() {
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(S3Api.DEFAULT_URL)
+    private RestAdapter createRestAdapter(String endpoint) {
+        return new RestAdapter.Builder()
+                .setEndpoint(endpoint)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
-        return adapter.create(S3Api.class);
     }
 
     @Provides
     @Singleton
     SharedServicesApi provideSharedServicesApi() {
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(SharedServicesApi.DEFAULT_URL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-        return adapter.create(SharedServicesApi.class);
+        return createRestAdapter(BuildConfig.SharedServicesApi).create(SharedServicesApi.class);
     }
 
     @Provides

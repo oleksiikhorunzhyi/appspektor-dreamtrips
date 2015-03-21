@@ -5,7 +5,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.trips.GetActivitiesRequest;
+import com.worldventures.dreamtrips.core.api.request.trips.GetRegionsRequest;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.FilterModel;
@@ -81,7 +82,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
 
     public void loadFilters() {
         view.startLoading();
-        dreamSpiceManager.execute(new DreamTripsRequest.GetActivitiesRequest(db), new RequestListener<ArrayList<Activity>>() {
+        dreamSpiceManager.execute(new GetActivitiesRequest(db), new RequestListener<ArrayList<Activity>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 
@@ -96,7 +97,7 @@ public class FiltersFragmentPM extends BasePresentation<FiltersFragmentPM.View> 
                 }
             }
         });
-        dreamSpiceManager.execute(new DreamTripsRequest.GetRegionsRequest(db), new RequestListener<ArrayList<Region>>() {
+        dreamSpiceManager.execute(new GetRegionsRequest(db), new RequestListener<ArrayList<Region>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 

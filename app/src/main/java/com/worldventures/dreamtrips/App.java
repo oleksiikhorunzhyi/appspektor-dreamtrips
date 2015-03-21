@@ -9,5 +9,4 @@ public class App extends BaseApplicationWithInjector {
     protected Object getApplicationModule() {
         return new DTModule(this);
     }
-
 }

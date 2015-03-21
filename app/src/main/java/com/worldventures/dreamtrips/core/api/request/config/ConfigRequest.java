@@ -1,15 +1,16 @@
-package com.worldventures.dreamtrips.core.api.spice;
+package com.worldventures.dreamtrips.core.api.request.config;
 
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.worldventures.dreamtrips.core.api.S3Api;
+import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.model.config.S3GlobalConfig;
 
-public abstract class S3Request<T> extends RetrofitSpiceRequest<T, S3Api> {
-    public S3Request(Class<T> clazz) {
-        super(clazz, S3Api.class);
+public abstract class ConfigRequest<T> extends RetrofitSpiceRequest<T, ConfigApi> {
+
+    public ConfigRequest(Class<T> clazz) {
+        super(clazz, ConfigApi.class);
     }
 
-    public static class GetConfigRequest extends S3Request<S3GlobalConfig> {
+    public static class GetConfigRequest extends ConfigRequest<S3GlobalConfig> {
 
         public GetConfigRequest() {
             super(S3GlobalConfig.class);

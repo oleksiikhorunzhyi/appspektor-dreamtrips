@@ -9,7 +9,8 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.bucketlist.AddBucketItem;
+import com.worldventures.dreamtrips.core.api.request.bucketlist.GetPopularLocation;
 import com.worldventures.dreamtrips.core.model.bucket.BucketItem;
 import com.worldventures.dreamtrips.core.model.bucket.BucketPostItem;
 import com.worldventures.dreamtrips.core.model.bucket.PopularBucketItem;
@@ -44,7 +45,7 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
     RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
-            return new DreamTripsRequest.GetPopularLocation(type);
+            return new GetPopularLocation(type);
         }
 
         @Override
@@ -104,7 +105,7 @@ public class BucketListPopularPM extends BasePresentation<BucketListPopularPM.Vi
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
                 popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
-        dreamSpiceManager.execute(new DreamTripsRequest.AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
+        dreamSpiceManager.execute(new AddBucketItem(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 popularBucketItem.setLoading(false);

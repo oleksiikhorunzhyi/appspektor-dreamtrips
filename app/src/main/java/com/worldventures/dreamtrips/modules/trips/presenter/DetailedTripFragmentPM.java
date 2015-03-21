@@ -7,7 +7,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.trips.GetTripDetails;
+import com.worldventures.dreamtrips.core.api.request.trips.LikeTrip;
+import com.worldventures.dreamtrips.core.api.request.trips.UnlikeTrip;
 import com.worldventures.dreamtrips.core.model.ContentItem;
 import com.worldventures.dreamtrips.core.model.Trip;
 import com.worldventures.dreamtrips.core.model.TripDetails;
@@ -106,7 +108,7 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
                 AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
             }
         };
-        dreamSpiceManager.execute(new DreamTripsRequest.GetDetails(trip.getId()), callback);
+        dreamSpiceManager.execute(new GetTripDetails(trip.getId()), callback);
     }
 
     public void actionLike() {
@@ -129,9 +131,9 @@ public class DetailedTripFragmentPM extends BasePresentation<DetailedTripFragmen
             }
         };
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback2);
+            dreamSpiceManager.execute(new LikeTrip(trip.getId()), callback2);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback2);
+            dreamSpiceManager.execute(new UnlikeTrip(trip.getId()), callback2);
         }
     }
 

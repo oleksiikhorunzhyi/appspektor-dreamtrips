@@ -8,7 +8,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.successstories.GetSuccessStories;
 import com.worldventures.dreamtrips.core.model.SuccessStory;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.State;
@@ -41,7 +41,7 @@ public class SuccessStoriesListFragmentPM extends BasePresentation<SuccessStorie
     RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
         @Override
         public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
-            return new DreamTripsRequest.GetSuccessStores() {
+            return new GetSuccessStories() {
                 @Override
                 public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
                     return performFiltering(super.loadDataFromNetwork());

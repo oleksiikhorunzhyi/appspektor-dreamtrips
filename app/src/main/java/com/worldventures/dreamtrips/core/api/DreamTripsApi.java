@@ -95,7 +95,6 @@ public interface DreamTripsApi {
     @POST("/api/photos")
     public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
-
     @GET("/api/trips/{id}/details")
     public TripDetails getDetails(@Path("id") int tripId);
 

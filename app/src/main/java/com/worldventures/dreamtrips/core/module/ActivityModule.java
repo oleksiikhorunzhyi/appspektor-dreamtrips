@@ -15,9 +15,10 @@ import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.spice.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.photos.GetMyPhotos;
+import com.worldventures.dreamtrips.core.api.request.photos.UploadTripPhoto;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.auth.presenter.LoginActivityPresentation;
@@ -269,14 +270,14 @@ import dagger.Provides;
                 BaseArrayListAdapter.class,
                 MyDraggableSwipeableItemAdapter.class,
                 FilterableArrayListAdapter.class,
-                DreamTripsRequest.GetMyPhotos.class,
+                GetMyPhotos.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
 
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
                 SimpleStreamPlayerActivity.class,
-                DreamTripsRequest.UploadTripPhoto.class,
+                UploadTripPhoto.class,
                 OtaFragment.class,
                 ActualTokenStaticInfoFragment.class,
                 ActualTokenStaticInfoFragmentPM.class,

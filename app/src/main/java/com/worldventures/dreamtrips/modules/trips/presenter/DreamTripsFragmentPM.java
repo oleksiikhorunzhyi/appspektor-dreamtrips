@@ -8,7 +8,9 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.spice.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.trips.GetTripsRequest;
+import com.worldventures.dreamtrips.core.api.request.trips.LikeTrip;
+import com.worldventures.dreamtrips.core.api.request.trips.UnlikeTrip;
 import com.worldventures.dreamtrips.core.model.Activity;
 import com.worldventures.dreamtrips.core.model.DateFilterItem;
 import com.worldventures.dreamtrips.core.model.Trip;
@@ -49,7 +51,7 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
 
         @Override
         public SpiceRequest<ArrayList<Trip>> getRefreshRequest() {
-            return new DreamTripsRequest.GetTripsRequest(db, prefs, loadFromApi) {
+            return new GetTripsRequest(db, prefs, loadFromApi) {
                 @Override
                 public ArrayList<Trip> loadDataFromNetwork() throws Exception {
                     return performFiltering(super.loadDataFromNetwork());
@@ -170,9 +172,9 @@ public class DreamTripsFragmentPM extends BasePresentation<DreamTripsFragmentPM.
             }
         };
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new DreamTripsRequest.LikeTrip(trip.getId()), callback);
+            dreamSpiceManager.execute(new LikeTrip(trip.getId()), callback);
         } else {
-            dreamSpiceManager.execute(new DreamTripsRequest.UnlikeTrip(trip.getId()), callback);
+            dreamSpiceManager.execute(new UnlikeTrip(trip.getId()), callback);
         }
     }
 

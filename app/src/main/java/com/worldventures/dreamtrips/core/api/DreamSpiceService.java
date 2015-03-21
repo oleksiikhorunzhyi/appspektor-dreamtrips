@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.api.spice;
+package com.worldventures.dreamtrips.core.api;
 
 import android.app.Application;
 import android.content.Context;
@@ -10,9 +10,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.AuthApi;
+import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.S3Api;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 
 import javax.inject.Inject;
@@ -32,10 +31,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     SharedServicesApi sharedServicesApi;
 
     @Inject
-    S3Api s3Api;
-
-    @Inject
-    AuthApi authApi;
+    ConfigApi configApi;
 
     @Override
     protected NetworkStateChecker getNetworkStateChecker() {
@@ -58,8 +54,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
         super.onCreate();
         addRetrofitInterface(DreamTripsApi.class);
         addRetrofitInterface(SharedServicesApi.class);
-        addRetrofitInterface(S3Api.class);
-        addRetrofitInterface(AuthApi.class);
+        addRetrofitInterface(ConfigApi.class);
     }
 
     @Override
@@ -79,10 +74,8 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
             t = (T) dreamTripsApi;
         } else if (serviceClass == SharedServicesApi.class) {
             t = (T) sharedServicesApi;
-        } else if (serviceClass == S3Api.class) {
-            t = (T) s3Api;
-        } else if (serviceClass == AuthApi.class) {
-            t = (T) authApi;
+        } else if (serviceClass == ConfigApi.class) {
+            t = (T) configApi;
         }
         return t;
     }

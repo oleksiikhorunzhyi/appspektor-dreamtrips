@@ -15,11 +15,11 @@ import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipPM;
+import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_membership)
-public class MemberShipFragment extends BaseFragment<MembershipPM> implements BasePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements Presenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -86,9 +86,7 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
         super.onResume();
 
         if (this.arrayListAdapter.getItemCount() == 0) {
-            this.refreshLayout.post(() -> {
-                getPresenter().getAdapterController().reload();
-            });
+            this.refreshLayout.post(() -> getPresenter().getAdapterController().reload());
         }
     }
 
@@ -98,8 +96,8 @@ public class MemberShipFragment extends BaseFragment<MembershipPM> implements Ba
     }
 
     @Override
-    protected MembershipPM createPresenter(Bundle savedInstanceState) {
-        return new MembershipPM(this);
+    protected MembershipVideosPresenter createPresenter(Bundle savedInstanceState) {
+        return new MembershipVideosPresenter(this);
     }
 
     public void onEvent(ScreenOrientationChangeEvent event) {

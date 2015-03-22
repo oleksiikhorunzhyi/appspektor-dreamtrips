@@ -104,7 +104,7 @@ public class AdobeTrackingHelper {
         trackPageView(memberId, PHOTOS_MINE);
     }
 
-    public static void video(String memberId) {
+    public static void onMemberShipVideos(String memberId) {
         trackPageView(memberId, MEMBERSHIP);
     }
 

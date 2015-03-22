@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.trips.model.Region;
-import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
+import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.Region;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -43,13 +43,13 @@ public interface DreamTripsApi {
     @Multipart
     public User uploadAvatar(@Part("avatar") TypedFile image);
 
-    @GET("/api/trips")/*TODO*/
+    @GET("/api/trips")
     public List<Trip> getTrips();
 
-    @GET("/api/regions")/*TODO*/
+    @GET("/api/regions")
     public List<Region> getRegions();
 
-    @GET("/api/activities")/*TODO*/
+    @GET("/api/activities")
     public List<Activity> getActivities();
 
     @GET("/api/photos")
@@ -62,7 +62,7 @@ public interface DreamTripsApi {
     public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/ysbh_photos")
-    public ArrayList<Photo> getYouShoulBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+    public ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/success_stories")
     public ArrayList<SuccessStory> getSuccessStores();

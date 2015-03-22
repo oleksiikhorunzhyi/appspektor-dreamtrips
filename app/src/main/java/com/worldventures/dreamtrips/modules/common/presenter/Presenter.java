@@ -1,22 +1,19 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BasePresenter<VT extends BasePresenter.View> {
+public class Presenter<VT extends Presenter.View> {
 
     protected final VT view;
 
@@ -37,10 +34,9 @@ public class BasePresenter<VT extends BasePresenter.View> {
 
     @Inject
     @Global
-    protected
-    EventBus eventBus;
+    protected EventBus eventBus;
 
-    public BasePresenter(VT view) {
+    public Presenter(VT view) {
         this.view = view;
     }
 
@@ -49,14 +45,11 @@ public class BasePresenter<VT extends BasePresenter.View> {
     }
 
     public void destroyView() {
+
     }
 
     public void resume() {
 
-    }
-
-    public void handleError(Exception ex) {
-        Log.e(this.getClass().getSimpleName(), "", ex);
     }
 
     public DreamSpiceManager getDreamSpiceManager() {
@@ -65,13 +58,6 @@ public class BasePresenter<VT extends BasePresenter.View> {
 
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager conMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo i = conMgr.getActiveNetworkInfo();
-        return i != null && i.isConnected() && i.isAvailable();
     }
 
     public interface View {

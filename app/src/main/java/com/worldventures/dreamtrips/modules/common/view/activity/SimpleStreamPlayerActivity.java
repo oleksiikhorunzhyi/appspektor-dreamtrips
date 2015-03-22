@@ -82,7 +82,7 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
     }
 
     /**
-     * Start the video with a local file path
+     * Start the onMemberShipVideos with a local file path
      *
      * @param filename The file path on device storage
      */

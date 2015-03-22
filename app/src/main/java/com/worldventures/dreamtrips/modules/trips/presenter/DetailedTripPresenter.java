@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import android.os.Bundle;
-
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -10,7 +8,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
@@ -30,7 +28,7 @@ import de.greenrobot.event.EventBus;
  * Created by Edward on 19.01.15.
  * presentation model for DetailedTripFragment
  */
-public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.View> {
+public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View> {
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -44,7 +42,6 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
 
     private Trip trip;
     private List<Object> filteredImages;
-    private List<TripImage> images;
 
     public DetailedTripPresenter(View view) {
         super(view);
@@ -56,10 +53,8 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
 
     public void setTrip(Trip trip) {
         this.trip = trip;
-        images = trip.getImages();
         filteredImages = new ArrayList<>();
         filteredImages.addAll(trip.getFilteredImages());
-
     }
 
     public void onCreate() {
@@ -72,10 +67,13 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
         view.setPrice(trip.getPrice().toString());
         view.setFeatured(trip.isFeatured());
         view.setDuration(trip.getDuration());
-        if (trip.getRewardsLimit() > 0)
+
+        if (trip.getRewardsLimit() > 0) {
             view.setRedemption(String.valueOf(trip.getRewardsLimit()));
-        else
+        } else {
             view.setPointsInvisible();
+        }
+
         view.setLike(trip.isLiked());
         loadTripDetails();
     }
@@ -108,6 +106,7 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
                 AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
             }
         };
+
         dreamSpiceManager.execute(new GetTripDetailsQuery(trip.getId()), callback);
     }
 
@@ -116,7 +115,7 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
         trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
 
-        RequestListener<JsonObject> callback2 = new RequestListener<JsonObject>() {
+        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
@@ -125,15 +124,15 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
-                Bundle bundle = new Bundle();
                 eventBus.post(new TripLikedEvent(trip));
                 db.saveTrip(trip);
             }
         };
+
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), callback2);
+            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), callback);
         } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), callback2);
+            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), callback);
         }
     }
 
@@ -143,7 +142,7 @@ public class DetailedTripPresenter extends BasePresenter<DetailedTripPresenter.V
         }
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void setContent(List<ContentItem> contentItems);
 
         void setName(String text);

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.Activity;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class MapFragmentPresenter extends BasePresenter<MapFragmentPresenter.View> {
+public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     @Inject
     SnappyRepository db;
@@ -166,7 +166,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentPresenter.Vie
         fragmentCompass.pop();
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         public void addPin(LatLng latLng, int id);
 
         public void clearMap();

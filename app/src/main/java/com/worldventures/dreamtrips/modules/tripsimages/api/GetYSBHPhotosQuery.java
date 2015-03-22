@@ -17,6 +17,6 @@ public class GetYSBHPhotosQuery extends Query<ArrayList<Photo>> {
 
     @Override
     public ArrayList<Photo> loadDataFromNetwork() throws Exception {
-        return getService().getYouShoulBeHerePhotos(perPage, page);
+        return getService().getYouShouldBeHerePhotos(perPage, page);
     }
 }

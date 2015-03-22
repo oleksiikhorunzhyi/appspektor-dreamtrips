@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.api;
 
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.worldventures.dreamtrips.core.api.ConfigApi;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 public abstract class GlobalConfigQuery<T> extends RetrofitSpiceRequest<T, ConfigApi> {
 
@@ -10,14 +10,14 @@ public abstract class GlobalConfigQuery<T> extends RetrofitSpiceRequest<T, Confi
         super(clazz, ConfigApi.class);
     }
 
-    public static class GetConfigRequest extends GlobalConfigQuery<S3GlobalConfig> {
+    public static class GetConfigRequest extends GlobalConfigQuery<AppConfig> {
 
         public GetConfigRequest() {
-            super(S3GlobalConfig.class);
+            super(AppConfig.class);
         }
 
         @Override
-        public S3GlobalConfig loadDataFromNetwork() throws Exception {
+        public AppConfig loadDataFromNetwork() throws Exception {
             return getService().getConfig();
         }
     }

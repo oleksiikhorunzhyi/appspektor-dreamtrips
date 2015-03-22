@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.auth.model;
 
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 
 public class LoginResponse {
-    S3GlobalConfig config;
+    AppConfig config;
     Session session;
 
-    public S3GlobalConfig getConfig() {
+    public AppConfig getConfig() {
         return config;
     }
 
-    public void setConfig(S3GlobalConfig config) {
+    public void setConfig(AppConfig config) {
         this.config = config;
     }
 

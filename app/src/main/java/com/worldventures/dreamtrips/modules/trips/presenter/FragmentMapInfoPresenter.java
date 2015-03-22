@@ -4,14 +4,14 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class FragmentMapInfoPresenter extends BasePresenter<FragmentMapInfoPresenter.View> {
+public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter.View> {
 
     @Global
     @Inject
@@ -73,7 +73,7 @@ public class FragmentMapInfoPresenter extends BasePresenter<FragmentMapInfoPrese
         activityRouter.openTripDetails(trip);
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         void setName(String name);
 
         void setDate(String вфе);

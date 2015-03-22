@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by 1 on 26.02.15.
  */
-public class BucketListQuickInputPM extends BasePresenter<BucketListQuickInputPM.View> {
+public class BucketListQuickInputPM extends Presenter<BucketListQuickInputPM.View> {
 
     @Inject
     SnappyRepository db;
@@ -95,7 +95,7 @@ public class BucketListQuickInputPM extends BasePresenter<BucketListQuickInputPM
         });
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         BaseArrayListAdapter getAdapter();
     }
 }

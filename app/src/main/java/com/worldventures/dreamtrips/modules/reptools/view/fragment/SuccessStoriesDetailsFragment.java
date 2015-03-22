@@ -17,13 +17,13 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPM;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_success_stores)
-public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPM> implements SuccessStoryDetailsFragmentPM.View {
+public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter> implements SuccessStoryDetailsFragmentPresenter.View {
 
     public static final String STORY = "STORY";
     @InjectView(R.id.progressBarWeb)
@@ -92,8 +92,8 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     }
 
     @Override
-    protected SuccessStoryDetailsFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsFragmentPM(this);
+    protected SuccessStoryDetailsFragmentPresenter createPresenter(Bundle savedInstanceState) {
+        return new SuccessStoryDetailsFragmentPresenter(this);
     }
 
     @Override

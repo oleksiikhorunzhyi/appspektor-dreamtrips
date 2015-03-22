@@ -12,12 +12,12 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsFragmentPM;
+import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_rep_tools)
-public class RepToolsFragment extends BaseFragment<RepToolsFragmentPM> implements ViewPager.OnPageChangeListener {
+public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
@@ -49,8 +49,8 @@ public class RepToolsFragment extends BaseFragment<RepToolsFragmentPM> implement
     }
 
     @Override
-    protected RepToolsFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new RepToolsFragmentPM(this);
+    protected RepToolsPresenter createPresenter(Bundle savedInstanceState) {
+        return new RepToolsPresenter(this);
     }
 
     @Override

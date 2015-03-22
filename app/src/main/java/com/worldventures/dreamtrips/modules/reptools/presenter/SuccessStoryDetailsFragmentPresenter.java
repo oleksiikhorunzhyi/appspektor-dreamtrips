@@ -5,7 +5,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
@@ -15,13 +15,13 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresenter<SuccessStoryDetailsFragmentPM.View> {
+public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsFragmentPresenter.View> {
 
     @Inject
     @Global
     EventBus eventBus;
 
-    public SuccessStoryDetailsFragmentPM(View view) {
+    public SuccessStoryDetailsFragmentPresenter(View view) {
         super(view);
     }
 
@@ -58,7 +58,7 @@ public class SuccessStoryDetailsFragmentPM extends WebViewFragmentPresenter<Succ
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();

@@ -16,9 +16,9 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
@@ -35,11 +35,11 @@ import retrofit.RetrofitError;
 public class DreamSpiceManager extends SpiceManager {
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    protected SessionHolder<UserSession> appSessionHolder;
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     private Injector injector;
 
@@ -78,7 +78,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
 
-    private boolean handleSession(Session session, String legacyToken, S3GlobalConfig globalConfig, String username, String userPassword) {
+    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig, String username, String userPassword) {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
@@ -103,14 +103,14 @@ public class DreamSpiceManager extends SpiceManager {
 
     public void login(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
 
-        DreamSpiceManager.super.execute(new GlobalConfigQuery.GetConfigRequest(), new RequestListener<S3GlobalConfig>() {
+        DreamSpiceManager.super.execute(new GlobalConfigQuery.GetConfigRequest(), new RequestListener<AppConfig>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 onLoginSuccess.result(null, spiceException);
             }
 
             @Override
-            public void onRequestSuccess(S3GlobalConfig s3GlobalConfig) {
+            public void onRequestSuccess(AppConfig appConfig) {
                 DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
@@ -121,7 +121,7 @@ public class DreamSpiceManager extends SpiceManager {
                     public void onRequestSuccess(Session session) {
                         LoginResponse l = new LoginResponse();
                         l.setSession(session);
-                        l.setConfig(s3GlobalConfig);
+                        l.setConfig(appConfig);
                         handleSession(l.getSession(), l.getSession().getSso_token(), l.getConfig(), username, userPassword);
                         onLoginSuccess.result(l, null);
                     }

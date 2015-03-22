@@ -35,7 +35,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListFragmentPM;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
@@ -49,7 +49,7 @@ import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListFragmentPM> implements BucketListFragmentPM.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -231,9 +231,9 @@ public class BucketListFragment extends BaseFragment<BucketListFragmentPM> imple
     }
 
     @Override
-    protected BucketListFragmentPM createPresenter(Bundle savedInstanceState) {
+    protected BucketListPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return new BucketListFragmentPM(this, type);
+        return new BucketListPresenter(this, type);
     }
 
     @Override

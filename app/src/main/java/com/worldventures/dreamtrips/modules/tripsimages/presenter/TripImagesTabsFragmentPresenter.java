@@ -3,14 +3,14 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
 
-public class TripImagesTabsFragmentPresenter extends BasePresenter<TripImagesTabsFragmentPresenter.View> {
+public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
 
     ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -52,8 +52,7 @@ public class TripImagesTabsFragmentPresenter extends BasePresenter<TripImagesTab
     }
 
     public void onCreate() {
-        boolean facebookAvailable = appSessionHolder.get().get().getGlobalConfig().isFacebook_gallery_enabled();
-        view.setFabVisibility(facebookAvailable);
+        view.setFabVisibility(true);
     }
 
     public void onFacebookAction(BaseFragment from) {
@@ -68,9 +67,7 @@ public class TripImagesTabsFragmentPresenter extends BasePresenter<TripImagesTab
         return fbCallback;
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         void setFabVisibility(boolean visibility);
-
-
     }
 }

@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import de.greenrobot.event.EventBus;
 
-public class SuccessStoriesListFragmentPM extends BasePresenter<SuccessStoriesListFragmentPM.View> {
+public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
 
     @Inject
     @Named("details")
@@ -60,7 +60,7 @@ public class SuccessStoriesListFragmentPM extends BasePresenter<SuccessStoriesLi
         }
     };
 
-    public SuccessStoriesListFragmentPM(View view) {
+    public SuccessStoriesListPresenter(View view) {
         super(view);
     }
 
@@ -138,7 +138,7 @@ public class SuccessStoriesListFragmentPM extends BasePresenter<SuccessStoriesLi
         return onlyFavorites;
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
 
         boolean isTablet();
 

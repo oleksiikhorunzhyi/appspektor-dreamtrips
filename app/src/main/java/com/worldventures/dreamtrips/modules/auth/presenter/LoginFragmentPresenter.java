@@ -4,12 +4,12 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
-import com.worldventures.dreamtrips.modules.common.presenter.BaseActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
 
-public class LoginFragmentPresenter extends BaseActivityPresenter<LoginFragmentPresenter.View> {
+public class LoginFragmentPresenter extends ActivityPresenter<LoginFragmentPresenter.View> {
 
     @Inject
     DreamTripsApi dreamTripsApi;
@@ -49,7 +49,7 @@ public class LoginFragmentPresenter extends BaseActivityPresenter<LoginFragmentP
         }
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void showProgressDialog();
 
         void showLoginSuccess();

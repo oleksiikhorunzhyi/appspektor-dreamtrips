@@ -6,14 +6,14 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsActivityPM;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_success_story_details)
-public class SuccessStoryDetailsActivity extends PresentationModelDrivenActivity<SuccessStoryDetailsActivityPM> implements BasePresenter.View {
+public class SuccessStoryDetailsActivity extends PresentationModelDrivenActivity<SuccessStoryDetailsPresenter> implements Presenter.View {
 
     public static final String BUNDLE_STORY = "BUNDLE_STORY";
     @InjectView(R.id.toolbar_actionbar)
@@ -29,7 +29,7 @@ public class SuccessStoryDetailsActivity extends PresentationModelDrivenActivity
     }
 
     @Override
-    protected SuccessStoryDetailsActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsActivityPM(this);
+    protected SuccessStoryDetailsPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new SuccessStoryDetailsPresenter(this);
     }
 }

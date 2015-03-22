@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<Ac
         }
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void loadContent();
     }
 

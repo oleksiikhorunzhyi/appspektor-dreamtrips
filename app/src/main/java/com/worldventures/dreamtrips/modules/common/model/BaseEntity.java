@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import java.io.Serializable;
 
 public class BaseEntity implements Serializable {
+
     @TaggedFieldSerializer.Tag(0)
     protected int id;
 

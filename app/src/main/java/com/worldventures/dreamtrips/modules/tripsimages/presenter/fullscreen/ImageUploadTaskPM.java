@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-public class ImageUploadTaskPM extends BaseFSViewPM {
+public class ImageUploadTaskPM extends FSViewPM {
     public ImageUploadTaskPM(View view) {
         super(view);
     }

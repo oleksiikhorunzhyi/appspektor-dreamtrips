@@ -5,9 +5,8 @@ import android.widget.ProgressBar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
-import com.worldventures.dreamtrips.modules.infopages.model.URLS;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 import butterknife.InjectView;
 
@@ -18,9 +17,9 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
 
     @Override
     protected String getURL() {
-        S3GlobalConfig config = getPresenter().getConfig();
-        URLS urls = config.getUrls();
-        URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+        AppConfig config = getPresenter().getConfig();
+        AppConfig.URLS urls = config.getUrls();
+        AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
         String s = configs.getoTAPageBaseURL();
         s += "?user=%s&token=%s&appMode=true#/";
         UserSession userSession = getPresenter().getCurrentUser();

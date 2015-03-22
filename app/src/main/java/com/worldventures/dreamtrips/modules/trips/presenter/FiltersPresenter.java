@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.utils.events.SoldOutEvent;
 import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesQuery;
 import com.worldventures.dreamtrips.modules.trips.api.GetRegionsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.Activity;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class FiltersPresenter extends BasePresenter<FiltersPresenter.View> {
+public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
     SnappyRepository db;
@@ -285,7 +285,7 @@ public class FiltersPresenter extends BasePresenter<FiltersPresenter.View> {
     }
 
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void dataSetChanged();
 
         void startLoading();

@@ -6,9 +6,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.modules.infopages.model.URLS;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
@@ -17,10 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-/**
- * Created by Edward on 23.01.15.
- */
-public class BookItActivityPresenter extends BasePresenter<BookItActivityPresenter.View> {
+public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.View> {
 
     public static final int LIFE_DURATION = 30;
     private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
@@ -52,8 +49,8 @@ public class BookItActivityPresenter extends BasePresenter<BookItActivityPresent
 
     private void openBookIt() {
         UserSession userSession = appSessionHolder.get().get();
-        URLS urls = userSession.getGlobalConfig().getUrls();
-        URLS.Config config = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+        AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
+        AppConfig.URLS.Config config = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
         String urlPrefix = config.getBookingPageBaseURL();
         String url = String.format(urlPrefix + URL_BASE, view.getTripId(), userSession.getUser().getUsername(),
                 userSession.getLegacyApiToken());
@@ -62,7 +59,7 @@ public class BookItActivityPresenter extends BasePresenter<BookItActivityPresent
         fragmentCompass.add(Route.BOOK_IT, bundle);
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         int getTripId();
     }
 

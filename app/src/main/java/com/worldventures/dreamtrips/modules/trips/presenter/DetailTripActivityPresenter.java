@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-public class DetailTripActivityPresenter extends BasePresenter<BasePresenter.View> {
+public class DetailTripActivityPresenter extends Presenter<Presenter.View> {
 
-    public DetailTripActivityPresenter(BasePresenter.View view) {
+    public DetailTripActivityPresenter(Presenter.View view) {
         super(view);
     }
 

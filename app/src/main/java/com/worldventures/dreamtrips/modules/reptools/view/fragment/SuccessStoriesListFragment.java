@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListFragmentPM;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
@@ -32,7 +32,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories)
-public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListFragmentPM> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListFragmentPM.View {
+public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
 
     @InjectView(R.id.recyclerViewTrips)
     EmptyRecyclerView recyclerView;
@@ -55,8 +55,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListF
 
 
     @Override
-    protected SuccessStoriesListFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new SuccessStoriesListFragmentPM(this);
+    protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
+        return new SuccessStoriesListPresenter(this);
     }
 
     @OnClick(R.id.iv_filter)

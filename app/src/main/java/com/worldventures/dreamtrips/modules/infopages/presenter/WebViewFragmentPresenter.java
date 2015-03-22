@@ -3,14 +3,13 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.modules.infopages.model.URLS;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 
-public class WebViewFragmentPresenter<T extends BasePresenter.View> extends BasePresenter<T> {
+public class WebViewFragmentPresenter<T extends Presenter.View> extends Presenter<T> {
 
     public WebViewFragmentPresenter(T view) {
         super(view);
@@ -34,7 +33,7 @@ public class WebViewFragmentPresenter<T extends BasePresenter.View> extends Base
     }
 
     public String etEnrollUrl() {
-        URLS urls = appSessionHolder.get().get().getGlobalConfig().getUrls();
+        AppConfig.URLS urls = appSessionHolder.get().get().getGlobalConfig().getUrls();
         if (BuildConfig.DEBUG) {
             return urls.getQA().getEnrollMemeberURL();
         } else {
@@ -43,7 +42,7 @@ public class WebViewFragmentPresenter<T extends BasePresenter.View> extends Base
     }
 
 
-    public S3GlobalConfig getConfig() {
+    public AppConfig getConfig() {
         return appSessionHolder.get().get().getGlobalConfig();
     }
 

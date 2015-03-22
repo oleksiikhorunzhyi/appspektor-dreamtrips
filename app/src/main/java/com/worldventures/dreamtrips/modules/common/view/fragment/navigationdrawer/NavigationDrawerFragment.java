@@ -15,13 +15,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateSelectionEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPM;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.io.File;
@@ -33,7 +32,7 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_navigation_drawer)
-public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> implements BasePresenter.View, NavigationDrawerListener {
+public class NavigationDrawerFragment extends BaseFragment<Presenter> implements Presenter.View, NavigationDrawerListener {
 
     private static final String STATE_SELECTED_STATE = "selected_navigation_drawer_state";
 
@@ -74,8 +73,8 @@ public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPM> i
     }
 
     @Override
-    protected NavigationDrawerPM createPresenter(Bundle savedInstanceState) {
-        return new NavigationDrawerPM(this);
+    protected Presenter createPresenter(Bundle savedInstanceState) {
+        return new Presenter(this);
     }
 
     @Override

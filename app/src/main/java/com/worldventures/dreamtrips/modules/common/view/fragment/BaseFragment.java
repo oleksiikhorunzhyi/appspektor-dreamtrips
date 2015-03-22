@@ -12,11 +12,11 @@ import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseFragment<PM extends BasePresenter> extends InjectingFragment implements BasePresenter.View {
+public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
 
     private PM presenter;
 

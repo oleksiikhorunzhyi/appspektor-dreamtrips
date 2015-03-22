@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -29,7 +29,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,23 +39,24 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.View> {
-    private static final Handler handler = new Handler(Looper.getMainLooper());
+public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
+
     @Inject
-    Context context;
+    public Context context;
     @Inject
-    SnappyRepository db;
+    public SnappyRepository db;
     @Global
     @Inject
-    EventBus eventBus;
+    public EventBus eventBus;
     @Inject
-    Prefs prefs;
+    public Prefs prefs;
+
     private BucketTabsFragment.Type type;
     private boolean showToDO = true;
     private boolean showCompleted = true;
     private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
 
-    public BucketListFragmentPM(View view, BucketTabsFragment.Type type) {
+    public BucketListPresenter(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
     }
@@ -65,6 +66,13 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
         super.init();
         AdobeTrackingHelper.bucketList(getUserId());
         eventBus.register(this);
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager conMgr = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        return i != null && i.isConnected() && i.isAvailable();
     }
 
     public void loadBucketItems(boolean fromNetwork) {
@@ -90,7 +98,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
                 this.bucketItems.addAll(db.readBucketList(type.name()));
                 fillWithItems();
             } catch (Exception e) {
-                Log.e(BucketListFragmentPM.class.getSimpleName(), "", e);
+                Log.e(BucketListPresenter.class.getSimpleName(), "", e);
             }
         }
     }
@@ -279,7 +287,7 @@ public class BucketListFragmentPM extends BasePresenter<BucketListFragmentPM.Vie
         return showCompleted;
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         BaseArrayListAdapter getAdapter();
 
         void showUndoBar(android.view.View.OnClickListener clickListener);

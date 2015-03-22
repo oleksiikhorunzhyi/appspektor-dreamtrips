@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class DreamTripsFragmentPresenter extends BasePresenter<DreamTripsFragmentPresenter.View> {
+public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPresenter.View> {
 
     @Inject
     Prefs prefs;
@@ -187,7 +187,7 @@ public class DreamTripsFragmentPresenter extends BasePresenter<DreamTripsFragmen
     }
 
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void dataSetChanged();
 
         void showErrorMessage();

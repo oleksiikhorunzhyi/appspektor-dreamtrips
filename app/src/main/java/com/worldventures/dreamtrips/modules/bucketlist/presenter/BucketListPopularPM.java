@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by 1 on 03.03.15.
  */
-public class BucketListPopularPM extends BasePresenter<BucketListPopularPM.View> {
+public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
 
     @Inject
     Context context;
@@ -59,7 +59,6 @@ public class BucketListPopularPM extends BasePresenter<BucketListPopularPM.View>
         }
     };
     private List<BucketItem> realData = new ArrayList<>();
-    private int lastId = 0;
 
     public BucketListPopularPM(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -133,7 +132,7 @@ public class BucketListPopularPM extends BasePresenter<BucketListPopularPM.View>
         adapterController.reload();
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         BaseArrayListAdapter<PopularBucketItem> getAdapter();
 
         void startLoading();

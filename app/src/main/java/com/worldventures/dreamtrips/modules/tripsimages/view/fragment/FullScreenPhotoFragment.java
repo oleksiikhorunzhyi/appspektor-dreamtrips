@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BaseFSViewPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSViewPM;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 
 import java.util.List;
@@ -39,7 +39,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<BaseFSViewPM<T>> implements BaseFSViewPM.View {
+public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<FSViewPM<T>> implements FSViewPM.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
@@ -123,12 +123,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
-    protected BaseFSViewPM createPresenter(Bundle savedInstanceState) {
+    protected FSViewPM createPresenter(Bundle savedInstanceState) {
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         int position = getArguments().getInt(EXTRA_POSITION);
         IFullScreenAvailableObject photo = activity.getPhoto(position);
 
-        return BaseFSViewPM.create(this, photo);
+        return FSViewPM.create(this, photo);
     }
 
 

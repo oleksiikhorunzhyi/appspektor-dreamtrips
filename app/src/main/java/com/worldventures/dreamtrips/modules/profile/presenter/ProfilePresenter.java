@@ -10,9 +10,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.auth.session.UserSession;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import retrofit.mime.TypedFile;
 
-public class ProfilePresenter extends BasePresenter<ProfilePresenter.View> {
+public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     @Inject
     protected Prefs prefs;
@@ -44,7 +44,7 @@ public class ProfilePresenter extends BasePresenter<ProfilePresenter.View> {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     view.avatarProgressVisible(false);
-                    handleError(spiceException);
+                    Log.e(this.getClass().getSimpleName(), "", spiceException);
                     view.informUser(context.getString(R.string.error_internal_server));
                 }
 
@@ -128,7 +128,7 @@ public class ProfilePresenter extends BasePresenter<ProfilePresenter.View> {
     }
 
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         public void setAvatarImage(Uri uri);
 
         public void setCoverImage(Uri uri);

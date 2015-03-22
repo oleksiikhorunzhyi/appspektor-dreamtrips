@@ -12,9 +12,8 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.infopages.model.URLS;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 
 import butterknife.InjectView;
@@ -43,14 +42,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         });
         webView.loadUrl(getURL());
     }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
 
     abstract protected String getURL();
 
@@ -153,9 +144,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TrainingVideosFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            S3GlobalConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
-            URLS urls = config.getUrls();
-            URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+            AppConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
+            AppConfig.URLS urls = config.getUrls();
+            AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
             return configs.getTrainingVideosURL();
         }
     }
@@ -181,10 +172,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
+
             webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
+            webView.getSettings().setAppCachePath(getActivity().getCacheDir().getPath());
             webView.getSettings().setAppCacheEnabled(true);
             webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
             webView.setWebViewClient(new WebViewClient() {
 
                 @Override

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -19,7 +19,7 @@ import de.greenrobot.event.EventBus;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends BasePresenter<BaseFSViewPM.View> {
+public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Presenter<FSViewPM.View> {
 
     protected Type type;
     protected User user;
@@ -28,12 +28,12 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
     EventBus eventBus;
     T photo;
 
-    public BaseFSViewPM(View view) {
+    public FSViewPM(View view) {
         super(view);
 
     }
 
-    public static BaseFSViewPM create(View view, IFullScreenAvailableObject photo) {
+    public static FSViewPM create(View view, IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
             return new FSPhotoPM(view);
         } else if (photo instanceof Inspiration) {
@@ -109,7 +109,7 @@ public abstract class BaseFSViewPM<T extends IFullScreenAvailableObject> extends
         return appSessionHolder.get().get().getGlobalConfig().getFlagContent().getDefault();
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void setTitle(String title);
 
         void setInspireDescription(String desc);

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class MainActivityPresenter extends BaseActivityPresenter<MainActivityPresenter.View> {
+public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
     @Global
     @Inject
@@ -51,7 +51,7 @@ public class MainActivityPresenter extends BaseActivityPresenter<MainActivityPre
         }
     }
 
-    public static interface View extends BasePresenter.View {
+    public static interface View extends Presenter.View {
         void setTitle(int title);
     }
 }

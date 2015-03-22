@@ -4,10 +4,10 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 
-public class CreatePhotoActivityPM extends BasePresenter<BasePresenter.View> {
+public class CreatePhotoActivityPM extends Presenter<Presenter.View> {
 
     private Uri imageUri;
 

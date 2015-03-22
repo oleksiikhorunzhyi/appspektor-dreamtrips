@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.facebook.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 
-public class FacebookAlbumFragmentPM extends BasePresenter<BasePresenter.View> {
+public class FacebookAlbumFragmentPM extends Presenter<Presenter.View> {
     public FacebookAlbumFragmentPM(View view) {
         super(view);
     }

@@ -17,6 +17,7 @@ public class User extends BaseEntity implements Parcelable {
             return new User[size];
         }
     };
+
     String username;
     String email;
     String firstName;

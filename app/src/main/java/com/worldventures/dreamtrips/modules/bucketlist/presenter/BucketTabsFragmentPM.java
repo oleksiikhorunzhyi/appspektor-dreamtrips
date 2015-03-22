@@ -7,13 +7,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.QuickAddItemEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BucketTabsFragmentPM extends BasePresenter<BucketTabsFragmentPM.View> {
+public class BucketTabsFragmentPM extends Presenter<BucketTabsFragmentPM.View> {
 
     @Global
     @Inject
@@ -38,7 +38,7 @@ public class BucketTabsFragmentPM extends BasePresenter<BucketTabsFragmentPM.Vie
         return args;
     }
 
-    public interface View extends BasePresenter.View {
+    public interface View extends Presenter.View {
         boolean isTabletLandscape();
     }
 

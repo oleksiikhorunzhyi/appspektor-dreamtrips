@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 
-public class SuccessStoryDetailsActivityPM extends BasePresenter<BasePresenter.View> {
+public class SuccessStoryDetailsPresenter extends Presenter<Presenter.View> {
 
-    public SuccessStoryDetailsActivityPM(View view) {
+    public SuccessStoryDetailsPresenter(View view) {
         super(view);
     }
 

@@ -1,6 +1,6 @@
-package com.worldventures.dreamtrips.modules.auth.session;
+package com.worldventures.dreamtrips.core.session;
 
-import com.worldventures.dreamtrips.modules.common.model.S3GlobalConfig;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class UserSession {
     private String userPassword;
     private String username;
     private long lastUpdate;
-    private S3GlobalConfig globalConfig;
+    private AppConfig globalConfig;
     private List<Header> headerList;
 
     public User getUser() {
@@ -66,11 +66,11 @@ public class UserSession {
         this.lastUpdate = lastUpdate;
     }
 
-    public S3GlobalConfig getGlobalConfig() {
+    public AppConfig getGlobalConfig() {
         return globalConfig;
     }
 
-    public void setGlobalConfig(S3GlobalConfig globalConfig) {
+    public void setGlobalConfig(AppConfig globalConfig) {
         this.globalConfig = globalConfig;
     }
 

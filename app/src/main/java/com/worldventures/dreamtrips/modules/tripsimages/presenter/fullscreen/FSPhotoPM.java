@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.util.Log;
+
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -17,7 +19,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-public class FSPhotoPM extends BaseFSViewPM<Photo> {
+public class FSPhotoPM extends FSViewPM<Photo> {
     public FSPhotoPM(View view) {
         super(view);
     }
@@ -43,8 +45,7 @@ public class FSPhotoPM extends BaseFSViewPM<Photo> {
         dreamSpiceManager.execute(new FlagPhotoCommand(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-                handleError(spiceException);
-
+                Log.e(this.getClass().getSimpleName(), "", spiceException);
             }
 
             @Override

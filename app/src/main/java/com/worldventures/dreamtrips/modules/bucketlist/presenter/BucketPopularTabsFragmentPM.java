@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-public class BucketPopularTabsFragmentPM extends BasePresenter<BasePresenter.View> {
+public class BucketPopularTabsFragmentPM extends Presenter<Presenter.View> {
 
 
     public BucketPopularTabsFragmentPM(View view) {

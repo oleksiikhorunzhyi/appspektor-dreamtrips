@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -30,6 +31,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     @Inject
     protected Prefs prefs;
+
+    @Inject
+    Context context;
 
     @Inject
     @Global

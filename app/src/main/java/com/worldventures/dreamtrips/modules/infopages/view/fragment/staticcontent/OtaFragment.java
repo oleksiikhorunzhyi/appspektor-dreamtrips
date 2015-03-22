@@ -12,6 +12,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
 public class OtaFragment extends ActualTokenStaticInfoFragment {
+
     @InjectView(R.id.progressBarWeb)
     ProgressBar progressBarWeb;
 

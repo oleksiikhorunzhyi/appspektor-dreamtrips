@@ -8,7 +8,8 @@ import android.view.WindowManager;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)
-public class FullScreenTripImageActivity extends PresentationModelDrivenActivity<FullScreenActivityPM> {
+public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScreenActivityPM> {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 

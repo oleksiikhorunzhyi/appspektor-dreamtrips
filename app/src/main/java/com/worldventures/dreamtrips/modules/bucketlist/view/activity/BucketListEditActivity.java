@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 
 import butterknife.InjectView;
 
@@ -18,7 +18,7 @@ import butterknife.InjectView;
  * Created by 1 on 26.02.15.
  */
 @Layout(R.layout.activity_book_it)
-public class BucketListEditActivity extends PresentationModelDrivenActivity<BucketListEditActivityPM> {
+public class BucketListEditActivity extends ActivityWithPresenter<BucketListEditActivityPM> {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_STATE = "EXTRA_STATE";

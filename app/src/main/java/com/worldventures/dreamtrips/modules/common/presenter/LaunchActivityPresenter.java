@@ -7,15 +7,7 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         super(view);
     }
 
-    public void onCreate() {
-
-        if (appSessionHolder.get().isPresent()) {
-            activityRouter.openMain();
-        } else {
-            activityRouter.openLogin();
-        }
-
-        activityRouter.finish();
+    public boolean isLogged() {
+        return appSessionHolder.get().isPresent();
     }
-
 }

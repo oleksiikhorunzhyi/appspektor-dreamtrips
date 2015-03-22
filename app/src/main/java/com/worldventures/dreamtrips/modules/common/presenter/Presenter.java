@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.content.Context;
-
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -21,9 +19,6 @@ public class Presenter<VT extends Presenter.View> {
     protected FragmentCompass fragmentCompass;
 
     @Inject
-    protected Context context;
-
-    @Inject
     protected ActivityRouter activityRouter;
 
     @Inject
@@ -41,7 +36,11 @@ public class Presenter<VT extends Presenter.View> {
     }
 
     public void init() {
-
+        try {
+            eventBus.registerSticky(this);
+        } catch (Exception ignored) {
+            //Ignored
+        }
     }
 
     public void destroyView() {
@@ -62,7 +61,6 @@ public class Presenter<VT extends Presenter.View> {
 
     public interface View {
         void informUser(String stringId);
-
         void alert(String s);
     }
 }

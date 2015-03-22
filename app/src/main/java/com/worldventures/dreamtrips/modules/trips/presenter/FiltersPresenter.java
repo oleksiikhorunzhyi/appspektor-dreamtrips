@@ -73,7 +73,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         dateFilterItem = new DateFilterItem();
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
-        eventBus.register(this);
     }
 
     public void loadFilters() {

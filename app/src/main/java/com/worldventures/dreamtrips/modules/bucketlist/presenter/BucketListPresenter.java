@@ -65,7 +65,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void init() {
         super.init();
         AdobeTrackingHelper.bucketList(getUserId());
-        eventBus.register(this);
     }
 
     public boolean isConnected() {

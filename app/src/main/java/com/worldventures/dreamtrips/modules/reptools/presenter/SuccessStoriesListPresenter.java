@@ -86,10 +86,8 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
         boolean isLandTablet = view.isLandscape() && view.isTablet();
         view.setDetailsContainerVisibility(isLandTablet);
-
     }
 
     public void reload() {

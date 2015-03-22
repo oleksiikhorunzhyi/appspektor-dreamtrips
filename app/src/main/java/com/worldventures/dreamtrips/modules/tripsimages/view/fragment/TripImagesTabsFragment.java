@@ -164,10 +164,4 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void onPageScrollStateChanged(int state) {
 
     }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().destroy();
-        super.onDestroy();
-    }
 }

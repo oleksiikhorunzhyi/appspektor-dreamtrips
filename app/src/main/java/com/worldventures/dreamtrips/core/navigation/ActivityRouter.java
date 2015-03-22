@@ -46,6 +46,7 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openLogin() {
         startActivity(LoginActivity.class);
+        finish();
     }
 
     public void openEnroll() {

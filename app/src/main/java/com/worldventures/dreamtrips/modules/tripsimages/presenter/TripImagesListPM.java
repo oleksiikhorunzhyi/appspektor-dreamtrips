@@ -7,7 +7,6 @@ import android.util.Log;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -24,20 +23,20 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
+
     @Inject
     protected Context context;
+
     protected Type type;
-    @Inject
-    @Global
-    EventBus eventBus;
-    int firstVisibleItem, visibleItemCount, totalItemCount, llastPage;
+
+    int firstVisibleItem;
+    int visibleItemCount;
+    int totalItemCount;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -120,12 +119,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             getAdapterController().loadNext();
             loading = true;
         }
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        eventBus.registerSticky(this);
     }
 
     public void destroyView() {

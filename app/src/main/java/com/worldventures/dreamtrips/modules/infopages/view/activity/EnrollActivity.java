@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 
 import butterknife.InjectView;
@@ -15,7 +15,7 @@ import butterknife.InjectView;
  * Created by 1 on 06.02.15.
  */
 @Layout(R.layout.activity_book_it)
-public class EnrollActivity extends PresentationModelDrivenActivity<EnrollActivityPresenter> implements Presenter.View {
+public class EnrollActivity extends ActivityWithPresenter<EnrollActivityPresenter> implements Presenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;

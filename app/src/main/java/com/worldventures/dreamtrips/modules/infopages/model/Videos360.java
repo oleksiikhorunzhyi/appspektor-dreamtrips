@@ -8,17 +8,15 @@ public class Videos360 {
 
     @SerializedName("Order")
     private Number order;
+
     @SerializedName("Title")
     private String title;
+
     @SerializedName("Videos")
     private List<Video360> videos;
 
     public Number getOrder() {
         return this.order;
-    }
-
-    public void setOrder(Number order) {
-        this.order = order;
     }
 
     public String getTitle() {
@@ -31,9 +29,5 @@ public class Videos360 {
 
     public List<Video360> getVideos() {
         return this.videos;
-    }
-
-    public void setVideos(List<Video360> videos) {
-        this.videos = videos;
     }
 }

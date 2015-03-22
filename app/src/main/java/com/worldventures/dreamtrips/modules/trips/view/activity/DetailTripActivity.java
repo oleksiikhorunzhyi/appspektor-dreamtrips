@@ -5,11 +5,11 @@ import android.os.Bundle;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
 
 @Layout(R.layout.activity_detail_trip)
-public class DetailTripActivity extends PresentationModelDrivenActivity<DetailTripActivityPresenter> {
+public class DetailTripActivity extends ActivityWithPresenter<DetailTripActivityPresenter> {
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
     @Override

@@ -85,7 +85,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     @Override
     public void init() {
         super.init();
-        eventBus.registerSticky(this);
         AdobeTrackingHelper.dreamTrips(getUserId());
         // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }

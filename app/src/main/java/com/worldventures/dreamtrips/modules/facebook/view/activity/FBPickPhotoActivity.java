@@ -10,11 +10,11 @@ import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoActivityPM;
 
 @Layout(R.layout.activity_login)
-public class FBPickPhotoActivity extends PresentationModelDrivenActivity<FacebookPickPhotoActivityPM> implements FacebookPickPhotoActivityPM.View {
+public class FBPickPhotoActivity extends ActivityWithPresenter<FacebookPickPhotoActivityPM> implements FacebookPickPhotoActivityPM.View {
     public static final String RESULT_PHOTO = "RESULT_PHOTO";
     public static final int REQUEST_CODE_PICK_FB_PHOTO = 123;
     private UiLifecycleHelper uiHelper;

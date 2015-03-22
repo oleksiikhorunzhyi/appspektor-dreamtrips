@@ -8,7 +8,7 @@ import com.gc.materialdesign.widgets.SnackBar;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-public abstract class PresentationModelDrivenActivity<PM extends Presenter> extends BaseActivity implements Presenter.View {
+public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseActivity implements Presenter.View {
     private PM presentationModel;
 
     public PM getPresentationModel() {
@@ -39,8 +39,9 @@ public abstract class PresentationModelDrivenActivity<PM extends Presenter> exte
 
     @Override
     public void onDestroy() {
-        if (getPresentationModel() != null)
+        if (getPresentationModel() != null) {
             getPresentationModel().destroyView();
+        }
         super.onDestroy();
     }
 
@@ -49,13 +50,17 @@ public abstract class PresentationModelDrivenActivity<PM extends Presenter> exte
     protected void onResume() {
         super.onResume();
         DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
-        if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(this);
+        if (!dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.start(this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
-        if (dreamSpiceManager.isStarted()) dreamSpiceManager.shouldStop();
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
+        }
     }
 }

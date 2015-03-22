@@ -26,9 +26,9 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         super(view);
     }
 
-
     public void onCreate() {
         UserSession userSession = appSessionHolder.get().get();
+
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             openBookIt();
         } else {
@@ -44,7 +44,6 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
                 }
             });
         }
-
     }
 
     private void openBookIt() {
@@ -62,5 +61,4 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
     public static interface View extends Presenter.View {
         int getTripId();
     }
-
 }

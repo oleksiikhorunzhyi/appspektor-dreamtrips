@@ -76,7 +76,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void onDestroyView() {
-        getPresenter().destroyView();
+        if (getPresenter() != null) {
+            getPresenter().destroyView();
+        }
         super.onDestroyView();
     }
 

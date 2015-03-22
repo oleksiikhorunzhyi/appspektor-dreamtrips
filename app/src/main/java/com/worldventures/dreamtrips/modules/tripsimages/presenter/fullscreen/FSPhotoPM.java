@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -15,11 +16,16 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.LikePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UnlikePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import javax.inject.Inject;
+
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public class FSPhotoPM extends FSViewPM<Photo> {
+    @Inject
+    Context context;
+
     public FSPhotoPM(View view) {
         super(view);
     }

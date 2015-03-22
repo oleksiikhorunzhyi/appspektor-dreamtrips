@@ -6,13 +6,13 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_book_it)
-public class BookItActivity extends PresentationModelDrivenActivity<BookItActivityPresenter> implements BookItActivityPresenter.View {
+public class BookItActivity extends ActivityWithPresenter<BookItActivityPresenter> implements BookItActivityPresenter.View {
     public static final String EXTRA_TRIP_ID = "TRIP_ID";
 
     @InjectView(R.id.toolbar_actionbar)

@@ -9,13 +9,13 @@ import android.view.WindowManager;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.routing.BaseRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.PresentationModelDrivenActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoActivityPM;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_create_photo)
-public class CreatePhotoActivity extends PresentationModelDrivenActivity<CreatePhotoActivityPM> {
+public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoActivityPM> {
     public static final String EXTRA_FILE_URI = "EXTRA_FILE_URI";
     public static final int REQUEST_CODE_CREATE_PHOTO = 342;
 

@@ -29,7 +29,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.activity_main)
-public class MainActivity extends PresentationModelDrivenActivity<MainActivityPresenter> implements MainActivityPresenter.View, NavigationDrawerListener {
+public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> implements MainActivityPresenter.View, NavigationDrawerListener {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -51,7 +51,6 @@ public class MainActivity extends PresentationModelDrivenActivity<MainActivityPr
         super.onCreate(savedInstanceState);
         getPresentationModel().create();
     }
-
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {

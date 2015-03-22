@@ -56,7 +56,6 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     }
 
     public void onMapLoaded() {
-        eventBus.registerSticky(this);
         data.clear();
         try {
             data.addAll(db.getTrips());

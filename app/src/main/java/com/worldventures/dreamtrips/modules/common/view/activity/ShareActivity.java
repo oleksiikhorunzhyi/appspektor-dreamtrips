@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhoto
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
-public class ShareActivity extends PresentationModelDrivenActivity<ShareActivityPM> implements FacebookPickPhotoActivityPM.View, ShareActivityPM.View {
+public class ShareActivity extends ActivityWithPresenter<ShareActivityPM> implements FacebookPickPhotoActivityPM.View, ShareActivityPM.View {
 
     public static final String FB = "fb";
     public static final String TW = "tw";

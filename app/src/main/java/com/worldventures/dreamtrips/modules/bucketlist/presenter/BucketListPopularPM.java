@@ -68,7 +68,6 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
         try {
             realData.addAll(db.readBucketList(type.name()));
         } catch (ExecutionException | InterruptedException e) {

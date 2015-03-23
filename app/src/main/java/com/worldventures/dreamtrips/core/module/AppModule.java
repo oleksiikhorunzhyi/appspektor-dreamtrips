@@ -41,7 +41,6 @@ import de.greenrobot.event.EventBus;
                 FabricInitializer.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
-                UploadTripPhotoCommand.class
         },
         includes = {
                 InjectingApplicationModule.class,

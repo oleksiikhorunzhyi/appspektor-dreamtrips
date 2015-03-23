@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">DreamTrips</string>
-    <string name="facebook_app_id">761667837261383</string>
 
     <string name="web_title">Web</string>
     <string name="new_photo">Web</string>

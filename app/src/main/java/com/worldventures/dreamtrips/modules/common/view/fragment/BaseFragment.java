@@ -11,7 +11,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.ButterKnife;
@@ -47,31 +46,14 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void onStop() {
-        stopSpiceManger();
         super.onStop();
-    }
-
-    private void stopSpiceManger() {
-        DreamSpiceManager dreamSpiceManager = getPresenter().getDreamSpiceManager();
-        if (dreamSpiceManager.isStarted()) {
-            dreamSpiceManager.shouldStop();
-        }
+        getPresenter().onStop();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (needSpiceManager()) {
-            DreamSpiceManager dreamSpiceManager = getPresenter().getDreamSpiceManager();
-
-            if (!dreamSpiceManager.isStarted()) {
-                dreamSpiceManager.start(getActivity());
-            }
-        }
-    }
-
-    protected boolean needSpiceManager() {
-        return true;
+        getPresenter().onStart();
     }
 
     @Override

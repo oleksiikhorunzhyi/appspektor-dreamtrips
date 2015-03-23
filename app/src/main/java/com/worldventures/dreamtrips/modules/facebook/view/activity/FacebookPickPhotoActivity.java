@@ -8,8 +8,6 @@ import com.facebook.Session;
 import com.facebook.UiLifecycleHelper;
 import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
@@ -59,7 +57,6 @@ public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPic
     protected FacebookPickPhotoPresenter createPresentationModel(Bundle savedInstanceState) {
         return new FacebookPickPhotoPresenter(this);
     }
-
 
     public void preFinishProcessing(ChosenImage image) {
         Intent intent = new Intent();

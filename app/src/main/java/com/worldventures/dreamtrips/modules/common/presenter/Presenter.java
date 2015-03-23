@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.content.Context;
+
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -31,6 +33,9 @@ public class Presenter<VT extends Presenter.View> {
     @Global
     protected EventBus eventBus;
 
+    @Inject
+    Context context;
+
     public Presenter(VT view) {
         this.view = view;
     }
@@ -57,6 +62,26 @@ public class Presenter<VT extends Presenter.View> {
 
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();
+    }
+
+    public void onStop() {
+        stopSpiceManager();
+    }
+
+    private void stopSpiceManager() {
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
+        }
+    }
+
+    public void onStart() {
+        startSpiceManager();
+    }
+
+    private void startSpiceManager() {
+        if (!dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.start(context);
+        }
     }
 
     public interface View {

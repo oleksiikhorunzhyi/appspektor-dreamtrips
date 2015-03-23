@@ -70,10 +70,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
     private boolean longPressed;
+
     /**
      * Swipe handling, @see SwipeListener
      */
-
     private int lastOffset;
 
     public BucketItemCell(View view) {
@@ -129,7 +129,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
             crossing.setVisibility(View.VISIBLE);
-            buttonCancel.setImageResource(0);
+            buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         } else {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_to_do));
             crossing.setVisibility(View.INVISIBLE);
@@ -225,19 +225,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 bottomContainer.setBackgroundColor(context.getResources().getColor(R.color.bucket_red));
                 break;
             case ACTION_DONE:
-                imageViewStatusDone.setVisibility(View.VISIBLE);
-                imageViewStatusClose.setVisibility(View.INVISIBLE);
-                bottomContainer.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
-                break;
             case ACTION_NONE:
+            case ACTION_SETTLING:
                 imageViewStatusDone.setVisibility(View.VISIBLE);
                 imageViewStatusClose.setVisibility(View.INVISIBLE);
                 bottomContainer.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
-                break;
-            case ACTION_SETTLING:
-                imageViewStatusDone.setVisibility(View.INVISIBLE);
-                imageViewStatusClose.setVisibility(View.INVISIBLE);
-                bottomContainer.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
                 break;
         }
     }
@@ -259,7 +251,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @SwipeAction
     private int getAction(int offset, float velocity) {
-        if (isFling(velocity)) return ACTION_DONE;
+        //if (isFling(velocity)) return ACTION_DONE;
 
         if (offset > swipeLayout.getWidth() * 2 / 3.f) return ACTION_DEL;
         else if (offset > swipeLayout.getWidth() / 3.f) return ACTION_DONE;

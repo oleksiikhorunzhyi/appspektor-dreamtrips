@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPrese
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.ShareActivityPM;
+import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
@@ -25,7 +25,7 @@ import dagger.Module;
                 MainActivityPresenter.class,
                 NavigationDrawerPresenter.class,
                 Presenter.class,
-                ShareActivityPM.class,
+                SharePresenter.class,
 
                 LaunchActivity.class,
                 MainActivity.class,

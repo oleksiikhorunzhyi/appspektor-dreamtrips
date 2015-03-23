@@ -25,7 +25,7 @@
     <string name="action_map">Map</string>
     <string name="action_like">Like</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_main">DreamTrips</string>
+    <string name="trips">DreamTrips</string>
     <string name="hello_blank_fragment"></string>
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>

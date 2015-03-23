@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
@@ -25,6 +28,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripI
 import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -57,4 +61,14 @@ import dagger.Module;
         library = true
 )
 public class TripsModule {
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideTripsComponent() {
+        return new ComponentDescription("trips", R.string.trips, R.drawable.ic_dreamtrips, DreamTripsFragment.class);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideOTAComponent() {
+        return new ComponentDescription("ota", R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
+    }
 }

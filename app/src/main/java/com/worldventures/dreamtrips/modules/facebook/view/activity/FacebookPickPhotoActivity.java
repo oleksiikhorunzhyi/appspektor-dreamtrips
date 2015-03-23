@@ -11,10 +11,10 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoActivityPM;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
 @Layout(R.layout.activity_login)
-public class FBPickPhotoActivity extends ActivityWithPresenter<FacebookPickPhotoActivityPM> implements FacebookPickPhotoActivityPM.View {
+public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPickPhotoPresenter> implements FacebookPickPhotoPresenter.View {
     public static final String RESULT_PHOTO = "RESULT_PHOTO";
     public static final int REQUEST_CODE_PICK_FB_PHOTO = 123;
     private UiLifecycleHelper uiHelper;
@@ -57,8 +57,8 @@ public class FBPickPhotoActivity extends ActivityWithPresenter<FacebookPickPhoto
     }
 
     @Override
-    protected FacebookPickPhotoActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new FacebookPickPhotoActivityPM(this);
+    protected FacebookPickPhotoPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new FacebookPickPhotoPresenter(this);
     }
 
 

@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -134,8 +134,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         if (pid != null) {
             this.pid.onActivityResult(requestCode, resultCode, data);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
-            ChosenImage image = new Gson().fromJson(data.getStringExtra(FBPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
+            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
             getPresenter().provideFbCallback().onResult(this, image, null);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {

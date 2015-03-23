@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
@@ -11,6 +13,7 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStorie
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesListFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -28,4 +31,8 @@ import dagger.Module;
         library = true
 )
 public class ReptoolsModule {
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideRepToolsComponent() {
+        return new ComponentDescription("rep_tools", R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
+    }
 }

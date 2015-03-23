@@ -20,8 +20,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClick
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoFragmentPM;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoItem;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.dialog_facebook_select_photo)
-public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM> implements FacebookPhotoFragmentPM.View {
+public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
 
     public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
     @InjectView(R.id.lv_items)
@@ -88,8 +88,8 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
     }
 
     @Override
-    protected FacebookPhotoFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new FacebookPhotoFragmentPM(this);
+    protected FacebookPhotoPresenter createPresenter(Bundle savedInstanceState) {
+        return new FacebookPhotoPresenter(this);
     }
 
     private void handleResponse(Response response) {
@@ -105,6 +105,6 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoFragmentPM>
 
     @Override
     public void preFinishProcessing(ChosenImage image) {
-        ((FBPickPhotoActivity) getActivity()).preFinishProcessing(image);
+        ((FacebookPickPhotoActivity) getActivity()).preFinishProcessing(image);
     }
 }

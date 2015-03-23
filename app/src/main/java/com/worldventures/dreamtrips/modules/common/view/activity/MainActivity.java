@@ -2,7 +2,8 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -15,11 +16,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
 
 import butterknife.InjectView;
@@ -38,6 +41,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @InjectView(R.id.drawer)
     DrawerLayout drawerLayout;
 
+    NavigationDrawerFragment navigationDrawerFragment;
+
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         return new MainActivityPresenter(this);
@@ -47,6 +52,17 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPresentationModel().create();
+
+        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
+
+        checkGoogleServices();
+    }
+
+    private void checkGoogleServices() {
+        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (code != ConnectionResult.SUCCESS) {
+            GooglePlayServicesUtil.getErrorDialog(code, this, 0).show();
+        }
     }
 
     @Override
@@ -59,10 +75,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     protected void onResume() {
         super.onResume();
         makeActionBarTransparent(false);
-        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (code != ConnectionResult.SUCCESS) {
-            GooglePlayServicesUtil.getErrorDialog(code, this, 0).show();
-        }
     }
 
     @Override
@@ -93,20 +105,32 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             // Set the drawer toggle as the DrawerListener
             drawerLayout.setDrawerListener(mDrawerToggle);
             this.drawerLayout.post(mDrawerToggle::syncState);
-            //openLeftDrawer();
         }
 
         disableRightDrawer();
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(Route route) {
+    public void onNavigationDrawerItemSelected(ComponentDescription route) {
         closeLeftDrawer();
         makeActionBarTransparent(false);
-        new Handler().postDelayed(() -> {
-            getPresentationModel().selectItem(route);
+
+        if (route != null) {
+            final String className = route.getFragmentClass().getName();
+            BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.container, fragment);
+            fragmentTransaction.addToBackStack(route.getKey());
+            fragmentTransaction.commit();
+
             setTitle(route.getTitle());
-        }, 150);
+        }
+    }
+
+    @Override
+    public void onNavigationDrawerItemReselected(ComponentDescription componentDescription) {
+        closeLeftDrawer();
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {
@@ -121,20 +145,20 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     public void openLeftDrawer() {
-        if (!ViewUtils.isLandscapeOrientation(this))
+        if (!ViewUtils.isLandscapeOrientation(this)) {
             drawerLayout.openDrawer(Gravity.START);
+        }
     }
 
     public void closeLeftDrawer() {
-        if (!ViewUtils.isLandscapeOrientation(this))
+        if (!ViewUtils.isLandscapeOrientation(this)) {
             drawerLayout.closeDrawer(Gravity.START);
+        }
     }
 
     public void openRightDrawer() {
         drawerLayout.openDrawer(Gravity.END);
         enableRightDrawer();
-        //FiltersFragment filtersFragment = (FiltersFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_filters);
-        //filtersFragment.refresh();
     }
 
     public void closeRightDrawer() {
@@ -164,7 +188,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
             lp.height = size;
             toolbar.setLayoutParams(lp);
-            // ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, ViewUtils.isLandscapeOrientation(this) ? 0 : size, 0, 0);
         }
     }
 
@@ -175,7 +198,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             closeLeftDrawer();
         } else {
-            getPresentationModel().onBackPressed();
+            if (navigationDrawerFragment != null) {
+                navigationDrawerFragment.onBackPressed();
+            }
+
             super.onBackPressed();
         }
     }
@@ -192,19 +218,23 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     private void unbindDrawables(View view) {
-        if (view.getBackground() != null)
+        if (view.getBackground() != null) {
             view.getBackground().setCallback(null);
+        }
 
         if (view instanceof ImageView) {
             ImageView imageView = (ImageView) view;
             imageView.setImageBitmap(null);
         } else if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++)
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
                 unbindDrawables(viewGroup.getChildAt(i));
+            }
 
-            if (!(view instanceof AdapterView))
+            if (!(view instanceof AdapterView)) {
                 viewGroup.removeAllViews();
+            }
+
         }
     }
 }

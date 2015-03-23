@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 
 import java.util.List;
@@ -35,15 +35,15 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private int headerSize = 0;
 
-    private List<Route> mData;
+    private List<ComponentDescription> componentDescriptions;
     private NavigationDrawerListener mNavigationDrawerListener;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
     private NavigationHeader navigationHeader;
 
-    public NavigationDrawerAdapter(List<Route> data, Injector injector) {
+    public NavigationDrawerAdapter(List<ComponentDescription> data, Injector injector) {
         injector.inject(this);
-        mData = data;
+        componentDescriptions = data;
     }
 
     public void setNavigationDrawerCallbacks(NavigationDrawerListener navigationDrawerListener) {
@@ -67,10 +67,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof ItemHolder) {
             ItemHolder holder = (ItemHolder) viewHolder;
-            Route item = getItem(i);
-            if (holder.itemName != null)
+            ComponentDescription item = getItem(i);
+
+            if (holder.itemName != null) {
                 holder.itemName.setText(item.getTitle());
-            holder.sectionIcon.setImageResource(item.getDrawableId());
+            }
+
+            holder.sectionIcon.setImageResource(item.getIcon());
             holder.itemView.setOnTouchListener((v, event) -> {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
@@ -92,7 +95,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             holder.itemView.setOnClickListener(v -> {
                 selectPosition(i);
                 if (mNavigationDrawerListener != null) {
-                    mNavigationDrawerListener.onNavigationDrawerItemSelected(mData.get(i - headerSize));
+                    mNavigationDrawerListener.onNavigationDrawerItemSelected(componentDescriptions.get(i - headerSize));
                 }
 
             });
@@ -136,7 +139,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return navigationHeader != null ? mData.size() + 1 : mData.size();
+        return navigationHeader != null ? componentDescriptions.size() + 1 : componentDescriptions.size();
     }
 
     @Override
@@ -152,8 +155,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         return navigationHeader != null && position == 0;
     }
 
-    public Route getItem(int position) {
-        return mData.get(navigationHeader != null ? position - 1 : position);
+    public ComponentDescription getItem(int position) {
+        return componentDescriptions.get(navigationHeader != null ? position - 1 : position);
     }
 
     public void setHeader(NavigationHeader navigationHeader) {

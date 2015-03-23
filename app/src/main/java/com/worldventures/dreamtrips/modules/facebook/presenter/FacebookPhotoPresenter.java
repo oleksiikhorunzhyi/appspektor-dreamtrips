@@ -4,8 +4,8 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 
-public class FacebookPhotoFragmentPM extends Presenter<FacebookPhotoFragmentPM.View> {
-    public FacebookPhotoFragmentPM(View view) {
+public class FacebookPhotoPresenter extends Presenter<FacebookPhotoPresenter.View> {
+    public FacebookPhotoPresenter(View view) {
         super(view);
     }
 

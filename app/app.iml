@@ -110,8 +110,8 @@
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="instabugsupport-1.2.7" level="project" />
-    <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-stickyheaders-0.5.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.4" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.4.7" level="project" />

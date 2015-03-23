@@ -173,31 +173,28 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                View v = getActivity().findViewById(R.id.editTextQuickInput);
-                if (v == null) {
-                    View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
+                View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
 
-                    PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
-                    popupMenu.inflate(R.menu.menu_bucket_filter);
+                PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
+                popupMenu.inflate(R.menu.menu_bucket_filter);
 
-                    boolean showCompleted = getPresenter().isShowCompleted();
-                    boolean showToDO = getPresenter().isShowToDO();
+                boolean showCompleted = getPresenter().isShowCompleted();
+                boolean showToDO = getPresenter().isShowToDO();
 
-                    if (showCompleted && showToDO)
-                        popupMenu.getMenu().getItem(0).setChecked(true);
-                    else if (showCompleted)
-                        popupMenu.getMenu().getItem(1).setChecked(true);
-                    else
-                        popupMenu.getMenu().getItem(2).setChecked(true);
+                if (showCompleted && showToDO)
+                    popupMenu.getMenu().getItem(0).setChecked(true);
+                else if (showCompleted)
+                    popupMenu.getMenu().getItem(1).setChecked(true);
+                else
+                    popupMenu.getMenu().getItem(2).setChecked(true);
 
-                    popupMenu.setOnMenuItemClickListener((menuItem) -> {
-                        getPresenter().reloadWithFilter(menuItem.getItemId());
+                popupMenu.setOnMenuItemClickListener((menuItem) -> {
+                    getPresenter().reloadWithFilter(menuItem.getItemId());
 
-                        return false;
-                    });
+                    return false;
+                });
 
-                    popupMenu.show();
-                }
+                popupMenu.show();
                 break;
             case R.id.action_popular:
                 getPresenter().addPopular();

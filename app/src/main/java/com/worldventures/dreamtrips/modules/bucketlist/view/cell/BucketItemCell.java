@@ -100,6 +100,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
             container.setBackgroundResource(bgResId);
         }
+        afterSwipe = true;
     }
 
     @OnTouch(R.id.swipeLayout)
@@ -125,7 +126,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
             crossing.setVisibility(View.VISIBLE);
-            buttonCancel.setImageResource(0);
+            buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         } else {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_to_do));
             crossing.setVisibility(View.INVISIBLE);
@@ -196,8 +197,9 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onUpdate(SwipeLayout swipeLayout, int leftOffset, int topOffset) {
-        if (!afterSwipe) return;
-        lastOffset = leftOffset;
+        if (afterSwipe)
+            lastOffset = leftOffset;
+
         renderAction(getAction(leftOffset, 0));
     }
 
@@ -253,15 +255,13 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
                 break;
         }
-        afterSwipe = true;
         render();
     }
 
     @SwipeAction
     private int getAction(int offset, float velocity) {
-        if (isFling(velocity)) return ACTION_DONE;
-
         if (offset > swipeLayout.getWidth() * 2 / 3.f) return ACTION_DEL;
+        else if (isFling(velocity)) return ACTION_DONE;
         else if (offset > swipeLayout.getWidth() / 3.f) return ACTION_DONE;
         else return ACTION_NONE;
     }

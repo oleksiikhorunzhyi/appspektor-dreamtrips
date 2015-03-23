@@ -54,6 +54,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
         public void showLocalErrors(int userNameError, int passwordError);
 
         String getUsername();
+
         String getUserPassword();
     }
 }

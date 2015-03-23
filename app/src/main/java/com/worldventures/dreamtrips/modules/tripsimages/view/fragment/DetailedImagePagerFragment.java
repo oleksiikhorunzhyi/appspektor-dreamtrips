@@ -77,8 +77,10 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                progressBar.setVisibility(View.GONE);
-                informUser(getString(R.string.error_while_loading));
+                if (isAdded()) {
+                    progressBar.setVisibility(View.GONE);g
+                    informUser(getString(R.string.error_while_loading));
+                }
             }
 
             @Override

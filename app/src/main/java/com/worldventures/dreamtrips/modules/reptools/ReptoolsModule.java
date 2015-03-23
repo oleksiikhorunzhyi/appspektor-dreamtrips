@@ -12,9 +12,6 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStorie
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 SuccessStoriesDetailsFragment.class,

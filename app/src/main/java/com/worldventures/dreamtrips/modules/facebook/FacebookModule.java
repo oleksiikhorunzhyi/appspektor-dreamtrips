@@ -11,9 +11,6 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhoto
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 FacebookPickPhotoActivityPM.class,

@@ -17,9 +17,6 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 OtaFragment.class,

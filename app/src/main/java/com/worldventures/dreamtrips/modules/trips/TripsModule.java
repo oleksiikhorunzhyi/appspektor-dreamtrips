@@ -26,9 +26,6 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 BookItActivity.class,

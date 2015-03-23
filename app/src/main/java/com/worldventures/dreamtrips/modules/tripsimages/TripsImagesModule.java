@@ -29,9 +29,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 FullScreenPhotoActivity.class,

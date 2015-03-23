@@ -5,9 +5,6 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragmen
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 ProfilePresenter.class,

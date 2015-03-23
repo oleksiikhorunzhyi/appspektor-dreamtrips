@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import com.adobe.mobile.Config;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
@@ -29,8 +30,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public abstract class BaseActivity extends InjectingActivity {
-
-    protected static final String HOCKEY_APP_ID = "4fc6063859b3388635cb834dbb004324";
 
     @Inject
     ActivityRouter router;
@@ -104,7 +103,7 @@ public abstract class BaseActivity extends InjectingActivity {
 
 
     protected void initHockeyApp() {
-        CrashManager.register(this, HOCKEY_APP_ID);
+        CrashManager.register(this, BuildConfig.HOCKEY_APP_ID);
     }
 
     @Override

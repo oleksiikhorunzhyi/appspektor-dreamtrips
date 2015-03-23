@@ -6,9 +6,6 @@ import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 
 import dagger.Module;
 
-/**
- * Created by Edward on 23.03.15.
- */
 @Module(
         injects = {
                 LoginPresenter.class,

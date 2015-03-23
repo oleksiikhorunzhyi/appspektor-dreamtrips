@@ -18,9 +18,6 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawe
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 ActivityPresenter.class,

@@ -20,9 +20,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 
 import dagger.Module;
 
-/**
- * Created by 1 on 23.03.15.
- */
 @Module(
         injects = {
                 BucketListQuickInputPM.class,
@@ -47,4 +44,5 @@ import dagger.Module;
         library = true
 )
 public class BucketListModule {
+
 }

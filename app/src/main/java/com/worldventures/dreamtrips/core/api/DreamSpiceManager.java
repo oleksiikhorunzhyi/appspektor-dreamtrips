@@ -55,8 +55,9 @@ public class DreamSpiceManager extends SpiceManager {
             @Override
             public void onRequestFailure(SpiceException error) {
                 if (isLoginError(error) && isCredentialExist()) {
-                    String username = appSessionHolder.get().get().getUsername();
-                    String userPassword = appSessionHolder.get().get().getUserPassword();
+                    final UserSession userSession = appSessionHolder.get().get();
+                    final String username = userSession.getUsername();
+                    final String userPassword = userSession.getUserPassword();
 
                     login(userPassword, username, (l, e) -> {
                         if (l != null) {
@@ -128,7 +129,6 @@ public class DreamSpiceManager extends SpiceManager {
                 });
             }
         });
-
     }
 
     public void uploadPhoto(ImageUploadTask task) {

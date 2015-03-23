@@ -59,9 +59,6 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         story = getArguments().getParcelable(STORY);
         ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
         super.afterCreateView(rootView);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setUseWideViewPort(true);
 
         webView.setWebViewClient(new WebViewClient() {
 
@@ -79,6 +76,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
                 view.loadUrl(view.getUrl());
             }
 

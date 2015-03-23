@@ -17,6 +17,7 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
+import com.worldventures.dreamtrips.modules.auth.presenter.LoginPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
@@ -38,7 +39,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoComma
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.modules.auth.presenter.LoginFragmentPresenter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
@@ -162,7 +162,7 @@ import dagger.Provides;
                 SuccessStoryDetailsPresenter.class,
                 LaunchActivityPresenter.class,
                 BucketListQuickInputPM.class,
-                LoginFragmentPresenter.class,
+                LoginPresenter.class,
                 WebViewFragmentPresenter.class,
                 ActivityPresenter.class,
                 ProfilePresenter.class,
@@ -301,44 +301,44 @@ public class ActivityModule {
 
     @Provides
     @Singleton
-    UniversalImageLoader provideImageLoader() {
+    public UniversalImageLoader provideImageLoader() {
         return new UniversalImageLoader();
     }
 
     @Provides
-    FragmentCompass provideFragmentCompass() {
+    public FragmentCompass provideFragmentCompass() {
         return new FragmentCompass(baseActivity, R.id.container);
     }
 
     @Provides
     @Named("details")
-    FragmentCompass provideFragmentCompassDetails() {
+    public FragmentCompass provideFragmentCompassDetails() {
         return new FragmentCompass(baseActivity, R.id.detail_container);
     }
 
     @Provides
-    SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
+    public  SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
         return new SimpleKeyValueStorage(preferences);
     }
 
     @Provides
     @Singleton
-    SharedPreferences provideSharedPreferences(Context context) {
+    public SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
     @Provides
-    DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
+    public DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
     @Provides
-    DependencyInjector provideDependencyInjector(@InjectingServiceModule.Service Injector injector) {
+    public DependencyInjector provideDependencyInjector(@InjectingServiceModule.Service Injector injector) {
         return injector::inject;
     }
 
     @Provides
-    Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector) {
+    public Configuration provideJobManagerConfiguration(Context context, DependencyInjector injector) {
         return new Configuration.Builder(context)
                 .injector(injector)
                 .minConsumerCount(1)
@@ -351,7 +351,7 @@ public class ActivityModule {
 
     @Provides
     @Singleton
-    JobManager provideJobManager(Context context, Configuration configuration) {
+    public JobManager provideJobManager(Context context, Configuration configuration) {
         return new JobManager(context, configuration);
     }
 }

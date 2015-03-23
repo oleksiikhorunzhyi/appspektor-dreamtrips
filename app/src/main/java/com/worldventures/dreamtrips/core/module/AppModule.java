@@ -58,55 +58,55 @@ public class AppModule {
     }
 
     @Provides
-    App provideApplication() {
+    public App provideApplication() {
         return app;
     }
 
     @Provides
-    BaseApplicationWithInjector provideInjectingApplication() {
+    public BaseApplicationWithInjector provideInjectingApplication() {
         return app;
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideImageLoaderInitializer() {
+    public AppInitializer provideImageLoaderInitializer() {
         return new ImageLoaderInitializer();
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideInstabugInitializer() {
+    public AppInitializer provideInstabugInitializer() {
         return new InstabugInitializer();
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideLoggingInitializer() {
+    public AppInitializer provideLoggingInitializer() {
         return new LoggingInitializer();
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideFabricInitializer() {
+    public AppInitializer provideFabricInitializer() {
         return new FabricInitializer();
     }
 
     @Provides
     @Singleton
-    SessionHolder<UserSession> provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
+    public SessionHolder<UserSession> provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
     }
 
     @Provides
     @Singleton
-    SnappyRepository provideDB(Context context) {
+    public SnappyRepository provideDB(Context context) {
         return new SnappyRepository(context);
     }
 
     @Provides
     @Singleton
-    Prefs providePrefs(SharedPreferences sharedPreferences) {
+    public Prefs providePrefs(SharedPreferences sharedPreferences) {
         return new Prefs(sharedPreferences);
     }
 
     @Provides
-    CognitoCachingCredentialsProvider provideCredProvider(Context context) {
+    public CognitoCachingCredentialsProvider provideCredProvider(Context context) {
         return new CognitoCachingCredentialsProvider(
                 context,
                 BuildConfig.AWS_ACCOUNT_ID,
@@ -118,12 +118,12 @@ public class AppModule {
 
     @Provides
     @Singleton
-    TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
+    public TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
         return new TransferManager(credentialsProvider);
     }
 
     @Provides
-    UploadingFileManager provideUploadingFileManager(Context context) {
+    public UploadingFileManager provideUploadingFileManager(Context context) {
         return new UploadingFileManager(context);
     }
 }

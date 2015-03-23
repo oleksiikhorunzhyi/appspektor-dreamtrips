@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.auth.presenter;
 
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
@@ -9,12 +8,12 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
 
-public class LoginFragmentPresenter extends ActivityPresenter<LoginFragmentPresenter.View> {
+public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
     @Inject
     DreamTripsApi dreamTripsApi;
 
-    public LoginFragmentPresenter(View view) {
+    public LoginPresenter(View view) {
         super(view);
     }
 
@@ -25,10 +24,12 @@ public class LoginFragmentPresenter extends ActivityPresenter<LoginFragmentPrese
 
         ValidationUtils.VResult usernameValid = ValidationUtils.isUsernameValid(username);
         ValidationUtils.VResult passwordValid = ValidationUtils.isPasswordValid(userPassword);
+
         if (!usernameValid.isValid() || !passwordValid.isValid()) {
             view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
             return;
         }
+
         dreamSpiceManager.login(userPassword, username, (l, e) -> {
             if (e != null) {
                 view.showLoginErrorMessage();
@@ -39,14 +40,8 @@ public class LoginFragmentPresenter extends ActivityPresenter<LoginFragmentPrese
                 view.showLoginSuccess();
             }
         });
-        this.view.showProgressDialog();
-    }
 
-    public void fillDataAction() {
-        if (BuildConfig.DEBUG && !BuildConfig.FLAVOR.equals("prod")) {
-            view.setUsername("888888");
-            view.setUserPassword("travel1ns1de");
-        }
+        this.view.showProgressDialog();
     }
 
     public static interface View extends Presenter.View {
@@ -59,11 +54,6 @@ public class LoginFragmentPresenter extends ActivityPresenter<LoginFragmentPrese
         public void showLocalErrors(int userNameError, int passwordError);
 
         String getUsername();
-
-        void setUsername(String s);
-
         String getUserPassword();
-
-        void setUserPassword(String travel1ns1de);
     }
 }

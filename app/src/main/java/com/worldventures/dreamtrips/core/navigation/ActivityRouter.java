@@ -1,28 +1,27 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
-import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
+import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -112,6 +111,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         if (imageUrl == null) imageUrl = "";
         if (shareLink == null) shareLink = "";
         if (text == null) text = "";
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
@@ -120,15 +120,9 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(ShareActivity.class, bundle);
     }
 
-
-    public void openShare(Intent share) {
-        startActivityIntent(share);
-    }
-
     public void openSuccessStoryDetails(SuccessStory successStory) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
         startActivity(SuccessStoryDetailsActivity.class, bundle);
-
     }
 }

@@ -197,10 +197,12 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onUpdate(SwipeLayout swipeLayout, int leftOffset, int topOffset) {
-        if (afterSwipe)
+        if (afterSwipe) {
+            Log.d(BucketItemCell.class.getName(), "lastOffser =" + lastOffset);
             lastOffset = leftOffset;
+        }
 
-        renderAction(getAction(leftOffset, 0));
+        renderAction(getAction(lastOffset, 0));
     }
 
     @Override
@@ -255,7 +257,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
                 break;
         }
-        render();
     }
 
     @SwipeAction

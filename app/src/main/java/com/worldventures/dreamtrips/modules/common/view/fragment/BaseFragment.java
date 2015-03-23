@@ -26,7 +26,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void informUser(String stringId) {
-        if (getActivity() != null) {
+        if (getActivity() != null && isAdded()) {
             getActivity().runOnUiThread(() -> {
                 SnackBar snackBar = new SnackBar(getActivity(), stringId);
                 snackBar.setDismissTimer(stringId.length() > 100 ? 4000 : 2000);
@@ -37,7 +37,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void alert(String s) {
-        if (getActivity() != null) {
+        if (getActivity() != null && isAdded()) {
             getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.title("Alert").content(s).positiveText("Ok").show();

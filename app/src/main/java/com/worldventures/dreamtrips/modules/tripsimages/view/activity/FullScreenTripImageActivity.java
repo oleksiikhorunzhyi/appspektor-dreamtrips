@@ -46,7 +46,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
 
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 

@@ -5,7 +5,6 @@
     style="@style/commonListItemStyle"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@drawable/bg_swipe_item_neutral"
     app:show_mode="pull_out"
     app:drag_edge="left"
     >

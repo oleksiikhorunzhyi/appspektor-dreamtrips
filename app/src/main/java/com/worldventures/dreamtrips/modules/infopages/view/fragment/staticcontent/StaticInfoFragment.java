@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -24,6 +23,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @InjectView(R.id.web_view)
     protected WebView webView;
 
+    @InjectView(R.id.progressBarWeb)
+    ProgressBar progressBarWeb;
+
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new WebViewFragmentPresenter(this);
@@ -39,6 +41,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return false;
             }
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                progressBarWeb.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressBarWeb.setVisibility(View.GONE);
+            }
         });
         webView.loadUrl(getURL());
     }
@@ -49,20 +62,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public void onResume() {
         super.onResume();
         webView.onResume();
-        webView.resumeTimers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         webView.onPause();
-        webView.pauseTimers();
-    }
-
-    @Override
-    public void onDestroyView() {
-        webView.destroy();
-        super.onDestroyView();
     }
 
     @Layout(R.layout.fragment_webview)
@@ -97,8 +102,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
-        @InjectView(R.id.progressBarWeb)
-        ProgressBar progressBarWeb;
 
         @Override
         protected String getURL() {
@@ -111,20 +114,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setBuiltInZoomControls(true);
             webView.getSettings().setUseWideViewPort(true);
-            webView.setWebViewClient(new WebViewClient() {
-
-                @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
-                    progressBarWeb.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    progressBarWeb.setVisibility(View.GONE);
-                }
-            });
         }
     }
 
@@ -172,12 +161,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
-
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setAppCachePath(getActivity().getCacheDir().getPath());
-            webView.getSettings().setAppCacheEnabled(true);
-            webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-
             webView.setWebViewClient(new WebViewClient() {
 
                 @Override

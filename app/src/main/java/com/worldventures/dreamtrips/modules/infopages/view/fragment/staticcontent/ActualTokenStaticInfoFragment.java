@@ -24,6 +24,7 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
         webView.getSettings().setAppCachePath("/data/data/com.worldventures.dreamtrips/cache");
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        webView.getSettings().setJavaScriptEnabled(true);
 
         webView.setWebViewClient(new WebViewClient() {
 

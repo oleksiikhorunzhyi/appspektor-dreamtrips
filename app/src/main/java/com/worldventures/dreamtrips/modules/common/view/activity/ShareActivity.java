@@ -3,7 +3,10 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PersistableBundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -130,15 +133,15 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
         } else {
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
+                Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
-                    getPresentationModel().openShareActivity(picture, link, text);
-                    // publishFeedDialog(picture, link, text, appName);
+                    runOnUiThread(() -> new Handler().postDelayed(() -> getPresentationModel().openShareActivity(picture, link, text), 150));
                 }
             });
             loginButton.performClick();
         }
-
     }
+
 
     public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
         if (shareUrl == null) shareUrl = "";

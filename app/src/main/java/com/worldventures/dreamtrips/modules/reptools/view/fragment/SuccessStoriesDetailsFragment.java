@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -59,36 +56,11 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         story = getArguments().getParcelable(STORY);
         ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
         super.afterCreateView(rootView);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setUseWideViewPort(true);
-
-        webView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                progressBarWeb.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressBarWeb.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                view.loadUrl(view.getUrl());
-            }
-
-        });
-
     }
 
     @Override
     protected String getURL() {
-        return story.getUrl() + "?appMode=true";
+        return story.getUrl();
     }
 
     @Override

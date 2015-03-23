@@ -49,7 +49,7 @@ import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -119,18 +119,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     }
 
     @Override
-    public boolean onQueryTextSubmit(String s) {
-        if (!TextUtils.isEmpty(s))
-            getPresenter().addToBucketList(s);
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        return false;
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
@@ -145,6 +133,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    quickInputEditText.setText("");
                     quickInputEditText.setFocusable(true);
                     hideSoftKeyboard(v);
                 }
@@ -153,6 +142,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
+                v.setText("");
                 getPresenter().addToBucketList(s);
             }
             return false;

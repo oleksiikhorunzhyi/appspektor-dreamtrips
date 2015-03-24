@@ -8,6 +8,7 @@ repositories {
     maven { url 'http://archiva.instabug.com/repository/release' }
     maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/techery/android' }
+    maven { url "https://jitpack.io" }
 }
 
 android {

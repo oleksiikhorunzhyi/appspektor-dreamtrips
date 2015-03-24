@@ -110,16 +110,16 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0)
+                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     longPressed = false;
+                }
+                if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close &&
+                        (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
+                    getEventBus().post(new BucketItemClickedEvent(getModelObject()));
+                }
                 break;
         }
         return swipeLayout.onTouchEvent(event);
-    }
-
-    @OnClick(R.id.swipeLayout)
-    void onClicked() {
-        getEventBus().post(new BucketItemClickedEvent(getModelObject()));
     }
 
     @OnLongClick(R.id.swipeLayout)

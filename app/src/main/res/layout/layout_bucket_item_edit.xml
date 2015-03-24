@@ -17,9 +17,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/white"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -31,9 +29,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/white"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -45,9 +41,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/white"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -59,9 +53,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/white"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -73,9 +65,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/white"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -87,9 +77,7 @@
         android:singleLine="true"
         android:textColor="#3f3f3f"
         android:textColorHint="#979797"
-        app:baseColor="@color/theme_main_darker"
         app:floatingLabel="highlight"
-        app:hintColor="@android:color/black"
         app:maxCharacters="120"
         app:minCharacters="0"
         app:primaryColor="@color/theme_main_darker" />

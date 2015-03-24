@@ -122,8 +122,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(BucketItemClickedEvent event) {
-        if (!bucketItems.contains(event.getBucketItem())
-                && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             eventBus.cancelEventDelivery(event);
             openDetails(event.getBucketItem());
         }

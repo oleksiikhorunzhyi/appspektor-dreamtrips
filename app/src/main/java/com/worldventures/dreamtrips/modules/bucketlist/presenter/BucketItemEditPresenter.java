@@ -16,22 +16,12 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
     @Inject
     SnappyRepository db;
-    @Global
-    @Inject
-    EventBus eventBus;
 
     private BucketTabsFragment.Type type;
 
     public BucketItemEditPresenter(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
-    }
-
-
-    @Override
-    public void init() {
-        super.init();
-        eventBus.register(this);
     }
 
     public void frameClicked() {

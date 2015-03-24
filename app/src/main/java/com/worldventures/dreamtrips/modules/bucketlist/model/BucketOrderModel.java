@@ -5,10 +5,9 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 /**
  * Created by 1 on 19.03.15.
  */
-public class BucketOrderModel extends BaseEntity {
+public class BucketOrderModel {
 
     private int position;
-
 
     public int getPosition() {
         return position;

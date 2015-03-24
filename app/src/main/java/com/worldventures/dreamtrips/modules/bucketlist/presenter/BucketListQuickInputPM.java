@@ -33,9 +33,8 @@ public class BucketListQuickInputPM extends Presenter<BucketListQuickInputPM.Vie
     @Global
     @Inject
     EventBus eventBus;
+
     private BucketTabsFragment.Type type;
-    private List<BucketPostItem> data = new ArrayList<>();
-    private List<BucketItem> realData = new ArrayList<>();
 
     public BucketListQuickInputPM(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -46,56 +45,13 @@ public class BucketListQuickInputPM extends Presenter<BucketListQuickInputPM.Vie
     @Override
     public void init() {
         super.init();
-        try {
-            realData.addAll(db.readBucketList(type.name()));
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(BucketListQuickInputPM.class.getSimpleName(), "", e);
-        }
         eventBus.register(this);
-    }
-
-    public void onEvent(BucketItemReloadEvent event) {
-        loadBucketItem(event.getBucketPostItem());
     }
 
     public void frameClicked() {
         fragmentCompass.pop();
     }
 
-    public void addToBucketList(String title) {
-        BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);
-
-        data.add(0, bucketPostItem);
-        view.getAdapter().addItem(0, bucketPostItem);
-        view.getAdapter().notifyDataSetChanged();
-        loadBucketItem(bucketPostItem);
-    }
-
-    public void loadBucketItem(BucketPostItem bucketPostItem) {
-        bucketPostItem.setLoaded(false);
-        bucketPostItem.setError(false);
-        view.getAdapter().notifyDataSetChanged();
-
-        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                bucketPostItem.setError(true);
-                bucketPostItem.setLoaded(false);
-                view.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onRequestSuccess(BucketItem bucketItem) {
-                bucketPostItem.setLoaded(true);
-                eventBus.post(new BucketItemAddedEvent(bucketItem));
-                view.getAdapter().notifyDataSetChanged();
-                realData.add(0, bucketItem);
-                db.saveBucketList(realData, type.name());
-            }
-        });
-    }
-
     public interface View extends Presenter.View {
-        BaseArrayListAdapter getAdapter();
     }
 }

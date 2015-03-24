@@ -31,8 +31,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
 
-        versionCode 34
-        versionName "0.1.34"
+        versionCode 36
+        versionName "0.1.36"
 
         multiDexEnabled true
 
@@ -147,7 +147,7 @@ dependencies {
     }
 
 //UI
-    compile 'com.rengwuxian.materialedittext:library:1.6.0'
+    compile 'com.rengwuxian.materialedittext:library:1.8.3'
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
     compile 'com.afollestad:material-dialogs:0.4.7'

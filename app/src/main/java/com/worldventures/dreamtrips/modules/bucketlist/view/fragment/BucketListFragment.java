@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gc.materialdesign.widgets.SnackBar;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
@@ -49,7 +50,7 @@ import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -194,10 +195,15 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     }
 
     @Override
+    public void informUser(String stringId) {
+        Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         this.recyclerView.post(() -> {
-            getPresenter().loadBucketItems(false);
+            getPresenter().loadBucketItems();
         });
     }
 
@@ -205,16 +211,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public void onPause() {
         mDragDropManager.cancelDrag();
         super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onRefresh() {
-        getPresenter().loadBucketItems(true);
     }
 
     @Override

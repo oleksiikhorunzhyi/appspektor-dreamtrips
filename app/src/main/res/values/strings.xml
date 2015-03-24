@@ -139,7 +139,15 @@
     <string name="bucket_list_create_message">Currently you have no Bucket List Items. You can choose from the popular Bucket List items or create your Bucket List from scratch.</string>
     <string name="bucket_list_choose">Choose From Popular Items</string>
     <string name="bucket_list_create_new">Create My Own List</string>
-    <string name="bucket_quick_input_title">Title</string>
+    <string name="bucket_hint_title">Title</string>
+    <string name="bucket_hint_description">Description</string>
+    <string name="bucket_hint_time">Time</string>
+    <string name="bucket_hint_location">Location</string>
+    <string name="bucket_hint_people">People</string>
+    <string name="bucket_hint_tags">Tags</string>
+    <string name="bucket_item_edit_completed">I\'ve completed this bucket list item!</string>
+    <string name="bucket_item_photos">Add pictures</string>
+
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>
 

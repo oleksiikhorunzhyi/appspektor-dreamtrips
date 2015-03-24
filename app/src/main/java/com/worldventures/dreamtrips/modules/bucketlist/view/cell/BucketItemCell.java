@@ -87,7 +87,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         // set background resource (target view ID: container)
         final int dragState = getDragStateFlags();
 
-        if (((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
+        if (!getModelObject().isDone() && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
 
             if ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -117,8 +117,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @OnLongClick(R.id.swipeLayout)
     boolean onLongClick(View v) {
-        v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        longPressed = true;
+        if (!getModelObject().isDone()) {
+            v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            longPressed = true;
+        }
         return false;
     }
 

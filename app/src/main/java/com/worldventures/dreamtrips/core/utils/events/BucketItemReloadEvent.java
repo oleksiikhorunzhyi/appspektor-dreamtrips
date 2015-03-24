@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 
-/**
- * Created by 1 on 13.03.15.
- */
 public class BucketItemReloadEvent {
     private BucketPostItem bucketPostItem;
 

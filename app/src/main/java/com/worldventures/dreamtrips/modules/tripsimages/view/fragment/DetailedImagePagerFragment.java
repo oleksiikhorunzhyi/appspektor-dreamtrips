@@ -24,7 +24,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by 1 on 23.01.15.
+ *  1 on 23.01.15.
  */
 @Layout(R.layout.fragment_image_detailed)
 public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {

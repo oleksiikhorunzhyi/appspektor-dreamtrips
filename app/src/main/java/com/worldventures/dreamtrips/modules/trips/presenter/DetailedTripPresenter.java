@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 /**
- * Created by Edward on 19.01.15.
+ *  Edward on 19.01.15.
  * presentation model for DetailedTripFragment
  */
 public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View> {

@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by 1 on 03.03.15.
+ *  1 on 03.03.15.
  */
 
 @Layout(R.layout.adapter_item_popular_cell)

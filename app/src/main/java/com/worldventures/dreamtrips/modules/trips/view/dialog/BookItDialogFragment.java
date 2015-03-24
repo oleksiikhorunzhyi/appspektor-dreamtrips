@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresente
 import butterknife.InjectView;
 
 /**
- * Created by Edward on 29.01.15.
+ *  Edward on 29.01.15.
  */
 @Layout(R.layout.fragment_webview)
 public class BookItDialogFragment extends BaseDialogFragment<BookItDialogPresenter> implements BookItDialogPresenter.View {

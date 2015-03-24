@@ -14,7 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by 1 on 23.01.15.
+ *  1 on 23.01.15.
  */
 @Layout(R.layout.adapter_item_activity_header)
 public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {

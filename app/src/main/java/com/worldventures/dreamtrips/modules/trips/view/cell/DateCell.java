@@ -19,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by Edward on 08.02.15.
+ *  Edward on 08.02.15.
  */
 @Layout(R.layout.adapter_item_dates)
 public class DateCell extends AbstractCell<DateFilterItem> implements DatePickerDialog.OnDateSetListener {

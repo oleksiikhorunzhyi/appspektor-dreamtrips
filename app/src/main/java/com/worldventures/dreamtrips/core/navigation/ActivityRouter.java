@@ -7,7 +7,8 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
@@ -78,11 +79,19 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
-    public void openBucketListEditActivity(BucketTabsFragment.Type type, Route route) {
+    public void openBucketListPopularActivity(BucketTabsFragment.Type type) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListEditActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketListEditActivity.EXTRA_STATE, route);
-        startActivity(BucketListEditActivity.class, bundle);
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_STATE, Route.POPULAR_TAB_BUCKER);
+        startActivity(BucketListPopularActivity.class, bundle);
+    }
+
+    public void openBucketItemEditActivity(BucketTabsFragment.Type type, BucketItem bucketItem) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_STATE, Route.BUCKET_EDIT);
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_ITEM, bucketItem);
+        startActivity(BucketListPopularActivity.class, bundle);
     }
 
     public void openTripDetails(Trip trip) {

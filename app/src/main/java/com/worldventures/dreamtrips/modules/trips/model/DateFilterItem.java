@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Edward on 08.02.15.
+ *  Edward on 08.02.15.
  */
 public class DateFilterItem {
 

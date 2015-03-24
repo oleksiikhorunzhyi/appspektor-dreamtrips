@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
@@ -120,6 +121,14 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         view.getAdapter().setItems(result);
     }
 
+    public void onEvent(BucketItemClickedEvent event) {
+        if (!bucketItems.contains(event.getBucketItem())
+                && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
+            openDetails(event.getBucketItem());
+        }
+    }
+
     public void onEvent(BucketItemAddedEvent event) {
         if (!bucketItems.contains(event.getBucketItem())
                 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
@@ -132,49 +141,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
             eventBus.cancelEventDelivery(event);
         }
-    }
-
-    public void addPopular() {
-        activityRouter.openBucketListEditActivity(type, Route.POPULAR_TAB_BUCKER);
-    }
-
-    public void onEvent(DeleteBucketItemEvent event) {
-        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            eventBus.cancelEventDelivery(event);
-
-            Log.d("TAG_BucketListPM", "Receivent delete event");
-
-            int index = bucketItems.indexOf(event.getBucketItem());
-            bucketItems.remove(event.getBucketItem());
-            refresh();
-
-            DeleteBucketItemCommand request = hiden(event.getBucketItem().getId());
-            view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
-        }
-    }
-
-    private DeleteBucketItemCommand hiden(int id) {
-        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, 3500);
-        dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.informUser(spiceException.getMessage());
-                Log.d("TAG_BucketListPM", spiceException.getMessage());
-            }
-
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                Log.d("TAG_BucketListPM", "Item deleted");
-                db.saveBucketList(bucketItems, type.name());
-            }
-        });
-        return request;
-    }
-
-    private void undo(BucketItem bucketItem, int index, DeleteBucketItemCommand request) {
-        request.setCanceled(true);
-        bucketItems.add(index, bucketItem);
-        refresh();
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
@@ -208,6 +174,53 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             db.saveBucketList(bucketItems, type.name());
             refresh();
         }
+    }
+
+    public void onEvent(DeleteBucketItemEvent event) {
+        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+            eventBus.cancelEventDelivery(event);
+
+            Log.d("TAG_BucketListPM", "Receivent delete event");
+
+            int index = bucketItems.indexOf(event.getBucketItem());
+            bucketItems.remove(event.getBucketItem());
+            refresh();
+
+            DeleteBucketItemCommand request = hiden(event.getBucketItem().getId());
+            view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
+        }
+    }
+
+    private void openDetails(BucketItem bucketItem) {
+        activityRouter.openBucketItemEditActivity(type, bucketItem);
+    }
+
+    public void addPopular() {
+        activityRouter.openBucketListPopularActivity(type);
+    }
+
+    private DeleteBucketItemCommand hiden(int id) {
+        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, 3500);
+        dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                view.informUser(spiceException.getMessage());
+                Log.d("TAG_BucketListPM", spiceException.getMessage());
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                Log.d("TAG_BucketListPM", "Item deleted");
+                db.saveBucketList(bucketItems, type.name());
+            }
+        });
+        return request;
+    }
+
+    private void undo(BucketItem bucketItem, int index, DeleteBucketItemCommand request) {
+        request.setCanceled(true);
+        bucketItems.add(index, bucketItem);
+        refresh();
     }
 
     private void moveItem(BucketItem bucketItem, int index) {
@@ -272,7 +285,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         loadBucketItem(bucketPostItem);
     }
 
-    public void loadBucketItem(BucketPostItem bucketPostItem) {
+    private void loadBucketItem(BucketPostItem bucketPostItem) {
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {

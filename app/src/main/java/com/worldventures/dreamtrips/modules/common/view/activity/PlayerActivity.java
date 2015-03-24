@@ -13,7 +13,7 @@ import tv.danmaku.ijk.media.widget.MediaController;
 import tv.danmaku.ijk.media.widget.VideoView;
 
 /**
- * Created by 1 on 04.02.15.
+ *  1 on 04.02.15.
  */
 @Layout(R.layout.player_activity_simple)
 public class PlayerActivity extends BaseActivity {

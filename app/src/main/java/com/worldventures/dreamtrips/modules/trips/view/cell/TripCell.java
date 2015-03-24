@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by Edward on 19.01.15.
+ *  Edward on 19.01.15.
  * cell for dream trips fragment
  */
 @Layout(R.layout.adapter_item_trip)

@@ -84,6 +84,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
+        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
         this.recyclerView.setEmptyView(emptyView);
 
         mDragDropManager = new RecyclerViewDragDropManager();
@@ -115,8 +116,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         this.recyclerView.setFadingEdgeLength(0);
 
         mDragDropManager.attachRecyclerView(recyclerView);
-
-        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
     }
 
     @Override

@@ -17,7 +17,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by 1 on 10.03.15.
+ *  1 on 10.03.15.
  */
 @Layout(R.layout.adapter_item_video_360_small)
 public class Video360SmallCell extends AbstractCell<Video360> {

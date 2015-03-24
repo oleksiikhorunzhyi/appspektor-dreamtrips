@@ -10,20 +10,17 @@ import android.widget.ImageView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListQuickInputPM;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-/**
- * Created by 1 on 26.02.15.
- */
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickInputPM> implements BucketListQuickInputPM.View {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View {
 
     @Optional
     @InjectView(R.id.done)
@@ -67,9 +64,9 @@ public class BucketListQuickInputFragment extends BaseFragment<BucketListQuickIn
 
 
     @Override
-    protected BucketListQuickInputPM createPresenter(Bundle savedInstanceState) {
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
-        return new BucketListQuickInputPM(this, type);
+    protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
+        return new BucketItemEditPresenter(this, type);
     }
 }
 

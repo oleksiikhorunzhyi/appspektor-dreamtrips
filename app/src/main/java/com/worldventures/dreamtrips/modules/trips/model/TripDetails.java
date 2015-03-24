@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import java.util.List;
 
 /**
- * Created by 1 on 23.01.15.
+ *  1 on 23.01.15.
  */
 public class TripDetails extends BaseEntity {
     private List<ContentItem> content;

@@ -19,6 +19,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -29,6 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
@@ -113,6 +115,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 break;
         }
         return swipeLayout.onTouchEvent(event);
+    }
+
+    @OnClick(R.id.swipeLayout)
+    void onClicked() {
+        getEventBus().post(new BucketItemClickedEvent(getModelObject()));
     }
 
     @OnLongClick(R.id.swipeLayout)

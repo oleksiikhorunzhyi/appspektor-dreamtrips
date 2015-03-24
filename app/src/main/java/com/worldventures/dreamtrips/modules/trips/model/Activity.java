@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.model;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 /**
- * Created by 1 on 23.01.15.
+ *  1 on 23.01.15.
  */
 public class Activity extends BaseEntity {
 

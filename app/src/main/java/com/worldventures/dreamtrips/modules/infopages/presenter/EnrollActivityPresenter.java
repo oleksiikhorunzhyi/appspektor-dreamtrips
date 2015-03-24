@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 /**
- * Created by 1 on 06.02.15.
+ *  1 on 06.02.15.
  */
 public class EnrollActivityPresenter extends Presenter<Presenter.View> {
 

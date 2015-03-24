@@ -23,9 +23,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by 1 on 23.01.15.
- */
 @Layout(R.layout.fragment_image_detailed)
 public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
 
@@ -33,6 +30,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
     @InjectView(R.id.imageViewTripImage)
     ImageView ivImage;
+
     @InjectView(R.id.progressBarImage)
     ProgressBar progressBar;
 
@@ -45,10 +43,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
         Object photo = getArguments().getSerializable(EXTRA_PHOTO);
 
-        if (photo instanceof TripImage) {
-            getPresenter().setPhoto((TripImage) photo);
-        }
-
+        getPresenter().setPhoto((TripImage) photo);
 
         ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

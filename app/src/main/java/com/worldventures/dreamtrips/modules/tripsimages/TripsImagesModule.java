@@ -70,8 +70,11 @@ import dagger.Provides;
         library = true
 )
 public class TripsImagesModule {
+
+    public static final String TRIP_IMAGES = "trip_images";
+
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripImagesComponent() {
-        return new ComponentDescription("trip_images", R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
+        return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
     }
 }

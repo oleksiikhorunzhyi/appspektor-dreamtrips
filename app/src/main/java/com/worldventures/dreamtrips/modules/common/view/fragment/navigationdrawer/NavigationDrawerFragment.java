@@ -9,12 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -25,13 +24,10 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_navigation_drawer)
 public class NavigationDrawerFragment extends BaseFragment<Presenter> implements Presenter.View, NavigationDrawerListener {
@@ -39,22 +35,13 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     private static final String STATE_SELECTED_STATE = "selected_navigation_drawer_state";
 
     @Inject
-    @Global
-    EventBus eventBus;
-
-    @Inject
     SessionHolder<UserSession> appSessionHolder;
-
-    @Inject
-    FragmentCompass fragmentCompass;
 
     @InjectView(R.id.drawerList)
     RecyclerView drawerList;
 
     @Inject
-    Set<ComponentDescription> componentDescriptionSet;
-
-    List<ComponentDescription> componentDescriptionList;
+    RootComponentsProvider rootComponentsProvider;
 
     private NavigationDrawerListener navigationDrawerListener;
     private NavigationDrawerAdapter adapter;
@@ -69,9 +56,9 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
         ComponentDescription componentDescription;
         if (savedInstanceState != null) {
-            componentDescription = this.componentDescriptionList.get(savedInstanceState.getInt(STATE_SELECTED_STATE));
+            componentDescription = this.rootComponentsProvider.getActiveComponents().get(savedInstanceState.getInt(STATE_SELECTED_STATE));
         } else {
-            componentDescription = this.componentDescriptionList.get(0);
+            componentDescription = this.rootComponentsProvider.getActiveComponents().get(0);
         }
 
         selectItem(componentDescription);
@@ -91,9 +78,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
         drawerList.setLayoutManager(layoutManager);
 
-        this.componentDescriptionList = new ArrayList<>(this.componentDescriptionSet);
-
-        adapter = new NavigationDrawerAdapter(new ArrayList<>(componentDescriptionList), (Injector) getActivity());
+        adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
         adapter.setNavigationDrawerCallbacks(this);
 
         if (!ViewUtils.isLandscapeOrientation(getActivity())) {
@@ -101,7 +86,6 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         }
 
         drawerList.setAdapter(adapter);
-        eventBus.register(this);
     }
 
     private NavigationHeader getNavigationHeader() {
@@ -153,7 +137,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_STATE, componentDescriptionList.indexOf(currentComponent));
+        outState.putInt(STATE_SELECTED_STATE, this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent));
     }
 
     @Override
@@ -171,7 +155,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         if (fm.getBackStackEntryCount() >= 2) {
             final int index = fm.getBackStackEntryCount() - 2;
             final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
-            setCurrentComponent(getComponentDescriptionByKey(backEntry.getName()));
+            setCurrentComponent(this.rootComponentsProvider.getComponentByKey(backEntry.getName()));
         }
     }
 
@@ -179,7 +163,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         this.currentComponent = currentComponent;
 
         if (this.currentComponent != null) {
-            final int componentIndex = componentDescriptionList.indexOf(currentComponent);
+            final int componentIndex = this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent);
             adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
                     componentIndex : componentIndex + 1);
 
@@ -187,17 +171,5 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
                 getActivity().setTitle(currentComponent.getTitle());
             }
         }
-    }
-
-    private ComponentDescription getComponentDescriptionByKey(String key) {
-        ComponentDescription component = null;
-
-        for (final ComponentDescription componentDescription : componentDescriptionList) {
-            if (componentDescription.getKey().equals(key)) {
-                component = componentDescription;
-                break;
-            }
-        }
-        return component;
     }
 }

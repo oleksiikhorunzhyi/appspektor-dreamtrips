@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.component.ComponentsConfig;
+import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
@@ -15,8 +19,18 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
+import com.worldventures.dreamtrips.modules.trips.TripsModule;
+import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -42,4 +56,29 @@ import dagger.Module;
         library = true
 )
 public class CommonModule {
+
+    @Provides
+    RootComponentsProvider provideRootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig config) {
+        return new RootComponentsProvider(descriptions, config);
+    }
+
+    @Provides
+    ComponentsConfig provideComponentsConfig() {
+        List<String> activeComponents = new ArrayList<>();
+
+        activeComponents.add(TripsModule.TRIPS);
+        activeComponents.add(TripsModule.OTA);
+        activeComponents.add(TripsImagesModule.TRIP_IMAGES);
+        activeComponents.add(InfoModule.MEMBERSHIP);
+        activeComponents.add(BucketListModule.BUCKETLIST);
+        activeComponents.add(ProfileModule.MY_PROFILE);
+        activeComponents.add(ReptoolsModule.REP_TOOLS);
+        activeComponents.add(InfoModule.TERMS_OF_SERVICE);
+        activeComponents.add(InfoModule.FAQ);
+        activeComponents.add(InfoModule.PRIVACY_POLICY);
+        activeComponents.add(InfoModule.COOKIE_POLICY);
+
+        return new ComponentsConfig(activeComponents);
+    }
+
 }

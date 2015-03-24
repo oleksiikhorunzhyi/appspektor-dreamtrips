@@ -62,13 +62,16 @@ import dagger.Provides;
 )
 public class TripsModule {
 
+    public static final String TRIPS = "trips";
+    public static final String OTA = "ota";
+
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripsComponent() {
-        return new ComponentDescription("trips", R.string.trips, R.drawable.ic_dreamtrips, DreamTripsFragment.class);
+        return new ComponentDescription(TRIPS, R.string.trips, R.drawable.ic_dreamtrips, DreamTripsFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideOTAComponent() {
-        return new ComponentDescription("ota", R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
+        return new ComponentDescription(OTA, R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
     }
 }

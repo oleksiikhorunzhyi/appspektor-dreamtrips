@@ -47,8 +47,10 @@ import dagger.Provides;
 )
 public class BucketListModule {
 
+    public static final String BUCKETLIST = "bucketlist";
+
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideBucketListComponent() {
-        return new ComponentDescription("bucketlist", R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
+        return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
     }
 }

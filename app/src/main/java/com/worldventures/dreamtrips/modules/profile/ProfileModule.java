@@ -17,8 +17,11 @@ import dagger.Provides;
         library = true
 )
 public class ProfileModule {
+
+    public static final String MY_PROFILE = "my_profile";
+
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideProfileComponent() {
-        return new ComponentDescription("my_profile", R.string.my_profile, R.drawable.ic_profile, ProfileFragment.class);
+        return new ComponentDescription(MY_PROFILE, R.string.my_profile, R.drawable.ic_profile, ProfileFragment.class);
     }
 }

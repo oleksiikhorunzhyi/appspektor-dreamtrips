@@ -31,8 +31,11 @@ import dagger.Provides;
         library = true
 )
 public class ReptoolsModule {
+
+    public static final String REP_TOOLS = "rep_tools";
+
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideRepToolsComponent() {
-        return new ComponentDescription("rep_tools", R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
+        return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
     }
 }

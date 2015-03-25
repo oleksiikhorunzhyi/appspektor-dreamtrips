@@ -79,7 +79,7 @@ public class ActivityModule {
     }
 
     @Provides
-    public DreamSpiceManager provideSpiceManager(BaseApplicationWithInjector injector) {
+    public DreamSpiceManager provideSpiceManager(Injector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 

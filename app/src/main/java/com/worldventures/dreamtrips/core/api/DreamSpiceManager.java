@@ -131,19 +131,24 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void uploadPhoto(ImageUploadTask task) {
-        UploadTripPhotoCommand request = new UploadTripPhotoCommand(task);
-        injector.inject(request);
-        execute(request, new RequestListener<Photo>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
-            }
+        try {
+            UploadTripPhotoCommand request = new UploadTripPhotoCommand(task);
+            injector.inject(request);
+            execute(request, new RequestListener<Photo>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
+                }
 
-            @Override
-            public void onRequestSuccess(Photo photo) {
+                @Override
+                public void onRequestSuccess(Photo photo) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
+
+        }
     }
 
     private boolean isCredentialExist() {

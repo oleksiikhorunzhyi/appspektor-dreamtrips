@@ -50,7 +50,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
 
             this.adapter.add(new FragmentItem(BucketListFragment.class, getString(R.string.bucket_locations)));
             this.adapter.add(new FragmentItem(BucketListFragment.class, getString(R.string.bucket_activities)));
-            this.adapter.add(new FragmentItem(BucketListFragment.class, getString(R.string.bucket_restaurants)));
         }
 
         pager.setAdapter(adapter);

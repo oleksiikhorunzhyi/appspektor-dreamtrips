@@ -8,13 +8,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,7 +28,10 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+
+    @Inject
+    FragmentCompass fragmentCompass;
 
     @Optional
     @InjectView(R.id.done)
@@ -79,6 +88,15 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     void onDone() {
     }
 
+    @OnClick(R.id.editTextTime)
+    void onTimeClicked() {
+        fragmentCompass.showDatePickerDialog(this, getPresenter().getDate());
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i2, int i3) {
+    }
+
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
@@ -97,8 +115,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void setTime(String time) {
-        editTextTime.setText(time);
+    public void setTime(Date time) {
+
     }
 
     @Override
@@ -116,7 +134,30 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         editTextTitle.setText(title);
     }
 
+    @Override
+    public String getTags() {
+        return editTextTags.getText().toString();
+    }
 
+    @Override
+    public String getPeople() {
+        return editTextPeople.getText().toString();
+    }
+
+    @Override
+    public Date getTime() {
+        return null;
+    }
+
+    @Override
+    public String getTitle() {
+        return editTextTitle.getText().toString();
+    }
+
+    @Override
+    public String getDescription() {
+        return editTextDescription.getText().toString();
+    }
 }
 
 

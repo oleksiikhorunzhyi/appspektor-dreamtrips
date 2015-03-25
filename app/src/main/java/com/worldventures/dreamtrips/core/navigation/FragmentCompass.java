@@ -137,10 +137,6 @@ public class FragmentCompass {
         fragment.setArguments(bundle);
     }
 
-    public void switchBranch(final Route route) {
-        switchBranch(route, null);
-    }
-
     public void switchBranch(final Route route, final Bundle args) {
         clearBackStack();
         replace(route, args);
@@ -181,10 +177,6 @@ public class FragmentCompass {
         if (onTransactionListener != null) {
             onTransactionListener.onTransactionDone(null, Action.POP);
         }
-    }
-
-    public void setOnTransactionListener(OnTransactionListener onTransactionListener) {
-        this.onTransactionListener = onTransactionListener;
     }
 
     public enum Action {

@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 
-public class FacebookAlbumFragmentPM extends Presenter<Presenter.View> {
-    public FacebookAlbumFragmentPM(View view) {
+public class FacebookAlbumPresenter extends Presenter<Presenter.View> {
+    public FacebookAlbumPresenter(View view) {
         super(view);
     }
 

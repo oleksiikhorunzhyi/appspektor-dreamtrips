@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
@@ -27,10 +26,11 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
 
     @InjectView(R.id.pager)
     ViewPager pager;
+
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+
     ArrayList<Serializable> photoList;
-    private BaseStatePagerAdapter<DetailedImagePagerFragment> adapter;
 
     @Override
     protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
             position = 0;
         }
 
-        adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getSupportFragmentManager()) {
+        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();

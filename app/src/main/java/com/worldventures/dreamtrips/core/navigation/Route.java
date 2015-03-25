@@ -43,9 +43,9 @@ public enum Route {
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_location_popular),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
-    MAP(MapFragment.class, R.string.title_activity_main),
+    MAP(MapFragment.class, R.string.trips),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
-    DREAMTRIPS(DreamTripsFragment.class, R.string.title_activity_main, R.drawable.ic_dreamtrips, 0),
+    DREAMTRIPS(DreamTripsFragment.class, R.string.trips, R.drawable.ic_dreamtrips, 0),
     OTA(OtaFragment.class, R.string.other_travel, R.drawable.ic_other_travel, 1),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, R.drawable.ic_trip_images, 2),
     MEMBERSHIP(MemberShipFragment.class, R.string.membership, R.drawable.ic_membership, 3),
@@ -62,10 +62,6 @@ public enum Route {
     private int titleRes;
     private int drawableId;
     private int position;
-
-    static {
-        generateSideMenuFields();
-    }
 
     Route(Class<? extends BaseFragment> fragmentClass, int title) {
         this(fragmentClass, title, -1, -1);
@@ -96,14 +92,6 @@ public enum Route {
             }
         }
         return result;
-    }
-
-    public static ArrayList<Route> getMenuItemsArray() {
-        return menuItemsArray;
-    }
-
-    public static Route findByKey(int i) {
-        return menuItemsArray.get(i);
     }
 
     public String getClazzName() {

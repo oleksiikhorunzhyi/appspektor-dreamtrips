@@ -222,13 +222,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     @Override
     public void startLoading() {
         progressBar.setVisibility(View.VISIBLE);
-        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
         progressBar.setVisibility(View.GONE);
-        // recyclerView.post(()->swipeRefreshLayout.setRefreshing(false));
     }
 
     @Override
@@ -243,7 +241,5 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
 
     private enum BucketFilter {
         ALL, TO_DO, COMPLETED
-
     }
-
 }

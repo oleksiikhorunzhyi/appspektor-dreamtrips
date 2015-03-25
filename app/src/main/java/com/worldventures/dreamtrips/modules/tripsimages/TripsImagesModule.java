@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoActivityPM;
@@ -28,6 +30,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -67,4 +70,11 @@ import dagger.Module;
         library = true
 )
 public class TripsImagesModule {
+
+    public static final String TRIP_IMAGES = "trip_images";
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideTripImagesComponent() {
+        return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
+    }
 }

@@ -18,13 +18,13 @@ import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.presenter.ShareActivityPM;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoActivityPM;
+import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
+import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
-public class ShareActivity extends ActivityWithPresenter<ShareActivityPM> implements FacebookPickPhotoActivityPM.View, ShareActivityPM.View {
+public class ShareActivity extends ActivityWithPresenter<SharePresenter> implements FacebookPickPhotoPresenter.View, SharePresenter.View {
 
     public static final String FB = "fb";
     public static final String TW = "tw";
@@ -89,8 +89,8 @@ public class ShareActivity extends ActivityWithPresenter<ShareActivityPM> implem
     }
 
     @Override
-    protected ShareActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new ShareActivityPM(this);
+    protected SharePresenter createPresentationModel(Bundle savedInstanceState) {
+        return new SharePresenter(this);
     }
 
 

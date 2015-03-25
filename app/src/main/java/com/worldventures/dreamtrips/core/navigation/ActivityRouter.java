@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FBPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
@@ -101,7 +101,7 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openFacebookPhoto(Fragment fm) {
-        startForResult(fm, FBPickPhotoActivity.class, FBPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
+        startForResult(fm, FacebookPickPhotoActivity.class, FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {

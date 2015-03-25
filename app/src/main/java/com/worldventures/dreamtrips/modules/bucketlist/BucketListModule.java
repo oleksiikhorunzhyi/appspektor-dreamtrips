@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist;
 
 
+
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularActivityPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularPM;
@@ -19,6 +22,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopul
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -38,11 +42,16 @@ import dagger.Module;
                 BucketItemCell.class,
                 BucketQuickCell.class,
                 BucketPopularCell.class,
-
         },
         complete = false,
         library = true
 )
 public class BucketListModule {
 
+    public static final String BUCKETLIST = "bucketlist";
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideBucketListComponent() {
+        return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
+    }
 }

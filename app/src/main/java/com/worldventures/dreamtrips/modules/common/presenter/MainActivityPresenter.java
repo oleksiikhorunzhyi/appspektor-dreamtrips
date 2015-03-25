@@ -13,15 +13,14 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     @Global
     @Inject
     EventBus eventBus;
-    private Route currentRoute;
 
     public MainActivityPresenter(View view) {
         super(view);
     }
 
     public void create() {
-    }
 
+    }
 
     @Override
     public void resume() {
@@ -34,7 +33,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     }
 
     public void onBackPressed() {
-        currentRoute = fragmentCompass.getPreviousFragment();
+        Route currentRoute = fragmentCompass.getPreviousFragment();
         int title = currentRoute.getTitle();
         eventBus.post(new UpdateSelectionEvent());
         view.setTitle(title);
@@ -42,13 +41,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
     public void restoreInstanceState() {
         view.setTitle(fragmentCompass.getCurrentState().getTitle());
-    }
-
-    public void selectItem(Route route) {
-        if (!route.equals(currentRoute)) {
-            currentRoute = route;
-            fragmentCompass.replace(route);
-        }
     }
 
     public static interface View extends Presenter.View {

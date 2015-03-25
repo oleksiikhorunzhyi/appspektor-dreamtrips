@@ -8,11 +8,12 @@ repositories {
     maven { url 'http://archiva.instabug.com/repository/release' }
     maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/techery/android' }
+    maven { url "https://jitpack.io" }
 }
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "22.0.1"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

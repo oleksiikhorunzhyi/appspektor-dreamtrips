@@ -8,8 +8,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 
 import java.io.File;
 
-public class ShareActivityPM extends Presenter<ShareActivityPM.View> {
-    public ShareActivityPM(View view) {
+public class SharePresenter extends Presenter<SharePresenter.View> {
+    public SharePresenter(View view) {
         super(view);
     }
 

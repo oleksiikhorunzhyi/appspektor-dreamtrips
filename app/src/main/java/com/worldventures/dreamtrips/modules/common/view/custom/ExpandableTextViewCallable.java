@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 /**
- * Created by Edward on 03.02.15.
+ *  Edward on 03.02.15.
  * expandable text view which returns callbacks when pressed
  */
 public class ExpandableTextViewCallable extends ExpandableTextView {

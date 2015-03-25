@@ -22,7 +22,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by Edward on 23.01.15.
+ *  Edward on 23.01.15.
  */
 //TODO replace with recycler adapter
 public class ContentAdapter extends BaseAdapter {

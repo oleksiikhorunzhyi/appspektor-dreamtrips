@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 import butterknife.InjectView;
 
 /**
- * Created by Edward on 23.01.15.
+ *  Edward on 23.01.15.
  * cell for show sold out filter
  */
 @Layout(R.layout.adapter_item_show_sold_out)

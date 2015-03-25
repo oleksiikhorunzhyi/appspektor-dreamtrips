@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.utils.events;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 
 /**
- * Created by 1 on 19.03.15.
+ *  1 on 19.03.15.
  */
 public class QuickAddItemEvent {
 

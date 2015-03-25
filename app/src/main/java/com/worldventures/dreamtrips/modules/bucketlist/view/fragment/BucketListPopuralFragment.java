@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularPM;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import butterknife.InjectView;
 
 /**
- * Created by 1 on 03.03.15.
+ *  1 on 03.03.15.
  */
 @Layout(R.layout.fragment_bucket_popular)
 public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM> implements BucketListPopularPM.View, SwipeRefreshLayout.OnRefreshListener {
@@ -87,7 +87,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketListPopularPM>
 
     @Override
     protected BucketListPopularPM createPresenter(Bundle savedInstanceState) {
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListEditActivity.EXTRA_TYPE);
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
         return new BucketListPopularPM(this, type);
     }
 }

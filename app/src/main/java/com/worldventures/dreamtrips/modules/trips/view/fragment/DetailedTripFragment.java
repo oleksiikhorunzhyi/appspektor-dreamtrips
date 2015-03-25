@@ -38,7 +38,7 @@ import butterknife.Optional;
 import me.relex.circleindicator.CircleIndicator;
 
 /**
- * Created by Edward on 19.01.15.
+ *  Edward on 19.01.15.
  * fragment to show detailed trip
  */
 @Layout(R.layout.fragment_detailed_trip)

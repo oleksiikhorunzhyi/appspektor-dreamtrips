@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.utils.events;
 import com.worldventures.dreamtrips.modules.trips.model.Trip;
 
 /**
- * Created by Edward on 20.01.15.
+ *  Edward on 20.01.15.
  * event when some trip was liked
  */
 public class LikeTripEvent {

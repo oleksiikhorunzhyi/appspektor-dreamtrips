@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import butterknife.ButterKnife;
 
 /**
- * Created by 1 on 29.01.15.
+ *  1 on 29.01.15.
  */
 public abstract class BaseDialogFragment<PM extends Presenter> extends InjectingDialogFragment implements Presenter.View {
 

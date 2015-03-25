@@ -28,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by Edward on 22.01.15.
+ *  Edward on 22.01.15.
  * filters fragment for right side nav drawer
  */
 @Layout(R.layout.layout_filters)

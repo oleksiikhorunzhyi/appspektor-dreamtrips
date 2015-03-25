@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 /**
- * Created by 1 on 03.03.15.
+ *  1 on 03.03.15.
  */
 public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
 

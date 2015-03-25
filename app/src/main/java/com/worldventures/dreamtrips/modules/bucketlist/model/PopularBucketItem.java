@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 /**
- * Created by 1 on 16.03.15.
+ *  1 on 16.03.15.
  */
 public class PopularBucketItem extends BaseEntity {
 

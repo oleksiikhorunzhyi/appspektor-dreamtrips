@@ -17,9 +17,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by Edward on 22.01.15.
- */
+
 @Layout(R.layout.adapter_item_region)
 public class RegionCell extends AbstractCell<Region> {
 

@@ -141,10 +141,15 @@
     <string name="bucket_list_create_new">Create My Own List</string>
     <string name="bucket_hint_title">Title</string>
     <string name="bucket_hint_description">Description</string>
+    <string name="bucket_hint_description_text">Type your description here</string>
     <string name="bucket_hint_time">Time</string>
+    <string name="bucket_hint_time_text">When would you like to accomplish this goal?</string>
     <string name="bucket_hint_location">Location</string>
+    <string name="bucket_hint_location_text">Is there a specific location for this goal?</string>
     <string name="bucket_hint_people">People</string>
+    <string name="bucket_hint_people_text">Add people you want to accomplish this goal with</string>
     <string name="bucket_hint_tags">Tags</string>
+    <string name="bucket_hint_tags_text">Add tags that describe yout bucket list item</string>
     <string name="bucket_item_edit_completed">I\'ve completed this bucket list item!</string>
     <string name="bucket_item_photos">Add pictures</string>
 

@@ -5,11 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -25,6 +27,24 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Optional
     @InjectView(R.id.done)
     ImageView imageViewDone;
+
+    @InjectView(R.id.editTextTitle)
+    EditText editTextTitle;
+
+    @InjectView(R.id.editTextDescription)
+    EditText editTextDescription;
+
+    @InjectView(R.id.editTextLocation)
+    EditText editTextLocation;
+
+    @InjectView(R.id.editTextPeople)
+    EditText editTextPeople;
+
+    @InjectView(R.id.editTextTags)
+    EditText editTextTags;
+
+    @InjectView(R.id.editTextTime)
+    EditText editTextTime;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -54,18 +74,49 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return super.onOptionsItemSelected(item);
     }
 
-
     @Optional
     @OnClick(R.id.done)
     void onDone() {
     }
 
-
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
-        return new BucketItemEditPresenter(this, type);
+        BucketItem item = (BucketItem) getArguments().getSerializable(BucketListPopularActivity.EXTRA_ITEM);
+        return new BucketItemEditPresenter(this, type, item);
     }
+
+    @Override
+    public void setTags(String tags) {
+        editTextTags.setText(tags);
+    }
+
+    @Override
+    public void setPeople(String people) {
+        editTextPeople.setText(people);
+    }
+
+    @Override
+    public void setTime(String time) {
+        editTextTime.setText(time);
+    }
+
+    @Override
+    public void setLocation(String location) {
+        editTextLocation.setText(location);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        editTextDescription.setText(description);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        editTextTitle.setText(title);
+    }
+
+
 }
 
 

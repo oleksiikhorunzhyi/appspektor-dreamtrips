@@ -16,9 +16,7 @@ import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by Edward on 22.01.15.
- */
+
 @Layout(R.layout.adapter_item_filters)
 public class FiltersCell extends AbstractCell<FilterModel> {
 

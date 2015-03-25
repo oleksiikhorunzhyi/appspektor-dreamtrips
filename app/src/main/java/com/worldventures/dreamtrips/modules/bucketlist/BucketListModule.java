@@ -1,22 +1,22 @@
 package com.worldventures.dreamtrips.modules.bucketlist;
 
 
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListEditActivityPM;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularActivityPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularPM;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListQuickInputPM;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsFragmentPM;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsFragmentPM;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListEditActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketQuickCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListQuickInputFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 
@@ -25,13 +25,13 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                BucketListQuickInputPM.class,
+                BucketItemEditPresenter.class,
                 BucketPopularTabsFragmentPM.class,
-                BucketListQuickInputFragment.class,
+                BucketItemEditFragment.class,
                 BucketTabsFragmentPM.class,
                 BucketListPresenter.class,
-                BucketListEditActivity.class,
-                BucketListEditActivityPM.class,
+                BucketListPopularActivity.class,
+                BucketListPopularActivityPresenter.class,
                 BucketListPopularPM.class,
                 BucketListPopuralFragment.class,
                 BucketTabsFragment.class,
@@ -39,7 +39,6 @@ import dagger.Provides;
                 BucketListFragment.class,
                 BucketHeaderCell.class,
                 BucketItemCell.class,
-                BucketQuickCell.class,
                 BucketPopularCell.class,
         },
         complete = false,

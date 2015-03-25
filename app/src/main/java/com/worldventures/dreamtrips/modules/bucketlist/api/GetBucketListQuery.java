@@ -9,18 +9,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
 
     private BucketTabsFragment.Type type;
-    private boolean fromNetwork;
     private SnappyRepository snappyRepository;
     private Prefs prefs;
 
-    public GetBucketListQuery(Prefs prefs, SnappyRepository snappyRepository, BucketTabsFragment.Type type, boolean fromNetwork) {
+    public GetBucketListQuery(Prefs prefs, SnappyRepository snappyRepository, BucketTabsFragment.Type type) {
         super((Class<ArrayList<BucketItem>>) new ArrayList<BucketItem>().getClass());
-        this.fromNetwork = fromNetwork;
         this.type = type;
         this.snappyRepository = snappyRepository;
         this.prefs = prefs;
@@ -30,24 +29,12 @@ public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
     public ArrayList<BucketItem> loadDataFromNetwork() throws Exception {
         ArrayList<BucketItem> resultList = new ArrayList<>();
 
-        if (needUpdate() || fromNetwork) {
-            ArrayList<BucketItem> list = getService().getBucketList();
+        if (needUpdate()) {
+            ArrayList<BucketItem> list = getService().getBucketList(type.getName());
+            snappyRepository.saveBucketList(list, type.name());
+            resultList.addAll(list);
 
-            ArrayList<BucketItem> activityList = new ArrayList<>();
-            ArrayList<BucketItem> locationList = new ArrayList<>();
-
-            activityList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
-                    .equalsIgnoreCase(BucketTabsFragment.Type.ACTIVITIES.getName())).toList());
-            locationList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
-                    .equalsIgnoreCase(BucketTabsFragment.Type.LOCATIONS.getName())).toList());
-
-            snappyRepository.saveBucketList(activityList, BucketTabsFragment.Type.ACTIVITIES.name());
-            snappyRepository.saveBucketList(locationList, BucketTabsFragment.Type.LOCATIONS.name());
-
-            resultList.addAll(Queryable.from(list).filter((bucketItem) -> bucketItem.getType()
-                    .equalsIgnoreCase(type.getName())).toList());
-
-            prefs.put(Prefs.LAST_SYNC_BUCKET, Calendar.getInstance().getTimeInMillis());
+            prefs.put(Prefs.LAST_SYNC_BUCKET + type.getName(), Calendar.getInstance().getTimeInMillis());
         } else {
             resultList.addAll(snappyRepository.readBucketList(type.name()));
         }
@@ -57,7 +44,7 @@ public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
 
     private boolean needUpdate() throws ExecutionException, InterruptedException {
         long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
+        return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET + type.getName()) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
     }
 
 }

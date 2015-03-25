@@ -11,17 +11,17 @@ import java.util.List;
 
 public class ReorderBucketItemCommand extends Command<JsonObject> {
     private BucketOrderModel bucketOrderModel;
+    private int id;
 
-    public ReorderBucketItemCommand(BucketOrderModel bucketOrderModel) {
+    public ReorderBucketItemCommand(int id, BucketOrderModel bucketOrderModel) {
         super(JsonObject.class);
         this.bucketOrderModel = bucketOrderModel;
+        this.id = id;
     }
 
     @Override
     public JsonObject loadDataFromNetwork() {
         Log.d("TAG_BucketListPM", "Sending delete item event");
-        List<BucketOrderModel> list = new ArrayList<>();
-        list.add(bucketOrderModel);
-        return getService().changeOrder(list);
+        return getService().changeOrder(id, bucketOrderModel);
     }
 }

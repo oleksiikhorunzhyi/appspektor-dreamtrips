@@ -24,6 +24,7 @@
             android:layout_marginTop="60dp"
             android:alpha="0.5"
             android:padding="22dp"
+            android:gravity="center"
             android:text="@string/bucket_list_create_message"
             android:textColor="@android:color/black"
             android:textSize="18dp" />

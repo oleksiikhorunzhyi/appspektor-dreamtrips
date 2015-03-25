@@ -6,9 +6,9 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 
-public class BucketListEditActivityPM extends ActivityPresenter {
+public class BucketListPopularActivityPresenter extends ActivityPresenter {
 
-    public BucketListEditActivityPM(View view) {
+    public BucketListPopularActivityPresenter(View view) {
         super(view);
     }
 

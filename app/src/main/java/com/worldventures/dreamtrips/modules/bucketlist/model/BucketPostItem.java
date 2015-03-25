@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 /**
- * Created by 1 on 11.03.15.
+ *  1 on 11.03.15.
  */
 public class BucketPostItem {
 

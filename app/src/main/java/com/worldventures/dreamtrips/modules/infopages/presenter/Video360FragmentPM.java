@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.Videos360;
 import java.util.List;
 
 /**
- * Created by 1 on 10.03.15.
+ *  1 on 10.03.15.
  */
 public class Video360FragmentPM extends Presenter<Video360FragmentPM.View> {
 

@@ -24,7 +24,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by Edward on 28.01.15.
+ *  Edward on 28.01.15.
  * kind of info window for map pin
  */
 @Layout(R.layout.fragment_trip_pin)

@@ -6,9 +6,7 @@ import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Edward on 22.01.15.
- */
+
 public class FilterBusEvent {
 
     private int minNights;

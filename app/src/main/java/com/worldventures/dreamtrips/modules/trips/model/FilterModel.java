@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-/**
- * Created by Edward on 22.01.15.
- */
+
 public class FilterModel {
 
     private int indexLeftPrice = 0;

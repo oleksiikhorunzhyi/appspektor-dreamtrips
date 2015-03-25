@@ -23,14 +23,6 @@ public class BucketTabsFragmentPM extends Presenter<BucketTabsFragmentPM.View> {
         super(view);
     }
 
-    public void addOwn(int position) {
-        eventBus.post(new QuickAddItemEvent(BucketTabsFragment.Type.values()[position]));
-    }
-
-    public void addPopular(int position) {
-        activityRouter.openBucketListEditActivity(BucketTabsFragment.Type.values()[position], Route.POPULAR_TAB_BUCKER);
-    }
-
     public Bundle getBundleForPosition(int position) {
         Bundle args = new Bundle();
         BucketTabsFragment.Type type = BucketTabsFragment.Type.values()[position];

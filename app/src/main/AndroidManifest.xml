@@ -32,6 +32,10 @@
             android:name="com.instabug.ProductionMode"
             android:value="false" />
 
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f" />
+
         <activity
             android:name=".modules.infopages.view.activity.EnrollActivity"
             android:configChanges="orientation|screenSize" />

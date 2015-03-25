@@ -163,13 +163,33 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return -1;
+    }
+
+    @Override
+    public String getFsLocation() {
+        return locationName;
+    }
+
+    @Override
+    public String getFsDate() {
+        return "";
+    }
+
+    @Override
     public String getUserName() {
         return "";
     }
 
     @Override
     public String getUserLocation() {
-        return "";
+        return locationName;
     }
 
     @Override

@@ -67,15 +67,19 @@ public class FSPhotoPM extends FSViewPM<Photo> {
         final RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                view.informUser("Can't like photo");
             }
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
-                boolean isLiked = photo.isLiked();
-                photo.setLiked(!isLiked);
-                view.setLiked(!isLiked);
-                eventBus.postSticky(new PhotoLikeEvent(photo.getId(), !isLiked));
+                boolean isLiked = !photo.isLiked();
+                photo.setLiked(isLiked);
+                int likesCount = photo.getLikesCount();
+                int actualLikeCount = isLiked ? likesCount + 1 : likesCount - 1;
+                photo.setLikesCount(actualLikeCount);
+                view.setLiked(isLiked);
+                view.setLikeCount(actualLikeCount);
+                eventBus.postSticky(new PhotoLikeEvent(photo.getId(), isLiked));
                 AdobeTrackingHelper.like(type, String.valueOf(photo.getId()), getUserId());
             }
         };

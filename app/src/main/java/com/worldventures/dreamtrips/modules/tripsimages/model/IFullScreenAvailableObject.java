@@ -24,4 +24,12 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable {
 
     public String getPhotoLocation();
 
+    int getFsCommentCount();
+
+
+    int getFsLikeCount();
+
+    String getFsLocation();
+
+    String getFsDate();
 }

@@ -30,7 +30,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     List<String> tags;
     Image images;
     boolean liked;
-    int likeCount;
+    int likesCount;
     String taskId;
     User user;
 
@@ -46,7 +46,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         in.readList(this.tags, String.class.getClassLoader());
         this.images = in.readParcelable(Image.class.getClassLoader());
         this.liked = in.readByte() != 0;
-        this.likeCount = in.readInt();
+        this.likesCount = in.readInt();
         this.taskId = in.readString();
         this.user = in.readParcelable(User.class.getClassLoader());
         this.id = in.readInt();
@@ -108,12 +108,12 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         this.liked = liked;
     }
 
-    public int getLikeCount() {
-        return likeCount;
+    public int getLikesCount() {
+        return likesCount;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
                 ", tags=" + tags +
                 ", images=" + images +
                 ", liked=" + liked +
-                ", likeCount=" + likeCount +
+                ", likesCount=" + likesCount +
                 ", taskId='" + taskId + '\'' +
                 ", user=" + user +
                 '}';
@@ -152,7 +152,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         dest.writeList(this.tags);
         dest.writeParcelable(this.images, 0);
         dest.writeByte(liked ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.likeCount);
+        dest.writeInt(this.likesCount);
         dest.writeString(this.taskId);
         dest.writeParcelable(this.user, 0);
         dest.writeInt(this.id);
@@ -165,12 +165,15 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
 
     @Override
     public String getFSTitle() {
-        return title;
+        if (user != null) {
+            return user.getFullName();
+        }
+        return "";
     }
 
     @Override
     public String getFsDescription() {
-        return "";
+        return title;
     }
 
     @Override
@@ -181,6 +184,29 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     @Override
     public String getPhotoLocation() {
         return location != null ? location.getName() : "";
+    }
+
+    @Override
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return likesCount;
+    }
+
+    @Override
+    public String getFsLocation() {
+        if (location == null) {
+            return "";
+        }
+        return location.getName();
+    }
+
+    @Override
+    public String getFsDate() {
+        return shotAt;
     }
 
     @Override

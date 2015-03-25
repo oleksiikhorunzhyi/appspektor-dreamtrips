@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,23 +46,34 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @InjectView(R.id.iv_image)
     ImageView ivImage;
-    @InjectView(R.id.tv_title)
-    TextView tvTitle;
-    @InjectView(R.id.iv_like)
-    ImageView ivLike;
-    @InjectView(R.id.iv_delete)
-    ImageView ivDelete;
-    @InjectView(R.id.iv_flag)
-    ImageView ivFlag;
     @InjectView(R.id.pb)
     ProgressBar progressBar;
-    @InjectView(R.id.ripple_like)
-    View vRippleLike;
-
-    @InjectView(R.id.vg_inpire_me)
-    ViewGroup vgInspireMe;
+    @InjectView(R.id.ll_content_wrapper)
+    LinearLayout llContentWraper;
+    @InjectView(R.id.tv_title)
+    TextView tvTitle;
     @InjectView(R.id.tv_description)
     TextView tvDescription;
+    @InjectView(R.id.tv_see_more)
+    TextView tvSeeMore;
+    @InjectView(R.id.tv_location)
+    TextView tvLocation;
+    @InjectView(R.id.tv_date)
+    TextView tvDate;
+    @InjectView(R.id.tv_likes_count)
+    TextView tvLikesCount;
+    @InjectView(R.id.tv_comments_count)
+    TextView tvCommentsCount;
+    @InjectView(R.id.iv_like)
+    ImageView ivLike;
+    @InjectView(R.id.iv_comment)
+    ImageView ivComment;
+    @InjectView(R.id.iv_share)
+    ImageView ivShare;
+    @InjectView(R.id.iv_flag)
+    ImageView ivFlag;
+    @InjectView(R.id.iv_delete)
+    ImageView ivDelete;
 
     @Inject
     UniversalImageLoader imageLoader;
@@ -132,14 +143,42 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
 
-    @OnClick(R.id.iv_twitter)
-    public void twitterShare() {
-        getPresenter().onTwitterShare(((FullScreenPhotoActivity) getActivity()));
+    @OnClick(R.id.iv_share)
+    public void actionShare() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title("Share")
+                .items(R.array.share_dialog_items)
+                .itemsCallback((dialog, view, which, text) -> {
+                    if (which == 0) {
+                        getPresenter().onFbShare();
+                    } else {
+                        getPresenter().onTwitterShare();
+                    }
+                }).show();
     }
 
-    @OnClick(R.id.iv_facebook)
-    public void fbShare() {
-        getPresenter().onFbShare(((FullScreenPhotoActivity) getActivity()));
+    @OnClick(R.id.iv_image)
+    public void actionImageClick() {
+        llContentWraper.setVisibility(llContentWraper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+    }
+
+    @OnClick(R.id.tv_see_more)
+    public void actionSeeMore() {
+        tvTitle.setVisibility(View.VISIBLE);
+        tvLocation.setVisibility(View.VISIBLE);
+        tvDate.setVisibility(View.VISIBLE);
+        tvDescription.setSingleLine(false);
+
+        tvSeeMore.setVisibility(View.GONE);
+        if (tvDescription.getText().length() == 0) {
+            tvDescription.setVisibility(View.GONE);
+        }
+        if (tvDate.getText().length() == 0) {
+            tvDate.setVisibility(View.GONE);
+        }
+        if (tvLocation.getText().length() == 0) {
+            tvLocation.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.iv_delete)
@@ -230,13 +269,40 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
-    public void setInspireDescription(String desc) {
-        if (!TextUtils.isEmpty(desc)) {
-            tvDescription.setText(desc);
-            vgInspireMe.setVisibility(View.VISIBLE);
-        } else {
-            vgInspireMe.setVisibility(View.GONE);
+    public void setDate(String date) {
+        if (TextUtils.isEmpty(date)) {
+            tvDate.setVisibility(View.GONE);
         }
+        tvDate.setText(date);
+    }
+
+    @Override
+    public void setLocation(String location) {
+        if (TextUtils.isEmpty(location)) {
+            tvLocation.setVisibility(View.GONE);
+        }
+        tvLocation.setText(location);
+    }
+
+    @Override
+    public void setCommentCount(int count) {
+        if (count == -1) {
+            tvCommentsCount.setVisibility(View.GONE);
+        }
+        tvCommentsCount.setText(count + " Comments");
+    }
+
+    @Override
+    public void setLikeCount(int count) {
+        if (count == -1) {
+            tvCommentsCount.setVisibility(View.GONE);
+        }
+        tvLikesCount.setText(count + " Likes");
+    }
+
+    @Override
+    public void setDescription(String desc) {
+        tvDescription.setText(desc);
     }
 
     @Override
@@ -256,12 +322,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @Override
     public void setLikeVisibility(boolean isVisible) {
-        vRippleLike.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        ivLike.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
-
-    @Override
-    public void informUser(String stringId) {
-        super.informUser(stringId);
-    }
-
 }

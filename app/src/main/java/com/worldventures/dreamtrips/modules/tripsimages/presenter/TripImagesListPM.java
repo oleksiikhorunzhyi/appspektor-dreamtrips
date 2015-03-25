@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -100,22 +99,11 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         visibleItemCount = childCount;
         totalItemCount = itemCount;
         firstVisibleItem = firstVisibleItemPosition;
-        Log.v("LoadNext", "------------------------");
-        Log.v("LoadNext", "" + this.hashCode() + " " + view.hashCode());
-        Log.v("LoadNext", "in scrolled childCount:" + childCount + "; itemCount:" + itemCount + "; firstVisibleItemPosition: " + firstVisibleItemPosition);
-        Log.v("LoadNext", "previousTotal:" + previousTotal);
-
-        Log.v("LoadNext", "is loading: " + loading);
         if (totalItemCount > previousTotal) {
             loading = false;
             previousTotal = totalItemCount;
         }
-        Log.i("LoadNext", "is loading: " + loading);
-
-        int page = itemCount / PER_PAGE + 1;
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
-            //   loadNext(page);
-            Log.w("LoadNext", "totalitem count:" + totalItemCount);
             getAdapterController().loadNext();
             loading = true;
         }

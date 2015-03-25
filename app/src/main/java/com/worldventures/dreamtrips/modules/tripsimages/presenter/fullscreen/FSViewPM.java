@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailab
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 
 import java.util.List;
 
@@ -71,7 +70,11 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
         view.setDeleteVisibility(isDeleteVisible());
         view.setFlagVisibility(isFlagVisible());
         view.loadImage(photo.getFSImage());
-        view.setInspireDescription(photo.getFsDescription());
+        view.setDescription(photo.getFsDescription());
+        view.setCommentCount(photo.getFsCommentCount());
+        view.setLikeCount(photo.getFsLikeCount());
+        view.setLocation(photo.getFsLocation());
+        view.setDate(photo.getFsDate());
     }
 
     protected abstract boolean isLiked();
@@ -97,11 +100,11 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
     public void onDeleteAction() {
     }
 
-    public void onFbShare(FullScreenPhotoActivity activity) {
+    public void onFbShare() {
         activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
     }
 
-    public void onTwitterShare(FullScreenPhotoActivity activity) {
+    public void onTwitterShare() {
         activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
     }
 
@@ -112,7 +115,15 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
     public static interface View extends Presenter.View {
         void setTitle(String title);
 
-        void setInspireDescription(String desc);
+        void setDate(String date);
+
+        void setLocation(String location);
+
+        void setCommentCount(int count);
+
+        void setLikeCount(int count);
+
+        void setDescription(String desc);
 
         void setLiked(boolean isLiked);
 

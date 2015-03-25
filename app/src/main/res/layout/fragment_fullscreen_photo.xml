@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <ImageView
@@ -28,6 +29,7 @@
         android:layout_centerVertical="true" />
 
     <LinearLayout
+        android:id="@+id/ll_content_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -35,7 +37,6 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/vg_inpire_me"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
@@ -49,58 +50,61 @@
                 android:maxLines="3"
                 android:text="Jason Gordon"
                 android:textColor="@android:color/white"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="TRIP TO THE GOLDEN GATE"
-                    android:textColor="@android:color/white"
-                    android:textSize="20dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
                     android:layout_weight="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="TRIP TO THE GOLDEN GATE"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/tv_see_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See more"
-                    android:id="@+id/tv_see_more"
-                    android:textColor="#ff9e9e9e"
-                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:textSize="18dp"
                     android:layout_marginRight="16dp"
-                    android:singleLine="true" />
+                    android:layout_marginTop="16dp"
+                    android:singleLine="true"
+                    android:text="See more"
+                    android:textColor="#ff9e9e9e"
+                    android:textSize="18dp" />
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="16dp"
                 android:text="Sun Francisco, CA"
-                android:id="@+id/tv_location"
                 android:textAlignment="viewEnd"
                 android:textColor="#ff9e9e9e"
-                android:layout_marginLeft="16dp"
-                android:layout_marginBottom="4dp" />
+                android:visibility="gone" />
 
             <TextView
+                android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:text="APR 18, 2014 9:00AM"
-                android:id="@+id/tv_date"
                 android:textColor="#ff9e9e9e"
-                android:layout_marginLeft="16dp" />
+                android:visibility="gone" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -133,21 +137,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:drawableLeft="@drawable/ic_like_2_normal"
+                    android:drawableLeft="@drawable/ic_fs_comments_small"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
                     android:text="150 likes"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp"
-                    android:gravity="center_vertical" />
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/tv_comments_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/done_green"
+                    android:drawableLeft="@drawable/ic_fs_thumb_up_small"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
                     android:text="12 comments"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp"
-                    android:gravity="center_vertical" />
+                    android:textSize="14dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -163,38 +169,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_like_2" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_thumb_up" />
 
                 <ImageView
                     android:id="@+id/iv_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_like_2" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_comments"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/iv_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_share" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_share" />
 
                 <ImageView
                     android:id="@+id/iv_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_flag_2" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_image" />
 
                 <ImageView
                     android:id="@+id/iv_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_delete_2" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_delete" />
 
             </LinearLayout>
         </LinearLayout>

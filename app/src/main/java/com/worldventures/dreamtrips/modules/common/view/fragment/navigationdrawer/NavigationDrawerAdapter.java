@@ -112,7 +112,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             HeaderHolder holder = (HeaderHolder) viewHolder;
             universalImageLoader.loadImage(navigationHeader.getUserPhoto(), holder.userPhoto, OP_AVATAR);
             universalImageLoader.loadImage(navigationHeader.getUserCover(), holder.userCover, OP_COVER);
-            holder.userNome.setText(navigationHeader.getUserNome());
+            holder.userNome.setText(navigationHeader.getUserName());
             holder.userEmail.setText(navigationHeader.getUserEmail());
         }
 

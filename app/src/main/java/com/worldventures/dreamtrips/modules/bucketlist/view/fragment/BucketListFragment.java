@@ -83,7 +83,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
         this.recyclerView.setEmptyView(emptyView);
 
-        mDragDropManager = new RecyclerViewDragDropManager();
         mDragDropManager.setDraggingItemShadowDrawable(
                 (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 

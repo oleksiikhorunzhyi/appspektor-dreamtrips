@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -116,8 +117,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                         (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     getEventBus().post(new BucketItemClickedEvent(getModelObject()));
                 }
-                break;
-        }
+                break;        }
         return swipeLayout.onTouchEvent(event);
     }
 
@@ -126,6 +126,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         if (!getModelObject().isDone()) {
             v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             longPressed = true;
+            mDragStateFlags = RecyclerViewDragDropManager.STATE_FLAG_DRAGGING;
         }
         return false;
     }
@@ -144,6 +145,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void prepareForReuse() {
+        longPressed = false;
+
         swipeLayout.close(false, false);
 
         swipeLayout.removeSwipeListener(this);
@@ -174,7 +177,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     }
 
     public View getDraggableView() {
-        return container;
+        return swipeLayout;
     }
 
     /**
@@ -255,6 +258,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
                 break;
         }
+        lastOffset = 0;
     }
 
     @SwipeAction

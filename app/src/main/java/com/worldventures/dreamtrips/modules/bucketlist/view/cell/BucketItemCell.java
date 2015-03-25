@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,7 +28,6 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
@@ -42,9 +39,10 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     static final int ACTION_DEL = 0;
     static final int ACTION_DONE = 1;
-    //
+
     static final int ACTION_NONE = -1;
     static final int ACTION_SETTLING = -2;
+
     @InjectView(R.id.container)
     RelativeLayout container;
     @InjectView(R.id.textViewName)
@@ -61,15 +59,17 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     ImageView imageViewStatusClose;
     @InjectView(R.id.crossing)
     View crossing;
+
     @Inject
     Context context;
+
     private int mDragStateFlags;
     private int mSwipeStateFlags;
     private int mSwipeResult = RecyclerViewSwipeManager.RESULT_NONE;
     private int mAfterSwipeReaction = RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
-    private float mSwipeAmount;
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
+
     private boolean longPressed;
 
     private int lastOffset;
@@ -86,7 +86,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         renderAction(ACTION_SETTLING);
         render();
 
-        // set background resource (target view ID: container)
         final int dragState = getDragStateFlags();
 
         if (!getModelObject().isDone() && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
@@ -145,10 +144,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void prepareForReuse() {
-        //set show mode.
         swipeLayout.close(false, false);
 
-        //set drag edge.
         swipeLayout.removeSwipeListener(this);
         swipeLayout.addSwipeListener(this);
     }
@@ -167,7 +164,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
      *
      * @see DraggableItemViewHolder
      */
-
     @Override
     public void setDragStateFlags(int flags) {
         mDragStateFlags = flags;
@@ -184,7 +180,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     /**
      * Swipe handling, @see SwipeListener
      */
-
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
         afterSwipe = true;
@@ -207,7 +202,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     @Override
     public void onUpdate(SwipeLayout swipeLayout, int leftOffset, int topOffset) {
         if (afterSwipe) {
-            Log.d(BucketItemCell.class.getName(), "lastOffser =" + lastOffset);
             lastOffset = leftOffset;
         }
 
@@ -228,7 +222,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     }
 
     private void renderAction(@SwipeAction int action) {
-        Log.d(BucketItemCell.class.getName(), "action =" + action);
         switch (action) {
             case ACTION_DEL:
                 imageViewStatusDone.setVisibility(View.INVISIBLE);
@@ -236,10 +229,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                 swipeLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_red));
                 break;
             case ACTION_DONE:
-                imageViewStatusDone.setVisibility(View.VISIBLE);
-                imageViewStatusClose.setVisibility(View.INVISIBLE);
-                swipeLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
-                break;
             case ACTION_NONE:
                 imageViewStatusDone.setVisibility(View.VISIBLE);
                 imageViewStatusClose.setVisibility(View.INVISIBLE);

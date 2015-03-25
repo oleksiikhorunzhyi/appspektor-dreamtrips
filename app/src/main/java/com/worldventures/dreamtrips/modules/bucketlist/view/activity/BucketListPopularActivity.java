@@ -7,7 +7,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPopularActivityPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -54,10 +53,6 @@ public class BucketListPopularActivity extends ActivityWithPresenter<BucketListP
             }
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
-    }
-
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
     }
 
     @Override

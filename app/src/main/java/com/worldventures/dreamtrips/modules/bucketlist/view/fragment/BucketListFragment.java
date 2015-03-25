@@ -67,10 +67,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
 
-    @Inject
-    @Global
-    EventBus eventBus;
-
     private MyDraggableSwipeableItemAdapter<Object> mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
 
@@ -82,7 +78,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BUNDLE_TYPE);
-        eventBus.register(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));

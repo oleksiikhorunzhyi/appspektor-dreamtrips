@@ -19,11 +19,9 @@ public class BucketHeaderCell extends AbstractCell<BucketHeader> {
 
     @Override
     protected void syncUIStateWithModel() {
-        //textViewHeader.setText(getModelObject().getHeaderResource());
     }
 
     @Override
     public void prepareForReuse() {
-
     }
 }

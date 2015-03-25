@@ -42,13 +42,13 @@ import de.greenrobot.event.EventBus;
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
+    private static final int DELETION_DELAY = 3500;
+
     @Inject
     public Context context;
     @Inject
     public SnappyRepository db;
-    @Global
-    @Inject
-    public EventBus eventBus;
+
     @Inject
     public Prefs prefs;
 
@@ -121,13 +121,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         view.getAdapter().setItems(result);
     }
 
-    public void onEvent(BucketItemClickedEvent event) {
-        if (event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            eventBus.cancelEventDelivery(event);
-            openDetails(event.getBucketItem());
-        }
-    }
-
     public void onEvent(BucketItemAddedEvent event) {
         if (!bucketItems.contains(event.getBucketItem())
                 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
@@ -185,7 +178,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketItems.remove(event.getBucketItem());
             refresh();
 
-            DeleteBucketItemCommand request = hiden(event.getBucketItem().getId());
+            DeleteBucketItemCommand request = deleteDellayed(event.getBucketItem().getId());
             view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
     }
@@ -198,8 +191,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         activityRouter.openBucketListPopularActivity(type);
     }
 
-    private DeleteBucketItemCommand hiden(int id) {
-        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, 3500);
+    private DeleteBucketItemCommand deleteDellayed(int id) {
+        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, DELETION_DELAY);
         dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -277,7 +270,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
         });
     }
-
 
     public void addToBucketList(String title) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);

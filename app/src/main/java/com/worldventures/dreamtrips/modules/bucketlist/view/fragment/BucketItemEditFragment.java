@@ -26,11 +26,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.done)
     ImageView imageViewDone;
 
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
     }
 
     @Override

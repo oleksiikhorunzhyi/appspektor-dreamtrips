@@ -17,7 +17,7 @@
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
-        app:floatingLabel="highlight"
+        app:floatingLabel="normal"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -30,7 +30,7 @@
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
         app:floatingLabelText="@string/bucket_hint_description"
-        app:floatingLabel="highlight"
+        app:floatingLabel="normal"
         app:primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText

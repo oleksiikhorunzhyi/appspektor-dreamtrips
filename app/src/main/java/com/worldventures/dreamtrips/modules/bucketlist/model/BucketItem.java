@@ -10,11 +10,14 @@ import java.util.Date;
 public class BucketItem extends BaseEntity {
 
     public static final String NEW = "new";
-    @TaggedFieldSerializer.Tag(2)
-    private String status = NEW;
     public static final String COMPLETED = "completed";
+
     @TaggedFieldSerializer.Tag(1)
     private String name;
+
+    @TaggedFieldSerializer.Tag(2)
+    private String status = NEW;
+
     @TaggedFieldSerializer.Tag(3)
     private Date target_date;
 

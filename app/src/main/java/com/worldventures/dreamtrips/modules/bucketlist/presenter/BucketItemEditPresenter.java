@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 /**
- *  1 on 26.02.15.
+ * 1 on 26.02.15.
  */
 public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.View> {
 
@@ -19,10 +19,22 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
     SnappyRepository db;
 
     private BucketTabsFragment.Type type;
+    private BucketItem bucketItem;
 
     public BucketItemEditPresenter(View view, BucketTabsFragment.Type type, BucketItem bucketItem) {
         super(view);
         this.type = type;
+        this.bucketItem = bucketItem;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        view.setTitle(bucketItem.getName());
+    }
+
+    public void saveItem() {
+
     }
 
     public void frameClicked() {
@@ -31,11 +43,17 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
     public interface View extends Presenter.View {
         void setTitle(String title);
-        void setDescription(String description);
-        void setLocation(String location);
-        void setTime(String time);
-        void setPeople(String people);
-        void setTags(String tags);
 
+        void setDescription(String description);
+
+        void setLocation(String location);
+
+        void setTime(String time);
+
+        void setPeople(String people);
+
+        void setTags(String tags);
     }
+
+
 }

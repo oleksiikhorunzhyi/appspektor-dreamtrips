@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.Date;
+import java.util.List;
 
 @DefaultSerializer(TaggedFieldSerializer.class)
 public class BucketItem extends BaseEntity {
@@ -26,6 +27,12 @@ public class BucketItem extends BaseEntity {
 
     @TaggedFieldSerializer.Tag(5)
     private String type;
+
+    @TaggedFieldSerializer.Tag(6)
+    private String description;
+
+    @TaggedFieldSerializer.Tag(7)
+    private List<BucketTag> bucketTags;
 
     public String getName() {
         return name;
@@ -75,5 +82,19 @@ public class BucketItem extends BaseEntity {
         this.type = type;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<BucketTag> getBucketTags() {
+        return bucketTags;
+    }
+
+    public void setBucketTags(List<BucketTag> bucketTags) {
+        this.bucketTags = bucketTags;
+    }
 }

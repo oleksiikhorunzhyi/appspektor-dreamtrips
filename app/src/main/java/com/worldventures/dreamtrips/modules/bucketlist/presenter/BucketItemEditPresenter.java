@@ -1,10 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,10 +36,22 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
     public void resume() {
         super.resume();
         view.setTitle(bucketItem.getName());
+        view.setDescription(bucketItem.getDescription());
+        view.setTime(bucketItem.getCompletion_date());
+
     }
 
     public void saveItem() {
 
+    }
+
+    public Date getDate() {
+        Date date = bucketItem.getCompletion_date();
+        return date != null ? date : Calendar.getInstance().getTime();
+    }
+
+    public List<String> getListFromString(String temp) {
+        return Queryable.from(temp.split(",")).map((s) -> s.trim()).toList();
     }
 
     public void frameClicked() {
@@ -48,11 +65,21 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
         void setLocation(String location);
 
-        void setTime(String time);
+        void setTime(Date time);
 
         void setPeople(String people);
 
         void setTags(String tags);
+
+        String getTags();
+
+        String getPeople();
+
+        Date getTime();
+
+        String getTitle();
+
+        String getDescription();
     }
 
 

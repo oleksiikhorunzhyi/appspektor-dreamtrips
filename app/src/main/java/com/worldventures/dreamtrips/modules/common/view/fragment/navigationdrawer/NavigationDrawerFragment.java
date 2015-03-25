@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -18,11 +17,9 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -45,7 +42,6 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
     private NavigationDrawerListener navigationDrawerListener;
     private NavigationDrawerAdapter adapter;
-
     private ComponentDescription currentComponent;
 
     @Override
@@ -57,11 +53,11 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         ComponentDescription componentDescription;
         if (savedInstanceState != null) {
             componentDescription = this.rootComponentsProvider.getActiveComponents().get(savedInstanceState.getInt(STATE_SELECTED_STATE));
+            setCurrentComponent(componentDescription);
         } else {
             componentDescription = this.rootComponentsProvider.getActiveComponents().get(0);
+            selectItem(componentDescription);
         }
-
-        selectItem(componentDescription);
     }
 
     @Override
@@ -89,16 +85,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     private NavigationHeader getNavigationHeader() {
-        NavigationHeader navHeader = new NavigationHeader();
-
-        final User user = appSessionHolder.get().get().getUser();
-
-        navHeader.setUserEmail(user.getEmail());
-        navHeader.setUserNome(user.getUsername());
-        navHeader.setUserCover(Uri.fromFile(new File(user.getCoverPath())));
-        navHeader.setUserPhoto(Uri.parse(user.getAvatar().getMedium()));
-
-        return navHeader;
+        return new NavigationHeader(appSessionHolder.get().get().getUser());
     }
 
     public void onEvent(UpdateUserInfoEvent event) {
@@ -129,7 +116,6 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
                 this.navigationDrawerListener.onNavigationDrawerItemReselected(componentDescription);
             }
         }
-
 
         setCurrentComponent(componentDescription);
     }

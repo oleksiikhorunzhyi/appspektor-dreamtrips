@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -122,7 +121,9 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
             feedDialog.setOnCompleteListener((bundle, e) -> {
                 if (feedDialog != null) {
                     if (e == null) {
-                        informUser(getString(R.string.fab_posted));
+                        new Handler().postDelayed(() -> {
+                            informUser(getString(R.string.fab_posted));
+                        }, 300);
                         finish();
                     }
                     feedDialog.dismiss();

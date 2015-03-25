@@ -264,6 +264,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
+    public void setLikeCountVisibility(boolean likeCountVisible) {
+        tvLikesCount.setVisibility(likeCountVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void setTitle(String title) {
         tvTitle.setText(title);
     }
@@ -272,16 +277,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     public void setDate(String date) {
         if (TextUtils.isEmpty(date)) {
             tvDate.setVisibility(View.GONE);
+            date = "";
         }
-        tvDate.setText(date);
+        tvDate.setText(date.toUpperCase());
     }
 
     @Override
     public void setLocation(String location) {
         if (TextUtils.isEmpty(location)) {
             tvLocation.setVisibility(View.GONE);
+            location = "";
         }
-        tvLocation.setText(location);
+        tvLocation.setText(location.toUpperCase());
     }
 
     @Override

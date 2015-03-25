@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Presenter<FSViewPM.View> {
 
@@ -67,6 +69,7 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
         view.setTitle(photo.getFSTitle());
         view.setLiked(isLiked());
         view.setLikeVisibility(isLikeVisible());
+        view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
         view.setFlagVisibility(isFlagVisible());
         view.loadImage(photo.getFSImage());
@@ -77,6 +80,8 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
         view.setDate(photo.getFsDate());
     }
 
+
+
     protected abstract boolean isLiked();
 
     protected abstract boolean isFlagVisible();
@@ -84,6 +89,10 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
     protected abstract boolean isDeleteVisible();
 
     protected abstract boolean isLikeVisible();
+
+    private boolean isLikeCountVisible() {
+        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
+    }
 
     public void showFlagAction(int itemId) {
         Flag flagContent = getFlagContent().get(itemId);
@@ -138,5 +147,7 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
         public void showFlagConfirmDialog(String reason, String desc);
 
         public void showFlagDescription(String reason);
+
+        void setLikeCountVisibility(boolean likeCountVisible);
     }
 }

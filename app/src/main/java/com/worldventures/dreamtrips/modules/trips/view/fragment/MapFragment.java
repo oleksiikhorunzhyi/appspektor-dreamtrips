@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import butterknife.InjectView;
 
 /**
- * Created by Edward on 26.01.15.
+ *  Edward on 26.01.15.
  * fragment with map and trips
  */
 @Layout(R.layout.fragment_map)

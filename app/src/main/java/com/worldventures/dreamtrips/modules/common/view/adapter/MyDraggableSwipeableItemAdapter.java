@@ -124,22 +124,12 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         if (item instanceof BucketItem) {
             if (!((BucketItem) item).isDone()) {
                 if (moveListener != null) {
-                    moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
-                }
-            } else {
-                BaseItemClass firstItem = getItem(1);
-                if (firstItem instanceof BucketItem && moveListener != null) {
-                    if (((BucketItem) firstItem).isDone()) {
-                        moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
-                    } else {
-                        moveListener.onItemMoved(fromPosition - 2, toPosition - 2);
-                    }
+                    moveListener.onItemMoved(fromPosition, toPosition);
                 }
             }
         }
 
         moveItem(fromPosition, toPosition);
-
         notifyItemMoved(fromPosition, toPosition);
     }
 

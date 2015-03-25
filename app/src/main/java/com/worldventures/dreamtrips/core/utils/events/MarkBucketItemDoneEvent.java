@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.utils.events;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 /**
- * Created by 1 on 05.03.15.
+ *  1 on 05.03.15.
  */
 public class MarkBucketItemDoneEvent {
     private BucketItem bucketItem;

@@ -25,7 +25,6 @@ public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter
     @Override
     public void init() {
         super.init();
-        eventBus.register(this);
     }
 
     private void setView() {

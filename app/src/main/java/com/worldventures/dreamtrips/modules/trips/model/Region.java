@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-/**
- * Created by Edward on 22.01.15.
- */
+
 public class Region extends BaseEntity {
 
     private String name;

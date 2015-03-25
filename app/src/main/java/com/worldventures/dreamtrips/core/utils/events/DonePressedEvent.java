@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 
-/**
- * Created by 1 on 17.03.15.
- */
 public class DonePressedEvent {
 
     private PopularBucketItem popularBucketItem;

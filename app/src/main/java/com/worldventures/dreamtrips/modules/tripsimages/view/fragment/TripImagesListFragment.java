@@ -58,7 +58,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        eventBus.register(this);
 
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         this.recyclerView.setEmptyView(emptyView);

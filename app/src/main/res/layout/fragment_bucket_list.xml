@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/center_view"
             android:layout_marginTop="60dp"
+            android:gravity="center"
             android:alpha="0.5"
             android:padding="22dp"
             android:text="@string/bucket_list_create_message"
@@ -49,7 +50,7 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerInParent="true"/>
 
     <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView

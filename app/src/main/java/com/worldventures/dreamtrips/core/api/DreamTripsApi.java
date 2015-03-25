@@ -101,14 +101,14 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items")
     public BucketItem createItem(@Body BucketPostItem bucketItem);
 
-    @PATCH("/api/bucket_list_items/{id}")
+    @PUT("/api/bucket_list_items/{id}/status")
     public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
 
     @DELETE("/api/bucket_list_items/{id}")
     public JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")
-    public ArrayList<BucketItem> getBucketList();
+    public ArrayList<BucketItem> getBucketList(@Query("type") String type);
 
     @GET("/api/bucket_list/locations")
     public ArrayList<PopularBucketItem> getPopularLocations();
@@ -116,7 +116,7 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/activities")
     public ArrayList<PopularBucketItem> getPopularActivities();
 
-    @PUT("/api/bucket_list_order")
-    public JsonObject changeOrder(@Body List<BucketOrderModel> items);
+    @PUT("/api/bucket_list_items/{id}/position")
+    public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 
 }

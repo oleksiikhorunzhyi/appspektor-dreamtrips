@@ -6,10 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -95,6 +99,25 @@ public class FragmentCompass {
             FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
             dialogFragment.show(supportFragmentManager, tag);
         }
+    }
+
+    public void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener,
+                                     Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        showDatePickerDialog(onDateSetListener, calendar, 0, 0, "default");
+    }
+
+    public void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener,
+                                     Calendar calendar, int from, int to, String tag) {
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance
+                (onDateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+
+        if (from != 0 && to != 0) {
+            datePickerDialog.setYearRange(from, to);
+        }
+
+        show(datePickerDialog, tag);
     }
 
     protected void showDialog(DialogState state, Bundle bundle) {

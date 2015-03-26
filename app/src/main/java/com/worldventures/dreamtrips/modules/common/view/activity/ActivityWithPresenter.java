@@ -30,8 +30,7 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
 
     @Override
     public void informUser(int stringId) {
-        SnackBar snackbar = new SnackBar(this, getString(stringId));
-        snackbar.show();
+        Toast.makeText(getApplicationContext(), stringId, Toast.LENGTH_SHORT).show();
     }
 
     @Override

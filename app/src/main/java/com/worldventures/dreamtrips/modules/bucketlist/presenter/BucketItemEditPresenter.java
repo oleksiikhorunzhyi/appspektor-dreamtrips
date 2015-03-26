@@ -6,6 +6,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -55,6 +56,8 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         bucketPostItem.setStatus(view.getStatus());
         bucketPostItem.setTags(getListFromString(view.getTags()));
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
+        Date date = DateTimeUtils.dateFromString(view.getTime());
+        bucketPostItem.setDate(date);
         UpdateBucketItemCommand updateBucketItemCommand = new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
         dreamSpiceManager.execute(updateBucketItemCommand, updateListener);
     }
@@ -74,6 +77,10 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
             db.saveBucketList(items, type.name());
         }
     };
+
+    public void onDataSet(int year, int month, int day) {
+        view.setTime(DateTimeUtils.convertDateToString(year, month, day));
+    }
 
     public Date getDate() {
         Date date = bucketItem.getCompletion_date();

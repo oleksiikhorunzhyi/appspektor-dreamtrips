@@ -99,6 +99,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        getPresenter().onDataSet(year, month, day);
     }
 
     @Override

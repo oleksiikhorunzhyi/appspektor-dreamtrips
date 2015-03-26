@@ -9,21 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trip extends BaseEntity implements Filterable {
-    String name;
-    String description;
-    boolean featured;
-    boolean rewarded;
-    boolean liked;
-    int duration;
-    boolean price_available;
-    boolean available;
-    long rewardsLimit;
-    Price price;
-    Location location;
-    Schedule dates;
-    Region region;
-    List<TripImage> images;
-    List<Activity> activities;
+    private String name;
+    private String description;
+    private boolean featured;
+    private boolean rewarded;
+    private boolean liked;
+    private int duration;
+    private boolean price_available;
+    private boolean available;
+    private long rewardsLimit;
+    private Price price;
+    private Location location;
+    private Schedule dates;
+    private Region region;
+    private List<TripImage> images;
+    private List<Activity> activities;
 
     public String getName() {
         return name;

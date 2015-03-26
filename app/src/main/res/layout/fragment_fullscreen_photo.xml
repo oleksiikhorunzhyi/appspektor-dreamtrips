@@ -69,7 +69,9 @@
                     android:singleLine="true"
                     android:text="TRIP TO THE GOLDEN GATE"
                     android:textColor="@android:color/white"
-                    android:textSize="20dp" />
+                    android:textSize="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp" />
 
                 <TextView
                     android:id="@+id/tv_see_more"

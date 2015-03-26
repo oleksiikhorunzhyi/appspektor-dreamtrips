@@ -116,8 +116,10 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     public void onItemClick(int position) {
         List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
         IFullScreenAvailableObject obj = objects.get(position);
-        if (obj instanceof ImageUploadTask && ((ImageUploadTask) obj).isFailed()) {
-            dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+        if (obj instanceof ImageUploadTask) {
+            if (((ImageUploadTask) obj).isFailed()) {
+                dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+            }
         } else {
             this.activityRouter.openFullScreenPhoto(position, type);
         }
@@ -142,6 +144,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                     Object item = view.getPhotosFromAdapter().get(i);
                     if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                         view.replace(i, event.getPhoto());
+                        eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
                         break;
                     }
                 }
@@ -156,6 +159,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             Object o = photosFromAdapter.get(i);
             if (o instanceof Photo && ((Photo) o).getId() == event.getPhotoId()) {
                 view.remove(i);
+                eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
             }
         }
     }

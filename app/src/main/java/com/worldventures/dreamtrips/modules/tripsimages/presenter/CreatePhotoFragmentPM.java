@@ -4,10 +4,13 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.net.Uri;
 
 import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -23,8 +26,12 @@ public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View>
     @Inject
     @Global
     EventBus eventBus;
+
     @Inject
     SnappyRepository db;
+
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
 
     public CreatePhotoFragmentPM(View view) {
         super(view);
@@ -48,13 +55,14 @@ public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View>
             ImageUploadTask action = new ImageUploadTask();
             action.setFileUri(view.getImageUri().toString());
             action.setTitle(view.getTitle());
+            action.setUserName(appSessionHolder.get().get().getUser().getFullName());
             action.setTags(getParsedText(view.getTags()));
             action.setLatitude(0);
             action.setLongitude(0);
             action.setLocationName(view.getLocation());
             Date date = DateTimeUtils.dateFromString(view.getDate());
             Date time = DateTimeUtils.timeFromString(view.getTime());
-            action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+            action.setShotAt(new DateTime(DateTimeUtils.mergeDateTime(date, time)));
             action.setTaskId(UUID.randomUUID().toString());
             db.saveUploadImageTask(action);
 

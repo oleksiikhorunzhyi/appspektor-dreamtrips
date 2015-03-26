@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -20,9 +21,6 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-/**
- * 1 on 26.02.15.
- */
 public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.View> {
 
     @Inject
@@ -64,12 +62,12 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
     private RequestListener<BucketItem> updateListener = new RequestListener<BucketItem>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            view.informUser(spiceException.getMessage());
+            view.informUser(R.string.bucket_item_edit_error);
         }
 
         @Override
         public void onRequestSuccess(BucketItem bucketItem) {
-            view.informUser("Saved!");
+            view.informUser(R.string.bucket_item_edit_completed);
             int i = items.indexOf(bucketItem);
             items.remove(items.indexOf(bucketItem));
             items.add(i, bucketItem);

@@ -9,7 +9,7 @@ import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsFragmentPM;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> implements BucketTabsFragmentPM.View {
+public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.sw_liked)
     Switch swLiked;
@@ -32,8 +32,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
     BasePagerAdapter adapter;
 
     @Override
-    protected BucketTabsFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new BucketTabsFragmentPM(this);
+    protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
+        return new BucketTabsPresenter(this);
     }
 
     @Override
@@ -55,11 +55,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsFragmentPM> imple
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
         tabs.setViewPager(pager);
-    }
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     public enum Type {

@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-/**
- *  1 on 19.03.15.
- */
 public class BucketOrderModel {
 
     private int position;

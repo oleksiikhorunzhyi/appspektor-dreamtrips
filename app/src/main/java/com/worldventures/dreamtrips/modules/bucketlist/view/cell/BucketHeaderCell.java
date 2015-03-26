@@ -7,9 +7,6 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 
-/**
- *  1 on 05.03.15.
- */
 @Layout(R.layout.adapter_header_bucket)
 public class BucketHeaderCell extends AbstractCell<BucketHeader> {
 

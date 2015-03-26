@@ -14,7 +14,6 @@
         android:layout_alignParentTop="false"
         android:visibility="gone">
 
-
         <TextView
             android:id="@+id/textViewEmpty"
             android:layout_width="wrap_content"

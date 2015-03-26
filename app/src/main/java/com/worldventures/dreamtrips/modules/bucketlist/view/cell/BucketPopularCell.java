@@ -19,10 +19,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- *  1 on 03.03.15.
- */
-
 @Layout(R.layout.adapter_item_popular_cell)
 public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
 
@@ -65,14 +61,12 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
 
     @OnClick(R.id.buttonDone)
     void onDone() {
-        //getModelObject().setDone(buttonFlatDone.isSelected());
         getEventBus().post(new DonePressedEvent(getModelObject(), getPosition()));
         hideButtons();
     }
 
     @OnClick(R.id.buttonAdd)
     void onAdd() {
-        //getModelObject().setAdd(buttonFlatAdd.isSelected());
         getEventBus().post(new AddPressedEvent(getModelObject(), getPosition()));
         hideButtons();
     }

@@ -109,13 +109,13 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
-                    longPressed = false;
-                }
                 if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close &&
                         (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     getEventBus().post(new BucketItemClickedEvent(getModelObject()));
+                }
+            case MotionEvent.ACTION_CANCEL:
+                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
+                    longPressed = false;
                 }
                 container.setBackgroundResource(R.drawable.bucket_item_selector);
                 break;
@@ -251,13 +251,11 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     private void processAction(@SwipeAction int action) {
         switch (action) {
             case ACTION_DEL:
-                Timber.d("Sending delete event");
                 getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
                 break;
             case ACTION_DONE:
                 getModelObject().setDone(!getModelObject().isDone());
                 render();
-                Timber.d("Sending done event");
                 getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
                 break;
         }

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -23,7 +22,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -32,7 +30,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 1 on 03.03.15.
  */
-public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
+public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
     @Inject
     Context context;
@@ -60,7 +58,7 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
     };
     private List<BucketItem> realData = new ArrayList<>();
 
-    public BucketListPopularPM(View view, BucketTabsFragment.Type type) {
+    public BucketPopularPresenter(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
     }

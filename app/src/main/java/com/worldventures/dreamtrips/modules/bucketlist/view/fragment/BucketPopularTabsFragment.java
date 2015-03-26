@@ -7,7 +7,7 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsFragmentPM;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -18,7 +18,7 @@ import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFragmentPM> implements BucketPopularTabsFragmentPM.View {
+public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPresenter> implements BucketPopularTabsPresenter.View {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabs;
@@ -29,8 +29,8 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsFra
     BasePagerAdapter adapter;
 
     @Override
-    protected BucketPopularTabsFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new BucketPopularTabsFragmentPM(this);
+    protected BucketPopularTabsPresenter createPresenter(Bundle savedInstanceState) {
+        return new BucketPopularTabsPresenter(this);
     }
 
     @Override

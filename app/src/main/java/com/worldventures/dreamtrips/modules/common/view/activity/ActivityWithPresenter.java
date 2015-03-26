@@ -30,6 +30,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
+    public void informUser(int stringId) {
+        SnackBar snackbar = new SnackBar(this, getString(stringId));
+        snackbar.show();
+    }
+
+    @Override
     public void alert(String s) {
         runOnUiThread(() -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);

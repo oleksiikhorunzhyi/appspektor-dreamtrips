@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-/**
- *  1 on 06.03.15.
- */
 public class BucketHeader extends BaseEntity {
 
     private int headerResource;

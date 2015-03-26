@@ -5,9 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * 1 on 11.03.15.
- */
 public class BucketPostItem {
     private Integer id;
     private String name;

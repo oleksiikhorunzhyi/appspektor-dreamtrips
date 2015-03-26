@@ -85,7 +85,8 @@ public class Presenter<VT extends Presenter.View> {
     }
 
     public interface View {
-        void informUser(String stringId);
+        void informUser(int stringId);
+        void informUser(String string);
         void alert(String s);
     }
 }

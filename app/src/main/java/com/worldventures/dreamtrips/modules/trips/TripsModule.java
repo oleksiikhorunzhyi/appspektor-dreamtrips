@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
-import com.worldventures.dreamtrips.modules.trips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
@@ -37,7 +36,6 @@ import dagger.Provides;
                 FiltersPresenter.class,
                 BookItDialogPresenter.class,
                 BookItActivityPresenter.class,
-                BookItDialogFragment.class,
                 DetailedTripFragment.class,
                 DetailTripActivity.class,
                 DetailTripActivityPresenter.class,

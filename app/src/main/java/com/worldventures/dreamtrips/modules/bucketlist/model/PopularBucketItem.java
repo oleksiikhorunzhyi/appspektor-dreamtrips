@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-/**
- *  1 on 16.03.15.
- */
 public class PopularBucketItem extends BaseEntity {
 
     private String name;

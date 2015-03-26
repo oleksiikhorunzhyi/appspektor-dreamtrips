@@ -110,17 +110,22 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     public void fillData() {
+        view.finishLoading();
         if (regions != null && activities != null) {
+
             List<Object> data = new ArrayList<>();
-            view.finishLoading();
             data.clear();
             data.add(dateFilterItem);
             data.add(filterModel);
-            if (!filterModel.isHide())
+            if (!filterModel.isHide()) {
                 data.addAll(regions);
+            }
+
             data.add(themeHeaderModel);
-            if (!themeHeaderModel.isHide())
+
+            if (!themeHeaderModel.isHide()) {
                 data.addAll(parentActivities);
+            }
 
             setRegionsChecked(filterModel.isChecked());
             setThemesChecked(themeHeaderModel.isChecked());

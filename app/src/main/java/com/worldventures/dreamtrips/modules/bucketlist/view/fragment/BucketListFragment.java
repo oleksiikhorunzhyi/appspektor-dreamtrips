@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -34,6 +35,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -118,8 +120,12 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_quick);
-        View view = MenuItemCompat.getActionView(searchItem);
-        EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
+        setupQuickTypeInput(searchItem);
+    }
+
+    private void setupQuickTypeInput(MenuItem item) {
+        View view = MenuItemCompat.getActionView(item);
+        AutoCompleteTextView quickInputEditText = (AutoCompleteTextView) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
@@ -232,6 +238,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public void hideSoftKeyboard(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     private enum BucketFilter {

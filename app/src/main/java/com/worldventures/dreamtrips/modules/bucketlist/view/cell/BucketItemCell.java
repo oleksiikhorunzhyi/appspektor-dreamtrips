@@ -82,7 +82,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     protected void syncUIStateWithModel() {
-        tvName.setText(getModelObject().getName() + " id =" + getModelObject().getId());
+        tvName.setText(getModelObject().getName());
 
         renderAction(ACTION_SETTLING);
         render();
@@ -117,7 +117,9 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
                         (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     getEventBus().post(new BucketItemClickedEvent(getModelObject()));
                 }
-                break;        }
+                container.setBackgroundResource(R.drawable.bucket_item_selector);
+                break;
+        }
         return swipeLayout.onTouchEvent(event);
     }
 
@@ -127,6 +129,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
             v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             longPressed = true;
             mDragStateFlags = RecyclerViewDragDropManager.STATE_FLAG_DRAGGING;
+            container.setBackgroundResource(R.drawable.bg_item_dragging_active_state);
         }
         return false;
     }

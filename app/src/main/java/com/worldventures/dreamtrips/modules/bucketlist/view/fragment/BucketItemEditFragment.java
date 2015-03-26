@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.gc.materialdesign.views.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -43,9 +44,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.editTextDescription)
     EditText editTextDescription;
 
-    @InjectView(R.id.editTextLocation)
-    EditText editTextLocation;
-
     @InjectView(R.id.editTextPeople)
     EditText editTextPeople;
 
@@ -55,9 +53,13 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.editTextTime)
     EditText editTextTime;
 
+    @InjectView(R.id.checkBoxDone)
+    CheckBox checkBox;
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        checkBox.setBackgroundColor(getResources().getColor(R.color.theme_main));
     }
 
     @Override
@@ -77,6 +79,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
+                getPresenter().saveItem();
                 break;
 
         }
@@ -86,6 +89,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Optional
     @OnClick(R.id.done)
     void onDone() {
+        getPresenter().saveItem();
     }
 
     @OnClick(R.id.editTextTime)
@@ -94,7 +98,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i2, int i3) {
+    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
     }
 
     @Override
@@ -115,13 +119,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void setTime(Date time) {
-
-    }
-
-    @Override
-    public void setLocation(String location) {
-        editTextLocation.setText(location);
+    public void setTime(String time) {
+        editTextTime.setText(time);
     }
 
     @Override
@@ -145,8 +144,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public Date getTime() {
-        return null;
+    public String getTime() {
+        return editTextTime.getText().toString();
     }
 
     @Override
@@ -157,6 +156,16 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public String getDescription() {
         return editTextDescription.getText().toString();
+    }
+
+    @Override
+    public void setStatus(boolean isCompleted) {
+        checkBox.setChecked(isCompleted);
+    }
+
+    @Override
+    public boolean getStatus() {
+        return checkBox.isCheck();
     }
 }
 

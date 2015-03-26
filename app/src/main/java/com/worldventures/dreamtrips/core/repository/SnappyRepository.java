@@ -88,8 +88,16 @@ public class SnappyRepository {
         putList(items, BUCKET_LIST + ":" + type, BucketItem.class);
     }
 
-    public List<BucketItem> readBucketList(String type) throws ExecutionException, InterruptedException {
-        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+    public List<BucketItem> readBucketList(String type) {
+        List<BucketItem> list = null;
+        try {
+            list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) {
                 return 0;
@@ -99,6 +107,7 @@ public class SnappyRepository {
                 return -1;
             }
         });
+
         return list;
     }
 

@@ -8,4 +8,8 @@ import java.io.Serializable;
 public class BucketTag implements Serializable {
 
     private String name;
+
+    public String getName() {
+        return name;
+    }
 }

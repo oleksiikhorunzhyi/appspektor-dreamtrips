@@ -1,17 +1,22 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 /**
- *  1 on 11.03.15.
+ * 1 on 11.03.15.
  */
 public class BucketPostItem {
-
+    private Integer id;
     private String name;
     private String type;
-    private Integer id;
     private String status;
-
-    private transient boolean isLoaded = false;
-    private transient boolean isError = false;
+    private String date;
+    private String description;
+    private List<String> tags;
+    private List<String> people;
 
     public BucketPostItem() {
     }
@@ -31,51 +36,34 @@ public class BucketPostItem {
         this.status = status;
     }
 
-    public boolean isLoaded() {
-        return isLoaded;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
-    public void setLoaded(boolean isLoaded) {
-        this.isLoaded = isLoaded;
-    }
-
-    public String getName() {
-        return name;
+    public void setPeople(List<String> people) {
+        this.people = people;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public void setType(String type) {
         this.type = type;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public void setStatus(boolean status) {
+        this.status = status ? BucketItem.COMPLETED : BucketItem.NEW;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDate(Date date) {
     }
 
-    public boolean isError() {
-        return isError;
-    }
-
-    public void setError(boolean isError) {
-        this.isError = isError;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

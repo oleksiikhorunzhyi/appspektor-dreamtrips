@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 /**
- *  1 on 03.03.15.
+ * 1 on 03.03.15.
  */
 public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
 
@@ -68,12 +68,7 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
     @Override
     public void init() {
         super.init();
-        try {
-            realData.addAll(db.readBucketList(type.name()));
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(BucketListPopularPM.class.getSimpleName(), "", e);
-        }
-
+        realData.addAll(db.readBucketList(type.name()));
     }
 
     @Override

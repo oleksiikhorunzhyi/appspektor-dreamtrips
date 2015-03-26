@@ -4,26 +4,26 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
 
-    String title;
-    DateTime shotAt;
-    Location location;
-    List<String> tags;
-    Image images;
-    boolean liked;
-    int likesCount;
-    String taskId;
-    User user;
+    private String title;
+    private DateTime shotAt;
+    private Location location;
+    private List<String> tags;
+    private Image images;
+    private boolean liked;
+    private int likesCount;
+    private String taskId;
+    private User user;
 
     public Photo() {
     }
@@ -167,8 +167,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         if (shotAt == null) {
             return "";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mma");
-        return sdf.format(shotAt);
+        return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
     }
 
     @Override
@@ -184,11 +183,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     @Override
     public String getUserAvatar() {
         return user != null ? user.getAvatar().getThumb() : "";
-    }
-
-
-    public static class PList extends ArrayList<IFullScreenAvailableObject> {
-
     }
 
     @Override

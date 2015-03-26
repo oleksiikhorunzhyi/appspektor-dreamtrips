@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -25,8 +25,7 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     public void informUser(String st) {
-        SnackBar snackbar = new SnackBar(this, st);
-        snackbar.show();
+        Toast.makeText(getApplicationContext(), st, Toast.LENGTH_SHORT).show();
     }
 
     @Override

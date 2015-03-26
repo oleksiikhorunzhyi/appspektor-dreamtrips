@@ -121,9 +121,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
             feedDialog.setOnCompleteListener((bundle, e) -> {
                 if (feedDialog != null) {
                     if (e == null) {
-                        new Handler().postDelayed(() -> {
-                            informUser(getString(R.string.fab_posted));
-                        }, 300);
+                        informUser(getString(R.string.fab_posted));
                         finish();
                     }
                     feedDialog.dismiss();

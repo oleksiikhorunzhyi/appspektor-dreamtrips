@@ -20,7 +20,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Presenter<FSViewPM.View> {
+public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> extends Presenter<FullScreenPresenter.View> {
 
     protected Type type;
     protected User user;
@@ -29,12 +29,12 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
     EventBus eventBus;
     T photo;
 
-    public FSViewPM(View view) {
+    public FullScreenPresenter(View view) {
         super(view);
 
     }
 
-    public static FSViewPM create(View view, IFullScreenAvailableObject photo) {
+    public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
             return new FSPhotoPM(view);
         } else if (photo instanceof Inspiration) {
@@ -51,10 +51,6 @@ public abstract class FSViewPM<T extends IFullScreenAvailableObject> extends Pre
         this.type = type;
         AdobeTrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
 
-    }
-
-    public T providePhoto() {
-        return photo;
     }
 
     public void onCreate() {

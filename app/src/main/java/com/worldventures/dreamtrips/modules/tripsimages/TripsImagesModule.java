@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoActivityPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPM;
@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSInspireMePM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSPhotoPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSViewPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.ImageUploadTaskPM;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
@@ -43,15 +43,15 @@ import dagger.Provides;
                 MyImagesPM.class,
                 UserImagesPM.class,
                 YSBHPM.class,
-                FullScreenActivityPM.class,
+                FullScreenParentPresenter.class,
                 FullScreenPhotoFragment.class,
-                CreatePhotoActivityPM.class,
-                CreatePhotoFragmentPM.class,
+                CreatePhotoParentPresenter.class,
+                CreatePhotoPresenter.class,
                 DetailedImagePagerFragmentPresenter.class,
 
                 FSPhotoPM.class,
                 FSInspireMePM.class,
-                FSViewPM.class,
+                FullScreenPresenter.class,
                 ImageUploadTaskPM.class,
 
                 TripImagesTabsFragment.class,

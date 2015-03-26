@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 
+import android.content.Context;
 import android.net.Uri;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Annotations.Global;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -14,15 +15,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View> {
+public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     @Inject
     @Global
     EventBus eventBus;
@@ -31,9 +32,9 @@ public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View>
     SnappyRepository db;
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    Context context;
 
-    public CreatePhotoFragmentPM(View view) {
+    public CreatePhotoPresenter(View view) {
         super(view);
     }
 
@@ -49,14 +50,15 @@ public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View>
 
     public void saveAction() {
         if (view.getImageUri().toString().isEmpty()) {
-            view.informUser("Wrong image");
+            view.informUser(context.getString(R.string.wrong_image));
         } else {
 
             ImageUploadTask action = new ImageUploadTask();
             action.setFileUri(view.getImageUri().toString());
             action.setTitle(view.getTitle());
             action.setUserName(appSessionHolder.get().get().getUser().getFullName());
-            action.setTags(getParsedText(view.getTags()));
+            List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
+            action.setTags(new ArrayList<>(tags));
             action.setLatitude(0);
             action.setLongitude(0);
             action.setLocationName(view.getLocation());
@@ -71,15 +73,6 @@ public class CreatePhotoFragmentPM extends Presenter<CreatePhotoFragmentPM.View>
             view.end();
         }
     }
-
-    private ArrayList<String> getParsedText(String tags) {
-        String[] split = tags.split(",");
-        String[] trimed = new String[split.length];
-        for (int i = 0; i < trimed.length; i++)
-            trimed[i] = split[i].trim();
-        return new ArrayList<>(Arrays.asList(trimed));
-    }
-
 
     public interface View extends Presenter.View {
         void end();

@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoFragmentPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 import java.util.Calendar;
@@ -29,7 +29,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_create_photo)
-public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener, CreatePhotoFragmentPM.View {
+public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener, CreatePhotoPresenter.View {
 
     public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
@@ -78,13 +78,13 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoFragmentPM> imp
     }
 
     @Override
-    protected CreatePhotoFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new CreatePhotoFragmentPM(this);
+    protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
+        return new CreatePhotoPresenter(this);
     }
 
 
     @OnClick(R.id.btn_save)
-    public void onActionSave(View v) {
+    public void onActionSave() {
         getPresenter().saveAction();
     }
 

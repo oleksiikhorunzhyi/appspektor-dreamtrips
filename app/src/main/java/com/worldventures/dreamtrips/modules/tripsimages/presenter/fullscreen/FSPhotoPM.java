@@ -22,7 +22,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-public class FSPhotoPM extends FSViewPM<Photo> {
+public class FSPhotoPM extends FullScreenPresenter<Photo> {
     @Inject
     Context context;
 
@@ -67,7 +67,7 @@ public class FSPhotoPM extends FSViewPM<Photo> {
         final RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-                view.informUser("Can't like photo");
+                view.informUser(context.getString(R.string.can_not_like_photo));
             }
 
             @Override

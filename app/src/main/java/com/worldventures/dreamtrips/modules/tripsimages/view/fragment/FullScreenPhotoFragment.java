@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSViewPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 
 import java.util.List;
@@ -39,9 +39,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<FSViewPM<T>> implements FSViewPM.View {
+public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
 
-    public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
@@ -134,12 +133,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
-    protected FSViewPM createPresenter(Bundle savedInstanceState) {
+    protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         int position = getArguments().getInt(EXTRA_POSITION);
         IFullScreenAvailableObject photo = activity.getPhoto(position);
 
-        return FSViewPM.create(this, photo);
+        return FullScreenPresenter.create(this, photo);
     }
 
 
@@ -296,7 +295,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (count == -1) {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvCommentsCount.setText(count + " Comments");
+        tvCommentsCount.setText(count + getString(R.string.comments));
     }
 
     @Override
@@ -304,7 +303,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (count == -1) {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvLikesCount.setText(count + " Likes");
+        tvLikesCount.setText(count + getString(R.string.likes));
     }
 
     @Override

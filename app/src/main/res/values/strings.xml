@@ -25,11 +25,9 @@
     <string name="action_like">Like</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="trips">DreamTrips</string>
-    <string name="hello_blank_fragment"></string>
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
     <string name="empty"></string>
-    <string name="activity_feed_sh"></string>
     <string name="logout_dialog_title">Logout</string>
     <string name="logout_dialog_message">Are you sure you want to logout?</string>
     <string name="logout_dialog_positive_btn">Logout</string>
@@ -181,5 +179,9 @@
     <string name="training_videos">Training Videos</string>
 
     <string name="error_while_sync">Something went wrong</string>
+    <string name="can_not_like_photo">Can\'t like photo</string>
+    <string name="likes">" Likes"</string>
+    <string name="comments">" Comments"</string>
+    <string name="wrong_image">Wrong image</string>
 
 </resources>

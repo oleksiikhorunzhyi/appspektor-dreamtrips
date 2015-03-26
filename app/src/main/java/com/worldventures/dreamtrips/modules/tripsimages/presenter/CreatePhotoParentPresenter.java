@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 
-public class CreatePhotoActivityPM extends Presenter<Presenter.View> {
+public class CreatePhotoParentPresenter extends Presenter<Presenter.View> {
 
     private Uri imageUri;
 
-    public CreatePhotoActivityPM(View view) {
+    public CreatePhotoParentPresenter(View view) {
         super(view);
     }
 
@@ -19,10 +19,6 @@ public class CreatePhotoActivityPM extends Presenter<Presenter.View> {
         Bundle b = new Bundle();
         b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
         fragmentCompass.add(Route.CREATE_PHOTO, b);
-    }
-
-    public Uri getImageUri() {
-        return imageUri;
     }
 
     public void setImageUri(Uri imageUri) {

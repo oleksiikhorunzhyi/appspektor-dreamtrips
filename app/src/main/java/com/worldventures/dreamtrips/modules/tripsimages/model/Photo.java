@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -14,42 +15,26 @@ import java.util.List;
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
 
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        public Photo createFromParcel(Parcel source) {
-            return new Photo(source);
-        }
-
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
-
-    String title;
-    String shotAt;
-    Location location;
-    List<String> tags;
-    Image images;
-    boolean liked;
-    int likeCount;
-    String taskId;
-    User user;
+    private String title;
+    private DateTime shotAt;
+    private Location location;
+    private List<String> tags;
+    private Image images;
+    private boolean liked;
+    private int likesCount;
+    private String taskId;
+    private User user;
 
     public Photo() {
     }
 
 
-    private Photo(Parcel in) {
-        this.title = in.readString();
-        this.shotAt = in.readString();
-        this.location = in.readParcelable(Location.class.getClassLoader());
-        this.tags = new ArrayList<String>();
-        in.readList(this.tags, String.class.getClassLoader());
-        this.images = in.readParcelable(Image.class.getClassLoader());
-        this.liked = in.readByte() != 0;
-        this.likeCount = in.readInt();
-        this.taskId = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.id = in.readInt();
+    public DateTime getShotAt() {
+        return shotAt;
+    }
+
+    public void setShotAt(DateTime shotAt) {
+        this.shotAt = shotAt;
     }
 
     public User getUser() {
@@ -76,14 +61,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         this.location = coordinates;
     }
 
-    public String getShotAt() {
-        return shotAt;
-    }
-
-    public void setShotAt(String shotAt) {
-        this.shotAt = shotAt;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -108,12 +85,12 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         this.liked = liked;
     }
 
-    public int getLikeCount() {
-        return likeCount;
+    public int getLikesCount() {
+        return likesCount;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 
     @Override
@@ -125,7 +102,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
                 ", tags=" + tags +
                 ", images=" + images +
                 ", liked=" + liked +
-                ", likeCount=" + likeCount +
+                ", likesCount=" + likesCount +
                 ", taskId='" + taskId + '\'' +
                 ", user=" + user +
                 '}';
@@ -140,37 +117,21 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
-        dest.writeString(this.shotAt);
-        dest.writeParcelable(this.location, 0);
-        dest.writeList(this.tags);
-        dest.writeParcelable(this.images, 0);
-        dest.writeByte(liked ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.likeCount);
-        dest.writeString(this.taskId);
-        dest.writeParcelable(this.user, 0);
-        dest.writeInt(this.id);
-    }
-
-    @Override
     public Image getFSImage() {
         return images;
     }
 
     @Override
     public String getFSTitle() {
-        return title;
+        if (user != null) {
+            return user.getFullName();
+        }
+        return "";
     }
 
     @Override
     public String getFsDescription() {
-        return "";
+        return title;
     }
 
     @Override
@@ -181,6 +142,32 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     @Override
     public String getPhotoLocation() {
         return location != null ? location.getName() : "";
+    }
+
+    @Override
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return likesCount;
+    }
+
+    @Override
+    public String getFsLocation() {
+        if (location == null) {
+            return "";
+        }
+        return location.getName();
+    }
+
+    @Override
+    public String getFsDate() {
+        if (shotAt == null) {
+            return "";
+        }
+        return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
     }
 
     @Override
@@ -198,8 +185,47 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
         return user != null ? user.getAvatar().getThumb() : "";
     }
 
-
-    public static class PList extends ArrayList<IFullScreenAvailableObject> {
-
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
+        dest.writeParcelable(this.location, 0);
+        dest.writeList(this.tags);
+        dest.writeParcelable(this.images, 0);
+        dest.writeByte(liked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.likesCount);
+        dest.writeString(this.taskId);
+        dest.writeParcelable(this.user, 0);
+        dest.writeInt(this.id);
+    }
+
+    private Photo(Parcel in) {
+        this.title = in.readString();
+        long tmpShotAt = in.readLong();
+        this.shotAt = tmpShotAt == -1 ? null : new DateTime(tmpShotAt);
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.tags = new ArrayList<>();
+        in.readList(this.tags, ArrayList.class.getClassLoader());
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.liked = in.readByte() != 0;
+        this.likesCount = in.readInt();
+        this.taskId = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.id = in.readInt();
+    }
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        public Photo createFromParcel(Parcel source) {
+            return new Photo(source);
+        }
+
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 }

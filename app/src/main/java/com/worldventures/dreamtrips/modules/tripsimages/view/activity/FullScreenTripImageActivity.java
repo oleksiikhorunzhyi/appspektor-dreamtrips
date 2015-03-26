@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenActivityPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedImagePagerFragment;
 
 import java.io.Serializable;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)
-public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScreenActivityPM> {
+public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScreenParentPresenter> {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
@@ -33,8 +33,8 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
     ArrayList<Serializable> photoList;
 
     @Override
-    protected FullScreenActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new FullScreenActivityPM(this);
+    protected FullScreenParentPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new FullScreenParentPresenter(this);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
             }
         };
 
-        for (Serializable photo : photoList) {
+        for (Serializable ignored : photoList) {
             adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
         }
 

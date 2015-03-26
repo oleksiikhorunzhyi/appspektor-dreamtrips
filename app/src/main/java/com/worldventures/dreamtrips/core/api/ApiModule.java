@@ -10,6 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
+import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -72,6 +73,9 @@ public class ApiModule {
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd")
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(DateTime.class, new DateTimeDeserializer())
+                .registerTypeAdapter(DateTime.class, new DateTimeSerializer())
+
                 .create();
     }
 

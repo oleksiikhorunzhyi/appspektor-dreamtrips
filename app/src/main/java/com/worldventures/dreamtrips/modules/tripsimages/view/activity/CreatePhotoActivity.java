@@ -10,12 +10,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.routing.BaseRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoActivityPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_create_photo)
-public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoActivityPM> {
+public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParentPresenter> {
     public static final String EXTRA_FILE_URI = "EXTRA_FILE_URI";
     public static final int REQUEST_CODE_CREATE_PHOTO = 342;
 
@@ -23,8 +23,8 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoActivi
     Toolbar toolbar;
 
     @Override
-    protected CreatePhotoActivityPM createPresentationModel(Bundle savedInstanceState) {
-        return new CreatePhotoActivityPM(this);
+    protected CreatePhotoParentPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new CreatePhotoParentPresenter(this);
     }
 
     @Override

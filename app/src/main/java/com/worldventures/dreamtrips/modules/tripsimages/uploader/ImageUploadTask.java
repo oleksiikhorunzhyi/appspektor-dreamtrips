@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
@@ -29,10 +30,11 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     private String locationName;
     private float latitude;
     private float longitude;
-    private Date shotAt;
+    private DateTime shotAt;
     private String originUrl;
     private ArrayList<String> tags;
     private boolean failed;
+    private String userName;
 
     public ImageUploadTask() {
     }
@@ -46,7 +48,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         this.latitude = in.readFloat();
         this.longitude = in.readFloat();
         long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
+        this.shotAt = tmpShotAt == -1 ? null : new DateTime(tmpShotAt);
         this.originUrl = in.readString();
         this.tags = (ArrayList<String>) in.readSerializable();
     }
@@ -107,11 +109,11 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         this.longitude = longitude;
     }
 
-    public Date getShotAt() {
+    public DateTime getShotAt() {
         return shotAt;
     }
 
-    public void setShotAt(Date shotAt) {
+    public void setShotAt(DateTime shotAt) {
         this.shotAt = shotAt;
     }
 
@@ -144,12 +146,12 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
 
     @Override
     public String getFSTitle() {
-        return title;
+        return userName;
     }
 
     @Override
     public String getFsDescription() {
-        return "";
+        return title;
     }
 
     @Override
@@ -163,13 +165,33 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
-    public String getUserName() {
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return 0;
+    }
+
+    @Override
+    public String getFsLocation() {
+        return locationName;
+    }
+
+    @Override
+    public String getFsDate() {
         return "";
     }
 
     @Override
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
     public String getUserLocation() {
-        return "";
+        return locationName;
     }
 
     @Override
@@ -207,5 +229,9 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
 
     public void setFailed(boolean failed) {
         this.failed = failed;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

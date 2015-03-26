@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
-public class FSInspireMePM extends FSViewPM<Inspiration> {
+public class FSInspireMePM extends FullScreenPresenter<Inspiration> {
     public FSInspireMePM(View view) {
         super(view);
     }

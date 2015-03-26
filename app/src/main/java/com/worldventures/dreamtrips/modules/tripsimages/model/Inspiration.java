@@ -61,12 +61,12 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
 
     @Override
     public String getFSTitle() {
-        return "\u2014 " + author;
+        return author;
     }
 
     @Override
     public String getFsDescription() {
-        return "\"" + quote + "\"";
+        return quote;
     }
 
     @Override
@@ -89,6 +89,26 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
 
     @Override
     public String getPhotoLocation() {
+        return "";
+    }
+
+    @Override
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return -1;
+    }
+
+    @Override
+    public String getFsLocation() {
+        return "";
+    }
+
+    @Override
+    public String getFsDate() {
         return "";
     }
 

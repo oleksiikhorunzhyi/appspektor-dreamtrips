@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
             action.setLocationName(view.getLocation());
             Date date = DateTimeUtils.dateFromString(view.getDate());
             Date time = DateTimeUtils.timeFromString(view.getTime());
-            action.setShotAt(new DateTime(DateTimeUtils.mergeDateTime(date, time)));
+            action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
             action.setTaskId(UUID.randomUUID().toString());
             db.saveUploadImageTask(action);
 

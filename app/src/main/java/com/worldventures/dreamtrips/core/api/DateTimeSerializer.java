@@ -3,17 +3,15 @@ package com.worldventures.dreamtrips.core.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.Date;
 
-public class DateTimeSerializer implements JsonSerializer<DateTime> {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
+public class DateTimeSerializer implements JsonSerializer<Date> {
 
     @Override
-    public JsonElement serialize(DateTime src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(dateFormat.format(src));
+    public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+        return context.serialize(DateTimeUtils.getDefaultISOFormat().format(src));
     }
 }

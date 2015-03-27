@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
@@ -30,7 +29,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     private String locationName;
     private float latitude;
     private float longitude;
-    private DateTime shotAt;
+    private Date shotAt;
     private String originUrl;
     private ArrayList<String> tags;
     private boolean failed;
@@ -48,7 +47,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         this.latitude = in.readFloat();
         this.longitude = in.readFloat();
         long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new DateTime(tmpShotAt);
+        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
         this.originUrl = in.readString();
         this.tags = (ArrayList<String>) in.readSerializable();
     }
@@ -109,11 +108,11 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         this.longitude = longitude;
     }
 
-    public DateTime getShotAt() {
+    public Date getShotAt() {
         return shotAt;
     }
 
-    public void setShotAt(DateTime shotAt) {
+    public void setShotAt(Date shotAt) {
         this.shotAt = shotAt;
     }
 

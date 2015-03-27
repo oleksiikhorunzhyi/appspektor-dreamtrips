@@ -1,28 +1,31 @@
 package com.worldventures.dreamtrips.core.api;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonSerializer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.DateTime;
+import com.google.gson.JsonParseException;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.Date;
 
-public class DateTimeDeserializer implements JsonDeserializer<DateTime> {
+public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
-    final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     @Override
-    public DateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-        try {
-            return new DateTime(df.parse(json.getAsString()));
-        } catch (ParseException e) {
-            return null;
+    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        for (DateFormat format : DateTimeUtils.getISO1DateFormats()) {
+            try {
+                return format.parse(json.getAsString());
+            } catch (ParseException e) {
+                Log.v(DateTimeDeserializer.class.getSimpleName(), e.getMessage());
+            }
         }
+        return null;
     }
-
 }

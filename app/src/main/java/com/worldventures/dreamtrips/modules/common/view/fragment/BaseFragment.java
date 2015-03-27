@@ -74,7 +74,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         this.presenter = createPresenter(savedInstanceState);
 
         if (this.presenter == null) {

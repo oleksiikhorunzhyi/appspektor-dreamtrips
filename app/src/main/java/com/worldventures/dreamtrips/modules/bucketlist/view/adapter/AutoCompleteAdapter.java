@@ -23,8 +23,10 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     List<T> items = findBucketItems(constraint.toString());
-                    filterResults.values = items;
-                    filterResults.count = items.size();
+                    if (items != null) {
+                        filterResults.values = items;
+                        filterResults.count = items.size();
+                    }
                 }
                 return filterResults;
             }
@@ -53,7 +55,20 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
         this.loader = loader;
     }
 
-    public static interface Loader<T> {
-        List<T> load(String query);
+    public static abstract class Loader<T> {
+
+        public List<T> load(String query) {
+            try {
+                return request(query);
+            } catch (Exception e) {
+                handleError(e);
+                return null;
+            }
+        }
+
+        protected abstract List<T> request(String query);
+
+        public abstract void handleError(Exception e);
+
     }
 }

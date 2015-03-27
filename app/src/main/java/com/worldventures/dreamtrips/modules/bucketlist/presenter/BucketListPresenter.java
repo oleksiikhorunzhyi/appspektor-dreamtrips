@@ -11,6 +11,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
@@ -44,11 +46,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private static final int DELETION_DELAY = 3500;
 
-    @Inject
-    protected DreamTripsApi api;
 
     @Inject
     protected SnappyRepository db;
+
+    @Inject
+    protected DreamTripsApi api;
 
     @Inject
     protected Prefs prefs;
@@ -56,7 +59,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private BucketTabsFragment.Type type;
     private boolean showToDO = true;
     private boolean showCompleted = true;
-    private List<BucketItem> bucketItems = new ArrayList<BucketItem>();
+    private List<BucketItem> bucketItems = new ArrayList<>();
 
     public BucketListPresenter(View view, BucketTabsFragment.Type type) {
         super(view);
@@ -82,7 +85,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             dreamSpiceManager.execute(new GetBucketListQuery(prefs, db, type), new RequestListener<ArrayList<BucketItem>>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-                    view.informUser("Could not load " + type.getName());
+                    view.informUser(context.getString(R.string.could_not_load) + type.getName());
                 }
 
                 @Override
@@ -105,8 +108,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void refresh() {
         ArrayList<Object> result = new ArrayList<>();
         if (bucketItems.size() > 0) {
-            Collection<BucketItem> toDo = Queryable.from(bucketItems).filter((bucketItem) -> !bucketItem.isDone()).toList();
-            Collection<BucketItem> done = Queryable.from(bucketItems).filter((bucketItem) -> bucketItem.isDone()).toList();
+            Collection<BucketItem> toDo = Queryable.from(bucketItems).
+                    filter((bucketItem) -> !bucketItem.isDone()).toList();
+            Collection<BucketItem> done = Queryable.from(bucketItems).
+                    filter((bucketItem) -> bucketItem.isDone()).toList();
             if (showToDO && toDo.size() > 0) {
                 result.addAll(toDo);
             }
@@ -140,28 +145,32 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
-        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
+        if (bucketItems.size() > 0 && isNamesEquals) {
             eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
             moveItem(bucketItem, bucketItem.isDone()
-                    ? bucketItems.indexOf(Queryable.from(bucketItems).first((item) -> item.isDone()))
+                    ? bucketItems.indexOf(Queryable.from(bucketItems).first(BucketItem::isDone))
                     : 0);
 
             BucketPostItem bucketPostItem = new BucketPostItem();
             bucketPostItem.setStatus(bucketItem.isDone());
 
-            dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    view.informUser(spiceException.getMessage());
-                }
+            dreamSpiceManager.execute(new MarkBucketItemCommand(
+                            event.getBucketItem().getId(),
+                            bucketPostItem),
+                    new RequestListener<BucketItem>() {
+                        @Override
+                        public void onRequestFailure(SpiceException spiceException) {
+                            view.informUser(spiceException.getMessage());
+                        }
 
-                @Override
-                public void onRequestSuccess(BucketItem jsonObject) {
-                    //nothing to do here
-                }
-            });
+                        @Override
+                        public void onRequestSuccess(BucketItem jsonObject) {
+                            //nothing to do here
+                        }
+                    });
 
             bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(bucketItem.isDone());
             db.saveBucketList(bucketItems, type.name());
@@ -170,7 +179,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
+        if (bucketItems.size() > 0 && isNamesEquals) {
             eventBus.cancelEventDelivery(event);
 
             int index = bucketItems.indexOf(event.getBucketItem());
@@ -252,20 +262,23 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         BucketOrderModel orderModel = new BucketOrderModel();
         orderModel.setPosition(toPosition);
 
-        dreamSpiceManager.execute(new ReorderBucketItemCommand(bucketItems.get(fromPosition).getId(), orderModel), new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.informUser(context.getString(R.string.smth_went_wrong));
-                refresh();
-            }
+        dreamSpiceManager.execute(new ReorderBucketItemCommand(
+                        bucketItems.get(fromPosition).getId(),
+                        orderModel),
+                new RequestListener<JsonObject>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        view.informUser(context.getString(R.string.smth_went_wrong));
+                        refresh();
+                    }
 
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                final BucketItem item = bucketItems.remove(fromPosition);
-                bucketItems.add(toPosition, item);
-                db.saveBucketList(bucketItems, type.name());
-            }
-        });
+                    @Override
+                    public void onRequestSuccess(JsonObject jsonObject) {
+                        final BucketItem item = bucketItems.remove(fromPosition);
+                        bucketItems.add(toPosition, item);
+                        db.saveBucketList(bucketItems, type.name());
+                    }
+                });
     }
 
     public void addToBucketList(String title) {
@@ -274,21 +287,22 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void loadBucketItem(BucketPostItem bucketPostItem) {
-        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
-            }
+        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem),
+                new RequestListener<BucketItem>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        //nothing to do here
+                    }
 
-            @Override
-            public void onRequestSuccess(BucketItem bucketItem) {
-                bucketItems.add(0, bucketItem);
-                db.saveBucketList(bucketItems, type.name());
+                    @Override
+                    public void onRequestSuccess(BucketItem bucketItem) {
+                        bucketItems.add(0, bucketItem);
+                        db.saveBucketList(bucketItems, type.name());
 
-                view.getAdapter().addItem(0, bucketItem);
-                view.getAdapter().notifyDataSetChanged();
-            }
-        });
+                        view.getAdapter().addItem(0, bucketItem);
+                        view.getAdapter().notifyDataSetChanged();
+                    }
+                });
     }
 
     public boolean isShowToDO() {
@@ -306,12 +320,42 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public AutoCompleteAdapter.Loader getSuggestionLoader() {
-        if (type == BucketTabsFragment.Type.LOCATIONS) {
-            return api::getLocationSuggestions;
-        } else if (type == BucketTabsFragment.Type.ACTIVITIES) {
-            return api::getActivitySuggestions;
+        return new SuggestionLoader(type, dreamSpiceManager, api);
+    }
+
+
+    public static class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
+
+        protected DreamSpiceManager dreamSpiceManager;
+
+        protected DreamTripsApi api;
+
+        private BucketTabsFragment.Type type;
+
+        public SuggestionLoader(BucketTabsFragment.Type type,
+                                DreamSpiceManager dreamSpiceManager,
+                                DreamTripsApi api) {
+            this.type = type;
+            this.dreamSpiceManager = dreamSpiceManager;
+            this.api = api;
         }
-        return null;
+
+        @Override
+        protected List<Suggestion> request(String query) {
+            if (type == BucketTabsFragment.Type.LOCATIONS) {
+                return api.getLocationSuggestions(query);
+            } else if (type == BucketTabsFragment.Type.ACTIVITIES) {
+                return api.getActivitySuggestions(query);
+            }
+            return null;
+        }
+
+        @Override
+        public final void handleError(Exception e) {
+            if (DreamSpiceManager.isLoginError(e)) {
+                dreamSpiceManager.login(null);
+            }
+        }
     }
 
     public interface View extends Presenter.View {

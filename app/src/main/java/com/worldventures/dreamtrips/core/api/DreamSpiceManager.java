@@ -77,7 +77,6 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
-
     private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig, String username, String userPassword) {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
@@ -99,6 +98,22 @@ public class DreamSpiceManager extends SpiceManager {
         }
         eventBus.post(new UpdateUserInfoEvent());
         return false;
+    }
+
+    public void login(RequestListener<LoginResponse> requestListener) {
+        final UserSession userSession = appSessionHolder.get().get();
+        final String username = userSession.getUsername();
+        final String userPassword = userSession.getUserPassword();
+
+        login(userPassword, username, (l, e) -> {
+            if (requestListener != null) {
+                if (l != null) {
+                    requestListener.onRequestSuccess(l);
+                } else {
+                    requestListener.onRequestFailure(e);
+                }
+            }
+        });
     }
 
     public void login(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
@@ -156,8 +171,11 @@ public class DreamSpiceManager extends SpiceManager {
         return userSession.getUsername() != null && userSession.getUserPassword() != null;
     }
 
-    private boolean isLoginError(SpiceException error) {
-        if (error.getCause() instanceof RetrofitError) {
+    public static boolean isLoginError(Exception error) {
+        if (error instanceof RetrofitError) {
+            RetrofitError cause = (RetrofitError) error;
+            return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
+        } else if (error.getCause() instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error.getCause();
             return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
         }

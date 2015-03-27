@@ -187,5 +187,6 @@
     <string name="likes">" Likes"</string>
     <string name="comments">" Comments"</string>
     <string name="wrong_image">Wrong image</string>
+    <string name="could_not_load">"Could not load "</string>
 
 </resources>

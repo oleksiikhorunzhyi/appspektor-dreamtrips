@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
@@ -22,23 +20,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
-/**
- *  Edward on 19.01.15.
- * presentation model for DetailedTripFragment
- */
 public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View> {
 
     @Inject
-    DreamTripsApi dreamTripsApi;
-
-    @Global
-    @Inject
-    EventBus eventBus;
-
-    @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     private Trip trip;
     private List<Object> filteredImages;

@@ -32,13 +32,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Inject
     protected Prefs prefs;
 
-    @Inject
-    Context context;
-
-    @Inject
-    @Global
-    protected EventBus eventBus;
-
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
             final File file = new File(image.getFileThumbnail());

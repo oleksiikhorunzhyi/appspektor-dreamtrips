@@ -148,7 +148,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
 
     @OnClick(R.id.buttonNew)
     void onAdd() {
-        onOptionsItemSelected(menuItemAdd);
+        menuItemAdd.expandActionView();
     }
 
     @OnClick(R.id.buttonPopular)

@@ -10,9 +10,6 @@ import javax.inject.Inject;
 
 public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
-    @Inject
-    DreamTripsApi dreamTripsApi;
-
     public LoginPresenter(View view) {
         super(view);
     }

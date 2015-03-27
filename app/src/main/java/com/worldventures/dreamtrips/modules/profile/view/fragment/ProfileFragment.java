@@ -43,42 +43,36 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfilePresenter.View {
 
     @InjectView(R.id.user_cover)
-    ImageView userCover;
+    protected  ImageView userCover;
 
     @Optional
     @InjectView(R.id.vg_content_container)
-    ViewGroup vgContentContainer;
+    protected ViewGroup vgContentContainer;
     @InjectView(R.id.user_photo)
-    ImageView userPhoto;
-    @Optional
-    @InjectView(R.id.user_photo_2)
-    ImageView userPhoto2;
-    @Optional
-    @InjectView(R.id.user_photo_3)
-    ImageView userPhoto3;
+    protected ImageView userPhoto;
     @InjectView(R.id.user_name)
-    TextView userName;
+    protected TextView userName;
     @InjectView(R.id.user_email)
-    TextView userEmail;
+    protected TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
-    DTEditText dateOfBirth;
+    protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
-    ProgressBarCircularIndeterminate progressBar;
+    protected ProgressBarCircularIndeterminate progressBar;
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
     @Optional
     @InjectView(R.id.sv)
-    ScrollView sv;
+    protected ScrollView sv;
     @InjectView(R.id.et_user_id)
-    DTEditText etUserId;
+    protected DTEditText etUserId;
     @InjectView(R.id.et_from)
-    DTEditText etFrom;
+    protected DTEditText etFrom;
     @InjectView(R.id.et_live_in)
-    DTEditText etLiveIn;
+    protected DTEditText etLiveIn;
 
     @Optional
     @InjectView(R.id.v_top_strip)
-    View vTopStirp;
+    protected View vTopStirp;
 
     private PickImageDialog pid;
 

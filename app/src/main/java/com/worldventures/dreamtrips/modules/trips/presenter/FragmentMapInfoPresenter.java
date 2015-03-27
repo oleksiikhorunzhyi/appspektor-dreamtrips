@@ -13,9 +13,6 @@ import de.greenrobot.event.EventBus;
 
 public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter.View> {
 
-    @Global
-    @Inject
-    EventBus eventBus;
     private Trip trip;
 
     public FragmentMapInfoPresenter(View view) {

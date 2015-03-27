@@ -132,9 +132,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     }
 
     private void render() {
-        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
-        params.leftMargin = 0;
-        swipeLayout.setLayoutParams(params);
+        setContainerMargin(0);
         container.setBackgroundResource(R.drawable.bucket_item_selector);
 
         if (getModelObject().isDone()) {
@@ -148,11 +146,15 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
         }
     }
 
+    private void setContainerMargin(int margin) {
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
+        params.leftMargin = margin;
+        swipeLayout.setLayoutParams(params);
+    }
+
     private void renderLongPress() {
         container.setBackgroundResource(R.drawable.bg_item_dragging_active_state);
-        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
-        params.leftMargin = 50;
-        swipeLayout.setLayoutParams(params);
+        setContainerMargin(context.getResources().getDimensionPixelSize(R.dimen.draggable_margin));
     }
 
     @Override

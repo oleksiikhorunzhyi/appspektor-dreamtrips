@@ -31,4 +31,6 @@
     <dimen name="pin_offset">40dp</dimen>
 
     <dimen name="map_offset_y">64dp</dimen>
+
+    <dimen name="draggable_margin">24dp</dimen>
 </resources>

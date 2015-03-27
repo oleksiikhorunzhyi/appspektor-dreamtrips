@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.api;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -15,11 +17,13 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
 
     @Override
-    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
         for (DateFormat format : DateTimeUtils.getISO1DateFormats()) {
             try {
                 return format.parse(json.getAsString());
-            } catch (ParseException ignored) {
+            } catch (ParseException e) {
+                Log.v(DateTimeDeserializer.class.getSimpleName(), e.getMessage());
             }
         }
         return null;

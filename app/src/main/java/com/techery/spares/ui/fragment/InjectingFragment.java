@@ -45,6 +45,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return FragmentHelper.onCreateView(inflater, container, this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         try {

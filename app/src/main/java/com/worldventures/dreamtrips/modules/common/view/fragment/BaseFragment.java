@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
-import com.techery.spares.ui.fragment.FragmentHelper;
+import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+
+import butterknife.ButterKnife;
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
 
@@ -72,7 +74,27 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return FragmentHelper.onCreateView(inflater, container, this);
+        this.presenter = createPresenter(savedInstanceState);
+
+        if (this.presenter == null) {
+            throw new IllegalArgumentException("Presenter can't be null");
+        }
+
+        inject(this.presenter);
+
+        Layout layout = this.getClass().getAnnotation(Layout.class);
+
+        if (layout == null) {
+            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
+        }
+
+        View view = inflater.inflate(layout.value(), container, false);
+        ButterKnife.inject(this, view);
+
+        this.presenter.init();
+        afterCreateView(view);
+
+        return view;
     }
 
     @Override

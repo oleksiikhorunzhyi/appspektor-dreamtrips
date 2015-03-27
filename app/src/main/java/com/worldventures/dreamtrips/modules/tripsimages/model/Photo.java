@@ -208,7 +208,11 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     private Photo(Parcel in) {
         this.title = in.readString();
         long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
+        if (tmpShotAt == -1) {
+            this.shotAt = null;
+        } else {
+            this.shotAt = new Date(tmpShotAt);
+        }
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.tags = new ArrayList<>();
         in.readList(this.tags, ArrayList.class.getClassLoader());

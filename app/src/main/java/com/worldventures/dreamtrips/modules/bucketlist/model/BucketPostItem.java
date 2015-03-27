@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +21,8 @@ public class BucketPostItem {
     public BucketPostItem() {
     }
 
-    public BucketPostItem(String type, Integer id, String status) {
-        this("", type, id, status);
+    public BucketPostItem(String type, Integer id) {
+        this("", type, id, "");
     }
 
     public BucketPostItem(String type, String name, String status) {
@@ -54,10 +57,15 @@ public class BucketPostItem {
     }
 
     public void setStatus(boolean status) {
-        this.status = status ? BucketItem.COMPLETED : BucketItem.NEW;
+        if (status) {
+            this.status = BucketItem.COMPLETED;
+        } else {
+            this.status = BucketItem.NEW;
+        }
     }
 
     public void setDate(Date date) {
+        this.date = DateTimeUtils.convertDateToString(date, DateTimeUtils.DATE_FORMAT);
     }
 
     public void setDescription(String description) {

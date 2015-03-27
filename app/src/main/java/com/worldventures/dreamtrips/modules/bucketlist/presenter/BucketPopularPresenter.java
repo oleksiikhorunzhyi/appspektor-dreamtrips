@@ -27,20 +27,14 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-/**
- * 1 on 03.03.15.
- */
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
     @Inject
-    Context context;
-    @Global
-    @Inject
-    EventBus eventBus;
-    @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
+
     private BucketTabsFragment.Type type;
-    RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
+
+    protected RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
             return new GetPopularLocation(type);
@@ -56,6 +50,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
             view.finishLoading();
         }
     };
+
     private List<BucketItem> realData = new ArrayList<>();
 
     public BucketPopularPresenter(View view, BucketTabsFragment.Type type) {
@@ -95,7 +90,8 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
-                popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
+                popularBucketItem.getId());
+        bucketPostItem.setStatus(done);
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {

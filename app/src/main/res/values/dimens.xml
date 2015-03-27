@@ -33,4 +33,5 @@
     <dimen name="map_offset_y">64dp</dimen>
 
     <dimen name="draggable_margin">24dp</dimen>
+    <dimen name="button_width">220dp</dimen>
 </resources>

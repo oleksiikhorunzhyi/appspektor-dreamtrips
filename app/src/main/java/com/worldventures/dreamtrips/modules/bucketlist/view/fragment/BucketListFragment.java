@@ -21,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_bucket_list)
@@ -75,6 +77,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     private RecyclerViewDragDropManager mDragDropManager;
     private SnackBar snackBar;
     private boolean expand = false;
+
+    private MenuItem menuItemAdd;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -119,8 +123,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem searchItem = menu.findItem(R.id.action_quick);
-        setupQuickTypeInput(searchItem);
+        menuItemAdd = menu.findItem(R.id.action_quick);
+        setupQuickTypeInput(menuItemAdd);
     }
 
     private void setupQuickTypeInput(MenuItem item) {
@@ -149,6 +153,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
             }
             return false;
         });
+    }
+
+    @OnClick(R.id.buttonNew)
+    protected void onAdd() {
+        onOptionsItemSelected(menuItemAdd);
+    }
+
+    @OnClick(R.id.buttonPopular)
+    protected void onPopular() {
+        getPresenter().addPopular();
     }
 
     @Override

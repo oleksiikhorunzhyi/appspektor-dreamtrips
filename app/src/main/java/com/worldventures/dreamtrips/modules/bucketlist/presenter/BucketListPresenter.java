@@ -47,8 +47,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private static final int DELETION_DELAY = 3500;
 
     @Inject
-    public Context context;
-    @Inject
     public SnappyRepository db;
 
     @Inject
@@ -160,6 +158,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
                 @Override
                 public void onRequestSuccess(BucketItem jsonObject) {
+                //nothing to do here
                 }
             });
 
@@ -277,6 +276,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
+                //nothing to do here
             }
 
             @Override

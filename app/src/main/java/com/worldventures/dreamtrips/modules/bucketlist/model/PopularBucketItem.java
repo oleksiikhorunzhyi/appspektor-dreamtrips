@@ -1,15 +1,18 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class PopularBucketItem extends BaseEntity {
 
     private String name;
     private boolean liked;
-    private int likes_count;
+    @SerializedName("likes_count")
+    private int likesCount;
     private String imageLink;
     private String description;
-    private String short_description;
+    @SerializedName("short_description")
+    private String shortDescription;
     private String url;
 
     private transient String type;
@@ -37,11 +40,11 @@ public class PopularBucketItem extends BaseEntity {
     }
 
     public int getLikes_count() {
-        return likes_count;
+        return likesCount;
     }
 
-    public void setLikes_count(int likes_count) {
-        this.likes_count = likes_count;
+    public void setLikes_count(int likesCount) {
+        this.likesCount = likesCount;
     }
 
     public String getImageLink() {
@@ -69,11 +72,11 @@ public class PopularBucketItem extends BaseEntity {
     }
 
     public String getShort_description() {
-        return short_description;
+        return shortDescription;
     }
 
-    public void setShort_description(String short_description) {
-        this.short_description = short_description;
+    public void setShort_description(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     public String getType() {

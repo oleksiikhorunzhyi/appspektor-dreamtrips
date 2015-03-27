@@ -106,11 +106,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
 
     @OnTouch(R.id.swipeLayout)
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP
+                && swipeLayout.getOpenStatus() == SwipeLayout.Status.Close
+                && !longPressed) {
+            getEventBus().post(new BucketItemClickedEvent(getModelObject()));
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close && !longPressed) {
-                    getEventBus().post(new BucketItemClickedEvent(getModelObject()));
-                }
             case MotionEvent.ACTION_CANCEL:
                 if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     longPressed = false;
@@ -118,6 +121,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
                 render();
                 break;
         }
+
         return swipeLayout.onTouchEvent(event);
     }
 

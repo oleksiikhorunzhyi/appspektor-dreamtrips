@@ -93,9 +93,9 @@ public class SnappyRepository {
         try {
             list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
         }
 
         Collections.sort(list, (lhs, rhs) -> {
@@ -140,7 +140,7 @@ public class SnappyRepository {
                 snappyDb.put(TRIP_KEY + trip.getId(), trip);
                 snappyDb.close();
             } catch (SnappydbException e) {
-
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }

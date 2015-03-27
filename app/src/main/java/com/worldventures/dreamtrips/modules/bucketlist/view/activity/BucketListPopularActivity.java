@@ -24,10 +24,10 @@ public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPre
     public static final String EXTRA_STATE = "EXTRA_STATE";
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @Inject
-    FragmentCompass fragmentCompass;
+    protected FragmentCompass fragmentCompass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

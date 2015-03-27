@@ -24,7 +24,7 @@ import javax.inject.Inject;
 public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.View> {
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     private BucketTabsFragment.Type type;
     private BucketItem bucketItem;

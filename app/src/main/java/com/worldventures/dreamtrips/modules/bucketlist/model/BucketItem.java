@@ -64,7 +64,11 @@ public class BucketItem extends BaseEntity {
     }
 
     public void setDone(boolean status) {
-        this.status = status ? COMPLETED : NEW;
+        if (status) {
+            this.status = BucketItem.COMPLETED;
+        } else {
+            this.status = BucketItem.NEW;
+        }
     }
 
     public String getType() {
@@ -76,12 +80,18 @@ public class BucketItem extends BaseEntity {
     }
 
     public String getCategory() {
-        return categoryItem != null ? categoryItem.getName() : "";
+        if (categoryItem != null) {
+            return categoryItem.getName();
+        } else {
+            return "";
+        }
     }
 
     public String getBucketTags() {
-        return tags != null
-                ? Queryable.from(tags).joinStrings(", ", (element) -> element.getName())
-                : "";
+        if (tags != null) {
+            return Queryable.from(tags).joinStrings(", ", (element) -> element.getName());
+        } else {
+            return "";
+        }
     }
 }

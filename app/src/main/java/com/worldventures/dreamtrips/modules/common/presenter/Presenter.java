@@ -34,7 +34,7 @@ public class Presenter<VT extends Presenter.View> {
     protected EventBus eventBus;
 
     @Inject
-    Context context;
+    protected Context context;
 
     public Presenter(VT view) {
         this.view = view;

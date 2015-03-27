@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -130,6 +132,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
 
+        int types = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
+        quickInputEditText.setInputType(types);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         quickInputEditText.setShowSoftInputOnFocus(true);
         quickInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
@@ -248,9 +252,13 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     }
 
     public void hideSoftKeyboard(View v) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        try {
+            Object systemService = getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager) systemService;
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        } catch (NullPointerException e) {
+            Log.e(BucketListFragment.class.getSimpleName(), "", e);
+        }
     }
 
     @Override

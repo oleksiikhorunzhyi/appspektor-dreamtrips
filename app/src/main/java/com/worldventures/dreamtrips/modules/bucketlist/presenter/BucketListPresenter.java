@@ -11,7 +11,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -30,9 +29,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -82,18 +81,19 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void loadBucketItems() {
         if (isConnected()) {
             view.startLoading();
-            dreamSpiceManager.execute(new GetBucketListQuery(prefs, db, type), new RequestListener<ArrayList<BucketItem>>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    view.informUser(context.getString(R.string.could_not_load) + type.getName());
-                }
+            dreamSpiceManager.execute(new GetBucketListQuery(prefs, db, type),
+                    new RequestListener<ArrayList<BucketItem>>() {
+                        @Override
+                        public void onRequestFailure(SpiceException spiceException) {
+                            view.informUser(context.getString(R.string.could_not_load) + type.getName());
+                        }
 
-                @Override
-                public void onRequestSuccess(ArrayList<BucketItem> result) {
-                    view.finishLoading();
-                    addItems(result);
-                }
-            });
+                        @Override
+                        public void onRequestSuccess(ArrayList<BucketItem> result) {
+                            view.finishLoading();
+                            addItems(result);
+                        }
+                    });
         } else {
             addItems(db.readBucketList(type.name()));
         }
@@ -321,41 +321,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public AutoCompleteAdapter.Loader getSuggestionLoader() {
         return new SuggestionLoader(type, dreamSpiceManager, api);
-    }
-
-
-    public static class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
-
-        protected DreamSpiceManager dreamSpiceManager;
-
-        protected DreamTripsApi api;
-
-        private BucketTabsFragment.Type type;
-
-        public SuggestionLoader(BucketTabsFragment.Type type,
-                                DreamSpiceManager dreamSpiceManager,
-                                DreamTripsApi api) {
-            this.type = type;
-            this.dreamSpiceManager = dreamSpiceManager;
-            this.api = api;
-        }
-
-        @Override
-        protected List<Suggestion> request(String query) {
-            if (type == BucketTabsFragment.Type.LOCATIONS) {
-                return api.getLocationSuggestions(query);
-            } else if (type == BucketTabsFragment.Type.ACTIVITIES) {
-                return api.getActivitySuggestions(query);
-            }
-            return null;
-        }
-
-        @Override
-        public final void handleError(Exception e) {
-            if (DreamSpiceManager.isLoginError(e)) {
-                dreamSpiceManager.login(null);
-            }
-        }
     }
 
     public interface View extends Presenter.View {

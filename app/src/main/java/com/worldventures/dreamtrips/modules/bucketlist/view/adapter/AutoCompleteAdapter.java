@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterable {
@@ -17,42 +18,15 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
 
     @Override
     public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
-                    List<T> items = findBucketItems(constraint.toString());
-                    if (items != null) {
-                        filterResults.values = items;
-                        filterResults.count = items.size();
-                    }
-                }
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    clear();
-                    addAll((List<T>) results.values);
-                    notifyDataSetChanged();
-                } else {
-                    notifyDataSetInvalidated();
-                }
-            }
-        };
-    }
-
-    private List<T> findBucketItems(String query) {
-        if (loader == null) {
-            throw new IllegalStateException("Loader can't be null");
-        }
-        return loader.load(query);
+        return new AutoCompleteFilter<>(this);
     }
 
     public void setLoader(Loader<T> loader) {
         this.loader = loader;
+    }
+
+    public Loader<T> getLoader() {
+        return loader;
     }
 
     public static abstract class Loader<T> {
@@ -62,7 +36,7 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
                 return request(query);
             } catch (Exception e) {
                 handleError(e);
-                return null;
+                return Collections.emptyList();
             }
         }
 

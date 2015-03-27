@@ -10,13 +10,14 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
 
     private String title;
-    private DateTime shotAt;
+    private Date shotAt;
     private Location location;
     private List<String> tags;
     private Image images;
@@ -29,11 +30,11 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     }
 
 
-    public DateTime getShotAt() {
+    public Date getShotAt() {
         return shotAt;
     }
 
-    public void setShotAt(DateTime shotAt) {
+    public void setShotAt(Date shotAt) {
         this.shotAt = shotAt;
     }
 
@@ -207,7 +208,7 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
     private Photo(Parcel in) {
         this.title = in.readString();
         long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new DateTime(tmpShotAt);
+        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.tags = new ArrayList<>();
         in.readList(this.tags, ArrayList.class.getClassLoader());

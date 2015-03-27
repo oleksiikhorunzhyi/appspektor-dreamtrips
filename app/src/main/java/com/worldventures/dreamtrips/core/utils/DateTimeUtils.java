@@ -12,8 +12,25 @@ import timber.log.Timber;
 public class DateTimeUtils {
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
-    public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
 
+    public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
+    public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+
+    public static DateFormat getDefaultISOFormat() {
+        return new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault());
+    }
+
+    public static DateFormat[] getISO1DateFormats() {
+        return new DateFormat[]{
+                new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", Locale.getDefault()),
+        };
+    }
 
     public static String convertDateToString(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());

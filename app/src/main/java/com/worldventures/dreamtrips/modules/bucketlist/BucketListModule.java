@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist;
 
 
-
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
@@ -38,6 +38,7 @@ import dagger.Provides;
                 BucketHeaderCell.class,
                 BucketItemCell.class,
                 BucketPopularCell.class,
+                AutoCompleteAdapter.class,
         },
         complete = false,
         library = true

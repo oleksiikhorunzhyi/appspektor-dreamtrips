@@ -4,15 +4,14 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -31,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -40,17 +40,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private static final int DELETION_DELAY = 3500;
 
     @Inject
-    public SnappyRepository db;
+    protected DreamTripsApi api;
 
     @Inject
-    public Prefs prefs;
+    protected SnappyRepository db;
+
+    @Inject
+    protected Prefs prefs;
 
     private BucketTabsFragment.Type type;
     private boolean showToDO = true;
@@ -158,7 +159,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
                 @Override
                 public void onRequestSuccess(BucketItem jsonObject) {
-                //nothing to do here
+                    //nothing to do here
                 }
             });
 
@@ -302,6 +303,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void destroyView() {
         super.destroyView();
         eventBus.unregister(this);
+    }
+
+    public AutoCompleteAdapter.Loader getSuggestionLoader() {
+        if (type == BucketTabsFragment.Type.LOCATIONS) {
+            return api::getLocationSuggestions;
+        } else if (type == BucketTabsFragment.Type.ACTIVITIES) {
+            return api::getActivitySuggestions;
+        }
+        return null;
     }
 
     public interface View extends Presenter.View {

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
@@ -125,4 +126,10 @@ public interface DreamTripsApi {
 
     @GET("/api/categories")
     public ArrayList<CategoryItem> getCategories();
+
+    @GET("/api/location_suggestions")
+    public ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
+
+    @GET("/api/activity_suggestions")
+    public ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
 }

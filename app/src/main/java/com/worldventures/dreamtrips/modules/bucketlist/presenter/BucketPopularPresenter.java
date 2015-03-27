@@ -1,14 +1,10 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
@@ -23,26 +19,18 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
-/**
- *  1 on 03.03.15.
- */
-public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
+public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
     @Inject
-    Context context;
-    @Global
-    @Inject
-    EventBus eventBus;
-    @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
+
     private BucketTabsFragment.Type type;
-    RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
+    private List<BucketItem> realData = new ArrayList<>();
+
+    protected RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
             return new GetPopularLocation(type);
@@ -58,9 +46,8 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
             view.finishLoading();
         }
     };
-    private List<BucketItem> realData = new ArrayList<>();
 
-    public BucketListPopularPM(View view, BucketTabsFragment.Type type) {
+    public BucketPopularPresenter(View view, BucketTabsFragment.Type type) {
         super(view);
         this.type = type;
     }
@@ -68,12 +55,7 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
     @Override
     public void init() {
         super.init();
-        try {
-            realData.addAll(db.readBucketList(type.name()));
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(BucketListPopularPM.class.getSimpleName(), "", e);
-        }
-
+        realData.addAll(db.readBucketList(type.name()));
     }
 
     @Override
@@ -102,7 +84,8 @@ public class BucketListPopularPM extends Presenter<BucketListPopularPM.View> {
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
-                popularBucketItem.getId(), done ? BucketItem.COMPLETED : BucketItem.NEW);
+                popularBucketItem.getId());
+        bucketPostItem.setStatus(done);
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {

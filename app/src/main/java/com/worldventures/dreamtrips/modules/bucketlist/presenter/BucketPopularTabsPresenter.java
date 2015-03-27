@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListP
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-public class BucketPopularTabsFragmentPM extends Presenter<Presenter.View> {
+public class BucketPopularTabsPresenter extends Presenter<Presenter.View> {
 
 
-    public BucketPopularTabsFragmentPM(View view) {
+    public BucketPopularTabsPresenter(View view) {
         super(view);
     }
 

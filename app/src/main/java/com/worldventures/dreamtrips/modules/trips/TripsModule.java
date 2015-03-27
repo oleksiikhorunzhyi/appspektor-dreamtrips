@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItDialogPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
@@ -20,7 +19,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
-import com.worldventures.dreamtrips.modules.trips.view.dialog.BookItDialogFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
@@ -35,9 +33,7 @@ import dagger.Provides;
                 BookItActivity.class,
                 DreamTripsFragmentPresenter.class,
                 FiltersPresenter.class,
-                BookItDialogPresenter.class,
                 BookItActivityPresenter.class,
-                BookItDialogFragment.class,
                 DetailedTripFragment.class,
                 DetailTripActivity.class,
                 DetailTripActivityPresenter.class,

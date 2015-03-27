@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.os.Bundle;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.events.QuickAddItemEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -13,13 +11,9 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BucketTabsFragmentPM extends Presenter<BucketTabsFragmentPM.View> {
+public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
-    @Global
-    @Inject
-    EventBus eventBus;
-
-    public BucketTabsFragmentPM(View view) {
+    public BucketTabsPresenter(View view) {
         super(view);
     }
 
@@ -31,7 +25,6 @@ public class BucketTabsFragmentPM extends Presenter<BucketTabsFragmentPM.View> {
     }
 
     public interface View extends Presenter.View {
-        boolean isTabletLandscape();
     }
 
 }

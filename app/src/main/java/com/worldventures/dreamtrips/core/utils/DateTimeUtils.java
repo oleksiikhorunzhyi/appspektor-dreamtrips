@@ -17,7 +17,11 @@ public class DateTimeUtils {
 
     public static String convertDateToString(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-        return sdf.format(date);
+        if (date != null) {
+            return sdf.format(date);
+        } else {
+            return "";
+        }
     }
 
     public static String convertDateToString(int year, int month, int day) {

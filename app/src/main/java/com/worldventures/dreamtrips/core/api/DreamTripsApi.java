@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -25,6 +26,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Part;
@@ -103,6 +105,9 @@ public interface DreamTripsApi {
     @PUT("/api/bucket_list_items/{id}/status")
     public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
 
+    @PATCH("/api/bucket_list_items/{id}")
+    public BucketItem updateItem(@Path("id") int id, @Body BucketPostItem bucketPostItem);
+
     @DELETE("/api/bucket_list_items/{id}")
     public JsonObject deleteItem(@Path("id") int id);
 
@@ -118,4 +123,6 @@ public interface DreamTripsApi {
     @PUT("/api/bucket_list_items/{id}/position")
     public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 
+    @GET("/api/categories")
+    public ArrayList<CategoryItem> getCategories();
 }

@@ -88,8 +88,16 @@ public class SnappyRepository {
         putList(items, BUCKET_LIST + ":" + type, BucketItem.class);
     }
 
-    public List<BucketItem> readBucketList(String type) throws ExecutionException, InterruptedException {
-        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+    public List<BucketItem> readBucketList(String type) {
+        List<BucketItem> list = null;
+        try {
+            list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        } catch (ExecutionException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        } catch (InterruptedException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        }
+
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) {
                 return 0;
@@ -99,6 +107,7 @@ public class SnappyRepository {
                 return -1;
             }
         });
+
         return list;
     }
 
@@ -131,7 +140,7 @@ public class SnappyRepository {
                 snappyDb.put(TRIP_KEY + trip.getId(), trip);
                 snappyDb.close();
             } catch (SnappydbException e) {
-
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }

@@ -23,7 +23,5 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
             }
         }
         return null;
-
-
     }
 }

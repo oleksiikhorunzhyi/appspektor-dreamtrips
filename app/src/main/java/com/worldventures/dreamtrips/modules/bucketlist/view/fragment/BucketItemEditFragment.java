@@ -35,7 +35,8 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View,
+        DatePickerDialog.OnDateSetListener {
 
     @Inject
     protected FragmentCompass fragmentCompass;

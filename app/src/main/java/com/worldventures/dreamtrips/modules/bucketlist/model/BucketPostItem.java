@@ -2,12 +2,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.DateUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class BucketPostItem {
     private Integer id;

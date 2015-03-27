@@ -32,13 +32,13 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     private static final String STATE_SELECTED_STATE = "selected_navigation_drawer_state";
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    protected SessionHolder<UserSession> appSessionHolder;
 
     @InjectView(R.id.drawerList)
-    RecyclerView drawerList;
+    protected RecyclerView drawerList;
 
     @Inject
-    RootComponentsProvider rootComponentsProvider;
+    protected RootComponentsProvider rootComponentsProvider;
 
     private NavigationDrawerListener navigationDrawerListener;
     private NavigationDrawerAdapter adapter;

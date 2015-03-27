@@ -46,46 +46,46 @@ import me.relex.circleindicator.CircleIndicator;
 public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> implements DetailedTripPresenter.View {
 
     @InjectView(R.id.textViewName)
-    TextView textViewName;
+    protected TextView textViewName;
     @InjectView(R.id.textViewReload)
-    TextView textViewReloadTripDetails;
+    protected TextView textViewReloadTripDetails;
     @InjectView(R.id.textViewPlace)
-    TextView textViewPlace;
+    protected TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
-    TextView textViewPrice;
+    protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
-    TextView textViewDate;
+    protected TextView textViewDate;
     @InjectView(R.id.textViewDescription)
-    TextView textViewDescription;
+    protected TextView textViewDescription;
     @InjectView(R.id.textViewScheduleDescription)
-    TextView textViewScheduleDescription;
+    protected TextView textViewScheduleDescription;
     @InjectView(R.id.viewPagerGallery)
-    ViewPager viewPagerGallery;
+    protected ViewPager viewPagerGallery;
     @InjectView(R.id.textViewPoints)
-    TextView textViewPoints;
+    protected TextView textViewPoints;
     @InjectView(R.id.listViewContent)
-    LinearListView linearListView;
+    protected LinearListView linearListView;
     @InjectView(R.id.progressBarDetailLoading)
-    ProgressBar progressBarDetailLoading;
+    protected ProgressBar progressBarDetailLoading;
     @InjectView(R.id.circleIndicator)
-    CircleIndicator circleIndicator;
+    protected CircleIndicator circleIndicator;
     @InjectView(R.id.pointsCountLayout)
-    FrameLayout pointsCountLayout;
+    protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
-    TextView textViewFeatured;
+    protected TextView textViewFeatured;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Optional
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @Optional
     @InjectView(R.id.toolbar_actionbar_landscape)
-    Toolbar toolbarLanscape;
+    protected Toolbar toolbarLanscape;
 
-    MenuItem likeItem;
+    protected MenuItem likeItem;
 
     @Override
     protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {

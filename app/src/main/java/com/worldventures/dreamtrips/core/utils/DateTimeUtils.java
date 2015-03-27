@@ -10,12 +10,17 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class DateTimeUtils {
+    private static final String FILTER_PATTERN = "dd MMM yyyy";
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+
+    public static String convertDateForFilters(Date date) {
+        return convertDateToString(date, FILTER_PATTERN);
+    }
 
     public static DateFormat getDefaultISOFormat() {
         return new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault());
@@ -85,6 +90,11 @@ public class DateTimeUtils {
         calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
 
         return calendarA.getTime();
+    }
+
+    public static String convertSecondsToString(int seconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("mm:ss", Locale.getDefault());
+        return formatter.format(new Date(seconds * 1000L));
     }
 
     public static Date dateFromString(String date) {

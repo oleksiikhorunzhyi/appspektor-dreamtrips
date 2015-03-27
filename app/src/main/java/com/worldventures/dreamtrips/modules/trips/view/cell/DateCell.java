@@ -8,7 +8,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.utils.DateUtils;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 
 import java.util.Calendar;
@@ -18,21 +18,17 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- *  Edward on 08.02.15.
- */
 @Layout(R.layout.adapter_item_dates)
 public class DateCell extends AbstractCell<DateFilterItem> implements DatePickerDialog.OnDateSetListener {
 
     @InjectView(R.id.textViewStartDate)
-    TextView textViewStart;
+    protected TextView textViewStart;
 
     @InjectView(R.id.textViewEndDate)
-    TextView textViewEnd;
+    protected TextView textViewEnd;
 
     @Inject
-    FragmentCompass fragmentCompass;
-
+    protected FragmentCompass fragmentCompass;
 
     public DateCell(View view) {
         super(view);
@@ -40,8 +36,8 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
 
     @Override
     protected void syncUIStateWithModel() {
-        textViewStart.setText(DateUtils.convertDateForFilters(getModelObject().getStartDate()));
-        textViewEnd.setText(DateUtils.convertDateForFilters(getModelObject().getEndDate()));
+        textViewStart.setText(DateTimeUtils.convertDateForFilters(getModelObject().getStartDate()));
+        textViewEnd.setText(DateTimeUtils.convertDateForFilters(getModelObject().getEndDate()));
     }
 
     @OnClick(R.id.textViewStartDate)
@@ -67,10 +63,10 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         if (tag.equals("end")) {
-            textViewEnd.setText(DateUtils.convertDateForFilters(calendar.getTime()));
+            textViewEnd.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
             getModelObject().setEndDate(calendar.getTime());
         } else {
-            textViewStart.setText(DateUtils.convertDateForFilters(calendar.getTime()));
+            textViewStart.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
             getModelObject().setStartDate(calendar.getTime());
         }
     }

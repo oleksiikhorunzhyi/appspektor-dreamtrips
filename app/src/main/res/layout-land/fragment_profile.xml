@@ -98,13 +98,29 @@
 
         </LinearLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_photo"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_avatar_placeholder" />
+            android:layout_above="@+id/gradient"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_photo"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:src="@drawable/ic_avatar_placeholder" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_photo_camera"
+                android:layout_gravity="end"/>
+
+        </FrameLayout>
+
+
 
         <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
             android:id="@+id/pb"

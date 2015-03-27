@@ -35,6 +35,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         super(view);
         this.type = type;
         this.bucketItem = bucketItem;
+
     }
 
     @Override
@@ -43,8 +44,9 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         view.setTitle(bucketItem.getName());
         view.setDescription(bucketItem.getDescription());
         view.setStatus(bucketItem.isDone());
+        view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
-        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getCompletion_date(), DateTimeUtils.DATE_FORMAT));
+        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getTarget_date(), DateTimeUtils.DATE_FORMAT));
         view.setCategory(bucketItem.getCategory());
 
         items.addAll(db.readBucketList(type.name()));
@@ -72,7 +74,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         bucketPostItem.setStatus(view.getStatus());
         bucketPostItem.setTags(getListFromString(view.getTags()));
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
-        Date date = DateTimeUtils.dateFromString(view.getTime());
+        Date date = DateTimeUtils.dateFromString(view.getTime(), DateTimeUtils.DATE_FORMAT);
         bucketPostItem.setDate(date);
         UpdateBucketItemCommand updateBucketItemCommand = new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
         dreamSpiceManager.execute(updateBucketItemCommand, updateListener);
@@ -86,7 +88,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
         @Override
         public void onRequestSuccess(BucketItem bucketItem) {
-            view.informUser(R.string.bucket_item_edit_completed);
+            view.informUser(R.string.bucket_item_edit_done);
             int i = items.indexOf(bucketItem);
             items.remove(items.indexOf(bucketItem));
             items.add(i, bucketItem);
@@ -99,7 +101,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
     }
 
     public Date getDate() {
-        Date date = bucketItem.getCompletion_date();
+        Date date = bucketItem.getTarget_date();
         return date != null ? date : Calendar.getInstance().getTime();
     }
 

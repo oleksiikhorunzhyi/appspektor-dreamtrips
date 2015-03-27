@@ -44,12 +44,12 @@ public class HtmlTagHandler implements Html.TagHandler {
      * Keeps track of lists (ol, ul). On bottom of Stack is the outermost list
      * and on top of Stack is the most nested list
      */
-    Stack<String> lists = new Stack<String>();
+    protected Stack<String> lists = new Stack<String>();
     /**
      * Tracks indexes of ordered lists so that after a nested list ends
      * we can continue with correct index of outer list
      */
-    Stack<Integer> olNextIndex = new Stack<Integer>();
+    protected Stack<Integer> olNextIndex = new Stack<Integer>();
 
     /**
      * @see android.text.Html

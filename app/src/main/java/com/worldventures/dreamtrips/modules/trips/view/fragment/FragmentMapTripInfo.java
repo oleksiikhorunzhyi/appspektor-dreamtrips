@@ -23,40 +23,36 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- *  Edward on 28.01.15.
- * kind of info window for map pin
- */
 @Layout(R.layout.fragment_trip_pin)
 public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> implements FragmentMapInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
     @InjectView(R.id.imageViewTripImage)
-    ImageView imageViewTripImage;
+    protected ImageView imageViewTripImage;
     @InjectView(R.id.imageViewLike)
-    ImageView imageViewLike;
+    protected ImageView imageViewLike;
     @InjectView(R.id.textViewName)
-    TextView textViewName;
+    protected TextView textViewName;
     @InjectView(R.id.textViewPlace)
-    TextView textViewPlace;
+    protected TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
-    TextView textViewPrice;
+    protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
-    TextView textViewDate;
+    protected TextView textViewDate;
     @InjectView(R.id.textViewPoints)
-    TextView textViewPoints;
+    protected TextView textViewPoints;
     @InjectView(R.id.textViewDescription)
-    TextView textViewDescription;
+    protected TextView textViewDescription;
     @InjectView(R.id.itemLayout)
-    RelativeLayout itemLayout;
+    protected RelativeLayout itemLayout;
     @InjectView(R.id.pointsCountLayout)
-    FrameLayout pointsCountLayout;
+    protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
-    TextView textViewFeatured;
+    protected TextView textViewFeatured;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Override
     public void afterCreateView(final View rootView) {

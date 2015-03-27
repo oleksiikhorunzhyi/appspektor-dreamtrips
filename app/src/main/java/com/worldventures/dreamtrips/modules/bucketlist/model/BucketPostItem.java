@@ -1,22 +1,21 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.DateUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class BucketPostItem {
     private Integer id;
     private String name;
     private String type;
     private String status;
+    @SerializedName("target_date")
     private String date;
     private String description;
     private List<String> tags;
-    private List<String> people;
+    private List<String> friends;
 
     public BucketPostItem() {
     }
@@ -41,7 +40,7 @@ public class BucketPostItem {
     }
 
     public void setPeople(List<String> people) {
-        this.people = people;
+        this.friends = people;
     }
 
     public void setName(String name) {
@@ -65,7 +64,7 @@ public class BucketPostItem {
     }
 
     public void setDate(Date date) {
-        this.date = DateTimeUtils.convertDateToString(date, DateTimeUtils.DATE_FORMAT);
+        this.date = DateTimeUtils.convertDateToString(date, DateTimeUtils.DEFAULT_ISO_FORMAT);
     }
 
     public void setDescription(String description) {

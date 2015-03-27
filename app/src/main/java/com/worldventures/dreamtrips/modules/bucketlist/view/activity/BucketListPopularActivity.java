@@ -42,7 +42,7 @@ public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPre
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (route.equals(Route.POPULAR_BUCKET)) {
+        if (route.equals(Route.POPULAR_TAB_BUCKER)) {
             switch (type) {
                 case LOCATIONS:
                     getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
@@ -54,6 +54,8 @@ public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPre
                     getSupportActionBar().setTitle(R.string.bucket_list_dinning_popular);
                     break;
             }
+        } else {
+            getSupportActionBar().setTitle(R.string.bucket_list_edit_header);
         }
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));

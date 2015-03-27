@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.utils.DateUtils;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 public class Video360 {
     @SerializedName("Order")
@@ -48,6 +48,6 @@ public class Video360 {
     }
 
     public String getDuration() {
-        return duration != 0 ? DateUtils.convertSecondsToString(duration) : "";
+        return duration != 0 ? DateTimeUtils.convertSecondsToString(duration) : "";
     }
 }

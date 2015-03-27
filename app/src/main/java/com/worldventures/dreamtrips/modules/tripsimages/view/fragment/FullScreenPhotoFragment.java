@@ -44,38 +44,38 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
-    ImageView ivImage;
+    protected ImageView ivImage;
     @InjectView(R.id.pb)
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
     @InjectView(R.id.ll_content_wrapper)
-    LinearLayout llContentWraper;
+    protected LinearLayout llContentWraper;
     @InjectView(R.id.tv_title)
-    TextView tvTitle;
+    protected TextView tvTitle;
     @InjectView(R.id.tv_description)
-    TextView tvDescription;
+    protected TextView tvDescription;
     @InjectView(R.id.tv_see_more)
-    TextView tvSeeMore;
+    protected TextView tvSeeMore;
     @InjectView(R.id.tv_location)
-    TextView tvLocation;
+    protected TextView tvLocation;
     @InjectView(R.id.tv_date)
-    TextView tvDate;
+    protected TextView tvDate;
     @InjectView(R.id.tv_likes_count)
-    TextView tvLikesCount;
+    protected TextView tvLikesCount;
     @InjectView(R.id.tv_comments_count)
-    TextView tvCommentsCount;
+    protected TextView tvCommentsCount;
     @InjectView(R.id.iv_like)
-    ImageView ivLike;
+    protected ImageView ivLike;
     @InjectView(R.id.iv_comment)
-    ImageView ivComment;
+    protected ImageView ivComment;
     @InjectView(R.id.iv_share)
-    ImageView ivShare;
+    protected ImageView ivShare;
     @InjectView(R.id.iv_flag)
-    ImageView ivFlag;
+    protected ImageView ivFlag;
     @InjectView(R.id.iv_delete)
-    ImageView ivDelete;
+    protected ImageView ivDelete;
 
     @Inject
-    UniversalImageLoader imageLoader;
+    protected UniversalImageLoader imageLoader;
     private SimpleImageLoadingListener originalCallback;
     private SimpleImageLoadingListener mediumCallback;
     private TripImagesListFragment.Type type;

@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.RecyclerView;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -105,15 +108,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close &&
-                        (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
+                if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close && !longPressed) {
                     getEventBus().post(new BucketItemClickedEvent(getModelObject()));
                 }
             case MotionEvent.ACTION_CANCEL:
                 if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
                     longPressed = false;
                 }
-                container.setBackgroundResource(R.drawable.bucket_item_selector);
+                render();
                 break;
         }
         return swipeLayout.onTouchEvent(event);
@@ -124,13 +126,17 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
         if (!getModelObject().isDone()) {
             v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             longPressed = true;
-            mDragStateFlags = RecyclerViewDragDropManager.STATE_FLAG_DRAGGING;
-            container.setBackgroundResource(R.drawable.bg_item_dragging_active_state);
+            renderLongPress();
         }
         return false;
     }
 
     private void render() {
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
+        params.leftMargin = 0;
+        swipeLayout.setLayoutParams(params);
+        container.setBackgroundResource(R.drawable.bucket_item_selector);
+
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
             crossing.setVisibility(View.VISIBLE);
@@ -140,6 +146,13 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
             crossing.setVisibility(View.INVISIBLE);
             buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         }
+    }
+
+    private void renderLongPress() {
+        container.setBackgroundResource(R.drawable.bg_item_dragging_active_state);
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
+        params.leftMargin = 50;
+        swipeLayout.setLayoutParams(params);
     }
 
     @Override
@@ -184,6 +197,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
      */
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
+        render();
         afterSwipe = true;
         renderAction(ACTION_NONE);
     }

@@ -60,7 +60,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTime;
 
     @InjectView(R.id.checkBoxDone)
-    protected CheckBox checkBox;
+    protected android.widget.CheckBox checkBox;
 
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
@@ -68,9 +68,16 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        checkBox.setBackgroundColor(getResources().getColor(R.color.theme_main));
-        spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
-                CategoryItem categoryItem = (CategoryItem) parent.getItemAtPosition(position);
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
     }
 
@@ -194,7 +201,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public boolean getStatus() {
-        return checkBox.isCheck();
+        return checkBox.isChecked();
     }
 }
 

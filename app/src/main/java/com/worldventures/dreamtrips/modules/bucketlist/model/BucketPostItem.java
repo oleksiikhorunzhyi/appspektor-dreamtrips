@@ -15,7 +15,7 @@ public class BucketPostItem {
     private String type;
     private String status;
     @SerializedName("target_date")
-    private Date date;
+    private String date;
     private String description;
     private List<String> tags;
     private List<String> friends;
@@ -67,7 +67,7 @@ public class BucketPostItem {
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.date = DateTimeUtils.convertDateToString(date, DateTimeUtils.DEFAULT_ISO_FORMAT);
     }
 
     public void setDescription(String description) {

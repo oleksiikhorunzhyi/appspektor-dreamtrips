@@ -36,7 +36,6 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         this.type = type;
         this.bucketItem = bucketItem;
 
-        loadCategories();
     }
 
     @Override
@@ -47,7 +46,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         view.setStatus(bucketItem.isDone());
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
-        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getCompletion_date(), DateTimeUtils.DATE_FORMAT));
+        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getTarget_date(), DateTimeUtils.DATE_FORMAT));
         view.setCategory(bucketItem.getCategory());
 
         items.addAll(db.readBucketList(type.name()));
@@ -75,7 +74,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         bucketPostItem.setStatus(view.getStatus());
         bucketPostItem.setTags(getListFromString(view.getTags()));
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
-        Date date = DateTimeUtils.dateFromString(view.getTime(), DateTimeUtils.DEFAULT_ISO_FORMAT);
+        Date date = DateTimeUtils.dateFromString(view.getTime(), DateTimeUtils.DATE_FORMAT);
         bucketPostItem.setDate(date);
         UpdateBucketItemCommand updateBucketItemCommand = new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
         dreamSpiceManager.execute(updateBucketItemCommand, updateListener);
@@ -89,7 +88,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
         @Override
         public void onRequestSuccess(BucketItem bucketItem) {
-            view.informUser(R.string.bucket_item_edit_completed);
+            view.informUser(R.string.bucket_item_edit_done);
             int i = items.indexOf(bucketItem);
             items.remove(items.indexOf(bucketItem));
             items.add(i, bucketItem);

@@ -40,6 +40,11 @@
             app:floatingLabelText="@string/bucket_hint_description"
             app:primaryColor="@color/theme_main_darker" />
 
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTime"
             android:layout_width="match_parent"

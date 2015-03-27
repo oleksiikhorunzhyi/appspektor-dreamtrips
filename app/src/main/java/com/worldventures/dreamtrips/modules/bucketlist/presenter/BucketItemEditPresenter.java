@@ -3,13 +3,14 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -19,8 +20,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.View> {
 
@@ -45,9 +44,26 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         view.setDescription(bucketItem.getDescription());
         view.setStatus(bucketItem.isDone());
         view.setTags(bucketItem.getBucketTags());
+        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getCompletion_date(), DateTimeUtils.DATE_FORMAT));
+        view.setCategory(bucketItem.getCategory());
 
         items.addAll(db.readBucketList(type.name()));
     }
+
+    private void loadCategories() {
+        dreamSpiceManager.execute(new GetCategoryQuery(), categoryLoadListener);
+    }
+
+    private RequestListener<ArrayList<CategoryItem>> categoryLoadListener = new RequestListener<ArrayList<CategoryItem>>() {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+        }
+
+        @Override
+        public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
+            view.setCategoryItems(categoryItems);
+        }
+    };
 
     public void saveItem() {
         BucketPostItem bucketPostItem = new BucketPostItem();
@@ -107,6 +123,10 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         void setTags(String tags);
 
         void setStatus(boolean isCompleted);
+
+        void setCategory(String name);
+
+        void setCategoryItems(List<CategoryItem> items);
 
         boolean getStatus();
 

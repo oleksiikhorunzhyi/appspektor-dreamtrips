@@ -3,10 +3,14 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.gc.materialdesign.views.CheckBox;
@@ -15,11 +19,13 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,34 +38,40 @@ import butterknife.Optional;
 public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
     @Inject
-    FragmentCompass fragmentCompass;
+    protected FragmentCompass fragmentCompass;
 
     @Optional
     @InjectView(R.id.done)
-    ImageView imageViewDone;
+    protected ImageView imageViewDone;
 
     @InjectView(R.id.editTextTitle)
-    EditText editTextTitle;
+    protected EditText editTextTitle;
 
     @InjectView(R.id.editTextDescription)
-    EditText editTextDescription;
+    protected EditText editTextDescription;
 
     @InjectView(R.id.editTextPeople)
-    EditText editTextPeople;
+    protected EditText editTextPeople;
 
     @InjectView(R.id.editTextTags)
-    EditText editTextTags;
+    protected EditText editTextTags;
 
     @InjectView(R.id.editTextTime)
-    EditText editTextTime;
+    protected EditText editTextTime;
 
     @InjectView(R.id.checkBoxDone)
-    CheckBox checkBox;
+    protected CheckBox checkBox;
+
+    @InjectView(R.id.spinnerCategory)
+    protected Spinner spinnerCategory;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         checkBox.setBackgroundColor(getResources().getColor(R.color.theme_main));
+        spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
+                CategoryItem categoryItem = (CategoryItem) parent.getItemAtPosition(position);
+        });
     }
 
     @Override
@@ -107,6 +119,22 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
         BucketItem item = (BucketItem) getArguments().getSerializable(BucketListPopularActivity.EXTRA_ITEM);
         return new BucketItemEditPresenter(this, type, item);
+    }
+
+    @Override
+    public void setCategoryItems(List<CategoryItem> items) {
+        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(adapter);
+    }
+
+    @Override
+    public void setCategory(String name) {
+        if (TextUtils.isEmpty(name)) {
+            spinnerCategory.setPromptId(R.string.category);
+        } else {
+            spinnerCategory.setPrompt(name);
+        }
     }
 
     @Override

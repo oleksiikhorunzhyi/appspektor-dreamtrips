@@ -40,6 +40,9 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(8)
     private List<BucketTag> tags;
 
+    @TaggedFieldSerializer.Tag(9)
+    private CategoryItem categoryItem;
+
     public String getName() {
         return name;
     }
@@ -70,6 +73,10 @@ public class BucketItem extends BaseEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getCategory() {
+        return categoryItem != null ? categoryItem.getName() : "";
     }
 
     public String getBucketTags() {

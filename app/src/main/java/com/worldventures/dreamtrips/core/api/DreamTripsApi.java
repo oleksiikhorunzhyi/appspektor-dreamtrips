@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -122,4 +123,6 @@ public interface DreamTripsApi {
     @PUT("/api/bucket_list_items/{id}/position")
     public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 
+    @GET("/api/categories")
+    public ArrayList<CategoryItem> getCategories();
 }

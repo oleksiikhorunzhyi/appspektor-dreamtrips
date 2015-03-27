@@ -153,6 +153,8 @@
     <string name="bucket_item_edit_error">Error was occured while bucket item saving</string>
     <string name="bucket_item_photos">Add pictures</string>
 
+    <string name="category">Category</string>
+
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>
 

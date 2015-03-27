@@ -5,10 +5,8 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,8 +30,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -41,13 +39,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCel
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
-import de.greenrobot.event.EventBus;
+import butterknife.OnClick;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
@@ -73,6 +68,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     private RecyclerViewDragDropManager mDragDropManager;
     private SnackBar snackBar;
     private boolean expand = false;
+
+    private MenuItem menuItemAdd;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -117,9 +114,13 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem searchItem = menu.findItem(R.id.action_quick);
-        View view = MenuItemCompat.getActionView(searchItem);
-        EditText quickInputEditText = (EditText) view.findViewById(R.id.editTextQuickInput);
+        menuItemAdd = menu.findItem(R.id.action_quick);
+        setupQuickTypeInput(menuItemAdd);
+    }
+
+    private void setupQuickTypeInput(MenuItem item) {
+        View view = MenuItemCompat.getActionView(item);
+        AutoCompleteTextView quickInputEditText = (AutoCompleteTextView) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
@@ -143,6 +144,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
             }
             return false;
         });
+    }
+
+    @OnClick(R.id.buttonNew)
+    void onAdd() {
+        onOptionsItemSelected(menuItemAdd);
+    }
+
+    @OnClick(R.id.buttonPopular)
+    void onPopular() {
+        getPresenter().addPopular();
     }
 
     @Override
@@ -232,6 +243,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public void hideSoftKeyboard(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     private enum BucketFilter {

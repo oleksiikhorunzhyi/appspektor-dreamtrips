@@ -1,109 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:material="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_title"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabel="normal"
-        app:primaryColor="@color/theme_main_darker" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_description_text"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabelText="@string/bucket_hint_description"
-        app:floatingLabel="normal"
-        app:primaryColor="@color/theme_main_darker" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_time_text"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:focusable="false"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabelText="@string/bucket_hint_time"
-        app:floatingLabel="highlight"
-        app:primaryColor="@color/theme_main_darker" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_location_text"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabelText="@string/bucket_hint_location"
-        app:floatingLabel="highlight"
-        app:primaryColor="@color/theme_main_darker" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextPeople"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_people_text"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabelText="@string/bucket_hint_people"
-        app:floatingLabel="highlight"
-        app:primaryColor="@color/theme_main_darker" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextTags"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/bucket_hint_tags_text"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        app:floatingLabel="highlight"
-        app:floatingLabelText="@string/bucket_hint_tags"
-        app:maxCharacters="120"
-        app:minCharacters="0"
-        app:primaryColor="@color/theme_main_darker" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
 
-        <com.gc.materialdesign.views.CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:text="@string/bucket_item_edit_completed"/>
+            android:hint="@string/bucket_hint_title"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            app:floatingLabel="normal"
+            app:primaryColor="@color/theme_main_darker" />
 
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/bucket_hint_description_text"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            app:maxCharacters="120"
+            app:minCharacters="0"
+            app:floatingLabel="normal"
+            app:floatingLabelText="@string/bucket_hint_description"
+            app:primaryColor="@color/theme_main_darker" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="@string/bucket_hint_time_text"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            app:floatingLabel="highlight"
+            app:floatingLabelText="@string/bucket_hint_time"
+            app:primaryColor="@color/theme_main_darker" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextPeople"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/bucket_hint_people_text"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            app:floatingLabel="highlight"
+            app:floatingLabelText="@string/bucket_hint_people"
+            app:primaryColor="@color/theme_main_darker" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/bucket_hint_tags_text"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            app:floatingLabel="highlight"
+            app:floatingLabelText="@string/bucket_hint_tags"
+            app:maxCharacters="120"
+            app:minCharacters="0"
+            app:primaryColor="@color/theme_main_darker" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBoxDone"
+                android:layout_width="wrap_content"
+                android:text="@string/bucket_item_edit_completed"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

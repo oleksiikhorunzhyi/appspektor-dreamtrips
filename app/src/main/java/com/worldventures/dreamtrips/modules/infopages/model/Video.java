@@ -4,27 +4,27 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Video extends BaseEntity {
 
-    String Caption1;
-    String Caption1LanguageUrl;
-    String Caption2;
-    String Caption2LanguageUrl;
-    String Country;
-    String CountryAbbreviation1;
-    String CountryAbbreviation2;
-    String CountryCode;
-    String Download1080;
-    String Download480;
-    String Download720;
-    String FlashUrl;
-    String ImageUrl;
-    String Language1;
-    String Language2;
-    String Mp4Url;
-    String OgvUrl;
-    String PointOfEntry;
-    String UID;
-    String VideoName;
-    String WebmUrl;
+    private String Caption1;
+    private String Caption1LanguageUrl;
+    private String Caption2;
+    private String Caption2LanguageUrl;
+    private String Country;
+    private String CountryAbbreviation1;
+    private String CountryAbbreviation2;
+    private String CountryCode;
+    private String Download1080;
+    private String Download480;
+    private String Download720;
+    private String FlashUrl;
+    private String ImageUrl;
+    private String Language1;
+    private String Language2;
+    private String Mp4Url;
+    private String OgvUrl;
+    private String PointOfEntry;
+    private String UID;
+    private String VideoName;
+    private String WebmUrl;
 
     public String getCaption1() {
         return Caption1;

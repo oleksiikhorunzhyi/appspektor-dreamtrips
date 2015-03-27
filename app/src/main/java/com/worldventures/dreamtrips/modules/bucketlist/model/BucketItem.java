@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.Date;
@@ -31,39 +32,30 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(6)
     private String description;
 
+    @Deprecated
     @TaggedFieldSerializer.Tag(7)
     private List<BucketTag> bucketTags;
 
+    @TaggedFieldSerializer.Tag(8)
+    private List<BucketTag> tags;
+
+    @TaggedFieldSerializer.Tag(9)
+    private CategoryItem categoryItem;
+
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public Date getTarget_date() {
         return target_date;
     }
 
-    public void setTarget_date(Date target_date) {
-        this.target_date = target_date;
-    }
-
     public Date getCompletion_date() {
         return completion_date;
-    }
-
-    public void setCompletion_date(Date completion_date) {
-        this.completion_date = completion_date;
     }
 
     public boolean isDone() {
@@ -71,30 +63,34 @@ public class BucketItem extends BaseEntity {
     }
 
     public void setDone(boolean status) {
-        this.status = status ? COMPLETED : NEW;
+        if (status) {
+            this.status = BucketItem.COMPLETED;
+        } else {
+            this.status = BucketItem.NEW;
+        }
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getCategory() {
+        if (categoryItem != null) {
+            return categoryItem.getName();
+        } else {
+            return "";
+        }
     }
 
-    public List<BucketTag> getBucketTags() {
-        return bucketTags;
-    }
-
-    public void setBucketTags(List<BucketTag> bucketTags) {
-        this.bucketTags = bucketTags;
+    public String getBucketTags() {
+        if (tags != null) {
+            return Queryable.from(tags).joinStrings(", ", (element) -> element.getName());
+        } else {
+            return "";
+        }
     }
 }

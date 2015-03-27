@@ -4,7 +4,7 @@ import java.util.List;
 
 public class BucketListResponse {
 
-    List<BucketItem> data;
+    private List<BucketItem> data;
 
     public List<BucketItem> getData() {
         return data;

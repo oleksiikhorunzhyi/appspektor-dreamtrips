@@ -86,11 +86,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketListPopularActivity.class, bundle);
     }
 
-    public void openBucketItemEditActivity(BucketTabsFragment.Type type, BucketItem bucketItem) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListPopularActivity.EXTRA_TYPE, type);
+    public void openBucketItemEditActivity(BucketTabsFragment.Type type, Bundle bundle) {
         bundle.putSerializable(BucketListPopularActivity.EXTRA_STATE, Route.BUCKET_EDIT);
-        bundle.putSerializable(BucketListPopularActivity.EXTRA_ITEM, bucketItem);
         startActivity(BucketListPopularActivity.class, bundle);
     }
 

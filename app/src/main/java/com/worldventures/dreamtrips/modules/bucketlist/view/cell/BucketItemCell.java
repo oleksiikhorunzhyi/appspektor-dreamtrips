@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,43 +31,40 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnLongClick;
 import butterknife.OnTouch;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.utils.ViewUtils.dpFromPx;
 
 @Layout(R.layout.adapter_item_bucket_cell)
-public class BucketItemCell extends AbstractCell<BucketItem> implements DraggableItemViewHolder, SwipeLayout.SwipeListener {
+public class BucketItemCell extends AbstractCell<BucketItem> implements
+        DraggableItemViewHolder, SwipeLayout.SwipeListener {
 
-    static final int ACTION_DEL = 0;
-    static final int ACTION_DONE = 1;
-
-    static final int ACTION_NONE = -1;
-    static final int ACTION_SETTLING = -2;
+    private static final int ACTION_DEL = 0;
+    private static final int ACTION_DONE = 1;
+    private static final int ACTION_NONE = -1;
+    private static final int ACTION_SETTLING = -2;
 
     @InjectView(R.id.container)
-    RelativeLayout container;
+    protected RelativeLayout container;
     @InjectView(R.id.textViewName)
-    TextView tvName;
+    protected TextView tvName;
     @InjectView(R.id.button_cancel)
-    ImageView buttonCancel;
+    protected ImageView buttonCancel;
     @InjectView(R.id.drag_handle)
-    View drag_handle;
+    protected View drag_handle;
     @InjectView(R.id.swipeLayout)
-    SwipeLayout swipeLayout;
+    protected SwipeLayout swipeLayout;
     @InjectView(R.id.imageViewStatusDone)
-    ImageView imageViewStatusDone;
+    protected ImageView imageViewStatusDone;
     @InjectView(R.id.imageViewStatusClose)
-    ImageView imageViewStatusClose;
+    protected ImageView imageViewStatusClose;
     @InjectView(R.id.crossing)
-    View crossing;
+    protected View crossing;
 
     @Inject
-    Context context;
+    protected Context context;
 
     private int mDragStateFlags;
-    private int mSwipeStateFlags;
     private int mSwipeResult = RecyclerViewSwipeManager.RESULT_NONE;
-    private int mAfterSwipeReaction = RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
 
@@ -82,14 +79,15 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     protected void syncUIStateWithModel() {
-        tvName.setText(getModelObject().getName() + " id =" + getModelObject().getId());
+        tvName.setText(getModelObject().getName());
 
         renderAction(ACTION_SETTLING);
         render();
 
         final int dragState = getDragStateFlags();
 
-        if (!getModelObject().isDone() && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
+        if (!getModelObject().isDone()
+                && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
 
             if ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -107,17 +105,20 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @OnTouch(R.id.swipeLayout)
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
-                    longPressed = false;
-                }
-                if (swipeLayout.getOpenStatus() == SwipeLayout.Status.Close &&
-                        (mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
-                    getEventBus().post(new BucketItemClickedEvent(getModelObject()));
-                }
-                break;        }
+        if (event.getAction() == MotionEvent.ACTION_UP
+                && swipeLayout.getOpenStatus() == SwipeLayout.Status.Close
+                && !longPressed) {
+            getEventBus().post(new BucketItemClickedEvent(getModelObject()));
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_CANCEL
+                || event.getAction() == MotionEvent.ACTION_UP) {
+            if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
+                longPressed = false;
+            }
+            render();
+        }
+
         return swipeLayout.onTouchEvent(event);
     }
 
@@ -126,12 +127,15 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
         if (!getModelObject().isDone()) {
             v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             longPressed = true;
-            mDragStateFlags = RecyclerViewDragDropManager.STATE_FLAG_DRAGGING;
+            renderLongPress();
         }
         return false;
     }
 
     private void render() {
+        setContainerMargin(0);
+        container.setBackgroundResource(R.drawable.bucket_item_selector);
+
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
             crossing.setVisibility(View.VISIBLE);
@@ -141,6 +145,17 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
             crossing.setVisibility(View.INVISIBLE);
             buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         }
+    }
+
+    private void setContainerMargin(int margin) {
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) swipeLayout.getLayoutParams();
+        params.leftMargin = margin;
+        swipeLayout.setLayoutParams(params);
+    }
+
+    private void renderLongPress() {
+        container.setBackgroundResource(R.drawable.bg_item_dragging_active_state);
+        setContainerMargin(context.getResources().getDimensionPixelSize(R.dimen.draggable_margin));
     }
 
     @Override
@@ -185,12 +200,14 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
      */
     @Override
     public void onStartOpen(SwipeLayout swipeLayout) {
+        render();
         afterSwipe = true;
         renderAction(ACTION_NONE);
     }
 
     @Override
     public void onOpen(SwipeLayout swipeLayout) {
+        //do nothing
     }
 
     @Override
@@ -200,6 +217,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onClose(SwipeLayout swipeLayout) {
+        //do nothing
     }
 
     @Override
@@ -213,13 +231,16 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
 
     @Override
     public void onHandRelease(SwipeLayout swipeLayout, float xvel, float yVel) {
-        if (!afterSwipe) return;
+        if (!afterSwipe) {
+            return;
+        }
+
         afterSwipe = false;
 
         int action = getAction(lastOffset, xvel);
         renderAction(action);
         int closeDelay = 0;
-        if (isFling(xvel)) closeDelay = 250; // due to swipe layout inner invalidations
+        if (isFling(xvel)) closeDelay = 250;
         itemView.postDelayed(() -> swipeLayout.close(true, false), closeDelay);
         itemView.postDelayed(() -> processAction(action), 300);
     }
@@ -246,27 +267,25 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements Draggabl
     }
 
     private void processAction(@SwipeAction int action) {
-        switch (action) {
-            case ACTION_DEL:
-                Timber.d("Sending delete event");
-                getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
-                break;
-            case ACTION_DONE:
-                getModelObject().setDone(!getModelObject().isDone());
-                render();
-                Timber.d("Sending done event");
-                getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
-                break;
+        if (action == ACTION_DEL) {
+            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
+        } else if (action == ACTION_DONE) {
+            getModelObject().setDone(!getModelObject().isDone());
+            render();
+            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
         }
         lastOffset = 0;
     }
 
     @SwipeAction
     private int getAction(int offset, float velocity) {
-        if (offset > swipeLayout.getWidth() * 2 / 3.f) return ACTION_DEL;
-        else if (isFling(velocity)) return ACTION_DONE;
-        else if (offset > swipeLayout.getWidth() / 3.f) return ACTION_DONE;
-        else return ACTION_NONE;
+        if (offset > swipeLayout.getWidth() * 2 / 3.f) {
+            return ACTION_DEL;
+        } else if (isFling(velocity)
+                || offset > swipeLayout.getWidth() / 3.f) {
+            return ACTION_DONE;
+        }
+        return ACTION_NONE;
     }
 
     private boolean isFling(float velocity) {

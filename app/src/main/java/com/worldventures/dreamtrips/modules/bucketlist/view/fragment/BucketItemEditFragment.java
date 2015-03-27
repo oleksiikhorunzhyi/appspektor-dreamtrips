@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
@@ -14,11 +16,12 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,36 +31,51 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View,
+        DatePickerDialog.OnDateSetListener {
 
     @Inject
-    FragmentCompass fragmentCompass;
+    protected FragmentCompass fragmentCompass;
 
     @Optional
     @InjectView(R.id.done)
-    ImageView imageViewDone;
+    protected ImageView imageViewDone;
 
     @InjectView(R.id.editTextTitle)
-    EditText editTextTitle;
+    protected EditText editTextTitle;
 
     @InjectView(R.id.editTextDescription)
-    EditText editTextDescription;
-
-    @InjectView(R.id.editTextLocation)
-    EditText editTextLocation;
+    protected EditText editTextDescription;
 
     @InjectView(R.id.editTextPeople)
-    EditText editTextPeople;
+    protected EditText editTextPeople;
 
     @InjectView(R.id.editTextTags)
-    EditText editTextTags;
+    protected EditText editTextTags;
 
     @InjectView(R.id.editTextTime)
-    EditText editTextTime;
+    protected EditText editTextTime;
+
+    @InjectView(R.id.checkBoxDone)
+    protected android.widget.CheckBox checkBox;
+
+    @InjectView(R.id.spinnerCategory)
+    protected Spinner spinnerCategory;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -77,6 +95,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
+                getPresenter().saveItem();
                 break;
 
         }
@@ -86,6 +105,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Optional
     @OnClick(R.id.done)
     void onDone() {
+        getPresenter().saveItem();
     }
 
     @OnClick(R.id.editTextTime)
@@ -94,7 +114,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i2, int i3) {
+    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        getPresenter().onDataSet(year, month, day);
     }
 
     @Override
@@ -102,6 +123,22 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
         BucketItem item = (BucketItem) getArguments().getSerializable(BucketListPopularActivity.EXTRA_ITEM);
         return new BucketItemEditPresenter(this, type, item);
+    }
+
+    @Override
+    public void setCategoryItems(List<CategoryItem> items) {
+        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(adapter);
+    }
+
+    @Override
+    public void setCategory(String name) {
+        if (TextUtils.isEmpty(name)) {
+            spinnerCategory.setPromptId(R.string.category);
+        } else {
+            spinnerCategory.setPrompt(name);
+        }
     }
 
     @Override
@@ -115,13 +152,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void setTime(Date time) {
-
-    }
-
-    @Override
-    public void setLocation(String location) {
-        editTextLocation.setText(location);
+    public void setTime(String time) {
+        editTextTime.setText(time);
     }
 
     @Override
@@ -145,8 +177,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public Date getTime() {
-        return null;
+    public String getTime() {
+        return editTextTime.getText().toString();
     }
 
     @Override
@@ -157,6 +189,16 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public String getDescription() {
         return editTextDescription.getText().toString();
+    }
+
+    @Override
+    public void setStatus(boolean isCompleted) {
+        checkBox.setChecked(isCompleted);
+    }
+
+    @Override
+    public boolean getStatus() {
+        return checkBox.isChecked();
     }
 }
 

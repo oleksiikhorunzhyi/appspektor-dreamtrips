@@ -35,6 +35,14 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     }
 
     @Override
+    public void informUser(int stringId) {
+        if (getActivity() != null && isAdded()) {
+            SnackBar snackbar = new SnackBar(getActivity(), getActivity().getString(stringId));
+            snackbar.show();
+        }
+    }
+
+    @Override
     public void alert(String s) {
         if (getActivity() != null && isAdded()) {
             getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {

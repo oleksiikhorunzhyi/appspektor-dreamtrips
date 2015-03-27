@@ -29,6 +29,11 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
+    public void informUser(int stringId) {
+        Toast.makeText(getApplicationContext(), stringId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void alert(String s) {
         runOnUiThread(() -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);

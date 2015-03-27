@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.Calendar;
@@ -31,14 +30,6 @@ public class FragmentCompass {
 
     public void setContainerId(int containerId) {
         this.containerId = containerId;
-    }
-
-    public void show(DialogState state) {
-        show(state, null);
-    }
-
-    public void show(DialogState state, Bundle bundle) {
-        showDialog(state, bundle);
     }
 
     public void add(Route route) {
@@ -118,26 +109,6 @@ public class FragmentCompass {
         }
 
         show(datePickerDialog, tag);
-    }
-
-    protected void showDialog(DialogState state, Bundle bundle) {
-        if (validateState()) {
-            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
-            String clazzName = state.getClazzName();
-            BaseDialogFragment dialogFragment = (BaseDialogFragment) DialogFragment.instantiate(activity, clazzName);
-            dialogFragment.setArguments(bundle);
-
-            FragmentTransaction ft = supportFragmentManager.beginTransaction();
-            Fragment prev = supportFragmentManager.findFragmentByTag("dialog");
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
-
-            dialogFragment.show(supportFragmentManager, "dialog");
-        } else {
-            Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
-        }
     }
 
     public int getPreviousFragmentTitle() {

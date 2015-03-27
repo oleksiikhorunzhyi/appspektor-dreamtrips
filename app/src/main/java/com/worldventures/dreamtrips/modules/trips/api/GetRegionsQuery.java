@@ -21,7 +21,6 @@ public class GetRegionsQuery extends Query<ArrayList<Region>> {
         if (db.isEmpty(SnappyRepository.REGIONS)) {
             data.addAll(getService().getRegions());
             db.putList(data, SnappyRepository.REGIONS, Region.class);
-
         } else {
             data.addAll(db.readList(SnappyRepository.REGIONS, Region.class));
         }

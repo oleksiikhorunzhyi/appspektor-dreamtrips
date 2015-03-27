@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -44,8 +46,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private static final int DELETION_DELAY = 3500;
 
-    @Inject
-    public Context context;
     @Inject
     public SnappyRepository db;
 
@@ -91,11 +91,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 }
             });
         } else {
-            try {
-                addItems(db.readBucketList(type.name()));
-            } catch (Exception e) {
-                Log.e(BucketListPresenter.class.getSimpleName(), "", e);
-            }
+            addItems(db.readBucketList(type.name()));
         }
     }
 
@@ -119,6 +115,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
         }
         view.getAdapter().setItems(result);
+    }
+
+    public void onEvent(BucketItemClickedEvent event) {
+        if (bucketItems.contains(event.getBucketItem())) {
+            eventBus.cancelEventDelivery(event);
+            openDetails(event.getBucketItem());
+        }
     }
 
     public void onEvent(BucketItemAddedEvent event) {
@@ -145,20 +148,17 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                     : 0);
 
             BucketPostItem bucketPostItem = new BucketPostItem();
-            bucketPostItem.setStatus(bucketItem.getStatus());
-
-            Log.d("TAG_BucketListPM", "Receivent mark as done event");
+            bucketPostItem.setStatus(bucketItem.isDone());
 
             dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketPostItem), new RequestListener<BucketItem>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     view.informUser(spiceException.getMessage());
-                    Log.d("TAG_BucketListPM", spiceException.getMessage());
                 }
 
                 @Override
                 public void onRequestSuccess(BucketItem jsonObject) {
-                    Log.d("TAG_BucketListPM", "Item marked as done");
+                //nothing to do here
                 }
             });
 
@@ -172,8 +172,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (bucketItems.size() > 0 && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
             eventBus.cancelEventDelivery(event);
 
-            Log.d("TAG_BucketListPM", "Receivent delete event");
-
             int index = bucketItems.indexOf(event.getBucketItem());
             bucketItems.remove(event.getBucketItem());
             refresh();
@@ -184,7 +182,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
-        activityRouter.openBucketItemEditActivity(type, bucketItem);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListPopularActivity.EXTRA_ITEM, bucketItem);
+        if (view.isTabletLandscape()) {
+            fragmentCompass.setContainerId(R.id.container_child);
+            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
+        } else {
+            activityRouter.openBucketItemEditActivity(type, bundle);
+        }
     }
 
     public void addPopular() {
@@ -197,12 +203,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 view.informUser(spiceException.getMessage());
-                Log.d("TAG_BucketListPM", spiceException.getMessage());
             }
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
-                Log.d("TAG_BucketListPM", "Item deleted");
                 db.saveBucketList(bucketItems, type.name());
             }
         });
@@ -239,18 +243,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         refresh();
     }
 
-    @Override
-    public void destroyView() {
-        super.destroyView();
-        eventBus.unregister(this);
-    }
-
     public void itemMoved(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;
         }
 
-        Log.d("TAG_BucketListPM", "Syncing position from " + fromPosition + " to " + toPosition);
         BucketOrderModel orderModel = new BucketOrderModel();
         orderModel.setPosition(toPosition);
 
@@ -263,7 +260,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
-                Log.d("TAG_BucketListPM", "Synced position!");
                 final BucketItem item = bucketItems.remove(fromPosition);
                 bucketItems.add(toPosition, item);
                 db.saveBucketList(bucketItems, type.name());
@@ -280,6 +276,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
+                //nothing to do here
             }
 
             @Override
@@ -301,6 +298,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         return showCompleted;
     }
 
+    @Override
+    public void destroyView() {
+        super.destroyView();
+        eventBus.unregister(this);
+    }
+
     public interface View extends Presenter.View {
         BaseArrayListAdapter getAdapter();
 
@@ -309,5 +312,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void startLoading();
 
         void finishLoading();
+
+        boolean isTabletLandscape();
     }
 }

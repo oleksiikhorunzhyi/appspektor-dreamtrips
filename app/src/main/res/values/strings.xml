@@ -149,7 +149,11 @@
     <string name="bucket_hint_tags">Tags</string>
     <string name="bucket_hint_tags_text">Add tags that describe yout bucket list item</string>
     <string name="bucket_item_edit_completed">I\'ve completed this bucket list item!</string>
+    <string name="bucket_item_edit_done">Bucket item was saved!</string>
+    <string name="bucket_item_edit_error">Error was occured while bucket item saving</string>
     <string name="bucket_item_photos">Add pictures</string>
+
+    <string name="category">Category</string>
 
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>

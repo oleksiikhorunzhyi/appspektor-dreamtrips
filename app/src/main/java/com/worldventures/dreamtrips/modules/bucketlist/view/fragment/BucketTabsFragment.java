@@ -22,14 +22,15 @@ import butterknife.InjectView;
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.sw_liked)
-    Switch swLiked;
+    protected Switch swLiked;
     @InjectView(R.id.tabs)
-    PagerSlidingTabStrip tabs;
+    protected PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
-    CustomViewPager pager;
+    protected CustomViewPager pager;
     @InjectView(R.id.v_bg_holder)
-    View vBgHolder;
-    BasePagerAdapter adapter;
+    protected View vBgHolder;
+
+    private BasePagerAdapter adapter;
 
     @Override
     protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {

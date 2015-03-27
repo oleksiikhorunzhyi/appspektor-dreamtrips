@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.content.Context;
-
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
@@ -25,14 +22,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
 
     private BucketTabsFragment.Type type;
+    private List<BucketItem> realData = new ArrayList<>();
 
     protected RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
         @Override
@@ -50,8 +46,6 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
             view.finishLoading();
         }
     };
-
-    private List<BucketItem> realData = new ArrayList<>();
 
     public BucketPopularPresenter(View view, BucketTabsFragment.Type type) {
         super(view);

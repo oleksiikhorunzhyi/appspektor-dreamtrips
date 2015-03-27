@@ -7,8 +7,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -88,7 +86,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
 
         final int dragState = getDragStateFlags();
 
-        if (!getModelObject().isDone() && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
+        if (!getModelObject().isDone()
+                && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
 
             if ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -112,14 +111,12 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
             getEventBus().post(new BucketItemClickedEvent(getModelObject()));
         }
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
-                    longPressed = false;
-                }
-                render();
-                break;
+        if (event.getAction() == MotionEvent.ACTION_CANCEL
+                || event.getAction() == MotionEvent.ACTION_UP) {
+            if ((mDragStateFlags & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) == 0) {
+                longPressed = false;
+            }
+            render();
         }
 
         return swipeLayout.onTouchEvent(event);
@@ -284,7 +281,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     private int getAction(int offset, float velocity) {
         if (offset > swipeLayout.getWidth() * 2 / 3.f) {
             return ACTION_DEL;
-        } else if (isFling(velocity) || offset > swipeLayout.getWidth() / 3.f) {
+        } else if (isFling(velocity)
+                || offset > swipeLayout.getWidth() / 3.f) {
             return ACTION_DONE;
         }
         return ACTION_NONE;

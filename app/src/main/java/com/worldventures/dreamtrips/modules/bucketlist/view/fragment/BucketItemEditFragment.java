@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.gc.materialdesign.views.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -24,7 +21,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditP
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;

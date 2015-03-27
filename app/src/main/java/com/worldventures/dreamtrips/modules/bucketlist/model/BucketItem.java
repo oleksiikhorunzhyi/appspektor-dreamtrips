@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 

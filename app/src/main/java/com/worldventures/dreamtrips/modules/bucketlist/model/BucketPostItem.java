@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.DateUtils;
 
@@ -13,10 +14,11 @@ public class BucketPostItem {
     private String name;
     private String type;
     private String status;
-    private String date;
+    @SerializedName("target_date")
+    private Date date;
     private String description;
     private List<String> tags;
-    private List<String> people;
+    private List<String> friends;
 
     public BucketPostItem() {
     }
@@ -41,7 +43,7 @@ public class BucketPostItem {
     }
 
     public void setPeople(List<String> people) {
-        this.people = people;
+        this.friends = people;
     }
 
     public void setName(String name) {
@@ -65,7 +67,7 @@ public class BucketPostItem {
     }
 
     public void setDate(Date date) {
-        this.date = DateTimeUtils.convertDateToString(date, DateTimeUtils.DATE_FORMAT);
+        this.date = date;
     }
 
     public void setDescription(String description) {

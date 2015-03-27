@@ -42,6 +42,9 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(9)
     private CategoryItem categoryItem;
 
+    @TaggedFieldSerializer.Tag(10)
+    private List<String> friends;
+
     public String getName() {
         return name;
     }
@@ -81,6 +84,14 @@ public class BucketItem extends BaseEntity {
     public String getCategory() {
         if (categoryItem != null) {
             return categoryItem.getName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getFriends() {
+        if (tags != null) {
+            return Queryable.from(friends).joinStrings(", ");
         } else {
             return "";
         }

@@ -6,7 +6,6 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -47,25 +46,15 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
         view.setTime(DateTimeUtils.convertDateToString(bucketItem.getTarget_date(), DateTimeUtils.DATE_FORMAT));
-        view.setCategory(bucketItem.getCategory());
+
+        List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
+        if (!list.isEmpty()) {
+            view.setCategoryItems(list);
+            view.setCategory(list.indexOf(bucketItem.getCategory()));
+        }
 
         items.addAll(db.readBucketList(type.name()));
     }
-
-    private void loadCategories() {
-        dreamSpiceManager.execute(new GetCategoryQuery(), categoryLoadListener);
-    }
-
-    private RequestListener<ArrayList<CategoryItem>> categoryLoadListener = new RequestListener<ArrayList<CategoryItem>>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-        }
-
-        @Override
-        public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            view.setCategoryItems(categoryItems);
-        }
-    };
 
     public void saveItem() {
         BucketPostItem bucketPostItem = new BucketPostItem();
@@ -74,6 +63,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         bucketPostItem.setStatus(view.getStatus());
         bucketPostItem.setTags(getListFromString(view.getTags()));
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
+        bucketPostItem.setCategory(view.getSelectedItem());
         Date date = DateTimeUtils.dateFromString(view.getTime(), DateTimeUtils.DATE_FORMAT);
         bucketPostItem.setDate(date);
         UpdateBucketItemCommand updateBucketItemCommand = new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
@@ -126,9 +116,11 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
 
         void setStatus(boolean isCompleted);
 
-        void setCategory(String name);
+        void setCategory(int selection);
 
         void setCategoryItems(List<CategoryItem> items);
+
+        CategoryItem getSelectedItem();
 
         boolean getStatus();
 

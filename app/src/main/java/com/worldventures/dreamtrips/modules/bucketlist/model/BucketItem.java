@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
@@ -40,6 +41,7 @@ public class BucketItem extends BaseEntity {
     private List<BucketTag> tags;
 
     @TaggedFieldSerializer.Tag(9)
+    @SerializedName("category")
     private CategoryItem categoryItem;
 
     @TaggedFieldSerializer.Tag(10)
@@ -81,12 +83,8 @@ public class BucketItem extends BaseEntity {
         return description;
     }
 
-    public String getCategory() {
-        if (categoryItem != null) {
-            return categoryItem.getName();
-        } else {
-            return "";
-        }
+    public CategoryItem getCategory() {
+        return categoryItem;
     }
 
     public String getFriends() {

@@ -10,8 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTitle"
@@ -34,17 +34,32 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:maxCharacters="120"
-            app:minCharacters="0"
             app:floatingLabel="normal"
             app:floatingLabelText="@string/bucket_hint_description"
+            app:maxCharacters="120"
+            app:minCharacters="0"
             app:primaryColor="@color/theme_main_darker" />
 
-        <Spinner
-            android:id="@+id/spinnerCategory"
-            android:visibility="gone"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/category" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTime"
@@ -96,8 +111,8 @@
             <CheckBox
                 android:id="@+id/checkBoxDone"
                 android:layout_width="wrap_content"
-                android:text="@string/bucket_item_edit_completed"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/bucket_item_edit_completed" />
 
         </LinearLayout>
     </LinearLayout>

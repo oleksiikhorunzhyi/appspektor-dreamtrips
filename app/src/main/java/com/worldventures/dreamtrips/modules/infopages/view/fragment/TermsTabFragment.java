@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
@@ -18,16 +19,13 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 
 import butterknife.InjectView;
 
+@Layout(R.layout.fragment_tab_info)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
 
-    @InjectView(R.id.sw_liked)
-    protected Switch swLiked;
     @InjectView(R.id.tabs)
     protected PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
     protected CustomViewPager pager;
-    @InjectView(R.id.v_bg_holder)
-    protected View vBgHolder;
 
     private BasePagerAdapter adapter;
 
@@ -41,6 +39,7 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
         super.afterCreateView(rootView);
 
         if (adapter == null) {
+            this.adapter = new BasePagerAdapter(getChildFragmentManager());
             this.adapter.add(new FragmentItem(StaticInfoFragment.PrivacyPolicyFragment.class, getString(R.string.privacy)));
             this.adapter.add(new FragmentItem(StaticInfoFragment.TermsOfServiceFragment.class, getString(R.string.terms_of_service)));
             this.adapter.add(new FragmentItem(StaticInfoFragment.CookiePolicyFragment.class, getString(R.string.cookie)));

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,17 +64,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     @Override
@@ -127,18 +115,20 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {
-        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), android.R.layout.simple_spinner_item, items);
+        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), R.layout.spinner_dropdown_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
     }
 
     @Override
-    public void setCategory(String name) {
-        if (TextUtils.isEmpty(name)) {
-            spinnerCategory.setPromptId(R.string.category);
-        } else {
-            spinnerCategory.setPrompt(name);
-        }
+    public CategoryItem getSelectedItem() {
+        return ((CategoryItem) spinnerCategory.getSelectedItem());
+    }
+
+    @Override
+    public void setCategory(int selection) {
+        spinnerCategory.setSelection(selection);
     }
 
     @Override

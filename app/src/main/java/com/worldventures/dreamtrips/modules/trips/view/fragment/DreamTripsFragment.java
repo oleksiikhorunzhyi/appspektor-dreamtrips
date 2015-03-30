@@ -39,15 +39,15 @@ import butterknife.OnClick;
 public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+    protected ViewGroup emptyView;
 
     @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+    protected SwipeRefreshLayout refreshLayout;
 
-    FilterableArrayListAdapter<TripModel> adapter;
+    private FilterableArrayListAdapter<TripModel> adapter;
 
     private int lastConfig;
     private boolean search;

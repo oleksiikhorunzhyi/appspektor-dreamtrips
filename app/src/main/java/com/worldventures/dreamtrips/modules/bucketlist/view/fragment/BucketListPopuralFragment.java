@@ -22,23 +22,19 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 
-/**
- *  1 on 03.03.15.
- */
 @Layout(R.layout.fragment_bucket_popular)
 public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresenter> implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.recyclerViewBuckets)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+    protected ViewGroup emptyView;
 
     @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+    protected SwipeRefreshLayout refreshLayout;
 
-    LoaderRecycleAdapter<Object> arrayListAdapter;
-
+    private LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -59,6 +55,15 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private void setupManager() {
+
     }
 
     @Override

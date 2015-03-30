@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -15,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -96,7 +99,11 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
     }
 
     public List<String> getListFromString(String temp) {
-        return Queryable.from(temp.split(",")).map((s) -> s.trim()).toList();
+        if (TextUtils.isEmpty(temp)) {
+            return Collections.emptyList();
+        } else {
+            return Queryable.from(temp.split(",")).map((s) -> s.trim()).toList();
+        }
     }
 
     public void frameClicked() {

@@ -58,15 +58,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    private void setupManager() {
-
-    }
-
-    @Override
     public BaseArrayListAdapter getAdapter() {
         return arrayListAdapter;
     }

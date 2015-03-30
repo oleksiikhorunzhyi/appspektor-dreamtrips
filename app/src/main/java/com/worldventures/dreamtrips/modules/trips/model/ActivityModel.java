@@ -7,12 +7,12 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class ActivityModel extends BaseEntity {
 
-    int parent_id;
-    int position;
-    String icon;
-    String name;
+    private int parent_id;
+    private int position;
+    private String icon;
+    private String name;
 
-    private transient boolean isChecked = true;
+    private transient boolean checked = true;
     private transient boolean shouldBeGone = true;
 
     public int getParent_id() {
@@ -48,11 +48,11 @@ public class ActivityModel extends BaseEntity {
     }
 
     public boolean isChecked() {
-        return isChecked;
+        return checked;
     }
 
-    public void setChecked(boolean isChecked) {
-        this.isChecked = isChecked;
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     public boolean isShouldBeGone() {
@@ -61,26 +61,5 @@ public class ActivityModel extends BaseEntity {
 
     public void setShouldBeGone(boolean shouldBeGone) {
         this.shouldBeGone = shouldBeGone;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        ActivityModel activity = (ActivityModel) o;
-
-        if (id != activity.id) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + id;
-        return result;
     }
 }

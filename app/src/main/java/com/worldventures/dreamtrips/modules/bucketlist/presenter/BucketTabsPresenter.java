@@ -23,6 +23,18 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     protected SnappyRepository snappyRepository;
 
+    private RequestListener<ArrayList<CategoryItem>> categoriesRequestListener = new RequestListener<ArrayList<CategoryItem>>() {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            //do nothing
+        }
+
+        @Override
+        public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
+            snappyRepository.putList(categoryItems, SnappyRepository.CATEGORIES, CategoryItem.class);
+        }
+    };
+
     public BucketTabsPresenter(View view) {
         super(view);
     }
@@ -41,20 +53,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     private void loadCategories() {
-        dreamSpiceManager.execute(new GetCategoryQuery(), categoryLoadListener);
+        dreamSpiceManager.execute(new GetCategoryQuery(), categoriesRequestListener);
     }
-
-    private RequestListener<ArrayList<CategoryItem>> categoryLoadListener = new RequestListener<ArrayList<CategoryItem>>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-        }
-
-        @Override
-        public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            snappyRepository.putList(categoryItems, SnappyRepository.CATEGORIES, CategoryItem.class);
-        }
-    };
-
 
     public interface View extends Presenter.View {
     }

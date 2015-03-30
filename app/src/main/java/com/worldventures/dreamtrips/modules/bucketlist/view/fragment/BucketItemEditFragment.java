@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -62,11 +61,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected Spinner spinnerCategory;
 
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (imageViewDone != null)
@@ -123,7 +117,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public CategoryItem getSelectedItem() {
-        return ((CategoryItem) spinnerCategory.getSelectedItem());
+        return (CategoryItem) spinnerCategory.getSelectedItem();
     }
 
     @Override

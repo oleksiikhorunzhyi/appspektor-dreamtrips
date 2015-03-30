@@ -154,8 +154,8 @@ public class TripModel extends BaseEntity implements Filterable {
 
     public List<Object> getFilteredImages() {
         List<Object> filteredImages = new ArrayList<>();
-        filteredImages.addAll(Queryable.from(images).filter((input) ->
-                input.getType().equals("RETINA")).toList());
+        filteredImages.addAll(Queryable.from(images).filter(input ->
+                "RETINA".equals(input.getType())).toList());
         return filteredImages;
     }
 

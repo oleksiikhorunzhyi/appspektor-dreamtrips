@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.modules.auth.presenter;
 
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-
-import javax.inject.Inject;
 
 public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
@@ -31,7 +28,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
             if (e != null) {
                 view.showLoginErrorMessage();
             } else {
-                AdobeTrackingHelper.login(l.getSession().getUser().getEmail());
+                TrackingHelper.login(l.getSession().getUser().getEmail());
                 activityRouter.openMain();
                 activityRouter.finish();
                 view.showLoginSuccess();

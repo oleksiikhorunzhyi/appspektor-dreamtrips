@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -57,7 +57,7 @@ public class FSPhotoPM extends FullScreenPresenter<Photo> {
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 view.informUser(context.getString(R.string.photo_flagged));
-                AdobeTrackingHelper.flag(type, String.valueOf(photo.getId()), getUserId());
+                TrackingHelper.flag(type, String.valueOf(photo.getId()), getUserId());
 
             }
         });
@@ -80,7 +80,7 @@ public class FSPhotoPM extends FullScreenPresenter<Photo> {
                 view.setLiked(isLiked);
                 view.setLikeCount(actualLikeCount);
                 eventBus.postSticky(new PhotoLikeEvent(photo.getId(), isLiked));
-                AdobeTrackingHelper.like(type, String.valueOf(photo.getId()), getUserId());
+                TrackingHelper.like(type, String.valueOf(photo.getId()), getUserId());
             }
         };
 

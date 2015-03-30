@@ -11,7 +11,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -85,7 +85,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     @Override
     public void init() {
         super.init();
-        AdobeTrackingHelper.dreamTrips(getUserId());
+        TrackingHelper.dreamTrips(getUserId());
         // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
 

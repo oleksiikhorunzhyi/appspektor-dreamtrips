@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -18,16 +18,16 @@ public class WebViewFragmentPresenter<T extends Presenter.View> extends Presente
     public void track(Route route) {
         switch (route) {
             case TERMS_OF_SERVICE:
-                AdobeTrackingHelper.service(getUserId());
+                TrackingHelper.service(getUserId());
                 break;
             case FAQ:
-                AdobeTrackingHelper.faq(getUserId());
+                TrackingHelper.faq(getUserId());
                 break;
             case COOKIE_POLICY:
-                AdobeTrackingHelper.cookie(getUserId());
+                TrackingHelper.cookie(getUserId());
                 break;
             case PRIVACY_POLICY:
-                AdobeTrackingHelper.privacy(getUserId());
+                TrackingHelper.privacy(getUserId());
                 break;
         }
     }

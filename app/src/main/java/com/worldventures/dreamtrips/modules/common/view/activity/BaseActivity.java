@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
-import com.adobe.mobile.Config;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
@@ -40,21 +40,32 @@ public abstract class BaseActivity extends InjectingActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Config.setDebugLogging(true);
-        Config.setContext(this.getApplicationContext());
+        TrackingHelper.onCreate(this);
+    }
+
+    @Override
+    protected void onStart() {
+        TrackingHelper.onStart(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        TrackingHelper.onStop(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         initHockeyApp();
-        Config.collectLifecycleData(this);
+        TrackingHelper.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Config.pauseCollectingLifecycleData();
+        TrackingHelper.onPause(this);
     }
 
     @Override

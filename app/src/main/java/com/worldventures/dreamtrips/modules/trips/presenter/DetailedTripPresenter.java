@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
@@ -43,7 +43,7 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
     }
 
     public void onCreate() {
-        AdobeTrackingHelper.trip(String.valueOf(trip.getId()), getUserId());
+        TrackingHelper.trip(String.valueOf(trip.getId()), getUserId());
 
         view.setName(trip.getName());
         view.setDates(trip.getAvailabilityDates().toString());
@@ -72,7 +72,7 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
     }
 
     public void actionBookIt() {
-        AdobeTrackingHelper.bookIt(String.valueOf(trip.getId()), getUserId());
+        TrackingHelper.bookIt(String.valueOf(trip.getId()), getUserId());
         activityRouter.openBookItActivity(trip.getId());
     }
 
@@ -88,7 +88,7 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
             @Override
             public void onRequestSuccess(TripDetails tripDetails) {
                 view.setContent(tripDetails.getContent());
-                AdobeTrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
+                TrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
             }
         };
 

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.techery.spares.module.Annotations.Global;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -49,7 +49,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     public void setupType(Type type) {
         this.type = type;
-        AdobeTrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
+        TrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
 
     }
 

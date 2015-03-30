@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
@@ -34,11 +34,11 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
 
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
-            AdobeTrackingHelper.mine(getUserId());
+            TrackingHelper.mine(getUserId());
         } else if (position == TripImagesListFragment.Type.YOU_SHOULD_BE_HERE.ordinal()) {
-            AdobeTrackingHelper.ysbh(getUserId());
+            TrackingHelper.ysbh(getUserId());
         } else if (position == TripImagesListFragment.Type.MEMBER_IMAGES.ordinal()) {
-            AdobeTrackingHelper.all(getUserId());
+            TrackingHelper.all(getUserId());
         }
     }
 

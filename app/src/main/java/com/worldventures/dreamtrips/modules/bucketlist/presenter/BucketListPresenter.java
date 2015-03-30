@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
@@ -68,7 +68,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     @Override
     public void init() {
         super.init();
-        AdobeTrackingHelper.bucketList(getUserId());
+        TrackingHelper.bucketList(getUserId());
     }
 
     public boolean isConnected() {

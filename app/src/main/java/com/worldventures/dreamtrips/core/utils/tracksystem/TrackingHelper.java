@@ -1,26 +1,68 @@
-package com.worldventures.dreamtrips.core.utils;
+package com.worldventures.dreamtrips.core.utils.tracksystem;
 
-import com.adobe.mobile.Analytics;
+import android.app.Activity;
+
+import com.adobe.mobile.Config;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class AdobeTrackingHelper {
+public class TrackingHelper {
 
-    private static final String LOGIN = "login";
-    private static final String DREAMTRIPS = "nav_menu:dreamtrips";
-    private static final String PHOTOS_YSBH = "nav_menu:photos-ysbh";
-    private static final String PHOTOS_ALL_USERS = "nav_menu:photos-allusers";
-    private static final String PHOTOS_MINE = "nav_menu:photos-mine";
-    private static final String MEMBERSHIP = "nav_menu:membership-videos";
-    private static final String ENROLL = "nav_menu:membership-enroll";
-    private static final String BUCKET_LIST = "nav_menu:bucketlist";
-    private static final String PROFILE = "nav_menu:profile";
-    private static final String FAQ = "nav_menu:faq";
-    private static final String PRIVACY = "nav_menu:terms-privacy";
-    private static final String COOKIE = "nav_menu:terms-cookie";
-    private static final String SERVICE = "nav_menu:terms-service";
+    public static final String LOGIN = "login";
+    public static final String DREAMTRIPS = "nav_menu:dreamtrips";
+    public static final String PHOTOS_YSBH = "nav_menu:photos-ysbh";
+    public static final String PHOTOS_ALL_USERS = "nav_menu:photos-allusers";
+    public static final String PHOTOS_MINE = "nav_menu:photos-mine";
+    public static final String MEMBERSHIP = "nav_menu:membership-videos";
+    public static final String ENROLL = "nav_menu:membership-enroll";
+    public static final String BUCKET_LIST = "nav_menu:bucketlist";
+    public static final String PROFILE = "nav_menu:profile";
+    public static final String FAQ = "nav_menu:faq";
+    public static final String PRIVACY = "nav_menu:terms-privacy";
+    public static final String COOKIE = "nav_menu:terms-cookie";
+    public static final String SERVICE = "nav_menu:terms-service";
+
+    private static List<ITracker> trackers = new ArrayList<>();
+
+    static {
+        trackers.add(new AdobeTracker());
+        trackers.add(new ApptentiveTracker());
+    }
+
+    public static void onCreate(BaseActivity activity) {
+        for (ITracker tracker : trackers) {
+            tracker.onCreate(activity);
+        }
+    }
+
+    public static void onStart(Activity activity) {
+        for (ITracker tracker : trackers) {
+            tracker.onStart(activity);
+        }
+    }
+
+    public static void onStop(Activity activity) {
+        for (ITracker tracker : trackers) {
+            tracker.onStop(activity);
+        }
+    }
+
+    public static void onResume(Activity activity) {
+        for (ITracker tracker : trackers) {
+            tracker.onResume(activity);
+        }
+    }
+
+    public static void onPause(Activity activity) {
+        for (ITracker tracker : trackers) {
+            tracker.onPause(activity);
+        }
+    }
 
 
     public static void login(String userId) {
@@ -116,10 +158,6 @@ public class AdobeTrackingHelper {
         trackMemberAction(action, data);
     }
 
-    private static void trackMemberAction(String action, Map<String, Object> data) {
-        Analytics.trackAction(action, data);
-    }
-
     public static void enroll(String memberId) {
         trackPageView(memberId, ENROLL);
     }
@@ -134,6 +172,12 @@ public class AdobeTrackingHelper {
 
     public static void faq(String memberId) {
         trackPageView(memberId, FAQ);
+    }
+
+    private static void trackMemberAction(String action, Map<String, Object> data) {
+        for (ITracker tracker : trackers) {
+            tracker.trackMemberAction(action, data);
+        }
     }
 
     private static void trackPageView(String memberId, String action) {
@@ -153,4 +197,6 @@ public class AdobeTrackingHelper {
     public static void service(String memberId) {
         trackPageView(memberId, SERVICE);
     }
+
+
 }

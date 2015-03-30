@@ -1,15 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -24,7 +22,6 @@ import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import retrofit.mime.TypedFile;
 
 public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
@@ -85,7 +82,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Override
     public void init() {
         super.init();
-        AdobeTrackingHelper.profile(getUserId());
+        TrackingHelper.profile(getUserId());
     }
 
     @Override

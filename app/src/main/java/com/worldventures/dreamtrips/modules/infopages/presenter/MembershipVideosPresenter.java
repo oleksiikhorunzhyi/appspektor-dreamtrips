@@ -6,7 +6,7 @@ import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.utils.AdobeTrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.model.Video;
 
@@ -42,14 +42,14 @@ public class MembershipVideosPresenter extends Presenter<Presenter.View> {
     }
 
     public void actionEnroll() {
-        AdobeTrackingHelper.enroll(getUserId());
+        TrackingHelper.enroll(getUserId());
         activityRouter.openEnroll();
     }
 
     @Override
     public void init() {
         super.init();
-        AdobeTrackingHelper.onMemberShipVideos(getUserId());
+        TrackingHelper.onMemberShipVideos(getUserId());
 
         this.adapterController = loaderFactory.create(0, (context, params) -> {
             this.objects = this.sp.getVideos();

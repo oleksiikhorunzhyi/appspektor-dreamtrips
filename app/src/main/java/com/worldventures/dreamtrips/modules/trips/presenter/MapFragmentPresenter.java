@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
@@ -34,15 +34,15 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     @Global
     EventBus eventBus;
 
-    private List<Trip> data = new ArrayList<>();
-    private List<Trip> filteredData;
+    private List<TripModel> data = new ArrayList<>();
+    private List<TripModel> filteredData;
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
     private boolean showSoldOut;
     private List<Integer> acceptedRegions;
-    private List<Activity> acceptedThemes;
+    private List<ActivityModel> acceptedThemes;
     private DateFilterItem dateFilterItem = new DateFilterItem();
     private String query;
 
@@ -94,7 +94,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     private void reloadPins() {
         view.clearMap();
-        for (Trip trip : filteredData) {
+        for (TripModel trip : filteredData) {
             view.addPin(new LatLng(trip.getGeoLocation().getLat(),
                     trip.getGeoLocation().getLng()), trip.getId());
         }
@@ -141,9 +141,9 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     }
 
     public void onMarkerClick(String id) {
-        Trip resultTrip = null;
+        TripModel resultTrip = null;
         int realId = Integer.valueOf(id);
-        for (Trip trip : filteredData) {
+        for (TripModel trip : filteredData) {
             if (trip.getId() == realId) {
                 resultTrip = trip;
                 break;

@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-/**
- *  1 on 23.01.15.
- */
-public class Activity extends BaseEntity {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class ActivityModel extends BaseEntity {
 
     int parent_id;
     int position;
@@ -70,7 +70,7 @@ public class Activity extends BaseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Activity activity = (Activity) o;
+        ActivityModel activity = (ActivityModel) o;
 
         if (id != activity.id) return false;
 

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -17,7 +16,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickP
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -91,7 +90,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketListPopularActivity.class, bundle);
     }
 
-    public void openTripDetails(Trip trip) {
+    public void openTripDetails(TripModel trip) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
         startActivity(DetailTripActivity.class, bundle);

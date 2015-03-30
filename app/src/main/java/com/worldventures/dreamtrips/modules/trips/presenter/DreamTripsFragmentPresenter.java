@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,13 +43,13 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     SnappyRepository db;
 
     private boolean loadFromApi;
-    private RoboSpiceAdapterController<Trip> adapterController = new RoboSpiceAdapterController<Trip>() {
+    private RoboSpiceAdapterController<TripModel> adapterController = new RoboSpiceAdapterController<TripModel>() {
 
         @Override
-        public SpiceRequest<ArrayList<Trip>> getRefreshRequest() {
+        public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
             return new GetTripsQuery(db, prefs, loadFromApi) {
                 @Override
-                public ArrayList<Trip> loadDataFromNetwork() throws Exception {
+                public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
                     return performFiltering(super.loadDataFromNetwork());
                 }
             };
@@ -61,7 +61,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         }
 
         @Override
-        public void onFinish(LoadType type, List<Trip> items, SpiceException spiceException) {
+        public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
             view.finishLoading(items);
         }
@@ -76,7 +76,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private boolean showSoldOut;
     private DateFilterItem dateFilterItem = new DateFilterItem();
     private List<Integer> acceptedRegions;
-    private List<Activity> acceptedThemes;
+    private List<ActivityModel> acceptedThemes;
 
     public DreamTripsFragmentPresenter(View view) {
         super(view);
@@ -129,8 +129,8 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         adapterController.reload();
     }
 
-    private ArrayList<Trip> performFiltering(List<Trip> data) {
-        ArrayList<Trip> filteredTrips = new ArrayList<>();
+    private ArrayList<TripModel> performFiltering(List<TripModel> data) {
+        ArrayList<TripModel> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Queryable.from(data).filter((input) ->
                 input.getPrice().getAmount() <= maxPrice
                         && input.getAvailabilityDates().check(dateFilterItem)
@@ -153,7 +153,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         dateFilterItem.reset();
     }
 
-    public void onItemLike(Trip trip) {
+    public void onItemLike(TripModel trip) {
         RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -181,7 +181,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         fragmentCompass.replace(Route.MAP, null);
     }
 
-    public void onItemClick(Trip trip) {
+    public void onItemClick(TripModel trip) {
         activityRouter.openTripDetails(trip);
     }
 
@@ -193,9 +193,9 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
         void startLoading();
 
-        void finishLoading(List<Trip> items);
+        void finishLoading(List<TripModel> items);
 
-        IRoboSpiceAdapter<Trip> getAdapter();
+        IRoboSpiceAdapter<TripModel> getAdapter();
     }
 
 }

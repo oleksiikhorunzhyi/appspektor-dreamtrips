@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class FilterBusEvent {
     private boolean showSoldOut;
     private DateFilterItem dateFilterItem;
     private List<Integer> acceptedRegions = new ArrayList<>();
-    private List<Activity> acceptedActivities = new ArrayList<>();
+    private List<ActivityModel> acceptedActivities = new ArrayList<>();
 
     public int getMinNights() {
         return minNights;
@@ -59,11 +59,11 @@ public class FilterBusEvent {
         this.acceptedRegions = acceptedRegions;
     }
 
-    public List<Activity> getAcceptedActivities() {
+    public List<ActivityModel> getAcceptedActivities() {
         return acceptedActivities;
     }
 
-    public void setAcceptedActivities(List<Activity> acceptedActivities) {
+    public void setAcceptedActivities(List<ActivityModel> acceptedActivities) {
         this.acceptedActivities = acceptedActivities;
     }
 

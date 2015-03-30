@@ -21,10 +21,10 @@ import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesQuery;
 import com.worldventures.dreamtrips.modules.trips.api.GetRegionsQuery;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
-import com.worldventures.dreamtrips.modules.trips.model.Region;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 
@@ -45,9 +45,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     @Global
     EventBus eventBus;
 
-    private List<Region> regions;
-    private List<Activity> activities;
-    private List<Activity> parentActivities;
+    private List<RegionModel> regions;
+    private List<ActivityModel> activities;
+    private List<ActivityModel> parentActivities;
 
     /**
      * variables for filtering
@@ -77,14 +77,14 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void loadFilters() {
         view.startLoading();
-        dreamSpiceManager.execute(new GetActivitiesQuery(db), new RequestListener<ArrayList<Activity>>() {
+        dreamSpiceManager.execute(new GetActivitiesQuery(db), new RequestListener<ArrayList<ActivityModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 
             }
 
             @Override
-            public void onRequestSuccess(ArrayList<Activity> activities) {
+            public void onRequestSuccess(ArrayList<ActivityModel> activities) {
                 FiltersPresenter.this.activities = activities;
                 parentActivities = getParentActivities();
                 if (regions != null && regions.size() != 0) {
@@ -92,14 +92,14 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 }
             }
         });
-        dreamSpiceManager.execute(new GetRegionsQuery(db), new RequestListener<ArrayList<Region>>() {
+        dreamSpiceManager.execute(new GetRegionsQuery(db), new RequestListener<ArrayList<RegionModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 
             }
 
             @Override
-            public void onRequestSuccess(ArrayList<Region> regions) {
+            public void onRequestSuccess(ArrayList<RegionModel> regions) {
                 FiltersPresenter.this.regions = regions;
                 if (activities != null && activities.size() != 0) {
                     fillData();
@@ -137,7 +137,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void setRegionsChecked(boolean isChecked) {
         if (regions != null) {
-            for (Region region : regions) {
+            for (RegionModel region : regions) {
                 region.setChecked(isChecked);
             }
         }
@@ -145,7 +145,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void setThemesChecked(boolean isChecked) {
         if (parentActivities != null) {
-            for (Activity activity : parentActivities) {
+            for (ActivityModel activity : parentActivities) {
                 activity.setChecked(isChecked);
             }
         }
@@ -182,8 +182,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         eventBus.postSticky(filterBusEvent);
     }
 
-    private List<Activity> getParentActivities() {
-        List<Activity> parentActivities = new ArrayList<>();
+    private List<ActivityModel> getParentActivities() {
+        List<ActivityModel> parentActivities = new ArrayList<>();
         parentActivities.addAll(Queryable.from(activities).filter((input) -> input.getParent_id() == 0).toList());
         return parentActivities;
     }
@@ -193,7 +193,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
         if (regions != null) {
             regionsList = new ArrayList<>();
-            for (Region region : regions) {
+            for (RegionModel region : regions) {
                 if (region.isChecked()) {
                     regionsList.add(region.getId());
                 }
@@ -203,11 +203,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         return regionsList;
     }
 
-    private List<Activity> getAcceptedThemes() {
-        List<Activity> themesList = null;
+    private List<ActivityModel> getAcceptedThemes() {
+        List<ActivityModel> themesList = null;
         if (parentActivities != null) {
             themesList = new ArrayList<>();
-            for (Activity activity : parentActivities) {
+            for (ActivityModel activity : parentActivities) {
                 if (activity.isChecked()) {
                     themesList.addAll(Queryable.from(activities).filter((input) -> input.getParent_id()
                             == activity.getId()).toList());
@@ -266,7 +266,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void onEvent(ThemeSetChangedEvent event) {
         boolean allIsChecked = true;
-        for (Activity activity : parentActivities) {
+        for (ActivityModel activity : parentActivities) {
             if (!activity.isChecked()) {
                 allIsChecked = false;
                 break;
@@ -278,7 +278,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void onEvent(RegionSetChangedEvent event) {
         boolean allIsChecked = true;
-        for (Region region : regions) {
+        for (RegionModel region : regions) {
             if (!region.isChecked()) {
                 allIsChecked = false;
                 break;

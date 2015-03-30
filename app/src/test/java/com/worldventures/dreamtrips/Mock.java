@@ -1,21 +1,21 @@
 package com.worldventures.dreamtrips;
 
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Mock {
     //For feature
-    public static List<Trip> getTrips() {
-        List<Trip> result = new ArrayList<>();
+    public static List<TripModel> getTrips() {
+        List<TripModel> result = new ArrayList<>();
         result.add(getTrip());
         result.add(getTrip());
         return result;
     }
 
-    public static Trip getTrip() {
-        Trip trip = new Trip();
+    public static TripModel getTrip() {
+        TripModel trip = new TripModel();
         trip.setName("Europe");
         trip.setDescription("Dream trip");
         return trip;

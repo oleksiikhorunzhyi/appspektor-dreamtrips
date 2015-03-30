@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
@@ -52,10 +53,8 @@ public enum Route {
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, R.drawable.ic_bucket_lists, 4),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile, R.drawable.ic_profile, 5),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, R.drawable.ic_rep_tools, 6),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, R.drawable.ic_terms, 7),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 8),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, R.drawable.ic_termsconditions, 9),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, R.drawable.ic_cookie, 10);
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 7),
+    TERMS(TermsTabFragment.class, R.string.terms_of_service, R.drawable.ic_termsconditions, 8);
 
     private static ArrayList<Route> menuItemsArray = new ArrayList<>();
     private Class<? extends BaseFragment> fragmentClass;

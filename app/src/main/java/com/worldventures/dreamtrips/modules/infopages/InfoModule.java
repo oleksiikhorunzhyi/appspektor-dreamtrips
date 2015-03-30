@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.MemberShipFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.ActualTokenStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
@@ -43,6 +44,7 @@ import dagger.Provides;
                 EnrollActivity.class,
                 EnrollActivityPresenter.class,
 
+                TermsTabFragment.class,
                 WebViewFragmentPresenter.class,
                 MemberShipFragment.class,
                 StaticInfoFragment.EnrollFragment.class,

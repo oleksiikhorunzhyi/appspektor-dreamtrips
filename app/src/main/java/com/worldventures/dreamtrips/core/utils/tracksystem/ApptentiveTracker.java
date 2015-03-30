@@ -25,7 +25,6 @@ public class ApptentiveTracker implements ITracker {
 
     public void onStop(Activity activity) {
         Apptentive.onStop(activity);
-        this.activity = null;
     }
 
 

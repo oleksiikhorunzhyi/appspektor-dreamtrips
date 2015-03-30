@@ -29,10 +29,7 @@ import de.greenrobot.event.EventBus;
 public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     @Inject
-    SnappyRepository db;
-    @Inject
-    @Global
-    EventBus eventBus;
+    protected SnappyRepository db;
 
     private List<TripModel> data = new ArrayList<>();
     private List<TripModel> filteredData;

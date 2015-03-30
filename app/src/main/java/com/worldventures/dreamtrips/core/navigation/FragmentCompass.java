@@ -18,8 +18,8 @@ import timber.log.Timber;
 
 public class FragmentCompass {
 
-    BaseActivity activity;
-    OnTransactionListener onTransactionListener;
+    private BaseActivity activity;
+    private OnTransactionListener onTransactionListener;
 
     private int containerId;
 

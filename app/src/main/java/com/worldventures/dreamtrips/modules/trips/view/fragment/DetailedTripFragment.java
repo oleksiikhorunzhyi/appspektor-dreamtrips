@@ -37,10 +37,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import me.relex.circleindicator.CircleIndicator;
 
-/**
- *  Edward on 19.01.15.
- * fragment to show detailed trip
- */
 @Layout(R.layout.fragment_detailed_trip)
 @MenuResource(R.menu.menu_detailed_trip)
 public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> implements DetailedTripPresenter.View {

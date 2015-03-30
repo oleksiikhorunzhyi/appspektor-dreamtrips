@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
 
@@ -24,7 +24,7 @@ import butterknife.OnClick;
  * cell for dream trips fragment
  */
 @Layout(R.layout.adapter_item_trip)
-public class TripCell extends AbstractCell<Trip> {
+public class TripCell extends AbstractCell<TripModel> {
 
     @InjectView(R.id.imageViewTripImage)
     ImageView imageViewTripImage;

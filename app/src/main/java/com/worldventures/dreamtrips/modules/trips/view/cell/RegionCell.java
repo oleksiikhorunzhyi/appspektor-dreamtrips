@@ -10,7 +10,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.RegionSetChangedEvent;
-import com.worldventures.dreamtrips.modules.trips.model.Region;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,7 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_region)
-public class RegionCell extends AbstractCell<Region> {
+public class RegionCell extends AbstractCell<RegionModel> {
 
     @InjectView(R.id.textViewRegionName)
     TextView textViewName;

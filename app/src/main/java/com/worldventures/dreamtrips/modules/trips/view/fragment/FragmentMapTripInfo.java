@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
 
 import javax.inject.Inject;
@@ -57,7 +57,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     @Override
     public void afterCreateView(final View rootView) {
         super.afterCreateView(rootView);
-        getPresenter().setTrip((Trip) getArguments().getSerializable(EXTRA_TRIP));
+        getPresenter().setTrip((TripModel) getArguments().getSerializable(EXTRA_TRIP));
         ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

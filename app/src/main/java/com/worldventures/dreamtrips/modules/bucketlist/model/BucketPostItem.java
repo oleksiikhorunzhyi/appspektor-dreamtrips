@@ -8,6 +8,8 @@ import java.util.List;
 
 public class BucketPostItem {
     private Integer id;
+    @SerializedName("category_id")
+    private Integer categoryId;
     private String name;
     private String type;
     private String status;
@@ -60,6 +62,12 @@ public class BucketPostItem {
             this.status = BucketItem.COMPLETED;
         } else {
             this.status = BucketItem.NEW;
+        }
+    }
+
+    public void setCategory(CategoryItem category) {
+        if (category != null) {
+            this.categoryId = category.getId();
         }
     }
 

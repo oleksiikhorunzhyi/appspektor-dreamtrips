@@ -5,28 +5,28 @@ import android.util.Log;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
-public class GetTripsQuery extends DreamTripsRequest<ArrayList<Trip>> {
+public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
 
     private SnappyRepository db;
     private boolean fromApi;
     private Prefs prefs;
 
     public GetTripsQuery(SnappyRepository snappyRepository, Prefs prefs, boolean fromApi) {
-        super((Class<ArrayList<Trip>>) new ArrayList<Trip>().getClass());
+        super((Class<ArrayList<TripModel>>) new ArrayList<TripModel>().getClass());
         this.fromApi = fromApi;
         this.prefs = prefs;
         this.db = snappyRepository;
     }
 
     @Override
-    public ArrayList<Trip> loadDataFromNetwork() throws Exception {
-        ArrayList<Trip> data = new ArrayList<>();
+    public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
+        ArrayList<TripModel> data = new ArrayList<>();
         if (needUpdate() || fromApi) {
             this.fromApi = false;
             data.addAll(getService().getTrips());

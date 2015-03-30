@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
@@ -47,7 +47,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    FilterableArrayListAdapter<Trip> adapter;
+    FilterableArrayListAdapter<TripModel> adapter;
 
     private int lastConfig;
     private boolean search;
@@ -61,7 +61,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         this.recyclerView.setEmptyView(emptyView);
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.adapter.registerCell(Trip.class, TripCell.class);
+        this.adapter.registerCell(TripModel.class, TripCell.class);
 
         this.recyclerView.setAdapter(adapter);
 
@@ -172,12 +172,12 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     }
 
     @Override
-    public void finishLoading(List<Trip> items) {
+    public void finishLoading(List<TripModel> items) {
         refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override
-    public IRoboSpiceAdapter<Trip> getAdapter() {
+    public IRoboSpiceAdapter<TripModel> getAdapter() {
         return adapter;
     }
 }

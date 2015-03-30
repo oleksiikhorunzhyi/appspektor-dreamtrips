@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
@@ -25,18 +25,18 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
     @Inject
     protected SnappyRepository db;
 
-    private Trip trip;
+    private TripModel trip;
     private List<Object> filteredImages;
 
     public DetailedTripPresenter(View view) {
         super(view);
     }
 
-    public Trip getTrip() {
+    public TripModel getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(TripModel trip) {
         this.trip = trip;
         filteredImages = new ArrayList<>();
         filteredImages.addAll(trip.getFilteredImages());

@@ -73,10 +73,8 @@ public class CommonModule {
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
         activeComponents.add(ReptoolsModule.REP_TOOLS);
-        activeComponents.add(InfoModule.TERMS_OF_SERVICE);
         activeComponents.add(InfoModule.FAQ);
-        activeComponents.add(InfoModule.PRIVACY_POLICY);
-        activeComponents.add(InfoModule.COOKIE_POLICY);
+        activeComponents.add(InfoModule.TERMS_OF_SERVICE);
 
         return new ComponentsConfig(activeComponents);
     }

@@ -1,19 +1,14 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
-
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter.View> {
 
-    private Trip trip;
+    private TripModel trip;
 
     public FragmentMapInfoPresenter(View view) {
         super(view);
@@ -40,11 +35,11 @@ public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter
         view.setFeatured(trip.isFeatured());
     }
 
-    public Trip getTrip() {
+    public TripModel getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(TripModel trip) {
         this.trip = trip;
         setView();
     }

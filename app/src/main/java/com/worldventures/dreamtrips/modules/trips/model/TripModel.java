@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -8,7 +10,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trip extends BaseEntity implements Filterable {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class TripModel extends BaseEntity implements Filterable {
     private String name;
     private String description;
     private boolean featured;
@@ -21,9 +24,9 @@ public class Trip extends BaseEntity implements Filterable {
     private Price price;
     private Location location;
     private Schedule dates;
-    private Region region;
+    private RegionModel region;
     private List<TripImage> images;
-    private List<Activity> activities;
+    private List<ActivityModel> activities;
 
     public String getName() {
         return name;
@@ -121,11 +124,11 @@ public class Trip extends BaseEntity implements Filterable {
         this.liked = liked;
     }
 
-    public Region getRegion() {
+    public RegionModel getRegion() {
         return region;
     }
 
-    public void setRegion(Region region) {
+    public void setRegion(RegionModel region) {
         this.region = region;
     }
 
@@ -141,7 +144,7 @@ public class Trip extends BaseEntity implements Filterable {
         return url;
     }
 
-    public List<Activity> getActivities() {
+    public List<ActivityModel> getActivities() {
         return activities;
     }
 
@@ -151,8 +154,8 @@ public class Trip extends BaseEntity implements Filterable {
 
     public List<Object> getFilteredImages() {
         List<Object> filteredImages = new ArrayList<>();
-        filteredImages.addAll(Queryable.from(images).filter((input) ->
-                input.getType().equals("RETINA")).toList());
+        filteredImages.addAll(Queryable.from(images).filter(input ->
+                "RETINA".equals(input.getType())).toList());
         return filteredImages;
     }
 

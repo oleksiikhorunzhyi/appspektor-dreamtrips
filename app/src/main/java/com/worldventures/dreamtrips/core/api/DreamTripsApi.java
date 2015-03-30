@@ -10,9 +10,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
-import com.worldventures.dreamtrips.modules.trips.model.Region;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -46,13 +46,13 @@ public interface DreamTripsApi {
     public User uploadAvatar(@Part("avatar") TypedFile image);
 
     @GET("/api/trips")
-    public List<Trip> getTrips();
+    public List<TripModel> getTrips();
 
     @GET("/api/regions")
-    public List<Region> getRegions();
+    public List<RegionModel> getRegions();
 
     @GET("/api/activities")
-    public List<Activity> getActivities();
+    public List<ActivityModel> getActivities();
 
     @GET("/api/photos")
     public ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);

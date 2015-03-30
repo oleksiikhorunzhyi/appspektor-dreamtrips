@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 public class TouchTripEvent {
-    Trip trip;
+    TripModel trip;
 
-    public TouchTripEvent(Trip trip) {
+    public TouchTripEvent(TripModel trip) {
         this.trip = trip;
     }
 
-    public Trip getTrip() {
+    public TripModel getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(TripModel trip) {
         this.trip = trip;
     }
 }

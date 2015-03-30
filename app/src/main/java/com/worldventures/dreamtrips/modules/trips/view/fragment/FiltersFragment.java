@@ -12,10 +12,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.trips.model.Activity;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
-import com.worldventures.dreamtrips.modules.trips.model.Region;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
@@ -49,9 +49,9 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         this.recyclerView.setLayoutManager(layoutManager);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.arrayListAdapter.registerCell(Region.class, RegionCell.class);
+        this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
-        this.arrayListAdapter.registerCell(Activity.class, ActivityCell.class);
+        this.arrayListAdapter.registerCell(ActivityModel.class, ActivityCell.class);
         this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
         //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);

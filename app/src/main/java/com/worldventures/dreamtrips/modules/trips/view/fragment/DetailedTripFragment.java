@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
-import com.worldventures.dreamtrips.modules.trips.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedImagePagerFragment;
@@ -137,7 +137,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
             toolbarLanscape.getBackground().setAlpha(255);
         }
 
-        getPresenter().setTrip((Trip) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
+        getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
         getPresenter().onCreate();
 
         BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {

@@ -2,32 +2,29 @@ package com.worldventures.dreamtrips.core.navigation;
 
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
-import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
-import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.MemberShipFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
-import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.MemberShipFragment;
-import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public enum Route {
     LOGIN(LoginFragment.class, R.string.log_in),
@@ -52,12 +49,12 @@ public enum Route {
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, R.drawable.ic_bucket_lists, 4),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile, R.drawable.ic_profile, 5),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, R.drawable.ic_rep_tools, 6),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service, R.drawable.ic_terms, 7),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 8),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy, R.drawable.ic_termsconditions, 9),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie, R.drawable.ic_cookie, 10);
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 7),
+    TERMS(TermsTabFragment.class, R.string.terms_of_service, R.drawable.ic_termsconditions, 8),
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie);
 
-    private static ArrayList<Route> menuItemsArray = new ArrayList<>();
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;
     private int drawableId;
@@ -72,15 +69,6 @@ public enum Route {
         this.titleRes = title;
         this.drawableId = imageID;
         this.position = position;
-    }
-
-    private static void generateSideMenuFields() {
-        List<Route> routes = Arrays.asList(Route.values());
-        Collections.sort(routes, new MenuComparator());
-        for (Route v : routes) {
-            if (v.position >= 0)
-                menuItemsArray.add(v);
-        }
     }
 
     public static Route restoreByClass(String clazzName) {

@@ -28,17 +28,9 @@ import de.greenrobot.event.EventBus;
 
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
 
-    @Inject
-    @Named("details")
-    FragmentCompass detailsCompass;
-    @Inject
-    @Global
-    EventBus eventBus;
+    private boolean onlyFavorites = false;
 
-
-    boolean onlyFavorites = false;
-
-    RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
+    private RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
         @Override
         public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
             return new GetSuccessStoriesQuery() {
@@ -107,7 +99,8 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoriesDetailsFragment.STORY, successStory);
         if (view.isLandscape() && view.isTablet()) {
-            detailsCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
+            fragmentCompass.setContainerId(R.id.detail_container);
+            fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
             eventBus.post(new SuccessStoryItemSelectedEvent(position));
         } else {
             activityRouter.openSuccessStoryDetails(successStory);

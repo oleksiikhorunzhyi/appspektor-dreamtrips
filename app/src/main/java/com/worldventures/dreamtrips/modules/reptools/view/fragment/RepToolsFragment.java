@@ -20,11 +20,11 @@ import butterknife.InjectView;
 public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
-    PagerSlidingTabStrip tabs;
+    protected PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
-    ViewPager pager;
+    protected ViewPager pager;
 
-    BaseStatePagerAdapter adapter;
+    private BaseStatePagerAdapter adapter;
 
     @Override
     public void afterCreateView(View rootView) {

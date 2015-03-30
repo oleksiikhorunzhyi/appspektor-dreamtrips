@@ -24,7 +24,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     public static final String STORY = "STORY";
     @InjectView(R.id.progressBarWeb)
-    ProgressBar progressBarWeb;
+    protected ProgressBar progressBarWeb;
     private SuccessStory story;
     private MenuItem favoriteMenuItem;
 

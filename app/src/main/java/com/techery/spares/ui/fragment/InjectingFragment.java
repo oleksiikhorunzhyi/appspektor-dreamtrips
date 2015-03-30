@@ -24,8 +24,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
 
     @Inject
     @Global
-    public
-    EventBus eventBus;
+    public EventBus eventBus;
 
     public interface Events {
         class ReloadEvent {
@@ -33,7 +32,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     public void onEvent(Events.ReloadEvent reloadEvent) {
-
+        //do nothing
     }
 
     public EventBus getEventBus() {

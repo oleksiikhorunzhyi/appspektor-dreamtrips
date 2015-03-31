@@ -58,7 +58,7 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
     }
 
-    public static interface View extends Presenter.View {
+    public static interface View extends WebViewFragmentPresenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();

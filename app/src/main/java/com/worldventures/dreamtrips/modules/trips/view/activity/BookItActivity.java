@@ -16,7 +16,7 @@ public class BookItActivity extends ActivityWithPresenter<BookItActivityPresente
     public static final String EXTRA_TRIP_ID = "TRIP_ID";
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     private int tripId;
 

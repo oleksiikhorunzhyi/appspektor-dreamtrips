@@ -34,7 +34,6 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     private String originUrl;
     private ArrayList<String> tags;
     private boolean failed;
-    private String cuserName;
     private User user;
 
     public ImageUploadTask() {

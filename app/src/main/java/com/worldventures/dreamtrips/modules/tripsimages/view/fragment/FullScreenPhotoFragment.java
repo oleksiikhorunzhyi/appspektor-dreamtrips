@@ -106,12 +106,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
             getPresenter().setupType(type);
         }
         getPresenter().setupActualViewState();
-        if (ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity())) {
-            llTopContainer.setOrientation(LinearLayout.HORIZONTAL);
-        } else {
-            llTopContainer.setOrientation(LinearLayout.VERTICAL);
-        }
-
     }
 
     @Override
@@ -176,9 +170,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.tv_see_more)
     public void actionSeeMore() {
-        tvTitle.setVisibility(View.VISIBLE);
-        tvLocation.setVisibility(View.VISIBLE);
-        tvDate.setVisibility(View.VISIBLE);
         llMoreInfo.setVisibility(View.VISIBLE);
         tvDescription.setSingleLine(false);
 
@@ -192,6 +183,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         if (tvLocation.getText().length() == 0) {
             tvLocation.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.ll_top_container)
+    public void actionSeeLess() {
+        llMoreInfo.setVisibility(View.INVISIBLE);
+        tvDescription.setSingleLine(true);
+        tvDescription.setVisibility(View.VISIBLE);
+        tvSeeMore.setVisibility(View.VISIBLE);
+
     }
 
     @OnClick(R.id.iv_delete)

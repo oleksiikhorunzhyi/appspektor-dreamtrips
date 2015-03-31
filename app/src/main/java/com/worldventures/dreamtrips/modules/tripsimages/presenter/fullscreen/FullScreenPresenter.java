@@ -74,6 +74,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         view.setLikeCount(photo.getFsLikeCount());
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
+        view.setUserPhoto(photo.getFsUserPhoto());
     }
 
 
@@ -145,5 +146,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         public void showFlagDescription(String reason);
 
         void setLikeCountVisibility(boolean likeCountVisible);
+
+        void setUserPhoto(String fsPhoto);
     }
 }

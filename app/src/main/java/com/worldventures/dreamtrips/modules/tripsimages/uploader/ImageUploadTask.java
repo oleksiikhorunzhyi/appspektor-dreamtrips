@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
@@ -33,7 +34,8 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     private String originUrl;
     private ArrayList<String> tags;
     private boolean failed;
-    private String userName;
+    private String cuserName;
+    private User user;
 
     public ImageUploadTask() {
     }
@@ -145,7 +147,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
 
     @Override
     public String getFSTitle() {
-        return userName;
+        return user.getFullName();
     }
 
     @Override
@@ -155,7 +157,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
 
     @Override
     public String getFsShareText() {
-        return "";
+        return title;
     }
 
     @Override
@@ -184,8 +186,13 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
+    public String getFsUserPhoto() {
+        return user.getAvatar().getMedium();
+    }
+
+    @Override
     public String getUserName() {
-        return userName;
+        return user.getFullName();
     }
 
     @Override
@@ -230,7 +237,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         this.failed = failed;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

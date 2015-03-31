@@ -24,6 +24,15 @@ public class UniversalImageLoader {
             .bitmapConfig(Bitmap.Config.RGB_565)
             .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
             .build();
+    public static final DisplayImageOptions OP_AVATAR_WITH_CACHE = new DisplayImageOptions.Builder()
+            .cacheOnDisk(false)
+            .cacheInMemory(false)
+            .showImageForEmptyUri(R.drawable.ic_avatar_placeholder)
+            .showImageOnFail(R.drawable.ic_avatar_placeholder)
+            .displayer(new FadeInBitmapDisplayer(300))
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+            .build();
     public static final DisplayImageOptions OP_COVER = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)
             .cacheInMemory(true)

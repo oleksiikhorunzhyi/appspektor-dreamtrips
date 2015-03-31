@@ -16,7 +16,7 @@ import butterknife.InjectView;
 public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<ActualTokenStaticInfoFragmentPM> implements ActualTokenStaticInfoFragmentPM.View {
 
     @InjectView(R.id.progressBarWeb)
-    ProgressBar progressBarWeb;
+    protected ProgressBar progressBarWeb;
 
     @Override
     public void afterCreateView(View rootView) {

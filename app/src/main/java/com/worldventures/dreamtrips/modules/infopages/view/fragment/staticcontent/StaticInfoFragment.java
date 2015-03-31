@@ -18,13 +18,14 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentP
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T> {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
+        implements WebViewFragmentPresenter.View {
 
     @InjectView(R.id.web_view)
     protected WebView webView;
 
     @InjectView(R.id.progressBarWeb)
-    ProgressBar progressBarWeb;
+    protected ProgressBar progressBarWeb;
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return false;
             }
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -53,6 +55,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 progressBarWeb.setVisibility(View.GONE);
             }
         });
+        webView.loadUrl(getURL());
+    }
+
+    @Override
+    public void reload() {
+        webView.loadUrl("about:blank");
         webView.loadUrl(getURL());
     }
 
@@ -147,8 +155,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Layout(R.layout.fragment_webview)
     public static class BundleUrlFragment extends StaticInfoFragment {
         public static final String URL_EXTRA = "URL_EXTRA";
-        @InjectView(R.id.progressBarWeb)
-        ProgressBar progressBarWeb;
         private String url;
 
         @Override
@@ -161,20 +167,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
-            webView.setWebViewClient(new WebViewClient() {
-
-                @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
-                    progressBarWeb.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    progressBarWeb.setVisibility(View.GONE);
-                }
-            });
+            webView.getSettings().setDomStorageEnabled(true);
         }
 
         @Override

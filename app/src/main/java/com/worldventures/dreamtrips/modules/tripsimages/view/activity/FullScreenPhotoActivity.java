@@ -1,20 +1,14 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.WindowManager;
 
-import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.LoginButton;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -36,45 +30,14 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
     public static final String OUT_STATE_POSITION = "OUT_STATE_POSITION";
     @InjectView(R.id.pager)
-    ViewPager pager;
+    protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-    @InjectView(R.id.login_button)
-    LoginButton loginButton;
-    BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
-    ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
-    TripImagesListFragment.Type type;
-    private UiLifecycleHelper uiHelper;
+
+    protected Toolbar toolbar;
+    protected BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
+    protected ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
+    protected TripImagesListFragment.Type type;
     private int position;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        uiHelper.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        uiHelper.onPause();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
-            @Override
-            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
-                Log.e("Activity", String.format("Error: %s", error.toString()));
-            }
-
-            @Override
-            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
-                Log.i("Activity", "Success!");
-            }
-        });
-    }
-
 
     @Override
     protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
@@ -84,15 +47,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
         outState.putSerializable(OUT_STATE_IMAGES, photoList);
         outState.putSerializable(OUT_STATE_POSITION, pager.getCurrentItem());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        uiHelper = new UiLifecycleHelper(this, null);
-        uiHelper.onCreate(savedInstanceState);
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
         if (savedInstanceState != null) {
             Serializable serializable = savedInstanceState.getSerializable(OUT_STATE_IMAGES);
@@ -115,7 +75,26 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
         if (position < 0) {
             position = 0;
         }
+        setupAdapter();
 
+        toolbar.getBackground().setAlpha(0);
+
+        pager.setAdapter(adapter);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                FullScreenPhotoActivity.this.position = position;
+                getPresentationModel().scrolled(1, adapter.getCount(), position);
+            }
+        });
+    }
+
+    private void setupAdapter() {
         if (adapter == null) {
             adapter = new BaseStatePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
                 @Override
@@ -135,22 +114,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
                 }
             };
         }
-
-        toolbar.getBackground().setAlpha(0);
-
-        pager.setAdapter(adapter);
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-                FullScreenPhotoActivity.this.position = position;
-                getPresentationModel().scrolled(1, adapter.getCount(), position);
-            }
-        });
     }
 
     public TripImagesListFragment.Type getType() {

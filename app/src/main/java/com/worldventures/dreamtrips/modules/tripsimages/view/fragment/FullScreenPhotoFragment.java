@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
@@ -47,8 +48,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     protected ImageView ivImage;
     @InjectView(R.id.pb)
     protected ProgressBar progressBar;
-    @InjectView(R.id.ll_content_wrapper)
-    protected LinearLayout llContentWraper;
+    @InjectView(R.id.ll_global_content_wrapper)
+    protected LinearLayout llContentWrapper;
+    @InjectView(R.id.ll_top_container)
+    protected LinearLayout llTopContainer;
+    @InjectView(R.id.ll_more_info)
+    protected LinearLayout llMoreInfo;
     @InjectView(R.id.tv_title)
     protected TextView tvTitle;
     @InjectView(R.id.tv_description)
@@ -73,9 +78,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     protected ImageView ivFlag;
     @InjectView(R.id.iv_delete)
     protected ImageView ivDelete;
+    @InjectView(R.id.user_photo)
+    protected CircleImageView civUserPhoto;
 
     @Inject
     protected UniversalImageLoader imageLoader;
+
     private SimpleImageLoadingListener originalCallback;
     private SimpleImageLoadingListener mediumCallback;
     private TripImagesListFragment.Type type;
@@ -98,6 +106,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
             getPresenter().setupType(type);
         }
         getPresenter().setupActualViewState();
+        if (ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity())) {
+            llTopContainer.setOrientation(LinearLayout.HORIZONTAL);
+        } else {
+            llTopContainer.setOrientation(LinearLayout.VERTICAL);
+        }
 
     }
 
@@ -158,7 +171,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.iv_image)
     public void actionImageClick() {
-        llContentWraper.setVisibility(llContentWraper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        llContentWrapper.setVisibility(llContentWrapper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     @OnClick(R.id.tv_see_more)
@@ -166,6 +179,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
         tvTitle.setVisibility(View.VISIBLE);
         tvLocation.setVisibility(View.VISIBLE);
         tvDate.setVisibility(View.VISIBLE);
+        llMoreInfo.setVisibility(View.VISIBLE);
         tvDescription.setSingleLine(false);
 
         tvSeeMore.setVisibility(View.GONE);
@@ -265,6 +279,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @Override
     public void setLikeCountVisibility(boolean likeCountVisible) {
         tvLikesCount.setVisibility(likeCountVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setUserPhoto(String fsPhoto) {
+        if (TextUtils.isEmpty(fsPhoto)) {
+            civUserPhoto.setVisibility(View.GONE);
+        } else {
+            imageLoader.loadImage(fsPhoto, civUserPhoto, UniversalImageLoader.OP_AVATAR_WITH_CACHE);
+        }
     }
 
     @Override

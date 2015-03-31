@@ -107,6 +107,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
                 return false;
             }
         });
+        ivSearch.setIconifiedByDefault(false);
 
     }
 
@@ -142,7 +143,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
                 refreshLayout.setRefreshing(false);
                 if (isLandscape() && isTablet()) {
                     if (!result.isEmpty()) {
-                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 1));
+                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
                     }
                 }
             }

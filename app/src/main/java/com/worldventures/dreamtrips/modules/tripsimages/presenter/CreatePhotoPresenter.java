@@ -55,7 +55,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
             ImageUploadTask action = new ImageUploadTask();
             action.setFileUri(view.getImageUri().toString());
             action.setTitle(view.getTitle());
-            action.setUserName(appSessionHolder.get().get().getUser().getFullName());
+            action.setUser(appSessionHolder.get().get().getUser());
             List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
             action.setTags(new ArrayList<>(tags));
             action.setLatitude(0);

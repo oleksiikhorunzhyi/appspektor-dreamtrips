@@ -71,6 +71,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         } else {
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);
         }
+        webView.getSettings().setUseWideViewPort(true);
     }
 
     @Override

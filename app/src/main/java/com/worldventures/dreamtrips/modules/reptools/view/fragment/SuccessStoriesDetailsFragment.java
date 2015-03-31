@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -11,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.apptentive.android.sdk.Log;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
@@ -53,7 +53,9 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     @Override
     public void afterCreateView(View rootView) {
         story = getArguments().getParcelable(STORY);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
+        if (!ViewUtils.isTablet(getActivity())) {
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
+        }
         super.afterCreateView(rootView);
         ivFullscreen.setVisibility(View.GONE);
         ivLike.setImageResource(story.isLiked() ? R.drawable.ic_success_heart_selected : R.drawable.ic_success_heart_normal);

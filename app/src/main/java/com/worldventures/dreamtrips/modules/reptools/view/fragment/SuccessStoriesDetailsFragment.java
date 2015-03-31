@@ -7,13 +7,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.apptentive.android.sdk.Log;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -21,7 +21,6 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories_details)
 public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter> implements SuccessStoryDetailsFragmentPresenter.View {
 
-    public static final String TAG = SuccessStoriesDetailsFragment.class.getSimpleName();
     public static final String STORY = "STORY";
     private SuccessStory story;
 
@@ -46,8 +45,11 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @OnClick(R.id.iv_full_screen)
     public void onFullScreen() {
-        //TODO
-        Log.i(TAG, "onFullScreen action");
+        if (getActivity() instanceof SuccessStoryDetailsActivity) {
+            getActivity().finish();
+        } else {
+            getPresenter().fullscreenEvent(story);
+        }
     }
 
     @Override
@@ -55,10 +57,20 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         story = getArguments().getParcelable(STORY);
         if (!ViewUtils.isTablet(getActivity())) {
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
+            ivFullscreen.setVisibility(View.GONE);
         }
         super.afterCreateView(rootView);
-        ivFullscreen.setVisibility(View.GONE);
-        ivLike.setImageResource(story.isLiked() ? R.drawable.ic_success_heart_selected : R.drawable.ic_success_heart_normal);
+        if (story.isLiked()) {
+            ivLike.setImageResource(R.drawable.ic_success_heart_selected);
+        } else {
+            ivLike.setImageResource(R.drawable.ic_success_heart_normal);
+        }
+
+        if (getActivity() instanceof SuccessStoryDetailsActivity) {
+            ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
+        } else {
+            ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);
+        }
     }
 
     @Override

@@ -21,6 +21,7 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
     @Global
     EventBus eventBus;
 
+
     public SuccessStoryDetailsFragmentPresenter(View view) {
         super(view);
     }
@@ -56,6 +57,10 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
 
     public void onTwitterShare(SuccessStory successStory) {
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
+    }
+
+    public void fullscreenEvent(SuccessStory story) {
+        activityRouter.openSuccessStoryDetails(story);
     }
 
     public static interface View extends Presenter.View {

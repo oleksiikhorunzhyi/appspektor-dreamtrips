@@ -3,9 +3,10 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class User extends BaseEntity implements Parcelable {
+public class User extends BaseEntity implements Parcelable, Serializable {
 
 
     public static final Creator<User> CREATOR = new Creator<User>() {

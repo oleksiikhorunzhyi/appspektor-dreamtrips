@@ -18,7 +18,8 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentP
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T> implements WebViewFragmentPresenter.View {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
+        implements WebViewFragmentPresenter.View {
 
     @InjectView(R.id.web_view)
     protected WebView webView;

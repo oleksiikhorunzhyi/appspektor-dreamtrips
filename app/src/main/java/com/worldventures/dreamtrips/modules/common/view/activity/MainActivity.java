@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
+import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -32,16 +33,16 @@ import butterknife.Optional;
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> implements MainActivityPresenter.View, NavigationDrawerListener {
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @InjectView(R.id.container)
-    View container;
+    protected View container;
 
     @Optional
     @InjectView(R.id.drawer)
-    DrawerLayout drawerLayout;
+    protected DrawerLayout drawerLayout;
 
-    NavigationDrawerFragment navigationDrawerFragment;
+    private NavigationDrawerFragment navigationDrawerFragment;
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -130,6 +131,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     public void onNavigationDrawerItemReselected(ComponentDescription componentDescription) {
+        eventBus.post(new WebViewReloadEvent());
         closeLeftDrawer();
     }
 

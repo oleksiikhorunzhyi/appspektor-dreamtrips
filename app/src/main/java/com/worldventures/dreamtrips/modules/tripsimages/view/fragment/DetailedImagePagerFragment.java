@@ -27,21 +27,27 @@ import butterknife.OnClick;
 public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
+    public static final String EXTRA_PHOTO_FULLSCREEN = "isFullscreen";
 
     @InjectView(R.id.imageViewTripImage)
-    ImageView ivImage;
+    protected ImageView ivImage;
 
     @InjectView(R.id.progressBarImage)
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
 
     @Inject
-    UniversalImageLoader imageLoader;
+    protected UniversalImageLoader imageLoader;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
         Object photo = getArguments().getSerializable(EXTRA_PHOTO);
+        boolean isFullScreen = getArguments().getBoolean(EXTRA_PHOTO_FULLSCREEN, false);
+
+        if (isFullScreen) {
+            ivImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
 
         getPresenter().setPhoto((TripImage) photo);
 

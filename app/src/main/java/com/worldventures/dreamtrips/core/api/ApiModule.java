@@ -53,13 +53,14 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder) {
+    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
                 String authToken = "Token token=" + userSession.getApiToken();
                 request.addHeader("Authorization", authToken);
             }
+            request.addHeader("Accept-Language", context.getResources().getConfiguration().locale.getLanguage());
         };
     }
 

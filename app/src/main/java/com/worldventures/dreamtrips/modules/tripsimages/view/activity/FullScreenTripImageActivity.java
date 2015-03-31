@@ -25,12 +25,12 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.pager)
-    ViewPager pager;
+    protected ViewPager pager;
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
-    ArrayList<Serializable> photoList;
+    private ArrayList<Serializable> photoList;
 
     @Override
     protected FullScreenParentPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
             @Override
             public void setArgs(int position, DetailedImagePagerFragment fragment) {
                 Bundle args = new Bundle();
+                args.putBoolean(DetailedImagePagerFragment.EXTRA_PHOTO_FULLSCREEN, true);
                 args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, photoList.get(position));
                 fragment.setArguments(args);
             }

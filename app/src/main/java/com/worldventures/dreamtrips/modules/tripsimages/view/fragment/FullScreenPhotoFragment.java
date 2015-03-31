@@ -187,7 +187,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.ll_top_container)
     public void actionSeeLess() {
-        llMoreInfo.setVisibility(View.INVISIBLE);
+        llMoreInfo.setVisibility(View.GONE);
         tvDescription.setSingleLine(true);
         tvDescription.setVisibility(View.VISIBLE);
         tvSeeMore.setVisibility(View.VISIBLE);

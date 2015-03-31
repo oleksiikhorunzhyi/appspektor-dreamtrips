@@ -91,6 +91,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".modules.tripsimages.view.activity.FullScreenPhotoActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_full_screen_photo" />
         <activity
             android:name=".modules.tripsimages.view.activity.FullScreenTripImageActivity"

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
@@ -128,6 +129,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             eventBus.cancelEventDelivery(event);
             openDetails(event.getBucketItem());
         }
+    }
+
+    public void onEvent(BucketItemReloadEvent event) {
+        addItems(db.readBucketList(type.name()));
     }
 
     public void onEvent(BucketItemAddedEvent event) {

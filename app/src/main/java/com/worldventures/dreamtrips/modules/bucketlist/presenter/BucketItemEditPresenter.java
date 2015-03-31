@@ -8,6 +8,8 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -86,6 +88,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
             items.remove(items.indexOf(bucketItem));
             items.add(i, bucketItem);
             db.saveBucketList(items, type.name());
+            eventBus.post(new BucketItemReloadEvent());
         }
     };
 

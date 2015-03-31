@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <ProgressBar
+        android:id="@+id/progressBarWeb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:id="@+id/iv_full_screen"
+            android:background="@color/black_semi_transparent"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/filters"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="2dp" />
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:id="@+id/iv_share"
+            android:background="@color/black_semi_transparent"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/abc_ic_menu_share_mtrl_alpha"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="2dp" />
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:id="@+id/iv_like"
+            android:background="@color/black_semi_transparent"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/ic_heart_1"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="2dp" />
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+    <!--    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/action_share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_like"
+        android:icon="@drawable/ic_success_heart_normal"
+        android:title="@string/action_like"
+        app:showAsAction="ifRoom" />-->

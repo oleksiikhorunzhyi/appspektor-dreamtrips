@@ -5,6 +5,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.worldventures.dreamtrips.R;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
     protected Loader<T> loader;
 
     public AutoCompleteAdapter(Context context) {
-        super(context, android.R.layout.simple_list_item_1);
+        super(context, R.layout.item_dropdown);
     }
 
     @Override

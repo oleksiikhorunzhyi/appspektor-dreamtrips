@@ -18,7 +18,7 @@ public class Prefs extends SimpleKeyValueStorage {
     }
 
     public long getLong(final String key) {
-        return this.appSharedPrefs.getLong(key, 0l);
+        return this.appSharedPrefs.getLong(key, 0L);
     }
 
     public void clear() {

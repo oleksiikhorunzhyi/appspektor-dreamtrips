@@ -53,11 +53,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
 
     @Override
     public boolean onCheckCanStartDrag(BucketItemCell bucketItemCell, int x, int y) {
-        if (!bucketItemCell.isLongPressed()) {
-            return false;
-        } else {
-            return true;
-        }
+        return bucketItemCell.isLongPressed();
     }
 
     @Override

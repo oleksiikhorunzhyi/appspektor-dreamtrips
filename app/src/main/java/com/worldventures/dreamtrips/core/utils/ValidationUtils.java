@@ -71,7 +71,7 @@ public class ValidationUtils {
      */
     public static <T> T checkNotNull(T reference) {
         if (reference == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException("reference is null");
         }
         return reference;
     }
@@ -79,14 +79,14 @@ public class ValidationUtils {
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.
      *
-     * @param reference an object reference
+     * @param reference            an object reference
      * @param errorMessageTemplate a template for the exception message should the check fail. The
-     *     message is formed by replacing each {@code %s} placeholder in the template with an
-     *     argument. These are matched by position - the first {@code %s} gets {@code
-     *     errorMessageArgs[0]}, etc.  Unmatched arguments will be appended to the formatted message
-     *     in square braces. Unmatched placeholders will be left as-is.
-     * @param errorMessageArgs the arguments to be substituted into the message template. Arguments
-     *     are converted to strings using {@link String#valueOf(Object)}.
+     *                             message is formed by replacing each {@code %s} placeholder in the template with an
+     *                             argument. These are matched by position - the first {@code %s} gets {@code
+     *                             errorMessageArgs[0]}, etc.  Unmatched arguments will be appended to the formatted message
+     *                             in square braces. Unmatched placeholders will be left as-is.
+     * @param errorMessageArgs     the arguments to be substituted into the message template. Arguments
+     *                             are converted to strings using {@link String#valueOf(Object)}.
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
@@ -95,7 +95,7 @@ public class ValidationUtils {
                                      @Nullable Object... errorMessageArgs) {
         if (reference == null) {
             // If either of these parameters is null, the right thing happens anyway
-            throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));
+            throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }
         return reference;
     }

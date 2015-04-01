@@ -21,13 +21,7 @@ import java.util.Date;
 public class UploadingFileManager {
     private static final String TAG = UploadingFileManager.class.getSimpleName();
 
-    private final Context context;
-
-    public UploadingFileManager(Context context) {
-        this.context = context;
-    }
-
-    public static final String md5(final String s) {
+    public static String md5(final String s) {
         final String MD5 = "MD5";
         try {
             // Create MD5 Hash
@@ -41,7 +35,7 @@ public class UploadingFileManager {
             for (byte aMessageDigest : messageDigest) {
                 String h = Integer.toHexString(0xFF & aMessageDigest);
                 while (h.length() < 2)
-                    h = "0" + h;
+                    h = String.format("0%s", h);
                 hexString.append(h);
             }
             return hexString.toString();
@@ -52,7 +46,7 @@ public class UploadingFileManager {
         return "";
     }
 
-    public File copyFileIfNeed(String filePath) {
+    public  static File copyFileIfNeed(String filePath, Context context) {
         ValidationUtils.checkNotNull(filePath);
 
         File file = null;

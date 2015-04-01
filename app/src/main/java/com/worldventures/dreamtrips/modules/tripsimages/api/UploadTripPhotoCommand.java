@@ -33,8 +33,6 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
     @Inject
     protected transient TransferManager transferManager;
     @Inject
-    protected transient UploadingFileManager uploadingFileManager;
-    @Inject
     @Global
     protected transient EventBus eventBus;
     @Inject
@@ -56,7 +54,7 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
         try {
             eventBus.post(new PhotoUploadStarted(uploadTask));
 
-            File file = this.uploadingFileManager.copyFileIfNeed(uploadTask.getFileUri());
+            File file = UploadingFileManager.copyFileIfNeed(uploadTask.getFileUri(), context);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("");

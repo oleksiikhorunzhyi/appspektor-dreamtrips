@@ -139,7 +139,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     public void onMarkerClick(String id) {
         TripModel resultTrip = null;
-        int realId = Integer.valueOf(id);
+        int realId = Integer.parseInt(id);
         for (TripModel trip : filteredData) {
             if (trip.getId() == realId) {
                 resultTrip = trip;

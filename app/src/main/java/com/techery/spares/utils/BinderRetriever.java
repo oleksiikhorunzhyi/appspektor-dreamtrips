@@ -20,10 +20,10 @@ public class BinderRetriever {
 
     public <T extends IBinder> void retrieveBinder(Class<? extends Service> serviceClass, OnBinderRetrieved<T> onBinderRetrieved) {
         Intent intent = new Intent(this.context, serviceClass);
-        this.context.bindService(intent, new ServiceLoadingConnection<T>(context, onBinderRetrieved), Context.BIND_AUTO_CREATE);
+        this.context.bindService(intent, new ServiceLoadingConnection(context, onBinderRetrieved), Context.BIND_AUTO_CREATE);
     }
 
-    private static class ServiceLoadingConnection<T extends IBinder> implements ServiceConnection {
+    private static class ServiceLoadingConnection implements ServiceConnection {
         private final OnBinderRetrieved listener;
         private final Context context;
 

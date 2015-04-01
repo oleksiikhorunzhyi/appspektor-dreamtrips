@@ -1,112 +1,134 @@
 package com.worldventures.dreamtrips.modules.infopages.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Video extends BaseEntity {
 
-    private String Caption1;
-    private String Caption1LanguageUrl;
-    private String Caption2;
-    private String Caption2LanguageUrl;
-    private String Country;
-    private String CountryAbbreviation1;
-    private String CountryAbbreviation2;
-    private String CountryCode;
-    private String Download1080;
-    private String Download480;
-    private String Download720;
-    private String FlashUrl;
-    private String ImageUrl;
-    private String Language1;
-    private String Language2;
-    private String Mp4Url;
-    private String OgvUrl;
-    private String PointOfEntry;
-    private String UID;
-    private String VideoName;
-    private String WebmUrl;
+    @SerializedName("Caption1")
+    private String caption1;
+    @SerializedName("Caption1LanguageUrl")
+    private String caption1LanguageUrl;
+    @SerializedName("Caption2")
+    private String caption2;
+    @SerializedName("CaptCaption2LanguageUrlion1")
+    private String caption2LanguageUrl;
+    @SerializedName("Country")
+    private String country;
+    @SerializedName("CountryAbbreviation1")
+    private String countryAbbreviation1;
+    @SerializedName("CountryAbbreviation2")
+    private String countryAbbreviation2;
+    @SerializedName("CountryCode")
+    private String countryCode;
+    @SerializedName("Download1080")
+    private String download1080;
+    @SerializedName("Download480")
+    private String download480;
+    @SerializedName("Download720")
+    private String download720;
+    @SerializedName("FlashUrl")
+    private String flashUrl;
+    @SerializedName("ImageUrl")
+    private String imageUrl;
+    @SerializedName("Language1")
+    private String language1;
+    @SerializedName("Language2")
+    private String language2;
+    @SerializedName("Mp4Url")
+    private String mp4Url;
+    @SerializedName("OgvUrl")
+    private String ogvUrl;
+    @SerializedName("PointOfEntry")
+    private String pointOfEntry;
+    @SerializedName("UID")
+    private String uid;
+    @SerializedName("VideoName")
+    private String videoName;
+    @SerializedName("WebmUrl")
+    private String webmUrl;
 
     public String getCaption1() {
-        return Caption1;
+        return caption1;
     }
 
     public String getCaption1LanguageUrl() {
-        return Caption1LanguageUrl;
+        return caption1LanguageUrl;
     }
 
     public String getCaption2() {
-        return Caption2;
+        return caption2;
     }
 
     public String getCaption2LanguageUrl() {
-        return Caption2LanguageUrl;
+        return caption2LanguageUrl;
     }
 
     public String getCountry() {
-        return Country;
+        return country;
     }
 
     public String getCountryAbbreviation1() {
-        return CountryAbbreviation1;
+        return countryAbbreviation1;
     }
 
     public String getCountryAbbreviation2() {
-        return CountryAbbreviation2;
+        return countryAbbreviation2;
     }
 
     public String getCountryCode() {
-        return CountryCode;
+        return countryCode;
     }
 
     public String getDownload1080() {
-        return Download1080;
+        return download1080;
     }
 
     public String getDownload480() {
-        return Download480;
+        return download480;
     }
 
     public String getDownload720() {
-        return Download720;
+        return download720;
     }
 
     public String getFlashUrl() {
-        return FlashUrl;
+        return flashUrl;
     }
 
     public String getImageUrl() {
-        return ImageUrl;
+        return imageUrl;
     }
 
     public String getLanguage1() {
-        return Language1;
+        return language1;
     }
 
     public String getLanguage2() {
-        return Language2;
+        return language2;
     }
 
     public String getMp4Url() {
-        return Mp4Url;
+        return mp4Url;
     }
 
     public String getOgvUrl() {
-        return OgvUrl;
+        return ogvUrl;
     }
 
     public String getPointOfEntry() {
-        return PointOfEntry;
+        return pointOfEntry;
     }
 
-    public String getUID() {
-        return UID;
+    public String getUid() {
+        return uid;
     }
 
     public String getVideoName() {
-        return VideoName;
+        return videoName;
     }
 
     public String getWebmUrl() {
-        return WebmUrl;
+        return webmUrl;
     }
 }

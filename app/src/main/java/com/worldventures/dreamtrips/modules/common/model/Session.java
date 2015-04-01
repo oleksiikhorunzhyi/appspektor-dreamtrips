@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Session extends BaseEntity {
-    private String sso_token;
+
     private String token;
     private User user;
     @SerializedName("sso_token")

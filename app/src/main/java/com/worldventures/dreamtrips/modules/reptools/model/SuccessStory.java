@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.reptools.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
@@ -21,7 +22,8 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
     private String author;
     private String category;
     private String locale;
-    private String published_date;
+    @SerializedName("published_date")
+    private String publishedDate;
     private String url;
     private String sharingUrl = "";
     private boolean liked;
@@ -33,7 +35,7 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         this.author = in.readString();
         this.category = in.readString();
         this.locale = in.readString();
-        this.published_date = in.readString();
+        this.publishedDate = in.readString();
         this.url = in.readString();
         this.sharingUrl = in.readString();
         this.liked = in.readByte() != 0;
@@ -80,12 +82,12 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         this.locale = locale;
     }
 
-    public String getPublished_date() {
-        return published_date;
+    public String getPublishedDate() {
+        return publishedDate;
     }
 
-    public void setPublished_date(String published_date) {
-        this.published_date = published_date;
+    public void setPublishedDate(String publishedDate) {
+        this.publishedDate = publishedDate;
     }
 
     public String getUrl() {
@@ -111,7 +113,7 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         dest.writeString(this.author);
         dest.writeString(this.category);
         dest.writeString(this.locale);
-        dest.writeString(this.published_date);
+        dest.writeString(this.publishedDate);
         dest.writeString(this.url);
         dest.writeString(this.sharingUrl);
         dest.writeByte(liked ? (byte) 1 : (byte) 0);

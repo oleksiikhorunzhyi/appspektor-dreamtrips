@@ -184,7 +184,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     private List<ActivityModel> getParentActivities() {
         List<ActivityModel> parentActivities = new ArrayList<>();
-        parentActivities.addAll(Queryable.from(activities).filter((input) -> input.getParent_id() == 0).toList());
+        parentActivities.addAll(Queryable.from(activities).filter((input) -> input.getParentId() == 0).toList());
         return parentActivities;
     }
 
@@ -209,7 +209,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             themesList = new ArrayList<>();
             for (ActivityModel activity : parentActivities) {
                 if (activity.isChecked()) {
-                    themesList.addAll(Queryable.from(activities).filter((input) -> input.getParent_id()
+                    themesList.addAll(Queryable.from(activities).filter((input) -> input.getParentId()
                             == activity.getId()).toList());
                 }
             }

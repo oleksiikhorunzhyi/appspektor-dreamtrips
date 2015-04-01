@@ -26,10 +26,9 @@ public class SnappyRepository {
     public static final String REGIONS = "regions_new";
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
-    public static final String BUCKET_LIST = "buckets";
+    public static final String BUCKET_LIST = "bucketItems";
 
     public static final String TRIP_KEY = "trip_new";
-    public static final String BUCKET_KEY = "bucket";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
 
     private Context context;

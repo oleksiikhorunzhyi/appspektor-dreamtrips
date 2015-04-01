@@ -34,12 +34,12 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
 
     public static final String EXTRA_URL = "EXTRA_URL";
 
-    PFView pfView;
-    PFAsset pfAsset;
-    PFNavigationMode _currentNavigationMode = PFNavigationMode.MOTION;
+    private PFView pfView;
+    private PFAsset pfAsset;
+    private PFNavigationMode currentNavigationMode = PFNavigationMode.MOTION;
 
     @InjectView(R.id.framecontainer)
-    ViewGroup frameContainer;
+    protected ViewGroup frameContainer;
 
     /**
      * Creation and initalization of the Activitiy.
@@ -92,7 +92,7 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
         pfAsset = PFObjectFactory.assetFromUri(this, Uri.parse(filename), this);
 
         pfView.displayAsset(pfAsset);
-        pfView.setNavigationMode(_currentNavigationMode);
+        pfView.setNavigationMode(currentNavigationMode);
 
         frameContainer.addView(pfView.getView(), 0);
 

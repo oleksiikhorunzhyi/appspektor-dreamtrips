@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class TripImage extends BaseEntity {
 
     private static final String PATTERN = "?width=%d&height=%d";
-    String description;
-    String url;
-    String type;
-    String origin_url;
+    private String description;
+    private String url;
+    private String type;
+    @SerializedName("origin_url")
+    private String originUrl;
 
     public String getDescription() {
         return description;
@@ -39,10 +41,10 @@ public class TripImage extends BaseEntity {
     }
 
     public String getOriginalUrl() {
-        return origin_url;
+        return originUrl;
     }
 
     public void setOriginalUrl(String originalUrl) {
-        this.origin_url = originalUrl;
+        this.originUrl = originalUrl;
     }
 }

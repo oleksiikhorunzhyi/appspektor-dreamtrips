@@ -137,7 +137,7 @@ public class DreamSpiceManager extends SpiceManager {
                         LoginResponse l = new LoginResponse();
                         l.setSession(session);
                         l.setConfig(appConfig);
-                        handleSession(l.getSession(), l.getSession().getSso_token(), l.getConfig(), username, userPassword);
+                        handleSession(l.getSession(), l.getSession().getSsoToken(), l.getConfig(), username, userPassword);
                         onLoginSuccess.result(l, null);
                     }
                 });

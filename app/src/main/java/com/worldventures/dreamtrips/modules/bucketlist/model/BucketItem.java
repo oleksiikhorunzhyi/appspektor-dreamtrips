@@ -22,10 +22,12 @@ public class BucketItem extends BaseEntity {
     private String status = NEW;
 
     @TaggedFieldSerializer.Tag(3)
-    private Date target_date;
+    @SerializedName("target_date")
+    private Date targetDate;
 
     @TaggedFieldSerializer.Tag(4)
-    private Date completion_date;
+    @SerializedName("completion_date")
+    private Date completionDate;
 
     @TaggedFieldSerializer.Tag(5)
     private String type;
@@ -33,18 +35,14 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(6)
     private String description;
 
-    @Deprecated
     @TaggedFieldSerializer.Tag(7)
-    private List<BucketTag> bucketTags;
-
-    @TaggedFieldSerializer.Tag(8)
     private List<BucketTag> tags;
 
-    @TaggedFieldSerializer.Tag(9)
+    @TaggedFieldSerializer.Tag(8)
     @SerializedName("category")
     private CategoryItem categoryItem;
 
-    @TaggedFieldSerializer.Tag(10)
+    @TaggedFieldSerializer.Tag(9)
     private List<String> friends;
 
     public String getName() {
@@ -56,11 +54,11 @@ public class BucketItem extends BaseEntity {
     }
 
     public Date getTarget_date() {
-        return target_date;
+        return targetDate;
     }
 
     public Date getCompletion_date() {
-        return completion_date;
+        return completionDate;
     }
 
     public boolean isDone() {

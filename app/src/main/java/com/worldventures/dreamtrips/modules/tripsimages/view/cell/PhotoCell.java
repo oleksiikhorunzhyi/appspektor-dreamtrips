@@ -27,16 +27,16 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
     protected ImageView imageViewUser;
     @Optional
     @InjectView(R.id.user_location)
-    protected TextView user_location;
+    protected TextView userLocation;
     @Optional
     @InjectView(R.id.user_name)
-    protected TextView user_name;
+    protected TextView userName;
     @Optional
     @InjectView(R.id.title)
     protected TextView title;
     @Optional
     @InjectView(R.id.shot_location)
-    protected TextView shot_location;
+    protected TextView shotLocation;
 
     @Inject
     protected UniversalImageLoader universalImageLoader;
@@ -48,10 +48,10 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
     @Override
     protected void syncUIStateWithModel() {
         if (imageViewUser != null) {
-            this.user_location.setText(getModelObject().getUserLocation());
-            this.shot_location.setText(getModelObject().getPhotoLocation());
+            this.userLocation.setText(getModelObject().getUserLocation());
+            this.shotLocation.setText(getModelObject().getPhotoLocation());
             this.title.setText(getModelObject().getFSTitle());
-            this.user_name.setText(getModelObject().getUserName());
+            this.userName.setText(getModelObject().getUserName());
             this.universalImageLoader.loadImage(getModelObject().getUserAvatar(), this.imageViewUser, null, new SimpleImageLoadingListener());
         }
         this.universalImageLoader.loadImage(getModelObject().getFSImage().getThumb().getUrl(), this.imageView, UniversalImageLoader.OP_TRIP_PHOTO, new SimpleImageLoadingListener());

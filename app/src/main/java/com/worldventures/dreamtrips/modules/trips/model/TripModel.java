@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -18,7 +19,8 @@ public class TripModel extends BaseEntity implements Filterable {
     private boolean rewarded;
     private boolean liked;
     private int duration;
-    private boolean price_available;
+    @SerializedName("price_available")
+    private boolean priceAvailable;
     private boolean available;
     private long rewardsLimit;
     private Price price;
@@ -68,12 +70,12 @@ public class TripModel extends BaseEntity implements Filterable {
         this.duration = duration;
     }
 
-    public boolean isPrice_available() {
-        return price_available;
+    public boolean isPriceAvailable() {
+        return priceAvailable;
     }
 
-    public void setPrice_available(boolean price_available) {
-        this.price_available = price_available;
+    public void setPriceAvailable(boolean priceAvailable) {
+        this.priceAvailable = priceAvailable;
     }
 
     public boolean isAvailable() {

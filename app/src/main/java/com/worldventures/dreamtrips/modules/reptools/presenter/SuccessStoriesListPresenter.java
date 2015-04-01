@@ -142,8 +142,6 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         void finishLoading(List<SuccessStory> items);
 
         void startLoading();
-
-        void showOnlyFavorites(boolean onlyFavorites);
     }
 }
 

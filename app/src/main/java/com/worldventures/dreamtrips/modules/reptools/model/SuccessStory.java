@@ -18,13 +18,13 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
         }
     };
 
-    String author;
-    String category;
-    String locale;
-    String published_date;
-    String url;
-    String sharingUrl = "";
-    boolean liked;
+    private String author;
+    private String category;
+    private String locale;
+    private String published_date;
+    private String url;
+    private String sharingUrl = "";
+    private boolean liked;
 
     public SuccessStory() {
     }

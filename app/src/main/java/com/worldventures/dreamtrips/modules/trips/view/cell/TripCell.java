@@ -19,34 +19,30 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- *  Edward on 19.01.15.
- * cell for dream trips fragment
- */
 @Layout(R.layout.adapter_item_trip)
 public class TripCell extends AbstractCell<TripModel> {
 
     @InjectView(R.id.imageViewTripImage)
-    ImageView imageViewTripImage;
+    protected ImageView imageViewTripImage;
     @InjectView(R.id.imageViewLike)
-    ImageView imageViewLike;
+    protected ImageView imageViewLike;
     @InjectView(R.id.textViewName)
-    TextView textViewName;
+    protected TextView textViewName;
     @InjectView(R.id.textViewPlace)
-    TextView textViewPlace;
+    protected TextView textViewPlace;
     @InjectView(R.id.textViewPrice)
-    TextView textViewPrice;
+    protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
-    TextView textViewDate;
+    protected TextView textViewDate;
     @InjectView(R.id.textViewPoints)
-    TextView textViewPoints;
+    protected TextView textViewPoints;
     @InjectView(R.id.pointsCountLayout)
-    FrameLayout pointsCountLayout;
+    protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
-    TextView textViewFeatured;
+    protected TextView textViewFeatured;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     public TripCell(View view) {
         super(view);
@@ -68,10 +64,11 @@ public class TripCell extends AbstractCell<TripModel> {
         if (getModelObject().getRewardsLimit() > 0) {
             textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
             pointsCountLayout.setVisibility(View.VISIBLE);
-        } else
+        } else {
             pointsCountLayout.setVisibility(View.GONE);
+        }
 
-        imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
+        setImageViewLike();
         universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
                 UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
@@ -79,9 +76,17 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @OnClick(R.id.imageViewLike)
     void actionLike() {
-        imageViewLike.setImageResource(!getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
         getModelObject().setLiked(!getModelObject().isLiked());
+        setImageViewLike();
         getEventBus().post(new LikeTripEvent(getModelObject()));
+    }
+
+    private void setImageViewLike() {
+        if (getModelObject().isLiked()) {
+            imageViewLike.setImageResource(R.drawable.ic_bucket_like_selected);
+        } else {
+            imageViewLike.setImageResource(R.drawable.ic_heart_1);
+        }
     }
 
     @OnClick(R.id.itemLayout)

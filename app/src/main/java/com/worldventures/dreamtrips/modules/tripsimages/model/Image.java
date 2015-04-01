@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Image extends BaseEntity implements Parcelable {
 
-
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         public Image createFromParcel(Parcel source) {
             return new Image(source);
@@ -17,9 +16,10 @@ public class Image extends BaseEntity implements Parcelable {
             return new Image[size];
         }
     };
-    ImageVersion original;
-    ImageVersion medium;
-    ImageVersion thumb;
+
+    private ImageVersion original;
+    private ImageVersion medium;
+    private ImageVersion thumb;
 
     public Image() {
     }

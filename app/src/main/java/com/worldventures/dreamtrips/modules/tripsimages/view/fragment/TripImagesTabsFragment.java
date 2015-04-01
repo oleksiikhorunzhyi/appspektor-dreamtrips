@@ -34,22 +34,22 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresenter> implements TripImagesTabsFragmentPresenter.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
-    PagerSlidingTabStrip tabs;
+    protected PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
-    ViewPager pager;
+    protected ViewPager pager;
     @InjectView(R.id.v_bg_holder)
-    View vBgHolder;
+    protected View vBgHolder;
     @InjectView(R.id.multiple_actions_down)
-    FloatingActionsMenu multipleActionsDown;
+    protected FloatingActionsMenu multipleActionsDown;
     @InjectView(R.id.fab_facebook)
-    FloatingActionButton fabFacebook;
+    protected  FloatingActionButton fabFacebook;
     @InjectView(R.id.fab_gallery)
-    FloatingActionButton fabGallery;
+    protected FloatingActionButton fabGallery;
     @InjectView(R.id.fab_photo)
-    FloatingActionButton fabPhoto;
+    protected FloatingActionButton fabPhoto;
 
-    BasePagerAdapter adapter;
-    PickImageDialog pid;
+    private BasePagerAdapter adapter;
+    private PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {

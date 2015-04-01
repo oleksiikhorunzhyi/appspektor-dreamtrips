@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 public class Session extends BaseEntity {
     String token;
     User user;
-    Session session;
+    Session innerSession;
     String sso_token;
 
     public String getSso_token() {
@@ -15,11 +15,11 @@ public class Session extends BaseEntity {
     }
 
     public Session getSession() {
-        return session;
+        return innerSession;
     }
 
     public void setSession(Session session) {
-        this.session = session;
+        this.innerSession = session;
     }
 
     public String getToken() {

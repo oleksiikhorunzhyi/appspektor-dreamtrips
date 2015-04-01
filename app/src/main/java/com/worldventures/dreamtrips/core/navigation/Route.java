@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 public enum Route {
@@ -98,9 +99,4 @@ public enum Route {
         return position;
     }
 
-    static class MenuComparator implements Comparator<Route> {
-        public int compare(Route strA, Route strB) {
-            return strA.getPosition() - strB.getPosition();
-        }
-    }
 }

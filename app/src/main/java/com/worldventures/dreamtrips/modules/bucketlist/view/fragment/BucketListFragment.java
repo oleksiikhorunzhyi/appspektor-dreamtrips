@@ -91,9 +91,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
-        mAdapter.setMoveListener((from, to) -> {
-            getPresenter().itemMoved(from, to);
-        });
+        mAdapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
 
         RecyclerView.Adapter mWrappedAdapter = mDragDropManager.createWrappedAdapter(mAdapter);
         GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();

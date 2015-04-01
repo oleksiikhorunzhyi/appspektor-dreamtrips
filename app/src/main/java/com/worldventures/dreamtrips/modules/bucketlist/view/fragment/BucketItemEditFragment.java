@@ -116,6 +116,11 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
+    public void done() {
+        getActivity().finish();
+    }
+
+    @Override
     public CategoryItem getSelectedItem() {
         return (CategoryItem) spinnerCategory.getSelectedItem();
     }

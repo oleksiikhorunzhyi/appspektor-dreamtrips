@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPrese
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -126,8 +127,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
 
     private void setupQuickTypeInput(MenuItem item) {
         View view = MenuItemCompat.getActionView(item);
-        AutoCompleteTextView quickInputEditText
-                = (AutoCompleteTextView) view.findViewById(R.id.editTextQuickInput);
+        CollapsibleAutoCompleteTextView quickInputEditText
+                = (CollapsibleAutoCompleteTextView) view.findViewById(R.id.editTextQuickInput);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.setLayoutParams(params);
@@ -135,14 +136,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         int types = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
         quickInputEditText.setInputType(types);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        quickInputEditText.setShowSoftInputOnFocus(true);
-        quickInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                quickInputEditText.setText("");
-                quickInputEditText.setFocusable(true);
-                hideSoftKeyboard(v);
-            }
-        });
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
@@ -151,12 +144,27 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
             }
             return false;
         });
+
         quickInputEditText.setThreshold(MIN_SYMBOL_COUNT);
         AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getActivity());
         adapter.setLoader(getPresenter().getSuggestionLoader());
         ((Injector) getActivity()).inject(adapter);
 
         quickInputEditText.setAdapter(adapter);
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                quickInputEditText.onActionViewExpanded();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                quickInputEditText.onActionViewCollapsed();
+                return true;
+            }
+        });
     }
 
     @OnClick(R.id.buttonNew)
@@ -251,15 +259,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         return mAdapter;
     }
 
-    public void hideSoftKeyboard(View v) {
-        try {
-            Object systemService = getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-            InputMethodManager inputMethodManager = (InputMethodManager) systemService;
-            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        } catch (NullPointerException e) {
-            Log.e(BucketListFragment.class.getSimpleName(), "", e);
-        }
-    }
 
     @Override
     public boolean isTabletLandscape() {

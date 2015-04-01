@@ -26,20 +26,19 @@ import butterknife.OnClick;
 public class VideoCell extends AbstractCell<Video> {
 
     @InjectView(R.id.iv_bg)
-    ImageView ivBg;
+    protected ImageView ivBg;
     @InjectView(R.id.iv_play)
-    ImageView ivPlay;
+    protected ImageView ivPlay;
     @InjectView(R.id.tv_title)
-    TextView tvTitle;
+    protected TextView tvTitle;
 
     @Inject
-    Context context;
+    protected Context context;
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
-
+    protected SessionHolder<UserSession> appSessionHolder;
 
     public VideoCell(View view) {
         super(view);
@@ -61,6 +60,6 @@ public class VideoCell extends AbstractCell<Video> {
 
     @Override
     public void prepareForReuse() {
-
+        ivBg.setImageResource(0);
     }
 }

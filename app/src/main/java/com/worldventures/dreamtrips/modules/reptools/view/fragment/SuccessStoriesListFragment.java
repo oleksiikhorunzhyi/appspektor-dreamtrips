@@ -35,24 +35,24 @@ import butterknife.OnClick;
 public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
 
     @InjectView(R.id.recyclerViewTrips)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+    protected SwipeRefreshLayout refreshLayout;
 
     @InjectView(R.id.detail_container)
-    FrameLayout flDetailContainer;
-    FilterableArrayListAdapter adapter;
+    protected  FrameLayout flDetailContainer;
 
     @InjectView(R.id.iv_search)
-    SearchView ivSearch;
+    protected SearchView ivSearch;
 
     @InjectView(R.id.iv_filter)
-    ImageView ivFilter;
+    protected ImageView ivFilter;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+    protected ViewGroup emptyView;
 
+    private FilterableArrayListAdapter adapter;
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
@@ -153,11 +153,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void startLoading() {
         new Handler().postDelayed(() -> refreshLayout.setRefreshing(true), 100);
-    }
-
-    @Override
-    public void showOnlyFavorites(boolean onlyFavorites) {
-        //TODO
     }
 
 }

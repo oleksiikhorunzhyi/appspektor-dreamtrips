@@ -14,7 +14,6 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -31,15 +30,15 @@ import butterknife.InjectView;
 public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements Presenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+    protected SwipeRefreshLayout refreshLayout;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+    protected ViewGroup emptyView;
 
-    LoaderRecycleAdapter<Object> arrayListAdapter;
+    private LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -98,11 +97,6 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     @Override
     protected MembershipVideosPresenter createPresenter(Bundle savedInstanceState) {
         return new MembershipVideosPresenter(this);
-    }
-
-    public void onEvent(ScreenOrientationChangeEvent event) {
-        boolean landscape = event.isLandscape();
-        setupLayoutManager(landscape);
     }
 
     private void setupLayoutManager(boolean landscape) {

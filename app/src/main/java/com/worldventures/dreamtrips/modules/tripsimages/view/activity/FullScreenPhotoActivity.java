@@ -29,10 +29,10 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
     public static final String OUT_STATE_POSITION = "OUT_STATE_POSITION";
+
     @InjectView(R.id.pager)
     protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
-
     protected Toolbar toolbar;
     protected BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
     protected ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
@@ -82,9 +82,11 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
         pager.setAdapter(adapter);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
+                //nothing to here
             }
 
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //nothing to here
             }
 
             public void onPageSelected(int position) {
@@ -131,12 +133,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void startLoading() {
-
+        //nothing to here
     }
 
     @Override
     public void finishLoading() {
-
+        //nothing to here
     }
 
     @Override
@@ -165,12 +167,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void add(IFullScreenAvailableObject item) {
-
+        //nothing to here
     }
 
     @Override
     public void add(int position, IFullScreenAvailableObject item) {
-
+        //nothing to here
     }
 
     @Override
@@ -183,7 +185,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void replace(int position, IFullScreenAvailableObject item) {
-
+        //nothing to here
     }
 
     @Override

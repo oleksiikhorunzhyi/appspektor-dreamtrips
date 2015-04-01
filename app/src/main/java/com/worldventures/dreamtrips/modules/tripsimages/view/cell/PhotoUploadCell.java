@@ -29,25 +29,25 @@ import butterknife.OnClick;
 public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @InjectView(R.id.iv_bg)
-    public ImageView imageView;
+    protected ImageView imageView;
 
     @InjectView(R.id.iv_result)
-    public ImageView ivResult;
+    protected ImageView ivResult;
 
     @InjectView(R.id.pb)
-    public ProgressPieView pb;
+    protected ProgressPieView pb;
 
     @InjectView(R.id.vg_upload_holder)
-    ViewGroup vgUploadHolder;
+    protected ViewGroup vgUploadHolder;
 
     @InjectView(R.id.btn_action)
-    ImageButton btnCancelUpload;
+    protected ImageButton btnCancelUpload;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     public PhotoUploadCell(View view) {
         super(view);

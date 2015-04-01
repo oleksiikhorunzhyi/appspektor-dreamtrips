@@ -16,26 +16,23 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- *  1 on 10.03.15.
- */
 @Layout(R.layout.adapter_item_video_360)
 public class Video360Cell extends AbstractCell<Video360> {
 
     @InjectView(R.id.textViewDuration)
-    TextView textViewDuration;
+    protected TextView textViewDuration;
 
     @InjectView(R.id.tv_title)
-    TextView textViewTitle;
+    protected TextView textViewTitle;
 
     @InjectView(R.id.iv_bg)
-    ImageView imageViewPreview;
+    protected ImageView imageViewPreview;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Inject
-    ActivityRouter activityRouter;
+    protected ActivityRouter activityRouter;
 
     public Video360Cell(View view) {
         super(view);

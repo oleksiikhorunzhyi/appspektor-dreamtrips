@@ -20,26 +20,26 @@ import butterknife.Optional;
 public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
 
     @InjectView(R.id.iv_bg)
-    public ImageView imageView;
+    protected  ImageView imageView;
 
     @Optional
     @InjectView(R.id.user_photo)
-    ImageView imageViewUser;
+    protected ImageView imageViewUser;
     @Optional
     @InjectView(R.id.user_location)
-    TextView user_location;
+    protected TextView user_location;
     @Optional
     @InjectView(R.id.user_name)
-    TextView user_name;
+    protected TextView user_name;
     @Optional
     @InjectView(R.id.title)
-    TextView title;
+    protected TextView title;
     @Optional
     @InjectView(R.id.shot_location)
-    TextView shot_location;
+    protected TextView shot_location;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     public PhotoCell(View view) {
         super(view);

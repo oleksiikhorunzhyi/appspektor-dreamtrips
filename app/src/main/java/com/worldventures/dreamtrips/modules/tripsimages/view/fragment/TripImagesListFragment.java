@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -28,10 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCel
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
-import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment extends BaseFragment<TripImagesListPM> implements TripImagesListPM.View, SwipeRefreshLayout.OnRefreshListener {
@@ -39,19 +34,15 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
     @InjectView(R.id.lv_items)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+    protected ViewGroup emptyView;
 
     @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+    protected SwipeRefreshLayout refreshLayout;
 
-    @Inject
-    @Global
-    EventBus eventBus;
-
-    BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
+    private BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
     private Type type;
     private LinearLayoutManager layoutManager;
 
@@ -94,12 +85,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
                 getPresenter().reload();
             });
         }
-    }
-
-
-    public void onEvent(ScreenOrientationChangeEvent event) {
-        boolean landscape = event.isLandscape();
-        setupLayoutManager(landscape);
     }
 
     private void setupLayoutManager(boolean landscape) {

@@ -19,15 +19,15 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         }
     };
 
-    String username;
-    String email;
-    String firstName;
-    String lastName;
-    Date birthDate;
-    String location;
-    Avatar avatar;
+    private String username;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private Date birthDate;
+    private String location;
+    private Avatar avatar;
 
-    String coverPath;
+    private String coverPath;
 
     public User() {
     }
@@ -144,9 +144,9 @@ public class User extends BaseEntity implements Parcelable, Serializable {
                 return new Avatar[size];
             }
         };
-        String original;
-        String medium;
-        String thumb;
+        private String original;
+        private String medium;
+        private String thumb;
 
         public Avatar() {
         }

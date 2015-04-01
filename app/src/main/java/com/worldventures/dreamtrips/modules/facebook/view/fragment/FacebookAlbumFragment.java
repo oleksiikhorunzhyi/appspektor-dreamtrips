@@ -32,14 +32,14 @@ import butterknife.InjectView;
 public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> {
 
     @InjectView(R.id.lv_items)
-    RecyclerView lvItems;
+    protected RecyclerView lvItems;
 
     @InjectView(R.id.login_button)
-    LoginButton loginButton;
+    protected LoginButton loginButton;
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-    BaseRecycleAdapter adapter;
+    protected Toolbar toolbar;
+    private BaseRecycleAdapter adapter;
 
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {

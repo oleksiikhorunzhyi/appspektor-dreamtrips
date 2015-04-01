@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ScreenOrientationChangeEvent;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -179,8 +178,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupToolbarLayout();
-        boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(this);
-        eventBus.post(new ScreenOrientationChangeEvent(landscapeOrientation));
     }
 
     private void setupToolbarLayout() {

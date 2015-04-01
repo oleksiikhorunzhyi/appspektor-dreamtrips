@@ -17,7 +17,7 @@ public class FabricInitializer implements AppInitializer {
     private static final String TWITTER_SECRET = "OflDXDujTfJiqMkdFk5z5eDV1woeNxOvWszXRLonpVbURF4hx1";
 
     @Inject
-    App application;
+    protected App application;
 
     @Override
     public void initialize(Injector injector) {

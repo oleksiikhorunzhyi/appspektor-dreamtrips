@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 public class SoldOutModel {
 
-    boolean showSoldOut = false;
+    protected boolean showSoldOut = false;
 
     public boolean isShowSoldOut() {
         return showSoldOut;

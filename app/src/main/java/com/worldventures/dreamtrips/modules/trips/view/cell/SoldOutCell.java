@@ -12,14 +12,14 @@ import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 import butterknife.InjectView;
 
 /**
- *  Edward on 23.01.15.
+ * Edward on 23.01.15.
  * cell for show sold out filter
  */
 @Layout(R.layout.adapter_item_show_sold_out)
 public class SoldOutCell extends AbstractCell<SoldOutModel> {
 
     @InjectView(R.id.checkBoxSold)
-    CheckBox checkBoxSold;
+    protected CheckBox checkBoxSold;
 
     public SoldOutCell(View view) {
         super(view);

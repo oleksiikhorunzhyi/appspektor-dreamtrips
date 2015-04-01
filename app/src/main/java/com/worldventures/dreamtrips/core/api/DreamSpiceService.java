@@ -10,9 +10,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.ConfigApi;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 
 import javax.inject.Inject;
 
@@ -22,16 +19,16 @@ import retrofit.converter.GsonConverter;
 public class DreamSpiceService extends RetrofitGsonSpiceService {
 
     @Inject
-    GsonConverter gsonConverter;
+    protected GsonConverter gsonConverter;
 
     @Inject
-    DreamTripsApi dreamTripsApi;
+    protected DreamTripsApi dreamTripsApi;
 
     @Inject
-    SharedServicesApi sharedServicesApi;
+    protected SharedServicesApi sharedServicesApi;
 
     @Inject
-    ConfigApi configApi;
+    protected ConfigApi configApi;
 
     @Override
     protected NetworkStateChecker getNetworkStateChecker() {

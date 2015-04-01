@@ -24,8 +24,6 @@ import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import javax.inject.Singleton;
 
@@ -50,7 +48,7 @@ import de.greenrobot.event.EventBus;
         complete = false
 )
 public class AppModule {
-    App app;
+    protected App app;
 
     public AppModule(App app) {
         this.app = app;

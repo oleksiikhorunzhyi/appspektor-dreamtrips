@@ -166,10 +166,10 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         @Optional
         @InjectView(R.id.item_name)
-        TextView itemName;
+        protected TextView itemName;
 
         @InjectView(R.id.section_icon)
-        ImageView sectionIcon;
+        protected ImageView sectionIcon;
 
         public ItemHolder(View itemView) {
             super(itemView);

@@ -18,7 +18,7 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     public SuccessStoryDetailsFragmentPresenter(View view) {
         super(view);

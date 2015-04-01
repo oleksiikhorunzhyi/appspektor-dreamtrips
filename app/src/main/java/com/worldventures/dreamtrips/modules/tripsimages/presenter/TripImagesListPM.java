@@ -33,9 +33,9 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     protected Type type;
 
-    int firstVisibleItem;
-    int visibleItemCount;
-    int totalItemCount;
+    protected int firstVisibleItem;
+    protected int visibleItemCount;
+    protected int totalItemCount;
 
     private int previousTotal = 0;
     private boolean loading = true;

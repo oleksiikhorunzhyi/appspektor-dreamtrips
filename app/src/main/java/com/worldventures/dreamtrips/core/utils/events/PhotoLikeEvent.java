@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 public class PhotoLikeEvent {
 
-    boolean isLiked;
-    int id;
+    protected boolean isLiked;
+    protected int id;
 
     public PhotoLikeEvent(int id, boolean isLiked) {
         this.id = id;

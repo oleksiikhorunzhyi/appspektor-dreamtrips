@@ -14,13 +14,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- *  1 on 23.01.15.
+ * 1 on 23.01.15.
  */
 @Layout(R.layout.adapter_item_activity_header)
 public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
 
     @InjectView(R.id.checkBoxSelectAllTheme)
-    CheckBox checkBoxSelectAll;
+    protected CheckBox checkBoxSelectAll;
 
     public ThemeHeaderCell(View view) {
         super(view);

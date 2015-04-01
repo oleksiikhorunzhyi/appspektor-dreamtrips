@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
 public class UploadProgressUpdateEvent {
-    int progress;
-    String taskId;
+    protected int progress;
+    protected String taskId;
 
     public UploadProgressUpdateEvent(String taskId, int progress) {
         this.taskId = taskId;

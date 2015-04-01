@@ -10,7 +10,6 @@ import com.path.android.jobqueue.di.DependencyInjector;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
-import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
@@ -39,7 +38,7 @@ import dagger.Provides;
 )
 public class ActivityModule {
 
-    BaseActivity baseActivity;
+    protected BaseActivity baseActivity;
 
     public ActivityModule(BaseActivity baseActivity) {
         this.baseActivity = baseActivity;

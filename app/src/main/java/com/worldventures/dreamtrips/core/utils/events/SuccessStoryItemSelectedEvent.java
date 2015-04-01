@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 public class SuccessStoryItemSelectedEvent {
 
-    int position;
+    protected int position;
 
     public SuccessStoryItemSelectedEvent(int position) {
         this.position = position;

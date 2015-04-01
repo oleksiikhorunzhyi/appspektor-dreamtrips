@@ -6,7 +6,7 @@ import java.util.List;
 
 public class AutoCompleteFilter<T> extends Filter {
 
-    AutoCompleteAdapter<T> adapter;
+    protected AutoCompleteAdapter<T> adapter;
 
     public AutoCompleteFilter(AutoCompleteAdapter<T> adapter) {
         this.adapter = adapter;

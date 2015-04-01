@@ -20,7 +20,7 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParent
     public static final int REQUEST_CODE_CREATE_PHOTO = 342;
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @Override
     protected CreatePhotoParentPresenter createPresentationModel(Bundle savedInstanceState) {

@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import java.io.File;
 
 public class NavigationHeader {
-    Uri userCover;
-    Uri userPhoto;
-    String userName;
-    String userEmail;
+    protected Uri userCover;
+    protected Uri userPhoto;
+    protected String userName;
+    protected String userEmail;
 
     public NavigationHeader(User user) {
         userEmail = user.getEmail();

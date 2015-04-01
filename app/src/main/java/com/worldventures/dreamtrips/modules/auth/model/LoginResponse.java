@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 
 public class LoginResponse {
-    AppConfig config;
-    Session session;
+    protected AppConfig config;
+    protected Session session;
 
     public AppConfig getConfig() {
         return config;

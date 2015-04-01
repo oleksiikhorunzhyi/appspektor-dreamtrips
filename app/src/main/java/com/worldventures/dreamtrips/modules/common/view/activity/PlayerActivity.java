@@ -13,13 +13,13 @@ import tv.danmaku.ijk.media.widget.MediaController;
 import tv.danmaku.ijk.media.widget.VideoView;
 
 /**
- *  1 on 04.02.15.
+ * 1 on 04.02.15.
  */
 @Layout(R.layout.player_activity_simple)
 public class PlayerActivity extends BaseActivity {
 
     @InjectView(R.id.myVideo)
-    VideoView videoView;
+    protected VideoView videoView;
 
     private ProgressDialog pDialog;
     private boolean paused = false;

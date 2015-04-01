@@ -6,8 +6,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 public class DetailedImagePagerFragmentPresenter extends Presenter<Presenter.View> {
 
-    TripImage photo;
-
+    protected TripImage photo;
 
     public DetailedImagePagerFragmentPresenter(View view) {
         super(view);

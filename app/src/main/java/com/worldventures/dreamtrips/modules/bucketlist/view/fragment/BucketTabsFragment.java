@@ -8,7 +8,6 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -62,8 +61,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         LOCATIONS("location", R.string.location),
         ACTIVITIES("activity", R.string.activity),
         RESTAURANTS("dinning", R.string.dinning);
-        String name;
-        int res;
+        protected String name;
+        protected int res;
 
         Type(String name, int res) {
             this.name = name;

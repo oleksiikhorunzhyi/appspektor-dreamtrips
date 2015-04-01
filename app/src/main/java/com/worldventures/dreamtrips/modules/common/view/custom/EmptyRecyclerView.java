@@ -7,7 +7,7 @@ import android.view.View;
 
 public class EmptyRecyclerView extends RecyclerView {
 
-    final AdapterDataObserver observer = new AdapterDataObserver() {
+    protected final AdapterDataObserver observer = new AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
@@ -15,7 +15,7 @@ public class EmptyRecyclerView extends RecyclerView {
         }
     };
 
-    View emptyView;
+    protected View emptyView;
 
     public EmptyRecyclerView(Context context) {
         super(context);

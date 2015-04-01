@@ -16,9 +16,10 @@ public class Location implements Serializable, Parcelable {
             return new Location[size];
         }
     };
-    String name;
-    double lat;
-    double lng;
+
+    protected String name;
+    protected double lat;
+    protected double lng;
 
     public Location() {
     }

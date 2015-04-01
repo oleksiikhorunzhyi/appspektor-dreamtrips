@@ -23,9 +23,9 @@ import butterknife.InjectView;
 
 public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
 
-    FacebookPhoto photo;
+    protected FacebookPhoto photo;
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     public FacebookPhotoItem(Injector injector, FacebookPhoto photo) {
         this.photo = photo;

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 public class InstabugInitializer implements AppInitializer {
     @Inject
-    Context context;
+    protected Context context;
 
 
     @Override

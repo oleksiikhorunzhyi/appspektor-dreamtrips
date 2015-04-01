@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 public class PhotoUploadFailedEvent {
 
-    String taskId;
+    protected String taskId;
 
     public PhotoUploadFailedEvent(String taskId) {
         this.taskId = taskId;

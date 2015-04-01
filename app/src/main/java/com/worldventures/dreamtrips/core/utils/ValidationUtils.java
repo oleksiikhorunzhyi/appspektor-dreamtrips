@@ -45,8 +45,8 @@ public class ValidationUtils {
 
 
     public static class VResult {
-        boolean isValid;
-        int messageRes;
+        protected boolean isValid;
+        protected int messageRes;
 
         private VResult(boolean isValid, int message) {
             this.isValid = isValid;

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class GetInspireMePhotosQuery extends Query<ArrayList<Inspiration>> {
 
-    int perPage;
-    int page;
+    protected int perPage;
+    protected int page;
 
     public GetInspireMePhotosQuery(int perPage, int page) {
         super((Class<ArrayList<Inspiration>>) new ArrayList<Inspiration>().getClass());

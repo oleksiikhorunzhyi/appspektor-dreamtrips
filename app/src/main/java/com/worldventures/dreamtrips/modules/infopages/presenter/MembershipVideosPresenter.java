@@ -18,13 +18,13 @@ import javax.inject.Inject;
 public class MembershipVideosPresenter extends Presenter<Presenter.View> {
 
     @Inject
-    LoaderFactory loaderFactory;
+    protected LoaderFactory loaderFactory;
 
     @Inject
-    Context context;
+    protected Context context;
 
     @Inject
-    SharedServicesApi sp;
+    protected SharedServicesApi sp;
 
     private List<Video> objects;
     private CollectionController<Object> adapterController;

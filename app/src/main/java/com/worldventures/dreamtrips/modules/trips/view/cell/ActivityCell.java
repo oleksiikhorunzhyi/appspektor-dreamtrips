@@ -21,13 +21,13 @@ import butterknife.OnClick;
 public class ActivityCell extends AbstractCell<ActivityModel> {
 
     @InjectView(R.id.cell)
-    LinearLayout cell;
+    protected LinearLayout cell;
     @InjectView(R.id.textViewRegionName)
-    TextView textViewName;
+    protected TextView textViewName;
     @InjectView(R.id.checkBox)
-    CheckBox checkBox;
+    protected CheckBox checkBox;
     @Inject
-    Context context;
+    protected Context context;
 
     public ActivityCell(View view) {
         super(view);

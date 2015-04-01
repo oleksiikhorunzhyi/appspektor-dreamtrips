@@ -15,9 +15,9 @@ import javax.inject.Inject;
 public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenAvailableObject>> {
 
     @Inject
-    SnappyRepository db;
-    int perPage;
-    int page;
+    protected SnappyRepository db;
+    protected int perPage;
+    protected int page;
     private int currentUserId;
 
     public GetMyPhotosQuery(int currentUserId, int perPage, int page) {

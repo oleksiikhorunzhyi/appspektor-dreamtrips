@@ -16,9 +16,10 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
             return new Inspiration[size];
         }
     };
-    Image images;
-    String quote;
-    String author;
+
+    private Image images;
+    private String quote;
+    private String author;
 
     public Inspiration() {
     }
@@ -132,29 +133,4 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         return "";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        Inspiration that = (Inspiration) o;
-
-        if (id != that.id) return false;
-        if (author != null ? !author.equals(that.author) : that.author != null) return false;
-        if (images != null ? !images.equals(that.images) : that.images != null) return false;
-        if (quote != null ? !quote.equals(that.quote) : that.quote != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (images != null ? images.hashCode() : 0);
-        result = 31 * result + (quote != null ? quote.hashCode() : 0);
-        result = 31 * result + (author != null ? author.hashCode() : 0);
-        result = 31 * result + id;
-        return result;
-    }
 }

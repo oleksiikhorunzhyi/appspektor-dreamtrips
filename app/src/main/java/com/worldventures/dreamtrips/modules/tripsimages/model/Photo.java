@@ -15,7 +15,6 @@ import java.util.List;
 
 public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailableObject {
 
-
     private String title;
     private Date shotAt;
     private Location location;
@@ -28,7 +27,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
 
     public Photo() {
     }
-
 
     public Date getShotAt() {
         return shotAt;
@@ -165,9 +163,6 @@ public class Photo extends BaseEntity implements Parcelable, IFullScreenAvailabl
 
     @Override
     public String getFsDate() {
-        if (shotAt == null) {
-            return "";
-        }
         return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
     }
 

@@ -163,7 +163,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
         if (!shareUrl.isEmpty()) {
             shareUrl += "\n";
         }
-        
+
         if (text == null) {
             text = "";
         }

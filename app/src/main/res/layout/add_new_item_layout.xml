@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <AutoCompleteTextView
+    <com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView
         android:id="@+id/editTextQuickInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:visibility="visible">
 
         <requestFocus />
-    </AutoCompleteTextView>
+    </com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView>
 
 
 </RelativeLayout>

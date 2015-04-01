@@ -89,6 +89,7 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
             items.add(i, bucketItem);
             db.saveBucketList(items, type.name());
             eventBus.post(new BucketItemReloadEvent());
+            view.done();
         }
     };
 
@@ -129,6 +130,8 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         void setCategory(int selection);
 
         void setCategoryItems(List<CategoryItem> items);
+
+        void done();
 
         CategoryItem getSelectedItem();
 

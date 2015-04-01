@@ -2,12 +2,9 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
-/**
- *  1 on 13.02.15.
- */
 public class TripLikedEvent {
 
-    TripModel trip;
+    protected TripModel trip;
 
     public TripLikedEvent(TripModel trip) {
         this.trip = trip;

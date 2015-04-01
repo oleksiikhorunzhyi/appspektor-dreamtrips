@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.LikePhotoCommand;
@@ -24,7 +24,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class FSPhotoPM extends FullScreenPresenter<Photo> {
     @Inject
-    Context context;
+    protected Context context;
 
     public FSPhotoPM(View view) {
         super(view);

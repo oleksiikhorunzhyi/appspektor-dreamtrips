@@ -11,9 +11,9 @@ import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
@@ -33,14 +33,14 @@ import de.greenrobot.event.EventBus;
 public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPresenter.View> {
 
     @Inject
-    Prefs prefs;
+    protected Prefs prefs;
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     private boolean loadFromApi;
     private RoboSpiceAdapterController<TripModel> adapterController = new RoboSpiceAdapterController<TripModel>() {

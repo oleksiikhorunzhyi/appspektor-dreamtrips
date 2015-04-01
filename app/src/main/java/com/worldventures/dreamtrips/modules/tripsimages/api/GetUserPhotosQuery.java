@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class GetUserPhotosQuery extends Query<ArrayList<Photo>> {
 
-    int perPage;
-    int page;
+    protected int perPage;
+    protected  int page;
 
     public GetUserPhotosQuery(int perPage, int page) {
         super((Class<ArrayList<Photo>>) new ArrayList<Photo>().getClass());

@@ -23,15 +23,15 @@ public class Video360Fragment extends BaseFragment<Video360FragmentPM> implement
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
-    RecyclerView recyclerViewFeatured;
+    protected RecyclerView recyclerViewFeatured;
 
     @Optional
     @InjectView(R.id.recyclerViewRecent)
-    RecyclerView recyclerViewRecent;
+    protected RecyclerView recyclerViewRecent;
 
     @Optional
     @InjectView(R.id.recyclerViewAll)
-    RecyclerView recyclerViewAll;
+    protected RecyclerView recyclerViewAll;
 
     private BaseArrayListAdapter<Video360> adapterFeatured;
     private BaseArrayListAdapter<Video360> adapterRecent;

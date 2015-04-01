@@ -32,10 +32,10 @@ import timber.log.Timber;
 public abstract class BaseActivity extends InjectingActivity {
 
     @Inject
-    ActivityRouter router;
+    protected ActivityRouter router;
 
     @Inject
-    UniversalImageLoader imageLoader;
+    protected UniversalImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

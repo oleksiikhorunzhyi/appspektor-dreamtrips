@@ -28,18 +28,18 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- *  Edward on 22.01.15.
+ * Edward on 22.01.15.
  * filters fragment for right side nav drawer
  */
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
     @InjectView(R.id.recyclerViewRegions)
-    EmptyRecyclerView recyclerView;
+    protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.progressBarFilters)
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
 
-    BaseArrayListAdapter<Object> arrayListAdapter;
+    protected BaseArrayListAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {

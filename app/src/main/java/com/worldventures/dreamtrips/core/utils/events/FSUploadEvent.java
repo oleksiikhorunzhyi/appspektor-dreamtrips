@@ -8,8 +8,8 @@ import java.util.List;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class FSUploadEvent {
-    Type type;
-    List<IFullScreenAvailableObject> images = new ArrayList<>();
+    protected Type type;
+    protected List<IFullScreenAvailableObject> images = new ArrayList<>();
 
     private FSUploadEvent(Type type, List<IFullScreenAvailableObject> images) {
         this.type = type;

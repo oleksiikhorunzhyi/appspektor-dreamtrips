@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class  SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
+public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
 
     private List<SuccessStory> items;
 
@@ -49,7 +49,7 @@ public class  SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessS
 
     public static class SuccessHeaderViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.tv_title)
-        TextView letter;
+        protected TextView letter;
 
         public SuccessHeaderViewHolder(View itemView) {
             super(itemView);

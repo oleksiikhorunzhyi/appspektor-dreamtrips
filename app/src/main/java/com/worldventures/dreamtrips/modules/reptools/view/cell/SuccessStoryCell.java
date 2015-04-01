@@ -18,9 +18,9 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_success_story)
 public class SuccessStoryCell extends AbstractCell<SuccessStory> {
     @InjectView(R.id.tv_title)
-    TextView tvTitle;
+    protected TextView tvTitle;
     @InjectView(R.id.vg_parent)
-    ViewGroup vgParent;
+    protected ViewGroup vgParent;
 
     public SuccessStoryCell(View view) {
         super(view);

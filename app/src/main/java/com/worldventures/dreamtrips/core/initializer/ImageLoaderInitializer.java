@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class ImageLoaderInitializer implements AppInitializer {
 
     @Inject
-    Context context;
+    protected Context context;
 
     @Override
     public void initialize(Injector injector) {

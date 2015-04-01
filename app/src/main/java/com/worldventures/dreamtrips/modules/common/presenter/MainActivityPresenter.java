@@ -12,7 +12,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
     @Global
     @Inject
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     public MainActivityPresenter(View view) {
         super(view);

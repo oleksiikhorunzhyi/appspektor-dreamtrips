@@ -8,13 +8,13 @@ import java.util.List;
 
 public class AppConfig {
     @SerializedName("FlagContent")
-    FlagList flagContent;
+    protected FlagList flagContent;
 
     @SerializedName("URLS")
-    URLS urls;
+    protected URLS urls;
 
     @SerializedName("Videos360")
-    List<Videos360> videos360;
+    protected List<Videos360> videos360;
 
     public FlagList getFlagContent() {
         return this.flagContent;

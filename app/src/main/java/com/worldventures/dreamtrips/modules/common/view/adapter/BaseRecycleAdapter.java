@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class BaseRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<ItemWrapper> data = new ArrayList<>();
-    Map<Integer, Integer> viewTypePositionMap = new ArrayMap<>();
+    protected List<ItemWrapper> data = new ArrayList<>();
+    protected Map<Integer, Integer> viewTypePositionMap = new ArrayMap<>();
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

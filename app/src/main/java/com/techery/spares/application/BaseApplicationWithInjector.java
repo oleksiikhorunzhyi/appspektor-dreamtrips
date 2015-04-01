@@ -16,7 +16,7 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
     private ObjectGraph objectGraph;
 
     @Inject
-    Set<AppInitializer> appInitializers;
+    protected Set<AppInitializer> appInitializers;
 
     @Override
     public void onCreate() {

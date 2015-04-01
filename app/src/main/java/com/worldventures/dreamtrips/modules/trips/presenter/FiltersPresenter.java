@@ -39,11 +39,11 @@ import de.greenrobot.event.EventBus;
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     private List<RegionModel> regions;
     private List<ActivityModel> activities;

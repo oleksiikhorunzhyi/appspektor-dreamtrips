@@ -22,7 +22,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- *  Edward on 23.01.15.
+ * Edward on 23.01.15.
  */
 //TODO replace with recycler adapter
 public class ContentAdapter extends BaseAdapter {
@@ -70,11 +70,11 @@ public class ContentAdapter extends BaseAdapter {
 
     static class ViewHolder {
         @InjectView(R.id.textViewContentHeader)
-        TextView textViewContentHeader;
+        protected TextView textViewContentHeader;
         @InjectView(R.id.textViewContent)
-        ExpandableTextViewCallable textViewContent;
+        protected ExpandableTextViewCallable textViewContent;
         @InjectView(R.id.imageViewArrow)
-        ImageView imageViewArrow;
+        protected ImageView imageViewArrow;
 
 
         private boolean isExpanded = false;

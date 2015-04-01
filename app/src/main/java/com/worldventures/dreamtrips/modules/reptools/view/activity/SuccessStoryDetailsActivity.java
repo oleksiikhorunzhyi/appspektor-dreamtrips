@@ -17,7 +17,7 @@ public class SuccessStoryDetailsActivity extends ActivityWithPresenter<SuccessSt
 
     public static final String BUNDLE_STORY = "BUNDLE_STORY";
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
 
     @Override

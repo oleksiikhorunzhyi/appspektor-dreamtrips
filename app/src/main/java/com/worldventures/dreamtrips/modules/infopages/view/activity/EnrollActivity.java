@@ -12,13 +12,13 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPr
 import butterknife.InjectView;
 
 /**
- *  1 on 06.02.15.
+ * 1 on 06.02.15.
  */
 @Layout(R.layout.activity_book_it)
 public class EnrollActivity extends ActivityWithPresenter<EnrollActivityPresenter> implements Presenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
 
     @Override

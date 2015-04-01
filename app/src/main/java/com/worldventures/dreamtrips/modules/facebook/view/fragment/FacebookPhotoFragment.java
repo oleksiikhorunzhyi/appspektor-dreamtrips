@@ -34,10 +34,10 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
 
     public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
     @InjectView(R.id.lv_items)
-    RecyclerView lvItems;
+    protected RecyclerView lvItems;
     @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-    private BaseRecycleAdapter adapter;
+    protected Toolbar toolbar;
+    protected BaseRecycleAdapter adapter;
 
     @Override
     public void afterCreateView(View rootView) {

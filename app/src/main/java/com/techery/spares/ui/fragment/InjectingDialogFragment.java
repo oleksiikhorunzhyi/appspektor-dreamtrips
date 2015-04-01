@@ -21,7 +21,7 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
 
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     public void onEvent(InjectingFragment.Events.ReloadEvent reloadEvent) {
 

@@ -28,7 +28,7 @@ import java.util.Set;
  * Implementation of an {@link Optional} not containing a reference.
  */
 final class Absent<T> extends Optional<T> {
-    static final Absent<Object> INSTANCE = new Absent<Object>();
+    private static final Absent<Object> INSTANCE = new Absent<Object>();
 
     @SuppressWarnings("unchecked") // implementation is "fully variant"
     static <T> Optional<T> withType() {

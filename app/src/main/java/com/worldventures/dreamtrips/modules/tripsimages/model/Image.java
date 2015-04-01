@@ -78,7 +78,7 @@ public class Image extends BaseEntity implements Parcelable {
                 return new ImageVersion[size];
             }
         };
-        String url;
+        protected String url;
 
         public ImageVersion() {
         }

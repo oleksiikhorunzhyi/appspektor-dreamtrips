@@ -25,13 +25,13 @@ import de.greenrobot.event.EventBus;
 public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     @Inject
     @Global
-    EventBus eventBus;
+    protected EventBus eventBus;
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     @Inject
-    Context context;
+    protected Context context;
 
     public CreatePhotoPresenter(View view) {
         super(view);

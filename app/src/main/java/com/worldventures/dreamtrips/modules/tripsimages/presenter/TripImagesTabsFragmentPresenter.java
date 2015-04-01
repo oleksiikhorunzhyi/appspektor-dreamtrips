@@ -12,7 +12,7 @@ import java.io.File;
 
 public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
 
-    ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
         } else {
@@ -20,7 +20,7 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         }
     };
 
-    ImagePickCallback fbCallback = (fragment, image, error) -> {
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
         } else {

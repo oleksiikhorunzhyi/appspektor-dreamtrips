@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import butterknife.InjectView;
 
 /**
- *  Edward on 26.01.15.
+ * Edward on 26.01.15.
  * fragment with map and trips
  */
 @Layout(R.layout.fragment_map)
@@ -41,11 +41,11 @@ import butterknife.InjectView;
 public class MapFragment extends BaseFragment<MapFragmentPresenter> implements MapFragmentPresenter.View, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.map)
-    ToucheableMapView mapView;
+    protected ToucheableMapView mapView;
     @InjectView(R.id.container_no_google)
-    FrameLayout frameLayoutNoGoogle;
+    protected FrameLayout frameLayoutNoGoogle;
 
-    GoogleMap googleMap;
+    protected GoogleMap googleMap;
     private LatLng lastClickedLocation;
 
     @Override

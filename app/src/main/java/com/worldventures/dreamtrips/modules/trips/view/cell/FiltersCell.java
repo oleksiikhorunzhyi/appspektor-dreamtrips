@@ -21,11 +21,11 @@ import butterknife.OnClick;
 public class FiltersCell extends AbstractCell<FilterModel> {
 
     @InjectView(R.id.rangeBarDay)
-    RangeBar rangeBarDay;
+    protected RangeBar rangeBarDay;
     @InjectView(R.id.rangeBarPrice)
-    RangeBar rangeBarPrice;
+    protected RangeBar rangeBarPrice;
     @InjectView(R.id.checkBoxSelectAll)
-    CheckBox checkBoxSelectAll;
+    protected CheckBox checkBoxSelectAll;
 
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;

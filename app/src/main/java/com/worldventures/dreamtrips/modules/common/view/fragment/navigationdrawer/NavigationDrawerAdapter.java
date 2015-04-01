@@ -31,7 +31,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private static final int TYPE_ITEM = 1;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     private int headerSize = 0;
 
@@ -181,17 +181,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public static class HeaderHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.user_cover)
-        ImageView userCover;
+        protected ImageView userCover;
         @InjectView(R.id.user_photo)
-        ImageView userPhoto;
+        protected ImageView userPhoto;
         @InjectView(R.id.user_photo_2)
-        ImageView userPhoto2;
+        protected ImageView userPhoto2;
         @InjectView(R.id.user_photo_3)
-        ImageView userPhoto3;
+        protected ImageView userPhoto3;
         @InjectView(R.id.user_name)
-        TextView userNome;
+        protected TextView userNome;
         @InjectView(R.id.user_email)
-        TextView userEmail;
+        protected TextView userEmail;
 
         public HeaderHolder(View itemView) {
             super(itemView);

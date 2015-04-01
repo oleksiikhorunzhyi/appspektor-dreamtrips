@@ -31,19 +31,19 @@ import de.greenrobot.event.EventBus;
 public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
 
     @Inject
-    transient TransferManager transferManager;
+    protected transient TransferManager transferManager;
     @Inject
-    transient UploadingFileManager uploadingFileManager;
+    protected transient UploadingFileManager uploadingFileManager;
     @Inject
     @Global
-    transient EventBus eventBus;
+    protected transient EventBus eventBus;
     @Inject
-    transient Context context;
+    protected transient Context context;
+    @Inject
+    protected SnappyRepository db;
 
-    transient double byteTransferred;
-    transient int lastPercent;
-    @Inject
-    SnappyRepository db;
+    private transient double byteTransferred;
+    private transient int lastPercent;
     private ImageUploadTask uploadTask;
 
     public UploadTripPhotoCommand(ImageUploadTask uploadTask) {

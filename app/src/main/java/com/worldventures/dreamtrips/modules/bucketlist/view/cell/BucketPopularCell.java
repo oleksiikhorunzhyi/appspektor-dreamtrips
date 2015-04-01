@@ -23,23 +23,23 @@ import butterknife.OnClick;
 public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
 
     @InjectView(R.id.imageViewImage)
-    ImageView imageViewImage;
+    protected ImageView imageViewImage;
     @InjectView(R.id.textViewName)
-    TextView textViewName;
+    protected TextView textViewName;
     @InjectView(R.id.textViewDescription)
-    TextView textViewDescription;
+    protected TextView textViewDescription;
     @InjectView(R.id.buttonAdd)
-    TextView buttonFlatAdd;
+    protected TextView buttonFlatAdd;
     @InjectView(R.id.buttonDone)
-    TextView buttonFlatDone;
+    protected TextView buttonFlatDone;
     @InjectView(R.id.progressBar)
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
 
     @Inject
-    UniversalImageLoader universalImageLoader;
+    protected UniversalImageLoader universalImageLoader;
 
     @Inject
-    Context context;
+    protected Context context;
 
     public BucketPopularCell(View view) {
         super(view);

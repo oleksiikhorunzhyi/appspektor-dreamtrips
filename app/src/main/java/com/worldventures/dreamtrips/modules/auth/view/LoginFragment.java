@@ -25,18 +25,18 @@ import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 public class LoginFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.View {
 
     @InjectView(R.id.btn_login)
-    Button loginButton;
+    protected Button loginButton;
     @InjectView(R.id.et_username)
-    DTEditText usernameEditText;
+    protected DTEditText usernameEditText;
     @InjectView(R.id.et_password)
-    DTEditText passwordEditText;
+    protected DTEditText passwordEditText;
     @InjectView(R.id.iv_bg)
-    ImageView ivBg;
+    protected ImageView ivBg;
     @InjectView(R.id.vg_content_container)
-    ViewGroup vgContentContainer;
+    protected ViewGroup vgContentContainer;
 
     public LoginFragment() {
-
+        //nothing to do
     }
 
     @Override

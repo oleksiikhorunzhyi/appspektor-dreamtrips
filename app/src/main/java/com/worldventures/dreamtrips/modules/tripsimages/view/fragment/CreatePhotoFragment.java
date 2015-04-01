@@ -33,21 +33,21 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
-    ImageView ivImage;
+    protected ImageView ivImage;
     @InjectView(R.id.btn_save)
-    FloatingActionButton btnSave;
+    protected FloatingActionButton btnSave;
     @InjectView(R.id.et_title)
-    DTEditText etTitle;
+    protected DTEditText etTitle;
     @InjectView(R.id.et_location)
-    DTEditText etLocation;
+    protected DTEditText etLocation;
     @InjectView(R.id.et_date)
-    DTEditText etDate;
+    protected DTEditText etDate;
     @InjectView(R.id.et_time)
-    DTEditText etTime;
+    protected DTEditText etTime;
     @InjectView(R.id.et_tags)
-    DTEditText etTags;
+    protected DTEditText etTags;
     @Inject
-    UniversalImageLoader imageLoader;
+    protected  UniversalImageLoader imageLoader;
     private Uri uri;
 
     @Override

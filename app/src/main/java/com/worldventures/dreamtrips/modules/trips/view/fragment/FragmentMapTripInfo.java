@@ -63,18 +63,17 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
             @Override
             public void onGlobalLayout() {
                 int fragmentHeight = itemLayout.getHeight();
-
+                int offset;
                 if (ViewUtils.isLandscapeOrientation(getActivity())) {
-                    int offset = fragmentHeight / 2;
+                    offset = fragmentHeight / 2;
                     offset += getResources().getDimensionPixelSize(R.dimen.pin_offset);
-                    getPresenter().sendOffset(offset);
                 } else {
                     int centerY = rootView.getHeight() / 2;
                     int resultY = fragmentHeight + getResources().getDimensionPixelSize(R.dimen.pin_offset);
-                    int offset = resultY - centerY;
-                    getPresenter().sendOffset(offset);
-                }
+                    offset = resultY - centerY;
 
+                }
+                getPresenter().sendOffset(offset);
                 ViewTreeObserver obs = rootView.getViewTreeObserver();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

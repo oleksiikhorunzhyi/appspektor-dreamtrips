@@ -64,10 +64,11 @@ public class TripCell extends AbstractCell<TripModel> {
         if (getModelObject().getRewardsLimit() > 0) {
             textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
             pointsCountLayout.setVisibility(View.VISIBLE);
-        } else
+        } else {
             pointsCountLayout.setVisibility(View.GONE);
+        }
 
-        imageViewLike.setImageResource(getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
+        setImageViewLike();
         universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
                 this.imageViewTripImage,
                 UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
@@ -75,9 +76,17 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @OnClick(R.id.imageViewLike)
     void actionLike() {
-        imageViewLike.setImageResource(!getModelObject().isLiked() ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
         getModelObject().setLiked(!getModelObject().isLiked());
+        setImageViewLike();
         getEventBus().post(new LikeTripEvent(getModelObject()));
+    }
+
+    private void setImageViewLike() {
+        if (getModelObject().isLiked()) {
+            imageViewLike.setImageResource(R.drawable.ic_bucket_like_selected);
+        } else {
+            imageViewLike.setImageResource(R.drawable.ic_heart_1);
+        }
     }
 
     @OnClick(R.id.itemLayout)

@@ -40,7 +40,8 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
+public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
+        extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
 
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
@@ -84,8 +85,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     @Inject
     protected UniversalImageLoader imageLoader;
 
-    private SimpleImageLoadingListener originalCallback;
-    private SimpleImageLoadingListener mediumCallback;
+    private SimpleImageLoadingListener simpleImageLoadingListenerOriginal;
+    private SimpleImageLoadingListener simpleImageLoadingListenerMedium;
     private TripImagesListFragment.Type type;
 
     @Override
@@ -98,7 +99,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
         getPresenter().onCreate();
 
-        ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()), ViewUtils.getScreenHeight(getActivity()));
+        ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()),
+                ViewUtils.getScreenHeight(getActivity()));
         ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
 
         if (photo != null) {
@@ -112,7 +114,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     public void loadImage(Image images) {
         String medium = images.getThumb().getUrl();
         String original = images.getMedium().getUrl();
-        originalCallback = new SimpleImageLoadingListener() {
+        simpleImageLoadingListenerOriginal = new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -122,7 +124,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 progressBar.setVisibility(View.GONE);
-                // informUser("Error while loading image");
             }
 
             @Override
@@ -130,13 +131,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
                 progressBar.setVisibility(View.GONE);
             }
         };
-        mediumCallback = new SimpleImageLoadingListener() {
+        simpleImageLoadingListenerMedium = new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                imageLoader.loadImage(original, ivImage, UniversalImageLoader.OP_FULL_SCREEN, originalCallback);
+                imageLoader.loadImage(original, ivImage,
+                        UniversalImageLoader.OP_FULL_SCREEN, simpleImageLoadingListenerOriginal);
             }
         };
-        imageLoader.loadImage(medium, ivImage, UniversalImageLoader.OP_FULL_SCREEN, mediumCallback);
+        imageLoader.loadImage(medium, ivImage, UniversalImageLoader.OP_FULL_SCREEN,
+                simpleImageLoadingListenerMedium);
     }
 
     @Override
@@ -165,7 +168,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @OnClick(R.id.iv_image)
     public void actionImageClick() {
-        llContentWrapper.setVisibility(llContentWrapper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        if (llContentWrapper.getVisibility() == View.VISIBLE) {
+            llContentWrapper.setVisibility(View.GONE);
+        } else {
+            llContentWrapper.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R.id.tv_see_more)
@@ -277,8 +284,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
     }
 
     @Override
-    public void setLikeCountVisibility(boolean likeCountVisible) {
-        tvLikesCount.setVisibility(likeCountVisible ? View.VISIBLE : View.GONE);
+    public void setLikeCountVisibility(boolean isVisible) {
+        if (isVisible) {
+            tvLikesCount.setVisibility(View.VISIBLE);
+        } else {
+            tvLikesCount.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -341,16 +352,28 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject> exten
 
     @Override
     public void setFlagVisibility(boolean isVisible) {
-        ivFlag.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (isVisible) {
+            ivFlag.setVisibility(View.VISIBLE);
+        } else {
+            ivFlag.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void setDeleteVisibility(boolean isVisible) {
-        ivDelete.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (isVisible) {
+            ivDelete.setVisibility(View.VISIBLE);
+        } else {
+            ivDelete.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void setLikeVisibility(boolean isVisible) {
-        ivLike.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (isVisible) {
+            ivLike.setVisibility(View.VISIBLE);
+        } else {
+            ivLike.setVisibility(View.GONE);
+        }
     }
 }

@@ -141,6 +141,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         void onItemRemoved(int position);
     }
 
+
     public interface MoveListener {
         void onItemMoved(int from, int to);
     }

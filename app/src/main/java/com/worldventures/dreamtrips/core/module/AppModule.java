@@ -120,9 +120,4 @@ public class AppModule {
     public TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
         return new TransferManager(credentialsProvider);
     }
-
-    @Provides
-    public UploadingFileManager provideUploadingFileManager(Context context) {
-        return new UploadingFileManager(context);
-    }
 }

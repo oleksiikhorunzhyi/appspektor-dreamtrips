@@ -1,25 +1,20 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Session extends BaseEntity {
-    String token;
-    User user;
-    Session innerSession;
-    String sso_token;
+    private String sso_token;
+    private String token;
+    private User user;
+    @SerializedName("sso_token")
+    private String ssoToken;
 
-    public String getSso_token() {
-        return sso_token;
+    public String getSsoToken() {
+        return ssoToken;
     }
 
-    public void setSso_token(String sso_token) {
-        this.sso_token = sso_token;
-    }
-
-    public Session getSession() {
-        return innerSession;
-    }
-
-    public void setSession(Session session) {
-        this.innerSession = session;
+    public void setSsoToken(String ssoToken) {
+        this.ssoToken = ssoToken;
     }
 
     public String getToken() {

@@ -24,14 +24,10 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     protected Type type;
     protected User user;
-    @Inject
-    @Global
-    EventBus eventBus;
-    T photo;
+    protected T photo;
 
     public FullScreenPresenter(View view) {
         super(view);
-
     }
 
     public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
@@ -76,7 +72,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
     }
-
 
 
     protected abstract boolean isLiked();

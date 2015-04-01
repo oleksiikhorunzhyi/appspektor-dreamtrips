@@ -23,7 +23,8 @@ import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhoto
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
-public class ShareActivity extends ActivityWithPresenter<SharePresenter> implements FacebookPickPhotoPresenter.View, SharePresenter.View {
+public class ShareActivity extends ActivityWithPresenter<SharePresenter>
+        implements FacebookPickPhotoPresenter.View, SharePresenter.View {
 
     public static final String FB = "fb";
     public static final String TW = "tw";
@@ -33,10 +34,10 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
     public static final String BUNDLE_TEXT = "BUNDLE_TEXT";
     public static final String BUNDLE_SHARE_TYPE = "BUNDLE_SHARE_TYPE";
     @InjectView(R.id.login_button)
-    LoginButton loginButton;
+    protected LoginButton loginButton;
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = (session, state, exception) -> {
-        // onSessionStateChange(session, state, exception);
+        //nothing to do here
     };
     private String imageUrl;
     private String shareUrl;
@@ -65,6 +66,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
             getPresentationModel().create(imageUrl, shareUrl, text, type);
             getIntent().removeExtra(ActivityRouter.EXTRA_BUNDLE);
         }
+
         AppEventsLogger.activateApp(this); //facebook SDK event logger. Really needed?
     }
 
@@ -94,13 +96,23 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
 
 
     public void shareFBDialog(String url, String link, String text) {
-        if (FacebookDialog.canPresentShareDialog(getApplicationContext(), FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            FacebookDialog.ShareDialogBuilder shareDialog = new FacebookDialog.ShareDialogBuilder(this);
-            if (!TextUtils.isEmpty(url)) shareDialog.setPicture(url);
-            if (TextUtils.isEmpty(link) && !TextUtils.isEmpty(url)) shareDialog.setLink(url);
-            if (!TextUtils.isEmpty(link)) shareDialog.setLink(link);
-            if (!TextUtils.isEmpty(text)) shareDialog.setDescription(text);
-            // shareDialog.setApplicationName("DreamTrips");
+        if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
+                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+            FacebookDialog.ShareDialogBuilder shareDialog =
+                    new FacebookDialog.ShareDialogBuilder(this);
+            if (!TextUtils.isEmpty(url)) {
+                shareDialog.setPicture(url);
+            }
+            if (TextUtils.isEmpty(link)
+                    && !TextUtils.isEmpty(url)) {
+                shareDialog.setLink(url);
+            }
+            if (!TextUtils.isEmpty(link)) {
+                shareDialog.setLink(link);
+            }
+            if (!TextUtils.isEmpty(text)) {
+                shareDialog.setDescription(text);
+            }
 
             uiHelper.trackPendingDialogCall(shareDialog.build().present());
         } else {
@@ -134,7 +146,8 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
-                    runOnUiThread(() -> new Handler().postDelayed(() -> getPresentationModel().openShareActivity(picture, link, text), 150));
+                    runOnUiThread(() -> new Handler().postDelayed(() ->
+                            getPresentationModel().openShareActivity(picture, link, text), 150));
                 }
             });
             loginButton.performClick();
@@ -143,13 +156,25 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter> impleme
 
 
     public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
-        if (shareUrl == null) shareUrl = "";
-        if (!shareUrl.isEmpty()) shareUrl += "\n";
-        if (text == null) text = "";
+        if (shareUrl == null) {
+            shareUrl = "";
+        }
+
+        if (!shareUrl.isEmpty()) {
+            shareUrl += "\n";
+        }
+
+        if (text == null) {
+            text = "";
+        }
 
         TweetComposer.Builder builder = new TweetComposer.Builder(this);
         builder.text(shareUrl + text);
-        if (imageUrl != null) builder.image(imageUrl);
+
+        if (imageUrl != null) {
+            builder.image(imageUrl);
+        }
+
         builder.show();
     }
 }

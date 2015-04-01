@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Schedule implements Serializable {
@@ -10,35 +13,37 @@ public class Schedule implements Serializable {
     private static final String PATTERN_MONTH_AND_DAY = "MMM d";
     private static final String PATTERN_DAY = "d";
 
-    java.util.Date start_on;
-    java.util.Date end_on;
+    @SerializedName("start_on")
+    private Date startOn;
+    @SerializedName("end_on")
+    private Date endOn;
 
     public java.util.Date getStartDate() {
-        return start_on;
+        return startOn;
     }
 
-    public void setStartDate(java.util.Date startDate) {
-        this.start_on = startDate;
+    public void setStartDate(java.util.Date startOn) {
+        this.startOn = startOn;
     }
 
     public java.util.Date getEndDate() {
-        return end_on;
+        return endOn;
     }
 
     public void setEndDate(java.util.Date endDate) {
-        this.end_on = endDate;
+        this.endOn = endDate;
     }
 
     public boolean check(DateFilterItem dateFilterItem) {
-        return start_on.after(dateFilterItem.getStartDate()) && end_on.before(dateFilterItem.getEndDate());
+        return startOn.after(dateFilterItem.getStartDate()) && endOn.before(dateFilterItem.getEndDate());
     }
 
     @Override
     public String toString() {
         Calendar calendarStart = Calendar.getInstance();
-        calendarStart.setTimeInMillis(start_on.getTime());
+        calendarStart.setTimeInMillis(startOn.getTime());
         Calendar calendarEnd = Calendar.getInstance();
-        calendarEnd.setTimeInMillis(end_on.getTime());
+        calendarEnd.setTimeInMillis(endOn.getTime());
 
         SimpleDateFormat simpleDateFormatFirst = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
         SimpleDateFormat simpleDateFormatSecond = new SimpleDateFormat(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH)

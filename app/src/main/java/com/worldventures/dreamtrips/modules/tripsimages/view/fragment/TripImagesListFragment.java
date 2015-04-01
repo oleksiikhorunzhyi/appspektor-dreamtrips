@@ -81,7 +81,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         super.onResume();
 
         if (this.arrayListAdapter.getItemCount() == 0) {
-            this.refreshLayout.post(() -> gHetPresenter().reload());
+            this.refreshLayout.post(() -> getPresenter().reload());
         }
     }
 

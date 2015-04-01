@@ -2,12 +2,14 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class ActivityModel extends BaseEntity {
 
-    private int parent_id;
+    @SerializedName("parent_id")
+    private int parentId;
     private int position;
     private String icon;
     private String name;
@@ -15,12 +17,12 @@ public class ActivityModel extends BaseEntity {
     private transient boolean checked = true;
     private transient boolean shouldBeGone = true;
 
-    public int getParent_id() {
-        return parent_id;
+    public int getParentId() {
+        return parentId;
     }
 
-    public void setParent_id(int parent_id) {
-        this.parent_id = parent_id;
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     public int getPosition() {

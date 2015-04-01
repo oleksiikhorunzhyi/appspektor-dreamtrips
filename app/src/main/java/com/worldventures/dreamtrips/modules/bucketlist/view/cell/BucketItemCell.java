@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -49,8 +48,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     protected TextView tvName;
     @InjectView(R.id.button_cancel)
     protected ImageView buttonCancel;
-    @InjectView(R.id.drag_handle)
-    protected View drag_handle;
     @InjectView(R.id.swipeLayout)
     protected SwipeLayout swipeLayout;
     @InjectView(R.id.imageViewStatusDone)
@@ -64,7 +61,6 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     protected Context context;
 
     private int mDragStateFlags;
-    private int mSwipeResult = RecyclerViewSwipeManager.RESULT_NONE;
     private boolean afterSwipe = false;
     private int swipeVelocityTrigger;
 

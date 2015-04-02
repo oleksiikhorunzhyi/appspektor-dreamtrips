@@ -19,7 +19,7 @@ public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPic
     public static final int REQUEST_CODE_PICK_FB_PHOTO = 123;
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = (session, state, exception) -> {
-        // onSessionStateChange(session, state, exception);
+        // nothing to do here
     };
 
     @Override

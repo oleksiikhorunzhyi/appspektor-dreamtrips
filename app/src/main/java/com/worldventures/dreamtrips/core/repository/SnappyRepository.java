@@ -40,26 +40,35 @@ public class SnappyRepository {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
-    public Boolean isEmpty(String key) throws ExecutionException, InterruptedException {
+    public Boolean isEmpty(String key) {
+        Boolean empty = null;
         Future<Boolean> future = executorService.submit(() -> {
             DB snappyDb = DBFactory.open(context);
             String[] keys = snappyDb.findKeys(key);
             snappyDb.close();
             return keys == null || keys.length == 0;
         });
-        return future.get();
 
+        try {
+            empty = future.get();
+        } catch (ExecutionException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        } catch (InterruptedException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        }
+
+        return empty;
     }
 
 
-    public <T> void putList(List<T> list, String key, Class<T> clazz) {
+    public <T> void putList(List<T> list, String key) {
         executorService.execute(() -> {
             try {
                 DB db = DBFactory.open(context);
                 db.put(key, list.toArray());
                 db.close();
             } catch (SnappydbException e) {
-
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }
@@ -90,13 +99,17 @@ public class SnappyRepository {
     }
 
     public void saveBucketList(List<BucketItem> items, String type) {
-        putList(items, BUCKET_LIST + ":" + type, BucketItem.class);
+        putList(items, BUCKET_LIST + ":" + type);
     }
 
     public List<BucketItem> readBucketList(String type) {
         List<BucketItem> list = null;
         list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        sortBucketList(list);
+        return list;
+    }
 
+    private void sortBucketList(List<BucketItem> list) {
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) {
                 return 0;
@@ -106,8 +119,6 @@ public class SnappyRepository {
                 return -1;
             }
         });
-
-        return list;
     }
 
     public void clearTrips(DB snappyDb) throws SnappydbException {
@@ -127,7 +138,7 @@ public class SnappyRepository {
                 }
                 snappyDb.close();
             } catch (SnappydbException e) {
-
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }
@@ -144,39 +155,52 @@ public class SnappyRepository {
         });
     }
 
-    public List<TripModel> getTrips() throws ExecutionException, InterruptedException {
-        Future<List<TripModel>> future = executorService.submit(new Callable<List<TripModel>>() {
-            @Override
-            public List<TripModel> call() throws Exception {
-                DB db = DBFactory.open(context);
-                List<TripModel> trips = new ArrayList<>();
+    public List<TripModel> getTrips() {
+        List<TripModel> list = null;
 
-                try {
-                    String[] keys = db.findKeys(TRIP_KEY);
-                    for (String key : keys) {
-                        trips.add(db.get(key, TripModel.class));
-                    }
-                } catch (SnappydbException e) {
-                    Log.e(SnappyRepository.class.getSimpleName(), "", e);
+
+        Future<List<TripModel>> future = executorService.submit(() -> {
+            DB db = DBFactory.open(context);
+            List<TripModel> trips = new ArrayList<>();
+
+            try {
+                String[] keys = db.findKeys(TRIP_KEY);
+                for (String key : keys) {
+                    trips.add(db.get(key, TripModel.class));
                 }
-                db.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+            db.close();
 
-                Collections.sort(trips, (lhs, rhs) -> {
-                    if (lhs.getStartDateMillis() < rhs.getStartDateMillis()) {
-                        return -1;
-                    } else if (lhs.getStartDateMillis() == rhs.getStartDateMillis()) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
-                });
+            sortTrips(trips);
+            return trips;
+        });
 
-                return trips;
+        try {
+            list = future.get();
+        } catch (ExecutionException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        } catch (InterruptedException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        }
+
+
+        return list;
+    }
+
+    private void sortTrips(List<TripModel> trips) {
+        Collections.sort(trips, (lhs, rhs) -> {
+            if (lhs.getStartDateMillis() < rhs.getStartDateMillis()) {
+                return -1;
+            } else if (lhs.getStartDateMillis() == rhs.getStartDateMillis()) {
+                return 0;
+            } else {
+                return 1;
             }
         });
-        return future.get();
-
     }
+
 
     public void saveUploadImageTask(ImageUploadTask ut) {
         executorService.execute(() -> {
@@ -185,7 +209,7 @@ public class SnappyRepository {
                 snappyDb.put(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId(), ut);
                 snappyDb.close();
             } catch (SnappydbException e) {
-
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }
@@ -197,7 +221,7 @@ public class SnappyRepository {
                 snappyDb.del(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId());
                 snappyDb.close();
             } catch (SnappydbException e) {
-                Log.e("snappy", "", e);
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
     }
@@ -205,9 +229,7 @@ public class SnappyRepository {
 
     public List<ImageUploadTask> getAllImageUploadTask() {
 
-        Future<List<ImageUploadTask>> future = executorService.submit(new Callable<List<ImageUploadTask>>() {
-            @Override
-            public List<ImageUploadTask> call() throws Exception {
+        Future<List<ImageUploadTask>> future = executorService.submit(() -> {
                 DB db = DBFactory.open(context);
                 List<ImageUploadTask> tasks = new ArrayList<>();
                 try {
@@ -216,19 +238,19 @@ public class SnappyRepository {
                         tasks.add(db.get(key, ImageUploadTask.class));
                     }
                 } catch (SnappydbException e) {
-                    Log.e("snappy", "", e);
+                    Log.e(SnappyRepository.class.getSimpleName(), "", e);
                 }
                 db.close();
 
                 return tasks;
-            }
         });
+
         try {
             return future.get();
         } catch (Exception e) {
-            Log.e("snappy", "", e);
-
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
         }
+
         return new ArrayList<>();
     }
 }

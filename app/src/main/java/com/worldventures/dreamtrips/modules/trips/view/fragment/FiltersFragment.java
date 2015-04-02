@@ -53,7 +53,6 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(ActivityModel.class, ActivityCell.class);
         this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
-        //this.arrayListAdapter.registerCell(SoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
 
         this.recyclerView.setHasFixedSize(false);
@@ -72,12 +71,6 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     void resetFilter() {
         ((MainActivity) getActivity()).closeRightDrawer();
         getPresenter().resetFilters();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //  refresh();
     }
 
     @Override

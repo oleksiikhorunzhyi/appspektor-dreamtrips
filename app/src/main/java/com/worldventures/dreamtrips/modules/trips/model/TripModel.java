@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -163,6 +164,23 @@ public class TripModel extends BaseEntity implements Filterable {
 
     public long getStartDateMillis() {
         return dates.getStartDate().getTime();
+    }
+
+    public boolean isPriceAccepted(double maxPrice, double minPrice) {
+        return priceAvailable &&
+                price.getAmount() <= maxPrice &&
+                price.getAmount() >= minPrice;
+    }
+
+    public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
+        return duration <= maxNights &&
+                duration >= minNights &&
+                getAvailabilityDates().check(dateFilterItem);
+    }
+
+    public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
+        return (acceptedThemes == null || !Collections.disjoint(acceptedThemes, getActivities()))
+                && (acceptedRegions == null || acceptedRegions.contains(getRegion().getId()));
     }
 
     @Override

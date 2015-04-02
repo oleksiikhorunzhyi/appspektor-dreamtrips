@@ -36,14 +36,11 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     protected Prefs prefs;
 
     @Inject
-    @Global
-    protected EventBus eventBus;
-
-    @Inject
     protected SnappyRepository db;
 
     private boolean loadFromApi;
-    private RoboSpiceAdapterController<TripModel> adapterController = new RoboSpiceAdapterController<TripModel>() {
+    private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
+            = new RoboSpiceAdapterController<TripModel>() {
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
@@ -66,9 +63,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             view.finishLoading(items);
         }
     };
-    /**
-     * filters
-     */
+
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -85,16 +80,16 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     @Override
     public void init() {
         super.init();
+        dateFilterItem.reset();
         TrackingHelper.dreamTrips(getUserId());
-        // onEvent(eventBus.getStickyEvent(FilterBusEvent.class));
     }
 
     @Override
     public void resume() {
         if (view.getAdapter().getCount() == 0) {
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
+            roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
+            roboSpiceAdapterController.setAdapter(view.getAdapter());
+            roboSpiceAdapterController.reload();
         }
     }
 
@@ -104,7 +99,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
     public void reload() {
         loadFromApi = true;
-        adapterController.reload();
+        roboSpiceAdapterController.reload();
     }
 
     public void onEvent(FilterBusEvent event) {
@@ -121,25 +116,21 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
                 acceptedThemes = event.getAcceptedActivities();
                 showSoldOut = event.isShowSoldOut();
             }
-            adapterController.reload();
+            roboSpiceAdapterController.reload();
         }
     }
 
     public void onEvent(TripLikedEvent event) {
-        adapterController.reload();
+        roboSpiceAdapterController.reload();
     }
 
-    private ArrayList<TripModel> performFiltering(List<TripModel> data) {
+    private ArrayList<TripModel> performFiltering(List<TripModel> trips) {
         ArrayList<TripModel> filteredTrips = new ArrayList<>();
-        filteredTrips.addAll(Queryable.from(data).filter((input) ->
-                input.getPrice().getAmount() <= maxPrice
-                        && input.getAvailabilityDates().check(dateFilterItem)
-                        && input.getPrice().getAmount() >= minPrice
-                        && input.getDuration() >= minNights
-                        && input.getDuration() <= maxNights
-                        && (showSoldOut || input.isAvailable())
-                        && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
-                        && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))).toList());
+        filteredTrips.addAll(Queryable.from(trips).filter(input ->
+                input.isPriceAccepted(maxPrice, minPrice)
+                        && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
+                        && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)).toList());
+
         return filteredTrips;
     }
 
@@ -154,7 +145,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     }
 
     public void onItemLike(TripModel trip) {
-        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
+        RequestListener<JsonObject> requestListener = new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 trip.setLiked(!trip.isLiked());
@@ -168,13 +159,10 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             }
         };
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), requestListener);
         } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), requestListener);
         }
-    }
-
-    public void actionSearch(String query) {
     }
 
     public void actionMap() {

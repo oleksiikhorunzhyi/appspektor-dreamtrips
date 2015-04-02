@@ -237,17 +237,17 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
 
                 for (T item : items) {
-                    if (item instanceof ImageUploadTask) {
-                        if (((ImageUploadTask) item).isFailed()) {
-                            dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
-                        }
-                    }
+                    if (item instanceof ImageUploadTask
+                            && ((ImageUploadTask) item).isFailed()) {
+                        dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
                 }
             }
-            view.finishLoading();
         }
 
+        view.finishLoading();
     }
+
+}
 
 
 }

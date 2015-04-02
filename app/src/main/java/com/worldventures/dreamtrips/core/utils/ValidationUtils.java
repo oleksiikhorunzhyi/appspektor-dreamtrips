@@ -114,7 +114,8 @@ public class ValidationUtils {
                 break;
             }
             builder.append(template.substring(templateStart, placeholderStart));
-            builder.append(args[i++]);
+            builder.append(args[i]);
+            i++;
             templateStart = placeholderStart + 2;
         }
         builder.append(template.substring(templateStart));
@@ -122,10 +123,12 @@ public class ValidationUtils {
         // if we run out of placeholders, append the extra args in square braces
         if (i < args.length) {
             builder.append(" [");
-            builder.append(args[i++]);
+            builder.append(args[i]);
+            i++;
             while (i < args.length) {
                 builder.append(", ");
-                builder.append(args[i++]);
+                builder.append(args[i]);
+                i++;
             }
             builder.append(']');
         }

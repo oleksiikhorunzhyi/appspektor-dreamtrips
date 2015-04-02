@@ -66,54 +66,56 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof ItemHolder) {
-            ItemHolder holder = (ItemHolder) viewHolder;
-            ComponentDescription item = getItem(i);
-
-            if (holder.itemName != null) {
-                holder.itemName.setText(item.getTitle());
-            }
-
-            holder.sectionIcon.setImageResource(item.getIcon());
-            holder.itemView.setOnTouchListener((v, event) -> {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                touchPosition(i);
-                                return false;
-                            case MotionEvent.ACTION_CANCEL:
-                            case MotionEvent.ACTION_UP:
-                                touchPosition(-1);
-                                return false;
-                            case MotionEvent.ACTION_MOVE:
-                                return false;
-                        }
-                        return true;
-                    }
-            );
-
-            holder.itemView.setOnClickListener(v -> {
-                selectPosition(i);
-                if (mNavigationDrawerListener != null) {
-                    mNavigationDrawerListener.onNavigationDrawerItemSelected(componentDescriptions.get(i - headerSize));
-                }
-
-            });
-
-            final boolean isSelected = mSelectedPosition == i || mTouchedPosition == i;
-
-            if (holder.itemName != null) {
-                holder.itemName.setSelected(isSelected);
-            }
-
-            holder.sectionIcon.setSelected(isSelected);
-
+            bindItemViewHolder((ItemHolder) viewHolder, i);
         } else if (viewHolder instanceof HeaderHolder) {
-            HeaderHolder holder = (HeaderHolder) viewHolder;
-            universalImageLoader.loadImage(navigationHeader.getUserPhoto(), holder.userPhoto, OP_AVATAR);
-            universalImageLoader.loadImage(navigationHeader.getUserCover(), holder.userCover, OP_COVER);
-            holder.userNome.setText(navigationHeader.getUserName());
-            holder.userEmail.setText(navigationHeader.getUserEmail());
+            bindHeaderViewHolder((HeaderHolder) viewHolder, i);
+        }
+    }
+
+    private void bindHeaderViewHolder(HeaderHolder holder, int i) {
+        universalImageLoader.loadImage(navigationHeader.getUserPhoto(), holder.userPhoto, OP_AVATAR);
+        universalImageLoader.loadImage(navigationHeader.getUserCover(), holder.userCover, OP_COVER);
+        holder.userNome.setText(navigationHeader.getUserName());
+        holder.userEmail.setText(navigationHeader.getUserEmail());
+    }
+
+    private void bindItemViewHolder(ItemHolder holder, int i) {
+        ComponentDescription item = getItem(i);
+
+        holder.sectionIcon.setImageResource(item.getIcon());
+        holder.itemView.setOnTouchListener((v, event) -> {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            touchPosition(i);
+                            return false;
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP:
+                            touchPosition(-1);
+                            return false;
+                        case MotionEvent.ACTION_MOVE:
+                            return false;
+                    }
+                    return true;
+                }
+        );
+
+        holder.itemView.setOnClickListener(v -> {
+            selectPosition(i);
+            if (mNavigationDrawerListener != null) {
+                mNavigationDrawerListener.onNavigationDrawerItemSelected(componentDescriptions.get(i - headerSize));
+            }
+
+        });
+
+        final boolean isSelected = mSelectedPosition == i
+                || mTouchedPosition == i;
+
+        if (holder.itemName != null) {
+            holder.itemName.setText(item.getTitle());
+            holder.itemName.setSelected(isSelected);
         }
 
+        holder.sectionIcon.setSelected(isSelected);
     }
 
     private void touchPosition(int position) {

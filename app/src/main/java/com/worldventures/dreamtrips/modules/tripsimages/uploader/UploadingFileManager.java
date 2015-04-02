@@ -22,11 +22,11 @@ public class UploadingFileManager {
     private static final String TAG = UploadingFileManager.class.getSimpleName();
 
     public static String md5(final String s) {
-        final String MD5 = "MD5";
+        final String md5 = "MD5";
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest
-                    .getInstance(MD5);
+                    .getInstance(md5);
             digest.update(s.getBytes());
             byte messageDigest[] = digest.digest();
 

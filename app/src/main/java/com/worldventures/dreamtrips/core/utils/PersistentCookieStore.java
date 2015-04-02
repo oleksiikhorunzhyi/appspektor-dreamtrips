@@ -69,7 +69,7 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public void add(URI uri, HttpCookie cookie) {
-        String name = getCookieToken(uri, cookie);
+        String name = getCookieToken(cookie);
 
         // Save cookie into local store, or remove if expired
         if (!cookie.hasExpired()) {
@@ -88,7 +88,7 @@ public class PersistentCookieStore implements CookieStore {
         prefsWriter.commit();
     }
 
-    protected String getCookieToken(URI uri, HttpCookie cookie) {
+    protected String getCookieToken(HttpCookie cookie) {
         return cookie.getName() + cookie.getDomain();
     }
 
@@ -112,7 +112,7 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public boolean remove(URI uri, HttpCookie cookie) {
-        String name = getCookieToken(uri, cookie);
+        String name = getCookieToken(cookie);
 
         if (cookies.containsKey(uri.getHost()) && cookies.get(uri.getHost()).containsKey(name)) {
             cookies.get(uri.getHost()).remove(name);

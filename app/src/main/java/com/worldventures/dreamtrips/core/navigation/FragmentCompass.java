@@ -25,7 +25,7 @@ public class FragmentCompass {
 
     public FragmentCompass(BaseActivity activity, int containerId) {
         this.activity = activity;
-        setContainerId(containerId);
+        this.containerId = containerId;
     }
 
     public void setContainerId(int containerId) {
@@ -57,20 +57,20 @@ public class FragmentCompass {
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
                 setArgsToFragment(fragment, bundle);
                 FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+
                 switch (action) {
                     case REPLACE:
                         fragmentTransaction.replace(containerId, fragment);
-                        if (onTransactionListener != null) {
-                            onTransactionListener.onTransactionDone(route, Action.REPLACE);
-                        }
                         break;
                     case ADD:
                         fragmentTransaction.add(containerId, fragment);
-                        if (onTransactionListener != null) {
-                            onTransactionListener.onTransactionDone(null, Action.ADD);
-                        }
                         break;
                 }
+
+                if (onTransactionListener != null) {
+                    onTransactionListener.onTransactionDone(null, action);
+                }
+
                 fragmentTransaction.addToBackStack(clazzName);
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();

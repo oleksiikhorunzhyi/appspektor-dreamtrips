@@ -117,12 +117,10 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
 
         BaseItemClass item = getItem(fromPosition);
 
-        if (item instanceof BucketItem) {
-            if (!((BucketItem) item).isDone()) {
-                if (moveListener != null) {
-                    moveListener.onItemMoved(fromPosition, toPosition);
-                }
-            }
+        if (item instanceof BucketItem
+                && !((BucketItem) item).isDone()
+                && moveListener != null) {
+            moveListener.onItemMoved(fromPosition, toPosition);
         }
 
         moveItem(fromPosition, toPosition);

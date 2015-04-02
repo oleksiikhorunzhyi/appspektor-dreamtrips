@@ -3,16 +3,12 @@ package com.worldventures.dreamtrips.modules.trips.model;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- *  Edward on 08.02.15.
- */
 public class DateFilterItem {
 
     private Date startDate;
     private Date endDate;
 
     public DateFilterItem() {
-        reset();
     }
 
     public DateFilterItem(Date startDate, Date endDate) {
@@ -21,8 +17,8 @@ public class DateFilterItem {
     }
 
     public void reset() {
-        startDate = Calendar.getInstance().getTime();
         Calendar calendar = Calendar.getInstance();
+        startDate = calendar.getTime();
         calendar.add(Calendar.YEAR, 1);
         endDate = calendar.getTime();
     }

@@ -43,7 +43,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
-            //   loadData();
+            //nothing to do here
         }
     };
 

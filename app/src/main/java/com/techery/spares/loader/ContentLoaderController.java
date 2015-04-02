@@ -47,7 +47,7 @@ public class ContentLoaderController<T> implements ContentLoader<T> {
         return contentLoaderObserver;
     }
 
-    LoaderManager.LoaderCallbacks<T> loaderCallbacks = new LoaderManager.LoaderCallbacks<T>() {
+    private LoaderManager.LoaderCallbacks<T> loaderCallbacks = new LoaderManager.LoaderCallbacks<T>() {
 
         @Override
         public final Loader<T> onCreateLoader(int i, Bundle bundle) {

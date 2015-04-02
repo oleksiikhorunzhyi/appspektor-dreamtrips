@@ -41,7 +41,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     protected SwipeRefreshLayout refreshLayout;
 
     @InjectView(R.id.detail_container)
-    protected  FrameLayout flDetailContainer;
+    protected FrameLayout flDetailContainer;
 
     @InjectView(R.id.iv_search)
     protected SearchView ivSearch;
@@ -141,10 +141,10 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         new Handler().postDelayed(() -> {
             if (getActivity() != null) {
                 refreshLayout.setRefreshing(false);
-                if (isLandscape() && isTablet()) {
-                    if (!result.isEmpty()) {
-                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
-                    }
+                if (isLandscape()
+                        && isTablet()
+                        && !result.isEmpty()) {
+                    getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
                 }
             }
         }, 500);

@@ -71,6 +71,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         super.init();
         filterModel = new FilterModel();
         dateFilterItem = new DateFilterItem();
+        dateFilterItem.reset();
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new SoldOutModel();
     }
@@ -183,9 +184,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private List<ActivityModel> getParentActivities() {
-        List<ActivityModel> parentActivities = new ArrayList<>();
-        parentActivities.addAll(Queryable.from(activities).filter((input) -> input.getParentId() == 0).toList());
-        return parentActivities;
+        return Queryable.from(activities).filter(input -> input.getParentId() == 0).toList();
     }
 
     private List<Integer> getAcceptedRegions() {

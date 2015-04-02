@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -18,11 +19,11 @@ public class FacebookUtils {
     public static <T extends GraphObject> List<T> typedListFromResponse(Response response, Class<T> clazz) {
         GraphMultiResult multiResult = response.getGraphObjectAs(GraphMultiResult.class);
         if (multiResult == null) {
-            return null;
+            return Collections.emptyList();
         }
         GraphObjectList<GraphObject> data = multiResult.getData();
         if (data == null) {
-            return null;
+            return Collections.emptyList();
         }
         return data.castToListOf(clazz);
     }

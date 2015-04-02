@@ -67,7 +67,7 @@ public class FragmentMapInfoPresenter extends Presenter<FragmentMapInfoPresenter
     public interface View extends Presenter.View {
         void setName(String name);
 
-        void setDate(String вфе);
+        void setDate(String date);
 
         void setImage(String image);
 

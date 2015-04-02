@@ -25,7 +25,8 @@ import android.util.Log;
 
 import org.xml.sax.XMLReader;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Implements support for ordered and unordered lists in to Android TextView.
@@ -37,19 +38,19 @@ public class HtmlTagHandler implements Html.TagHandler {
     /**
      * List indentation in pixels. Nested lists use multiple of this.
      */
-    private static final int indent = 10;
-    private static final int listItemIndent = indent * 2;
-    private static final BulletSpan bullet = new BulletSpan(indent);
+    private static final int INDENT = 10;
+    private static final int LIST_ITEM_INDENT = INDENT * 2;
+    private static final BulletSpan BULLET_SPAN = new BulletSpan(INDENT);
     /**
      * Keeps track of lists (ol, ul). On bottom of Stack is the outermost list
      * and on top of Stack is the most nested list
      */
-    protected Stack<String> lists = new Stack<String>();
+    protected Deque<String> lists = new ArrayDeque<>();
     /**
      * Tracks indexes of ordered lists so that after a nested list ends
      * we can continue with correct index of outer list
      */
-    protected Stack<Integer> olNextIndex = new Stack<Integer>();
+    protected Deque<Integer> olNextIndex = new ArrayDeque<>();
 
     /**
      * @see android.text.Html
@@ -80,7 +81,7 @@ public class HtmlTagHandler implements Html.TagHandler {
      */
     private static Object getLast(Spanned text, Class<?> kind) {
         /*
-		 * This knows that the last returned object from getSpans()
+         * This knows that the last returned object from getSpans()
 		 * will be the most recently added.
 		 */
         Object[] objs = text.getSpans(0, text.length(), kind);
@@ -101,10 +102,8 @@ public class HtmlTagHandler implements Html.TagHandler {
         } else if (tag.equalsIgnoreCase("ol")) {
             if (opening) {
                 lists.push(tag);
-                String s = olNextIndex.push(1).toString();//TODO: add support for lists starting other index than 1
             } else {
                 lists.pop();
-                String s = olNextIndex.pop().toString();
             }
         } else if (tag.equalsIgnoreCase("li")) {
             if (opening) {
@@ -125,28 +124,28 @@ public class HtmlTagHandler implements Html.TagHandler {
                         output.append("\n");
                     }
                     // Nested BulletSpans increases distance between bullet and text, so we must prevent it.
-                    int bulletMargin = indent;
+                    int bulletMargin = INDENT;
                     if (lists.size() > 1) {
-                        bulletMargin = indent - bullet.getLeadingMargin(true);
+                        bulletMargin = INDENT - BULLET_SPAN.getLeadingMargin(true);
                         if (lists.size() > 2) {
                             // This get's more complicated when we add a LeadingMarginSpan into the same line:
                             // we have also counter it's effect to BulletSpan
-                            bulletMargin -= (lists.size() - 2) * listItemIndent;
+                            bulletMargin -= (lists.size() - 2) * LIST_ITEM_INDENT;
                         }
                     }
                     BulletSpan newBullet = new BulletSpan(bulletMargin);
                     end(output,
                             Ul.class,
-                            new LeadingMarginSpan.Standard(listItemIndent * (lists.size() - 1)),
+                            new LeadingMarginSpan.Standard(LIST_ITEM_INDENT * (lists.size() - 1)),
                             newBullet);
                 } else if (lists.peek().equalsIgnoreCase("ol")) {
                     if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                         output.append("\n");
                     }
-                    int numberMargin = listItemIndent * (lists.size() - 1);
+                    int numberMargin = LIST_ITEM_INDENT * (lists.size() - 1);
                     if (lists.size() > 2) {
                         // Same as in ordered lists: counter the effect of nested Spans
-                        numberMargin -= (lists.size() - 2) * listItemIndent;
+                        numberMargin -= (lists.size() - 2) * LIST_ITEM_INDENT;
                     }
                     end(output,
                             Ol.class,
@@ -154,14 +153,20 @@ public class HtmlTagHandler implements Html.TagHandler {
                 }
             }
         } else {
-            if (opening) Log.d("TagHandler", "Found an unsupported tag " + tag);
+            if (opening) {
+                Log.d("TagHandler", "Found an unsupported tag " + tag);
+            }
         }
     }
 
     private static class Ul {
+        private Ul() {
+        }
     }
 
     private static class Ol {
+        private Ol() {
+        }
     }
 
 }

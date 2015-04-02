@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -18,21 +16,17 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
 
-    private List<TripModel> data = new ArrayList<>();
-    private List<TripModel> filteredData;
+    private List<TripModel> trips = new ArrayList<>();
+    private List<TripModel> filteredTrips;
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -50,15 +44,12 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     @Override
     public void init() {
         super.init();
+        dateFilterItem.reset();
     }
 
     public void onMapLoaded() {
-        data.clear();
-        try {
-            data.addAll(db.getTrips());
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(MapFragmentPresenter.class.getSimpleName(), "", e);
-        }
+        trips.clear();
+        trips.addAll(db.getTrips());
         setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
     }
@@ -91,25 +82,21 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     private void reloadPins() {
         view.clearMap();
-        for (TripModel trip : filteredData) {
+        for (TripModel trip : filteredTrips) {
             view.addPin(new LatLng(trip.getGeoLocation().getLat(),
                     trip.getGeoLocation().getLng()), trip.getId());
         }
     }
 
     private void performFiltering() {
-        if (data != null) {
-            filteredData = new ArrayList<>();
-            filteredData.addAll(Queryable.from(data).filter((input) ->
-                    input.getPrice().getAmount() <= maxPrice
-                            && input.getAvailabilityDates().check(dateFilterItem)
-                            && input.getPrice().getAmount() >= minPrice
-                            && input.containsQuery(query)
-                            && input.getDuration() >= minNights
-                            && input.getDuration() <= maxNights
-                            && (showSoldOut || input.isAvailable())
-                            && (acceptedThemes == null || !Collections.disjoint(acceptedThemes, input.getActivities()))
-                            && (acceptedRegions == null || acceptedRegions.contains(input.getRegion().getId()))).toList());
+        if (trips != null) {
+            List<TripModel> tempList = new ArrayList<>();
+            tempList.addAll(Queryable.from(trips).filter((input) ->
+                    input.isPriceAccepted(maxPrice, minPrice)
+                            && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
+                            && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)).toList());
+
+            filteredTrips.addAll(Queryable.from(tempList).filter((input) -> input.containsQuery(query)).toList());
             reloadPins();
         }
     }
@@ -140,7 +127,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     public void onMarkerClick(String id) {
         TripModel resultTrip = null;
         int realId = Integer.parseInt(id);
-        for (TripModel trip : filteredData) {
+        for (TripModel trip : filteredTrips) {
             if (trip.getId() == realId) {
                 resultTrip = trip;
                 break;

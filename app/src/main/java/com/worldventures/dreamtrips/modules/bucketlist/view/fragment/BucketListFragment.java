@@ -50,7 +50,8 @@ import static com.worldventures.dreamtrips.modules.bucketlist.view.fragment.Buck
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListPresenter> implements BucketListPresenter.View {
+public class BucketListFragment extends BaseFragment<BucketListPresenter>
+        implements BucketListPresenter.View {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     public static final int MIN_SYMBOL_COUNT = 3;
@@ -80,14 +81,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.res)));
+        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add),
+                getString(type.res)));
         this.recyclerView.setEmptyView(emptyView);
 
         mDragDropManager = new RecyclerViewDragDropManager();
         mDragDropManager.setDraggingItemShadowDrawable(
                 (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 
-        mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(),
+                (com.techery.spares.module.Injector) getActivity());
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
@@ -100,12 +103,15 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
 
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
-        } else {
-            this.recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z1)));
+        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)) {
+            this.recyclerView.addItemDecoration(
+                    new ItemShadowDecorator((NinePatchDrawable) getResources()
+                            .getDrawable(R.drawable.material_shadow_z1)));
         }
 
-        this.recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        this.recyclerView.addItemDecoration(
+                new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider),
+                        true));
         this.recyclerView.setScrollbarFadingEnabled(false);
         this.recyclerView.setFadingEdgeLength(0);
 
@@ -185,34 +191,38 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter> implem
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
-
-                PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
-                popupMenu.inflate(R.menu.menu_bucket_filter);
-
-                boolean showCompleted = getPresenter().isShowCompleted();
-                boolean showToDO = getPresenter().isShowToDO();
-
-                if (showCompleted && showToDO)
-                    popupMenu.getMenu().getItem(0).setChecked(true);
-                else if (showCompleted)
-                    popupMenu.getMenu().getItem(1).setChecked(true);
-                else
-                    popupMenu.getMenu().getItem(2).setChecked(true);
-
-                popupMenu.setOnMenuItemClickListener((menuItem) -> {
-                    getPresenter().reloadWithFilter(menuItem.getItemId());
-
-                    return false;
-                });
-
-                popupMenu.show();
+                actionFilter();
                 break;
             case R.id.action_popular:
                 getPresenter().addPopular();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void actionFilter() {
+        View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
+
+        PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
+        popupMenu.inflate(R.menu.menu_bucket_filter);
+
+        boolean showCompleted = getPresenter().isShowCompleted();
+        boolean showToDO = getPresenter().isShowToDO();
+
+        if (showCompleted && showToDO)
+            popupMenu.getMenu().getItem(0).setChecked(true);
+        else if (showCompleted)
+            popupMenu.getMenu().getItem(1).setChecked(true);
+        else
+            popupMenu.getMenu().getItem(2).setChecked(true);
+
+        popupMenu.setOnMenuItemClickListener((menuItem) -> {
+            getPresenter().reloadWithFilter(menuItem.getItemId());
+
+            return false;
+        });
+
+        popupMenu.show();
     }
 
     @Override

@@ -32,10 +32,6 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import butterknife.InjectView;
 
-/**
- * Edward on 26.01.15.
- * fragment with map and trips
- */
 @Layout(R.layout.fragment_map)
 @MenuResource(R.menu.menu_map)
 public class MapFragment extends BaseFragment<MapFragmentPresenter> implements MapFragmentPresenter.View, SearchView.OnQueryTextListener {
@@ -63,8 +59,8 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
     }
 
     private void initMap() {
-        mapView.getMapAsync((googleMap) -> {
-            this.googleMap = googleMap;
+        mapView.getMapAsync((map) -> {
+            this.googleMap = map;
             getPresenter().onMapLoaded();
             this.googleMap.setOnMarkerClickListener((marker) -> {
                 getPresenter().onMarkerClick(marker.getSnippet());

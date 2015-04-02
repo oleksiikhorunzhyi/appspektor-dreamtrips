@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
-import android.content.Context;
-
 import com.techery.spares.loader.CollectionController;
 import com.techery.spares.loader.ContentLoader;
 import com.techery.spares.loader.LoaderFactory;
@@ -21,9 +19,6 @@ public class MembershipVideosPresenter extends Presenter<Presenter.View> {
     protected LoaderFactory loaderFactory;
 
     @Inject
-    protected Context context;
-
-    @Inject
     protected SharedServicesApi sp;
 
     private List<Video> objects;
@@ -31,10 +26,6 @@ public class MembershipVideosPresenter extends Presenter<Presenter.View> {
 
     public MembershipVideosPresenter(View view) {
         super(view);
-    }
-
-    public void onItemClick(int position) {
-
     }
 
     public ContentLoader<List<Object>> getAdapterController() {

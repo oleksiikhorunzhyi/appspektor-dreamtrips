@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.facebook.model.GraphObject;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
@@ -287,6 +288,8 @@ public class FacebookPhoto {
             try {
                 mParcelable = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
             } catch (FileNotFoundException e) {
+                Log.e(FacebookPhoto.class.getSimpleName(), "", e);
+
             }
             return this;
         }

@@ -13,7 +13,6 @@ public class ViewUtils {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int height = size.y;
         return width;
     }
 

@@ -15,12 +15,6 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
     public AbstractCell(View view) {
         super(view);
         ButterKnife.inject(this, view);
-
-        initialUISetup();
-    }
-
-    protected void initialUISetup() {
-
     }
 
     @Override

@@ -42,7 +42,7 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
         return data;
     }
 
-    private boolean needUpdate() throws ExecutionException, InterruptedException {
+    private boolean needUpdate() {
         long current = Calendar.getInstance().getTimeInMillis();
         return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA || db.isEmpty(SnappyRepository.TRIP_KEY);
     }

@@ -217,7 +217,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         return themesList;
     }
 
-    private boolean needUpdate() throws ExecutionException, InterruptedException {
+    private boolean needUpdate() {
         return db.isEmpty(SnappyRepository.REGIONS) && db.isEmpty(SnappyRepository.ACTIVITIES);
     }
 

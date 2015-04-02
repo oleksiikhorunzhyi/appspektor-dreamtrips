@@ -16,11 +16,11 @@ public class GetRegionsQuery extends Query<ArrayList<RegionModel>> {
     }
 
     @Override
-    public ArrayList<RegionModel> loadDataFromNetwork() throws Exception {
+    public ArrayList<RegionModel> loadDataFromNetwork() {
         ArrayList<RegionModel> data = new ArrayList<>();
         if (db.isEmpty(SnappyRepository.REGIONS)) {
             data.addAll(getService().getRegions());
-            db.putList(data, SnappyRepository.REGIONS, RegionModel.class);
+            db.putList(data, SnappyRepository.REGIONS);
         } else {
             data.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
         }

@@ -31,7 +31,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
         @Override
         public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            snappyRepository.putList(categoryItems, SnappyRepository.CATEGORIES, CategoryItem.class);
+            snappyRepository.putList(categoryItems, SnappyRepository.CATEGORIES);
         }
     };
 

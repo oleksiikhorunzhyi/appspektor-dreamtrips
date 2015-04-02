@@ -16,11 +16,11 @@ public class GetActivitiesQuery extends Query<ArrayList<ActivityModel>> {
     }
 
     @Override
-    public ArrayList<ActivityModel> loadDataFromNetwork() throws Exception {
+    public ArrayList<ActivityModel> loadDataFromNetwork() {
         ArrayList<ActivityModel> data = new ArrayList<>();
         if (db.isEmpty(SnappyRepository.ACTIVITIES)) {
             data.addAll(getService().getActivities());
-            db.putList(data, SnappyRepository.ACTIVITIES, ActivityModel.class);
+            db.putList(data, SnappyRepository.ACTIVITIES);
         } else {
             data.addAll(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class));
         }

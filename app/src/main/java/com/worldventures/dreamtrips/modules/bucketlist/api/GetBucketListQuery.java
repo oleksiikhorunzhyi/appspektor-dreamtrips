@@ -42,7 +42,7 @@ public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
         return resultList;
     }
 
-    private boolean needUpdate() throws ExecutionException, InterruptedException {
+    private boolean needUpdate()  {
         long current = Calendar.getInstance().getTimeInMillis();
         return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET + type.getName()) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
     }

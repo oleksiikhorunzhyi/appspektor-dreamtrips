@@ -8,11 +8,14 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.layout_detailed_bucket_item)
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
@@ -41,15 +44,26 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.textViewPlace)
     protected TextView textViewPlace;
 
-    @InjectView(R.id.recyclerViewBucketPhotos)
-    protected RecyclerView recyclerViewBucketPhotos;
-
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
+
+    @Inject
+    protected UniversalImageLoader universalImageLoader;
 
     @Override
     protected BucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
         return new BucketItemDetailsPresenter(this, getArguments());
+    }
+
+    @Override
+    public void setCover(String imageUrl) {
+        universalImageLoader.loadImage(imageUrl, imageViewCover,
+                UniversalImageLoader.OP_FULL_SCREEN);
+    }
+
+    @OnClick(R.id.imageViewEdit)
+    protected void onEdit() {
+        getPresenter().onEdit();
     }
 
     @Override
@@ -89,6 +103,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void done() {
-
+        //nothing to do now
     }
 }

@@ -8,8 +8,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -43,22 +44,29 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
     public BucketDetailsBasePresenter(VT view, Bundle bundle) {
         super(view);
         type = (BucketTabsFragment.Type)
-                bundle.getSerializable(BucketListPopularActivity.EXTRA_TYPE);
+                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
         bucketItem = (BucketItem)
-                bundle.getSerializable(BucketListPopularActivity.EXTRA_ITEM);
+                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
     }
 
     @Override
     public void resume() {
         super.resume();
+        items.addAll(db.readBucketList(type.name()));
+        syncUI();
+    }
+
+    public void onEvent(BucketItemUpdatedEvent event) {
+        bucketItem = event.getBucketItem();
+    }
+
+    protected void syncUI() {
         view.setTitle(bucketItem.getName());
         view.setDescription(bucketItem.getDescription());
         view.setStatus(bucketItem.isDone());
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
         view.setTime(DateTimeUtils.convertDateToString(bucketItem.getTarget_date(), DateTimeUtils.DATE_FORMAT));
-
-        items.addAll(db.readBucketList(type.name()));
     }
 
     private void onSuccess(BucketItem bucketItemUpdated) {
@@ -68,6 +76,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
         items.add(i, bucketItemUpdated);
         db.saveBucketList(items, type.name());
         eventBus.post(new BucketItemReloadEvent());
+        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
         view.done();
     }
 

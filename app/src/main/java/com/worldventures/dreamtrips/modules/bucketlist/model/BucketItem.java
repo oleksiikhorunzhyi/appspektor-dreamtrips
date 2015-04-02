@@ -46,6 +46,9 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(9)
     private List<String> friends;
 
+    @TaggedFieldSerializer.Tag(10)
+    private List<BucketPhoto> images;
+
     public String getName() {
         return name;
     }
@@ -78,6 +81,14 @@ public class BucketItem extends BaseEntity {
         }
     }
 
+    public List<BucketPhoto> getImages() {
+        return images;
+    }
+
+    public void setImages(List<BucketPhoto> images) {
+        this.images = images;
+    }
+
     public String getType() {
         return type;
     }
@@ -88,6 +99,19 @@ public class BucketItem extends BaseEntity {
 
     public CategoryItem getCategory() {
         return categoryItem;
+    }
+
+    public String getCategoryName() {
+        if (categoryItem != null) {
+            return categoryItem.getName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getCoverUrl() {
+        return "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
+                "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
     }
 
     public String getFriends() {

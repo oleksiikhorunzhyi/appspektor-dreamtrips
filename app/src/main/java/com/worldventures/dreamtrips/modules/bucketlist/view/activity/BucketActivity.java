@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_book_it)
-public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPresenter> {
+public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
@@ -44,17 +44,17 @@ public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPre
 
         if (route.equals(Route.POPULAR_TAB_BUCKER)) {
             switch (type) {
-                case LOCATIONS:
-                    getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
-                    break;
                 case ACTIVITIES:
                     getSupportActionBar().setTitle(R.string.bucket_list_activity_popular);
                     break;
                 case RESTAURANTS:
                     getSupportActionBar().setTitle(R.string.bucket_list_dinning_popular);
                     break;
+                default:
+                    getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
+                    break;
             }
-        } else {
+        } else if (route.equals(Route.BUCKET_EDIT)) {
             getSupportActionBar().setTitle(R.string.bucket_list_edit_header);
         }
 

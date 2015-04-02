@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketUploadPhotoCell;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.List;
@@ -66,7 +67,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @InjectView(R.id.lvImages)
     protected RecyclerView lvImages;
-    private BaseArrayListAdapter<Object> imagesAdapter;
+
+    private BaseArrayListAdapter imagesAdapter;
 
     @Override
     public void onResume() {
@@ -114,8 +116,21 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        imagesAdapter = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        imagesAdapter = new BaseArrayListAdapter(getActivity(), (Injector) getActivity()) {
+            @Override
+            public void clear() {
+                Object item = null;
+                if (!items.isEmpty()) {
+                    item = getItem(0); 
+                }
+                super.clear();
+                if (item != null) {
+                    addItem(item);
+                }
+            }
+        };
         imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
+        //imagesAdapter.addItem(new BucketUploadPhotoCell());
         lvImages.setAdapter(imagesAdapter);
     }
 
@@ -191,6 +206,12 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public String getDescription() {
         return editTextDescription.getText().toString();
+    }
+
+    @Override
+    public void addImages(List<BucketPhoto> images) {
+        imagesAdapter.clear();
+        imagesAdapter.addItems(images);
     }
 
     @Override

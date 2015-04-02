@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
@@ -29,6 +30,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (!list.isEmpty()) {
             view.setCategoryItems(list);
             view.setCategory(list.indexOf(bucketItem.getCategory()));
+        }
+
+        if(!bucketItem.getImages().isEmpty()){
+            view.addImages(bucketItem.getImages());
         }
     }
 
@@ -85,6 +90,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         String getTitle();
 
         String getDescription();
+
+        void addImages(List<BucketPhoto> images);
     }
 
 

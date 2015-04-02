@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 public class BucketPhoto {
-    private String photoUrl;
+    private String url;
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getUrl() {
+        return url;
     }
 }

@@ -50,13 +50,16 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
         view.setDesription(trip.getDescription());
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
-        view.setFeatured(trip.isFeatured());
         view.setDuration(trip.getDuration());
 
         if (trip.getRewardsLimit() > 0) {
             view.setRedemption(String.valueOf(trip.getRewardsLimit()));
         } else {
             view.setPointsInvisible();
+        }
+
+        if (trip.isFeatured()) {
+            view.setFeatured();
         }
 
         view.setLike(trip.isLiked());
@@ -150,6 +153,6 @@ public class DetailedTripPresenter extends Presenter<DetailedTripPresenter.View>
 
         void setPointsInvisible();
 
-        void setFeatured(boolean featured);
+        void setFeatured();
     }
 }

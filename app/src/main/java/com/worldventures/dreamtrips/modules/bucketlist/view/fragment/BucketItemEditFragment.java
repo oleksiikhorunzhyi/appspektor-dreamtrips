@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -10,12 +11,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.List;
@@ -59,6 +64,10 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
 
+    @InjectView(R.id.lvImages)
+    protected RecyclerView lvImages;
+    private BaseArrayListAdapter<Object> imagesAdapter;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -100,6 +109,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
         return new BucketItemEditPresenter(this, getArguments());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        imagesAdapter = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
+        lvImages.setAdapter(imagesAdapter);
     }
 
     @Override

@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_weight="4"
+            android:layout_weight="6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -43,7 +43,9 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/bucket_details"
             android:layout_weight="4"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

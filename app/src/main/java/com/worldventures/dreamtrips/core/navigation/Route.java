@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
@@ -41,6 +42,7 @@ public enum Route {
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_location_popular),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
+    DETAIL_BUCKET(BucketDetailsFragment.class, 0),
     MAP(MapFragment.class, R.string.trips),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
     DREAMTRIPS(DreamTripsFragment.class, R.string.trips, R.drawable.ic_dreamtrips, 0),

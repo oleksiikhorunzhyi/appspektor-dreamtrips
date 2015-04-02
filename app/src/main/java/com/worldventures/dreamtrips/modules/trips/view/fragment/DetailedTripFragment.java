@@ -15,7 +15,6 @@ import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -30,8 +29,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedIm
 import java.io.Serializable;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -39,7 +36,8 @@ import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_detailed_trip)
 @MenuResource(R.menu.menu_detailed_trip)
-public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> implements DetailedTripPresenter.View {
+public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
+        implements DetailedTripPresenter.View {
 
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
@@ -69,9 +67,6 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
     protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
     protected TextView textViewFeatured;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     @Optional
     @InjectView(R.id.toolbar_actionbar)
@@ -110,10 +105,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_like:
-                getPresenter().actionLike();
-                break;
+        if (item.getItemId() == R.id.action_like) {
+            getPresenter().actionLike();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -136,17 +129,18 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
         getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
         getPresenter().onCreate();
 
-        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
-            @Override
-            public void setArgs(int position, DetailedImagePagerFragment fragment) {
-                Bundle args = new Bundle();
-                Object photo = getPresenter().getFilteredImages().get(position);
-                if (photo instanceof Serializable) {
-                    args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
-                }
-                fragment.setArguments(args);
-            }
-        };
+        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter =
+                new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
+                    @Override
+                    public void setArgs(int position, DetailedImagePagerFragment fragment) {
+                        Bundle args = new Bundle();
+                        Object photo = getPresenter().getFilteredImages().get(position);
+                        if (photo instanceof Serializable) {
+                            args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
+                        }
+                        fragment.setArguments(args);
+                    }
+                };
 
         for (Object photo : getPresenter().getFilteredImages()) {
             adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
@@ -189,10 +183,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
     }
 
     @Override
-    public void setFeatured(boolean featured) {
-        if (featured) {
-            textViewFeatured.setVisibility(View.VISIBLE);
-        }
+    public void setFeatured() {
+        textViewFeatured.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -230,8 +222,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter> im
     }
 
     @Override
-    public void setLike(boolean like) {
-        if (likeItem != null)
-            likeItem.setIcon(like ? R.drawable.ic_bucket_like_selected : R.drawable.ic_heart_1);
+    public void setLike(boolean liked) {
+        if (likeItem != null) {
+            if (liked) {
+                likeItem.setIcon(R.drawable.ic_bucket_like_selected);
+            } else {
+                likeItem.setIcon(R.drawable.ic_heart_1);
+            }
+        }
     }
 }

@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
@@ -45,7 +45,6 @@ import javax.inject.Inject;
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private static final int DELETION_DELAY = 3500;
-
 
     @Inject
     protected SnappyRepository db;
@@ -199,13 +198,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListPopularActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketListPopularActivity.EXTRA_ITEM, bucketItem);
+        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
         if (view.isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.container_child);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openBucketItemEditActivity(type, bundle);
+            activityRouter.openBucketItemDetails(bundle);
         }
     }
 

@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -83,7 +83,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
         return new BucketPopularPresenter(this, type);
     }
 }

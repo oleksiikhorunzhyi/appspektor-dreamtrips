@@ -90,6 +90,19 @@ public class BucketItem extends BaseEntity {
         return categoryItem;
     }
 
+    public String getCategoryName() {
+        if (categoryItem != null) {
+            return categoryItem.getName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getCoverUrl() {
+        return  "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
+                "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
+    }
+
     public String getFriends() {
         if (tags != null) {
             return Queryable.from(friends).joinStrings(", ");

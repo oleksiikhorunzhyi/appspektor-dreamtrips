@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -13,10 +14,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.List;
@@ -29,8 +28,8 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View,
-        DatePickerDialog.OnDateSetListener {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
+        implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -55,7 +54,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTime;
 
     @InjectView(R.id.checkBoxDone)
-    protected android.widget.CheckBox checkBox;
+    protected CheckBox checkBox;
 
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
@@ -63,8 +62,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (imageViewDone != null)
+        if (imageViewDone != null) {
             setHasOptionsMenu(false);
+        }
     }
 
     @Optional
@@ -75,11 +75,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_done:
-                getPresenter().saveItem();
-                break;
-
+        if (item.getItemId() == R.id.action_done) {
+            getPresenter().saveItem();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -102,14 +99,13 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
-        BucketItem item = (BucketItem) getArguments().getSerializable(BucketListPopularActivity.EXTRA_ITEM);
-        return new BucketItemEditPresenter(this, type, item);
+        return new BucketItemEditPresenter(this, getArguments());
     }
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {
-        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), R.layout.spinner_dropdown_item, items);
+        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_dropdown_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);

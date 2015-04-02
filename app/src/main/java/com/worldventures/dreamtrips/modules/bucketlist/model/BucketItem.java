@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +55,11 @@ public class BucketItem extends BaseEntity {
     }
 
     public Date getTarget_date() {
-        return targetDate;
+        if (targetDate != null) {
+            return targetDate;
+        } else {
+            return Calendar.getInstance().getTime();
+        }
     }
 
     public Date getCompletion_date() {

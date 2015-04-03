@@ -205,8 +205,8 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
-    public int getId() {
-        return taskId.hashCode();
+    public String getId() {
+        return taskId.hashCode() + "";
     }
 
     @Override

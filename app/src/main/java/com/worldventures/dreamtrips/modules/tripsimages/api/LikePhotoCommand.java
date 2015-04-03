@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.core.api.request.Command;
 
 public class LikePhotoCommand extends Command<JsonObject> {
 
-    private int photoId;
+    private String photoId;
 
-    public LikePhotoCommand(int photoId) {
+    public LikePhotoCommand(String photoId) {
         super(JsonObject.class);
         this.photoId = photoId;
     }

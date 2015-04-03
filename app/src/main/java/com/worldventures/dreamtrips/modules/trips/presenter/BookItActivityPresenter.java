@@ -59,6 +59,6 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
     }
 
     public static interface View extends Presenter.View {
-        int getTripId();
+        String getTripId();
     }
 }

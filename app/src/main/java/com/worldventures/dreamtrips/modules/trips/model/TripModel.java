@@ -4,16 +4,17 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel extends BaseEntity implements Filterable {
+public class TripModel implements Filterable, Serializable {
+    private String id;
     private String name;
     private String description;
     private boolean featured;
@@ -30,6 +31,14 @@ public class TripModel extends BaseEntity implements Filterable {
     private RegionModel region;
     private List<TripImage> images;
     private List<ActivityModel> activities;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -186,5 +195,22 @@ public class TripModel extends BaseEntity implements Filterable {
     @Override
     public boolean containsQuery(String query) {
         return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TripModel tripModel = (TripModel) o;
+
+        if (id != null ? !id.equals(tripModel.id) : tripModel.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

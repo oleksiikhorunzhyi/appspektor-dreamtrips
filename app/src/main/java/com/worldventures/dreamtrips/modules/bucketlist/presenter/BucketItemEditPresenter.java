@@ -69,6 +69,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
+
         void setCategory(int selection);
 
         void setCategoryItems(List<CategoryItem> items);

@@ -14,6 +14,9 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripModel implements Filterable, Serializable {
+
+    static final long serialVersionUID = 123l;
+
     private String id;
     private String name;
     private String description;
@@ -199,18 +202,28 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TripModel tripModel = (TripModel) o;
 
-        if (id != null ? !id.equals(tripModel.id) : tripModel.id != null) return false;
+        if (id != null ? !id.equals(tripModel.id) : tripModel.id != null) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        if (id != null) {
+            return id.hashCode();
+        } else {
+            return 0;
+        }
     }
 }

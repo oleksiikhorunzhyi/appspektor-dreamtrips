@@ -26,7 +26,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     protected SnappyRepository db;
 
     private List<TripModel> trips = new ArrayList<>();
-    private List<TripModel> filteredTrips;
+    private List<TripModel> filteredTrips = new ArrayList<>();
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;

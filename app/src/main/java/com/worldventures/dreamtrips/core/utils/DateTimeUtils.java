@@ -106,11 +106,13 @@ public class DateTimeUtils {
     }
 
     public static Date dateFromString(String date, String dateFormat) {
-        DateFormat result = new SimpleDateFormat(dateFormat, Locale.getDefault());
-        try {
-            return result.parse(date);
-        } catch (ParseException e) {
-            Timber.e(e, "");
+        if (date != null) {
+            DateFormat result = new SimpleDateFormat(dateFormat, Locale.getDefault());
+            try {
+                return result.parse(date);
+            } catch (ParseException e) {
+                Timber.e(e, "");
+            }
         }
         return null;
     }

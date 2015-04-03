@@ -23,6 +23,11 @@
                     android:src="@drawable/ic_cover_place_holder"
                     android:scaleType="centerCrop" />
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/bucket_item_shadow"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -81,6 +86,7 @@
                             android:src="@drawable/ic_photo_camera" />
                     </LinearLayout>
                 </LinearLayout>
+
 
             </FrameLayout>
 

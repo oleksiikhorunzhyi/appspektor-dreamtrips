@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public Date getDate() {
-        return bucketItem.getTarget_date();
+        if (bucketItem.getTarget_date() != null) {
+            return bucketItem.getTarget_date();
+        } else {
+            return Calendar.getInstance().getTime();
+        }
     }
 
     public void onDataSet(int year, int month, int day) {
@@ -61,10 +66,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         } else {
             return Queryable.from(temp.split(",")).map(String::trim).toList();
         }
-    }
-
-    public void frameClicked() {
-        fragmentCompass.pop();
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -85,6 +86,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         String getTitle();
 
         String getDescription();
+
+        boolean isTabletLandscape();
     }
 
 

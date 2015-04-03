@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,6 +37,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @InjectView(R.id.container)
     protected View container;
+
+    @Optional
+    @InjectView(R.id.bucket_details)
+    protected FrameLayout detailsFrameLayout;
+
+    @Optional
+    @InjectView(R.id.container_edit)
+    protected FrameLayout editFrameLayout;
 
     @Optional
     @InjectView(R.id.drawer)
@@ -125,6 +134,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             fragmentTransaction.commit();
 
             setTitle(route.getTitle());
+
+            if (detailsFrameLayout != null) {
+                detailsFrameLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -196,9 +209,19 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             closeRightDrawer();
         } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             closeLeftDrawer();
+        } else if (editFrameLayout != null &&
+                editFrameLayout.getVisibility() == View.VISIBLE) {
+            editFrameLayout.setVisibility(View.GONE);
+        } else if (detailsFrameLayout != null &&
+                detailsFrameLayout.getVisibility() == View.VISIBLE) {
+            detailsFrameLayout.setVisibility(View.GONE);
         } else {
             if (navigationDrawerFragment != null) {
                 navigationDrawerFragment.onBackPressed();
+            }
+
+            if (detailsFrameLayout != null) {
+                detailsFrameLayout.setVisibility(View.GONE);
             }
 
             super.onBackPressed();
@@ -212,7 +235,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     public void onDestroy() {
-        unbindDrawables(findViewById(R.id.drawer));
         super.onDestroy();
     }
 

@@ -55,11 +55,7 @@ public class BucketItem extends BaseEntity {
     }
 
     public Date getTarget_date() {
-        if (targetDate != null) {
-            return targetDate;
-        } else {
-            return Calendar.getInstance().getTime();
-        }
+        return targetDate;
     }
 
     public Date getCompletion_date() {

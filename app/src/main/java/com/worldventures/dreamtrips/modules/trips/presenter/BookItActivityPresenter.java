@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.View> {
 
     public static final int LIFE_DURATION = 30;
-    private static final String URL_BASE = "/trips/details/%d?user=%s&token=%s&appMode=true#/book";
+    private static final String URL_BASE = "/trips/details/%s?user=%s&token=%s&appMode=true#/book";
 
     public BookItActivityPresenter(BookItActivityPresenter.View view) {
         super(view);
@@ -59,6 +59,6 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
     }
 
     public static interface View extends Presenter.View {
-        int getTripId();
+        String getTripId();
     }
 }

@@ -149,7 +149,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
     }
 
     @Override
-    public void addPin(LatLng latLng, int id) {
+    public void addPin(LatLng latLng, String id) {
         googleMap.addMarker(new MarkerOptions()
                 .snippet(String.valueOf(id))
                 .position(latLng)

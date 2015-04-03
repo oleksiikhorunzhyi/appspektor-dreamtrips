@@ -72,7 +72,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FullScreenTripImageActivity.class, bundle);
     }
 
-    public void openBookItActivity(int tripId) {
+    public void openBookItActivity(String tripId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
         startActivity(BookItActivity.class, bundle);

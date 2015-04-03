@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 
 public class GetTripDetailsQuery extends Query<TripDetails> {
 
-    private int tripId;
+    private String tripId;
 
-    public GetTripDetailsQuery(int tripId) {
+    public GetTripDetailsQuery(String tripId) {
         super(TripDetails.class);
         this.tripId = tripId;
     }

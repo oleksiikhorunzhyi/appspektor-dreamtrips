@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-
-public class Inspiration extends BaseEntity implements IFullScreenAvailableObject, Parcelable {
+public class Inspiration implements IFullScreenAvailableObject, Parcelable {
 
     public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
         public Inspiration createFromParcel(Parcel source) {
@@ -20,6 +18,8 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
     private Image images;
     private String quote;
     private String author;
+    private String id;
+
 
     public Inspiration() {
     }
@@ -28,7 +28,7 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         this.images = in.readParcelable(Image.class.getClassLoader());
         this.quote = in.readString();
         this.author = in.readString();
-        this.id = in.readInt();
+        this.id = in.readString();
     }
 
     public Image getImages() {
@@ -85,7 +85,16 @@ public class Inspiration extends BaseEntity implements IFullScreenAvailableObjec
         dest.writeParcelable(this.images, 0);
         dest.writeString(this.quote);
         dest.writeString(this.author);
-        dest.writeInt(this.id);
+        dest.writeString(this.id);
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

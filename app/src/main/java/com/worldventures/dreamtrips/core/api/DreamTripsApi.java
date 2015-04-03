@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
@@ -71,16 +71,16 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
-    public JsonObject flagPhoto(@Path("id") int photoId, @Field("reason") String nameOfReason);
+    public JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
 
     @DELETE("/api/photos/{id}")
-    public JsonObject deletePhoto(@Path("id") int photoId);
+    public JsonObject deletePhoto(@Path("id") String photoId);
 
     @POST("/api/photos/{id}/like")
-    public JsonObject likePhoto(@Path("id") int photoId);
+    public JsonObject likePhoto(@Path("id") String photoId);
 
     @DELETE("/api/photos/{id}/like")
-    public JsonObject unlikePhoto(@Path("id") int photoId);
+    public JsonObject unlikePhoto(@Path("id") String photoId);
 
     @POST("/api/success_stories/{id}/like")
     public JsonObject likeSS(@Path("id") int photoId);
@@ -89,16 +89,16 @@ public interface DreamTripsApi {
     public JsonObject unlikeSS(@Path("id") int photoId);
 
     @POST("/api/trips/{id}/like")
-    public JsonObject likeTrip(@Path("id") int photoId);
+    public JsonObject likeTrip(@Path("id") String photoId);
 
     @DELETE("/api/trips/{id}/like")
-    public JsonObject unlikeTrio(@Path("id") int photoId);
+    public JsonObject unlikeTrio(@Path("id") String photoId);
 
     @POST("/api/photos")
     public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
     @GET("/api/trips/{id}/details")
-    public TripDetails getDetails(@Path("id") int tripId);
+    public TripDetails getDetails(@Path("id") String tripId);
 
     @POST("/api/bucket_list_items")
     public BucketItem createItem(@Body BucketPostItem bucketItem);

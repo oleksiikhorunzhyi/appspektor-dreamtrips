@@ -117,9 +117,4 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     public void showEditContainer() {
         getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
 }

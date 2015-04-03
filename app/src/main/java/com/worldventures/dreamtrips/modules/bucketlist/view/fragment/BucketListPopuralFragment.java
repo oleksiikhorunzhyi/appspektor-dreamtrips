@@ -77,10 +77,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         getPresenter().reload();
     }
 
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
-
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);

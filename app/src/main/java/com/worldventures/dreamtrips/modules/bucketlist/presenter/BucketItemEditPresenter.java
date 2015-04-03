@@ -86,8 +86,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         String getTitle();
 
         String getDescription();
-
-        boolean isTabletLandscape();
     }
 
 

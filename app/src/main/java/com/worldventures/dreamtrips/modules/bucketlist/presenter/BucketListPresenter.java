@@ -201,7 +201,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
         if (view.isTabletLandscape()) {
-            view.showDetails();
+            view.showDetailsContainer();
             fragmentCompass.disableBackStack();
             fragmentCompass.setContainerId(R.id.bucket_details);
             fragmentCompass.replace(route, bundle);
@@ -338,8 +338,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
         void finishLoading();
 
-        boolean isTabletLandscape();
-
-        void showDetails();
+        void showDetailsContainer();
     }
 }

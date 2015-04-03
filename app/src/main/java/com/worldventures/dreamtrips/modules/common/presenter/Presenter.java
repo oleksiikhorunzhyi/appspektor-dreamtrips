@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -88,5 +89,6 @@ public class Presenter<VT extends Presenter.View> {
         void informUser(int stringId);
         void informUser(String string);
         void alert(String s);
+        boolean isTabletLandscape();
     }
 }

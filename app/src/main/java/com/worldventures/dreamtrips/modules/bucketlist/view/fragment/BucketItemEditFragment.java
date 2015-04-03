@@ -211,10 +211,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return checkBox.isChecked();
     }
 
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
 }
 
 

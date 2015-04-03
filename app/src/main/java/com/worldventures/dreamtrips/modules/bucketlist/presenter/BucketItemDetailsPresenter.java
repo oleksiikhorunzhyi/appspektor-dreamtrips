@@ -38,8 +38,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setCover(String imageUrl);
 
-        boolean isTabletLandscape();
-
         void showEditContainer();
     }
 

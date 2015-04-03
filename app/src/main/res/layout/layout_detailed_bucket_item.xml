@@ -21,8 +21,7 @@
                     android:id="@+id/imageViewCover"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_cover_place_holder" />
+                    android:scaleType="centerCrop" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -41,6 +40,7 @@
                         android:id="@+id/textViewName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:text="Surf in Australia"
                         android:textColor="@android:color/white"
                         android:textSize="26sp" />
@@ -56,8 +56,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
-                            android:inputType="textCapWords"
-                            android:text="Travel"
+                            android:singleLine="true"
+                            android:text="Travelfasfdfdffdf"
                             android:textColor="@color/bucket_detailed_text_color" />
 
                         <TextView
@@ -65,6 +65,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
+                            android:singleLine="true"
                             android:drawableLeft="@drawable/ic_location"
                             android:drawablePadding="4dp"
                             android:text="Byron Bay, Australia"
@@ -73,15 +74,17 @@
                         <TextView
                             android:id="@+id/textViewDate"
                             android:layout_width="wrap_content"
+                            android:singleLine="true"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
-                            android:text="Someday"
+                            android:text="@string/someday"
                             android:textColor="@color/bucket_detailed_text_color" />
 
                         <ImageView
                             android:id="@+id/imageViewPhoto"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:scaleType="fitEnd"
                             android:src="@drawable/ic_photo_camera" />
                     </LinearLayout>
@@ -101,11 +104,12 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="Who:" />
+                    android:text="@string/who" />
 
                 <TextView
                     android:id="@+id/textViewFriends"
                     android:layout_width="wrap_content"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:textColor="@color/bucket_detailed_text_color" />
             </LinearLayout>
@@ -126,11 +130,12 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="Tags:" />
+                    android:text="@string/tags" />
 
                 <TextView
                     android:id="@+id/textViewTags"
                     android:layout_width="wrap_content"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:textColor="@color/bucket_detailed_text_color" />
             </LinearLayout>
@@ -151,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="My pictures"
+                android:text="@string/my_pictures"
                 android:textColor="@android:color/black" />
 
             <LinearLayout

@@ -227,7 +227,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void showDetails() {
+    public void showDetailsContainer() {
         getActivity().findViewById(R.id.bucket_details).setVisibility(View.VISIBLE);
     }
 
@@ -269,9 +269,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return mAdapter;
     }
 
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
 }

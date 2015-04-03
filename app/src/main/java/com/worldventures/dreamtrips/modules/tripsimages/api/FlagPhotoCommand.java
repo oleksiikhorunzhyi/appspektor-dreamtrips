@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.core.api.request.Command;
 public class FlagPhotoCommand extends Command<JsonObject> {
 
     private String reason;
-    private int photoId;
+    private String photoId;
 
-    public FlagPhotoCommand(int photoId, String reason) {
+    public FlagPhotoCommand(String  photoId, String reason) {
         super(JsonObject.class);
         this.reason = reason;
         this.photoId = photoId;

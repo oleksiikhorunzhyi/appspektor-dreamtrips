@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
 public class PhotoDeletedEvent {
-    private int photoId;
+    private String photoId;
 
-    public PhotoDeletedEvent(int photoId) {
+    public PhotoDeletedEvent(String photoId) {
         this.photoId = photoId;
     }
 
-    public int getPhotoId() {
+    public String getPhotoId() {
         return photoId;
     }
 }

@@ -110,10 +110,6 @@ public class BucketItemEditPresenter extends Presenter<BucketItemEditPresenter.V
         }
     }
 
-    public void frameClicked() {
-        fragmentCompass.pop();
-    }
-
     public interface View extends Presenter.View {
         void setTitle(String title);
 

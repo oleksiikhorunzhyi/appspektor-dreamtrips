@@ -70,7 +70,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Optional
     @OnClick(R.id.mainFrame)
     void onClick() {
-        getPresenter().frameClicked();
+        done();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void done() {
-        getActivity().finish();
+        getActivity().onBackPressed();
     }
 
     @Override

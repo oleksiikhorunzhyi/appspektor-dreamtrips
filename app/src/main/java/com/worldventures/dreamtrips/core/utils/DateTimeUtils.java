@@ -28,11 +28,11 @@ public class DateTimeUtils {
 
     public static DateFormat[] getISO1DateFormats() {
         return new DateFormat[]{
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
                 new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault()),
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", Locale.getDefault()),
         };
     }
@@ -106,11 +106,13 @@ public class DateTimeUtils {
     }
 
     public static Date dateFromString(String date, String dateFormat) {
-        DateFormat result = new SimpleDateFormat(dateFormat, Locale.getDefault());
-        try {
-            return result.parse(date);
-        } catch (ParseException e) {
-            Timber.e(e, "");
+        if (date != null) {
+            DateFormat result = new SimpleDateFormat(dateFormat, Locale.getDefault());
+            try {
+                return result.parse(date);
+            } catch (ParseException e) {
+                Timber.e(e, "");
+            }
         }
         return null;
     }

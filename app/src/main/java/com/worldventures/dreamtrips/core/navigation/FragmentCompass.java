@@ -22,6 +22,7 @@ public class FragmentCompass {
     private OnTransactionListener onTransactionListener;
 
     private int containerId;
+    private boolean backStackEnabled = true;
 
     public FragmentCompass(BaseActivity activity, int containerId) {
         this.activity = activity;
@@ -71,7 +72,9 @@ public class FragmentCompass {
                     onTransactionListener.onTransactionDone(null, action);
                 }
 
-                fragmentTransaction.addToBackStack(clazzName);
+                if (backStackEnabled) {
+                    fragmentTransaction.addToBackStack(clazzName);
+                }
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();
                 } else {
@@ -125,6 +128,10 @@ public class FragmentCompass {
         }
         return Route.DREAMTRIPS;
 
+    }
+
+    public void disableBackStack() {
+        backStackEnabled = false;
     }
 
     private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {

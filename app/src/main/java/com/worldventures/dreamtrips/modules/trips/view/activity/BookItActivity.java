@@ -18,13 +18,13 @@ public class BookItActivity extends ActivityWithPresenter<BookItActivityPresente
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
-    private int tripId;
+    private String  tripId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
-        tripId = bundleExtra.getInt(EXTRA_TRIP_ID);
+        tripId = bundleExtra.getString(EXTRA_TRIP_ID);
         getPresentationModel().onCreate();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -33,7 +33,7 @@ public class BookItActivity extends ActivityWithPresenter<BookItActivityPresente
     }
 
     @Override
-    public int getTripId() {
+    public String getTripId() {
         return tripId;
     }
 

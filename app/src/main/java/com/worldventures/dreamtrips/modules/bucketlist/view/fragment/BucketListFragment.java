@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -223,6 +224,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         });
 
         popupMenu.show();
+    }
+
+    @Override
+    public void showDetails() {
+        getActivity().findViewById(R.id.bucket_details).setVisibility(View.VISIBLE);
     }
 
     @Override

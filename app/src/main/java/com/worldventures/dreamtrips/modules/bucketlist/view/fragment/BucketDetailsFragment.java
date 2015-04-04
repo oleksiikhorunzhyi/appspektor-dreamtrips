@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -78,7 +81,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setTime(String time) {
-        textViewDate.setText(time);
+        if (TextUtils.isEmpty(time)) {
+            textViewDate.setText(R.string.someday);
+        } else {
+            textViewDate.setText(time);
+        }
     }
 
     @Override
@@ -103,6 +110,16 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void done() {
-        //nothing to do now
+        getActivity().onBackPressed();
+    }
+
+    @Override
+    public void showEditContainer() {
+        getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 }

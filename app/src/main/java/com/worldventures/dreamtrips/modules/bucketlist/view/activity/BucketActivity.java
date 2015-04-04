@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.activity;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
@@ -56,6 +57,8 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
             }
         } else if (route.equals(Route.BUCKET_EDIT)) {
             getSupportActionBar().setTitle(R.string.bucket_list_edit_header);
+        } else if (route.equals(Route.DETAIL_BUCKET)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));

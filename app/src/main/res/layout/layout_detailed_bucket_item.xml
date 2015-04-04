@@ -5,7 +5,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,17 +20,22 @@
                 <ImageView
                     android:id="@+id/imageViewCover"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:src="@drawable/ic_cover_place_holder"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_cover_place_holder" />
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/bucket_item_shadow" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_gravity="bottom"
-                    android:padding="8dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/textViewName"
@@ -49,28 +55,27 @@
                             android:id="@+id/textViewCategory"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
                             android:inputType="textCapWords"
                             android:text="Travel"
-                            android:layout_marginRight="10dp"
                             android:textColor="@color/bucket_detailed_text_color" />
 
                         <TextView
                             android:id="@+id/textViewPlace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
                             android:drawableLeft="@drawable/ic_location"
                             android:drawablePadding="4dp"
                             android:text="Byron Bay, Australia"
-                            android:layout_marginRight="10dp"
-                            android:textColor="@color/bucket_detailed_text_color"
-                            />
+                            android:textColor="@color/bucket_detailed_text_color" />
 
                         <TextView
                             android:id="@+id/textViewDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Someday"
                             android:layout_marginRight="10dp"
+                            android:text="Someday"
                             android:textColor="@color/bucket_detailed_text_color" />
 
                         <ImageView
@@ -82,65 +87,78 @@
                     </LinearLayout>
                 </LinearLayout>
 
+
             </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:background="#F6F6F6"
+                android:padding="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:text="Who:" />
 
                 <TextView
                     android:id="@+id/textViewFriends"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/bucket_detailed_text_color"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/bucket_detailed_text_color" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#EFEFEF" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:background="#F6F6F6"
+                android:padding="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:text="Tags:" />
 
                 <TextView
                     android:id="@+id/textViewTags"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/bucket_detailed_text_color"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/bucket_detailed_text_color" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#EFEFEF" />
 
             <TextView
                 android:id="@+id/textViewDescription"
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:background="@android:color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"/>
+                android:padding="16dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="My pictures"
+                android:textColor="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="8dp">
 
                 <CheckBox
                     android:id="@+id/checkBoxDone"

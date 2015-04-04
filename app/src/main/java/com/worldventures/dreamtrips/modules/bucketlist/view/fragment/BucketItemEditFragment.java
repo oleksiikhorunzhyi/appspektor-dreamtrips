@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
@@ -70,6 +72,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     private BaseArrayListAdapter imagesAdapter;
 
+    private boolean dateSelected = false;
+    private boolean categorySelected = false;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -81,7 +86,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Optional
     @OnClick(R.id.mainFrame)
     void onClick() {
-        getPresenter().frameClicked();
+        getActivity().onBackPressed();
     }
 
     @Override
@@ -105,6 +110,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        dateSelected = true;
         getPresenter().onDataSet(year, month, day);
     }
 
@@ -141,16 +147,31 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                categorySelected = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
     public void done() {
-        getActivity().finish();
+        getActivity().onBackPressed();
     }
 
     @Override
     public CategoryItem getSelectedItem() {
-        return (CategoryItem) spinnerCategory.getSelectedItem();
+        if (categorySelected) {
+            return (CategoryItem) spinnerCategory.getSelectedItem();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -195,7 +216,11 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public String getTime() {
-        return editTextTime.getText().toString();
+        if (dateSelected) {
+            return editTextTime.getText().toString();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -223,6 +248,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public boolean getStatus() {
         return checkBox.isChecked();
     }
+
 }
 
 

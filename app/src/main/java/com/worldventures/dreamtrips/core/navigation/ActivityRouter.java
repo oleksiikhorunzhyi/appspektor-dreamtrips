@@ -72,7 +72,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FullScreenTripImageActivity.class, bundle);
     }
 
-    public void openBookItActivity(int tripId) {
+    public void openBookItActivity(String tripId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
         startActivity(BookItActivity.class, bundle);
@@ -90,8 +90,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketActivity.class, bundle);
     }
 
-    public void openBucketItemDetails(Bundle bundle) {
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
+    public void openBucketItemDetails(Bundle bundle, Route route) {
+        bundle.putSerializable(BucketActivity.EXTRA_STATE, route);
         startActivity(BucketActivity.class, bundle);
     }
 

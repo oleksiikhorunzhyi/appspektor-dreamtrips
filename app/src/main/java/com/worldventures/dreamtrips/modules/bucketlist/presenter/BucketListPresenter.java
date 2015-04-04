@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemReloadEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
@@ -126,11 +126,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void onEvent(BucketItemClickedEvent event) {
         if (bucketItems.contains(event.getBucketItem())) {
             eventBus.cancelEventDelivery(event);
-            openDetails(event.getBucketItem());
+            openDetails(event.getBucketItem(), Route.DETAIL_BUCKET);
         }
     }
 
-    public void onEvent(BucketItemReloadEvent event) {
+    public void onEvent(BucketItemUpdatedEvent event) {
         addItems(db.readBucketList(type.name()));
     }
 
@@ -196,15 +196,17 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }
     }
 
-    private void openDetails(BucketItem bucketItem) {
+    private void openDetails(BucketItem bucketItem, Route route) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
         if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_child);
-            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
+            view.showDetails();
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.bucket_details);
+            fragmentCompass.replace(route, bundle);
         } else {
-            activityRouter.openBucketItemDetails(bundle);
+            activityRouter.openBucketItemDetails(bundle, route);
         }
     }
 
@@ -337,5 +339,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void finishLoading();
 
         boolean isTabletLandscape();
+
+        void showDetails();
     }
 }

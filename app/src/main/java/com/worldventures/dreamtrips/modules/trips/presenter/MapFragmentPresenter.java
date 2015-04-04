@@ -26,7 +26,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     protected SnappyRepository db;
 
     private List<TripModel> trips = new ArrayList<>();
-    private List<TripModel> filteredTrips;
+    private List<TripModel> filteredTrips = new ArrayList<>();
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
@@ -83,8 +83,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     private void reloadPins() {
         view.clearMap();
         for (TripModel trip : filteredTrips) {
-            view.addPin(new LatLng(trip.getGeoLocation().getLat(),
-                    trip.getGeoLocation().getLng()), trip.getId());
+            view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getId());
         }
     }
 
@@ -126,9 +125,8 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     public void onMarkerClick(String id) {
         TripModel resultTrip = null;
-        int realId = Integer.parseInt(id);
         for (TripModel trip : filteredTrips) {
-            if (trip.getId() == realId) {
+            if (trip.getId().equals(id)) {
                 resultTrip = trip;
                 break;
             }
@@ -150,7 +148,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        public void addPin(LatLng latLng, int id);
+        public void addPin(LatLng latLng, String id);
 
         public void clearMap();
 

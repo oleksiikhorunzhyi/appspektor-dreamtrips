@@ -44,6 +44,8 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        toolbar.getMenu().clear();
+
         if (route.equals(Route.POPULAR_TAB_BUCKER)) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             switch (type) {

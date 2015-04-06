@@ -34,17 +34,29 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void saveItem() {
-        BucketPostItem bucketPostItem = new BucketPostItem();
-        bucketPostItem.setName(view.getTitle());
-        bucketPostItem.setDescription(view.getDescription());
-        bucketPostItem.setStatus(view.getStatus());
-        bucketPostItem.setTags(getListFromString(view.getTags()));
-        bucketPostItem.setPeople(getListFromString(view.getPeople()));
-        bucketPostItem.setCategory(view.getSelectedItem());
-        bucketPostItem.setDate(selectedDate);
-        UpdateBucketItemCommand updateBucketItemCommand =
-                new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
-        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
+        if (checkEdit()) {
+            BucketPostItem bucketPostItem = new BucketPostItem();
+            bucketPostItem.setName(view.getTitle());
+            bucketPostItem.setDescription(view.getDescription());
+            bucketPostItem.setStatus(view.getStatus());
+            bucketPostItem.setTags(getListFromString(view.getTags()));
+            bucketPostItem.setPeople(getListFromString(view.getPeople()));
+            bucketPostItem.setCategory(view.getSelectedItem());
+            bucketPostItem.setDate(selectedDate);
+            UpdateBucketItemCommand updateBucketItemCommand =
+                    new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
+            dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
+        } else {
+            view.showError();
+        }
+    }
+
+    private boolean checkEdit() {
+        if (view.getDescription().length() > 120) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public Date getDate() {
@@ -77,6 +89,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
+
+        void showError();
 
         void setCategory(int selection);
 

@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -45,7 +48,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTitle;
 
     @InjectView(R.id.editTextDescription)
-    protected EditText editTextDescription;
+    protected MaterialEditText editTextDescription;
 
     @InjectView(R.id.editTextPeople)
     protected EditText editTextPeople;
@@ -70,6 +73,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.clear();
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -228,6 +239,10 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return checkBox.isChecked();
     }
 
+    @Override
+    public void showError() {
+        editTextDescription.checkCharactersCount();
+    }
 }
 
 

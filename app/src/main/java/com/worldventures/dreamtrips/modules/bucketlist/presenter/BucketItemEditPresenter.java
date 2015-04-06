@@ -35,6 +35,8 @@ import javax.inject.Inject;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
 
+    private Date selectedDate;
+
     @Inject
     Injector injector;
 
@@ -102,11 +104,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setTags(getListFromString(view.getTags()));
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
-        Date date = DateTimeUtils.dateFromString(view.getTime(), DateTimeUtils.DATE_FORMAT);
-        bucketPostItem.setDate(date);
+        bucketPostItem.setDate(selectedDate);
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
-        dreamSpiceManager.execute(updateBucketItemCommand, requestListener);
+        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
     public Date getDate() {
@@ -117,8 +118,17 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
-    public void onDataSet(int year, int month, int day) {
+    public void onDateSet(int year, int month, int day) {
         view.setTime(DateTimeUtils.convertDateToString(year, month, day));
+    }
+
+    public void setDate(Date date) {
+        this.selectedDate = date;
+    }
+
+    public void onDateClear() {
+        view.setTime("");
+        setDate(null);
     }
 
     public List<String> getListFromString(String temp) {
@@ -151,6 +161,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
+
         void setCategory(int selection);
 
         void setCategoryItems(List<CategoryItem> items);
@@ -162,8 +173,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         String getTags();
 
         String getPeople();
-
-        String getTime();
 
         String getTitle();
 

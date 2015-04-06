@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -44,6 +45,7 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (route.equals(Route.POPULAR_TAB_BUCKER)) {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             switch (type) {
                 case ACTIVITIES:
                     getSupportActionBar().setTitle(R.string.bucket_list_activity_popular);
@@ -56,12 +58,13 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
                     break;
             }
         } else if (route.equals(Route.BUCKET_EDIT)) {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             getSupportActionBar().setTitle(R.string.bucket_list_edit_header);
         } else if (route.equals(Route.DETAIL_BUCKET)) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            toolbar.setVisibility(View.GONE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
     }
 
     @Override

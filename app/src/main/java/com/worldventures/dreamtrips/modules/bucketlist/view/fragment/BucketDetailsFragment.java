@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 @Layout(R.layout.layout_detailed_bucket_item)
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
@@ -50,8 +51,23 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
 
+    @Optional
+    @InjectView(R.id.toolbar_actionbar)
+    protected Toolbar toolbar;
+
     @Inject
     protected UniversalImageLoader universalImageLoader;
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        if (toolbar != null) {
+            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
+            toolbar.getBackground().setAlpha(0);
+        }
+    }
 
     @Override
     protected BucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -76,7 +92,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setDescription(String description) {
-        textViewDescription.setText(description);
+        if (TextUtils.isEmpty(description)) {
+            textViewDescription.setVisibility(View.GONE);
+        } else {
+            textViewDescription.setVisibility(View.VISIBLE);
+            textViewDescription.setText(description);
+        }
     }
 
     @Override
@@ -105,7 +126,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setCategory(String category) {
-        textViewCategory.setText(category);
+        if (TextUtils.isEmpty(category)) {
+            textViewCategory.setVisibility(View.GONE);
+        } else {
+            textViewCategory.setText(category);
+        }
     }
 
     @Override
@@ -116,10 +141,5 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public void showEditContainer() {
         getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.View> extends Presenter<VT> {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
     @Inject
     protected SnappyRepository db;
@@ -28,7 +28,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
 
     protected List<BucketItem> items = new ArrayList<>();
 
-    protected RequestListener<BucketItem> requestListener = new RequestListener<BucketItem>() {
+    protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             view.informUser(R.string.bucket_item_edit_error);
@@ -40,7 +40,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
         }
     };
 
-    public BucketDetailsBasePresenter(VT view, Bundle bundle) {
+    public BucketDetailsBasePresenter(V view, Bundle bundle) {
         super(view);
         type = (BucketTabsFragment.Type)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);
@@ -57,6 +57,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
 
     public void onEvent(BucketItemUpdatedEvent event) {
         bucketItem = event.getBucketItem();
+        syncUI();
     }
 
     protected void syncUI() {
@@ -69,7 +70,6 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
     }
 
     private void onSuccess(BucketItem bucketItemUpdated) {
-        view.informUser(R.string.bucket_item_edit_done);
         int i = items.indexOf(bucketItemUpdated);
         items.remove(items.indexOf(bucketItemUpdated));
         items.add(i, bucketItemUpdated);

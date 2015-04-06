@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.ButterKnife;
@@ -50,6 +51,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
                 builder.title("Alert").content(s).positiveText("Ok").show();
             }));
         }
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     @Override

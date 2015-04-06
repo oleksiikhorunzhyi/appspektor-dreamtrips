@@ -12,7 +12,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
@@ -75,10 +74,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     @Override
     public void onRefresh() {
         getPresenter().reload();
-    }
-
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
     @Override

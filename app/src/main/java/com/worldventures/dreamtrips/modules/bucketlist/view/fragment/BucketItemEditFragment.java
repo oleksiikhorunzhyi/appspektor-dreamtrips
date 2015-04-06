@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
@@ -66,7 +68,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTags;
 
     @InjectView(R.id.editTextTime)
-    protected EditText editTextTime;
+    protected AutoCompleteTextView autoCompleteTextViwDate;
 
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
@@ -85,15 +87,18 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (imageViewDone != null) {
-            setHasOptionsMenu(false);
-        }
+        initAutoCompleteDate();
     }
 
     @Optional
     @OnClick(R.id.mainFrame)
     void onClick() {
-        getActivity().onBackPressed();
+        done();
+    }
+
+    @OnClick(R.id.editTextTime)
+    void onTimeClicked() {
+        autoCompleteTextViwDate.showDropDown();
     }
 
     @Override
@@ -110,15 +115,13 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         getPresenter().saveItem();
     }
 
-    @OnClick(R.id.editTextTime)
-    void onTimeClicked() {
+    private void openDatePicker() {
         fragmentCompass.showDatePickerDialog(this, getPresenter().getDate());
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        dateSelected = true;
-        getPresenter().onDataSet(year, month, day);
+        getPresenter().onDateSet(year, month, day);
     }
 
     @Override
@@ -129,6 +132,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        if (imageViewDone != null) {
+            setHasOptionsMenu(false);
+        }
         imagesAdapter = new BucketImageAdapter(getActivity(), (Injector) getActivity());
 
         imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
@@ -146,7 +152,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
-        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener onItemSelectedListenerCategory = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 categorySelected = true;
@@ -154,7 +160,24 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                //nothin to do here
+            }
+        };
+        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
+    }
 
+    private void initAutoCompleteDate() {
+        String[] items = getResources().getStringArray(R.array.bucket_date_items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.item_dropdown, items);
+        autoCompleteTextViwDate.setAdapter(adapter);
+        autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                openDatePicker();
+            } else if (position == parent.getCount() - 1) {
+                getPresenter().onDateClear();
+            } else {
+                getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
             }
         });
     }
@@ -190,7 +213,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void setTime(String time) {
-        editTextTime.setText(time);
+        autoCompleteTextViwDate.setText(time);
     }
 
     @Override
@@ -211,15 +234,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public String getPeople() {
         return editTextPeople.getText().toString();
-    }
-
-    @Override
-    public String getTime() {
-        if (dateSelected) {
-            return editTextTime.getText().toString();
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -247,7 +261,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void showAddPhotoDialog() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title("Select photo")
+        builder.title(getString(R.string.select_photo))
                 .items(R.array.dialog_add_bucket_photo)
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {

@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseActivity implements Presenter.View {
@@ -31,6 +32,11 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     @Override
     public void informUser(int stringId) {
         Toast.makeText(getApplicationContext(), stringId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean isTabletLandscape() {
+        return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
     }
 
     @Override

@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,7 +30,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -227,8 +225,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void showDetails() {
-        getActivity().findViewById(R.id.bucket_details).setVisibility(View.VISIBLE);
+    public void showDetailsContainer() {
+        getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -269,9 +267,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return mAdapter;
     }
 
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
 }

@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -24,7 +23,6 @@ import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -231,31 +229,5 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     public void setTitle(int title) {
         getSupportActionBar().setTitle(title);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    private void unbindDrawables(View view) {
-        if (view.getBackground() != null) {
-            view.getBackground().setCallback(null);
-        }
-
-        if (view instanceof ImageView) {
-            ImageView imageView = (ImageView) view;
-            imageView.setImageBitmap(null);
-        } else if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                unbindDrawables(viewGroup.getChildAt(i));
-            }
-
-            if (!(view instanceof AdapterView)) {
-                viewGroup.removeAllViews();
-            }
-
-        }
     }
 }

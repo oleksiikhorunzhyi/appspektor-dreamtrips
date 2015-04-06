@@ -107,9 +107,6 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items")
     public BucketItem createItem(@Body BucketPostItem bucketItem);
 
-    @PUT("/api/bucket_list_items/{id}/status")
-    public BucketItem markItem(@Path("id") int id, @Body BucketPostItem bucketItem);
-
     @PATCH("/api/bucket_list_items/{id}")
     public BucketItem updateItem(@Path("id") int id, @Body BucketPostItem bucketPostItem);
 

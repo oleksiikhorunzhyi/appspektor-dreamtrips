@@ -73,10 +73,10 @@ public class ApiModule {
     Gson provideGson() {
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd")
+                .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
-
                 .create();
     }
 

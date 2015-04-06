@@ -15,17 +15,17 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -161,8 +161,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             BucketPostItem bucketPostItem = new BucketPostItem();
             bucketPostItem.setStatus(bucketItem.isDone());
 
-            dreamSpiceManager.execute(new MarkBucketItemCommand(
-                            event.getBucketItem().getId(),
+            dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(),
                             bucketPostItem),
                     new RequestListener<BucketItem>() {
                         @Override
@@ -201,12 +200,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
         if (view.isTabletLandscape()) {
-            view.showDetails();
+            view.showDetailsContainer();
             fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.bucket_details);
-            fragmentCompass.replace(route, bundle);
+            fragmentCompass.setContainerId(R.id.container_edit);
+            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openBucketItemDetails(bundle, route);
+            activityRouter.openBucketItemEditActivity(bundle);
         }
     }
 
@@ -338,8 +337,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
         void finishLoading();
 
-        boolean isTabletLandscape();
-
-        void showDetails();
+        void showDetailsContainer();
     }
 }

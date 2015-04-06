@@ -11,9 +11,9 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_weight="6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="6"
             android:orientation="vertical">
 
             <android.support.v7.widget.Toolbar
@@ -26,11 +26,17 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <fragment
-                    android:id="@+id/fragment_drawer"
-                    android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
-                    android:layout_width="56dp"
-                    android:layout_height="match_parent" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="#0F2639">
+
+                    <fragment
+                        android:id="@+id/fragment_drawer"
+                        android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/container"
@@ -44,10 +50,10 @@
 
         <FrameLayout
             android:id="@+id/bucket_details"
-            android:layout_weight="4"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -61,9 +67,8 @@
 
     <FrameLayout
         android:id="@+id/container_edit"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:visibility="gone" />
 
 </android.support.v4.widget.DrawerLayout>

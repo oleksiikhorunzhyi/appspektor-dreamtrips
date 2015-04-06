@@ -118,6 +118,11 @@
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
+    <string-array name="dialog_add_bucket_photo">
+        <item>Choose from Facebook</item>
+        <item>Take Photo</item>
+        <item>Choose Photo</item>
+    </string-array>
 
     <string name="buffering">Buffering...</string>
 

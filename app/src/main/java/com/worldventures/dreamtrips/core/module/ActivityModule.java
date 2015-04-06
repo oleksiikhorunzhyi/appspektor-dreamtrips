@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -32,6 +33,7 @@ import dagger.Provides;
                 BaseArrayListAdapter.class,
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
+                S3ImageUploader.class,
         },
         complete = false,
         library = true

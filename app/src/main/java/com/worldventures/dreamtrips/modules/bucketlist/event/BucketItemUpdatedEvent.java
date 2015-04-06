@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.utils.events;
+package com.worldventures.dreamtrips.modules.bucketlist.event;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 

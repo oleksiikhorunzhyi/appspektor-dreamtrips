@@ -1,12 +1,12 @@
-package com.worldventures.dreamtrips.core.utils.events;
+package com.worldventures.dreamtrips.modules.bucketlist.event;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
-public class BucketItemClickedEvent {
 
+public class BucketItemAddedEvent {
     private BucketItem bucketItem;
 
-    public BucketItemClickedEvent(BucketItem bucketItem) {
+    public BucketItemAddedEvent(BucketItem bucketItem) {
         this.bucketItem = bucketItem;
     }
 

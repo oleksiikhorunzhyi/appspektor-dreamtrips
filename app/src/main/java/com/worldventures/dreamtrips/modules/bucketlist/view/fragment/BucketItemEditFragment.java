@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -11,7 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.google.gson.Gson;
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -19,12 +25,13 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketUploadPhotoCell;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import java.util.List;
 
@@ -127,7 +134,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
             public void clear() {
                 Object item = null;
                 if (!items.isEmpty()) {
-                    item = getItem(0); 
+                    item = getItem(0);
                 }
                 super.clear();
                 if (item != null) {
@@ -136,7 +143,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
             }
         };
         imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
-        //imagesAdapter.addItem(new BucketUploadPhotoCell());
+        imagesAdapter.registerCell(BucketAddPhotoCell.class, Object.class);
+        imagesAdapter.addItem(new Object());
         lvImages.setAdapter(imagesAdapter);
     }
 
@@ -238,6 +246,63 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         imagesAdapter.clear();
         imagesAdapter.addItems(images);
     }
+
+    @Override
+    public void showAddPhotoDialog() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title("add photo")
+                .items(R.array.dialog_add_bucket_photo)
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            actionFacebook();
+                            break;
+                        case 1:
+                            actionGallery();
+                            break;
+                        case 2:
+                            actionPhoto();
+                            break;
+                    }
+                }).show();
+    }
+
+    private PickImageDialog pid;
+
+
+    public void actionFacebook() {
+        getPresenter().onFacebookAction(this);
+    }
+
+    public void actionGallery() {
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("");
+        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
+        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
+        this.pid.show();
+    }
+
+    public void actionPhoto() {
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("");
+        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
+        this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
+        this.pid.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (pid != null) {
+            this.pid.onActivityResult(requestCode, resultCode, data);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
+            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+            getPresenter().provideFbCallback().onResult(this, image, null);
+        }
+    }
+
 
     @Override
     public void setStatus(boolean isCompleted) {

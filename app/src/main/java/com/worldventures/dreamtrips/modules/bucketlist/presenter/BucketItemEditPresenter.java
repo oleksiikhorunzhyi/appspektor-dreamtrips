@@ -1,17 +1,18 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -24,6 +25,23 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         super(view, bundle);
     }
 
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            //TODO   activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFileThumbnail())));
+        }
+    };
+
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            //TODO activityRouter.openCreatePhoto(fragment, Uri.parse(image.getFilePathOriginal()));
+        }
+    };
+
+
     @Override
     public void resume() {
         super.resume();
@@ -33,7 +51,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             view.setCategory(list.indexOf(bucketItem.getCategory()));
         }
 
-        if(!bucketItem.getImages().isEmpty()){
+        if (!bucketItem.getImages().isEmpty()) {
             view.addImages(bucketItem.getImages());
         }
     }
@@ -73,6 +91,24 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
+
+    public void onEvent(BucketAddPhotoClickEvent event) {
+        view.showAddPhotoDialog();
+    }
+
+
+    public void onFacebookAction(Fragment from) {
+        activityRouter.openFacebookPhoto(from);
+    }
+
+    public ImagePickCallback providePhotoChooseCallback() {
+        return selectImageCallback;
+    }
+
+    public ImagePickCallback provideFbCallback() {
+        return fbCallback;
+    }
+
     public interface View extends BucketDetailsBasePresenter.View {
         void setCategory(int selection);
 
@@ -94,6 +130,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
         void addImages(List<BucketPhoto> images);
 
+        void showAddPhotoDialog();
     }
 
 

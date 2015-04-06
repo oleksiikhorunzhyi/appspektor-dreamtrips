@@ -128,7 +128,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setCategory(String category) {
-        textViewCategory.setText(category);
+        if (TextUtils.isEmpty(category)) {
+            textViewCategory.setVisibility(View.GONE);
+        } else {
+            textViewCategory.setText(category);
+        }
     }
 
     @Override

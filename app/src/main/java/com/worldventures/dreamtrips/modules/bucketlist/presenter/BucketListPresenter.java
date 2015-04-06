@@ -202,10 +202,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();
             fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.bucket_details);
-            fragmentCompass.replace(route, bundle);
+            fragmentCompass.setContainerId(R.id.container_edit);
+            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openBucketItemDetails(bundle, route);
+            activityRouter.openBucketItemEditActivity(bundle);
         }
     }
 

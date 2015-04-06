@@ -70,7 +70,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void onSuccess(BucketItem bucketItemUpdated) {
-        view.informUser(R.string.bucket_item_edit_done);
         int i = items.indexOf(bucketItemUpdated);
         items.remove(items.indexOf(bucketItemUpdated));
         items.add(i, bucketItemUpdated);

@@ -40,6 +40,7 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
     public Photo loadDataFromNetwork() {
         try {
             eventBus.post(new PhotoUploadStarted(uploadTask));
+            db.saveUploadImageTask(uploadTask);
 
             String fileUri = uploadTask.getFileUri();
             String taskId = uploadTask.getTaskId();
@@ -50,14 +51,18 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
 
             eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
 
-            db.removeImageUploadTask(uploadTask);
 
             Photo photo = getService().uploadTripPhoto(uploadTask);
             photo.setTaskId(uploadTask.getTaskId());
+
+            db.removeImageUploadTask(uploadTask);
             eventBus.post(new PhotoUploadFinished(photo));
             return photo;
         } catch (Exception e) {
             Log.e("", e);
+            uploadTask.setFailed(true);
+            db.saveUploadImageTask(uploadTask);
+
             eventBus.post(new PhotoUploadFailedEvent(uploadTask.getTaskId()));
         }
         return null;

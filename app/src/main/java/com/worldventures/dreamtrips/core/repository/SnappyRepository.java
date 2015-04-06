@@ -6,16 +6,16 @@ import android.util.Log;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +30,7 @@ public class SnappyRepository {
 
     public static final String TRIP_KEY = "trip_new";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
+    public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
 
     private Context context;
     private ExecutorService executorService;
@@ -230,19 +231,19 @@ public class SnappyRepository {
     public List<ImageUploadTask> getAllImageUploadTask() {
 
         Future<List<ImageUploadTask>> future = executorService.submit(() -> {
-                DB db = DBFactory.open(context);
-                List<ImageUploadTask> tasks = new ArrayList<>();
-                try {
-                    String[] keys = db.findKeys(IMAGE_UPLOAD_TASK_KEY);
-                    for (String key : keys) {
-                        tasks.add(db.get(key, ImageUploadTask.class));
-                    }
-                } catch (SnappydbException e) {
-                    Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            DB db = DBFactory.open(context);
+            List<ImageUploadTask> tasks = new ArrayList<>();
+            try {
+                String[] keys = db.findKeys(IMAGE_UPLOAD_TASK_KEY);
+                for (String key : keys) {
+                    tasks.add(db.get(key, ImageUploadTask.class));
                 }
-                db.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+            db.close();
 
-                return tasks;
+            return tasks;
         });
 
         try {
@@ -252,5 +253,30 @@ public class SnappyRepository {
         }
 
         return new ArrayList<>();
+    }
+
+    public void saveBucketPhotoTask(BucketPhotoUploadTask task) {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getBucketId(), task);
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+        });
+    }
+
+
+    public void removeBucketPhotoTask(BucketPhotoUploadTask task) {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getBucketId());
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+        });
     }
 }

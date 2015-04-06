@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +26,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -129,22 +132,13 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        imagesAdapter = new BaseArrayListAdapter(getActivity(), (Injector) getActivity()) {
-            @Override
-            public void clear() {
-                Object item = null;
-                if (!items.isEmpty()) {
-                    item = getItem(0);
-                }
-                super.clear();
-                if (item != null) {
-                    addItem(item);
-                }
-            }
-        };
+        imagesAdapter = new BucketImageAdapter(getActivity(), (Injector) getActivity());
+
         imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
-        imagesAdapter.registerCell(BucketAddPhotoCell.class, Object.class);
+        imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoCell.class);
+        imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
         imagesAdapter.addItem(new Object());
+        lvImages.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         lvImages.setAdapter(imagesAdapter);
     }
 
@@ -250,7 +244,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void showAddPhotoDialog() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title("add photo")
+        builder.title("Select photo")
                 .items(R.array.dialog_add_bucket_photo)
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class BucketItem extends BaseEntity {
     private List<String> friends;
 
     @TaggedFieldSerializer.Tag(10)
-    private List<BucketPhoto> images;
+    private List<BucketPhoto> images = Collections.emptyList();
 
     public String getName() {
         return name;

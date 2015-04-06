@@ -20,8 +20,6 @@ public class BucketAddPhotoCell extends AbstractCell<Object> {
     @InjectView(R.id.iv_photo)
     ImageView ivPhoto;
 
-    @Inject
-
     public BucketAddPhotoCell(View view) {
         super(view);
     }

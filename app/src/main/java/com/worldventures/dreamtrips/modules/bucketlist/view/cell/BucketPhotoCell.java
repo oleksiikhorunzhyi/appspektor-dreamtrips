@@ -28,11 +28,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     protected void syncUIStateWithModel() {
-        imageLoader.loadImage(
-                getModelObject().getUrl(),
-                ivPhoto,
-                UniversalImageLoader.OP_AVATAR
-        );
+        imageLoader.loadImage(getModelObject().getUrl(), ivPhoto, UniversalImageLoader.OP_DEF);
     }
 
     @Override

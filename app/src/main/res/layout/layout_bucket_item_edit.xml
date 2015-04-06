@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:padding="@dimen/activity_horizontal_margin">
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -105,6 +107,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/add_pictures" />
 
         <LinearLayout
@@ -116,8 +119,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/lvImages"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:padding="@dimen/margin_small" />
+                android:layout_height="60dp" />
         </LinearLayout>
 
         <LinearLayout

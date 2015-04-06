@@ -45,17 +45,15 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             db.saveBucketPhotoTask(photoUploadTask);
 
             String fileUri = photoUploadTask.getFilePath();
-            int taskId = photoUploadTask.getBucketId();
+            int taskId = photoUploadTask.getTaskId();
 
             String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
-            BucketPhoto bucketPhoto = new BucketPhoto();
-            bucketPhoto.setBucketId(photoUploadTask.getBucketId());
-            bucketPhoto.setUrl(urlFromUploadResult);
+            BucketPhoto uploadObject = getUploadObject(taskId, urlFromUploadResult);
 
             eventBus.post(new UploadProgressUpdateEvent(String.valueOf(taskId), 100));
 
-            BucketPhoto photo = getService().uploadBucketPhoto(photoUploadTask.getBucketId(), bucketPhoto);
-            photo.setBucketId(photoUploadTask.getBucketId());
+            BucketPhoto photo = getService().uploadBucketPhoto(photoUploadTask.getBucketId(), uploadObject);
+            photo.setTaskId(taskId);
 
             db.removeBucketPhotoTask(photoUploadTask);
             eventBus.post(new BucketPhotoUploadFinished(photo));
@@ -63,9 +61,16 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             return photo;
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e);
-            eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getBucketId()));
+            eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
         }
         return null;
+    }
+
+    private BucketPhoto getUploadObject(int taskId, String urlFromUploadResult) {
+        BucketPhoto bucketPhoto = new BucketPhoto();
+        bucketPhoto.setTaskId(taskId);
+        bucketPhoto.setOriginUrl(urlFromUploadResult);
+        return bucketPhoto;
     }
 
 }

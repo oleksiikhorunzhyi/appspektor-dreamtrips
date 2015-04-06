@@ -30,7 +30,7 @@
         android:icon="@drawable/ic_dt_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.DreamTripsTheme"
-        tools:replace="android:icon">
+        tools:replace="icon, label">
 
         <meta-data
             android:name="com.instabug.DevelopmentAppToken"
@@ -140,7 +140,9 @@
         <service android:name="com.instabug.library.network.UploadCacheService" />
 
         <!-- This will prevent VERBOSE and DEBUG level logging. -->
-        <meta-data android:name="apptentive_log_level" android:value="DEBUG"/>
+        <meta-data
+            android:name="apptentive_log_level"
+            android:value="DEBUG" />
 
         <service
             android:name=".core.api.DreamSpiceService"

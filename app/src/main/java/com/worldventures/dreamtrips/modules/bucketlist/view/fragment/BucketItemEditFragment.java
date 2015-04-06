@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,9 +15,7 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -32,8 +29,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditP
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import java.util.List;
@@ -135,7 +132,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         imagesAdapter = new BucketImageAdapter(getActivity(), (Injector) getActivity());
 
         imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
-        imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoCell.class);
+        imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
         imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
         imagesAdapter.addItem(new Object());
         lvImages.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -242,6 +239,12 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
+    public void addImage(BucketPhotoUploadTask image) {
+        imagesAdapter.addItem(image);
+        imagesAdapter.notifyItemInserted(imagesAdapter.getCount() - 1);
+    }
+
+    @Override
     public void showAddPhotoDialog() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title("Select photo")
@@ -252,10 +255,10 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
                             actionFacebook();
                             break;
                         case 1:
-                            actionGallery();
+                            actionPhoto();
                             break;
                         case 2:
-                            actionPhoto();
+                            actionGallery();
                             break;
                     }
                 }).show();
@@ -284,19 +287,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         this.pid.show();
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (pid != null) {
             this.pid.onActivityResult(requestCode, resultCode, data);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
-            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-            getPresenter().provideFbCallback().onResult(this, image, null);
-        }
+        getPresenter().onActivityResult(this, requestCode, resultCode, data);
     }
-
 
     @Override
     public void setStatus(boolean isCompleted) {

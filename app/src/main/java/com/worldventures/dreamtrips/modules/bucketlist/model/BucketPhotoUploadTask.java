@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 public class BucketPhotoUploadTask {
 
     private String filePath;
+    private int taskId;
+    private int progress;
     private int bucketId;
-    int progress;
-
 
     public int getProgress() {
         return progress;
@@ -22,6 +22,14 @@ public class BucketPhotoUploadTask {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 
     public int getBucketId() {

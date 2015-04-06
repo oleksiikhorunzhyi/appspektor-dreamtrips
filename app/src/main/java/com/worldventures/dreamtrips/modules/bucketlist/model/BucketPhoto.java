@@ -1,24 +1,31 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-public class BucketPhoto {
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+
+import java.io.Serializable;
+
+public class BucketPhoto extends BaseEntity implements Serializable {
+
+    private String origin_url;
+
     private String url;
-    private int bucketId;
 
+    private int taskId;
 
-    public int getBucketId() {
-        return bucketId;
+    public int getTaskId() {
+        return taskId;
     }
 
-    public void setBucketId(int bucketId) {
-        this.bucketId = bucketId;
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setOriginUrl(String url) {
+        this.origin_url = url;
     }
 
 }

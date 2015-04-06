@@ -46,8 +46,8 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(9)
     private List<String> friends;
 
-    @TaggedFieldSerializer.Tag(10)
-    private List<BucketPhoto> images = Collections.emptyList();
+    @TaggedFieldSerializer.Tag(11)
+    private List<BucketPhoto> photos = Collections.emptyList();
 
     public String getName() {
         return name;
@@ -77,12 +77,12 @@ public class BucketItem extends BaseEntity {
         }
     }
 
-    public List<BucketPhoto> getImages() {
-        return images;
+    public List<BucketPhoto> getPhotos() {
+        return photos;
     }
 
     public void setImages(List<BucketPhoto> images) {
-        this.images = images;
+        this.photos = images;
     }
 
     public String getType() {

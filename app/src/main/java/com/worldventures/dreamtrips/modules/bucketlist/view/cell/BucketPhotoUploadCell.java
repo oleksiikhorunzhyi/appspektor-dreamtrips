@@ -1,0 +1,85 @@
+package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
+
+import android.view.View;
+import android.widget.ImageView;
+
+import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
+import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinished;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import butterknife.OnClick;
+import mbanje.kurt.fabbutton.CircleImageView;
+import mbanje.kurt.fabbutton.FabButton;
+
+@Layout(R.layout.adapter_item_bucket_photo_upload_cell)
+public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
+
+    @InjectView(R.id.iv_photo)
+    ImageView ivPhoto;
+    @InjectView(R.id.fab_progress)
+    FabButton fabProgress;
+    @InjectView(R.id.fabbutton_circle)
+    CircleImageView circleView;
+
+    @Inject
+    protected UniversalImageLoader imageLoader;
+
+    public BucketPhotoUploadCell(View view) {
+        super(view);
+    }
+
+    @Override
+    protected void syncUIStateWithModel() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
+        imageLoader.loadImage(getModelObject().getFilePath(), ivPhoto, UniversalImageLoader.OP_DEF);
+    }
+
+    @Override
+    public void prepareForReuse() {
+
+    }
+
+    @OnClick(R.id.iv_photo)
+    public void onCellClick() {
+
+    }
+
+    public void onEventMainThread(BucketPhotoUploadStarted event) {
+        if (getModelObject().getTaskId() == event.getBucketPhoto().getTaskId()) {
+            fabProgress.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onEventMainThread(BucketPhotoUploadFinished event) {
+        if (getModelObject().getTaskId() == event.getBucketPhoto().getTaskId()) {
+            fabProgress.setVisibility(View.GONE);
+        }
+    }
+
+    public void onEventMainThread(UploadProgressUpdateEvent event) {
+        String bucketId = String.valueOf(getModelObject().getTaskId());
+        if (bucketId.equals(event.getTaskId())) {
+            fabProgress.setProgress(event.getProgress());
+        }
+    }
+
+    public void onEventMainThread(BucketPhotoUploadFailedEvent event) {
+        if (getModelObject().getTaskId() == event.getTaskId()) {
+            fabProgress.setProgress(0);
+            fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
+            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
+            circleView.setColor(color);
+        }
+    }
+}

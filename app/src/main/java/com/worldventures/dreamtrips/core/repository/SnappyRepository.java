@@ -259,7 +259,7 @@ public class SnappyRepository {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
-                snappyDb.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getBucketId(), task);
+                snappyDb.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId(), task);
                 snappyDb.close();
             } catch (SnappydbException e) {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);
@@ -272,7 +272,7 @@ public class SnappyRepository {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
-                snappyDb.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getBucketId());
+                snappyDb.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId());
                 snappyDb.close();
             } catch (SnappydbException e) {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);

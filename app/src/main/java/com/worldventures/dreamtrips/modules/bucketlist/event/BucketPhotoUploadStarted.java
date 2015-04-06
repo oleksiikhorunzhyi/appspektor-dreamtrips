@@ -9,4 +9,8 @@ public class BucketPhotoUploadStarted {
 
         this.bucketPhoto = bucketPhoto;
     }
+
+    public BucketPhotoUploadTask getBucketPhoto() {
+        return bucketPhoto;
+    }
 }

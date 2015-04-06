@@ -10,7 +10,7 @@ public class BucketPhotoUploadFinished {
         this.photo = photo;
     }
 
-    public BucketPhoto getPhoto() {
+    public BucketPhoto getBucketPhoto() {
         return photo;
     }
 }

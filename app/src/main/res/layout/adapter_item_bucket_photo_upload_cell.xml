@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="8dp"
+    android:paddingTop="4dp">
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center" />
+
+    <view
+        android:id="@+id/fab_progress"
+        class="mbanje.kurt.fabbutton.FabButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:color="#ff6e9cff"
+        android:indeterminate="false"
+        android:max="100"
+        android:src="@drawable/ic_upload_cloud"
+        android:visibility="visible"
+        app:fbb_autoStart="true"
+        app:fbb_endBitmap="@drawable/ic_upload_done"
+        app:fbb_progressColor="#ffffff"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_showEndBitmap="true" />
+</FrameLayout>

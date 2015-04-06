@@ -18,7 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.View> extends Presenter<VT> {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
     @Inject
     protected SnappyRepository db;
@@ -40,7 +40,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
         }
     };
 
-    public BucketDetailsBasePresenter(VT view, Bundle bundle) {
+    public BucketDetailsBasePresenter(V view, Bundle bundle) {
         super(view);
         type = (BucketTabsFragment.Type)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);

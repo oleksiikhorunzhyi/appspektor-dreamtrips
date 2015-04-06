@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.api;
 
 import android.content.Context;
 
-import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

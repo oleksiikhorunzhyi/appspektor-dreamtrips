@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

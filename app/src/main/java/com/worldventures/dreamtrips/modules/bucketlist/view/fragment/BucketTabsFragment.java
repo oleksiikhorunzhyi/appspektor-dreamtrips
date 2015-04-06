@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.gc.materialdesign.views.Switch;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;

@@ -62,7 +62,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
 
-    private boolean dateSelected = false;
     private boolean categorySelected = false;
 
     @Override
@@ -110,7 +109,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        dateSelected = true;
         getPresenter().onDateSet(year, month, day);
     }
 
@@ -126,7 +124,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
-        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 categorySelected = true;
@@ -134,9 +132,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                //nothin to do here
             }
-        });
+        };
     }
 
     private void initAutoCompleteDate() {
@@ -144,19 +142,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 R.layout.item_dropdown, items);
         autoCompleteTextViwDate.setAdapter(adapter);
-        autoCompleteTextViwDate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    openDatePicker();
-                } else if (position == parent.getCount() - 1) {
-                    getPresenter().onDateClear();
-                } else {
-                    getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
-                }
+        autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                openDatePicker();
+            } else if (position == parent.getCount() - 1) {
+                getPresenter().onDateClear();
+            } else {
+                getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
             }
-
         });
     }
 

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -83,7 +84,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
-        BucketPostItem bucketPostItem = new BucketPostItem(type.getName(),
+        BucketBasePostItem bucketPostItem = new BucketBasePostItem(type.getName(),
                 popularBucketItem.getId());
         bucketPostItem.setStatus(done);
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {

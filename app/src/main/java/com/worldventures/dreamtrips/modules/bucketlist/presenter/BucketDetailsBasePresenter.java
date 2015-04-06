@@ -28,7 +28,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected List<BucketItem> items = new ArrayList<>();
 
-    protected RequestListener<BucketItem> requestListener = new RequestListener<BucketItem>() {
+    protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             view.informUser(R.string.bucket_item_edit_error);

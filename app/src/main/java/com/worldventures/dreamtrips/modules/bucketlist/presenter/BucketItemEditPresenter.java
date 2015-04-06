@@ -44,7 +44,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setDate(selectedDate);
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
-        dreamSpiceManager.execute(updateBucketItemCommand, requestListener);
+        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
     public Date getDate() {

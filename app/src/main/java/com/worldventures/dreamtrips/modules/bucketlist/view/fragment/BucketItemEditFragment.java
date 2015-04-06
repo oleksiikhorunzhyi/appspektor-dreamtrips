@@ -124,7 +124,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
-        AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener onItemSelectedListenerCategory = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 categorySelected = true;
@@ -135,6 +135,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
                 //nothin to do here
             }
         };
+        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
     }
 
     private void initAutoCompleteDate() {

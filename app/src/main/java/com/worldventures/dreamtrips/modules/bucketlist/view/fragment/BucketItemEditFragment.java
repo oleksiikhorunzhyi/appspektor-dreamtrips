@@ -3,7 +3,10 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -13,10 +16,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.List;
@@ -29,8 +31,8 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter> implements BucketItemEditPresenter.View,
-        DatePickerDialog.OnDateSetListener {
+public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
+        implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -52,19 +54,28 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTags;
 
     @InjectView(R.id.editTextTime)
-    protected EditText editTextTime;
+    protected AutoCompleteTextView autoCompleteTextViwDate;
 
     @InjectView(R.id.checkBoxDone)
-    protected android.widget.CheckBox checkBox;
+    protected CheckBox checkBox;
 
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
 
+    private boolean categorySelected = false;
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        if (imageViewDone != null) {
+            setHasOptionsMenu(false);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        if (imageViewDone != null)
-            setHasOptionsMenu(false);
+        initAutoCompleteDate();
     }
 
     @Optional
@@ -73,13 +84,15 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         done();
     }
 
+    @OnClick(R.id.editTextTime)
+    void onTimeClicked() {
+        autoCompleteTextViwDate.showDropDown();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_done:
-                getPresenter().saveItem();
-                break;
-
+        if (item.getItemId() == R.id.action_done) {
+            getPresenter().saveItem();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -90,29 +103,55 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         getPresenter().saveItem();
     }
 
-    @OnClick(R.id.editTextTime)
-    void onTimeClicked() {
+    private void openDatePicker() {
         fragmentCompass.showDatePickerDialog(this, getPresenter().getDate());
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        getPresenter().onDataSet(year, month, day);
+        getPresenter().onDateSet(year, month, day);
     }
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
-        BucketItem item = (BucketItem) getArguments().getSerializable(BucketListPopularActivity.EXTRA_ITEM);
-        return new BucketItemEditPresenter(this, type, item);
+        return new BucketItemEditPresenter(this, getArguments());
     }
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {
-        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<CategoryItem>(getActivity(), R.layout.spinner_dropdown_item, items);
+        ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_dropdown_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setVisibility(View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
+        AdapterView.OnItemSelectedListener onItemSelectedListenerCategory = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                categorySelected = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //nothin to do here
+            }
+        };
+        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
+    }
+
+    private void initAutoCompleteDate() {
+        String[] items = getResources().getStringArray(R.array.bucket_date_items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.item_dropdown, items);
+        autoCompleteTextViwDate.setAdapter(adapter);
+        autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                openDatePicker();
+            } else if (position == parent.getCount() - 1) {
+                getPresenter().onDateClear();
+            } else {
+                getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
+            }
+        });
     }
 
     @Override
@@ -122,7 +161,11 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public CategoryItem getSelectedItem() {
-        return (CategoryItem) spinnerCategory.getSelectedItem();
+        if (categorySelected) {
+            return (CategoryItem) spinnerCategory.getSelectedItem();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -142,7 +185,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void setTime(String time) {
-        editTextTime.setText(time);
+        autoCompleteTextViwDate.setText(time);
     }
 
     @Override
@@ -166,11 +209,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public String getTime() {
-        return editTextTime.getText().toString();
-    }
-
-    @Override
     public String getTitle() {
         return editTextTitle.getText().toString();
     }
@@ -189,6 +227,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public boolean getStatus() {
         return checkBox.isChecked();
     }
+
 }
 
 

@@ -30,7 +30,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -226,6 +225,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
+    public void showDetailsContainer() {
+        getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void informUser(String stringId) {
         Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
     }
@@ -263,9 +267,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return mAdapter;
     }
 
-
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
 }

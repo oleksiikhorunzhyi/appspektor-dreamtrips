@@ -32,6 +32,8 @@
     <color name="bucket_button_selected">#005E92</color>
     <color name="bucket_button_default">#404040</color>
 
+    <color name="bucket_detailed_text_color">#54BDFF</color>
+
     <color name="bucket_text_done">#A0A0A0</color>
     <color name="bucket_text_to_do">#000000</color>
 

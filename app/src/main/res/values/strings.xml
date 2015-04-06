@@ -191,6 +191,21 @@
     <string name="wrong_image">Wrong image</string>
     <string name="could_not_load">"Could not load "</string>
 
+    <string name="someday">Someday</string>
+    <string name="who">Who: </string>
+    <string name="tags">Tags: </string>
+    <string name="my_pictures">My pictures</string>
+
+    <string-array name="bucket_date_items">
+        <item>Specific date</item>
+        <item>Tomorrow</item>
+        <item>Next week</item>
+        <item>New month</item>
+        <item>In six month</item>
+        <item>Next year</item>
+        <item>@string/someday</item>
+    </string-array>
+
     <string name="facebook_app_id">761667837261383</string>
     <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
 </resources>

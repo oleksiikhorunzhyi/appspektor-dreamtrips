@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.activity;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -17,7 +19,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_book_it)
-public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPresenter> {
+public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
@@ -43,22 +45,26 @@ public class BucketListPopularActivity extends ActivityWithPresenter<ActivityPre
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (route.equals(Route.POPULAR_TAB_BUCKER)) {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             switch (type) {
-                case LOCATIONS:
-                    getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
-                    break;
                 case ACTIVITIES:
                     getSupportActionBar().setTitle(R.string.bucket_list_activity_popular);
                     break;
                 case RESTAURANTS:
                     getSupportActionBar().setTitle(R.string.bucket_list_dinning_popular);
                     break;
+                default:
+                    getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
+                    break;
             }
-        } else {
+        } else if (route.equals(Route.BUCKET_EDIT)) {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             getSupportActionBar().setTitle(R.string.bucket_list_edit_header);
+        } else if (route.equals(Route.DETAIL_BUCKET)) {
+            toolbar.setVisibility(View.GONE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
     }
 
     @Override

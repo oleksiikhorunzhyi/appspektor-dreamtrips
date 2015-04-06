@@ -88,5 +88,6 @@ public class Presenter<VT extends Presenter.View> {
         void informUser(int stringId);
         void informUser(String string);
         void alert(String s);
+        boolean isTabletLandscape();
     }
 }

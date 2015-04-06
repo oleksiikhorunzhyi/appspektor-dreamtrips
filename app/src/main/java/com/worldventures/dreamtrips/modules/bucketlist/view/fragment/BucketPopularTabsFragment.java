@@ -8,7 +8,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketListPopularActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
@@ -24,9 +24,8 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
     protected PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager)
     protected CustomViewPager pager;
-    @InjectView(R.id.v_bg_holder)
-    protected View vBgHolder;
-    protected BasePagerAdapter adapter;
+
+    private BasePagerAdapter adapter;
 
     @Override
     protected BucketPopularTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketListPopularActivity.EXTRA_TYPE);
+        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {

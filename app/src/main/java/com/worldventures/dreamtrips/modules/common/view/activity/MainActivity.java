@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.AdapterView;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -36,6 +35,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @InjectView(R.id.container)
     protected View container;
+
+    @Optional
+    @InjectView(R.id.bucket_details)
+    protected FrameLayout detailsFrameLayout;
+
+    @Optional
+    @InjectView(R.id.container_edit)
+    protected FrameLayout editFrameLayout;
 
     @Optional
     @InjectView(R.id.drawer)
@@ -125,6 +132,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             fragmentTransaction.commit();
 
             setTitle(route.getTitle());
+
+            if (detailsFrameLayout != null) {
+                detailsFrameLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -196,9 +207,19 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             closeRightDrawer();
         } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             closeLeftDrawer();
+        } else if (editFrameLayout != null &&
+                editFrameLayout.getVisibility() == View.VISIBLE) {
+            editFrameLayout.setVisibility(View.GONE);
+        } else if (detailsFrameLayout != null &&
+                detailsFrameLayout.getVisibility() == View.VISIBLE) {
+            detailsFrameLayout.setVisibility(View.GONE);
         } else {
             if (navigationDrawerFragment != null) {
                 navigationDrawerFragment.onBackPressed();
+            }
+
+            if (detailsFrameLayout != null) {
+                detailsFrameLayout.setVisibility(View.GONE);
             }
 
             super.onBackPressed();
@@ -208,32 +229,5 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     public void setTitle(int title) {
         getSupportActionBar().setTitle(title);
-    }
-
-    @Override
-    public void onDestroy() {
-        unbindDrawables(findViewById(R.id.drawer));
-        super.onDestroy();
-    }
-
-    private void unbindDrawables(View view) {
-        if (view.getBackground() != null) {
-            view.getBackground().setCallback(null);
-        }
-
-        if (view instanceof ImageView) {
-            ImageView imageView = (ImageView) view;
-            imageView.setImageBitmap(null);
-        } else if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                unbindDrawables(viewGroup.getChildAt(i));
-            }
-
-            if (!(view instanceof AdapterView)) {
-                viewGroup.removeAllViews();
-            }
-
-        }
     }
 }

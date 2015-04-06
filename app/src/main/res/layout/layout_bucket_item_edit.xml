@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bucket_hint_title"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bucket_hint_description_text"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
@@ -43,7 +43,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/category" />
+            android:text="@string/category"
+            android:layout_marginBottom="4dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -55,19 +56,18 @@
                 android:id="@+id/spinnerCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:visibility="visible" />
 
         </LinearLayout>
 
-
-        <com.rengwuxian.materialedittext.MaterialEditText
+        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
             android:id="@+id/editTextTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
+            android:editable="false"
             android:hint="@string/bucket_hint_time_text"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
@@ -80,11 +80,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bucket_hint_people_text"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="highlight"
+            app:floatingLabel="normal"
             app:floatingLabelText="@string/bucket_hint_people"
             app:primaryColor="@color/theme_main_darker" />
 
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bucket_hint_tags_text"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"

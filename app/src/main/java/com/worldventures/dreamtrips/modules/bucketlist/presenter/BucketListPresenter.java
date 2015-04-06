@@ -15,12 +15,12 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
+import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
@@ -161,8 +161,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             BucketPostItem bucketPostItem = new BucketPostItem();
             bucketPostItem.setStatus(bucketItem.isDone());
 
-            dreamSpiceManager.execute(new MarkBucketItemCommand(
-                            event.getBucketItem().getId(),
+            dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(),
                             bucketPostItem),
                     new RequestListener<BucketItem>() {
                         @Override

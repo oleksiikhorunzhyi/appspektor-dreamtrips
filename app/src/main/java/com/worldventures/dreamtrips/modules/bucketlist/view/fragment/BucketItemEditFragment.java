@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +16,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -53,7 +54,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTags;
 
     @InjectView(R.id.editTextTime)
-    protected EditText editTextTime;
+    protected AutoCompleteTextView autoCompleteTextViwDate;
 
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
@@ -65,17 +66,28 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     private boolean categorySelected = false;
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initAutoCompleteDate();
+    }
+
     @Optional
     @OnClick(R.id.mainFrame)
     void onClick() {
-       done();
+        done();
+    }
+
+    @OnClick(R.id.editTextTime)
+    void onTimeClicked() {
+        autoCompleteTextViwDate.showDropDown();
     }
 
     @Override
@@ -92,15 +104,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         getPresenter().saveItem();
     }
 
-    @OnClick(R.id.editTextTime)
-    void onTimeClicked() {
+    private void openDatePicker() {
         fragmentCompass.showDatePickerDialog(this, getPresenter().getDate());
     }
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         dateSelected = true;
-        getPresenter().onDataSet(year, month, day);
+        getPresenter().onDateSet(year, month, day);
     }
 
     @Override
@@ -125,6 +136,27 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });
+    }
+
+    private void initAutoCompleteDate() {
+        String[] items = getResources().getStringArray(R.array.bucket_date_items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.item_dropdown, items);
+        autoCompleteTextViwDate.setAdapter(adapter);
+        autoCompleteTextViwDate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    openDatePicker();
+                } else if (position == parent.getCount() - 1) {
+                    getPresenter().onDateClear();
+                } else {
+                    getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
+                }
+            }
+
         });
     }
 
@@ -159,7 +191,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void setTime(String time) {
-        editTextTime.setText(time);
+        autoCompleteTextViwDate.setText(time);
     }
 
     @Override
@@ -180,15 +212,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public String getPeople() {
         return editTextPeople.getText().toString();
-    }
-
-    @Override
-    public String getTime() {
-        if (dateSelected) {
-            return editTextTime.getText().toString();
-        } else {
-            return null;
-        }
     }
 
     @Override

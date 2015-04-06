@@ -71,7 +71,7 @@
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
             android:paddingTop="15dp"
-            android:text=""
+            android:text="@string/filter_price_header"
             android:textColor="@color/myNavigationColor"
              />
 

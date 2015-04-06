@@ -35,4 +35,6 @@
     <dimen name="draggable_margin">24dp</dimen>
     <dimen name="button_width">250dp</dimen>
     <dimen name="ss_button_corner">2dp</dimen>
+
+    <dimen name="bucket_detail_cover_size">250dp</dimen>
 </resources>

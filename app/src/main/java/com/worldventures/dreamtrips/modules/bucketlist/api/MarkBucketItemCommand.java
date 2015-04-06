@@ -19,6 +19,6 @@ public class MarkBucketItemCommand extends Command<BucketItem> {
     @Override
     public BucketItem loadDataFromNetwork() {
         Log.d("TAG_BucketListPM", "Sending mark as done item event");
-        return getService().markItem(id, bucketPostItem);
+        return getService().updateItem(id, bucketPostItem);
     }
 }

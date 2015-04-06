@@ -57,6 +57,7 @@ public class BucketDetailsBasePresenter<VT extends BucketDetailsBasePresenter.Vi
 
     public void onEvent(BucketItemUpdatedEvent event) {
         bucketItem = event.getBucketItem();
+        syncUI();
     }
 
     protected void syncUI() {

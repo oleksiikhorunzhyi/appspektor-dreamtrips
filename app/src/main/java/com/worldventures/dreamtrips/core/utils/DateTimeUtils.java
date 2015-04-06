@@ -11,11 +11,18 @@ import timber.log.Timber;
 
 public class DateTimeUtils {
     private static final String FILTER_PATTERN = "dd MMM yyyy";
+    private static final int TOMORROW = 1;
+    private static final int NEXT_WEEK = 2;
+    private static final int NEXT_MONTH = 3;
+    private static final int IN_SIX_MONTH = 4;
+    private static final int NEXT_YEAR = 5;
+
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
 
 
     public static String convertDateForFilters(Date date) {
@@ -42,7 +49,7 @@ public class DateTimeUtils {
         if (date != null) {
             return sdf.format(date);
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -115,6 +122,32 @@ public class DateTimeUtils {
             }
         }
         return null;
+    }
+
+    public static Date convertReferenceToDate(int position) {
+        Calendar calendar = Calendar.getInstance();
+
+        switch (position) {
+            case TOMORROW:
+                calendar.add(Calendar.DAY_OF_WEEK, 1);
+                break;
+            case NEXT_WEEK:
+                calendar.add(Calendar.WEEK_OF_MONTH, 1);
+                break;
+            case NEXT_MONTH:
+                calendar.add(Calendar.MONTH, 1);
+                break;
+            case IN_SIX_MONTH:
+                calendar.add(Calendar.MONTH, 6);
+                break;
+            case NEXT_YEAR:
+                calendar.add(Calendar.MONTH, 12);
+                break;
+            default:
+                break;
+        }
+
+        return calendar.getTime();
     }
 
 }

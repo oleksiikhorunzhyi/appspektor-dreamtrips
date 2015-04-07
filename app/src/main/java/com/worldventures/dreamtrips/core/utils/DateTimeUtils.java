@@ -27,11 +27,9 @@ public class DateTimeUtils {
     public static final int THIS_MONTH = 4;
     private static final int NEXT_MONTH = 5;
     private static final int IN_SIX_MONTH = 6;
-    private static final int NEXT_YEAR = 7;
-    private static final int SOMETIME = 8;
-
-    public static final int FULL_DAY = 1000 * 60 * 60 * 24;
-    public static final int NEXT_WEEK_MILLIS = 7 * FULL_DAY;
+    private static final int THIS_YEAR = 7;
+    private static final int NEXT_YEAR = 8;
+    private static final int SOMETIME = 9;
 
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
@@ -170,8 +168,10 @@ public class DateTimeUtils {
             return dateArray[THIS_MONTH];
         } else if (monthsBetween == 1) {
             return dateArray[NEXT_MONTH];
-        } else if (monthsBetween > 1 && monthsBetween <= 12) {
+        } else if (monthsBetween > 1 && monthsBetween <= 6) {
             return dateArray[IN_SIX_MONTH];
+        } else if (monthsBetween >= 6 && yearsBetween == 0) {
+            return dateArray[THIS_YEAR];
         } else if (yearsBetween == 1) {
             return dateArray[NEXT_YEAR];
         } else {

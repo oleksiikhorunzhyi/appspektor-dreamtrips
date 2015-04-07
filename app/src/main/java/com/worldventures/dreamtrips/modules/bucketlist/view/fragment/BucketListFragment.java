@@ -226,7 +226,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        getActivity().findViewById(R.id.detail_container).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.container_bucket_details).setVisibility(View.VISIBLE);
     }
 
     @Override

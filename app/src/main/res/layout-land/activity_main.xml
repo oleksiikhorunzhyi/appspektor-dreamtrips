@@ -49,7 +49,7 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/bucket_details"
+            android:id="@+id/container_bucket_details"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"

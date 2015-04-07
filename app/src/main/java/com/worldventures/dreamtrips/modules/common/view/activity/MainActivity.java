@@ -37,7 +37,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     protected View container;
 
     @Optional
-    @InjectView(R.id.bucket_details)
+    @InjectView(R.id.container_bucket_details)
     protected FrameLayout detailsFrameLayout;
 
     @Optional

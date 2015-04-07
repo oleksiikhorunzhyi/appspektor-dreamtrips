@@ -90,8 +90,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketActivity.class, bundle);
     }
 
-    public void openBucketItemDetails(Bundle bundle, Route route) {
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, route);
+    public void openBucketItemDetails(Bundle bundle) {
+        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
         startActivity(BucketActivity.class, bundle);
     }
 

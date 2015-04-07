@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
@@ -16,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
-
+    public static final int MAX_CHAR_COUNT = 120;
     private Date selectedDate;
 
     public BucketItemEditPresenter(View view, Bundle bundle) {
@@ -52,7 +53,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     private boolean checkEdit() {
-        if (view.getDescription().length() > 120) {
+        if (view.getDescription().length() > MAX_CHAR_COUNT) {
             return false;
         } else {
             return true;
@@ -68,7 +69,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onDateSet(int year, int month, int day) {
-        view.setTime(DateTimeUtils.convertDateToString(year, month, day));
+        String date = DateTimeUtils.convertDateToString(year, month, day);
+        view.setTime(date);
+        setDate(DateTimeUtils.dateFromString(date));
     }
 
     public void setDate(Date date) {
@@ -76,7 +79,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onDateClear() {
-        view.setTime("");
+        view.setTime(context.getString(R.string.someday));
         setDate(null);
     }
 

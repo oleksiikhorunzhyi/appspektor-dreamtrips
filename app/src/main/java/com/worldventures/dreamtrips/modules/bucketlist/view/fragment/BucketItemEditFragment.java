@@ -121,6 +121,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         getPresenter().onDateSet(year, month, day);
+        initAutoCompleteDate();
     }
 
     @Override
@@ -156,6 +157,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         autoCompleteTextViwDate.setAdapter(adapter);
         autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0) {
+                autoCompleteTextViwDate.setText("");
                 openDatePicker();
             } else if (position == parent.getCount() - 1) {
                 getPresenter().onDateClear();

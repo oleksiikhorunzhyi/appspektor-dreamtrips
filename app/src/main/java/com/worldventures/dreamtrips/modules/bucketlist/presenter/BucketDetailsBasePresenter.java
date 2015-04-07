@@ -66,7 +66,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.setStatus(bucketItem.isDone());
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
-        view.setTime(DateTimeUtils.convertDateToString(bucketItem.getTarget_date(), DateTimeUtils.DATE_FORMAT));
+        view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
     }
 
     private void onSuccess(BucketItem bucketItemUpdated) {

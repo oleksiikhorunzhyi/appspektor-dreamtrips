@@ -15,7 +15,7 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripModel implements Filterable, Serializable {
 
-    static final long serialVersionUID = 123l;
+    public static final long serialVersionUID = 123L;
 
     private String id;
     private String name;

@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.apptentive.android.sdk.Log;
 import com.techery.spares.module.Annotations.Global;
@@ -90,6 +92,13 @@ public class Presenter<VT extends Presenter.View> {
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager conMgr = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        return i != null && i.isConnected() && i.isAvailable();
     }
 
     public interface View {

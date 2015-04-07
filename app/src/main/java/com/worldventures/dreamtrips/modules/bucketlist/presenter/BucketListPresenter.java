@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import com.google.gson.JsonObject;
@@ -72,13 +69,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         TrackingHelper.bucketList(getUserId());
     }
 
-    public boolean isConnected() {
-        ConnectivityManager conMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo i = conMgr.getActiveNetworkInfo();
-        return i != null && i.isConnected() && i.isAvailable();
-    }
-
     public void loadBucketItems() {
         if (isConnected()) {
             view.startLoading();
@@ -107,16 +97,16 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void refresh() {
-        ArrayList<Object> result = new ArrayList<>();
-        if (bucketItems.size() > 0) {
+        List<Object> result = new ArrayList<>();
+        if (!bucketItems.isEmpty()) {
             Collection<BucketItem> toDo = Queryable.from(bucketItems).
                     filter((bucketItem) -> !bucketItem.isDone()).toList();
             Collection<BucketItem> done = Queryable.from(bucketItems).
                     filter((bucketItem) -> bucketItem.isDone()).toList();
-            if (showToDO && toDo.size() > 0) {
+            if (showToDO && !toDo.isEmpty()) {
                 result.addAll(toDo);
             }
-            if (showCompleted && done.size() > 0) {
+            if (showCompleted && !done.isEmpty()) {
                 result.add(new BucketHeader(0, R.string.completed));
                 result.addAll(done);
             }
@@ -127,7 +117,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void onEvent(BucketItemClickedEvent event) {
         if (bucketItems.contains(event.getBucketItem())) {
             eventBus.cancelEventDelivery(event);
-            openDetails(event.getBucketItem(), Route.DETAIL_BUCKET);
+            openDetails(event.getBucketItem());
         }
     }
 
@@ -151,7 +141,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(MarkBucketItemDoneEvent event) {
         boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (bucketItems.size() > 0 && isNamesEquals) {
+        if (!bucketItems.isEmpty() && isNamesEquals) {
             eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
@@ -183,7 +173,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(DeleteBucketItemEvent event) {
         boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (bucketItems.size() > 0 && isNamesEquals) {
+        if (bucketItems.isEmpty() && isNamesEquals) {
             eventBus.cancelEventDelivery(event);
 
             int index = bucketItems.indexOf(event.getBucketItem());
@@ -195,7 +185,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }
     }
 
-    private void openDetails(BucketItem bucketItem, Route route) {
+    private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
@@ -254,6 +244,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             case R.id.action_show_completed:
                 showToDO = false;
                 showCompleted = true;
+                break;
+            default:
                 break;
         }
         refresh();

@@ -68,7 +68,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
-    private boolean showSoldOut;
     private DateFilterItem dateFilterItem = new DateFilterItem();
     private List<Integer> acceptedRegions;
     private List<ActivityModel> acceptedThemes;
@@ -114,7 +113,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
                 dateFilterItem = event.getDateFilterItem();
                 acceptedRegions = event.getAcceptedRegions();
                 acceptedThemes = event.getAcceptedActivities();
-                showSoldOut = event.isShowSoldOut();
             }
             roboSpiceAdapterController.reload();
         }

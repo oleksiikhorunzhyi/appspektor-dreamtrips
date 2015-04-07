@@ -6,6 +6,7 @@ public class BucketPhotoUploadTask {
     private int taskId;
     private int progress;
     private int bucketId;
+    private boolean failed;
 
     public int getProgress() {
         return progress;
@@ -38,5 +39,13 @@ public class BucketPhotoUploadTask {
 
     public void setBucketId(int bucketId) {
         this.bucketId = bucketId;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
+
+    public boolean isFailed() {
+        return failed;
     }
 }

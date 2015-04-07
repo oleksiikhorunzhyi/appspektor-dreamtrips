@@ -49,7 +49,11 @@ public class Presenter<VT extends Presenter.View> {
     }
 
     public void destroyView() {
-
+        try {
+            eventBus.unregister(this);
+        } catch (Exception ignored) {
+            //Ignored
+        }
     }
 
     public void resume() {
@@ -86,8 +90,11 @@ public class Presenter<VT extends Presenter.View> {
 
     public interface View {
         void informUser(int stringId);
+
         void informUser(String string);
+
         void alert(String s);
+
         boolean isTabletLandscape();
     }
 }

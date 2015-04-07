@@ -8,28 +8,30 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.api.BucketPhotoAsCoverCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.api.BucketPhotoDeleteCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Calendar;
@@ -45,6 +47,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     @Inject
     Injector injector;
+    private int coverId;
+    private UploadBucketPhotoCommand uploadBucketPhotoCommand;
 
     public BucketItemEditPresenter(View view, Bundle bundle) {
         super(view, bundle);
@@ -69,25 +73,47 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     };
 
     private void handlePhotoPick(Uri uri) {
-        BucketPhotoUploadTask photoUploadTask = new BucketPhotoUploadTask();
-        photoUploadTask.setTaskId((int) System.currentTimeMillis());
-        photoUploadTask.setBucketId(bucketItem.getId());
-        photoUploadTask.setFilePath(uri.toString());
-        view.addImage(photoUploadTask);
-        dreamSpiceManager.execute(new UploadBucketPhotoCommand(photoUploadTask, injector), new RequestListener<BucketPhoto>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-
-            }
-
-            @Override
-            public void onRequestSuccess(BucketPhoto bucketPhoto) {
-                bucketItem.getPhotos().add(bucketPhoto);
-                view.replace(photoUploadTask, bucketPhoto);
-            }
-        });
+        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
+        task.setTaskId((int) System.currentTimeMillis());
+        task.setBucketId(bucketItem.getId());
+        task.setFilePath(uri.toString());
+        view.addImage(task);
+        startUpload(task);
     }
 
+    private void startUpload(final BucketPhotoUploadTask task) {
+        uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
+        dreamSpiceManager.execute(uploadBucketPhotoCommand,
+                task.getTaskId(),
+                DurationInMillis.ONE_MINUTE,
+                new RequestListener<BucketPhoto>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+
+                    }
+
+                    @Override
+                    public void onRequestSuccess(BucketPhoto bucketPhoto) {
+                        if (bucketPhoto != null) {
+                            bucketItem.getPhotos().add(bucketPhoto);
+                            view.replace(task, bucketPhoto);
+                        }
+                    }
+                });
+    }
+
+
+    public void onEvent(BucketPhotoReuploadRequestEvent event) {
+        startUpload(event.getTask());
+    }
+
+    public void onEvent(BucketPhotoUploadCancelEvent event) {
+        view.deleteImage(event.getTask());
+    }
+
+    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        uploadBucketPhotoCommand.cancel();
+    }
 
     @Override
     public void resume() {
@@ -112,6 +138,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
+        bucketPostItem.setCoverId(coverId);
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
         dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
@@ -152,34 +179,23 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
-        dreamSpiceManager.execute(new BucketPhotoAsCoverCommand(), new RequestListener<JSONObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-
-            }
-
-            @Override
-            public void onRequestSuccess(JSONObject jsonObject) {
-
-            }
-        });
+        coverId = event.getPhoto().getId();
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
-        dreamSpiceManager.execute(new BucketPhotoDeleteCommand(), new RequestListener<JSONObject>() {
+        dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
 
             }
 
             @Override
-            public void onRequestSuccess(JSONObject jsonObject) {
-                view.deleteImage(event.getPhoto().getId());
+            public void onRequestSuccess(JsonObject jsonObject) {
+                view.deleteImage(event.getPhoto());
             }
         });
 
     }
-
 
     public void onFacebookAction(Fragment from) {
         activityRouter.openFacebookPhoto(from);
@@ -222,7 +238,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
         void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);
 
-        void deleteImage(int id);
+        void deleteImage(BucketPhoto photo);
+
+        void deleteImage(BucketPhotoUploadTask photo);
     }
 
 

@@ -16,11 +16,12 @@
 
     <view
         android:id="@+id/fab_progress"
+        android:enabled="false"
         class="mbanje.kurt.fabbutton.FabButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:color="#ff6e9cff"
+        android:color="@color/bucket_blue"
         android:indeterminate="false"
         android:max="100"
         android:src="@drawable/ic_upload_cloud"

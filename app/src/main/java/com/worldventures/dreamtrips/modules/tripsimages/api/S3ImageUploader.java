@@ -52,7 +52,7 @@ public class S3ImageUploader {
         ProgressListener progressListener = progressEvent -> {
             byteTransferred += progressEvent.getBytesTransferred();
             double l = byteTransferred / file.length() * 100;
-            if (l > lastPercent + 5 || l > 99) {
+            if (l > lastPercent + 5 || l <= 99) {
                 lastPercent = (int) l;
                 Log.v("Progress event", "send UploadProgressUpdateEvent:" + l);
                 eventBus.post(new UploadProgressUpdateEvent(taskId, (int) l));

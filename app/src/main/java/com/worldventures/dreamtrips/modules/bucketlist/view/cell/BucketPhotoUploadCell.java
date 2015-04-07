@@ -3,11 +3,14 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.apptentive.android.sdk.Log;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
@@ -47,12 +50,21 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
     @Override
     public void prepareForReuse() {
-
+        Log.i(this.getClass().getSimpleName(), "prepareForReuse");
     }
 
-    @OnClick(R.id.iv_photo)
+    @OnClick(R.id.fab_progress)
     public void onCellClick() {
-
+        if (getModelObject().isFailed()) {
+            getEventBus().post(new BucketPhotoReuploadRequestEvent(getModelObject()));
+            getModelObject().setFailed(false);
+            fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_done);
+            fabProgress.setProgress(0);
+            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
+            circleView.setColor(color);
+        } else {
+            getEventBus().post(new BucketPhotoUploadCancelRequestEvent(getModelObject()));
+        }
     }
 
     public void onEventMainThread(BucketPhotoUploadStarted event) {
@@ -80,6 +92,7 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
             fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
             circleView.setColor(color);
+            getModelObject().setFailed(true);
         }
     }
 }

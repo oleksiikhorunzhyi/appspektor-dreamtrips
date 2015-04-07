@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUplo
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -251,14 +252,17 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void addImages(List<BucketPhoto> images) {
+        Collections.reverse(images);
         imagesAdapter.clear();
         imagesAdapter.addItems(images);
+        imagesAdapter.notifyDataSetChanged();
+
     }
 
     @Override
     public void addImage(BucketPhotoUploadTask image) {
-        imagesAdapter.addItem(image);
-        imagesAdapter.notifyItemInserted(imagesAdapter.getCount() - 1);
+        imagesAdapter.addItem(1, image);
+        imagesAdapter.notifyItemInserted(1);
     }
 
     @Override
@@ -293,11 +297,24 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void deleteImage(int id) {
+    public void deleteImage(BucketPhoto photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
 
             Object item = imagesAdapter.getItem(i);
-            if (item instanceof BucketPhoto && id == ((BucketPhoto) item).getId()) {
+            if (item instanceof BucketPhoto && photo.getId() == ((BucketPhoto) item).getId()) {
+                imagesAdapter.remove(item);
+                imagesAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void deleteImage(BucketPhotoUploadTask photo) {
+        for (int i = 0; i < imagesAdapter.getCount(); i++) {
+            Object item = imagesAdapter.getItem(i);
+            if (item instanceof BucketPhotoUploadTask &&
+                    photo.getTaskId() == ((BucketPhotoUploadTask) item).getTaskId()) {
                 imagesAdapter.remove(item);
                 imagesAdapter.notifyItemRemoved(i);
                 break;

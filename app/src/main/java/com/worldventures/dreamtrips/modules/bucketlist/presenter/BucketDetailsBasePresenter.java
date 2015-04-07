@@ -7,7 +7,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;

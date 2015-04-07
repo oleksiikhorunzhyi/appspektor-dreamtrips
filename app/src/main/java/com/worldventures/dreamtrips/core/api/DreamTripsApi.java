@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
@@ -98,6 +99,9 @@ public interface DreamTripsApi {
 
     @POST("/api/photos")
     public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
+
+    @POST("/api/bucket_list_items/{id}/photos")
+    public BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
 
     @GET("/api/trips/{id}/details")
     public TripDetails getDetails(@Path("id") String tripId);

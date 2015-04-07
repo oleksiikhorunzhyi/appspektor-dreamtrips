@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -11,8 +12,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTa
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
@@ -43,6 +48,11 @@ import dagger.Provides;
                 BucketDetailsFragment.class,
                 BucketItemDetailsPresenter.class,
                 AutoCompleteAdapter.class,
+                BucketImageAdapter.class,
+                BucketAddPhotoCell.class,
+                UploadBucketPhotoCommand.class,
+                BucketPhotoUploadCell.class,
+                BucketPhotoCell.class
         },
         complete = false,
         library = true

@@ -53,4 +53,5 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
     public void afterInject() {
 
     }
+
 }

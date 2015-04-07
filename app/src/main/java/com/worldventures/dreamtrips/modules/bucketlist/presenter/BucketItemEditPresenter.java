@@ -1,27 +1,143 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.apptentive.android.sdk.Log;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
+import javax.inject.Inject;
+
+public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
     public static final int MAX_CHAR_COUNT = 120;
     private Date selectedDate;
 
-    public BucketItemEditPresenter(View view, Bundle bundle) {
+    @Inject
+    private Injector injector;
+    private int coverId;
+    private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
+            handlePhotoPick(uri);
+        }
+    };
+
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.parse(image.getFilePathOriginal());
+            handlePhotoPick(uri);
+        }
+    };
+
+    public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
         super(view, bundle);
+    }
+
+    private void handlePhotoPick(Uri uri) {
+        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
+        task.setTaskId((int) System.currentTimeMillis());
+        task.setBucketId(bucketItem.getId());
+        task.setFilePath(uri.toString());
+        view.addImage(task);
+        startUpload(task);
+    }
+
+    private void startUpload(final BucketPhotoUploadTask task) {
+        uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
+        dreamSpiceManager.execute(uploadBucketPhotoCommand,
+                task.getTaskId(),
+                DurationInMillis.ONE_MINUTE,
+                new RequestListener<BucketPhoto>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        Log.e(this.getClass().getSimpleName(), "", spiceException);
+                    }
+
+                    @Override
+                    public void onRequestSuccess(BucketPhoto bucketPhoto) {
+                        if (bucketPhoto != null) {
+                            bucketItem.getPhotos().add(bucketPhoto);
+                            view.replace(task, bucketPhoto);
+                        }
+                    }
+                });
+    }
+
+    public void onEvent(BucketPhotoReuploadRequestEvent event) {
+        startUpload(event.getTask());
+    }
+
+    public void onEvent(BucketPhotoUploadCancelEvent event) {
+        view.deleteImage(event.getTask());
+    }
+
+    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        uploadBucketPhotoCommand.cancel();
+    }
+
+    public void onEvent(BucketAddPhotoClickEvent event) {
+        view.showAddPhotoDialog();
+    }
+
+    public void onEvent(BucketPhotoAsCoverRequestEvent event) {
+        coverId = event.getPhoto().getId();
+    }
+
+    public void onEvent(BucketPhotoDeleteRequestEvent event) {
+        dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                Log.e(this.getClass().getSimpleName(), "", spiceException);
+
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                view.deleteImage(event.getPhoto());
+            }
+        });
+
     }
 
     @Override
@@ -31,6 +147,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (!list.isEmpty()) {
             view.setCategoryItems(list);
             view.setCategory(list.indexOf(bucketItem.getCategory()));
+        }
+
+        if (!bucketItem.getPhotos().isEmpty()) {
+            view.addImages(bucketItem.getPhotos());
         }
     }
 
@@ -50,6 +170,18 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         } else {
             view.showError();
         }
+        BucketPostItem bucketPostItem = new BucketPostItem();
+        bucketPostItem.setName(view.getTitle());
+        bucketPostItem.setDescription(view.getDescription());
+        bucketPostItem.setStatus(view.getStatus());
+        bucketPostItem.setTags(getListFromString(view.getTags()));
+        bucketPostItem.setPeople(getListFromString(view.getPeople()));
+        bucketPostItem.setCategory(view.getSelectedItem());
+        bucketPostItem.setDate(selectedDate);
+        bucketPostItem.setCoverId(coverId);
+        UpdateBucketItemCommand updateBucketItemCommand =
+                new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
+        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
     private boolean checkEdit() {
@@ -91,26 +223,19 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
-    public interface View extends BucketDetailsBasePresenter.View {
-
-        void showError();
-
-        void setCategory(int selection);
-
-        void setCategoryItems(List<CategoryItem> items);
-
-        CategoryItem getSelectedItem();
-
-        boolean getStatus();
-
-        String getTags();
-
-        String getPeople();
-
-        String getTitle();
-
-        String getDescription();
+    public void onFacebookAction(Fragment from) {
+        activityRouter.openFacebookPhoto(from);
     }
 
+    public ImagePickCallback providePhotoChooseCallback() {
+        return selectImageCallback;
+    }
+
+    public void onActivityResult(Fragment fragment, int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
+            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+            fbCallback.onResult(fragment, image, null);
+        }
+    }
 
 }

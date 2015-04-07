@@ -143,6 +143,7 @@ public class DateTimeUtils {
         }
 
         String[] dateArray = context.getResources().getStringArray(R.array.bucket_date_items);
+        String today = context.getString(R.string.today);
 
         DateTime dateTimeToday = new DateTime(Calendar.getInstance().getTime());
         DateTime dateTimeTarget = new DateTime(dateTarget);
@@ -157,7 +158,7 @@ public class DateTimeUtils {
         int yearsBetween = Years.yearsBetween(dateTimeToday, dateTimeTarget).getYears();
 
         if (daysBetween == 0) {
-            return context.getString(R.string.today);
+            return today;
         } else if (daysBetween == 1) {
             return dateArray[TOMORROW];
         } else if (daysBetween > 1 && weeksBetween == 0) {

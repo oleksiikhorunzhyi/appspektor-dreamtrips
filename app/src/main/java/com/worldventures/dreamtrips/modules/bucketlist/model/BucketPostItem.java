@@ -15,6 +15,8 @@ public class BucketPostItem  extends BucketBasePostItem {
     private String description;
     private List<String> tags;
     private List<String> friends;
+    @SerializedName("cover_photo_id")
+    private int coverId;
 
     public BucketPostItem() {
     }
@@ -57,5 +59,13 @@ public class BucketPostItem  extends BucketBasePostItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setCoverId(int coverId) {
+        this.coverId = coverId;
+    }
+
+    public int getCoverId() {
+        return coverId;
     }
 }

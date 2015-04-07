@@ -7,7 +7,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;

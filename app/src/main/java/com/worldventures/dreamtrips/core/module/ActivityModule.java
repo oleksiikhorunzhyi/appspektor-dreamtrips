@@ -10,6 +10,7 @@ import com.path.android.jobqueue.di.DependencyInjector;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
+import com.techery.spares.module.Annotations.Application;
 import com.techery.spares.module.InjectingServiceModule;
 import com.techery.spares.module.Injector;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -32,6 +34,7 @@ import dagger.Provides;
                 BaseArrayListAdapter.class,
                 LoaderRecycleAdapter.class,
                 IRoboSpiceAdapter.class,
+                S3ImageUploader.class,
         },
         complete = false,
         library = true
@@ -103,5 +106,12 @@ public class ActivityModule {
     @Singleton
     public JobManager provideJobManager(Context context, Configuration configuration) {
         return new JobManager(context, configuration);
+    }
+
+    @Provides
+    @Singleton
+    @Application
+    Injector provideInjector() {
+        return baseActivity;
     }
 }

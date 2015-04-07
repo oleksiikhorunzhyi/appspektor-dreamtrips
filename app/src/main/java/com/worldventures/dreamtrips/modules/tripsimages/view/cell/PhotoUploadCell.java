@@ -110,9 +110,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         if (event.getTaskId().equals(getModelObject().getTaskId())) {
             new Handler().postDelayed(() -> {
                 Log.i("Progress event", "PhotoUploadFailed");
-                getModelObject().setFailed(true);
-                db.saveUploadImageTask(getModelObject());
-                setupViewAsFailed();
+                  setupViewAsFailed();
             }, 300);
         }
     }

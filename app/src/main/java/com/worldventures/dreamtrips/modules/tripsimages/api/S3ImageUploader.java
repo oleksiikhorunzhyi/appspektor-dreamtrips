@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileMa
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -37,7 +38,7 @@ public class S3ImageUploader {
     protected transient Context context;
 
     public String uploadImageToS3(String fileUri, String taskId)
-            throws Exception {
+            throws FileNotFoundException, InterruptedException {
         File file = UploadingFileManager.copyFileIfNeed(fileUri, context);
 
         ObjectMetadata metadata = new ObjectMetadata();

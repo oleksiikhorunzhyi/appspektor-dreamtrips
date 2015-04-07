@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 public class BucketPhoto extends BaseEntity implements Serializable {
 
-    static final long serialVersionUID = 14534647;
+    public static final long serialVersionUID = 14534647;
 
     @SerializedName("origin_url")
     private String originUrl;

@@ -8,33 +8,33 @@ import java.util.List;
 
 public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.View {
 
-        void showError();
+    void showError();
 
-        void setCategory(int selection);
+    void setCategory(int selection);
 
-        void setCategoryItems(List<CategoryItem> items);
+    void setCategoryItems(List<CategoryItem> items);
 
-        CategoryItem getSelectedItem();
+    CategoryItem getSelectedItem();
 
-        boolean getStatus();
+    boolean getStatus();
 
-        String getTags();
+    String getTags();
 
-        String getPeople();
+    String getPeople();
 
-        String getTitle();
+    String getTitle();
 
-        String getDescription();
+    String getDescription();
 
-        void addImages(List<BucketPhoto> images);
+    void addImages(List<BucketPhoto> images);
 
-        void addImage(BucketPhotoUploadTask images);
+    void addImage(BucketPhotoUploadTask images);
 
-        void showAddPhotoDialog();
+    void showAddPhotoDialog();
 
-        void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);
+    void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);
 
-        void deleteImage(BucketPhoto photo);
+    void deleteImage(BucketPhoto photo);
 
-        void deleteImage(BucketPhotoUploadTask photo);
-    }
+    void deleteImage(BucketPhotoUploadTask photo);
+}

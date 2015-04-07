@@ -17,7 +17,7 @@ import butterknife.OnClick;
 public class BucketAddPhotoCell extends AbstractCell<Object> {
 
     @InjectView(R.id.iv_photo)
-    private ImageView ivPhoto;
+    protected ImageView ivPhoto;
 
     public BucketAddPhotoCell(View view) {
         super(view);

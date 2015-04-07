@@ -48,9 +48,15 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     private Date selectedDate;
 
     @Inject
-    private Injector injector;
-    private int coverId;
+    protected Injector injector;
+
+    private Integer coverId;
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+
+    public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
+        super(view, bundle);
+        selectedDate = bucketItem.getTarget_date();
+    }
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -69,10 +75,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             handlePhotoPick(uri);
         }
     };
-
-    public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
-        super(view, bundle);
-    }
 
     private void handlePhotoPick(Uri uri) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
@@ -129,7 +131,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.e(this.getClass().getSimpleName(), "", spiceException);
-
             }
 
             @Override
@@ -170,18 +171,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         } else {
             view.showError();
         }
-        BucketPostItem bucketPostItem = new BucketPostItem();
-        bucketPostItem.setName(view.getTitle());
-        bucketPostItem.setDescription(view.getDescription());
-        bucketPostItem.setStatus(view.getStatus());
-        bucketPostItem.setTags(getListFromString(view.getTags()));
-        bucketPostItem.setPeople(getListFromString(view.getPeople()));
-        bucketPostItem.setCategory(view.getSelectedItem());
-        bucketPostItem.setDate(selectedDate);
-        bucketPostItem.setCoverId(coverId);
-        UpdateBucketItemCommand updateBucketItemCommand =
-                new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
-        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
     private boolean checkEdit() {

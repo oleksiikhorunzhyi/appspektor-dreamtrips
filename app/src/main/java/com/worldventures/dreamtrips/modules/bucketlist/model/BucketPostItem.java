@@ -16,7 +16,7 @@ public class BucketPostItem  extends BucketBasePostItem {
     private List<String> tags;
     private List<String> friends;
     @SerializedName("cover_photo_id")
-    private int coverId;
+    private Integer coverId;
 
     public BucketPostItem() {
     }

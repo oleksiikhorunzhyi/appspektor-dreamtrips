@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
@@ -51,7 +52,7 @@ import butterknife.Optional;
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
-        implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+        implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -269,7 +270,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         imagesAdapter.clear();
         imagesAdapter.addItems(images);
         imagesAdapter.notifyDataSetChanged();
-
     }
 
     @Override

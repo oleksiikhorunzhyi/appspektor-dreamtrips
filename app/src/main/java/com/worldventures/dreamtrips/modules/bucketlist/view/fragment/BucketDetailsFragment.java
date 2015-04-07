@@ -129,6 +129,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         if (TextUtils.isEmpty(category)) {
             textViewCategory.setVisibility(View.GONE);
         } else {
+            textViewCategory.setVisibility(View.VISIBLE);
             textViewCategory.setText(category);
         }
     }

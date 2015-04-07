@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.kbeanie.imagechooser.api.ChooserType;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -60,7 +63,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     protected EditText editTextTitle;
 
     @InjectView(R.id.editTextDescription)
-    protected EditText editTextDescription;
+    protected MaterialEditText editTextDescription;
 
     @InjectView(R.id.editTextPeople)
     protected EditText editTextPeople;
@@ -86,6 +89,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     private boolean dateSelected = false;
     private boolean categorySelected = false;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.clear();
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onResume() {
@@ -125,6 +136,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         getPresenter().onDateSet(year, month, day);
+        initAutoCompleteDate();
     }
 
     @Override
@@ -177,6 +189,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         autoCompleteTextViwDate.setAdapter(adapter);
         autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0) {
+                autoCompleteTextViwDate.setText("");
                 openDatePicker();
             } else if (position == parent.getCount() - 1) {
                 getPresenter().onDateClear();
@@ -361,6 +374,10 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return checkBox.isChecked();
     }
 
+    @Override
+    public void showError() {
+        editTextDescription.checkCharactersCount();
+    }
 }
 
 

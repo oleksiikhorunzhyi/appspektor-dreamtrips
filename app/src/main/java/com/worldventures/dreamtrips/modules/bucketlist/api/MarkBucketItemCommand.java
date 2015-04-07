@@ -1,24 +1,21 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
-import android.util.Log;
-
 import com.worldventures.dreamtrips.core.api.request.Command;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 
 public class MarkBucketItemCommand extends Command<BucketItem> {
-    private BucketPostItem bucketPostItem;
+    private BucketStatusItem bucketStatusItem;
     private int id;
 
-    public MarkBucketItemCommand(int id, BucketPostItem bucketPostItem) {
+    public MarkBucketItemCommand(int id, BucketStatusItem bucketStatusItem) {
         super(BucketItem.class);
-        this.bucketPostItem = bucketPostItem;
+        this.bucketStatusItem = bucketStatusItem;
         this.id = id;
     }
 
     @Override
     public BucketItem loadDataFromNetwork() {
-        Log.d("TAG_BucketListPM", "Sending mark as done item event");
-        return getService().updateItem(id, bucketPostItem);
+        return getService().completeItem(id, bucketStatusItem);
     }
 }

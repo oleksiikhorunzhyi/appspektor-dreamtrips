@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
@@ -158,11 +159,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                     ? bucketItems.indexOf(Queryable.from(bucketItems).first(BucketItem::isDone))
                     : 0);
 
-            BucketPostItem bucketPostItem = new BucketPostItem();
-            bucketPostItem.setStatus(bucketItem.isDone());
+            BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
 
             dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(),
-                            bucketPostItem),
+                            bucketStatusItem),
                     new RequestListener<BucketItem>() {
                         @Override
                         public void onRequestFailure(SpiceException spiceException) {
@@ -202,10 +202,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();
             fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.container_edit);
-            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
+            fragmentCompass.setContainerId(R.id.container_bucket_details);
+            fragmentCompass.add(Route.DETAIL_BUCKET, bundle);
         } else {
-            activityRouter.openBucketItemEditActivity(bundle);
+            activityRouter.openBucketItemDetails(bundle);
         }
     }
 

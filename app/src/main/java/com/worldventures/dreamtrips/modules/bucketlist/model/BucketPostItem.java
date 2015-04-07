@@ -6,13 +6,10 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import java.util.Date;
 import java.util.List;
 
-public class BucketPostItem {
-    private Integer id;
+public class BucketPostItem  extends BucketBasePostItem {
     @SerializedName("category_id")
     private Integer categoryId;
     private String name;
-    private String type;
-    private String status;
     @SerializedName("target_date")
     private String date;
     private String description;
@@ -33,10 +30,8 @@ public class BucketPostItem {
     }
 
     public BucketPostItem(String name, String type, Integer id, String status) {
+        super(id, type.toLowerCase(), status);
         this.name = name;
-        this.type = type.toLowerCase();
-        this.id = id;
-        this.status = status;
     }
 
     public void setTags(List<String> tags) {
@@ -51,21 +46,6 @@ public class BucketPostItem {
         this.name = name;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setStatus(boolean status) {
-        if (status) {
-            this.status = BucketItem.COMPLETED;
-        } else {
-            this.status = BucketItem.NEW;
-        }
-    }
 
     public void setCategory(CategoryItem category) {
         if (category != null) {

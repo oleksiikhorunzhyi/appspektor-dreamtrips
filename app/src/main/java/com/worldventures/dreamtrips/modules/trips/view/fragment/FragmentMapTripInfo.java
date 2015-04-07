@@ -91,13 +91,13 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     }
 
     @Override
-    public void setDate(String date) {
+    public void setDates(String date) {
         textViewDate.setText(date);
     }
 
     @Override
-    public void setDescription(String description) {
-        textViewDescription.setText(description);
+    public void setDesription(String text) {
+        textViewDescription.setText(text);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     }
 
     @Override
-    public void setPoints(String points) {
+    public void setRedemption(String points) {
         textViewPoints.setText(points);
     }
 
@@ -123,19 +123,17 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     }
 
     @Override
-    public void setFeatured(boolean isFeatured) {
-        if (isFeatured) {
-            textViewFeatured.setVisibility(View.VISIBLE);
-        }
+    public void setFeatured() {
+        textViewFeatured.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void setPlace(String place) {
+    public void setLocation(String place) {
         textViewPlace.setText(place);
     }
 
     @Override
-    public void setLiked(boolean liked) {
+    public void setLike(boolean liked) {
         imageViewLike.setImageResource(!liked ? R.drawable.ic_heart_1 : R.drawable.ic_bucket_like_selected);
     }
 
@@ -149,8 +147,19 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
         getPresenter().onClick();
     }
 
+    @OnClick(R.id.imageViewLike)
+    void onLike() {
+        getPresenter().actionLike();
+    }
+
     @Override
     protected FragmentMapInfoPresenter createPresenter(Bundle savedInstanceState) {
         return new FragmentMapInfoPresenter(this);
     }
+
+    @Override
+    public void setDuration(int count) {
+        //nothing to do here
+    }
+
 }

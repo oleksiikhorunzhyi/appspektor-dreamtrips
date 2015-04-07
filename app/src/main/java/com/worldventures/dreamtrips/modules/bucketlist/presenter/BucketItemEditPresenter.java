@@ -15,6 +15,7 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
@@ -42,7 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
-
+    public static final int MAX_CHAR_COUNT = 120;
     private Date selectedDate;
 
     @Inject
@@ -130,6 +131,21 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void saveItem() {
+        if (checkEdit()) {
+            BucketPostItem bucketPostItem = new BucketPostItem();
+            bucketPostItem.setName(view.getTitle());
+            bucketPostItem.setDescription(view.getDescription());
+            bucketPostItem.setStatus(view.getStatus());
+            bucketPostItem.setTags(getListFromString(view.getTags()));
+            bucketPostItem.setPeople(getListFromString(view.getPeople()));
+            bucketPostItem.setCategory(view.getSelectedItem());
+            bucketPostItem.setDate(selectedDate);
+            UpdateBucketItemCommand updateBucketItemCommand =
+                    new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
+            dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
+        } else {
+            view.showError();
+        }
         BucketPostItem bucketPostItem = new BucketPostItem();
         bucketPostItem.setName(view.getTitle());
         bucketPostItem.setDescription(view.getDescription());
@@ -144,6 +160,14 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
+    private boolean checkEdit() {
+        if (view.getDescription().length() > MAX_CHAR_COUNT) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public Date getDate() {
         if (bucketItem.getTarget_date() != null) {
             return bucketItem.getTarget_date();
@@ -153,7 +177,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onDateSet(int year, int month, int day) {
-        view.setTime(DateTimeUtils.convertDateToString(year, month, day));
+        String date = DateTimeUtils.convertDateToString(year, month, day);
+        view.setTime(date);
+        setDate(DateTimeUtils.dateFromString(date));
     }
 
     public void setDate(Date date) {
@@ -161,7 +187,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onDateClear() {
-        view.setTime("");
+        view.setTime(context.getString(R.string.someday));
         setDate(null);
     }
 
@@ -213,6 +239,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
+
+        void showError();
 
         void setCategory(int selection);
 

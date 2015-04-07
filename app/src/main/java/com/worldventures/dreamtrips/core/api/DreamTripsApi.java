@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -105,7 +107,10 @@ public interface DreamTripsApi {
     public TripDetails getDetails(@Path("id") String tripId);
 
     @POST("/api/bucket_list_items")
-    public BucketItem createItem(@Body BucketPostItem bucketItem);
+    public BucketItem createItem(@Body BucketBasePostItem bucketItem);
+
+    @PATCH("/api/bucket_list_items/{id}")
+    public BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
 
     @PATCH("/api/bucket_list_items/{id}")
     public BucketItem updateItem(@Path("id") int id, @Body BucketPostItem bucketPostItem);

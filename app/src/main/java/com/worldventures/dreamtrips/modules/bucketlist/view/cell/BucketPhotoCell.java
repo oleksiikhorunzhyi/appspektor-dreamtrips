@@ -61,7 +61,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(view.getContext());
         builder.items(R.array.dialog_action_bucket_photo)
                 .icon(d)
-                .title(view.getContext().getString(R.string.bucket_photo))
+                .title(view.getContext().getString(R.string.bucket_photo_dialog))
                 .itemsCallback((dialog, v, which, text) -> {
                     switch (which) {
                         case 0:

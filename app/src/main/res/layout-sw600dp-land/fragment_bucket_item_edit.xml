@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:padding="16dp"
-                android:text="@string/bucket_list_my_title"
+                android:text="@string/bucket_list_edit_header"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 

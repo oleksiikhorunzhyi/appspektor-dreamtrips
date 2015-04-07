@@ -32,8 +32,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
 
-        versionCode 39
-        versionName "0.2.0"
+        versionCode 41
+        versionName "0.2.02"
 
         multiDexEnabled true
 
@@ -57,7 +57,7 @@ android {
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
-          //  buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
             buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
@@ -174,5 +174,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.apptentive:apptentive-android:1.7.0@aar'
     compile 'mbanje.kurt:fabbutton:1.0.7'
+    compile 'joda-time:joda-time:2.7'
 }
 

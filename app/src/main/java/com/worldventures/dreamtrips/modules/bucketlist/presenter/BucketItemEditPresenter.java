@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.apptentive.android.sdk.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
@@ -42,18 +43,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
+public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
     public static final int MAX_CHAR_COUNT = 120;
     private Date selectedDate;
 
     @Inject
-    Injector injector;
+    private Injector injector;
     private int coverId;
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
-
-    public BucketItemEditPresenter(View view, Bundle bundle) {
-        super(view, bundle);
-    }
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -73,6 +70,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     };
 
+    public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
+        super(view, bundle);
+    }
+
     private void handlePhotoPick(Uri uri) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
         task.setTaskId((int) System.currentTimeMillis());
@@ -90,7 +91,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 new RequestListener<BucketPhoto>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-
+                        Log.e(this.getClass().getSimpleName(), "", spiceException);
                     }
 
                     @Override
@@ -103,7 +104,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 });
     }
 
-
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
         startUpload(event.getTask());
     }
@@ -114,6 +114,30 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         uploadBucketPhotoCommand.cancel();
+    }
+
+    public void onEvent(BucketAddPhotoClickEvent event) {
+        view.showAddPhotoDialog();
+    }
+
+    public void onEvent(BucketPhotoAsCoverRequestEvent event) {
+        coverId = event.getPhoto().getId();
+    }
+
+    public void onEvent(BucketPhotoDeleteRequestEvent event) {
+        dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                Log.e(this.getClass().getSimpleName(), "", spiceException);
+
+            }
+
+            @Override
+            public void onRequestSuccess(JsonObject jsonObject) {
+                view.deleteImage(event.getPhoto());
+            }
+        });
+
     }
 
     @Override
@@ -199,30 +223,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
-
-    public void onEvent(BucketAddPhotoClickEvent event) {
-        view.showAddPhotoDialog();
-    }
-
-    public void onEvent(BucketPhotoAsCoverRequestEvent event) {
-        coverId = event.getPhoto().getId();
-    }
-
-    public void onEvent(BucketPhotoDeleteRequestEvent event) {
-        dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-
-            }
-
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                view.deleteImage(event.getPhoto());
-            }
-        });
-
-    }
-
     public void onFacebookAction(Fragment from) {
         activityRouter.openFacebookPhoto(from);
     }
@@ -237,39 +237,5 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             fbCallback.onResult(fragment, image, null);
         }
     }
-
-    public interface View extends BucketDetailsBasePresenter.View {
-
-        void showError();
-
-        void setCategory(int selection);
-
-        void setCategoryItems(List<CategoryItem> items);
-
-        CategoryItem getSelectedItem();
-
-        boolean getStatus();
-
-        String getTags();
-
-        String getPeople();
-
-        String getTitle();
-
-        String getDescription();
-
-        void addImages(List<BucketPhoto> images);
-
-        void addImage(BucketPhotoUploadTask images);
-
-        void showAddPhotoDialog();
-
-        void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);
-
-        void deleteImage(BucketPhoto photo);
-
-        void deleteImage(BucketPhotoUploadTask photo);
-    }
-
 
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.content.Context;
 
+import com.apptentive.android.sdk.Log;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -45,6 +46,8 @@ public class Presenter<VT extends Presenter.View> {
             eventBus.registerSticky(this);
         } catch (Exception ignored) {
             //Ignored
+            Log.e(this.getClass().getSimpleName(), "", ignored);
+
         }
     }
 
@@ -53,6 +56,7 @@ public class Presenter<VT extends Presenter.View> {
             eventBus.unregister(this);
         } catch (Exception ignored) {
             //Ignored
+            Log.e(this.getClass().getSimpleName(), "", ignored);
         }
     }
 

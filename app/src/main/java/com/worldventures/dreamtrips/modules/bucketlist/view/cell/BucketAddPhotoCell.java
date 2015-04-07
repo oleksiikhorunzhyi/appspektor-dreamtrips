@@ -3,12 +3,11 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.apptentive.android.sdk.Log;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -18,7 +17,7 @@ import butterknife.OnClick;
 public class BucketAddPhotoCell extends AbstractCell<Object> {
 
     @InjectView(R.id.iv_photo)
-    ImageView ivPhoto;
+    private ImageView ivPhoto;
 
     public BucketAddPhotoCell(View view) {
         super(view);
@@ -33,6 +32,7 @@ public class BucketAddPhotoCell extends AbstractCell<Object> {
 
     @Override
     public void prepareForReuse() {
+        Log.v(this.getClass().getSimpleName(), "prepareForReuse");
 
     }
 

@@ -27,11 +27,11 @@ import mbanje.kurt.fabbutton.FabButton;
 public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
     @InjectView(R.id.iv_photo)
-    ImageView ivPhoto;
+    protected ImageView ivPhoto;
     @InjectView(R.id.fab_progress)
-    FabButton fabProgress;
+    protected FabButton fabProgress;
     @InjectView(R.id.fabbutton_circle)
-    CircleImageView circleView;
+    protected CircleImageView circleView;
 
     @Inject
     protected UniversalImageLoader imageLoader;

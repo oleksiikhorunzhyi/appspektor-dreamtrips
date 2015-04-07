@@ -58,7 +58,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
                 eventBus.post(new UploadProgressUpdateEvent(String.valueOf(taskId), 100));
 
-              //  eventBus.post(new BucketPhotoUploadFinished(photo));
                 return photo;
             }
             eventBus.post(new BucketPhotoUploadCancelEvent(photoUploadTask));

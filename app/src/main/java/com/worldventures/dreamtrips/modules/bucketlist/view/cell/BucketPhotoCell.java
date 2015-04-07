@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.apptentive.android.sdk.Log;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -30,7 +31,7 @@ import butterknife.OnClick;
 public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @InjectView(R.id.iv_photo)
-    ImageView ivPhoto;
+    private ImageView ivPhoto;
 
     @Inject
     protected UniversalImageLoader imageLoader;
@@ -46,7 +47,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     public void prepareForReuse() {
-
+        Log.v(this.getClass().getSimpleName(), "prepareForReuse");
     }
 
     @OnClick(R.id.iv_photo)
@@ -69,6 +70,9 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
                             break;
                         case 1:
                             showDeleteDialog(view.getContext());
+                            break;
+                        default:
+                            Log.v(this.getClass().getSimpleName(), "default");
                             break;
                     }
                 }).show();

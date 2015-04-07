@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.apptentive.android.sdk.Log;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -87,7 +88,6 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     private PickImageDialog pid;
 
-    private boolean dateSelected = false;
     private boolean categorySelected = false;
 
     @Override
@@ -293,6 +293,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
                             break;
                         case 2:
                             actionGallery();
+                            break;
+                        default:
+                            Log.v(this.getClass().getSimpleName(), "default");
                             break;
                     }
                 }).show();

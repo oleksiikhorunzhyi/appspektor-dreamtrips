@@ -22,7 +22,7 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
     @Global
     protected transient EventBus eventBus;
 
-    S3ImageUploader s3uploader = new S3ImageUploader();
+    protected S3ImageUploader s3uploader = new S3ImageUploader();
 
     @Inject
     protected SnappyRepository db;

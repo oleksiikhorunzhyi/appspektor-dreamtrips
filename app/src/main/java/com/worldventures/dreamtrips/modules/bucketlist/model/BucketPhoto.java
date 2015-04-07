@@ -1,12 +1,16 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.io.Serializable;
 
 public class BucketPhoto extends BaseEntity implements Serializable {
 
-    private String origin_url;
+    static final long serialVersionUID = 14534647;
+
+    @SerializedName("origin_url")
+    private String originUrl;
 
     private String url;
 
@@ -24,8 +28,15 @@ public class BucketPhoto extends BaseEntity implements Serializable {
         return url;
     }
 
-    public void setOriginUrl(String url) {
-        this.origin_url = url;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
+    public void setOriginUrl(String url) {
+        this.originUrl = url;
+    }
+
+    public String getOriginUrl() {
+        return originUrl;
+    }
 }

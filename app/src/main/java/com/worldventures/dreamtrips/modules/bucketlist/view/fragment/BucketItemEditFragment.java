@@ -81,6 +81,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     private BaseArrayListAdapter imagesAdapter;
 
+    private PickImageDialog pid;
+
     private boolean dateSelected = false;
     private boolean categorySelected = false;
 
@@ -141,7 +143,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
         imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
         imagesAdapter.addItem(new Object());
-        lvImages.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        lvImages.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
         lvImages.setAdapter(imagesAdapter);
     }
 
@@ -278,8 +281,29 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
                 }).show();
     }
 
-    private PickImageDialog pid;
+    @Override
+    public void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto) {
+        for (int i = 0; i < imagesAdapter.getCount(); i++) {
+            if (photoUploadTask == imagesAdapter.getItem(i)) {
+                imagesAdapter.replaceItem(i, bucketPhoto);
+                imagesAdapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
 
+    @Override
+    public void deleteImage(int id) {
+        for (int i = 0; i < imagesAdapter.getCount(); i++) {
+
+            Object item = imagesAdapter.getItem(i);
+            if (item instanceof BucketPhoto && id == ((BucketPhoto) item).getId()) {
+                imagesAdapter.remove(item);
+                imagesAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
 
     public void actionFacebook() {
         getPresenter().onFacebookAction(this);

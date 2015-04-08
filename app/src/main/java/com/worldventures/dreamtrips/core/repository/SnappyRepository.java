@@ -28,7 +28,7 @@ public class SnappyRepository {
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucketItems";
 
-    public static final String TRIP_KEY = "trip_new";
+    public static final String TRIP_KEY = "trip_rezopia";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
 

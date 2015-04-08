@@ -30,8 +30,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
 
     @Override
-    public void resume() {
-        super.resume();
+    protected void syncUI() {
+        super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
         view.setCover(bucketItem.getCoverUrl());
     }

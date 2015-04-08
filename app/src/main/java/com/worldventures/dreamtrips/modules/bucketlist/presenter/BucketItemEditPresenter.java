@@ -48,6 +48,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             bucketPostItem.setName(view.getTitle());
             bucketPostItem.setDescription(view.getDescription());
             bucketPostItem.setStatus(view.getStatus());
+            bucketPostItem.setCoverId(coverId);
             bucketPostItem.setTags(getListFromString(view.getTags()));
             bucketPostItem.setPeople(getListFromString(view.getPeople()));
             bucketPostItem.setCategory(view.getSelectedItem());

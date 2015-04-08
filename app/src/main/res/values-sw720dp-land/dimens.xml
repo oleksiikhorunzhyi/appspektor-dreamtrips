@@ -2,5 +2,6 @@
 <resources>
 
     <dimen name="tripImageHeightDetailed">450dp</dimen>
+    <dimen name="bucket_detail_cover_size">450dp</dimen>
 
 </resources>

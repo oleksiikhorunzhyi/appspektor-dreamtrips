@@ -61,7 +61,7 @@ public class BucketPostItem  extends BucketBasePostItem {
         this.description = description;
     }
 
-    public void setCoverId(int coverId) {
+    public void setCoverId(Integer coverId) {
         this.coverId = coverId;
     }
 

@@ -244,4 +244,9 @@ public class TripModel implements Filterable, Serializable {
             return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

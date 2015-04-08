@@ -113,8 +113,7 @@ public class BucketItem extends BaseEntity {
         if (coverPhoto != null) {
             return coverPhoto.getUrl();
         } else {
-            return "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
-                    "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
+            return "";
         }
     }
 

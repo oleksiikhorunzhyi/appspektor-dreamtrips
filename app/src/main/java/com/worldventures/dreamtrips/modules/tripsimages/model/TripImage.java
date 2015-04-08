@@ -3,9 +3,13 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-public class TripImage extends BaseEntity {
+import java.io.Serializable;
 
-    private static final String PATTERN = "?width=%d&height=%d";
+public class TripImage implements Serializable {
+    public static final String PATTERN = "?width=%d&height=%d";
+    public static final long serialVersionUID = 128L;
+
+    private String id;
     private String description;
     private String url;
     private String type;
@@ -47,4 +51,9 @@ public class TripImage extends BaseEntity {
     public void setOriginalUrl(String originalUrl) {
         this.originUrl = originalUrl;
     }
+
+    public String getId() {
+        return id;
+    }
+
 }

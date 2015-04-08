@@ -127,7 +127,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(BucketItemAddedEvent event) {
         if (!bucketItems.contains(event.getBucketItem())
-                && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+                && isTypeCorrect(event.getBucketItem().getType())) {
             if (event.getBucketItem().isDone()) {
                 bucketItems.add(0, event.getBucketItem());
                 refresh();
@@ -140,8 +140,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
-        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (!bucketItems.isEmpty() && isNamesEquals) {
+        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
             eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
@@ -172,8 +171,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (bucketItems.isEmpty() && isNamesEquals) {
+        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
             eventBus.cancelEventDelivery(event);
 
             int index = bucketItems.indexOf(event.getBucketItem());
@@ -183,6 +181,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             DeleteBucketItemCommand request = deleteDellayed(event.getBucketItem().getId());
             view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
+    }
+
+    private boolean isTypeCorrect(String bucketType) {
+        return bucketType.equalsIgnoreCase(type.getName());
     }
 
     private void openDetails(BucketItem bucketItem) {

@@ -7,6 +7,7 @@
         android:id="@+id/imageViewCover"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bucket_detail_cover_size"
+        android:src="@drawable/ic_trip_image_placeholder"
         android:scaleType="centerCrop" />
 
     <FrameLayout

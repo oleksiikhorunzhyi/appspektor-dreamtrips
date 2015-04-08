@@ -169,9 +169,18 @@ public class TripModel implements Filterable, Serializable {
 
     public List<Object> getFilteredImages() {
         List<Object> filteredImages = new ArrayList<>();
-        filteredImages.addAll(Queryable.from(images).filter(input ->
-                "RETINA".equals(input.getType())).toList());
+        filteredImages.addAll(getFilteredImagesByTag("RETINA"));
+
+        if (filteredImages.isEmpty()) {
+            filteredImages.addAll(getFilteredImagesByTag("NORMAL"));
+        }
+
         return filteredImages;
+    }
+
+    private List<TripImage> getFilteredImagesByTag(String tag) {
+        return Queryable.from(images).filter(input ->
+                tag.equals(input.getType())).toList();
     }
 
     public long getStartDateMillis() {
@@ -179,8 +188,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public boolean isPriceAccepted(double maxPrice, double minPrice) {
-        return priceAvailable &&
-                price.getAmount() <= maxPrice &&
+        return price.getAmount() <= maxPrice &&
                 price.getAmount() >= minPrice;
     }
 
@@ -190,9 +198,19 @@ public class TripModel implements Filterable, Serializable {
                 getAvailabilityDates().check(dateFilterItem);
     }
 
+
     public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
-        return (acceptedThemes == null || !Collections.disjoint(acceptedThemes, getActivities()))
-                && (acceptedRegions == null || acceptedRegions.contains(getRegion().getId()));
+        return (isActivitiesEmpty()
+                || acceptedThemes == null
+                || !Collections.disjoint(acceptedThemes, getActivities()))
+                && (getRegion() == null
+                || acceptedRegions == null
+                || acceptedRegions.contains(getRegion().getId()));
+    }
+
+    private boolean isActivitiesEmpty() {
+        return getActivities() == null ||
+                getActivities().isEmpty();
     }
 
     @Override

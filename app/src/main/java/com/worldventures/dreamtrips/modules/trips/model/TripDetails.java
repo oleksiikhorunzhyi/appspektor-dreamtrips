@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import java.io.Serializable;
 import java.util.List;
 
-/**
- *  1 on 23.01.15.
- */
-public class TripDetails extends BaseEntity {
+public class TripDetails implements Serializable {
     private List<ContentItem> content;
 
     public List<ContentItem> getContent() {

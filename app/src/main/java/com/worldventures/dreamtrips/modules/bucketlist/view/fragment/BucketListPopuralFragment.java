@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
@@ -28,7 +28,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
+    protected View emptyView;
 
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
@@ -39,6 +39,24 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
+        setManager();
+
+        this.recyclerView.setEmptyView(emptyView);
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
+        this.recyclerView.setAdapter(this.arrayListAdapter);
+
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setManager();
+    }
+
+    private void setManager() {
         RecyclerView.LayoutManager layoutManager;
         if (isTabletLandscape()) {
             layoutManager = new GridLayoutManager(getActivity(), 3);
@@ -47,13 +65,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         }
 
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setEmptyView(emptyView);
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
-        this.arrayListAdapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
-        this.recyclerView.setAdapter(this.arrayListAdapter);
-
-        this.refreshLayout.setOnRefreshListener(this);
-        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
     @Override

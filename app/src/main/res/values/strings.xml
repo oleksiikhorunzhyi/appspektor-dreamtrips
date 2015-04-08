@@ -118,6 +118,15 @@
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
+    <string-array name="dialog_add_bucket_photo">
+        <item>Choose from Facebook</item>
+        <item>Take Photo</item>
+        <item>Choose Photo</item>
+    </string-array>
+    <string-array name="dialog_action_bucket_photo">
+        <item>Set as cover</item>
+        <item>Delete</item>
+    </string-array>
 
     <string name="buffering">Buffering...</string>
 
@@ -196,16 +205,23 @@
     <string name="tags">Tags: </string>
     <string name="my_pictures">My pictures</string>
 
+    <string name="today">Today</string>
+
     <string-array name="bucket_date_items">
         <item>Specific date</item>
         <item>Tomorrow</item>
+        <item>This week</item>
         <item>Next week</item>
-        <item>New month</item>
+        <item>This month</item>
+        <item>Next month</item>
         <item>In six month</item>
         <item>Next year</item>
-        <item>@string/someday</item>
+        <item>@string/someday</item> //do not translate
     </string-array>
 
-    <string name="facebook_app_id">761667837261383</string>
-    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
+    <string name="facebook_app_id">761667837261383</string>//do not translate
+    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>//do not translate
+    <string name="add_pictures">Add pictures</string>
+    <string name="select_photo">Select photo</string>
+    <string name="bucket_photo_dialog">Bucket photo</string>
 </resources>

@@ -1,5 +1,15 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import android.content.Context;
+
+import com.worldventures.dreamtrips.R;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Months;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,17 +22,20 @@ import timber.log.Timber;
 public class DateTimeUtils {
     private static final String FILTER_PATTERN = "dd MMM yyyy";
     private static final int TOMORROW = 1;
-    private static final int NEXT_WEEK = 2;
-    private static final int NEXT_MONTH = 3;
-    private static final int IN_SIX_MONTH = 4;
-    private static final int NEXT_YEAR = 5;
+    public static final int THIS_WEEK = 2;
+    private static final int NEXT_WEEK = 3;
+    public static final int THIS_MONTH = 4;
+    private static final int NEXT_MONTH = 5;
+    private static final int IN_SIX_MONTH = 6;
+    private static final int THIS_YEAR = 7;
+    private static final int NEXT_YEAR = 8;
+    private static final int SOMETIME = 9;
 
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
 
 
     public static String convertDateForFilters(Date date) {
@@ -124,24 +137,82 @@ public class DateTimeUtils {
         return null;
     }
 
+    public static String convertDateToReference(Context context, Date dateTarget) {
+        if (dateTarget == null) {
+            return convertDateToString(dateTarget, DATE_FORMAT);
+        }
+
+        String[] dateArray = context.getResources().getStringArray(R.array.bucket_date_items);
+        String today = context.getString(R.string.today);
+
+        DateTime dateTimeToday = new DateTime(Calendar.getInstance().getTime());
+        DateTime dateTimeTarget = new DateTime(dateTarget);
+
+        if (dateTimeToday.isAfter(dateTimeTarget)) {
+            return convertDateToString(dateTarget, DATE_FORMAT);
+        }
+
+        int daysBetween = Days.daysBetween(dateTimeToday, dateTimeTarget).getDays();
+        int weeksBetween = Weeks.weeksBetween(dateTimeToday, dateTimeTarget).getWeeks();
+        int monthsBetween = Months.monthsBetween(dateTimeToday, dateTimeTarget).getMonths();
+        int yearsBetween = Years.yearsBetween(dateTimeToday, dateTimeTarget).getYears();
+
+        String result;
+        
+        if (daysBetween == 0) {
+            result = today;
+        } else if (daysBetween == 1) {
+            result = dateArray[TOMORROW];
+        } else if (daysBetween > 1 && weeksBetween == 0) {
+            result = dateArray[THIS_WEEK];
+        } else if (weeksBetween == 1) {
+            result = dateArray[NEXT_WEEK];
+        } else if (monthsBetween == 0) {
+            result = dateArray[THIS_MONTH];
+        } else if (monthsBetween == 1) {
+            result = dateArray[NEXT_MONTH];
+        } else if (monthsBetween > 1 && monthsBetween <= 6) {
+            result = dateArray[IN_SIX_MONTH];
+        } else if (monthsBetween >= 6 && yearsBetween == 0) {
+            result = dateArray[THIS_YEAR];
+        } else if (yearsBetween == 1) {
+            result = dateArray[NEXT_YEAR];
+        } else {
+            result = dateArray[SOMETIME];
+        }
+
+        return result;
+    }
+
     public static Date convertReferenceToDate(int position) {
         Calendar calendar = Calendar.getInstance();
 
         switch (position) {
             case TOMORROW:
                 calendar.add(Calendar.DAY_OF_WEEK, 1);
+                calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+                break;
+            case THIS_WEEK:
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
                 break;
             case NEXT_WEEK:
                 calendar.add(Calendar.WEEK_OF_MONTH, 1);
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
+                break;
+            case THIS_MONTH:
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case NEXT_MONTH:
                 calendar.add(Calendar.MONTH, 1);
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case IN_SIX_MONTH:
                 calendar.add(Calendar.MONTH, 6);
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case NEXT_YEAR:
-                calendar.add(Calendar.MONTH, 12);
+                calendar.add(Calendar.YEAR, 1);
+                calendar.add(Calendar.MONTH, 1);
                 break;
             default:
                 break;

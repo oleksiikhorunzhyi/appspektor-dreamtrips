@@ -17,8 +17,6 @@
 package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
@@ -29,13 +27,11 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-public class MyDraggableSwipeableItemAdapter<BaseItemClass>
-        extends BaseArrayListAdapter<BaseItemClass>
+public class MyDraggableSwipeableItemAdapter<V>
+        extends BaseArrayListAdapter<V>
         implements DraggableItemAdapter<BucketItemCell> {
 
-    private DeleteListener deleteListener;
     private MoveListener moveListener;
-    private View.OnClickListener mItemViewOnClickListener;
 
     public MyDraggableSwipeableItemAdapter(Context context, Injector injector) {
         super(context, injector);
@@ -44,7 +40,7 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
 
     @Override
     public long getItemId(int position) {
-        BaseItemClass baseItemClass = getItem(position);
+        V baseItemClass = getItem(position);
         if (baseItemClass instanceof BaseEntity) {
             return ((BaseEntity) baseItemClass).getId();
         }
@@ -109,13 +105,11 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
 
     @Override
     public void onMoveItem(int fromPosition, int toPosition) {
-        Log.d("Move", "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
-
         if (fromPosition == toPosition) {
             return;
         }
 
-        BaseItemClass item = getItem(fromPosition);
+        V item = getItem(fromPosition);
 
         if (item instanceof BucketItem
                 && !((BucketItem) item).isDone()
@@ -127,18 +121,9 @@ public class MyDraggableSwipeableItemAdapter<BaseItemClass>
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void setEventListener(DeleteListener eventListener) {
-        deleteListener = eventListener;
-    }
-
     public void setMoveListener(MoveListener moveListener) {
         this.moveListener = moveListener;
     }
-
-    public interface DeleteListener {
-        void onItemRemoved(int position);
-    }
-
 
     public interface MoveListener {
         void onItemMoved(int from, int to);

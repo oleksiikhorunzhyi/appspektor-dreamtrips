@@ -7,6 +7,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 import java.util.List;
 
 public class AppConfig {
+    public static final String TRIP_ID = "{tripid}";
+    public static final String USER_ID = "{userid}";
+    public static final String TOKEN = "{tokenval}";
+
     @SerializedName("FlagContent")
     protected FlagList flagContent;
 
@@ -66,6 +70,9 @@ public class AppConfig {
             @SerializedName("EnrollMemeberURL")
             private String enrollMemeberURL;
 
+            @SerializedName("EnrollRepURL")
+            private String enrollRepURL;
+
             @SerializedName("SurveyApiToken")
             private String surveyApiToken;
 
@@ -77,6 +84,24 @@ public class AppConfig {
 
             @SerializedName("TrainingVideosURL")
             private String trainingVideosURL;
+
+            @SerializedName("BookingPageURL")
+            private String bookingPageURL;
+
+            @SerializedName("OTAPageURL")
+            private String oTAPageURL;
+
+            public String getBookingPageURL() {
+                return bookingPageURL;
+            }
+
+            public String getoTAPageURL() {
+                return oTAPageURL;
+            }
+
+            public String getEnrollRepURL() {
+                return enrollRepURL;
+            }
 
             public String getAPIBaseURL() {
                 return this.aPIBaseURL;

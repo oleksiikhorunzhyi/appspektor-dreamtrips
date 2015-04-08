@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import com.google.gson.JsonObject;
@@ -15,9 +12,6 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemClickedEvent;
-import com.worldventures.dreamtrips.core.utils.events.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -26,6 +20,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemComma
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -72,13 +69,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         TrackingHelper.bucketList(getUserId());
     }
 
-    public boolean isConnected() {
-        ConnectivityManager conMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo i = conMgr.getActiveNetworkInfo();
-        return i != null && i.isConnected() && i.isAvailable();
-    }
-
     public void loadBucketItems() {
         if (isConnected()) {
             view.startLoading();
@@ -107,16 +97,16 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void refresh() {
-        ArrayList<Object> result = new ArrayList<>();
-        if (bucketItems.size() > 0) {
+        List<Object> result = new ArrayList<>();
+        if (!bucketItems.isEmpty()) {
             Collection<BucketItem> toDo = Queryable.from(bucketItems).
                     filter((bucketItem) -> !bucketItem.isDone()).toList();
             Collection<BucketItem> done = Queryable.from(bucketItems).
                     filter((bucketItem) -> bucketItem.isDone()).toList();
-            if (showToDO && toDo.size() > 0) {
+            if (showToDO && !toDo.isEmpty()) {
                 result.addAll(toDo);
             }
-            if (showCompleted && done.size() > 0) {
+            if (showCompleted && !done.isEmpty()) {
                 result.add(new BucketHeader(0, R.string.completed));
                 result.addAll(done);
             }
@@ -127,17 +117,19 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void onEvent(BucketItemClickedEvent event) {
         if (bucketItems.contains(event.getBucketItem())) {
             eventBus.cancelEventDelivery(event);
-            openDetails(event.getBucketItem(), Route.DETAIL_BUCKET);
+            openDetails(event.getBucketItem());
         }
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {
-        addItems(db.readBucketList(type.name()));
+        if (isTypeCorrect(event.getBucketItem().getType())) {
+            addItems(db.readBucketList(type.name()));
+        }
     }
 
     public void onEvent(BucketItemAddedEvent event) {
         if (!bucketItems.contains(event.getBucketItem())
-                && event.getBucketItem().getType().equalsIgnoreCase(type.getName())) {
+                && isTypeCorrect(event.getBucketItem().getType())) {
             if (event.getBucketItem().isDone()) {
                 bucketItems.add(0, event.getBucketItem());
                 refresh();
@@ -150,8 +142,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {
-        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (bucketItems.size() > 0 && isNamesEquals) {
+        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
             eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
@@ -182,8 +173,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        boolean isNamesEquals = event.getBucketItem().getType().equalsIgnoreCase(type.getName());
-        if (bucketItems.size() > 0 && isNamesEquals) {
+        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
             eventBus.cancelEventDelivery(event);
 
             int index = bucketItems.indexOf(event.getBucketItem());
@@ -195,17 +185,21 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }
     }
 
-    private void openDetails(BucketItem bucketItem, Route route) {
+    private boolean isTypeCorrect(String bucketType) {
+        return bucketType.equalsIgnoreCase(type.getName());
+    }
+
+    private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();
             fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.container_edit);
-            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
+            fragmentCompass.setContainerId(R.id.container_bucket_details);
+            fragmentCompass.add(Route.DETAIL_BUCKET, bundle);
         } else {
-            activityRouter.openBucketItemEditActivity(bundle);
+            activityRouter.openBucketItemDetails(bundle);
         }
     }
 
@@ -254,6 +248,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             case R.id.action_show_completed:
                 showToDO = false;
                 showCompleted = true;
+                break;
+            default:
                 break;
         }
         refresh();

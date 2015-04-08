@@ -58,4 +58,5 @@ public class BucketPostItem  extends BucketBasePostItem {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

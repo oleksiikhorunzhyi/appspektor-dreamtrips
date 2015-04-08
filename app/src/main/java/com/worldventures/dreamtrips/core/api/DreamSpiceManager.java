@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import android.os.Handler;
 
+import com.apptentive.android.sdk.Log;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -147,8 +148,7 @@ public class DreamSpiceManager extends SpiceManager {
 
     public void uploadPhoto(ImageUploadTask task) {
         try {
-            UploadTripPhotoCommand request = new UploadTripPhotoCommand(task);
-            injector.inject(request);
+            UploadTripPhotoCommand request = new UploadTripPhotoCommand(task, injector);
             execute(request, new RequestListener<Photo>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
@@ -161,6 +161,7 @@ public class DreamSpiceManager extends SpiceManager {
                 }
             });
         } catch (Exception e) {
+            Log.e(DreamSpiceManager.class.getSimpleName(), e);
             new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
 
         }

@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class ContentItem {
+import java.io.Serializable;
+
+public class ContentItem implements Serializable {
+    public static final long serialVersionUID = 138L;
+
     private String description;
     private String language;
     private String name;

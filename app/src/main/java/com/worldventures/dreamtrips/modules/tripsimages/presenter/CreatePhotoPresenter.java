@@ -65,7 +65,6 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
             Date time = DateTimeUtils.timeFromString(view.getTime());
             action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
             action.setTaskId(UUID.randomUUID().toString());
-            db.saveUploadImageTask(action);
 
             eventBus.post(new InsertNewImageUploadTaskEvent(action));
             dreamSpiceManager.uploadPhoto(action);

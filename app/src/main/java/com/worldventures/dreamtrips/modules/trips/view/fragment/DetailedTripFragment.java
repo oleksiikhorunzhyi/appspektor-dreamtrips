@@ -89,18 +89,10 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     }
 
     @Override
-    public void showErrorMessage() {
-        if (isAdded()) {
-            ((DetailTripActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
-            getActivity().invalidateOptionsMenu();
-        }
-    }
-
-    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
-        getPresenter().menuPrepared();
+        setLike(getPresenter().getTrip().isLiked());
     }
 
     @Override
@@ -127,7 +119,6 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
         }
 
         getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
-        getPresenter().onCreate();
 
         BaseStatePagerAdapter<DetailedImagePagerFragment> adapter =
                 new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {

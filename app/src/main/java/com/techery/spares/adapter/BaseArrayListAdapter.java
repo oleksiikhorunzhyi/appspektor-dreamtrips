@@ -118,6 +118,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void remove(BaseItemClass location) {
         this.items.remove(location);
     }
+
     public void moveItem(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;
@@ -127,6 +128,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
         items.add(toPosition, item);
     }
+
     public void clear() {
         this.items.clear();
         notifyDataSetChanged();
@@ -141,6 +143,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void setItems(List<BaseItemClass> baseItemClasses) {
+        if (items != null) {
+            clear();
+        }
         this.items = baseItemClasses;
         this.notifyDataSetChanged();
     }

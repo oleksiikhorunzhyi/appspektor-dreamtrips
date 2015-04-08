@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,14 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -54,6 +59,9 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Optional
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
+
+    @InjectView(R.id.lv_items)
+    protected BucketPhotosView bucketPhotosView;
 
     @Inject
     protected UniversalImageLoader universalImageLoader;
@@ -124,13 +132,35 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         checkBox.setChecked(completed);
     }
 
+    @OnCheckedChanged(R.id.checkBoxDone)
+    protected void onCheckedChanged(boolean isChecked) {
+        getPresenter().onStatusUpdated(isChecked);
+    }
+
+    @Override
+    public void disableCheckbox() {
+        checkBox.setEnabled(false);
+    }
+
+    @Override
+    public void enableCheckbox() {
+        checkBox.setEnabled(true);
+    }
+
     @Override
     public void setCategory(String category) {
         if (TextUtils.isEmpty(category)) {
             textViewCategory.setVisibility(View.GONE);
         } else {
+            textViewCategory.setVisibility(View.VISIBLE);
             textViewCategory.setText(category);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -139,7 +169,20 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
+    }
+
+    @Override
     public void showEditContainer() {
         getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void updatePhotos() {
+        bucketPhotosView.init(this, (Injector) getActivity(),false);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+    }
+
 }

@@ -23,6 +23,11 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_trip_image_placeholder"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/trip_item_shadow" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

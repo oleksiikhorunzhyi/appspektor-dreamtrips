@@ -39,7 +39,7 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
         BucketTabsFragment.Type type = (BucketTabsFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
         Route route = (Route) bundleExtra.getSerializable(EXTRA_STATE);
 
-        fragmentCompass.add(route, bundleExtra);
+        fragmentCompass.switchBranch(route, bundleExtra);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,13 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(9)
     private List<String> friends;
 
+    @TaggedFieldSerializer.Tag(11)
+    private List<BucketPhoto> photos = Collections.emptyList();
+
+    @TaggedFieldSerializer.Tag(12)
+    @SerializedName("cover_photo")
+    private BucketPhoto coverPhoto;
+
     public String getName() {
         return name;
     }
@@ -73,6 +81,14 @@ public class BucketItem extends BaseEntity {
         }
     }
 
+    public List<BucketPhoto> getPhotos() {
+        return photos;
+    }
+
+    public void setImages(List<BucketPhoto> images) {
+        this.photos = images;
+    }
+
     public String getType() {
         return type;
     }
@@ -94,8 +110,11 @@ public class BucketItem extends BaseEntity {
     }
 
     public String getCoverUrl() {
-        return  "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
-                "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
+        if (coverPhoto != null) {
+            return coverPhoto.getUrl();
+        } else {
+            return "";
+        }
     }
 
     public String getFriends() {

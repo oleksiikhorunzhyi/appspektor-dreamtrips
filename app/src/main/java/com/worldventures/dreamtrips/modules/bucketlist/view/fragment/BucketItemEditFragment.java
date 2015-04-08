@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +18,15 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.List;
@@ -35,7 +40,7 @@ import butterknife.Optional;
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
-        implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+        implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -65,15 +70,10 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
 
-    private boolean categorySelected = false;
+    @InjectView(R.id.lv_items)
+    protected BucketPhotosView bucketPhotosView;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        if (imageViewDone != null) {
-            setHasOptionsMenu(false);
-        }
-    }
+    private boolean categorySelected = false;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -121,11 +121,23 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         getPresenter().onDateSet(year, month, day);
+        initAutoCompleteDate();
     }
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
         return new BucketItemEditPresenter(this, getArguments());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        if (imageViewDone != null) {
+            setHasOptionsMenu(false);
+        }
+        bucketPhotosView.init(this, (Injector) getActivity(), true);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
 
     @Override
@@ -156,6 +168,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         autoCompleteTextViwDate.setAdapter(adapter);
         autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0) {
+                autoCompleteTextViwDate.setText("");
                 openDatePicker();
             } else if (position == parent.getCount() - 1) {
                 getPresenter().onDateClear();
@@ -229,6 +242,19 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return editTextDescription.getText().toString();
     }
 
+
+    @Override
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void setStatus(boolean isCompleted) {
         checkBox.setChecked(isCompleted);
@@ -243,6 +269,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public void showError() {
         editTextDescription.checkCharactersCount();
     }
+
+
 }
 
 

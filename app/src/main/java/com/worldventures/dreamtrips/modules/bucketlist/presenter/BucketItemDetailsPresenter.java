@@ -5,8 +5,10 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
+
 
     public BucketItemDetailsPresenter(View view, Bundle bundle) {
         super(view, bundle);
@@ -25,6 +27,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             activityRouter.openBucketItemEditActivity(bundle);
         }
     }
+
 
     @Override
     public void resume() {

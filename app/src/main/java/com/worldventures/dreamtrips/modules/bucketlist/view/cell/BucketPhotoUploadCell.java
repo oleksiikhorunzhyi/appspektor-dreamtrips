@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 
@@ -73,11 +72,6 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
         }
     }
 
-    public void onEventMainThread(BucketPhotoUploadFinished event) {
-        if (getModelObject().getTaskId() == event.getBucketPhoto().getTaskId()) {
-            fabProgress.setVisibility(View.GONE);
-        }
-    }
 
     public void onEventMainThread(UploadProgressUpdateEvent event) {
         String bucketId = String.valueOf(getModelObject().getTaskId());

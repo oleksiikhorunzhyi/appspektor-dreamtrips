@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingRight="8dp"
     android:paddingTop="4dp">
 
     <ImageView
         android:id="@+id/iv_photo"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:layout_gravity="center" />
 
@@ -31,4 +31,4 @@
         app:fbb_progressColor="#ffffff"
         app:fbb_progressWidthRatio="0.1"
         app:fbb_showEndBitmap="true" />
-</FrameLayout>
+</com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>

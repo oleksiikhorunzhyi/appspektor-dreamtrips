@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import javax.inject.Inject;
@@ -55,6 +59,9 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
+    @InjectView(R.id.lv_items)
+    protected BucketPhotosView bucketPhotosView;
+
     @Inject
     protected UniversalImageLoader universalImageLoader;
 
@@ -67,6 +74,9 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
+        bucketPhotosView.init(this, (Injector) getActivity(),false);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
 
     @Override
@@ -135,8 +145,19 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void done() {
         getActivity().onBackPressed();
+    }
+
+    @Override
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
     }
 
     @Override

@@ -89,7 +89,19 @@
                 android:padding="16dp"
                 android:text="@string/my_pictures"
                 android:textColor="@android:color/black" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
 
+                <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+                    android:id="@+id/lv_items"
+                    android:overScrollMode="never"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

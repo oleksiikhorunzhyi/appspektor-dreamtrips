@@ -112,15 +112,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/lvImages"
+            <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+                android:id="@+id/lv_items"
                 android:overScrollMode="never"
                 android:layout_width="match_parent"
-                android:layout_height="60dp" />
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout

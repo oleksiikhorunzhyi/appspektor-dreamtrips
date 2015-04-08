@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,31 +14,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.apptentive.android.sdk.Log;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.kbeanie.imagechooser.api.ChooserType;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -82,12 +70,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
 
-    @InjectView(R.id.lvImages)
-    protected RecyclerView lvImages;
-
-    private BaseArrayListAdapter imagesAdapter;
-
-    private PickImageDialog pid;
+    @InjectView(R.id.lv_items)
+    protected BucketPhotosView bucketPhotosView;
 
     private boolean categorySelected = false;
 
@@ -151,15 +135,9 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
-        imagesAdapter = new BucketImageAdapter(getActivity(), (Injector) getActivity());
-
-        imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
-        imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
-        imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
-        imagesAdapter.addItem(new Object());
-        lvImages.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-        lvImages.setAdapter(imagesAdapter);
+        bucketPhotosView.init(this, ((Injector) getActivity()), true);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
 
     @Override
@@ -264,107 +242,17 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         return editTextDescription.getText().toString();
     }
 
-    @Override
-    public void addImages(List<BucketPhoto> images) {
-        Collections.reverse(images);
-        imagesAdapter.clear();
-        imagesAdapter.addItems(images);
-        imagesAdapter.notifyDataSetChanged();
-    }
 
     @Override
-    public void addImage(BucketPhotoUploadTask image) {
-        imagesAdapter.addItem(1, image);
-        imagesAdapter.notifyItemInserted(1);
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
     }
 
-    @Override
-    public void showAddPhotoDialog() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.select_photo))
-                .items(R.array.dialog_add_bucket_photo)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            actionFacebook();
-                            break;
-                        case 1:
-                            actionPhoto();
-                            break;
-                        case 2:
-                            actionGallery();
-                            break;
-                        default:
-                            Log.v(this.getClass().getSimpleName(), "default");
-                            break;
-                    }
-                }).show();
-    }
-
-    @Override
-    public void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto) {
-        for (int i = 0; i < imagesAdapter.getCount(); i++) {
-            if (photoUploadTask == imagesAdapter.getItem(i)) {
-                imagesAdapter.replaceItem(i, bucketPhoto);
-                imagesAdapter.notifyItemChanged(i);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void deleteImage(BucketPhoto photo) {
-        for (int i = 0; i < imagesAdapter.getCount(); i++) {
-
-            Object item = imagesAdapter.getItem(i);
-            if (item instanceof BucketPhoto && photo.getId() == ((BucketPhoto) item).getId()) {
-                imagesAdapter.remove(item);
-                imagesAdapter.notifyItemRemoved(i);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void deleteImage(BucketPhotoUploadTask photo) {
-        for (int i = 0; i < imagesAdapter.getCount(); i++) {
-            Object item = imagesAdapter.getItem(i);
-            if (item instanceof BucketPhotoUploadTask &&
-                    photo.getTaskId() == ((BucketPhotoUploadTask) item).getTaskId()) {
-                imagesAdapter.remove(item);
-                imagesAdapter.notifyItemRemoved(i);
-                break;
-            }
-        }
-    }
-
-    public void actionFacebook() {
-        getPresenter().onFacebookAction(this);
-    }
-
-    public void actionGallery() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
-        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
-        this.pid.show();
-    }
-
-    public void actionPhoto() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
-        this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
-        this.pid.show();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (pid != null) {
-            this.pid.onActivityResult(requestCode, resultCode, data);
-        }
-        getPresenter().onActivityResult(this, requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

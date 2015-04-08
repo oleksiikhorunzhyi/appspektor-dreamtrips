@@ -74,9 +74,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
-        bucketPhotosView.init(this, (Injector) getActivity(),false);
-        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
 
     @Override
@@ -164,4 +161,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     public void showEditContainer() {
         getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void updatePhotos() {
+        bucketPhotosView.init(this, (Injector) getActivity(),false);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+    }
+
 }

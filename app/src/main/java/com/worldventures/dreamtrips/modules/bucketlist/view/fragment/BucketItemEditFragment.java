@@ -269,6 +269,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public void showError() {
         editTextDescription.checkCharactersCount();
     }
+
+
 }
 
 

@@ -36,7 +36,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCal
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -110,6 +109,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
         startUpload(event.getTask());
     }
 
@@ -118,14 +118,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
         uploadBucketPhotoCommand.cancel();
     }
 
     public void onEvent(BucketAddPhotoClickEvent event) {
+        eventBus.cancelEventDelivery(event);
         view.getBucketPhotosView().showAddPhotoDialog();
     }
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
         coverId = event.getPhoto().getId();
         saveCover();
     }
@@ -144,6 +147,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
         dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -206,7 +210,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected void onSuccess(BucketItem bucketItemUpdated) {
         resaveItem(bucketItemUpdated);
-        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
     }
 
     private void resaveItem(BucketItem bucketItemUpdated) {
@@ -214,6 +217,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         items.remove(items.indexOf(bucketItemUpdated));
         items.add(i, bucketItemUpdated);
         db.saveBucketList(items, type.name());
+        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
     }
 
     public ImagePickCallback getPhotoChooseCallback() {

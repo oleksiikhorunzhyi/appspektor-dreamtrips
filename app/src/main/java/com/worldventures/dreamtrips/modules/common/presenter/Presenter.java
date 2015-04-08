@@ -39,13 +39,15 @@ public class Presenter<VT extends Presenter.View> {
     @Inject
     protected Context context;
 
+    protected int priorityEventBus = 0;
+
     public Presenter(VT view) {
         this.view = view;
     }
 
     public void init() {
         try {
-            eventBus.registerSticky(this);
+            eventBus.registerSticky(this, priorityEventBus);
         } catch (Exception ignored) {
             //Ignored
             Log.e(this.getClass().getSimpleName(), "", ignored);

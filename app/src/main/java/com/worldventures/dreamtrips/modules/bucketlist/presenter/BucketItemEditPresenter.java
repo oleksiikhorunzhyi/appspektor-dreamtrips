@@ -23,11 +23,18 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     private Date selectedDate;
 
+    private boolean savingItem = false;
+
     public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
         super(view, bundle);
         selectedDate = bucketItem.getTarget_date();
     }
 
+    @Override
+    public void init() {
+        priorityEventBus = 1;
+        super.init();
+    }
 
     @Override
     public void resume() {
@@ -42,11 +49,15 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     protected void onSuccess(BucketItem bucketItemUpdated) {
         super.onSuccess(bucketItemUpdated);
-        view.done();
+        if (savingItem) {
+            savingItem = false;
+            view.done();
+        }
     }
 
     public void saveItem() {
         if (checkEdit()) {
+            savingItem = true;
             BucketPostItem bucketPostItem = new BucketPostItem();
             bucketPostItem.setName(view.getTitle());
             bucketPostItem.setDescription(view.getDescription());

@@ -34,6 +34,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
         view.setCover(bucketItem.getCoverUrl());
+        view.updatePhotos();
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -42,6 +43,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void setCover(String imageUrl);
 
         void showEditContainer();
+
+        void updatePhotos();
     }
 
 }

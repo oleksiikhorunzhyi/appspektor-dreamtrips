@@ -61,6 +61,7 @@
             android:label="@string/trips" />
         <activity
             android:name=".modules.bucketlist.view.activity.BucketActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/trips" />
         <activity
             android:name=".modules.common.view.activity.SimpleStreamPlayerActivity"

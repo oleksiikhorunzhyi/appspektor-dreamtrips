@@ -29,12 +29,8 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
         ArrayList<TripModel> data = new ArrayList<>();
         if (needUpdate() || fromApi) {
             this.fromApi = false;
-            data.addAll(getService().getTrips());
-            try {
-                db.saveTrips(data);
-            } catch (Exception e) {
-                Log.e("", "", e);
-            }
+            db.saveTrips(getService().getTrips());
+            data.addAll(db.getTrips());
             prefs.put(Prefs.LAST_SYNC, Calendar.getInstance().getTimeInMillis());
         } else {
             data.addAll(db.getTrips());

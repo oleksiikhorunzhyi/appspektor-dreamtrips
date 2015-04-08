@@ -33,7 +33,6 @@
                     android:id="@+id/textViewFriends"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:textColor="@color/bucket_detailed_text_color" />
             </LinearLayout>
 
@@ -62,12 +61,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:singleLine="true"
                     android:textColor="@color/bucket_detailed_text_color" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:src="@drawable/ic_edit_bucket" />
             </LinearLayout>
 

@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-
 import java.io.Serializable;
 import java.util.List;
 
 public class TripDetails implements Serializable {
+    public static final long serialVersionUID = 138L;
+
     private List<ContentItem> content;
 
     public List<ContentItem> getContent() {

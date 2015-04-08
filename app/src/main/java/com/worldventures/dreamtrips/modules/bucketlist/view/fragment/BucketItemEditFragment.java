@@ -135,7 +135,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
-        bucketPhotosView.init(this, ((Injector) getActivity()), true);
+        bucketPhotosView.init(this, (Injector) getActivity(), true);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }

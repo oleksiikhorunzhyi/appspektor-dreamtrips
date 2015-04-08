@@ -17,8 +17,6 @@
 package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;

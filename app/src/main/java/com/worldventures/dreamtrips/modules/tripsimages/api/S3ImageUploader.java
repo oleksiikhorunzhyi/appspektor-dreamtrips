@@ -37,17 +37,23 @@ public class S3ImageUploader {
     @Inject
     protected transient Context context;
 
-    public String uploadImageToS3(String fileUri, String taskId)
-            throws FileNotFoundException, InterruptedException {
+    public String uploadImageToS3(String fileUri, String taskId) {
         File file = UploadingFileManager.copyFileIfNeed(fileUri, context);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("");
-        Upload uploadHandler = transferManager.upload(
-                BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
-                BuildConfig.BUCKET_ROOT_PATH + file.getName(),
-                new FileInputStream(file), metadata
-        );
+
+        Upload uploadHandler = null;
+
+        try {
+            uploadHandler = transferManager.upload(
+                    BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
+                    BuildConfig.BUCKET_ROOT_PATH + file.getName(),
+                    new FileInputStream(file), metadata
+            );
+        } catch (FileNotFoundException e) {
+            Log.e(S3ImageUploader.class.getSimpleName(), "", e);
+        }
 
         ProgressListener progressListener = progressEvent -> {
             byteTransferred += progressEvent.getBytesTransferred();
@@ -61,7 +67,13 @@ public class S3ImageUploader {
 
         uploadHandler.addProgressListener(progressListener);
 
-        UploadResult uploadResult = uploadHandler.waitForUploadResult();
+        UploadResult uploadResult = null;
+
+        try {
+            uploadResult = uploadHandler.waitForUploadResult();
+        } catch (InterruptedException e) {
+            Log.e(S3ImageUploader.class.getSimpleName(), "", e);
+        }
 
 
         return getURLFromUploadResult(uploadResult);

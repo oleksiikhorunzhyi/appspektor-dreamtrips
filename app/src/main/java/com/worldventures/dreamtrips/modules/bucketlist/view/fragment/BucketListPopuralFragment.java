@@ -7,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
@@ -29,7 +28,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
+    protected View emptyView;
 
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;

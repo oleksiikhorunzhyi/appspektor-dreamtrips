@@ -73,8 +73,27 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     };
 
+    protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            view.informUser(R.string.bucket_item_edit_error);
+        }
+
+        @Override
+        public void onRequestSuccess(BucketItem bucketItemUpdated) {
+            onSuccess(bucketItemUpdated);
+        }
+    };
+
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
 
+    public BucketDetailsBasePresenter(V view, Bundle bundle) {
+        super(view);
+        type = (BucketTabsFragment.Type)
+                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
+        bucketItem = (BucketItem)
+                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
+    }
 
     private void handlePhotoPick(Uri uri) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
@@ -164,26 +183,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketItemUpdatedEvent event) {
         bucketItem = event.getBucketItem();
         syncUI();
-    }
-
-    protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            view.informUser(R.string.bucket_item_edit_error);
-        }
-
-        @Override
-        public void onRequestSuccess(BucketItem bucketItemUpdated) {
-            onSuccess(bucketItemUpdated);
-        }
-    };
-
-    public BucketDetailsBasePresenter(V view, Bundle bundle) {
-        super(view);
-        type = (BucketTabsFragment.Type)
-                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
-        bucketItem = (BucketItem)
-                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
     }
 
     @Override

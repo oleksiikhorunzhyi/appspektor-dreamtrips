@@ -157,27 +157,31 @@ public class DateTimeUtils {
         int monthsBetween = Months.monthsBetween(dateTimeToday, dateTimeTarget).getMonths();
         int yearsBetween = Years.yearsBetween(dateTimeToday, dateTimeTarget).getYears();
 
+        String result;
+        
         if (daysBetween == 0) {
-            return today;
+            result = today;
         } else if (daysBetween == 1) {
-            return dateArray[TOMORROW];
+            result = dateArray[TOMORROW];
         } else if (daysBetween > 1 && weeksBetween == 0) {
-            return dateArray[THIS_WEEK];
+            result = dateArray[THIS_WEEK];
         } else if (weeksBetween == 1) {
-            return dateArray[NEXT_WEEK];
+            result = dateArray[NEXT_WEEK];
         } else if (monthsBetween == 0) {
-            return dateArray[THIS_MONTH];
+            result = dateArray[THIS_MONTH];
         } else if (monthsBetween == 1) {
-            return dateArray[NEXT_MONTH];
+            result = dateArray[NEXT_MONTH];
         } else if (monthsBetween > 1 && monthsBetween <= 6) {
-            return dateArray[IN_SIX_MONTH];
+            result = dateArray[IN_SIX_MONTH];
         } else if (monthsBetween >= 6 && yearsBetween == 0) {
-            return dateArray[THIS_YEAR];
+            result = dateArray[THIS_YEAR];
         } else if (yearsBetween == 1) {
-            return dateArray[NEXT_YEAR];
+            result = dateArray[NEXT_YEAR];
         } else {
-            return dateArray[SOMETIME];
+            result = dateArray[SOMETIME];
         }
+
+        return result;
     }
 
     public static Date convertReferenceToDate(int position) {

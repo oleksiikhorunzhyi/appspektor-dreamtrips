@@ -4,8 +4,9 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
@@ -28,6 +29,14 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
     }
 
+    public void onStatusUpdated(boolean status) {
+        if (status != bucketItem.isDone()) {
+            view.disableCheckbox();
+            BucketBasePostItem bucketBasePostItem = new BucketBasePostItem();
+            bucketBasePostItem.setStatus(status);
+            saveBucketItem(bucketBasePostItem);
+        }
+    }
 
     @Override
     protected void syncUI() {
@@ -35,6 +44,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         view.setCategory(bucketItem.getCategoryName());
         view.setCover(bucketItem.getCoverUrl());
         view.updatePhotos();
+    }
+
+    @Override
+    protected void onSuccess(BucketItem bucketItemUpdated) {
+        super.onSuccess(bucketItemUpdated);
+        view.enableCheckbox();
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -45,6 +60,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void showEditContainer();
 
         void updatePhotos();
+
+        void disableCheckbox();
+
+        void enableCheckbox();
     }
 
 }

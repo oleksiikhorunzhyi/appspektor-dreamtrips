@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -129,6 +130,21 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public void setStatus(boolean completed) {
         checkBox.setChecked(completed);
+    }
+
+    @OnCheckedChanged(R.id.checkBoxDone)
+    protected void onCheckedChanged(boolean isChecked) {
+        getPresenter().onStatusUpdated(isChecked);
+    }
+
+    @Override
+    public void disableCheckbox() {
+        checkBox.setEnabled(false);
+    }
+
+    @Override
+    public void enableCheckbox() {
+        checkBox.setEnabled(true);
     }
 
     @Override

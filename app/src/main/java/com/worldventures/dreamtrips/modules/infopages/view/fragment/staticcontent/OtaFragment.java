@@ -15,7 +15,7 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
         AppConfig.URLS urls = config.getUrls();
         AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
         UserSession userSession = getPresenter().getCurrentUser();
-        String url = configs.getoTAPageBaseURL()
+        String url = configs.getoTAPageURL()
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
                 .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
         return url;

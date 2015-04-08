@@ -14,10 +14,10 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
         AppConfig config = getPresenter().getConfig();
         AppConfig.URLS urls = config.getUrls();
         AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-        String s = configs.getoTAPageBaseURL();
-        s += "?user=%s&token=%s&appMode=true#/";
         UserSession userSession = getPresenter().getCurrentUser();
-        String url = String.format(s, userSession.getUsername(), userSession.getLegacyApiToken());
+        String url = configs.getoTAPageBaseURL()
+                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
         return url;
     }
 

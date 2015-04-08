@@ -49,6 +49,10 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(11)
     private List<BucketPhoto> photos = Collections.emptyList();
 
+    @TaggedFieldSerializer.Tag(12)
+    @SerializedName("cover_photo")
+    private BucketPhoto coverPhoto;
+
     public String getName() {
         return name;
     }
@@ -106,8 +110,12 @@ public class BucketItem extends BaseEntity {
     }
 
     public String getCoverUrl() {
-        return "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
-                "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
+        if (coverPhoto != null) {
+            return coverPhoto.getUrl();
+        } else {
+            return "http://upload.wikimedia.org/wikipedia/commons/thumb/9/" +
+                    "9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
+        }
     }
 
     public String getFriends() {

@@ -50,9 +50,12 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         UserSession userSession = appSessionHolder.get().get();
         AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
         AppConfig.URLS.Config config = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-        String urlPrefix = config.getBookingPageBaseURL();
-        String url = String.format(urlPrefix + URL_BASE, view.getTripId(), userSession.getUser().getUsername(),
-                userSession.getLegacyApiToken());
+
+        String url = config.getBookingPageURL()
+                .replace(AppConfig.TRIP_ID, view.getTripId())
+                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+
         Bundle bundle = new Bundle();
         bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
         fragmentCompass.add(Route.BOOK_IT, bundle);

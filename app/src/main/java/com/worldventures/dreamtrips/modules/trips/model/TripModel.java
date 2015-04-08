@@ -200,12 +200,20 @@ public class TripModel implements Filterable, Serializable {
 
 
     public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
-        return (isActivitiesEmpty()
+        return themesAccepted(acceptedThemes)
+                && regionsAccepted(acceptedRegions);
+    }
+
+    private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
+        return isActivitiesEmpty()
                 || acceptedThemes == null
-                || !Collections.disjoint(acceptedThemes, getActivities()))
-                && (getRegion() == null
+                || !Collections.disjoint(acceptedThemes, getActivities());
+    }
+
+    private boolean regionsAccepted(List<Integer> acceptedRegions) {
+        return getRegion() == null
                 || acceptedRegions == null
-                || acceptedRegions.contains(getRegion().getId()));
+                || acceptedRegions.contains(getRegion().getId());
     }
 
     private boolean isActivitiesEmpty() {

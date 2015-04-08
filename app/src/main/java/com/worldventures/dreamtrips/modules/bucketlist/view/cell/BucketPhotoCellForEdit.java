@@ -21,7 +21,7 @@ import java.io.File;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
-public class BucketPhotoCellForEdit extends BucketPhotoCell{
+public class BucketPhotoCellForEdit extends BucketPhotoCell {
 
     public BucketPhotoCellForEdit(View view) {
         super(view);

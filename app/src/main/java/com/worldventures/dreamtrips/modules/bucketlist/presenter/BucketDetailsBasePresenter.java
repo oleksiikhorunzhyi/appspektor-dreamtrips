@@ -12,6 +12,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRe
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketCoverModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
@@ -51,7 +54,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Inject
     protected Injector injector;
 
-    private Integer coverId;
+    protected Integer coverId;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -99,6 +102,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                     public void onRequestSuccess(BucketPhoto bucketPhoto) {
                         if (bucketPhoto != null) {
                             bucketItem.getPhotos().add(bucketPhoto);
+                            resaveItem(bucketItem);
                             view.getBucketPhotosView().replace(task, bucketPhoto);
                         }
                     }
@@ -123,6 +127,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         coverId = event.getPhoto().getId();
+        saveCover();
+    }
+
+    private void saveCover() {
+        BucketCoverModel bucketCoverModel = new BucketCoverModel();
+        bucketCoverModel.setCoverId(coverId);
+        bucketCoverModel.setStatus(bucketItem.getStatus());
+        saveBucketItem(bucketCoverModel);
+    }
+
+    protected void saveBucketItem(BucketBasePostItem bucketBasePostItem) {
+        UpdateBucketItemCommand updateBucketItemCommand =
+                new UpdateBucketItemCommand(bucketItem.getId(), bucketBasePostItem);
+        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
@@ -186,13 +204,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
     }
 
-    private void onSuccess(BucketItem bucketItemUpdated) {
+    protected void onSuccess(BucketItem bucketItemUpdated) {
+        resaveItem(bucketItemUpdated);
+        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
+    }
+
+    private void resaveItem(BucketItem bucketItemUpdated) {
         int i = items.indexOf(bucketItemUpdated);
         items.remove(items.indexOf(bucketItemUpdated));
         items.add(i, bucketItemUpdated);
         db.saveBucketList(items, type.name());
-        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
-        view.done();
     }
 
     public ImagePickCallback getPhotoChooseCallback() {

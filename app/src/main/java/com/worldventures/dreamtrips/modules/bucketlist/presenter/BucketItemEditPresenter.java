@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 
@@ -16,8 +16,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
 
@@ -39,7 +37,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             view.setCategoryItems(list);
             view.setCategory(list.indexOf(bucketItem.getCategory()));
         }
+    }
 
+    @Override
+    protected void onSuccess(BucketItem bucketItemUpdated) {
+        super.onSuccess(bucketItemUpdated);
+        view.done();
     }
 
     public void saveItem() {
@@ -48,14 +51,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             bucketPostItem.setName(view.getTitle());
             bucketPostItem.setDescription(view.getDescription());
             bucketPostItem.setStatus(view.getStatus());
-            bucketPostItem.setCoverId(coverId);
             bucketPostItem.setTags(getListFromString(view.getTags()));
             bucketPostItem.setPeople(getListFromString(view.getPeople()));
             bucketPostItem.setCategory(view.getSelectedItem());
             bucketPostItem.setDate(selectedDate);
-            UpdateBucketItemCommand updateBucketItemCommand =
-                    new UpdateBucketItemCommand(bucketItem.getId(), bucketPostItem);
-            dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
+            saveBucketItem(bucketPostItem);
         } else {
             view.showError();
         }

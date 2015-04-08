@@ -189,6 +189,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void resume() {
         super.resume();
+        items.clear();
         items.addAll(db.readBucketList(type.name()));
         syncUI();
 

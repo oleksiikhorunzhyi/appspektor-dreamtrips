@@ -122,7 +122,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {
-        addItems(db.readBucketList(type.name()));
+        if (isTypeCorrect(event.getBucketItem().getType())) {
+            addItems(db.readBucketList(type.name()));
+        }
     }
 
     public void onEvent(BucketItemAddedEvent event) {

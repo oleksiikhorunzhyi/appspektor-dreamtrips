@@ -47,9 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:layout_marginBottom="4dp"
                     android:text="Golden Gate Bridge"
                     android:textColor="@color/white"
                     android:textSize="26sp" />
@@ -60,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:singleLine="true"
-                    android:textColor="@color/tripNameColor"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
             </LinearLayout>

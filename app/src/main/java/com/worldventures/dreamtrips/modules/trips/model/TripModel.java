@@ -27,6 +27,8 @@ public class TripModel implements Filterable, Serializable {
     @SerializedName("price_available")
     private boolean priceAvailable;
     private boolean available;
+    @SerializedName("sold_out")
+    private boolean soldOut;
     private long rewardsLimit;
     private Price price;
     private Location location;
@@ -73,6 +75,10 @@ public class TripModel implements Filterable, Serializable {
 
     public void setRewarded(boolean rewarded) {
         this.rewarded = rewarded;
+    }
+
+    public boolean isSoldOut() {
+        return soldOut;
     }
 
     public int getDuration() {
@@ -188,7 +194,8 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public boolean isPriceAccepted(double maxPrice, double minPrice) {
-        return price.getAmount() <= maxPrice &&
+        return !soldOut &&
+                price.getAmount() <= maxPrice &&
                 price.getAmount() >= minPrice;
     }
 

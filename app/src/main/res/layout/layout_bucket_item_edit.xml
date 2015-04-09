@@ -37,8 +37,6 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="normal"
             app:floatingLabelText="@string/bucket_hint_description"
-            app:maxCharacters="120"
-            app:minCharacters="0"
             app:primaryColor="@color/theme_main_darker" />
 
         <TextView
@@ -100,8 +98,6 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="highlight"
             app:floatingLabelText="@string/bucket_hint_tags"
-            app:maxCharacters="120"
-            app:minCharacters="0"
             app:primaryColor="@color/theme_main_darker" />
 
         <TextView

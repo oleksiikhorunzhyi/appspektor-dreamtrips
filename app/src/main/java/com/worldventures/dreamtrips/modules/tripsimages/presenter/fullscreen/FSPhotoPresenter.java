@@ -34,7 +34,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
         dreamSpiceManager.execute(new DeletePhotoCommand(photo.getId()), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                Log.v(this.getClass().getSimpleName(), "onRequestFailure");
             }
 
             @Override
@@ -46,9 +46,10 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
         });
     }
 
-    public void sendFlagAction(String title, String desc) {
-        if (desc == null) {
-            desc = "";
+    public void sendFlagAction(String title, String description) {
+        String desc = "";
+        if (description != null) {
+            desc = description;
         }
         dreamSpiceManager.execute(new FlagPhotoCommand(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override

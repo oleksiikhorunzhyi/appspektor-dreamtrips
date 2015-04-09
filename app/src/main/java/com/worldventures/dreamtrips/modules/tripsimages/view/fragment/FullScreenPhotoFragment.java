@@ -108,6 +108,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
             getPresenter().setupType(type);
         }
         getPresenter().setupActualViewState();
+
+        if (type == TripImagesListFragment.Type.INSPIRE_ME) {
+            actionSeeMore();
+        } else {
+            actionSeeLess();
+        }
     }
 
     @Override

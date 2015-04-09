@@ -75,7 +75,7 @@ public class S3ImageUploader {
             Log.e(S3ImageUploader.class.getSimpleName(), "", e);
         }
 
-
+        file.delete();
         return getURLFromUploadResult(uploadResult);
     }
 

@@ -22,11 +22,11 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-public class FSPhotoPM extends FullScreenPresenter<Photo> {
+public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
     @Inject
     protected Context context;
 
-    public FSPhotoPM(View view) {
+    public FSPhotoPresenter(View view) {
         super(view);
     }
 
@@ -47,7 +47,9 @@ public class FSPhotoPM extends FullScreenPresenter<Photo> {
     }
 
     public void sendFlagAction(String title, String desc) {
-        if (desc == null) desc = "";
+        if (desc == null) {
+            desc = "";
+        }
         dreamSpiceManager.execute(new FlagPhotoCommand(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {

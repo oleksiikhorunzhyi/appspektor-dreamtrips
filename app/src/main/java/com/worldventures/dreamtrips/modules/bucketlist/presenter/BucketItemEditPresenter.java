@@ -18,8 +18,6 @@ import java.util.List;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
 
-    public static final int MAX_CHAR_COUNT = 120;
-
     private Date selectedDate;
 
     private boolean savingItem = false;
@@ -55,28 +53,16 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void saveItem() {
-        if (checkEdit()) {
-            savingItem = true;
-            BucketPostItem bucketPostItem = new BucketPostItem();
-            bucketPostItem.setName(view.getTitle());
-            bucketPostItem.setDescription(view.getDescription());
-            bucketPostItem.setStatus(view.getStatus());
-            bucketPostItem.setTags(getListFromString(view.getTags()));
-            bucketPostItem.setPeople(getListFromString(view.getPeople()));
-            bucketPostItem.setCategory(view.getSelectedItem());
-            bucketPostItem.setDate(selectedDate);
-            saveBucketItem(bucketPostItem);
-        } else {
-            view.showError();
-        }
-    }
-
-    private boolean checkEdit() {
-        if (view.getDescription().length() > MAX_CHAR_COUNT) {
-            return false;
-        } else {
-            return true;
-        }
+        savingItem = true;
+        BucketPostItem bucketPostItem = new BucketPostItem();
+        bucketPostItem.setName(view.getTitle());
+        bucketPostItem.setDescription(view.getDescription());
+        bucketPostItem.setStatus(view.getStatus());
+        bucketPostItem.setTags(getListFromString(view.getTags()));
+        bucketPostItem.setPeople(getListFromString(view.getPeople()));
+        bucketPostItem.setCategory(view.getSelectedItem());
+        bucketPostItem.setDate(selectedDate);
+        saveBucketItem(bucketPostItem);
     }
 
     public Date getDate() {

@@ -49,7 +49,7 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
     protected void syncUIStateWithModel() {
         textViewDescription.setText(getModelObject().getDescription());
         textViewName.setText(getModelObject().getName());
-        universalImageLoader.loadImage(getModelObject().getImageLink(), imageViewImage, UniversalImageLoader.OP_LIST_SCREEN);
+        universalImageLoader.loadImage(getModelObject().getCoverPhotoUrl(), imageViewImage, UniversalImageLoader.OP_TRIP_PHOTO);
 
         if (getModelObject().isLoading()) {
             hideButtons();

@@ -9,18 +9,16 @@ public class PopularBucketItem extends BaseEntity {
     private boolean liked;
     @SerializedName("likes_count")
     private int likesCount;
-    private String imageLink;
     private String description;
     @SerializedName("short_description")
     private String shortDescription;
-    private String url;
-
+    @SerializedName("cover_photo")
+    private BucketPhoto coverPhoto;
     private transient String type;
     private transient boolean loading = false;
 
-    public PopularBucketItem() {
-        this.imageLink = "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Golden_Gate_Bridge_.JPG/800px-Golden_Gate_Bridge_.JPG";
-        this.description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    public String getCoverPhotoUrl() {
+        return coverPhoto != null ? coverPhoto.getUrl() : "";
     }
 
     public String getName() {
@@ -47,28 +45,12 @@ public class PopularBucketItem extends BaseEntity {
         this.likesCount = likesCount;
     }
 
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getShort_description() {

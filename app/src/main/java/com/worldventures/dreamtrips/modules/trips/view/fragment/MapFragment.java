@@ -190,7 +190,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
             @Override
             public void onCancel() {
-
+                //nothing to do here
             }
         });
     }

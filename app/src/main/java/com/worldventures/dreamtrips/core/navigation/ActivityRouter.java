@@ -106,9 +106,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {
-        if (imageUrl == null) imageUrl = "";
-        if (shareLink == null) shareLink = "";
-        if (text == null) text = "";
         Bundle bundle = new Bundle();
         bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
@@ -118,10 +115,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openShareTwitter(String imageUrl, String shareLink, String text) {
-        if (imageUrl == null) imageUrl = "";
-        if (shareLink == null) shareLink = "";
-        if (text == null) text = "";
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);

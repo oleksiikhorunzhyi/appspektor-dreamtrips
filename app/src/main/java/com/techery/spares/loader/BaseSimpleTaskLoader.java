@@ -9,6 +9,11 @@ import java.util.logging.Logger;
 public class BaseSimpleTaskLoader<T> extends BaseAbstractLoader<T> {
     private final LoadingTask<T> loadingTask;
 
+    public BaseSimpleTaskLoader(Context context, LoadingTask<T> loadingTask) {
+        super(context);
+        this.loadingTask = loadingTask;
+    }
+
     public static <T> ContentLoader.LoaderCreator buildCreator(final BaseSimpleTaskLoader.LoadingTask<T> loadingTask) {
         return new ContentLoader.LoaderCreator() {
             @Override
@@ -22,11 +27,6 @@ public class BaseSimpleTaskLoader<T> extends BaseAbstractLoader<T> {
 
     public interface LoadingTask<T> {
         T call(Context context, Bundle params);
-    }
-
-    public BaseSimpleTaskLoader(Context context, LoadingTask<T> loadingTask) {
-        super(context);
-        this.loadingTask = loadingTask;
     }
 
     protected T perform() {

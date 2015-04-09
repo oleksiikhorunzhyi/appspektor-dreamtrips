@@ -35,6 +35,11 @@ import java.util.Deque;
  * please vote my answer at <a href="http://stackoverflow.com/a/17365740/262462">StackOverflow</a> up.
  */
 public class HtmlTagHandler implements Html.TagHandler {
+
+    public static final String UL = "ul";
+    public static final String OL = "ol";
+    public static final String LI = "li";
+
     /**
      * List indentation in pixels. Nested lists use multiple of this.
      */
@@ -93,33 +98,33 @@ public class HtmlTagHandler implements Html.TagHandler {
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-        if (tag.equalsIgnoreCase("ul")) {
+        if (UL.equalsIgnoreCase(tag)) {
             if (opening) {
                 lists.push(tag);
             } else {
                 lists.pop();
             }
-        } else if (tag.equalsIgnoreCase("ol")) {
+        } else if (OL.equalsIgnoreCase(tag)) {
             if (opening) {
                 lists.push(tag);
             } else {
                 lists.pop();
             }
-        } else if (tag.equalsIgnoreCase("li")) {
+        } else if (LI.equalsIgnoreCase(tag)) {
             if (opening) {
                 if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                     output.append("\n");
                 }
                 String parentList = lists.peek();
-                if (parentList.equalsIgnoreCase("ol")) {
+                if (OL.equalsIgnoreCase(parentList)) {
                     start(output, new Ol());
                     output.append(olNextIndex.peek().toString()).append(". ");
                     olNextIndex.push(olNextIndex.pop() + 1);
-                } else if (parentList.equalsIgnoreCase("ul")) {
+                } else if (UL.equalsIgnoreCase(parentList)) {
                     start(output, new Ul());
                 }
             } else {
-                if (lists.peek().equalsIgnoreCase("ul")) {
+                if (UL.equalsIgnoreCase(lists.peek())) {
                     if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                         output.append("\n");
                     }
@@ -138,7 +143,7 @@ public class HtmlTagHandler implements Html.TagHandler {
                             Ul.class,
                             new LeadingMarginSpan.Standard(LIST_ITEM_INDENT * (lists.size() - 1)),
                             newBullet);
-                } else if (lists.peek().equalsIgnoreCase("ol")) {
+                } else if (OL.equalsIgnoreCase(lists.peek())) {
                     if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
                         output.append("\n");
                     }

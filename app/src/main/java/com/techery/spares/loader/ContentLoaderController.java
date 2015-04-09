@@ -16,6 +16,29 @@ public class ContentLoaderController<T> implements ContentLoader<T> {
     private final int loaderID;
     private final LoaderCreator loaderCreator;
 
+    private LoaderManager.LoaderCallbacks<T> loaderCallbacks = new LoaderManager.LoaderCallbacks<T>() {
+
+        @Override
+        public final Loader<T> onCreateLoader(int i, Bundle bundle) {
+            return ContentLoaderController.this.loaderCreator.createLoader(context, bundle);
+        }
+
+        @Override
+        public final void onLoadFinished(Loader<T> objectLoader, T o) {
+            if (o != null) {
+                ContentLoaderController.this.result = o;
+                getContentLoaderObserver().sendOnFinishLoading(o);
+            } else {
+                getContentLoaderObserver().sendOnError(null);
+            }
+        }
+
+        @Override
+        public final void onLoaderReset(Loader<T> objectLoader) {
+            objectLoader.reset();
+        }
+    };
+
     public ContentLoaderController(Context context, LoaderManager loaderManager, LoaderCreator factory) {
         this(context, loaderManager, DEFAULT_LOADER, factory);
     }
@@ -47,26 +70,4 @@ public class ContentLoaderController<T> implements ContentLoader<T> {
         return contentLoaderObserver;
     }
 
-    private LoaderManager.LoaderCallbacks<T> loaderCallbacks = new LoaderManager.LoaderCallbacks<T>() {
-
-        @Override
-        public final Loader<T> onCreateLoader(int i, Bundle bundle) {
-            return ContentLoaderController.this.loaderCreator.createLoader(context, bundle);
-        }
-
-        @Override
-        public final void onLoadFinished(Loader<T> objectLoader, T o) {
-            if (o != null) {
-                ContentLoaderController.this.result = o;
-                getContentLoaderObserver().sendOnFinishLoading(o);
-            } else {
-                getContentLoaderObserver().sendOnError(null);
-            }
-        }
-
-        @Override
-        public final void onLoaderReset(Loader<T> objectLoader) {
-            objectLoader.reset();
-        }
-    };
 }

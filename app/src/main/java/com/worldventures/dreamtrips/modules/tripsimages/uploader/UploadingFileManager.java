@@ -21,6 +21,9 @@ import java.util.Date;
 public class UploadingFileManager {
     private static final String TAG = UploadingFileManager.class.getSimpleName();
 
+    private UploadingFileManager() {
+    }
+
     public static String md5(final String s) {
         final String md5 = "MD5";
         try {

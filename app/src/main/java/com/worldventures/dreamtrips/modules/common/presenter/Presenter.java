@@ -65,7 +65,7 @@ public class Presenter<VT extends Presenter.View> {
     }
 
     public void resume() {
-
+        //nothing to do here
     }
 
     public DreamSpiceManager getDreamSpiceManager() {

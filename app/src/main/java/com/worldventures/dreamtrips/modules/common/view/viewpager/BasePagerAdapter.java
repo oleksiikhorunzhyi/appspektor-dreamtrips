@@ -16,7 +16,6 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter i
 
     public BasePagerAdapter(FragmentManager fm) {
         super(fm);
-
     }
 
     public void add(FragmentItem<? extends T> item) {
@@ -39,6 +38,7 @@ public class BasePagerAdapter<T extends Fragment> extends FragmentPagerAdapter i
     }
 
     public void setArgs(int position, T fragment) {
+        //nothing to do here
     }
 
     @Override

@@ -51,8 +51,10 @@ public class ContentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(int position, View contentView, ViewGroup parent) {
         ViewHolder holder;
+        View view = contentView;
+
         if (view != null) {
             holder = (ViewHolder) view.getTag();
         } else {

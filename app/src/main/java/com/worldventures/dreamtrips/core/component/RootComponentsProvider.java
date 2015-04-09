@@ -20,7 +20,7 @@ public class RootComponentsProvider {
     private final List<ComponentDescription> activeComponents;
 
     public RootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig componentConfig) {
-        Validate.isTrue(descriptions.size() > 0, "App should have at least 1 root component");
+        Validate.isTrue(!descriptions.isEmpty(), "App should have at least 1 root component");
         this.activeComponents = buildActiveComponents(descriptions, componentConfig);
     }
 

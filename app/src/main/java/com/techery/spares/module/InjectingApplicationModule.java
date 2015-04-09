@@ -51,7 +51,7 @@ public class InjectingApplicationModule {
         return new AppInitializer() {
             @Override
             public void initialize(Injector injector) {
-
+                //nothing to do here
             }
         };
     }

@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_rep_tools)
-public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements ViewPager.OnPageChangeListener {
+public class RepToolsFragment extends BaseFragment<RepToolsPresenter> {
 
     @InjectView(R.id.tabs)
     protected PagerSlidingTabStrip tabs;
@@ -43,7 +43,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
         }
         this.pager.setAdapter(adapter);
-        this.tabs.setOnPageChangeListener(this);
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
     }
@@ -51,20 +50,5 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     @Override
     protected RepToolsPresenter createPresenter(Bundle savedInstanceState) {
         return new RepToolsPresenter(this);
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
     }
 }

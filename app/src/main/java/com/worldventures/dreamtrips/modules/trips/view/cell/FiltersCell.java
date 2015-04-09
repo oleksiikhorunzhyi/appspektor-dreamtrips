@@ -78,6 +78,6 @@ public class FiltersCell extends AbstractCell<FilterModel> {
 
     @Override
     public void prepareForReuse() {
-
+        //nothing to do here
     }
 }

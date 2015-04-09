@@ -35,12 +35,12 @@ public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdap
                 cashedItems.addAll(items);
 
             items.clear();
-            query = query.toLowerCase();
+            String queryLowerCased = query.toLowerCase();
 
             for (BaseItemClass item : cashedItems) {
                 if (item instanceof Filterable) {
                     Filterable filterable = (Filterable) item;
-                    if (filterable.containsQuery(query))
+                    if (filterable.containsQuery(queryLowerCased))
                         items.add(item);
                 }
             }

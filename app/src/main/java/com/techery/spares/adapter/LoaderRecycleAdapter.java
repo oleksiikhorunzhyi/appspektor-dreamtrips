@@ -8,12 +8,12 @@ import com.techery.spares.module.Injector;
 import java.util.List;
 
 public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<BaseItemClass> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
-    public LoaderRecycleAdapter(Context context, Injector injector) {
-        super(context, injector);
-    }
 
     private ContentLoader<List<BaseItemClass>> contentLoader;
 
+    public LoaderRecycleAdapter(Context context, Injector injector) {
+        super(context, injector);
+    }
 
     @Override
     public void setContentLoader(ContentLoader<List<BaseItemClass>> contentLoader) {
@@ -32,7 +32,7 @@ public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<Ba
 
     @Override
     public void onStartLoading() {
-
+        //nothing to do here
     }
 
 
@@ -45,5 +45,6 @@ public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<Ba
 
     @Override
     public void onError(Throwable throwable) {
+        //nothing to do here
     }
 }

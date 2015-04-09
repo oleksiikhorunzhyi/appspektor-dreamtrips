@@ -81,14 +81,6 @@ public class TripCell extends AbstractCell<TripModel> {
         getEventBus().post(new LikeTripEvent(getModelObject()));
     }
 
-    private void setImageViewLike() {
-        if (getModelObject().isLiked()) {
-            imageViewLike.setImageResource(R.drawable.ic_bucket_like_selected);
-        } else {
-            imageViewLike.setImageResource(R.drawable.ic_heart_1);
-        }
-    }
-
     @OnClick(R.id.itemLayout)
     void actionItemClick() {
         getEventBus().post(new TouchTripEvent(getModelObject()));
@@ -97,6 +89,14 @@ public class TripCell extends AbstractCell<TripModel> {
     @OnClick(R.id.layoutInfo)
     void onInfoClick() {
         actionItemClick();
+    }
+
+    private void setImageViewLike() {
+        if (getModelObject().isLiked()) {
+            imageViewLike.setImageResource(R.drawable.ic_bucket_like_selected);
+        } else {
+            imageViewLike.setImageResource(R.drawable.ic_heart_1);
+        }
     }
 
     @Override

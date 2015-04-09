@@ -40,7 +40,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
 
             @Override
             public void checkPermissions(Context context) {
-
+                //nothing to do here
             }
         };
     }

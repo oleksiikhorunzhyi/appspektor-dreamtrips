@@ -12,6 +12,9 @@ import butterknife.ButterKnife;
 
 public class FragmentHelper {
 
+    private FragmentHelper() {
+    }
+
     public static View onCreateView(LayoutInflater inflater, ViewGroup container, ConfigurableFragment configurableFragment) {
         Layout layout = configurableFragment.getClass().getAnnotation(Layout.class);
 

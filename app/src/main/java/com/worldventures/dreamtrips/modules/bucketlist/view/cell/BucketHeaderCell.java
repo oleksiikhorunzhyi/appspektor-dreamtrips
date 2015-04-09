@@ -16,9 +16,11 @@ public class BucketHeaderCell extends AbstractCell<BucketHeader> {
 
     @Override
     protected void syncUIStateWithModel() {
+        //nothing to do here
     }
 
     @Override
     public void prepareForReuse() {
+        //nothing to do here
     }
 }

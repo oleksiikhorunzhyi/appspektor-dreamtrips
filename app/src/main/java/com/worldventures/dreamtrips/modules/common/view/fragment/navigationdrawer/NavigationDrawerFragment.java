@@ -133,7 +133,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
     @Override
     public void onNavigationDrawerItemReselected(ComponentDescription componentDescription) {
-
+        //nothing to do here
     }
 
     public void onBackPressed() {

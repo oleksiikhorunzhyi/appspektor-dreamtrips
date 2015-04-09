@@ -68,6 +68,11 @@ import java.util.Set;
  * @since 10.0
  */
 public abstract class Optional<T> implements Serializable {
+    private static final long serialVersionUID = 0;
+
+    Optional() {
+    }
+
     /**
      * Returns an {@code Optional} instance with no contained reference.
      */
@@ -90,9 +95,6 @@ public abstract class Optional<T> implements Serializable {
         return (nullableReference == null)
                 ? Optional.<T>absent()
                 : new Present<T>(nullableReference);
-    }
-
-    Optional() {
     }
 
     /**
@@ -232,5 +234,4 @@ public abstract class Optional<T> implements Serializable {
         };
     }
 
-    private static final long serialVersionUID = 0;
 }

@@ -17,6 +17,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_success_story)
 public class SuccessStoryCell extends AbstractCell<SuccessStory> {
+
     @InjectView(R.id.tv_title)
     protected TextView tvTitle;
     @InjectView(R.id.vg_parent)
@@ -31,9 +32,9 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
+
         tvTitle.setText(getModelObject().getAuthor());
     }
-
 
     public void onEventMainThread(SuccessStoryItemSelectedEvent event) {
         if (getPosition() == event.getPosition()) {
@@ -45,13 +46,12 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
 
     @Override
     public void prepareForReuse() {
-
+        //nothing to do here
     }
 
     @OnClick(R.id.vg_parent)
     public void onItemClick() {
         getEventBus().post(new OnSuccessStoryCellClickEvent(getModelObject(), getPosition()));
     }
-
 
 }

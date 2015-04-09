@@ -2,17 +2,17 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 
 public class CheckBoxAllPressedEvent {
-    private boolean isChecked;
+    private boolean checked;
 
-    public CheckBoxAllPressedEvent(boolean isChecked) {
-        this.isChecked = isChecked;
+    public CheckBoxAllPressedEvent(boolean checked) {
+        this.checked = checked;
     }
 
     public boolean isChecked() {
-        return isChecked;
+        return checked;
     }
 
     public void setChecked(boolean isChecked) {
-        this.isChecked = isChecked;
+        this.checked = isChecked;
     }
 }

@@ -19,7 +19,12 @@ import dagger.ObjectGraph;
 import de.greenrobot.event.EventBus;
 
 public abstract class InjectingActivity extends ActionBarActivity implements Injector {
+
     private ObjectGraph objectGraph;
+
+    @Inject
+    @Global
+    protected EventBus eventBus;
 
     @Override
     public ObjectGraph getObjectGraph() {
@@ -40,12 +45,8 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
     }
 
     private Injector getApplicationInjector() {
-        return ((Injector) getApplication());
+        return (Injector) getApplication();
     }
-
-    @Inject
-    @Global
-    protected EventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,6 @@ public abstract class InjectingActivity extends ActionBarActivity implements Inj
     }
 
     protected void afterCreateView(Bundle savedInstanceState) {
-
+        //nothing to here
     }
 }

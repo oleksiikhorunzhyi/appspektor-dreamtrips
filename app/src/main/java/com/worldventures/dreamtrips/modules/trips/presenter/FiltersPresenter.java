@@ -4,7 +4,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
@@ -30,20 +29,13 @@ import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
-
-    @Inject
-    @Global
-    protected EventBus eventBus;
 
     private List<RegionModel> regions;
     private List<ActivityModel> activities;
@@ -78,31 +70,33 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void loadFilters() {
         view.startLoading();
+
         dreamSpiceManager.execute(new GetActivitiesQuery(db), new RequestListener<ArrayList<ActivityModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                //nothing to do here
             }
 
             @Override
             public void onRequestSuccess(ArrayList<ActivityModel> activities) {
                 FiltersPresenter.this.activities = activities;
                 parentActivities = getParentActivities();
-                if (regions != null && regions.size() != 0) {
+                if (regions != null && !regions.isEmpty()) {
                     fillData();
                 }
             }
         });
+
         dreamSpiceManager.execute(new GetRegionsQuery(db), new RequestListener<ArrayList<RegionModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                //nothing to do here
             }
 
             @Override
             public void onRequestSuccess(ArrayList<RegionModel> regions) {
                 FiltersPresenter.this.regions = regions;
-                if (activities != null && activities.size() != 0) {
+                if (activities != null && !activities.isEmpty()) {
                     fillData();
                 }
 

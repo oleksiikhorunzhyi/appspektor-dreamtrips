@@ -40,7 +40,7 @@ public class BinderRetriever {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            //nothing to do here
         }
     }
 }

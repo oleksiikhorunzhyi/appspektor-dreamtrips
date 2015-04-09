@@ -89,13 +89,6 @@ public class UniversalImageLoader {
         loadImage(url, imageView, displayImageOptions, null);
     }
 
-    public void loadImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions, ImageLoadingListener listener) {
-        if (displayImageOptions == null) {
-            displayImageOptions = OP_DEF;
-        }
-        ImageLoader.getInstance().displayImage(url, imageView, displayImageOptions, listener);
-    }
-
     public void loadImage(Uri uri, ImageView imageView) {
         loadImage(uri, imageView, null);
     }
@@ -109,6 +102,12 @@ public class UniversalImageLoader {
         loadImage(uriS, imageView, displayImageOptions, new SimpleImageLoadingListener());
     }
 
+    public void loadImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions, ImageLoadingListener listener) {
+        DisplayImageOptions localDisplayImageOptions
+                = displayImageOptions != null ? displayImageOptions : OP_DEF;
+        ImageLoader.getInstance().displayImage(url, imageView,
+                localDisplayImageOptions, listener);
+    }
 
     public void pause() {
         ImageLoader.getInstance().pause();

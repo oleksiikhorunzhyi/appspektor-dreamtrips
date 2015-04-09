@@ -58,7 +58,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPresentationModel().create();
 
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
 

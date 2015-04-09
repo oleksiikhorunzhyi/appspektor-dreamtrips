@@ -163,7 +163,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
         }
 
         TweetComposer.Builder builder = new TweetComposer.Builder(this);
-        builder.text(shareUrl + text);
+        builder.text(url + text);
 
         if (imageUrl != null) {
             builder.image(imageUrl);

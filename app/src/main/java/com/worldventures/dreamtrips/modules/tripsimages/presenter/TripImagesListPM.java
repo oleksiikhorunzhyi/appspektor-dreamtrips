@@ -189,6 +189,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
         void finishLoading();
 
+        void setSelection();
+
         IRoboSpiceAdapter getAdapter();
 
         void inject(Object getMyPhotos);

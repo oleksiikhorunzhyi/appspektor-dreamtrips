@@ -4,7 +4,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
@@ -30,11 +29,8 @@ import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 

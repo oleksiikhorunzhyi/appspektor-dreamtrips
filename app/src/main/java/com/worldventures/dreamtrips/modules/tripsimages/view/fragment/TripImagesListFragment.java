@@ -85,6 +85,11 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         }
     }
 
+    @Override
+    public void setSelection() {
+        //nothing to do here
+    }
+
     private void setupLayoutManager(boolean landscape) {
         int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
         layoutManager = new GridLayoutManager(getActivity(), spanCount);

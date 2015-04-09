@@ -38,6 +38,7 @@ public class TabsController implements ActionBar.TabListener {
         viewPager.getAdapter().notifyDataSetChanged();
 
         actionBar.removeAllTabs();
+
         for (int i = 0; i < sectionsPagerAdapter.getCount(); i++) {
             actionBar.addTab(
                     actionBar.newTab()
@@ -53,11 +54,11 @@ public class TabsController implements ActionBar.TabListener {
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
+        //nothing to do here
     }
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
+        //nothing to do here
     }
 }

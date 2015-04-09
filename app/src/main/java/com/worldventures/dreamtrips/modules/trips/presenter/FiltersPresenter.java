@@ -41,10 +41,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     @Inject
     protected SnappyRepository db;
 
-    @Inject
-    @Global
-    protected EventBus eventBus;
-
     private List<RegionModel> regions;
     private List<ActivityModel> activities;
     private List<ActivityModel> parentActivities;
@@ -78,10 +74,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void loadFilters() {
         view.startLoading();
+
         dreamSpiceManager.execute(new GetActivitiesQuery(db), new RequestListener<ArrayList<ActivityModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                //nothing to do here
             }
 
             @Override
@@ -93,10 +90,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 }
             }
         });
+
         dreamSpiceManager.execute(new GetRegionsQuery(db), new RequestListener<ArrayList<RegionModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                //nothing to do here
             }
 
             @Override

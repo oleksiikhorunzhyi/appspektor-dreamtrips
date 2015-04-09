@@ -157,7 +157,7 @@ public class DreamSpiceManager extends SpiceManager {
 
                 @Override
                 public void onRequestSuccess(Photo photo) {
-
+                    //nothing to do here
                 }
             });
         } catch (Exception e) {

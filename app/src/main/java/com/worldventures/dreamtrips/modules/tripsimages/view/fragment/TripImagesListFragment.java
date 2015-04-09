@@ -118,11 +118,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    public void setSelection() {
-
-    }
-
-    @Override
     public IRoboSpiceAdapter getAdapter() {
         return arrayListAdapter;
     }

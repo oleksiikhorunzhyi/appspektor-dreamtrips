@@ -73,6 +73,6 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
 
     @Override
     public void prepareForReuse() {
-
+        //nothing to do here
     }
 }

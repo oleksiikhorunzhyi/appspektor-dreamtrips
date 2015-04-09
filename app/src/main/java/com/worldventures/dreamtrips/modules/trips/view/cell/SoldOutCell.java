@@ -11,10 +11,6 @@ import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 
 import butterknife.InjectView;
 
-/**
- * Edward on 23.01.15.
- * cell for show sold out filter
- */
 @Layout(R.layout.adapter_item_show_sold_out)
 public class SoldOutCell extends AbstractCell<SoldOutModel> {
 
@@ -36,6 +32,6 @@ public class SoldOutCell extends AbstractCell<SoldOutModel> {
 
     @Override
     public void prepareForReuse() {
-
+        //nothing to do here
     }
 }

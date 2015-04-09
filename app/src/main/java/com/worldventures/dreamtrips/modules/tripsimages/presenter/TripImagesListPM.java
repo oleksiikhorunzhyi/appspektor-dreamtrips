@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.content.Context;
 import android.os.Handler;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -20,16 +19,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPM.View> {
 
     public static final int PER_PAGE = 15;
-
-    @Inject
-    protected Context context;
 
     protected Type type;
 
@@ -82,7 +76,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             if (type == event.getType() && view.getAdapter().getCount() == 0) {
                 view.clear();
                 view.addAll(event.getImages());
-                view.setSelection();
             }
         }, 100);
     }
@@ -195,8 +188,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         void startLoading();
 
         void finishLoading();
-
-        void setSelection();
 
         IRoboSpiceAdapter getAdapter();
 

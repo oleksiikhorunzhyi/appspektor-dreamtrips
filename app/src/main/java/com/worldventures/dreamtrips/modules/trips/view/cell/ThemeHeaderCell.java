@@ -13,9 +13,6 @@ import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * 1 on 23.01.15.
- */
 @Layout(R.layout.adapter_item_activity_header)
 public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
 
@@ -51,7 +48,7 @@ public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
 
     @Override
     public void prepareForReuse() {
-
+        //nothing to do here
     }
 }
 

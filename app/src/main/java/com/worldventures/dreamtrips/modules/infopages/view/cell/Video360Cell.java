@@ -52,6 +52,6 @@ public class Video360Cell extends AbstractCell<Video360> {
 
     @Override
     public void prepareForReuse() {
-
+        imageViewPreview.setImageResource(0);
     }
 }

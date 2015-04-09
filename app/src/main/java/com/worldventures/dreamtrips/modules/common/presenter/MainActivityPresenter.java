@@ -1,35 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.UpdateSelectionEvent;
 
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
-
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
-
-    @Global
-    @Inject
-    protected EventBus eventBus;
 
     public MainActivityPresenter(View view) {
         super(view);
-    }
-
-    public void create() {
-
-    }
-
-    @Override
-    public void resume() {
-        super.resume();
-        updateFaqAndTermLinks();
-    }
-
-    private void updateFaqAndTermLinks() {
-
     }
 
     public void onBackPressed() {

@@ -146,7 +146,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        //nothing to do here
     }
 
     @Override
@@ -162,6 +162,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        //nothing to do here
     }
 }

@@ -14,7 +14,6 @@ public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<Ba
 
     private ContentLoader<List<BaseItemClass>> contentLoader;
 
-
     @Override
     public void setContentLoader(ContentLoader<List<BaseItemClass>> contentLoader) {
         this.contentLoader = contentLoader;
@@ -32,7 +31,7 @@ public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<Ba
 
     @Override
     public void onStartLoading() {
-
+        //nothing to do here
     }
 
 
@@ -45,5 +44,6 @@ public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<Ba
 
     @Override
     public void onError(Throwable throwable) {
+        //nothing to do here
     }
 }

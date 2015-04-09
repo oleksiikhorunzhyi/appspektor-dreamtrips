@@ -102,7 +102,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
 
-        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             this.recyclerView.addItemDecoration(
                     new ItemShadowDecorator((NinePatchDrawable) getResources()
                             .getDrawable(R.drawable.material_shadow_z1)));

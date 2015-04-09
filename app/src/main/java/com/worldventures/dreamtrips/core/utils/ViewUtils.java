@@ -8,6 +8,9 @@ import android.view.Display;
 
 public class ViewUtils {
 
+    private ViewUtils() {
+    }
+
     public static int getScreenWidth(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -15,7 +18,6 @@ public class ViewUtils {
         int width = size.x;
         return width;
     }
-
 
     public static int getMinSideSize(Activity activity) {
         return Math.min(getScreenHeight(activity), getScreenWidth(activity));
@@ -45,11 +47,11 @@ public class ViewUtils {
     }
 
     public static boolean isTablet(Context context) {
-        boolean xlarge = ((context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
-        boolean large = ((context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
-        return (xlarge || large);
+        boolean xlarge = (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        boolean large = (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE;
+        return xlarge || large;
     }
 
     public static float dpFromPx(final Context context, final float px) {

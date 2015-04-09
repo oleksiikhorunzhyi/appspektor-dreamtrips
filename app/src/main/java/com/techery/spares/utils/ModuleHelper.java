@@ -4,6 +4,10 @@ package com.techery.spares.utils;
 import com.techery.spares.module.Annotations.UseModule;
 
 public class ModuleHelper {
+
+    private ModuleHelper() {
+    }
+
     public static Object getUsedModule(Object object) {
         try {
             UseModule useModule = object.getClass().getAnnotation(UseModule.class);

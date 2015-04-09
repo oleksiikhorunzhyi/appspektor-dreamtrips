@@ -1,21 +1,18 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-/**
- *  1 on 23.01.15.
- */
 public class SoldOutEvent {
 
-    private boolean isSoldOut;
+    private boolean soldOut;
 
-    public SoldOutEvent(boolean isSoldOut) {
-        this.isSoldOut = isSoldOut;
+    public SoldOutEvent(boolean soldOut) {
+        this.soldOut = soldOut;
     }
 
     public boolean isSoldOut() {
-        return isSoldOut;
+        return soldOut;
     }
 
-    public void setSoldOut(boolean isSoldOut) {
-        this.isSoldOut = isSoldOut;
+    public void setSoldOut(boolean soldOut) {
+        this.soldOut = soldOut;
     }
 }

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.model;
 import java.io.Serializable;
 
 public class Price implements Serializable {
+    public static final String USD = "USD";
 
     private double amount;
     private String currency;
@@ -30,7 +31,7 @@ public class Price implements Serializable {
 
     private String getCurrencySymbol() {
         String result = currency;
-        if (currency.equals("USD")) {
+        if (currency.equals(USD)) {
             result = "$";
         }
         return result;

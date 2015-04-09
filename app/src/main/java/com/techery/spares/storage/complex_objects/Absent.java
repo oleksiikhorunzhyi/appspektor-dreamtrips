@@ -28,14 +28,16 @@ import java.util.Set;
  * Implementation of an {@link Optional} not containing a reference.
  */
 final class Absent<T> extends Optional<T> {
+    private static final long serialVersionUID = 0;
+
     private static final Absent<Object> INSTANCE = new Absent<Object>();
+
+    private Absent() {
+    }
 
     @SuppressWarnings("unchecked") // implementation is "fully variant"
     static <T> Optional<T> withType() {
         return (Optional<T>) INSTANCE;
-    }
-
-    private Absent() {
     }
 
     @Override
@@ -101,5 +103,4 @@ final class Absent<T> extends Optional<T> {
         return INSTANCE;
     }
 
-    private static final long serialVersionUID = 0;
 }

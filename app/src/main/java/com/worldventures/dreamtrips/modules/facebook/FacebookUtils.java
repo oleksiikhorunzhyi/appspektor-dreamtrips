@@ -129,7 +129,7 @@ public class FacebookUtils {
         }
 
         GraphObjectList<GraphObject> graphObjects = graphObject.getPropertyAsList(property, GraphObject.class);
-        if (graphObjects == null || graphObjects.size() == 0) {
+        if (graphObjects == null || !graphObjects.isEmpty()) {
             return result;
         }
 

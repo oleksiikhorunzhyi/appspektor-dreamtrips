@@ -25,10 +25,11 @@ public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucke
             list.addAll(getService().getPopularActivities());
         }
 
-        if (list.size() > 0)
+        if (!list.isEmpty()) {
             for (PopularBucketItem popularBucketItem : list) {
                 popularBucketItem.setType(type.getName());
             }
+        }
 
         return list;
     }

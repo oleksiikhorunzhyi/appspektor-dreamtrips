@@ -20,6 +20,8 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dates)
 public class DateCell extends AbstractCell<DateFilterItem> implements DatePickerDialog.OnDateSetListener {
+    public static final String START = "start";
+    public static final String END = "end";
 
     @InjectView(R.id.textViewStartDate)
     protected TextView textViewStart;
@@ -42,12 +44,12 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
 
     @OnClick(R.id.textViewStartDate)
     void onStartClick() {
-        showDatePickerDialog("start");
+        showDatePickerDialog(START);
     }
 
     @OnClick(R.id.textViewEndDate)
     void onEndClick() {
-        showDatePickerDialog("end");
+        showDatePickerDialog(END);
     }
 
     private void showDatePickerDialog(String tag) {
@@ -62,7 +64,8 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        if (tag.equals("end")) {
+
+        if (tag.equals(END)) {
             textViewEnd.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
             getModelObject().setEndDate(calendar.getTime());
         } else {

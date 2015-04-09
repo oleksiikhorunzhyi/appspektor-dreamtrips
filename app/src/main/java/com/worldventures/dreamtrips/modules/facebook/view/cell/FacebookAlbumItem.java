@@ -26,6 +26,7 @@ import butterknife.InjectView;
 public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
 
     protected FacebookAlbum photo;
+
     @Inject
     protected UniversalImageLoader universalImageLoader;
 
@@ -56,7 +57,7 @@ public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
 
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolder h = ((ViewHolder) holder);
+        ViewHolder h = (ViewHolder) holder;
         //https://graph.facebook.com/<?=$album['id']?>/picture?type=album&access_token=<?=$access_token?>
         universalImageLoader.loadImage(photo.getCoverUrl(Session.getActiveSession().getAccessToken()), h.ivBg, null, new SimpleImageLoadingListener());
         h.tvTitle.setText(photo.getName());

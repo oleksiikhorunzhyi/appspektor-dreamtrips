@@ -21,7 +21,8 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories_details)
 public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter> implements SuccessStoryDetailsFragmentPresenter.View {
 
-    public static final String STORY = "STORY";
+    public static final String EXTRA_STORY = "STORY";
+
     private SuccessStory story;
 
     @InjectView(R.id.progressBarWeb)
@@ -54,7 +55,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     public void afterCreateView(View rootView) {
-        story = getArguments().getParcelable(STORY);
+        story = getArguments().getParcelable(EXTRA_STORY);
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);
         }

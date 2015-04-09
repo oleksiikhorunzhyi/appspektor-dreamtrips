@@ -13,6 +13,8 @@ public class ValidationUtils {
     private static final String USERNAME_PATTERN = "^[a-z0-9._-]{2,25}$";
     private static final String PASSWORD_PATTERN = ".+";
 
+    private ValidationUtils() {
+    }
 
     public static VResult isUsernameValid(String username) {
 
@@ -45,16 +47,16 @@ public class ValidationUtils {
 
 
     public static class VResult {
-        protected boolean isValid;
+        protected boolean valid;
         protected int messageRes;
 
-        private VResult(boolean isValid, int message) {
-            this.isValid = isValid;
+        private VResult(boolean valid, int message) {
+            this.valid = valid;
             this.messageRes = message;
         }
 
         public boolean isValid() {
-            return isValid;
+            return valid;
         }
 
         public int getMessage() {

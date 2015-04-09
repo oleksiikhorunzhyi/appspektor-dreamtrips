@@ -113,7 +113,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
                     albums.add(album);
                 }
             }
-            adapter.addItems(FacebookAlbumItem.convert(((Injector) getActivity()), albums));
+            adapter.addItems(FacebookAlbumItem.convert((Injector) getActivity(), albums));
             adapter.notifyDataSetChanged();
         } else {
             //TODO handle error

@@ -37,9 +37,9 @@ public class CustomViewPager extends ViewPager {
     protected boolean canScroll(View v, boolean checkV, int dx, int x,
                                 int y) {
         if (v instanceof RecyclerView) {
-            return (true);
+            return true;
         }
 
-        return (super.canScroll(v, checkV, dx, x, y));
+        return super.canScroll(v, checkV, dx, x, y);
     }
 }

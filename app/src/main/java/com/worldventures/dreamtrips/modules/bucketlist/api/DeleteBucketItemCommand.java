@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 public class DeleteBucketItemCommand extends Command<JsonObject> {
     private int id;
     private long delay;
-    private boolean isCanceled = false;
+    private boolean canceled = false;
 
     public DeleteBucketItemCommand(int id, long delay) {
         super(JsonObject.class);
@@ -18,11 +18,11 @@ public class DeleteBucketItemCommand extends Command<JsonObject> {
     }
 
     public boolean isCanceled() {
-        return isCanceled;
+        return canceled;
     }
 
-    public void setCanceled(boolean isCanceled) {
-        this.isCanceled = isCanceled;
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DeleteBucketItemCommand extends Command<JsonObject> {
             Log.e(DreamTripsRequest.class.getName(), "", e);
         }
 
-        if (isCanceled) {
+        if (canceled) {
             return new JsonObject();
         } else {
             Log.d("TAG_BucketListPM", "Sending delete item event");

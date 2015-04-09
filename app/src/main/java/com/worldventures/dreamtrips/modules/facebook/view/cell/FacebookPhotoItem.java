@@ -55,7 +55,7 @@ public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
 
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolder h = ((ViewHolder) holder);
+        ViewHolder h = (ViewHolder) holder;
         universalImageLoader.loadImage(photo.getPicture(), h.ivBg, null, new SimpleImageLoadingListener());
     }
 

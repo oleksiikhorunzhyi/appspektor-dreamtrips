@@ -236,7 +236,9 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
         int action = getAction(lastOffset, xvel);
         renderAction(action);
         int closeDelay = 0;
-        if (isFling(xvel)) closeDelay = 250;
+        if (isFling(xvel)) {
+            closeDelay = 250;
+        }
         itemView.postDelayed(() -> swipeLayout.close(true, false), closeDelay);
         itemView.postDelayed(() -> processAction(action), 300);
     }

@@ -53,7 +53,9 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         ArrayList<SuccessStory> result = new ArrayList<>();
         if (isFilterFavorites()) {
             for (SuccessStory successStory : successStories) {
-                if (successStory.isLiked()) result.add(successStory);
+                if (successStory.isLiked()) {
+                    result.add(successStory);
+                }
             }
         } else {
             result.addAll(successStories);
@@ -91,7 +93,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
     private void handleListItemClick(SuccessStory successStory, int position) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoriesDetailsFragment.STORY, successStory);
+        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
         if (view.isLandscape() && view.isTablet()) {
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);

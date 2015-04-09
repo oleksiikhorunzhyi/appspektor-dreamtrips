@@ -85,7 +85,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             public void onRequestSuccess(ArrayList<ActivityModel> activities) {
                 FiltersPresenter.this.activities = activities;
                 parentActivities = getParentActivities();
-                if (regions != null && regions.size() != 0) {
+                if (regions != null && !regions.isEmpty()) {
                     fillData();
                 }
             }
@@ -100,7 +100,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             @Override
             public void onRequestSuccess(ArrayList<RegionModel> regions) {
                 FiltersPresenter.this.regions = regions;
-                if (activities != null && activities.size() != 0) {
+                if (activities != null && !activities.isEmpty()) {
                     fillData();
                 }
 

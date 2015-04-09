@@ -20,7 +20,7 @@ public class SuccessStoryDetailsPresenter extends Presenter<Presenter.View> {
 
     public void onCreate(SuccessStory story) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoriesDetailsFragment.STORY, story);
+        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, story);
         fragmentCompass.add(Route.SUCCESS_STORES_DETAILS, bundle);
     }
 }

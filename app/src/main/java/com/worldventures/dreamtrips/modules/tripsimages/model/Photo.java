@@ -28,6 +28,21 @@ public class Photo implements Parcelable, IFullScreenAvailableObject {
     public Photo() {
     }
 
+    private Photo(Parcel in) {
+        this.title = in.readString();
+        long tmpShotAt = in.readLong();
+        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.tags = new ArrayList<>();
+        in.readList(this.tags, ArrayList.class.getClassLoader());
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.liked = in.readByte() != 0;
+        this.likesCount = in.readInt();
+        this.taskId = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.id = in.readString();
+    }
+
     public String getId() {
         return id;
     }
@@ -217,21 +232,6 @@ public class Photo implements Parcelable, IFullScreenAvailableObject {
         dest.writeString(this.taskId);
         dest.writeParcelable(this.user, 0);
         dest.writeString(this.id);
-    }
-
-    private Photo(Parcel in) {
-        this.title = in.readString();
-        long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
-        this.location = in.readParcelable(Location.class.getClassLoader());
-        this.tags = new ArrayList<>();
-        in.readList(this.tags, ArrayList.class.getClassLoader());
-        this.images = in.readParcelable(Image.class.getClassLoader());
-        this.liked = in.readByte() != 0;
-        this.likesCount = in.readInt();
-        this.taskId = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.id = in.readString();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {

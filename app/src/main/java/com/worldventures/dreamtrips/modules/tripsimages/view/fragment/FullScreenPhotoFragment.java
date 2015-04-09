@@ -316,18 +316,20 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     public void setDate(String date) {
         if (TextUtils.isEmpty(date)) {
             tvDate.setVisibility(View.GONE);
-            date = "";
+        } else {
+            tvDate.setVisibility(View.VISIBLE);
+            tvDate.setText(date.toUpperCase());
         }
-        tvDate.setText(date.toUpperCase());
     }
 
     @Override
     public void setLocation(String location) {
         if (TextUtils.isEmpty(location)) {
             tvLocation.setVisibility(View.GONE);
-            location = "";
+        } else {
+            tvLocation.setVisibility(View.VISIBLE);
+            tvLocation.setText(location.toUpperCase());
         }
-        tvLocation.setText(location.toUpperCase());
     }
 
     @Override

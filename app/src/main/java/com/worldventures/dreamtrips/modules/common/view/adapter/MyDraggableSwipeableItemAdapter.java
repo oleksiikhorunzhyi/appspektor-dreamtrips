@@ -60,7 +60,8 @@ public class MyDraggableSwipeableItemAdapter<V>
         return new ItemDraggableRange(startPosition, endPosition);
     }
 
-    private int getStartDragPosition(int position) {
+    private int getStartDragPosition(int currentPosition) {
+        int position = currentPosition;
         Object item = getItem(position);
 
         if (item instanceof BucketHeader) {
@@ -80,7 +81,8 @@ public class MyDraggableSwipeableItemAdapter<V>
         return position;
     }
 
-    private int getEndDragPosition(int position) {
+    private int getEndDragPosition(int currentPosition) {
+        int position = currentPosition;
         Object item = getItem(position);
 
         if (item instanceof BucketHeader) {

@@ -59,9 +59,9 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
         if (bundleExtra == null) {
             finish();
         } else {
-            imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL);
-            shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL);
-            text = bundleExtra.getString(BUNDLE_TEXT);
+            imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL, "");
+            shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL, "");
+            text = bundleExtra.getString(BUNDLE_TEXT, "");
             type = bundleExtra.getString(BUNDLE_SHARE_TYPE);
             getPresentationModel().create(imageUrl, shareUrl, text, type);
             getIntent().removeExtra(ActivityRouter.EXTRA_BUNDLE);
@@ -95,6 +95,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     }
 
 
+    @Override
     public void shareFBDialog(String url, String link, String text) {
         if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
                 FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
@@ -119,7 +120,6 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
             publishFeedDialog(url, link, text, "DreamTrips");
         }
     }
-
 
     private void publishFeedDialog(String picture, String link, String text, String appName) {
         Session session = Session.getActiveSession();
@@ -154,18 +154,12 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
         }
     }
 
-
+    @Override
     public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
-        if (shareUrl == null) {
-            shareUrl = "";
-        }
-
+        String url = shareUrl;
+        
         if (!shareUrl.isEmpty()) {
-            shareUrl += "\n";
-        }
-
-        if (text == null) {
-            text = "";
+            url += "\n";
         }
 
         TweetComposer.Builder builder = new TweetComposer.Builder(this);

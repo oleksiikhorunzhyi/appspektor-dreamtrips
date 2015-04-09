@@ -56,7 +56,6 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     public void afterCreateView(View rootView) {
         story = getArguments().getParcelable(STORY);
         if (!ViewUtils.isTablet(getActivity())) {
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
             ivFullscreen.setVisibility(View.GONE);
         }
         super.afterCreateView(rootView);
@@ -67,6 +66,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         }
 
         if (getActivity() instanceof SuccessStoryDetailsActivity) {
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
         } else {
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);

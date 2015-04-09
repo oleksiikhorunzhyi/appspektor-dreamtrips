@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -11,10 +10,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
-
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
@@ -32,7 +27,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
-            return new FSPhotoPM(view);
+            return new FSPhotoPresenter(view);
         } else if (photo instanceof Inspiration) {
             return new FSInspireMePM(view);
         }

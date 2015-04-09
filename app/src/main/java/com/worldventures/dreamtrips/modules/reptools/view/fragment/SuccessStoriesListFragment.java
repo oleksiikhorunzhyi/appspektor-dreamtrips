@@ -13,7 +13,6 @@ import android.widget.PopupMenu;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -112,6 +111,16 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onRefresh() {
         getPresenter().reload();
     }
@@ -132,12 +141,13 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
-    public IRoboSpiceAdapter<SuccessStory> getAdapter() {
+    public FilterableArrayListAdapter<SuccessStory> getAdapter() {
         return adapter;
     }
 
     @Override
     public void finishLoading(List<SuccessStory> result) {
+        adapter.setFilter(ivSearch.getQuery().toString());
         new Handler().postDelayed(() -> {
             if (getActivity() != null) {
                 refreshLayout.setRefreshing(false);
@@ -155,4 +165,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         new Handler().postDelayed(() -> refreshLayout.setRefreshing(true), 100);
     }
 
+    @Override
+    public void onStoryClicked() {
+        ivSearch.clearFocus();
+    }
 }

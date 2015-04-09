@@ -67,7 +67,7 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
 
     @Override
     public String getFsDescription() {
-        return quote;
+        return String.format("\"%s\"", quote);
     }
 
     @Override

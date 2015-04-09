@@ -6,26 +6,25 @@ import java.io.Serializable;
 
 public interface IFullScreenAvailableObject extends Serializable, Parcelable {
 
-    public Image getFSImage();
+    Image getFSImage();
 
-    public String getFSTitle();
+    String getFSTitle();
 
-    public String getFsDescription();
+    String getFsDescription();
 
-    public String getFsShareText();
+    String getFsShareText();
 
-    public String getId();
+    String getId();
 
-    public String getUserName();
+    String getUserName();
 
-    public String getUserLocation();
+    String getUserLocation();
 
-    public String getUserAvatar();
+    String getUserAvatar();
 
-    public String getPhotoLocation();
+    String getPhotoLocation();
 
     int getFsCommentCount();
-
 
     int getFsLikeCount();
 

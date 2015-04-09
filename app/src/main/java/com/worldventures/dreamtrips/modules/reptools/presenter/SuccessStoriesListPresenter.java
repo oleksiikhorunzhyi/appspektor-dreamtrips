@@ -4,27 +4,20 @@ import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import de.greenrobot.event.EventBus;
 
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
 
@@ -88,6 +81,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
     public void onEvent(OnSuccessStoryCellClickEvent event) {
         handleListItemClick(event.getModelObject(), event.getPosition());
+        view.onStoryClicked();
     }
 
     public void onEvent(SuccessStoryLikedEvent event) {
@@ -129,7 +123,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         return onlyFavorites;
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
 
         boolean isTablet();
 
@@ -137,11 +131,13 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
         void setDetailsContainerVisibility(boolean b);
 
-        IRoboSpiceAdapter<SuccessStory> getAdapter();
+        FilterableArrayListAdapter<SuccessStory> getAdapter();
 
         void finishLoading(List<SuccessStory> items);
 
         void startLoading();
+
+        void onStoryClicked();
     }
 }
 

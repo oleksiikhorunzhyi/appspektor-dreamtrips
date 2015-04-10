@@ -180,6 +180,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketItems.remove(event.getBucketItem());
             refresh();
 
+            if (view.isTabletLandscape() && view.detailsOpened()) {
+                openDetails(index == bucketItems.size() ?
+                        bucketItems.get(index - 1) :
+                        bucketItems.get(index));
+            }
+
             DeleteBucketItemCommand request = deleteDellayed(event.getBucketItem().getId());
             view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
@@ -202,6 +208,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             activityRouter.openBucketItemDetails(bundle);
         }
     }
+
 
     public void addPopular() {
         activityRouter.openBucketListPopularActivity(type);
@@ -334,5 +341,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void finishLoading();
 
         void showDetailsContainer();
+
+        boolean detailsOpened();
     }
 }

@@ -76,6 +76,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             if (type == event.getType() && view.getAdapter().getCount() == 0) {
                 view.clear();
                 view.addAll(event.getImages());
+                view.setSelection();
             }
         }, 100);
     }

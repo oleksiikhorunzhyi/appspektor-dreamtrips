@@ -95,6 +95,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
                             && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
                             && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)).toList());
 
+            filteredTrips.clear();
             filteredTrips.addAll(Queryable.from(tempList).filter((input) -> input.containsQuery(query)).toList());
             reloadPins();
         }

@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
 import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -38,6 +40,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return false;
@@ -160,14 +168,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
             url = getArguments().getString(URL_EXTRA);
         }
 
         @Override
         public void afterCreateView(View rootView) {
-            super.afterCreateView(rootView);
             webView.getSettings().setDomStorageEnabled(true);
+            super.afterCreateView(rootView);
         }
 
         @Override

@@ -11,7 +11,6 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
 
     @Override
     protected String getURL() {
-        ;
         UserSession userSession = getPresenter().getCurrentUser();
         return getPresenter().getConfig().getoTAPageBaseURL()
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())

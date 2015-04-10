@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class InspireMePM extends TripImagesListPM<Inspiration> {
+    protected double randomSeed;
+
     public InspireMePM(View view) {
         super(view, Type.INSPIRE_ME);
     }
-
-    double randomSeed;
 
     @Override
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {

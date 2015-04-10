@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
@@ -60,6 +62,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         } else {
             result.addAll(successStories);
         }
+        Collections.sort(result, (lhs, rhs) -> lhs.getAuthor().compareTo(rhs.getAuthor()));
         return result;
     }
 

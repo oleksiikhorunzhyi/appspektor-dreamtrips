@@ -11,14 +11,11 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
 
     @Override
     protected String getURL() {
-        AppConfig config = getPresenter().getConfig();
-        AppConfig.URLS urls = config.getUrls();
-        AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+        ;
         UserSession userSession = getPresenter().getCurrentUser();
-        String url = configs.getoTAPageURL()
+        return getPresenter().getConfig().getoTAPageBaseURL()
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
                 .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
-        return url;
     }
 
 }

@@ -47,8 +47,11 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
 
-    public AppConfig getConfig() {
-        return appSessionHolder.get().get().getGlobalConfig();
+    public AppConfig.URLS.Config getConfig() {
+        AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
+        AppConfig.URLS urls = appConfig.getUrls();
+
+        return BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
     }
 
 

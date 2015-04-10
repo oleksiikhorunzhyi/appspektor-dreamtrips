@@ -9,7 +9,6 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -143,10 +142,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TrainingVideosFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            AppConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
-            AppConfig.URLS urls = config.getUrls();
-            AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-            return configs.getTrainingVideosURL();
+            AppConfig.URLS.Config config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
+            return config.getTrainingVideosURL();
         }
     }
 
@@ -154,16 +151,21 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class EnrollRepFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            AppConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
-            AppConfig.URLS urls = config.getUrls();
-            AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+            AppConfig.URLS.Config configs = ((WebViewFragmentPresenter) getPresenter()).getConfig();
             String enrollRepURL = configs.getEnrollRepURL();
             UserSession currentUser = ((WebViewFragmentPresenter) getPresenter()).getCurrentUser();
             String username = Base64.encodeToString(currentUser.getUsername().getBytes(), Base64.DEFAULT);
-            String url = enrollRepURL
+            return enrollRepURL
                     .replace("{BASE64_ENCODED_USERID}", username)
                     .replace("{locale}", getResources().getConfiguration().locale.getLanguage());
-            return url;
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.getSettings().setUseWideViewPort(true);
         }
     }
 

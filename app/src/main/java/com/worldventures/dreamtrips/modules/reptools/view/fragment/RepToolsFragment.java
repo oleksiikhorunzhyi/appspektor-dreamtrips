@@ -3,10 +3,13 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -17,6 +20,7 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_rep_tools)
+@MenuResource(R.menu.menu_empty)
 public class RepToolsFragment extends BaseFragment<RepToolsPresenter> {
 
     @InjectView(R.id.tabs)
@@ -46,6 +50,12 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> {
         this.pager.setAdapter(adapter);
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.trips.TripsModule;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -122,15 +124,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         makeActionBarTransparent(false);
 
         if (route != null) {
-            final String className = route.getFragmentClass().getName();
-            BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
-
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment);
-            fragmentTransaction.addToBackStack(route.getKey());
-            fragmentTransaction.commit();
-
-            setTitle(route.getTitle());
+            openComponent(route, true);
 
             if (detailsFrameLayout != null) {
                 detailsFrameLayout.setVisibility(View.GONE);
@@ -139,9 +133,32 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     @Override
-    public void onNavigationDrawerItemReselected(ComponentDescription componentDescription) {
+    public void onNavigationDrawerItemReselected(ComponentDescription route) {
         eventBus.post(new WebViewReloadEvent());
+        if (route != null) {
+            if (route.getKey().equals(TripsModule.OTA) ||
+                    route.getKey().equals(InfoModule.FAQ) ||
+                    route.getKey().equals(InfoModule.TERMS_OF_SERVICE)) {
+                openComponent(route, false);
+            }
+        }
         closeLeftDrawer();
+    }
+
+    private void openComponent(ComponentDescription route, boolean backstack) {
+        final String className = route.getFragmentClass().getName();
+        BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+
+        if (backstack) {
+            fragmentTransaction.addToBackStack(route.getKey());
+        }
+
+        fragmentTransaction.commit();
+
+        setTitle(route.getTitle());
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {

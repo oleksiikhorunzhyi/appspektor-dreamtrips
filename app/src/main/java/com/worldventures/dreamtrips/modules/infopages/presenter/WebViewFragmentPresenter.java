@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
@@ -34,7 +35,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public void onEvent(WebViewReloadEvent event) {
-        view.reload();
+        if (view instanceof StaticInfoFragment.TrainingVideosFragment) {
+            view.reload();
+        }
     }
 
     public String etEnrollUrl() {

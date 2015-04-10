@@ -267,4 +267,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return mAdapter;
     }
 
+    @Override
+    public boolean detailsOpened() {
+        return getActivity().findViewById(R.id.container_bucket_details).getVisibility() == View.VISIBLE;
+    }
 }

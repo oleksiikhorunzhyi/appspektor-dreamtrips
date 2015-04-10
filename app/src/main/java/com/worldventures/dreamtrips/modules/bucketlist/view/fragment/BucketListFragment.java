@@ -230,6 +230,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
+    public void hideContainer() {
+        getActivity().onBackPressed();
+    }
+
+    @Override
     public void informUser(String stringId) {
         Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
     }

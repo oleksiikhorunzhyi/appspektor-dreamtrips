@@ -12,9 +12,8 @@
         <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleStageDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileStageDebugSources" />
-        <option name="SOURCE_GEN_TASK_NAME" value="generateStageDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugAndroidTest" />
-        <option name="COMPILE_JAVA_TEST_TASK_NAME" value="compileStageDebugAndroidTestSources" />
+        <option name="SOURCE_GEN_TASK_NAME" value="generateStageDebugSources" />
         <option name="TEST_SOURCE_GEN_TASK_NAME" value="generateStageDebugAndroidTestSources" />
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
@@ -111,16 +110,16 @@
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="instabugsupport-1.2.7" level="project" />
-    <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-stickyheaders-0.5.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.4" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.4.7" level="project" />
     <orderEntry type="library" exported="" name="robospice-retrofit-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="objenesis-2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="mimecraft-1.1.1" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.7" level="project" />
     <orderEntry type="library" exported="" name="panframe-1.9" level="project" />
     <orderEntry type="library" exported="" name="apptentive-android-1.7.0" level="project" />
@@ -177,11 +176,11 @@
     <orderEntry type="library" exported="" name="materialrangebar-0.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.23.1" level="project" />
-    <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="collections-query-0.2.8" level="project" />
-    <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="armeabi" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.2" level="project" />
   </component>
@@ -190,3 +189,4 @@
     <option name="serverName" value="&lt;PROJECT&gt;" />
   </component>
 </module>
+

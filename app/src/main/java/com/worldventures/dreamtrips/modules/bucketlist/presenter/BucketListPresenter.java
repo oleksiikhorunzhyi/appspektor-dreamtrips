@@ -180,9 +180,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             refresh();
 
             if (view.isTabletLandscape() && view.detailsOpened()) {
-                openDetails(index == bucketItems.size() ?
-                        bucketItems.get(index - 1) :
-                        bucketItems.get(index));
+                if (bucketItems.isEmpty()) {
+                    view.hideContainer();
+                } else {
+                    openDetails(index == bucketItems.size() ?
+                            bucketItems.get(index - 1) :
+                            bucketItems.get(index));
+                }
             }
 
             DeleteBucketItemCommand request = deleteDellayed(event.getBucketItem().getId());
@@ -340,6 +344,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void finishLoading();
 
         void showDetailsContainer();
+
+        void hideContainer();
 
         boolean detailsOpened();
     }

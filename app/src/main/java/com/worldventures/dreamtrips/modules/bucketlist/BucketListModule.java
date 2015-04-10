@@ -54,7 +54,6 @@ import dagger.Provides;
                 UploadBucketPhotoCommand.class,
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
-                BucketPhotoCellForEdit.class
         },
         complete = false,
         library = true

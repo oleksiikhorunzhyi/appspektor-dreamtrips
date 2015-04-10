@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForEdit;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
@@ -50,12 +50,12 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Fragment fragment, Injector injector, boolean isEdit) {
+    public void init(Fragment fragment, Injector injector) {
         if (imagesAdapter == null) {
             this.fragment = fragment;
 
             imagesAdapter = new BucketImageAdapter(getContext(), injector);
-            imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForEdit.class);
+            imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
             imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
             imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
             imagesAdapter.addItem(new Object());

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 
 public class UniversalImageLoader {
 
+    public static final String PATTERN = "?width=%d&height=%d";
 
     public static final DisplayImageOptions OP_AVATAR = new DisplayImageOptions.Builder()
             .cacheOnDisk(false)

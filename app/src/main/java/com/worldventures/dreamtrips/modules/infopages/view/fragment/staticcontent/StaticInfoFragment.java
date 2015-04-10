@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
@@ -10,9 +11,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -149,10 +150,30 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TrainingVideosFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            AppConfig config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
-            AppConfig.URLS urls = config.getUrls();
-            AppConfig.URLS.Config configs = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-            return configs.getTrainingVideosURL();
+            AppConfig.URLS.Config config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
+            return config.getTrainingVideosURL();
+        }
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class EnrollRepFragment extends StaticInfoFragment {
+        @Override
+        protected String getURL() {
+            AppConfig.URLS.Config configs = ((WebViewFragmentPresenter) getPresenter()).getConfig();
+            String enrollRepURL = configs.getEnrollRepURL();
+            UserSession currentUser = ((WebViewFragmentPresenter) getPresenter()).getCurrentUser();
+            String username = Base64.encodeToString(currentUser.getUsername().getBytes(), Base64.DEFAULT);
+            return enrollRepURL
+                    .replace("{BASE64_ENCODED_USERID}", username)
+                    .replace("{locale}", getResources().getConfiguration().locale.getLanguage());
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.getSettings().setUseWideViewPort(true);
         }
     }
 

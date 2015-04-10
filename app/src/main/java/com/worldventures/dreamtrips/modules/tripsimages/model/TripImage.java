@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 
 import java.io.Serializable;
 
 public class TripImage implements Serializable {
-    public static final String PATTERN = "?width=%d&height=%d";
     public static final long serialVersionUID = 128L;
 
     private String id;
@@ -32,7 +32,7 @@ public class TripImage implements Serializable {
     }
 
     public String getUrl(int width, int height) {
-        return url + String.format(PATTERN, width, height);
+        return url + String.format(UniversalImageLoader.PATTERN, width, height);
     }
 
     public String getType() {

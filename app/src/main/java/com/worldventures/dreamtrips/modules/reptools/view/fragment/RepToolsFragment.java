@@ -40,6 +40,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> {
 
             this.adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
             this.adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
+            this.adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
 
         }
         this.pager.setAdapter(adapter);

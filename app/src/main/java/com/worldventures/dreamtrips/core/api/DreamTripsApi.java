@@ -62,8 +62,8 @@ public interface DreamTripsApi {
     @GET("/api/users/{id}/photos")
     public ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
-    @GET("/api/inspirations")
-    public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page);
+    @GET("/api/inspirations?random_seed=1")
+    public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
 
     @GET("/api/ysbh_photos")
     public ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);

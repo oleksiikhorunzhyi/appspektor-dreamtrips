@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class InspireMePM extends TripImagesListPM<Inspiration> {
+    protected double randomSeed;
+
     public InspireMePM(View view) {
         super(view, Type.INSPIRE_ME);
     }
@@ -21,13 +23,14 @@ public class InspireMePM extends TripImagesListPM<Inspiration> {
 
             @Override
             public SpiceRequest<ArrayList<Inspiration>> getRefreshRequest() {
-                return new GetInspireMePhotosQuery(PER_PAGE, 1);
+                randomSeed = Math.random();
+                return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
             }
 
             @Override
             public SpiceRequest<ArrayList<Inspiration>> getNextPageRequest(int currentCount) {
                 Log.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
-                return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+                return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
             }
         };
     }

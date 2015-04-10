@@ -37,6 +37,7 @@ import dagger.Provides;
                 StaticInfoFragment.PrivacyPolicyFragment.class,
                 StaticInfoFragment.CookiePolicyFragment.class,
                 StaticInfoFragment.FAQFragment.class,
+                StaticInfoFragment.EnrollRepFragment.class,
 
                 VideoCell.class,
                 Video360Cell.class,

@@ -143,7 +143,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
-            eventBus.cancelEventDelivery(event);
             BucketItem bucketItem = event.getBucketItem();
 
             moveItem(bucketItem, bucketItem.isDone()

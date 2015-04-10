@@ -57,7 +57,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
 
         Bundle bundle = new Bundle();
         bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
-        fragmentCompass.add(Route.BOOK_IT, bundle);
+        fragmentCompass.replace(Route.BOOK_IT, bundle);
     }
 
     public static interface View extends Presenter.View {

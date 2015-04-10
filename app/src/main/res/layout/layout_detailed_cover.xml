@@ -7,14 +7,20 @@
         android:id="@+id/imageViewCover"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bucket_detail_cover_size"
-        android:src="@drawable/ic_trip_image_placeholder"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_trip_image_placeholder" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="bottom"
         android:background="@drawable/bucket_item_shadow" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="top"
+        android:background="@drawable/trip_item_shadow" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_actionbar"
@@ -25,8 +31,9 @@
         android:id="@+id/imageViewPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_gravity="end"
+        android:visibility="gone"
+        android:layout_margin="16dp"
         android:src="@drawable/ic_photo_camera" />
 
     <LinearLayout

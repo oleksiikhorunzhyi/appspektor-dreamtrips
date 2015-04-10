@@ -76,6 +76,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
             if (type == event.getType() && view.getAdapter().getCount() == 0) {
                 view.clear();
                 view.addAll(event.getImages());
+                view.setSelection();
             }
         }, 100);
     }
@@ -182,7 +183,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
-    public static interface View extends Presenter.View, AdapterView<IFullScreenAvailableObject> {
+    public interface View extends Presenter.View, AdapterView<IFullScreenAvailableObject> {
         List<IFullScreenAvailableObject> getPhotosFromAdapter();
 
         void startLoading();
@@ -233,14 +234,14 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                     if (item instanceof ImageUploadTask
                             && ((ImageUploadTask) item).isFailed()) {
                         dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
+                    }
                 }
             }
+
+            view.finishLoading();
         }
 
-        view.finishLoading();
     }
-
-}
 
 
 }

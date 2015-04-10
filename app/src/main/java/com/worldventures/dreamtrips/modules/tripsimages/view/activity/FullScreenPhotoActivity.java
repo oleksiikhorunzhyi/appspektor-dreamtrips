@@ -76,7 +76,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
             position = 0;
         }
         setupAdapter();
-
         toolbar.getBackground().setAlpha(0);
 
         pager.setAdapter(adapter);

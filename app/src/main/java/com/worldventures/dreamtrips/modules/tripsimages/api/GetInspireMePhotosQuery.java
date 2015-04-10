@@ -11,16 +11,18 @@ public class GetInspireMePhotosQuery extends Query<ArrayList<Inspiration>> {
 
     protected int perPage;
     protected int page;
+    private double randomSeed;
 
-    public GetInspireMePhotosQuery(int perPage, int page) {
+    public GetInspireMePhotosQuery(int perPage, int page, double randomSeed) {
         super((Class<ArrayList<Inspiration>>) new ArrayList<Inspiration>().getClass());
         this.perPage = perPage;
         this.page = page;
+        this.randomSeed = randomSeed;
     }
 
     @Override
     public ArrayList<Inspiration> loadDataFromNetwork() throws Exception {
         Log.i("LoadNext", "per page: " + perPage + "; page:" + page);
-        return getService().getInspirationsPhotos(perPage, page);
+        return getService().getInspirationsPhotos(perPage, page,randomSeed);
     }
 }

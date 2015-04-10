@@ -15,19 +15,22 @@ public class InspireMePM extends TripImagesListPM<Inspiration> {
         super(view, Type.INSPIRE_ME);
     }
 
+    double randomSeed;
+
     @Override
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
         return new TripImagesRoboSpiceController() {
 
             @Override
             public SpiceRequest<ArrayList<Inspiration>> getRefreshRequest() {
-                return new GetInspireMePhotosQuery(PER_PAGE, 1);
+                randomSeed = Math.random();
+                return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
             }
 
             @Override
             public SpiceRequest<ArrayList<Inspiration>> getNextPageRequest(int currentCount) {
                 Log.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
-                return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+                return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
             }
         };
     }

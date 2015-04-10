@@ -180,7 +180,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void updatePhotos() {
-        bucketPhotosView.init(this, (Injector) getActivity(),false);
+        bucketPhotosView.init(this, (Injector) getActivity());
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }

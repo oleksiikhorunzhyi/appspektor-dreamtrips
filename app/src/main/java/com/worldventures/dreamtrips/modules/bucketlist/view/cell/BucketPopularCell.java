@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,7 +51,25 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
     protected void syncUIStateWithModel() {
         textViewDescription.setText(getModelObject().getDescription());
         textViewName.setText(getModelObject().getName());
-        universalImageLoader.loadImage(getModelObject().getCoverPhotoUrl(), imageViewImage, UniversalImageLoader.OP_TRIP_PHOTO);
+
+
+
+        ViewTreeObserver viewTreeObserver = imageViewImage.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = imageViewImage.getWidth();
+                int height = imageViewImage.getHeight();
+                universalImageLoader.loadImage(getModelObject().getCoverPhotoUrlThumb(width,height),
+                        imageViewImage, UniversalImageLoader.OP_TRIP_PHOTO);
+                ViewTreeObserver viewTreeObserver = imageViewImage.getViewTreeObserver();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                } else {
+                    viewTreeObserver.removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
 
         if (getModelObject().isLoading()) {
             hideButtons();

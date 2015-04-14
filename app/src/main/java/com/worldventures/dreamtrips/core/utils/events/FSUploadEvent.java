@@ -27,6 +27,8 @@ public class FSUploadEvent {
                 return new YSBHImagesFSEvent(type, images);
             case INSPIRE_ME:
                 return new InspireMeImagesFSEvent(type, images);
+            case BUCKET_PHOTOS:
+                return new BucketPhotoFsEvent(type,images);
         }
         return null;
     }
@@ -39,6 +41,12 @@ public class FSUploadEvent {
         return images;
     }
 
+    public static class BucketPhotoFsEvent extends FSUploadEvent {
+
+        public BucketPhotoFsEvent(Type type, List<IFullScreenAvailableObject> images) {
+            super(type, images);
+        }
+    }
     public static class MemberImagesFSEvent extends FSUploadEvent {
 
         public MemberImagesFSEvent(Type type, List<IFullScreenAvailableObject> images) {

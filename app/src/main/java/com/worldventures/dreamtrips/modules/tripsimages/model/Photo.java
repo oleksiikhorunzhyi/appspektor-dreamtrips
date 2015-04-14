@@ -43,7 +43,7 @@ public class Photo implements Parcelable, IFullScreenAvailableObject {
         this.id = in.readString();
     }
 
-    public String getId() {
+    public String getFsId() {
         return id;
     }
 
@@ -207,12 +207,6 @@ public class Photo implements Parcelable, IFullScreenAvailableObject {
     public String getUserLocation() {
         return user != null ? user.getLocation() : "";
     }
-
-    @Override
-    public String getUserAvatar() {
-        return user != null ? user.getAvatar().getThumb() : "";
-    }
-
 
     @Override
     public int describeContents() {

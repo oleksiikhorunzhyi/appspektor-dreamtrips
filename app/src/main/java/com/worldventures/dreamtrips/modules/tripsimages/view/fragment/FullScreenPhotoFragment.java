@@ -114,6 +114,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         } else {
             actionSeeLess();
         }
+        if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
+            tvSeeMore.setVisibility(View.GONE);
+        }else{
+            tvSeeMore.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -343,7 +348,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @Override
     public void setLikeCount(int count) {
         if (count == -1) {
-            tvCommentsCount.setVisibility(View.GONE);
+            tvLikesCount.setVisibility(View.GONE);
         }
         tvLikesCount.setText(count + getString(R.string.likes));
     }

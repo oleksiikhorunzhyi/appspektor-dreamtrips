@@ -21,7 +21,6 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
 
     @InjectView(R.id.iv_bg)
     protected  ImageView imageView;
-
     @Optional
     @InjectView(R.id.user_photo)
     protected ImageView imageViewUser;
@@ -52,7 +51,7 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
             this.shotLocation.setText(getModelObject().getPhotoLocation());
             this.title.setText(getModelObject().getFSTitle());
             this.userName.setText(getModelObject().getUserName());
-            this.universalImageLoader.loadImage(getModelObject().getUserAvatar(), this.imageViewUser, null, new SimpleImageLoadingListener());
+            this.universalImageLoader.loadImage(getModelObject().getFsUserPhoto(), this.imageViewUser, null, new SimpleImageLoadingListener());
         }
         this.universalImageLoader.loadImage(getModelObject().getFSImage().getThumb().getUrl(), this.imageView, UniversalImageLoader.OP_TRIP_PHOTO, new SimpleImageLoadingListener());
     }

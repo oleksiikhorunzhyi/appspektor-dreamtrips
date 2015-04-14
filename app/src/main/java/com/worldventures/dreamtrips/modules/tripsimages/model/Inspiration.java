@@ -89,7 +89,7 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
     }
 
     @Override
-    public String getId() {
+    public String getFsId() {
         return id;
     }
 
@@ -136,10 +136,4 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
     public String getUserLocation() {
         return "";
     }
-
-    @Override
-    public String getUserAvatar() {
-        return "";
-    }
-
 }

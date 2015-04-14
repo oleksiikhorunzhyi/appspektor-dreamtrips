@@ -14,13 +14,11 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable {
 
     String getFsShareText();
 
-    String getId();
+    String getFsId();
 
     String getUserName();
 
     String getUserLocation();
-
-    String getUserAvatar();
 
     String getPhotoLocation();
 

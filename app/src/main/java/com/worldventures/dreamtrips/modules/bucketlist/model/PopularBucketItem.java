@@ -25,9 +25,8 @@ public class PopularBucketItem extends BaseEntity {
 
     public String getCoverPhotoUrlThumb(int w, int h) {
         String args = String.format(UniversalImageLoader.PATTERN, w, h);
-        return String.format("%s%s", getCoverPhotoUrl(), args);
+        return getCoverPhotoUrl() + args;
     }
-
 
     public String getName() {
         return name;

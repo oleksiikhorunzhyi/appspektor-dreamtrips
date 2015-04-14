@@ -21,8 +21,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTa
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
-    private BaseArrayListAdapter imagesAdapter;
+    private BucketImageAdapter imagesAdapter;
 
     private PickImageDialog pid;
     private ImagePickCallback selectImageCallback;
@@ -50,12 +52,17 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Fragment fragment, Injector injector) {
+    public void init(Fragment fragment, Injector injector, Type type) {
         if (imagesAdapter == null) {
             this.fragment = fragment;
 
             imagesAdapter = new BucketImageAdapter(getContext(), injector);
-            imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
+            if (type == Type.EDIT) {
+                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
+            } else {
+                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForDetails.class);
+            }
+
             imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
             imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
             imagesAdapter.addItem(new Object());
@@ -73,7 +80,8 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void deleteImage(BucketPhoto photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             Object item = imagesAdapter.getItem(i);
-            if (item instanceof BucketPhoto && photo.getId() == ((BucketPhoto) item).getId()) {
+            boolean equals = photo.getFsId().equals(((BucketPhoto) item).getFsId());
+            if (item instanceof BucketPhoto && equals) {
                 imagesAdapter.remove(item);
                 imagesAdapter.notifyItemRemoved(i);
                 break;
@@ -162,6 +170,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
                 }).show();
     }
 
+    @Override
+    public List getImages() {
+        return imagesAdapter.getItems();
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (pid != null) {
             this.pid.onActivityResult(requestCode, resultCode, data);
@@ -178,5 +191,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public void setFbImageCallback(ImagePickCallback fbImageCallback) {
         this.fbImageCallback = fbImageCallback;
+    }
+
+
+    public enum Type {
+        DETAILS, EDIT
     }
 }

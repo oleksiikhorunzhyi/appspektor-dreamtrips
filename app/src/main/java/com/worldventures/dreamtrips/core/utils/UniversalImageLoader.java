@@ -54,6 +54,15 @@ public class UniversalImageLoader {
             .bitmapConfig(Bitmap.Config.RGB_565)
             .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
             .build();
+    public static final DisplayImageOptions OP_BUCKET_PHOTO = new DisplayImageOptions.Builder()
+            .cacheOnDisk(true)
+            .cacheInMemory(true)
+            .showImageForEmptyUri(R.drawable.ic_trip_image_placeholder)
+            .showImageOnFail(R.drawable.ic_trip_image_placeholder)
+            .showImageOnLoading(R.drawable.ic_trip_image_placeholder)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+            .build();
     public static final DisplayImageOptions OP_TRIP_PHOTO = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)
             .cacheInMemory(true)

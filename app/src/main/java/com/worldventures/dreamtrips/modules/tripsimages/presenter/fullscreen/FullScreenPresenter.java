@@ -40,7 +40,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     public void setupType(Type type) {
         this.type = type;
-        TrackingHelper.view(type, String.valueOf(photo.getId()), getUserId());
+        TrackingHelper.view(type, String.valueOf(photo.getFsId()), getUserId());
 
     }
 

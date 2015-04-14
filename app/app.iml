@@ -12,8 +12,8 @@
         <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleStageDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileStageDebugSources" />
-        <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugAndroidTest" />
         <option name="SOURCE_GEN_TASK_NAME" value="generateStageDebugSources" />
+        <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugAndroidTest" />
         <option name="TEST_SOURCE_GEN_TASK_NAME" value="generateStageDebugAndroidTestSources" />
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
@@ -189,4 +189,3 @@
     <option name="serverName" value="&lt;PROJECT&gt;" />
   </component>
 </module>
-

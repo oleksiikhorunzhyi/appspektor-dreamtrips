@@ -136,7 +136,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
         void setDetailsContainerVisibility(boolean b);
 
-        FilterableArrayListAdapter<SuccessStory> getAdapter();
+        FilterableArrayListAdapter getAdapter();
 
         void finishLoading(List<SuccessStory> items);
 

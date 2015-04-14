@@ -31,7 +31,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
     }
 
     public void onDeleteAction() {
-        dreamSpiceManager.execute(new DeletePhotoCommand(photo.getId()), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new DeletePhotoCommand(photo.getFsId()), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.v(this.getClass().getSimpleName(), "onRequestFailure");
@@ -40,7 +40,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 view.informUser(context.getString(R.string.photo_deleted));
-                eventBus.postSticky(new PhotoDeletedEvent(photo.getId()));
+                eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
 
             }
         });
@@ -51,7 +51,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
         if (description != null) {
             desc = description;
         }
-        dreamSpiceManager.execute(new FlagPhotoCommand(photo.getId(), title + ". " + desc), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new FlagPhotoCommand(photo.getFsId(), title + ". " + desc), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.e(this.getClass().getSimpleName(), "", spiceException);
@@ -60,7 +60,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
                 view.informUser(context.getString(R.string.photo_flagged));
-                TrackingHelper.flag(type, String.valueOf(photo.getId()), getUserId());
+                TrackingHelper.flag(type, String.valueOf(photo.getFsId()), getUserId());
 
             }
         });
@@ -82,15 +82,15 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
                 photo.setLikesCount(actualLikeCount);
                 view.setLiked(isLiked);
                 view.setLikeCount(actualLikeCount);
-                eventBus.postSticky(new PhotoLikeEvent(photo.getId(), isLiked));
-                TrackingHelper.like(type, String.valueOf(photo.getId()), getUserId());
+                eventBus.postSticky(new PhotoLikeEvent(photo.getFsId(), isLiked));
+                TrackingHelper.like(type, String.valueOf(photo.getFsId()), getUserId());
             }
         };
 
         if (!photo.isLiked()) {
-            dreamSpiceManager.execute(new LikePhotoCommand(photo.getId()), callback);
+            dreamSpiceManager.execute(new LikePhotoCommand(photo.getFsId()), callback);
         } else {
-            dreamSpiceManager.execute(new UnlikePhotoCommand(photo.getId()), callback);
+            dreamSpiceManager.execute(new UnlikePhotoCommand(photo.getFsId()), callback);
         }
     }
 

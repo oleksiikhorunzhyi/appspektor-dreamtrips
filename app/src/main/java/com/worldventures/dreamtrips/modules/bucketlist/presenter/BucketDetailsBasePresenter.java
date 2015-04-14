@@ -12,6 +12,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClick
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscreenRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
@@ -31,7 +33,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActiv
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.io.File;
@@ -40,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
@@ -147,6 +150,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.getBucketPhotosView().showAddPhotoDialog();
     }
 
+    public void onEvent(BucketPhotoFullscreenRequestEvent event) {
+        eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
+
+        List objects = view.getBucketPhotosView().getImages();
+        Object obj = objects.get(event.getPosition());
+        if (!(obj instanceof BucketPhotoUploadTask)) {
+            this.activityRouter.openFullScreenPhoto(event.getPosition(), Type.BUCKET_PHOTOS);
+        }
+    }
+
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         eventBus.cancelEventDelivery(event);
         coverId = event.getPhoto().getId();
@@ -170,7 +183,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getId()), bucketItem.getId()), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getFsId()), bucketItem.getId()), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.e(this.getClass().getSimpleName(), "", spiceException);

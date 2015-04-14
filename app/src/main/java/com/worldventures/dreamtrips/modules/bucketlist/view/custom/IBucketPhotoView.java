@@ -17,4 +17,6 @@ public interface IBucketPhotoView {
     void deleteImage(BucketPhotoUploadTask photo);
 
     void showAddPhotoDialog();
+
+    List getImages();
 }

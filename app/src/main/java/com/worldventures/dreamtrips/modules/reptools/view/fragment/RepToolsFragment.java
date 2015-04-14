@@ -63,7 +63,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         Log.v(this.getClass().getSimpleName(), "onPageScrolled");
-ц    }
+    }
 
     @Override
     public void onPageSelected(int position) {

@@ -18,8 +18,10 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
+import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -78,7 +80,8 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
-    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig, String username, String userPassword) {
+    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig,
+                                  String username, String userPassword) {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
@@ -99,6 +102,12 @@ public class DreamSpiceManager extends SpiceManager {
         }
         eventBus.post(new UpdateUserInfoEvent());
         return false;
+    }
+
+    private void updateSession(StaticPageConfig staticPageConfig) {
+        UserSession userSession = appSessionHolder.get().get();
+        userSession.setStaticPageConfig(staticPageConfig);
+        appSessionHolder.put(userSession);
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
@@ -135,13 +144,29 @@ public class DreamSpiceManager extends SpiceManager {
 
                     @Override
                     public void onRequestSuccess(Session session) {
-                        LoginResponse l = new LoginResponse();
-                        l.setSession(session);
-                        l.setConfig(appConfig);
-                        handleSession(l.getSession(), l.getSession().getSsoToken(), l.getConfig(), username, userPassword);
-                        onLoginSuccess.result(l, null);
+                        LoginResponse loginResponse = new LoginResponse();
+                        loginResponse.setSession(session);
+                        loginResponse.setConfig(appConfig);
+                        handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
+                                loginResponse.getConfig(), username, userPassword);
+                        loadStaticPagesContent(loginResponse, onLoginSuccess);
                     }
                 });
+            }
+        });
+    }
+
+    public void loadStaticPagesContent(LoginResponse loginResponse, OnLoginSuccess onLoginSuccess) {
+        DreamSpiceManager.super.execute(new StaticPagesQuery(), new RequestListener<StaticPageConfig>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                onLoginSuccess.result(null, spiceException);
+            }
+
+            @Override
+            public void onRequestSuccess(StaticPageConfig staticPageConfig) {
+                updateSession(staticPageConfig);
+                onLoginSuccess.result(loginResponse, null);
             }
         });
     }

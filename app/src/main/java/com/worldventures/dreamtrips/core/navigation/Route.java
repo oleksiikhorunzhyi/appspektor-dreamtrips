@@ -25,9 +25,6 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 public enum Route {
     LOGIN(LoginFragment.class, R.string.log_in),
     WEB_STATIC(StaticInfoFragment.class, R.string.web_title),
@@ -45,33 +42,25 @@ public enum Route {
     DETAIL_BUCKET(BucketDetailsFragment.class, 0),
     MAP(MapFragment.class, R.string.trips),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
-    DREAMTRIPS(DreamTripsFragment.class, R.string.trips, R.drawable.ic_dreamtrips, 0),
-    OTA(OtaFragment.class, R.string.other_travel, R.drawable.ic_other_travel, 1),
-    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images, R.drawable.ic_trip_images, 2),
-    MEMBERSHIP(MemberShipFragment.class, R.string.membership, R.drawable.ic_membership, 3),
-    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list, R.drawable.ic_bucket_lists, 4),
-    MY_PROFILE(ProfileFragment.class, R.string.my_profile, R.drawable.ic_profile, 5),
-    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools, R.drawable.ic_rep_tools, 6),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq, R.drawable.ic_faq, 7),
-    TERMS(TermsTabFragment.class, R.string.terms_of_service, R.drawable.ic_termsconditions, 8),
+    DREAMTRIPS(DreamTripsFragment.class, R.string.trips),
+    OTA(OtaFragment.class, R.string.other_travel),
+    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
+    MEMBERSHIP(MemberShipFragment.class, R.string.membership),
+    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
+    MY_PROFILE(ProfileFragment.class, R.string.my_profile),
+    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),
+    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq),
+    TERMS(TermsTabFragment.class, R.string.terms_of_service),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie);
 
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;
-    private int drawableId;
-    private int position;
 
     Route(Class<? extends BaseFragment> fragmentClass, int title) {
-        this(fragmentClass, title, -1, -1);
-    }
-
-    Route(Class<? extends BaseFragment> fragmentClass, int title, int imageID, int position) {
         this.fragmentClass = fragmentClass;
         this.titleRes = title;
-        this.drawableId = imageID;
-        this.position = position;
     }
 
     public static Route restoreByClass(String clazzName) {
@@ -92,13 +81,4 @@ public enum Route {
     public int getTitle() {
         return titleRes;
     }
-
-    public int getDrawableId() {
-        return drawableId;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
 }

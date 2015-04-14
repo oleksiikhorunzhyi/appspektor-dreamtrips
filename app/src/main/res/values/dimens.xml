@@ -37,4 +37,6 @@
     <dimen name="ss_button_corner">2dp</dimen>
 
     <dimen name="bucket_detail_cover_size">250dp</dimen>
+
+    <dimen name="bucket_popular_photo_width">256dp</dimen>
 </resources>

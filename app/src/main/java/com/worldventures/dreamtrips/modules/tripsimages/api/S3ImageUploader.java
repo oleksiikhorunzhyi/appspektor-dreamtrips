@@ -24,18 +24,15 @@ import de.greenrobot.event.EventBus;
 
 public class S3ImageUploader {
 
-    private transient double byteTransferred;
-    private transient int lastPercent;
-
     @Inject
     @Global
     protected transient EventBus eventBus;
-
     @Inject
     protected transient TransferManager transferManager;
-
     @Inject
     protected transient Context context;
+    private transient double byteTransferred;
+    private transient int lastPercent;
 
     public String uploadImageToS3(String fileUri, String taskId) {
         File file = UploadingFileManager.copyFileIfNeed(fileUri, context);
@@ -58,7 +55,7 @@ public class S3ImageUploader {
         ProgressListener progressListener = progressEvent -> {
             byteTransferred += progressEvent.getBytesTransferred();
             double l = byteTransferred / file.length() * 100;
-            if (l > lastPercent + 5 || l >= 99) {
+            if ((l > lastPercent + 5 || l >= 95) && l <= 99) {
                 lastPercent = (int) l;
                 Log.v("Progress event", "send UploadProgressUpdateEvent:" + l);
                 eventBus.post(new UploadProgressUpdateEvent(taskId, (int) l));

@@ -62,6 +62,10 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         String args = String.format(UniversalImageLoader.PATTERN, 256, 256);
         return String.format("%s%s", getUrl(), args);
     }
+    public String getMedium() {
+        String args = String.format(UniversalImageLoader.PATTERN, 720, 720);
+        return String.format("%s%s", getUrl(), args);
+    }
 
     public String getOriginUrl() {
         return originUrl;
@@ -75,7 +79,7 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     public Image getFSImage() {
         Image image = new Image();
         Image.ImageVersion version = new Image.ImageVersion();
-        version.setUrl(getThumbUrl());
+        version.setUrl(getMedium());
         image.setMedium(version);
         version = new Image.ImageVersion();
         version.setUrl(getOriginUrl());

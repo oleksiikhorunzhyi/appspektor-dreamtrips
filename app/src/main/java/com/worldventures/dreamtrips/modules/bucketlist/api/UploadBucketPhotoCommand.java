@@ -5,6 +5,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
@@ -57,6 +58,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
                 photo = getService().uploadBucketPhoto(photoUploadTask.getBucketId(), uploadObject);
                 photo.setTaskId(taskId);
             }
+            eventBus.post(new UploadProgressUpdateEvent(String.valueOf(taskId), 100));
             db.removeBucketPhotoTask(photoUploadTask);
 
             return photo;

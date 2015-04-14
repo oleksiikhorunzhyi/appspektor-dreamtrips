@@ -58,25 +58,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected Injector injector;
 
     protected Integer coverId;
-
-    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri);
-        }
-    };
-
-    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri);
-        }
-    };
-
     protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -88,8 +69,23 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             onSuccess(bucketItemUpdated);
         }
     };
-
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
+            handlePhotoPick(uri);
+        }
+    };
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.parse(image.getFilePathOriginal());
+            handlePhotoPick(uri);
+        }
+    };
 
     public BucketDetailsBasePresenter(V view, Bundle bundle) {
         super(view);
@@ -151,6 +147,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
+    //    eventBus.cancelEventDelivery(event);
         eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
 
         List objects = view.getBucketPhotosView().getImages();
@@ -158,6 +155,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         if (!(obj instanceof BucketPhotoUploadTask)) {
             this.activityRouter.openFullScreenPhoto(event.getPosition(), Type.BUCKET_PHOTOS);
         }
+    }
+
+    @Override
+    public void destroyView() {
+        super.destroyView();
+        eventBus.unregister(this);
     }
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {

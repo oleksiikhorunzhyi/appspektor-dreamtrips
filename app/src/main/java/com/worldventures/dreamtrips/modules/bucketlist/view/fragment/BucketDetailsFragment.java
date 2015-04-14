@@ -184,5 +184,4 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
-
 }

@@ -57,7 +57,7 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
         if (getModelObject().isFailed()) {
             getEventBus().post(new BucketPhotoReuploadRequestEvent(getModelObject()));
             getModelObject().setFailed(false);
-            fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_done);
+            fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
             fabProgress.setProgress(0);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
             circleView.setColor(color);
@@ -77,6 +77,11 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
         String bucketId = String.valueOf(getModelObject().getTaskId());
         if (bucketId.equals(event.getTaskId())) {
             fabProgress.setProgress(event.getProgress());
+        }
+        if (event.getProgress() == 100) {
+            fabProgress.setVisibility(View.GONE);
+        } else {
+            fabProgress.setVisibility(View.VISIBLE);
         }
     }
 

@@ -34,7 +34,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.*;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
@@ -59,25 +58,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected Injector injector;
 
     protected Integer coverId;
-
-    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri);
-        }
-    };
-
-    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri);
-        }
-    };
-
     protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -89,8 +69,23 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             onSuccess(bucketItemUpdated);
         }
     };
-
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
+            handlePhotoPick(uri);
+        }
+    };
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.parse(image.getFilePathOriginal());
+            handlePhotoPick(uri);
+        }
+    };
 
     public BucketDetailsBasePresenter(V view, Bundle bundle) {
         super(view);
@@ -152,6 +147,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
+    //    eventBus.cancelEventDelivery(event);
         eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
 
         List objects = view.getBucketPhotosView().getImages();
@@ -159,6 +155,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         if (!(obj instanceof BucketPhotoUploadTask)) {
             this.activityRouter.openFullScreenPhoto(event.getPosition(), Type.BUCKET_PHOTOS);
         }
+    }
+
+    @Override
+    public void destroyView() {
+        super.destroyView();
+        eventBus.unregister(this);
     }
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {

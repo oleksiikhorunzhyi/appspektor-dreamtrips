@@ -107,7 +107,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
             }
         });
         ivSearch.setIconifiedByDefault(false);
-
     }
 
     @Override
@@ -141,7 +140,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
-    public FilterableArrayListAdapter<SuccessStory> getAdapter() {
+    public FilterableArrayListAdapter getAdapter() {
         return adapter;
     }
 

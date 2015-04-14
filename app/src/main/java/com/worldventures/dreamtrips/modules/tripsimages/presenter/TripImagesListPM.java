@@ -51,8 +51,10 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                 return new YSBHPM(view);
             case INSPIRE_ME:
                 return new InspireMePM(view);
+            case BUCKET_PHOTOS:
+                return new BucketPhotoFsPresenter(view);
         }
-        return null;
+        return new MyImagesPM(view);
     }
 
     public void onEventMainThread(FSUploadEvent.InspireMeImagesFSEvent event) {
@@ -68,6 +70,9 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     }
 
     public void onEventMainThread(FSUploadEvent.MemberImagesFSEvent event) {
+        handleNewPhotoEvent(event);
+    }
+    public void onEventMainThread(FSUploadEvent.BucketPhotoFsEvent event) {
         handleNewPhotoEvent(event);
     }
 
@@ -151,7 +156,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
         List<IFullScreenAvailableObject> photosFromAdapter = view.getPhotosFromAdapter();
         for (int i = 0; i < photosFromAdapter.size(); i++) {
             Object o = photosFromAdapter.get(i);
-            if (o instanceof Photo && ((Photo) o).getId().equals(event.getPhotoId())) {
+            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getPhotoId())) {
                 view.remove(i);
                 eventBus.postSticky(FSUploadEvent.create(type, view.getPhotosFromAdapter()));
             }
@@ -160,7 +165,7 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
 
     public void onEvent(PhotoLikeEvent event) {
         for (Object o : view.getPhotosFromAdapter()) {
-            if (o instanceof Photo && ((Photo) o).getId().equals(event.getId())) {
+            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getId())) {
                 ((Photo) o).setLiked(event.isLiked());
             }
         }

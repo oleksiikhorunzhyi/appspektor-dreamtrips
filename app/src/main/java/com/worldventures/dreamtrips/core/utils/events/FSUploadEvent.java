@@ -18,7 +18,6 @@ public class FSUploadEvent {
 
     public static FSUploadEvent create(Type type, List<IFullScreenAvailableObject> images) {
         switch (type) {
-
             case MEMBER_IMAGES:
                 return new MemberImagesFSEvent(type, images);
             case MY_IMAGES:
@@ -27,6 +26,8 @@ public class FSUploadEvent {
                 return new YSBHImagesFSEvent(type, images);
             case INSPIRE_ME:
                 return new InspireMeImagesFSEvent(type, images);
+            case BUCKET_PHOTOS:
+                return new BucketPhotoFsEvent(type, images);
         }
         return null;
     }
@@ -37,6 +38,13 @@ public class FSUploadEvent {
 
     public List<IFullScreenAvailableObject> getImages() {
         return images;
+    }
+
+    public static class BucketPhotoFsEvent extends FSUploadEvent {
+
+        public BucketPhotoFsEvent(Type type, List<IFullScreenAvailableObject> images) {
+            super(type, images);
+        }
     }
 
     public static class MemberImagesFSEvent extends FSUploadEvent {

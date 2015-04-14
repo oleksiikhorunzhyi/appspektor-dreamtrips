@@ -163,7 +163,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         arrayListAdapter.notifyItemRemoved(index);
     }
 
-    public static enum Type {
-        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360
+    public enum Type {
+        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, BUCKET_PHOTOS
     }
 }

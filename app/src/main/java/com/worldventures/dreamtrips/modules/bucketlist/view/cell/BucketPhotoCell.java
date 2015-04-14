@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
@@ -42,7 +43,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     protected void syncUIStateWithModel() {
-        imageLoader.loadImage(getModelObject().getThumbUrl(), ivPhoto, UniversalImageLoader.OP_DEF);
+        imageLoader.loadImage(getModelObject().getThumbUrl(), ivPhoto, UniversalImageLoader.OP_BUCKET_PHOTO);
     }
 
     @Override
@@ -56,7 +57,13 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
         showItemDialog(view);
     }
 
-    private void showItemDialog(View view) {
+    @OnLongClick(R.id.iv_photo)
+    public boolean onCellLongClick(View view) {
+        showItemDialog(view);
+        return true;
+    }
+
+    protected void showItemDialog(View view) {
         try {
             String url = getModelObject().getThumbUrl();
             Resources res = view.getResources();

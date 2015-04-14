@@ -200,12 +200,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
-    public String getUserAvatar() {
-        return "";
-    }
-
-    @Override
-    public String getId() {
+    public String getFsId() {
         return taskId.hashCode() + "";
     }
 

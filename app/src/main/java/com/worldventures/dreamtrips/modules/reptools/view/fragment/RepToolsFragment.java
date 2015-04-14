@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.apptentive.android.sdk.Log;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -63,8 +62,8 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
+        Log.v(this.getClass().getSimpleName(), "onPageScrolled");
+ц    }
 
     @Override
     public void onPageSelected(int position) {
@@ -75,6 +74,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        Log.v(this.getClass().getSimpleName(), "onPageScrollStateChanged");
     }
 }

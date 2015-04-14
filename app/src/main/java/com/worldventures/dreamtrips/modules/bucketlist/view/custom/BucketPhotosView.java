@@ -38,7 +38,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     private ImagePickCallback selectImageCallback;
     private ImagePickCallback fbImageCallback;
     private Fragment fragment;
-    private Type type;
 
     public BucketPhotosView(Context context) {
         super(context);
@@ -54,7 +53,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
 
     public void init(Fragment fragment, Injector injector, Type type) {
-        this.type = type;
         if (imagesAdapter == null) {
             this.fragment = fragment;
 

@@ -13,13 +13,29 @@ import java.io.Serializable;
 public class BucketPhoto extends BaseEntity implements Serializable, IFullScreenAvailableObject, android.os.Parcelable {
 
     public static final long serialVersionUID = 14534647;
+    public static final Creator<BucketPhoto> CREATOR = new Creator<BucketPhoto>() {
+        public BucketPhoto createFromParcel(Parcel source) {
+            return new BucketPhoto(source);
+        }
 
+        public BucketPhoto[] newArray(int size) {
+            return new BucketPhoto[size];
+        }
+    };
     @SerializedName("origin_url")
     private String originUrl;
-
     private String url;
-
     private int taskId;
+
+    public BucketPhoto() {
+    }
+
+    private BucketPhoto(Parcel in) {
+        this.originUrl = in.readString();
+        this.url = in.readString();
+        this.taskId = in.readInt();
+        this.id = in.readInt();
+    }
 
     public int getTaskId() {
         return taskId;
@@ -33,6 +49,10 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         return url;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String getFsId() {
         return String.format("%d", super.getId());
@@ -43,16 +63,12 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         return String.format("%s%s", getUrl(), args);
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public String getOriginUrl() {
+        return originUrl;
     }
 
     public void setOriginUrl(String url) {
         this.originUrl = url;
-    }
-
-    public String getOriginUrl() {
-        return originUrl;
     }
 
     @Override
@@ -61,10 +77,10 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         Image.ImageVersion version = new Image.ImageVersion();
         version.setUrl(getThumbUrl());
         image.setMedium(version);
-        version= new Image.ImageVersion();
+        version = new Image.ImageVersion();
         version.setUrl(getOriginUrl());
         image.setOriginal(version);
-        version= new Image.ImageVersion();
+        version = new Image.ImageVersion();
         version.setUrl(getThumbUrl());
         image.setThumb(version);
         return image;
@@ -125,7 +141,6 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         return "";
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -138,24 +153,4 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         dest.writeInt(this.taskId);
         dest.writeInt(this.id);
     }
-
-    public BucketPhoto() {
-    }
-
-    private BucketPhoto(Parcel in) {
-        this.originUrl = in.readString();
-        this.url = in.readString();
-        this.taskId = in.readInt();
-        this.id = in.readInt();
-    }
-
-    public static final Creator<BucketPhoto> CREATOR = new Creator<BucketPhoto>() {
-        public BucketPhoto createFromParcel(Parcel source) {
-            return new BucketPhoto(source);
-        }
-
-        public BucketPhoto[] newArray(int size) {
-            return new BucketPhoto[size];
-        }
-    };
 }

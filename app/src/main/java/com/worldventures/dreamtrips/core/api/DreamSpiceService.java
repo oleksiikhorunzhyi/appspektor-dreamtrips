@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
 
@@ -25,7 +26,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     protected DreamTripsApi dreamTripsApi;
 
     @Inject
-    protected SharedServicesApi sharedServicesApi;
+    protected Lazy<SharedServicesApi> sharedServicesApi;
 
     @Inject
     protected ConfigApi configApi;
@@ -70,7 +71,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
         if (serviceClass == DreamTripsApi.class) {
             t = (T) dreamTripsApi;
         } else if (serviceClass == SharedServicesApi.class) {
-            t = (T) sharedServicesApi;
+            t = (T) sharedServicesApi.get();
         } else if (serviceClass == ConfigApi.class) {
             t = (T) configApi;
         }

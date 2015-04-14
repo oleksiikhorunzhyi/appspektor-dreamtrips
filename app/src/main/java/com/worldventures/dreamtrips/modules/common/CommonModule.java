@@ -69,7 +69,11 @@ public class CommonModule {
     ComponentsConfig provideComponentsConfig(SessionHolder<UserSession> appSession) {
         List<String> activeComponents = new ArrayList<>();
 
-        List<String> subscriptions = appSession.get().get().getUser().getSubscriptions();
+        User user = appSession.get().get().getUser();
+
+        if (user.isMember()) {
+            activeComponents.add(ReptoolsModule.REP_TOOLS);
+        }
 
         activeComponents.add(TripsModule.TRIPS);
         activeComponents.add(TripsModule.OTA);
@@ -78,7 +82,7 @@ public class CommonModule {
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
 
-        if (subscriptions != null && subscriptions.contains(User.RBS_SUBSCTIPTION)) {
+        if (user.isRep()) {
             activeComponents.add(ReptoolsModule.REP_TOOLS);
         }
 

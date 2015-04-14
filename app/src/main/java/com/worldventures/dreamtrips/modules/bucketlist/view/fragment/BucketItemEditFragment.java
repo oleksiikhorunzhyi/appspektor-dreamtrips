@@ -172,6 +172,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
                 openDatePicker();
             } else if (position == parent.getCount() - 1) {
                 getPresenter().onDateClear();
+                initAutoCompleteDate();
             } else {
                 getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
             }

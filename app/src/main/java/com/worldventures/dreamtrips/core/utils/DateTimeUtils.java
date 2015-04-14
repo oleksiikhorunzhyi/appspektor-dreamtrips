@@ -140,12 +140,12 @@ public class DateTimeUtils {
     }
 
     public static String convertDateToReference(Context context, Date dateTarget) {
-        if (dateTarget == null) {
-            return convertDateToString(dateTarget, DATE_FORMAT);
-        }
-
         String[] dateArray = context.getResources().getStringArray(R.array.bucket_date_items);
         String today = context.getString(R.string.today);
+
+        if (dateTarget == null) {
+            return dateArray[SOMETIME];
+        }
 
         DateTime dateTimeToday = new DateTime(Calendar.getInstance().getTime());
         DateTime dateTimeTarget = new DateTime(dateTarget);
@@ -210,6 +210,10 @@ public class DateTimeUtils {
                 break;
             case IN_SIX_MONTH:
                 calendar.add(Calendar.MONTH, 6);
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                break;
+            case THIS_YEAR:
+                calendar.add(Calendar.MONTH, 7);
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case NEXT_YEAR:

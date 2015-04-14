@@ -120,6 +120,9 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list_items")
     public ArrayList<BucketItem> getBucketList(@Query("type") String type);
 
+    @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
+    public JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
+
     @GET("/api/bucket_list/locations")
     public ArrayList<PopularBucketItem> getPopularLocations();
 

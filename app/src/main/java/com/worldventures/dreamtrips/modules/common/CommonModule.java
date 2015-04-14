@@ -72,10 +72,9 @@ public class CommonModule {
         User user = appSession.get().get().getUser();
 
         if (user.isMember()) {
-            activeComponents.add(ReptoolsModule.REP_TOOLS);
+            activeComponents.add(TripsModule.TRIPS);
         }
 
-        activeComponents.add(TripsModule.TRIPS);
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(InfoModule.MEMBERSHIP);

@@ -48,17 +48,8 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
 
         if (route.equals(Route.POPULAR_TAB_BUCKER)) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
-            switch (type) {
-                case ACTIVITIES:
-                    getSupportActionBar().setTitle(R.string.bucket_list_activity_popular);
-                    break;
-                case RESTAURANTS:
-                    getSupportActionBar().setTitle(R.string.bucket_list_dinning_popular);
-                    break;
-                default:
-                    getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
-                    break;
-            }
+
+            getSupportActionBar().setTitle(R.string.bucket_list_location_popular);
         } else if (route.equals(Route.BUCKET_EDIT)) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
             getSupportActionBar().setTitle(R.string.bucket_list_edit_header);

@@ -103,11 +103,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                     filter((bucketItem) -> !bucketItem.isDone()).toList();
             Collection<BucketItem> done = Queryable.from(bucketItems).
                     filter((bucketItem) -> bucketItem.isDone()).toList();
+            result.add(new BucketHeader(0, R.string.completed));
             if (showToDO && !toDo.isEmpty()) {
                 result.addAll(toDo);
             }
+            result.add(new BucketHeader(0, R.string.completed));
             if (showCompleted && !done.isEmpty()) {
-                result.add(new BucketHeader(0, R.string.completed));
                 result.addAll(done);
             }
         }
@@ -302,7 +303,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 new RequestListener<BucketItem>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        //nothing to do here
+                        view.informUser(context.getString(R.string.smth_went_wrong));
                     }
 
                     @Override

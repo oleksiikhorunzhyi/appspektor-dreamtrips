@@ -5,9 +5,15 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class User extends BaseEntity implements Parcelable, Serializable {
 
+    public static final String RBS_SUBSCTIPTION = "RBS";
+    public static final String DTM_SUBSCTIPTION = "DTM";
+    public static final String DTL_SUBSCTIPTION = "DTL";
+    public static final String DTG_SUBSCTIPTION = "DTG";
+    public static final String DTP_SUBSCRIPTION = "DTP";
 
     public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
@@ -28,6 +34,16 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     private Avatar avatar;
 
     private String coverPath;
+
+    /**
+     * RBS = Rep (i.e. this subscription is needed to show "Rep Tools")
+     * DTM = Standard DreamTrips Member
+     * DTL = DreamTrips Life membership (ignore for now)
+     * DTG = DreamTrips Gold membership
+     * DTP = DreamTrips Platinum
+     * LDTM - ignore
+     */
+    private List<String> subscriptions;
 
     public User() {
     }
@@ -50,6 +66,10 @@ public class User extends BaseEntity implements Parcelable, Serializable {
             coverPath = "";
         }
         return coverPath;
+    }
+
+    public List<String> getSubscriptions() {
+        return subscriptions;
     }
 
     public void setCoverPath(String coverPath) {

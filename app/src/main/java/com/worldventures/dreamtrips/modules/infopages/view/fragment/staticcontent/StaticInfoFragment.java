@@ -24,6 +24,11 @@ import butterknife.InjectView;
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
         implements WebViewFragmentPresenter.View {
 
+    public static final String PRIVACY_TITLE = "Privacy Policy";
+    public static final String COOKIE_TITLE = "Cookie Policy";
+    public static final String FAQ_TITLE = "FAQ";
+    public static final String TERMS_TITLE = "Terms of Use";
+
     @InjectView(R.id.web_view)
     protected WebView webView;
 
@@ -93,7 +98,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         protected String getURL() {
             ((WebViewFragmentPresenter) getPresenter()).track(Route.TERMS_OF_SERVICE);
-            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html";
+            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(TERMS_TITLE);
         }
     }
 
@@ -103,7 +108,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         protected String getURL() {
             ((WebViewFragmentPresenter) getPresenter()).track(Route.FAQ);
-            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/faq.html";
+            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(FAQ_TITLE);
         }
     }
 
@@ -113,7 +118,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         protected String getURL() {
             ((WebViewFragmentPresenter) getPresenter()).track(Route.PRIVACY_POLICY);
-            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/privacy_policy.html";
+            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(PRIVACY_TITLE);
         }
     }
 
@@ -122,7 +127,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         @Override
         protected String getURL() {
-            return getPresenter().etEnrollUrl();
+            return getPresenter().getEnrollUrl();
         }
 
         @Override
@@ -141,7 +146,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         @Override
         protected String getURL() {
             ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
-            return "http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/cookie_policy.html";
+            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(COOKIE_TITLE);
         }
     }
 

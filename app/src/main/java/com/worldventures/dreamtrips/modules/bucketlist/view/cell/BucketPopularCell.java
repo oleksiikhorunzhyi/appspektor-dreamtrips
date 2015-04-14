@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,7 +10,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -54,8 +50,10 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
         textViewDescription.setText(getModelObject().getDescription());
         textViewName.setText(getModelObject().getName());
 
-        int w = ViewUtils.getScreenWidth((Activity) textViewName.getContext());
-        universalImageLoader.loadImage(getModelObject().getCoverPhotoUrlThumb(w, w),
+        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
+        int height = context.getResources().getDimensionPixelOffset(R.dimen.tripImageHeight);
+
+        universalImageLoader.loadImage(getModelObject().getCoverPhotoUrlThumb(width, height),
                 imageViewImage, UniversalImageLoader.OP_TRIP_PHOTO);
 
         if (getModelObject().isLoading()) {

@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
@@ -63,8 +66,10 @@ public class CommonModule {
     }
 
     @Provides
-    ComponentsConfig provideComponentsConfig() {
+    ComponentsConfig provideComponentsConfig(SessionHolder<UserSession> appSession) {
         List<String> activeComponents = new ArrayList<>();
+
+        List<String> subscriptions = appSession.get().get().getUser().getSubscriptions();
 
         activeComponents.add(TripsModule.TRIPS);
         activeComponents.add(TripsModule.OTA);
@@ -72,7 +77,11 @@ public class CommonModule {
         activeComponents.add(InfoModule.MEMBERSHIP);
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
-        activeComponents.add(ReptoolsModule.REP_TOOLS);
+
+        if (subscriptions != null && subscriptions.contains(User.RBS_SUBSCTIPTION)) {
+            activeComponents.add(ReptoolsModule.REP_TOOLS);
+        }
+
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS_OF_SERVICE);
 

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
@@ -40,7 +41,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
-    public String etEnrollUrl() {
+    public String getEnrollUrl() {
         AppConfig.URLS urls = appSessionHolder.get().get().getGlobalConfig().getUrls();
         if (BuildConfig.DEBUG) {
             return urls.getQA().getEnrollMemeberURL();
@@ -49,6 +50,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
+    public String getStaticInfoUrl(String title) {
+        StaticPageConfig staticPageConfig = appSessionHolder.get().get().getStaticPageConfig();
+        return staticPageConfig.getUrlByTitle(title);
+    }
 
     public AppConfig.URLS.Config getConfig() {
         AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();

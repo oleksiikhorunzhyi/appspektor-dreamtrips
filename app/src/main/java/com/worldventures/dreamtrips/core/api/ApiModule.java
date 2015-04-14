@@ -7,9 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -95,8 +98,20 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    SharedServicesApi provideSharedServicesApi() {
-        return createRestAdapter(BuildConfig.SharedServicesApi).create(SharedServicesApi.class);
+    SharedServicesApi provideSharedServicesApi(SessionHolder<UserSession> session) {
+        String baseUrl = BuildConfig.SharedServicesApi;
+
+        Optional<UserSession> userSessionOptional = session.get();
+
+        if (userSessionOptional.isPresent()) {
+            AppConfig config = session.get().get().getGlobalConfig();
+
+            if (config != null) {
+                baseUrl = config.getUrls().getProduction().getAuthBaseURL();
+            }
+        }
+
+        return createRestAdapter(baseUrl).create(SharedServicesApi.class);
     }
 
     @Provides

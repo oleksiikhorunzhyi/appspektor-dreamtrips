@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;

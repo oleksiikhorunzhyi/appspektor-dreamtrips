@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;

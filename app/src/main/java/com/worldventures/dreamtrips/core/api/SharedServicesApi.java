@@ -10,9 +10,9 @@ import retrofit.http.GET;
 public interface SharedServicesApi {
 
     @GET("/LandingPageServices.svc/GetVideos?poe=DTAPP&country=US")
-    public List<Video> getVideos();
+    List<Video> getVideos();
 
     @GET("/LandingPageServices.svc/GetWebsiteDocumentsByCountry?dt=DTApp&cn=US&lc=EN")
-    public StaticPageConfig getStaticConfig();
+    StaticPageConfig getStaticConfig();
 
 }

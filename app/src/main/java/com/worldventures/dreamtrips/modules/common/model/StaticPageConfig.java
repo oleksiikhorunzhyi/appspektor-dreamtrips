@@ -24,17 +24,17 @@ public class StaticPageConfig {
 
     private class Document {
         @SerializedName("CountryCode")
-        private String countryCode;
+        protected String countryCode;
         @SerializedName("LanguageCode")
-        private String languageCode;
+        protected String languageCode;
         @SerializedName("Name")
-        private String name;
+        protected String name;
         @SerializedName("NameNative")
-        private String nameNative;
+        protected String nameNative;
         @SerializedName("Type")
-        private String type;
+        protected String type;
         @SerializedName("Url")
-        private String url;
+        protected String url;
 
     }
 }

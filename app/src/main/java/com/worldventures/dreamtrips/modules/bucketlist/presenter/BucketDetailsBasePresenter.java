@@ -12,6 +12,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -169,7 +170,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        dreamSpiceManager.execute(new DeletePhotoCommand(String.valueOf(event.getPhoto().getId())), new RequestListener<JsonObject>() {
+        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getId()), bucketItem.getId()), new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.e(this.getClass().getSimpleName(), "", spiceException);

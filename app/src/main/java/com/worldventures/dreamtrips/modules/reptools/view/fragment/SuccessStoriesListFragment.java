@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -142,7 +140,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
-    public FilterableArrayListAdapter<SuccessStory> getAdapter() {
+    public FilterableArrayListAdapter getAdapter() {
         return adapter;
     }
 

@@ -11,6 +11,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
 
     public static final String RBS_SUBSCTIPTION = "RBS";
     public static final String DTM_SUBSCTIPTION = "DTM";
+    public static final String DTS_SUBSCTIPTION = "DTS";
     public static final String DTG_SUBSCTIPTION = "DTG";
     public static final String DTP_SUBSCRIPTION = "DTP";
 
@@ -136,7 +137,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     }
 
     public boolean isMember() {
-        return contains(DTG_SUBSCTIPTION, DTP_SUBSCRIPTION, DTM_SUBSCTIPTION);
+        return contains(DTG_SUBSCTIPTION, DTP_SUBSCRIPTION, DTM_SUBSCTIPTION, DTS_SUBSCTIPTION);
     }
 
     public boolean isPlatinum() {
@@ -148,7 +149,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     }
 
     public boolean isGeneral() {
-        return contains(DTM_SUBSCTIPTION);
+        return contains(DTM_SUBSCTIPTION, DTS_SUBSCTIPTION);
     }
 
     public boolean isRep() {

@@ -143,24 +143,24 @@ public class DreamSpiceManager extends SpiceManager {
 
                 if (!status.equalsIgnoreCase("up")) {
                     onLoginSuccess.result(null, new SpiceException("Server is down"));
+                } else {
+                    DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
+                        @Override
+                        public void onRequestFailure(SpiceException spiceException) {
+                            onLoginSuccess.result(null, spiceException);
+                        }
+
+                        @Override
+                        public void onRequestSuccess(Session session) {
+                            LoginResponse loginResponse = new LoginResponse();
+                            loginResponse.setSession(session);
+                            loginResponse.setConfig(appConfig);
+                            handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
+                                    loginResponse.getConfig(), username, userPassword);
+                            loadStaticPagesContent(loginResponse, onLoginSuccess);
+                        }
+                    });
                 }
-
-                DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
-                    @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        onLoginSuccess.result(null, spiceException);
-                    }
-
-                    @Override
-                    public void onRequestSuccess(Session session) {
-                        LoginResponse loginResponse = new LoginResponse();
-                        loginResponse.setSession(session);
-                        loginResponse.setConfig(appConfig);
-                        handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
-                                loginResponse.getConfig(), username, userPassword);
-                        loadStaticPagesContent(loginResponse, onLoginSuccess);
-                    }
-                });
             }
         });
     }

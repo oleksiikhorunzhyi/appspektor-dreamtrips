@@ -137,6 +137,10 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().onStatusUpdated(isChecked);
     }
 
+    @OnClick(R.id.imageViewCover)
+    protected void onCoverClicked() {
+        getPresenter().openFullScreen(0);
+    }
     @Override
     public void disableCheckbox() {
         checkBox.setEnabled(false);

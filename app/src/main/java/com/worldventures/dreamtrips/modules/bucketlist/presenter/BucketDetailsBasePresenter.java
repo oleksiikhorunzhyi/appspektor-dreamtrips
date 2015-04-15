@@ -151,8 +151,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         List objects = view.getBucketPhotosView().getImages();
         Object obj = objects.get(event.getPosition());
         if (!(obj instanceof BucketPhotoUploadTask)) {
-            this.activityRouter.openFullScreenPhoto(event.getPosition(), Type.BUCKET_PHOTOS);
+            openFullScreen(event.getPosition());
         }
+    }
+
+    public void openFullScreen(int position) {
+        this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
     }
 
     @Override

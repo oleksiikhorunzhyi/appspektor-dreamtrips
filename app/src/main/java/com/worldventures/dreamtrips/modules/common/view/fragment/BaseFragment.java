@@ -106,7 +106,10 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void onResume() {
         super.onResume();
-        getPresenter().resume();
+        if (getActivity() != null) {
+            getActivity().invalidateOptionsMenu();
+            getPresenter().resume();
+        }
     }
 
     @Override

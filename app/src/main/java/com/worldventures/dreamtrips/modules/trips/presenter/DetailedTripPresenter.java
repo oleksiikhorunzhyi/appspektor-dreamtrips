@@ -29,6 +29,15 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         loadTripDetails();
     }
 
+    @Override
+    public void resume() {
+        super.resume();
+
+        if (!appSessionHolder.get().get().getUser().isPlatinum() && trip.isPlatinum()) {
+            view.hideBookIt();
+        }
+    }
+
     public List<Object> getFilteredImages() {
         return filteredImages;
     }
@@ -65,5 +74,7 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
 
     public static interface View extends BaseTripPresenter.View {
         void setContent(List<ContentItem> contentItems);
+
+        void hideBookIt();
     }
 }

@@ -114,12 +114,14 @@ public class TripModel implements Filterable, Serializable {
     public String getRewardsLimit(User user) {
         String result = String.valueOf(rewardsLimit);
 
-        if (user.isPlatinum() && rewardsRule.hasDtp()) {
-            result = rewardsRule.getDtp();
-        } else if (user.isGold() && rewardsRule.hasDtg()) {
-            result = rewardsRule.getDtg();
-        } else if (user.isGeneral() && rewardsRule.hasDtm()) {
-            result = rewardsRule.getDtm();
+        if (rewardsRule != null) {
+            if (user.isPlatinum() && rewardsRule.hasDtp()) {
+                result = rewardsRule.getDtp();
+            } else if (user.isGold() && rewardsRule.hasDtg()) {
+                result = rewardsRule.getDtg();
+            } else if (user.isGeneral() && rewardsRule.hasDtm()) {
+                result = rewardsRule.getDtm();
+            }
         }
 
         return result;

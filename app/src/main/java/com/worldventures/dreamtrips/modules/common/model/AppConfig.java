@@ -1,15 +1,19 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.util.Base64;
+
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.infopages.model.Videos360;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class AppConfig {
     public static final String TRIP_ID = "{tripid}";
     public static final String USER_ID = "{userid}";
     public static final String TOKEN = "{tokenval}";
+    public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
 
     @SerializedName("FlagContent")
     protected FlagList flagContent;
@@ -99,8 +103,8 @@ public class AppConfig {
                 return oTAPageURL;
             }
 
-            public String getEnrollRepURL() {
-                return enrollRepURL;
+            public String getEnrollRepURL(String uid) {
+                return replaceWithBase64(uid, enrollRepURL);
             }
 
             public String getAPIBaseURL() {
@@ -115,8 +119,8 @@ public class AppConfig {
                 return this.bookingPageBaseURL;
             }
 
-            public String getEnrollMemeberURL() {
-                return this.enrollMemeberURL;
+            public String getEnrollMemeberURL(String uid) {
+                return replaceWithBase64(uid, enrollMemeberURL);
             }
 
             public String getSurveyApiToken() {
@@ -135,6 +139,18 @@ public class AppConfig {
                 return trainingVideosURL;
             }
 
+            private String replaceWithBase64(String uid, String url) {
+                String encodedUrl = "";
+
+                try {
+                    encodedUrl = url.replace(ENROLL_UID,
+                            Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                return encodedUrl;
+            }
         }
     }
 }

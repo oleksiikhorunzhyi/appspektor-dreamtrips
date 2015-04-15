@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.api;
 
 import android.os.Handler;
+import android.util.Log;
 
-import com.apptentive.android.sdk.Log;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -154,9 +154,8 @@ public class DreamSpiceManager extends SpiceManager {
             public void onRequestSuccess(AppConfig appConfig) {
                 ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
                 String status = serv.getStatus();
-                String message = serv.getMessage();
 
-                if (!status.equalsIgnoreCase("up")) {
+                if (!"up".equalsIgnoreCase(status)) {
                     onLoginSuccess.result(null, new SpiceException("Server is down"));
                 } else {
                     DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
@@ -210,7 +209,7 @@ public class DreamSpiceManager extends SpiceManager {
                 }
             });
         } catch (Exception e) {
-            Log.e(DreamSpiceManager.class.getSimpleName(), e);
+            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
             new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
 
         }
@@ -251,7 +250,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             result = out.toString();
         } catch (IOException e) {
-            Log.e(DreamSpiceManager.class.getName(), e.getMessage());
+            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
         }
         return result;
     }
@@ -270,7 +269,7 @@ public class DreamSpiceManager extends SpiceManager {
             }
 
         } catch (JSONException e) {
-            Log.e(DreamSpiceManager.class.getName(), e.getMessage());
+            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
         }
         return "";
     }

@@ -71,7 +71,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         view.setDuration(trip.getDuration());
         view.setLike(trip.isLiked());
 
-        String reward = trip.getRewardsLimit((appSessionHolder.get().get().getUser()));
+        String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward)) {
             view.setRedemption(String.valueOf(reward));

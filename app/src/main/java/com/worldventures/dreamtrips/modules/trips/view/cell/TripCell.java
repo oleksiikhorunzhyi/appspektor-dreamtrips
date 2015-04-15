@@ -68,7 +68,7 @@ public class TripCell extends AbstractCell<TripModel> {
             textViewFeatured.setVisibility(View.GONE);
         }
 
-        String reward = getModelObject().getRewardsLimit((appSessionHolder.get().get().getUser()));
+        String reward = getModelObject().getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward)) {
             textViewPoints.setText(String.valueOf(reward));

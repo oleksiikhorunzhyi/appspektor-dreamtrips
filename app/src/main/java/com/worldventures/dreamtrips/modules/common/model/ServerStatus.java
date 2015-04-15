@@ -27,7 +27,7 @@ public class ServerStatus {
 
     public static class Status {
         @SerializedName("status")
-        protected String status;
+        protected String statusValue;
         @SerializedName("outage_type")
         protected String outageType;
         @SerializedName("message")
@@ -46,11 +46,11 @@ public class ServerStatus {
         }
 
         public String getStatus() {
-            return status;
+            return statusValue;
         }
 
         public void setStatus(String status) {
-            this.status = status;
+            this.statusValue = status;
         }
     }
 }

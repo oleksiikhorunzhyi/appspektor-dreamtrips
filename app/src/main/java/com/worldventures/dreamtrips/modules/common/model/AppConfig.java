@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.infopages.model.Videos360;
@@ -153,7 +154,7 @@ public class AppConfig {
                     encodedUrl = url.replace(ENROLL_UID,
                             Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    Log.e(AppConfig.class.getSimpleName(), "", e);
                 }
 
                 return encodedUrl;

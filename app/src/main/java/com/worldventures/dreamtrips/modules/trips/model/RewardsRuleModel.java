@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class RewardsRuleModel implements Serializable {
-    public static final long serialVersionUID = 999L;
+    private static final long serialVersionUID = 999L;
 
     @SerializedName("DTG")
     private String dtg;

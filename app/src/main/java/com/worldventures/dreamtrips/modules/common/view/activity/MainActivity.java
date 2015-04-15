@@ -67,14 +67,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         checkGoogleServices();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (menu != null) {
-            menu.clear();
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private void checkGoogleServices() {
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (code != ConnectionResult.SUCCESS) {

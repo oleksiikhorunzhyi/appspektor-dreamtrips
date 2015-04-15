@@ -231,7 +231,7 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    public static interface OnLoginSuccess {
+    public interface OnLoginSuccess {
         void result(LoginResponse loginResponse, SpiceException exception);
     }
 
@@ -249,7 +249,7 @@ public class DreamSpiceManager extends SpiceManager {
             }
 
             result = out.toString();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
         }
         return result;
@@ -268,7 +268,7 @@ public class DreamSpiceManager extends SpiceManager {
                 return o.getString(0);
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
         }
         return "";

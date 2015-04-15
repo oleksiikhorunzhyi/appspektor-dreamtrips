@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -64,6 +65,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
 
         checkGoogleServices();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (menu != null) {
+            menu.clear();
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void checkGoogleServices() {

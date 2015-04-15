@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.core.api;
 import android.os.Handler;
 
 import com.apptentive.android.sdk.Log;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -29,11 +32,22 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 
 public class DreamSpiceManager extends SpiceManager {
 
@@ -69,8 +83,13 @@ public class DreamSpiceManager extends SpiceManager {
                             requestListener.onRequestFailure(error);
                         }
                     });
+                } else if (error != null && error.getCause() instanceof RetrofitError) {
+                    RetrofitError retrofitError = (RetrofitError) error.getCause();
+                    String body = getBody(retrofitError.getResponse());
+                    String message = grabDetailedMessage(body);
+                    requestListener.onRequestFailure(new SpiceException(message));
                 } else {
-                    requestListener.onRequestFailure(error);
+                    requestListener.onRequestFailure(new SpiceException(error));
                 }
             }
 
@@ -221,4 +240,42 @@ public class DreamSpiceManager extends SpiceManager {
         void result(LoginResponse loginResponse, SpiceException exception);
     }
 
+    public String getBody(Response response) {
+        String result = "";
+        try {
+            TypedInput body = response.getBody();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+            StringBuilder out = new StringBuilder();
+            String newLine = System.getProperty("line.separator");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+                out.append(newLine);
+            }
+
+            result = out.toString();
+        } catch (IOException e) {
+            Log.e(DreamSpiceManager.class.getName(), e.getMessage());
+        }
+        return result;
+    }
+
+    private String grabDetailedMessage(String response) {
+        try {
+            JSONObject parent = new JSONObject(response);
+            JSONObject errors = parent.getJSONObject("errors");
+
+            Iterator<?> keys = errors.keys();
+
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                JSONArray o = errors.getJSONArray(key);
+                return o.getString(0);
+            }
+
+        } catch (JSONException e) {
+            Log.e(DreamSpiceManager.class.getName(), e.getMessage());
+        }
+        return "";
+    }
 }

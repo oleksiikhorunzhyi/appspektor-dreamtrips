@@ -25,7 +25,7 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         super.setTrip(trip);
         filteredImages = new ArrayList<>();
         filteredImages.addAll(trip.getFilteredImages());
-        TrackingHelper.trip(String.valueOf(trip.getId()), getUserId());
+        TrackingHelper.trip(String.valueOf(trip.getTripId()), getUserId());
         loadTripDetails();
     }
 
@@ -43,8 +43,8 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
     }
 
     public void actionBookIt() {
-        TrackingHelper.bookIt(String.valueOf(trip.getId()), getUserId());
-        activityRouter.openBookItActivity(trip.getId());
+        TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getUserId());
+        activityRouter.openBookItActivity(trip.getTripId());
     }
 
     public void loadTripDetails() {
@@ -58,11 +58,11 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
             @Override
             public void onRequestSuccess(TripDetails tripDetails) {
                 view.setContent(tripDetails.getContent());
-                TrackingHelper.tripInfo(String.valueOf(trip.getId()), getUserId());
+                TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
             }
         };
 
-        dreamSpiceManager.execute(new GetTripDetailsQuery(trip.getId()), callback);
+        dreamSpiceManager.execute(new GetTripDetailsQuery(trip.getTripId()), callback);
     }
 
 

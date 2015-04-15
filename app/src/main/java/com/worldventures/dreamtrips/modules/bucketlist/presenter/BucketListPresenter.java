@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
@@ -303,7 +304,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 new RequestListener<BucketItem>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        view.informUser(context.getString(R.string.smth_went_wrong));
+                        if (spiceException == null ||
+                                TextUtils.isEmpty(spiceException.getMessage())) {
+                            view.informUser(context.getString(R.string.smth_went_wrong));
+                        } else {
+                            view.informUser(spiceException.getMessage());
+                        }
                     }
 
                     @Override

@@ -53,9 +53,9 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         };
 
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), callback);
         } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), callback);
         }
     }
 

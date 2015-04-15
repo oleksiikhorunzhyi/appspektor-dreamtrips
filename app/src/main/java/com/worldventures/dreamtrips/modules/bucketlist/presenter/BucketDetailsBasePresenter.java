@@ -146,7 +146,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-        eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
 
         List objects = view.getBucketPhotosView().getImages();
         Object obj = objects.get(event.getPosition());
@@ -156,7 +155,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void openFullScreen(int position) {
-        this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
+        if (!view.getBucketPhotosView().getImages().isEmpty()) {
+            eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
+            this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
+        }
     }
 
     @Override
@@ -196,6 +198,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
+                bucketItem.getPhotos().remove(event.getPhoto());
+                resaveItem(bucketItem);
                 view.getBucketPhotosView().deleteImage(event.getPhoto());
             }
         });

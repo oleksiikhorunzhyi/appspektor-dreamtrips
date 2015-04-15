@@ -17,7 +17,7 @@ public class FragmentMapInfoPresenter extends BaseTripPresenter<FragmentMapInfoP
     }
 
     public void onEvent(TripLikedEvent tripEvent) {
-        if (tripEvent.getTrip().getId() == trip.getId()) {
+        if (tripEvent.getTrip().getTripId() == trip.getTripId()) {
             trip.setLiked(tripEvent.getTrip().isLiked());
             view.setLike(trip.isLiked());
         }

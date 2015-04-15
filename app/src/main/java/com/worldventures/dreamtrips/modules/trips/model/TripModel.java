@@ -20,7 +20,11 @@ public class TripModel implements Filterable, Serializable {
 
     public static final long serialVersionUID = 123L;
 
-    private String id;
+    @SerializedName("id")
+    private String likeId;
+    @SerializedName("trip_id")
+    private String tripId;
+
     private String name;
     private String description;
     private boolean featured;
@@ -43,12 +47,12 @@ public class TripModel implements Filterable, Serializable {
     private RewardsRuleModel rewardsRule;
 
 
-    public String getId() {
-        return id;
+    public String getLikeId() {
+        return likeId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getTripId() {
+        return tripId;
     }
 
     public String getName() {
@@ -270,7 +274,7 @@ public class TripModel implements Filterable, Serializable {
 
         TripModel tripModel = (TripModel) o;
 
-        if (id != null ? !id.equals(tripModel.id) : tripModel.id != null) {
+        if (tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null) {
             return false;
         }
 
@@ -279,8 +283,8 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
+        if (tripId != null) {
+            return tripId.hashCode();
         } else {
             return 0;
         }
@@ -288,6 +292,6 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public String toString() {
-        return id;
+        return tripId;
     }
 }

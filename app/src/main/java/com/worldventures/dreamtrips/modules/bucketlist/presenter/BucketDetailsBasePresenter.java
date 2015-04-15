@@ -147,7 +147,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-    //    eventBus.cancelEventDelivery(event);
         eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
 
         List objects = view.getBucketPhotosView().getImages();

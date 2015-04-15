@@ -24,6 +24,9 @@ public class AppConfig {
     @SerializedName("Videos360")
     protected List<Videos360> videos360;
 
+    @SerializedName("server_status")
+    protected ServerStatus serverStatus;
+
     public FlagList getFlagContent() {
         return this.flagContent;
     }
@@ -34,6 +37,10 @@ public class AppConfig {
 
     public List<Videos360> getVideos360() {
         return this.videos360;
+    }
+
+    public ServerStatus getServerStatus() {
+        return serverStatus;
     }
 
     public static class URLS {

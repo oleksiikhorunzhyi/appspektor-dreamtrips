@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -136,6 +137,14 @@ public class DreamSpiceManager extends SpiceManager {
 
             @Override
             public void onRequestSuccess(AppConfig appConfig) {
+                ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
+                String status = serv.getStatus();
+                String message = serv.getMessage();
+
+                if (!status.equalsIgnoreCase("up")) {
+                    onLoginSuccess.result(null, new SpiceException("Server is down"));
+                }
+
                 DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {

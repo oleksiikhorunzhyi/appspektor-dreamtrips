@@ -315,7 +315,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @Override
     public void setTitle(String title) {
         if (type == TripImagesListFragment.Type.INSPIRE_ME) {
-            textViewInspireMeTitle.setText(title);
+            textViewInspireMeTitle.setText("- " + title);
             tvTitle.setVisibility(View.GONE);
         } else {
             tvTitle.setText(title);

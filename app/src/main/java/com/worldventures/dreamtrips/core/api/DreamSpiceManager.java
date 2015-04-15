@@ -3,9 +3,6 @@ package com.worldventures.dreamtrips.core.api;
 import android.os.Handler;
 
 import com.apptentive.android.sdk.Log;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -40,7 +37,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -80,7 +76,7 @@ public class DreamSpiceManager extends SpiceManager {
                         if (l != null) {
                             DreamSpiceManager.super.execute(request, requestListener);
                         } else {
-                            requestListener.onRequestFailure(error);
+                            requestListener.onRequestFailure(new SpiceException(""));
                         }
                     });
                 } else if (error != null && error.getCause() instanceof RetrofitError) {
@@ -89,7 +85,7 @@ public class DreamSpiceManager extends SpiceManager {
                     String message = grabDetailedMessage(body);
                     requestListener.onRequestFailure(new SpiceException(message));
                 } else {
-                    requestListener.onRequestFailure(new SpiceException(error));
+                    requestListener.onRequestFailure(new SpiceException(""));
                 }
             }
 

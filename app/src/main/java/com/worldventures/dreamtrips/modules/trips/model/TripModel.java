@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import android.text.TextUtils;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;

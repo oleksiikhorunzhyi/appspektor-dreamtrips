@@ -63,6 +63,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     protected TextView tvSeeMore;
     @InjectView(R.id.tv_location)
     protected TextView tvLocation;
+    @InjectView(R.id.textViewInspireMeTitle)
+    protected TextView textViewInspireMeTitle;
     @InjectView(R.id.tv_date)
     protected TextView tvDate;
     @InjectView(R.id.tv_likes_count)
@@ -109,15 +111,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         }
         getPresenter().setupActualViewState();
 
-        if (type == TripImagesListFragment.Type.INSPIRE_ME) {
+        if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
+            tvSeeMore.setVisibility(View.GONE);
+        } else if (type == TripImagesListFragment.Type.INSPIRE_ME) {
             actionSeeMore();
         } else {
             actionSeeLess();
-        }
-        if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
-            tvSeeMore.setVisibility(View.GONE);
-        }else{
-            tvSeeMore.setVisibility(View.VISIBLE);
         }
     }
 
@@ -205,11 +204,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
     @OnClick(R.id.ll_top_container)
     public void actionSeeLess() {
-        llMoreInfo.setVisibility(View.GONE);
-        tvDescription.setSingleLine(true);
-        tvDescription.setVisibility(View.VISIBLE);
-        tvSeeMore.setVisibility(View.VISIBLE);
-
+        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+            llMoreInfo.setVisibility(View.GONE);
+            tvDescription.setSingleLine(true);
+            tvDescription.setVisibility(View.VISIBLE);
+            tvSeeMore.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R.id.iv_delete)
@@ -314,7 +314,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
     @Override
     public void setTitle(String title) {
-        tvTitle.setText(title);
+        if (type == TripImagesListFragment.Type.INSPIRE_ME) {
+            textViewInspireMeTitle.setText("- " + title);
+            tvTitle.setVisibility(View.GONE);
+        } else {
+            tvTitle.setText(title);
+        }
     }
 
     @Override

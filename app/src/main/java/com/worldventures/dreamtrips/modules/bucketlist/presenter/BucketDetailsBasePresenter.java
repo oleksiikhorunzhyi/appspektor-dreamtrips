@@ -104,7 +104,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         startUpload(task);
     }
 
-
     private void startUpload(final BucketPhotoUploadTask task) {
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
         dreamSpiceManager.execute(uploadBucketPhotoCommand,
@@ -147,12 +146,18 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-        eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
 
         List objects = view.getBucketPhotosView().getImages();
         Object obj = objects.get(event.getPosition());
         if (!(obj instanceof BucketPhotoUploadTask)) {
-            this.activityRouter.openFullScreenPhoto(event.getPosition(), Type.BUCKET_PHOTOS);
+            openFullScreen(event.getPosition());
+        }
+    }
+
+    public void openFullScreen(int position) {
+        if (!view.getBucketPhotosView().getImages().isEmpty()) {
+            eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
+            this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
         }
     }
 
@@ -193,6 +198,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             @Override
             public void onRequestSuccess(JsonObject jsonObject) {
+                bucketItem.getPhotos().remove(event.getPhoto());
+                resaveItem(bucketItem);
                 view.getBucketPhotosView().deleteImage(event.getPhoto());
             }
         });

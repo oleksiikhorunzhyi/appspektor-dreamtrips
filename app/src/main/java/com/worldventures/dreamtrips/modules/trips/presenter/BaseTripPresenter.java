@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -51,9 +53,9 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         };
 
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), callback);
         } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), callback);
+            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), callback);
         }
     }
 
@@ -69,8 +71,10 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         view.setDuration(trip.getDuration());
         view.setLike(trip.isLiked());
 
-        if (trip.getRewardsLimit() > 0) {
-            view.setRedemption(String.valueOf(trip.getRewardsLimit()));
+        String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
+
+        if (!TextUtils.isEmpty(reward)) {
+            view.setRedemption(String.valueOf(reward));
         } else {
             view.setPointsInvisible();
         }

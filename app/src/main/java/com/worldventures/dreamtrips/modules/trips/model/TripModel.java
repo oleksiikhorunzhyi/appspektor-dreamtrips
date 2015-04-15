@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
@@ -17,7 +18,11 @@ public class TripModel implements Filterable, Serializable {
 
     public static final long serialVersionUID = 123L;
 
-    private String id;
+    @SerializedName("id")
+    private String likeId;
+    @SerializedName("trip_id")
+    private String tripId;
+
     private String name;
     private String description;
     private boolean featured;
@@ -36,13 +41,16 @@ public class TripModel implements Filterable, Serializable {
     private RegionModel region;
     private List<TripImage> images;
     private List<ActivityModel> activities;
+    private boolean platinum;
+    private RewardsRuleModel rewardsRule;
 
-    public String getId() {
-        return id;
+
+    public String getLikeId() {
+        return likeId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getTripId() {
+        return tripId;
     }
 
     public String getName() {
@@ -105,8 +113,20 @@ public class TripModel implements Filterable, Serializable {
         this.available = available;
     }
 
-    public long getRewardsLimit() {
-        return rewardsLimit;
+    public String getRewardsLimit(User user) {
+        String result = String.valueOf(rewardsLimit);
+
+        if (rewardsRule != null) {
+            if (user.isPlatinum() && rewardsRule.hasDtp()) {
+                result = rewardsRule.getDtp();
+            } else if (user.isGold() && rewardsRule.hasDtg()) {
+                result = rewardsRule.getDtg();
+            } else if (user.isGeneral() && rewardsRule.hasDtm()) {
+                result = rewardsRule.getDtm();
+            }
+        }
+
+        return result;
     }
 
     public void setRewardsLimit(long rewardsLimit) {
@@ -194,9 +214,13 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public boolean isPriceAccepted(double maxPrice, double minPrice) {
-        return !soldOut &&
+        return isActive() &&
                 price.getAmount() <= maxPrice &&
                 price.getAmount() >= minPrice;
+    }
+
+    private boolean isActive() {
+        return !soldOut && available;
     }
 
     public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
@@ -228,6 +252,10 @@ public class TripModel implements Filterable, Serializable {
                 getActivities().isEmpty();
     }
 
+    public boolean isPlatinum() {
+        return platinum;
+    }
+
     @Override
     public boolean containsQuery(String query) {
         return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
@@ -244,7 +272,7 @@ public class TripModel implements Filterable, Serializable {
 
         TripModel tripModel = (TripModel) o;
 
-        if (id != null ? !id.equals(tripModel.id) : tripModel.id != null) {
+        if (tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null) {
             return false;
         }
 
@@ -253,8 +281,8 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
+        if (tripId != null) {
+            return tripId.hashCode();
         } else {
             return 0;
         }
@@ -262,6 +290,6 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public String toString() {
-        return id;
+        return tripId;
     }
 }

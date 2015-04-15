@@ -157,9 +157,9 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             }
         };
         if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getId()), requestListener);
+            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), requestListener);
         } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getId()), requestListener);
+            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), requestListener);
         }
     }
 

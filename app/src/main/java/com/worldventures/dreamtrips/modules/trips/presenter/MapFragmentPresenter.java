@@ -83,7 +83,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     private void reloadPins() {
         view.clearMap();
         for (TripModel trip : filteredTrips) {
-            view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getId());
+            view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getTripId());
         }
     }
 
@@ -127,7 +127,7 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     public void onMarkerClick(String id) {
         TripModel resultTrip = null;
         for (TripModel trip : filteredTrips) {
-            if (trip.getId().equals(id)) {
+            if (trip.getTripId().equals(id)) {
                 resultTrip = trip;
                 break;
             }

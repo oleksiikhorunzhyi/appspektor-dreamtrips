@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import android.text.TextUtils;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
@@ -36,6 +39,9 @@ public class TripModel implements Filterable, Serializable {
     private RegionModel region;
     private List<TripImage> images;
     private List<ActivityModel> activities;
+    private boolean platinum;
+    private RewardsRuleModel rewardsRule;
+
 
     public String getId() {
         return id;
@@ -105,8 +111,18 @@ public class TripModel implements Filterable, Serializable {
         this.available = available;
     }
 
-    public long getRewardsLimit() {
-        return rewardsLimit;
+    public String getRewardsLimit(User user) {
+        String result = String.valueOf(rewardsLimit);
+
+        if (user.isPlatinum() && rewardsRule.hasDtp()) {
+            result = rewardsRule.getDtp();
+        } else if (user.isGold() && rewardsRule.hasDtg()) {
+            result = rewardsRule.getDtg();
+        } else if (user.isGeneral() && rewardsRule.hasDtm()) {
+            result = rewardsRule.getDtm();
+        }
+
+        return result;
     }
 
     public void setRewardsLimit(long rewardsLimit) {
@@ -194,9 +210,13 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public boolean isPriceAccepted(double maxPrice, double minPrice) {
-        return !soldOut &&
+        return isActive() &&
                 price.getAmount() <= maxPrice &&
                 price.getAmount() >= minPrice;
+    }
+
+    private boolean isActive() {
+        return !soldOut && available;
     }
 
     public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
@@ -226,6 +246,10 @@ public class TripModel implements Filterable, Serializable {
     private boolean isActivitiesEmpty() {
         return getActivities() == null ||
                 getActivities().isEmpty();
+    }
+
+    public boolean isPlatinum() {
+        return platinum;
     }
 
     @Override

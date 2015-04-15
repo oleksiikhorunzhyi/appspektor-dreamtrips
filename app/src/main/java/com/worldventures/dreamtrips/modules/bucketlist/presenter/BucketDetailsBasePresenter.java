@@ -104,7 +104,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         startUpload(task);
     }
 
-
     private void startUpload(final BucketPhotoUploadTask task) {
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
         dreamSpiceManager.execute(uploadBucketPhotoCommand,

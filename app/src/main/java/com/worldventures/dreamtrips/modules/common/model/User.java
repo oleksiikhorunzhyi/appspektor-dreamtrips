@@ -139,6 +139,18 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         return contains(DTG_SUBSCTIPTION, DTP_SUBSCRIPTION, DTM_SUBSCTIPTION);
     }
 
+    public boolean isPlatinum() {
+        return contains(DTP_SUBSCRIPTION);
+    }
+
+    public boolean isGold() {
+        return contains(DTG_SUBSCTIPTION);
+    }
+
+    public boolean isGeneral() {
+        return contains(DTM_SUBSCTIPTION);
+    }
+
     public boolean isRep() {
         return contains(RBS_SUBSCTIPTION);
     }

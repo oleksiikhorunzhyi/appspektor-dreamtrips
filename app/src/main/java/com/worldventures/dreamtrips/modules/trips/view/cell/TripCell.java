@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -7,8 +8,10 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
@@ -42,6 +45,10 @@ public class TripCell extends AbstractCell<TripModel> {
     protected TextView textViewFeatured;
 
     @Inject
+    protected SessionHolder<UserSession> appSessionHolder;
+
+
+    @Inject
     protected UniversalImageLoader universalImageLoader;
 
     public TripCell(View view) {
@@ -61,8 +68,10 @@ public class TripCell extends AbstractCell<TripModel> {
             textViewFeatured.setVisibility(View.GONE);
         }
 
-        if (getModelObject().getRewardsLimit() > 0) {
-            textViewPoints.setText(String.valueOf(getModelObject().getRewardsLimit()));
+        String reward = getModelObject().getRewardsLimit((appSessionHolder.get().get().getUser()));
+
+        if (!TextUtils.isEmpty(reward)) {
+            textViewPoints.setText(String.valueOf(reward));
             pointsCountLayout.setVisibility(View.VISIBLE);
         } else {
             pointsCountLayout.setVisibility(View.GONE);

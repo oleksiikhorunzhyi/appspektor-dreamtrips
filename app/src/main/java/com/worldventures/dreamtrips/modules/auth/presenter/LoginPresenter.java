@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 

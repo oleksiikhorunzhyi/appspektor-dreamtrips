@@ -12,8 +12,10 @@ import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
@@ -127,19 +129,22 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
-        final UserSession userSession = appSessionHolder.get().get();
-        final String username = userSession.getUsername();
-        final String userPassword = userSession.getUserPassword();
+        Optional<UserSession> userSessionOptional = appSessionHolder.get();
+        if (userSessionOptional.isPresent()) {
+            UserSession userSession = userSessionOptional.get();
+            String username = userSession.getUsername();
+            String userPassword = userSession.getUserPassword();
 
-        login(userPassword, username, (loginResponse, error) -> {
-            if (requestListener != null) {
-                if (loginResponse != null) {
-                    requestListener.onRequestSuccess(loginResponse);
-                } else {
-                    requestListener.onRequestFailure(error);
+            login(userPassword, username, (loginResponse, error) -> {
+                if (requestListener != null) {
+                    if (loginResponse != null) {
+                        requestListener.onRequestSuccess(loginResponse);
+                    } else {
+                        requestListener.onRequestFailure(error);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void login(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
@@ -158,6 +163,7 @@ public class DreamSpiceManager extends SpiceManager {
 
                 if (!"up".equalsIgnoreCase(status)) {
                     onLoginSuccess.result(null, new SpiceException(message));
+                    eventBus.post(new ServerDownEvent(message));
                 } else {
                     DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                         @Override

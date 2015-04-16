@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
+import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
@@ -99,6 +100,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     public void reload() {
         loadFromApi = true;
         roboSpiceAdapterController.reload();
+        eventBus.post(new UpdateRegionsAndThemesEvent());
     }
 
     public void onEvent(FilterBusEvent event) {

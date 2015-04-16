@@ -70,7 +70,7 @@ public class TripCell extends AbstractCell<TripModel> {
 
         String reward = getModelObject().getRewardsLimit(appSessionHolder.get().get().getUser());
 
-        if (!TextUtils.isEmpty(reward)) {
+        if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
             textViewPoints.setText(String.valueOf(reward));
             pointsCountLayout.setVisibility(View.VISIBLE);
         } else {

@@ -73,7 +73,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
         String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
 
-        if (!TextUtils.isEmpty(reward)) {
+        if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
             view.setRedemption(String.valueOf(reward));
         } else {
             view.setPointsInvisible();

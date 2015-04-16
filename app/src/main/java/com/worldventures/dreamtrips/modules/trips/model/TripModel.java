@@ -42,7 +42,8 @@ public class TripModel implements Filterable, Serializable {
     private List<TripImage> images;
     private List<ActivityModel> activities;
     private boolean platinum;
-    private RewardsRuleModel rewardsRule;
+    @SerializedName("rewards_rules")
+    private RewardsRuleModel rewardsRules;
 
 
     public String getLikeId() {
@@ -116,13 +117,13 @@ public class TripModel implements Filterable, Serializable {
     public String getRewardsLimit(User user) {
         String result = String.valueOf(rewardsLimit);
 
-        if (rewardsRule != null) {
-            if (user.isPlatinum() && rewardsRule.hasDtp()) {
-                result = rewardsRule.getDtp();
-            } else if (user.isGold() && rewardsRule.hasDtg()) {
-                result = rewardsRule.getDtg();
-            } else if (user.isGeneral() && rewardsRule.hasDtm()) {
-                result = rewardsRule.getDtm();
+        if (rewardsRules != null) {
+            if (user.isPlatinum() && rewardsRules.hasDtp()) {
+                result = rewardsRules.getDtp();
+            } else if (user.isGold() && rewardsRules.hasDtg()) {
+                result = rewardsRules.getDtg();
+            } else if (user.isGeneral() && rewardsRules.hasDtm()) {
+                result = rewardsRules.getDtm();
             }
         }
 

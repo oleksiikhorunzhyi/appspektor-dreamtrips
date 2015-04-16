@@ -175,5 +175,6 @@ dependencies {
     compile 'com.apptentive:apptentive-android:1.7.0@aar'
     compile 'mbanje.kurt:fabbutton:1.0.7'
     compile 'joda-time:joda-time:2.7'
+    compile 'com.mani:thindownloadmanager:1.0.0'
 }
 

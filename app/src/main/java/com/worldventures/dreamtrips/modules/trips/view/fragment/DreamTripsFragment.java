@@ -185,7 +185,9 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     public void clearSearch() {
-        searchView.setQuery("", true);
-        searchView.clearFocus();
+        if (searchView != null) {
+            searchView.setQuery("", true);
+            searchView.clearFocus();
+        }
     }
 }

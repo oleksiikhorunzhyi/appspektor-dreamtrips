@@ -70,14 +70,8 @@ public class AppConfig {
 
         public static class Config {
 
-            @SerializedName("APIBaseURL")
-            private String aPIBaseURL;
-
             @SerializedName("AuthBaseURL")
             private String authBaseURL;
-
-            @SerializedName("BookingPageBaseURL")
-            private String bookingPageBaseURL;
 
             @SerializedName("EnrollMemeberURL")
             private String enrollMemeberURL;
@@ -87,9 +81,6 @@ public class AppConfig {
 
             @SerializedName("SurveyApiToken")
             private String surveyApiToken;
-
-            @SerializedName("OTAPageBaseURL")
-            private String oTAPageBaseURL;
 
             @SerializedName("TrainingVideosURL")
             private String trainingVideosURL;
@@ -112,16 +103,8 @@ public class AppConfig {
                 return replaceWithBase64(uid, enrollRepURL);
             }
 
-            public String getAPIBaseURL() {
-                return this.aPIBaseURL;
-            }
-
             public String getAuthBaseURL() {
                 return this.authBaseURL;
-            }
-
-            public String getBookingPageBaseURL() {
-                return this.bookingPageBaseURL;
             }
 
             public String getEnrollMemeberURL(String uid) {
@@ -130,10 +113,6 @@ public class AppConfig {
 
             public String getSurveyApiToken() {
                 return this.surveyApiToken;
-            }
-
-            public String getoTAPageBaseURL() {
-                return oTAPageBaseURL;
             }
 
             public String getTrainingVideosURL() {

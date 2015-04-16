@@ -106,6 +106,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     public void logout() {
         this.appSessionHolder.destroy();
+        snappyRepository.clearAll();
         activityRouter.finish();
         activityRouter.openLogin();
     }

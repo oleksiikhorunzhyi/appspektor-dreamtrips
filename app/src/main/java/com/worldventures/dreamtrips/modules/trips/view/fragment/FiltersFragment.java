@@ -58,7 +58,7 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
-        getPresenter().loadFilters();
+        getPresenter().loadFilters(false);
     }
 
     @OnClick(R.id.textViewApplyFilter)

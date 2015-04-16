@@ -1,7 +1,13 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.text.TextUtils;
+
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateSelectionEvent;
+import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
@@ -18,6 +24,10 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
     public void restoreInstanceState() {
         view.setTitle(fragmentCompass.getCurrentState().getTitle());
+    }
+
+    public void onEvent(ServerDownEvent event) {
+        view.alert(event.getMessage());
     }
 
     public static interface View extends Presenter.View {

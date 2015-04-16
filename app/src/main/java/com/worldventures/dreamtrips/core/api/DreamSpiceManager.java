@@ -30,11 +30,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
@@ -64,6 +62,7 @@ public class DreamSpiceManager extends SpiceManager {
 
     public <T> void execute(final SpiceRequest<T> request, final RequestListener<T> requestListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
+
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
@@ -72,13 +71,14 @@ public class DreamSpiceManager extends SpiceManager {
                     final String username = userSession.getUsername();
                     final String userPassword = userSession.getUserPassword();
 
-                    login(userPassword, username, (l, e) -> {
-                        if (l != null) {
+                    login(userPassword, username, (loginResponse, spiceError) -> {
+                        if (loginResponse != null) {
                             DreamSpiceManager.super.execute(request, requestListener);
                         } else {
-                            requestListener.onRequestFailure(new SpiceException(""));
+                            requestListener.onRequestFailure(new SpiceException(spiceError.getMessage()));
                         }
                     });
+
                 } else if (error != null && error.getCause() instanceof RetrofitError) {
                     RetrofitError retrofitError = (RetrofitError) error.getCause();
                     String body = getBody(retrofitError.getResponse());
@@ -131,12 +131,12 @@ public class DreamSpiceManager extends SpiceManager {
         final String username = userSession.getUsername();
         final String userPassword = userSession.getUserPassword();
 
-        login(userPassword, username, (l, e) -> {
+        login(userPassword, username, (loginResponse, error) -> {
             if (requestListener != null) {
-                if (l != null) {
-                    requestListener.onRequestSuccess(l);
+                if (loginResponse != null) {
+                    requestListener.onRequestSuccess(loginResponse);
                 } else {
-                    requestListener.onRequestFailure(e);
+                    requestListener.onRequestFailure(error);
                 }
             }
         });
@@ -161,7 +161,7 @@ public class DreamSpiceManager extends SpiceManager {
                     DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                         @Override
                         public void onRequestFailure(SpiceException spiceException) {
-                            onLoginSuccess.result(null, spiceException);
+                            onLoginSuccess.result(null, new SpiceException(""));
                         }
 
                         @Override

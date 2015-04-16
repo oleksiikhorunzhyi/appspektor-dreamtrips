@@ -111,7 +111,7 @@ public class BucketItem extends BaseEntity {
 
     public String getCoverUrl() {
         if (coverPhoto != null) {
-            return coverPhoto.getUrl();
+            return coverPhoto.getMedium();
         } else {
             return "";
         }

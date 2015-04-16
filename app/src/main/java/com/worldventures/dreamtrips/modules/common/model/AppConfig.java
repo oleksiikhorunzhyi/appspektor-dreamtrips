@@ -88,9 +88,6 @@ public class AppConfig {
             @SerializedName("SurveyApiToken")
             private String surveyApiToken;
 
-            @SerializedName("UserGeneratedContentAPIBaseUrl")
-            private String userGeneratedContentAPIBaseUrl;
-
             @SerializedName("OTAPageBaseURL")
             private String oTAPageBaseURL;
 
@@ -133,10 +130,6 @@ public class AppConfig {
 
             public String getSurveyApiToken() {
                 return this.surveyApiToken;
-            }
-
-            public String getUserGeneratedContentAPIBaseUrl() {
-                return this.userGeneratedContentAPIBaseUrl;
             }
 
             public String getoTAPageBaseURL() {

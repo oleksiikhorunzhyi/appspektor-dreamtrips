@@ -7,6 +7,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -28,6 +29,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     @Inject
     protected Prefs prefs;
+
+    @Inject
+    protected SnappyRepository snappyRepository;
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {

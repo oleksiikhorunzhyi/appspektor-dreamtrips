@@ -108,7 +108,7 @@ public class AppConfig {
             }
 
             public String getoTAPageURL() {
-                return oTAPageURL;
+                return oTAPageURL != null ? oTAPageURL : "";
             }
 
             public String getEnrollRepURL(String uid) {

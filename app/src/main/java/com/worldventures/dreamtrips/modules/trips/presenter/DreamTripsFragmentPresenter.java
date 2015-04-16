@@ -140,6 +140,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         this.acceptedRegions = null;
         this.acceptedThemes = null;
         dateFilterItem.reset();
+        view.clearSearch();
     }
 
     public void onItemLike(TripModel trip) {
@@ -180,6 +181,8 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         void startLoading();
 
         void finishLoading(List<TripModel> items);
+
+        void clearSearch();
 
         IRoboSpiceAdapter<TripModel> getAdapter();
     }

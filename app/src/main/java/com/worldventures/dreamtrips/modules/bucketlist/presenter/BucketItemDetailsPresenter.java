@@ -53,7 +53,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         if (!TextUtils.isEmpty(bucketItem.getCoverUrl())) {
             view.setCover(bucketItem.getCoverUrl());
         } else if (bucketItem.getPhotos() != null && !bucketItem.getPhotos().isEmpty()) {
-            view.setCover(bucketItem.getPhotos().get(0).getUrl());
+            view.setCover(bucketItem.getPhotos().get(0).getMedium());
         }
         view.updatePhotos();
     }

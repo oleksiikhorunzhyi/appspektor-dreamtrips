@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/bucket_hint_description_text"
             android:imeOptions="actionNext"
-            android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
             app:floatingLabel="normal"

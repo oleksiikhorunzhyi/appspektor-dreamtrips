@@ -3,10 +3,13 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Log;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -93,6 +96,14 @@ public class Presenter<VT extends Presenter.View> {
     private void startSpiceManager() {
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
+        }
+    }
+
+    protected void handleError(SpiceException error) {
+        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+            view.informUser(error.getMessage());
+        } else {
+            view.informUser(R.string.smth_went_wrong);
         }
     }
 

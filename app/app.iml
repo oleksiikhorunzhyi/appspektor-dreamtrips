@@ -12,9 +12,8 @@
         <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleStageDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileStageDebugSources" />
-        <option name="SOURCE_GEN_TASK_NAME" value="generateStageDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleStageDebugAndroidTest" />
-        <option name="COMPILE_JAVA_TEST_TASK_NAME" value="compileStageDebugAndroidTestSources" />
+        <option name="SOURCE_GEN_TASK_NAME" value="generateStageDebugSources" />
         <option name="TEST_SOURCE_GEN_TASK_NAME" value="generateStageDebugAndroidTestSources" />
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
@@ -180,8 +179,8 @@
     <orderEntry type="library" exported="" name="timber-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="collections-query-0.2.8" level="project" />
-    <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="armeabi" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.2" level="project" />
   </component>
@@ -190,3 +189,4 @@
     <option name="serverName" value="&lt;PROJECT&gt;" />
   </component>
 </module>
+

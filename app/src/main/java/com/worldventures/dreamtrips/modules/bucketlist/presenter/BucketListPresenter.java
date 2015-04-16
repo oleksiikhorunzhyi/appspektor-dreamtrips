@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
@@ -158,7 +157,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                     new RequestListener<BucketItem>() {
                         @Override
                         public void onRequestFailure(SpiceException spiceException) {
-                            view.informUser(spiceException.getMessage());
+                            handleError(spiceException);
                         }
 
                         @Override
@@ -224,7 +223,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-                view.informUser(spiceException.getMessage());
+                handleError(spiceException);
             }
 
             @Override
@@ -281,7 +280,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 new RequestListener<JsonObject>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        view.informUser(context.getString(R.string.smth_went_wrong));
+                        handleError(spiceException);
                         refresh();
                     }
 
@@ -296,20 +295,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void addToBucketList(String title) {
         BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);
-        loadBucketItem(bucketPostItem);
+        addBucketItem(bucketPostItem);
     }
 
-    private void loadBucketItem(BucketPostItem bucketPostItem) {
+    private void addBucketItem(BucketPostItem bucketPostItem) {
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem),
                 new RequestListener<BucketItem>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        if (spiceException == null ||
-                                TextUtils.isEmpty(spiceException.getMessage())) {
-                            view.informUser(context.getString(R.string.smth_went_wrong));
-                        } else {
-                            view.informUser(spiceException.getMessage());
-                        }
+                        handleError(spiceException);
                     }
 
                     @Override

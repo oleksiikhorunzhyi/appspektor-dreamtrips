@@ -41,6 +41,19 @@ public class SnappyRepository {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
+    public void clearAll() {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.destroy();
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+        });
+    }
+
+
     public Boolean isEmpty(String key) {
         Boolean empty = null;
         Future<Boolean> future = executorService.submit(() -> {

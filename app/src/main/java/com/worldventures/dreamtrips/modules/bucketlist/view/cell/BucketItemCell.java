@@ -82,6 +82,8 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
 
         final int dragState = getDragStateFlags();
 
+        container.setSelected(getModelObject().isSelected());
+
         if (!getModelObject().isDone()
                 && ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;

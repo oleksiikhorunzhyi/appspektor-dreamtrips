@@ -154,9 +154,10 @@ public class DreamSpiceManager extends SpiceManager {
             public void onRequestSuccess(AppConfig appConfig) {
                 ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
                 String status = serv.getStatus();
+                String message = serv.getMessage();
 
                 if (!"up".equalsIgnoreCase(status)) {
-                    onLoginSuccess.result(null, new SpiceException("Server is down"));
+                    onLoginSuccess.result(null, new SpiceException(message));
                 } else {
                     DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
                         @Override

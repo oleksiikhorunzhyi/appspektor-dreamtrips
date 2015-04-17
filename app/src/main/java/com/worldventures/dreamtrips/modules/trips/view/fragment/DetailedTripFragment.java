@@ -69,6 +69,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     protected TextView textViewFeatured;
     @InjectView(R.id.layoutBookIt)
     protected View layoutBookIt;
+    @InjectView(R.id.textViewBookIt)
+    protected TextView textViewBookIt;
 
     @Optional
     @InjectView(R.id.toolbar_actionbar)
@@ -211,7 +213,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     public void hideBookIt() {
-        layoutBookIt.setVisibility(View.GONE);
+        layoutBookIt.setEnabled(false);
+        textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
     }
 
     @Override

@@ -227,4 +227,5 @@
     <string name="add_pictures">Add pictures</string>
     <string name="select_photo">Select photo</string>
     <string name="bucket_photo_dialog">Bucket photo</string>
+    <string name="download_in_progress">Download in progress</string>
 </resources>

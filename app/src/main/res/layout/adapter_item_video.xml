@@ -42,7 +42,7 @@
             android:paddingLeft="@dimen/margin_small" />
 
         <view
-            android:id="@+id/fab_progress"
+            android:id="@+id/iv_download"
             android:enabled="false"
             class="mbanje.kurt.fabbutton.FabButton"
             android:layout_width="40dp"

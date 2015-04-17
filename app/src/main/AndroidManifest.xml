@@ -148,6 +148,9 @@
         <service
             android:name=".core.api.DreamSpiceService"
             android:exported="false" />
+        <service
+            android:name=".modules.video.DownloadVideoService"
+            android:exported="false" />
 
 
     </application>

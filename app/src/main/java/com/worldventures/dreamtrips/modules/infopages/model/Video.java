@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.infopages.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
 
 public class Video extends BaseEntity {
 
@@ -47,6 +50,36 @@ public class Video extends BaseEntity {
     private String videoName;
     @SerializedName("WebmUrl")
     private String webmUrl;
+
+    private DownloadVideoEntity entity;
+
+    public Video() {
+    }
+
+    private Video(Parcel in) {
+        this.caption1 = in.readString();
+        this.caption1LanguageUrl = in.readString();
+        this.caption2 = in.readString();
+        this.caption2LanguageUrl = in.readString();
+        this.country = in.readString();
+        this.countryAbbreviation1 = in.readString();
+        this.countryAbbreviation2 = in.readString();
+        this.countryCode = in.readString();
+        this.download1080 = in.readString();
+        this.download480 = in.readString();
+        this.download720 = in.readString();
+        this.flashUrl = in.readString();
+        this.imageUrl = in.readString();
+        this.language1 = in.readString();
+        this.language2 = in.readString();
+        this.mp4Url = in.readString();
+        this.ogvUrl = in.readString();
+        this.pointOfEntry = in.readString();
+        this.uid = in.readString();
+        this.videoName = in.readString();
+        this.webmUrl = in.readString();
+        this.id = in.readInt();
+    }
 
     public String getCaption1() {
         return caption1;
@@ -130,5 +163,16 @@ public class Video extends BaseEntity {
 
     public String getWebmUrl() {
         return webmUrl;
+    }
+
+    public DownloadVideoEntity getDownloadEntity() {
+        if(entity==null){
+            entity = new DownloadVideoEntity(this);
+        }
+        return entity;
+    }
+
+    public void setEntity(DownloadVideoEntity entity) {
+        this.entity = entity;
     }
 }

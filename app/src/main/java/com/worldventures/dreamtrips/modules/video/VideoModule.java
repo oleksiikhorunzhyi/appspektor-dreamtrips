@@ -12,7 +12,8 @@ import dagger.Provides;
 @Module(
         injects = {
                 DownloadVideoRequest.class,
-                MembershipVideosPresenter.class
+                MembershipVideosPresenter.class,
+                DownloadVideoService.class
         },
         complete = false,
         library = true

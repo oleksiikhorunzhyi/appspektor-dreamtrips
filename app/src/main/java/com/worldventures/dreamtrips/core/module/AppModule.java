@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.regions.Regions;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.core.api.ApiModule;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
+import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
@@ -37,6 +39,7 @@ import de.greenrobot.event.EventBus;
                 InstabugInitializer.class,
                 ImageLoaderInitializer.class,
                 FabricInitializer.class,
+                FrescoInitializer.class,
                 DreamSpiceService.class,
                 DreamSpiceManager.class,
         },
@@ -83,6 +86,9 @@ public class AppModule {
     public AppInitializer provideFabricInitializer() {
         return new FabricInitializer();
     }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideFrescoInitializer() {return new FrescoInitializer();}
 
     @Provides
     @Singleton

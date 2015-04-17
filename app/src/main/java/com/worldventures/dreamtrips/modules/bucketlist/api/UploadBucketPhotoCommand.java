@@ -56,7 +56,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
                 eventBus.post(new BucketPhotoUploadCancelEvent(photoUploadTask));
             } else {
                 photo = getService().uploadBucketPhoto(photoUploadTask.getBucketId(), uploadObject);
-                photo.setTaskId(taskId);
             }
             eventBus.post(new UploadProgressUpdateEvent(String.valueOf(taskId), 100));
             db.removeBucketPhotoTask(photoUploadTask);
@@ -73,7 +72,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
     private BucketPhoto getUploadObject(int taskId, String urlFromUploadResult) {
         BucketPhoto bucketPhoto = new BucketPhoto();
-        bucketPhoto.setTaskId(taskId);
         bucketPhoto.setOriginUrl(urlFromUploadResult);
         return bucketPhoto;
     }

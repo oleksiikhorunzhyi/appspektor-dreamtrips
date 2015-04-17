@@ -50,11 +50,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     protected void syncUI() {
         super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
-        if (!TextUtils.isEmpty(bucketItem.getCoverUrl())) {
-            view.setCover(bucketItem.getCoverUrl());
-        } else if (bucketItem.getPhotos() != null && !bucketItem.getPhotos().isEmpty()) {
-            view.setCover(bucketItem.getPhotos().get(0).getMedium());
-        }
+        view.setCover(bucketItem.getCoverUrl());
         view.updatePhotos();
     }
 

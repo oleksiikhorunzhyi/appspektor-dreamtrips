@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
@@ -9,12 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -46,9 +47,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
-    protected ImageView ivImage;
-    @InjectView(R.id.pb)
-    protected ProgressBar progressBar;
+    protected SimpleDraweeView ivImage;
     @InjectView(R.id.ll_global_content_wrapper)
     protected LinearLayout llContentWrapper;
     @InjectView(R.id.ll_top_container)
@@ -101,6 +100,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
         getPresenter().onCreate();
 
+
+        int width = ViewUtils.getScreenWidth(getActivity());
+        int heigh = ViewUtils.getScreenHeight(getActivity());
+
         ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()),
                 ViewUtils.getScreenHeight(getActivity()));
         ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
@@ -122,34 +125,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
     @Override
     public void loadImage(Image images) {
-        String medium = images.getThumb().getUrl();
-        String original = images.getMedium().getUrl();
-        simpleImageLoadingListenerOriginal = new SimpleImageLoadingListener() {
+        String medium = images.getThumbUrl(getResources());
+        String original = images.getUrl(ViewUtils.getScreenWidth(getActivity()),
+                ViewUtils.getScreenHeight(getActivity()));
+        loadImage(medium, original);
+    }
 
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                progressBar.setVisibility(View.GONE);
-            }
-        };
-        simpleImageLoadingListenerMedium = new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                imageLoader.loadImage(original, ivImage,
-                        UniversalImageLoader.OP_FULL_SCREEN, simpleImageLoadingListenerOriginal);
-            }
-        };
-        imageLoader.loadImage(medium, ivImage, UniversalImageLoader.OP_FULL_SCREEN,
-                simpleImageLoadingListenerMedium);
+    private void loadImage(String lowUrl, String url) {
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                .setImageRequest(ImageRequest.fromUri(url))
+                .build();
+        ivImage.setController(draweeController);
     }
 
     @Override

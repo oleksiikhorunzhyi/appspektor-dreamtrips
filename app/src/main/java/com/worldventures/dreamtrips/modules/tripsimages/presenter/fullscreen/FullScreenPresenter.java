@@ -97,11 +97,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     }
 
     public void onFbShare() {
-        activityRouter.openShareFacebook(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
+        activityRouter.openShareFacebook(photo.getFSImage().getUrl(), null, photo.getFsShareText());
     }
 
     public void onTwitterShare() {
-        activityRouter.openShareTwitter(photo.getFSImage().getMedium().getUrl(), null, photo.getFsShareText());
+        activityRouter.openShareTwitter(photo.getFSImage().getUrl(), null, photo.getFsShareText());
     }
 
     public List<Flag> getFlagContent() {

@@ -62,7 +62,10 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         } else {
             result.addAll(successStories);
         }
+
         Collections.sort(result, (lhs, rhs) -> lhs.getAuthor().compareTo(rhs.getAuthor()));
+        Collections.sort(result, (lhs, rhs) -> lhs.getCategory().compareTo(rhs.getCategory()));
+
         return result;
     }
 

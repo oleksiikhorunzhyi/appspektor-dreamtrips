@@ -41,6 +41,19 @@ public class SnappyRepository {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
+    public void clearAll() {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.destroy();
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+        });
+    }
+
+
     public Boolean isEmpty(String key) {
         Boolean empty = null;
         Future<Boolean> future = executorService.submit(() -> {
@@ -135,7 +148,7 @@ public class SnappyRepository {
                 DB snappyDb = DBFactory.open(context);
                 clearTrips(snappyDb);
                 for (TripModel trip : list) {
-                    snappyDb.put(TRIP_KEY + trip.getId(), trip);
+                    snappyDb.put(TRIP_KEY + trip.getTripId(), trip);
                 }
                 snappyDb.close();
             } catch (SnappydbException e) {
@@ -148,7 +161,7 @@ public class SnappyRepository {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
-                snappyDb.put(TRIP_KEY + trip.getId(), trip);
+                snappyDb.put(TRIP_KEY + trip.getTripId(), trip);
                 snappyDb.close();
             } catch (SnappydbException e) {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);

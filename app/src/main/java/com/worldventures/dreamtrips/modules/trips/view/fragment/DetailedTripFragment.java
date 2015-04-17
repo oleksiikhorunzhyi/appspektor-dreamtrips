@@ -67,6 +67,10 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
     protected TextView textViewFeatured;
+    @InjectView(R.id.layoutBookIt)
+    protected View layoutBookIt;
+    @InjectView(R.id.textViewBookIt)
+    protected TextView textViewBookIt;
 
     @Optional
     @InjectView(R.id.toolbar_actionbar)
@@ -205,6 +209,12 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
         textViewReloadTripDetails.setVisibility(View.GONE);
         progressBarDetailLoading.setVisibility(View.VISIBLE);
         getPresenter().loadTripDetails();
+    }
+
+    @Override
+    public void hideBookIt() {
+        layoutBookIt.setEnabled(false);
+        textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
     }
 
     @Override

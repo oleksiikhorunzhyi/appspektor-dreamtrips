@@ -80,11 +80,13 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void deleteImage(BucketPhoto photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             Object item = imagesAdapter.getItem(i);
-            boolean equals = photo.getFsId().equals(((BucketPhoto) item).getFsId());
-            if (item instanceof BucketPhoto && equals) {
-                imagesAdapter.remove(item);
-                imagesAdapter.notifyItemRemoved(i);
-                break;
+            if (item instanceof BucketPhoto) {
+                boolean equals = photo.getFsId().equals(((BucketPhoto) item).getFsId());
+                if (equals) {
+                    imagesAdapter.remove(item);
+                    imagesAdapter.notifyItemRemoved(i);
+                    break;
+                }
             }
         }
     }

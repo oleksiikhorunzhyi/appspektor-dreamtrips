@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.auth.presenter;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import android.text.TextUtils;
+
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -24,11 +26,15 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
             return;
         }
 
-        dreamSpiceManager.login(userPassword, username, (l, e) -> {
-            if (e != null) {
-                view.showLoginErrorMessage();
+        dreamSpiceManager.login(userPassword, username, (loginResponse, error) -> {
+            if (error != null) {
+                if (TextUtils.isEmpty(error.getMessage())) {
+                    view.showLoginErrorMessage();
+                } else {
+                    view.alert(error.getMessage());
+                }
             } else {
-                TrackingHelper.login(l.getSession().getUser().getEmail());
+                TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
                 activityRouter.openMain();
                 activityRouter.finish();
                 view.showLoginSuccess();

@@ -42,12 +42,15 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public String getEnrollUrl() {
-        AppConfig.URLS urls = appSessionHolder.get().get().getGlobalConfig().getUrls();
-        if (BuildConfig.DEBUG) {
-            return urls.getQA().getEnrollMemeberURL();
-        } else {
-            return urls.getProduction().getEnrollMemeberURL();
-        }
+        return setLocale(getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername()));
+    }
+
+    public String getEnrollRepUrl() {
+        return setLocale(getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername()));
+    }
+
+    public String setLocale(String url) {
+        return url.replace("{locale}", context.getResources().getConfiguration().locale.getLanguage());
     }
 
     public String getStaticInfoUrl(String title) {

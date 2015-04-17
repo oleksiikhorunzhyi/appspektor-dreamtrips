@@ -237,8 +237,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-        return isActivitiesEmpty()
-                || acceptedThemes == null
+        return  acceptedThemes == null
                 || !Collections.disjoint(acceptedThemes, getActivities());
     }
 
@@ -249,8 +248,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean isActivitiesEmpty() {
-        return getActivities() == null ||
-                getActivities().isEmpty();
+        return getActivities() == null;
     }
 
     public boolean isPlatinum() {

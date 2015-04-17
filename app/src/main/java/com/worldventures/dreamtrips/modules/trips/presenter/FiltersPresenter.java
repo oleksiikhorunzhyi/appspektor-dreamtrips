@@ -203,6 +203,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private List<ActivityModel> getAcceptedThemes() {
+        if (themeHeaderModel.isChecked()) {
+            return null;
+        }
+
         List<ActivityModel> themesList = null;
         if (parentActivities != null) {
             themesList = new ArrayList<>();

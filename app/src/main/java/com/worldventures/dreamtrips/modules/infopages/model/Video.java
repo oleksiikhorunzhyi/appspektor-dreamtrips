@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 public class Video extends BaseEntity {
 
@@ -51,7 +51,7 @@ public class Video extends BaseEntity {
     @SerializedName("WebmUrl")
     private String webmUrl;
 
-    private DownloadVideoEntity entity;
+    private CachedVideo entity;
 
     public Video() {
     }
@@ -165,14 +165,14 @@ public class Video extends BaseEntity {
         return webmUrl;
     }
 
-    public DownloadVideoEntity getDownloadEntity() {
+    public CachedVideo getDownloadEntity() {
         if(entity==null){
-            entity = new DownloadVideoEntity(this);
+            entity = new CachedVideo(this);
         }
         return entity;
     }
 
-    public void setEntity(DownloadVideoEntity entity) {
+    public void setEntity(CachedVideo entity) {
         this.entity = entity;
     }
 }

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 import javax.inject.Inject;
 
@@ -29,7 +29,7 @@ public class DownloadVideoRequest extends DownloadRequest {
     SnappyRepository db;
     int lastProgress;
 
-    public DownloadVideoRequest(DownloadVideoEntity entity, Injector injector) {
+    public DownloadVideoRequest(CachedVideo entity, Injector injector) {
         super(Uri.parse(entity.getUrl()));
         injector.inject(this);
         setDestinationURI(Uri.parse(entity.getFilePath(context)));

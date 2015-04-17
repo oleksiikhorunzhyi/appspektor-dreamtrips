@@ -5,7 +5,7 @@ import android.os.IBinder;
 
 import com.techery.spares.service.InjectingIntentService;
 import com.thin.downloadmanager.ThinDownloadManager;
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 import com.worldventures.dreamtrips.modules.video.request.DownloadVideoRequest;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class DownloadVideoService extends InjectingIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        DownloadVideoEntity entity = (DownloadVideoEntity) intent.getSerializableExtra(EXTRA_VIDEO);
+        CachedVideo entity = (CachedVideo) intent.getSerializableExtra(EXTRA_VIDEO);
         DownloadVideoRequest request = new DownloadVideoRequest(entity, this);
         thinDownloadManager.add(request);
     }

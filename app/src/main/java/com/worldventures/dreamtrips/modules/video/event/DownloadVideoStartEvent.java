@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 public class DownloadVideoStartEvent {
     private int id;
-    private DownloadVideoEntity entity;
+    private CachedVideo entity;
 
-    public DownloadVideoStartEvent(int id, DownloadVideoEntity entity) {
+    public DownloadVideoStartEvent(int id, CachedVideo entity) {
         this.id = id;
         this.entity = entity;
     }
@@ -15,7 +15,7 @@ public class DownloadVideoStartEvent {
         return id;
     }
 
-    public DownloadVideoEntity getEntity() {
+    public CachedVideo getEntity() {
         return entity;
     }
 }

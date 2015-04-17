@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 public class DownloadVideoFailedEvent {
     private final int id;
     private final int errorCode;
     private final String errorMessage;
-    private DownloadVideoEntity entity;
+    private CachedVideo entity;
 
 
     public DownloadVideoFailedEvent(int id, int errorCode,
-                                    String errorMessage, DownloadVideoEntity entity) {
+                                    String errorMessage, CachedVideo entity) {
 
         this.id = id;
         this.errorCode = errorCode;
@@ -30,7 +30,7 @@ public class DownloadVideoFailedEvent {
         return errorMessage;
     }
 
-    public DownloadVideoEntity getEntity() {
+    public CachedVideo getEntity() {
         return entity;
     }
 }

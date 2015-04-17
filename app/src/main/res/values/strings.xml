@@ -228,4 +228,6 @@
     <string name="select_photo">Select photo</string>
     <string name="bucket_photo_dialog">Bucket photo</string>
     <string name="download_in_progress">Download in progress</string>
+    <string name="delete_cached_video_title">Video</string>
+    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
 </resources>

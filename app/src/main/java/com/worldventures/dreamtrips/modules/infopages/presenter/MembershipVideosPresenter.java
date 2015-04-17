@@ -12,15 +12,17 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import com.worldventures.dreamtrips.modules.video.DownloadVideoService;
+import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.model.DownloadVideoEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MembershipVideosPresenter extends Presenter<Presenter.View> {
+public class MembershipVideosPresenter extends Presenter<MembershipVideosPresenter.View> {
 
     @Inject
     protected LoaderFactory loaderFactory;
@@ -55,9 +57,10 @@ public class MembershipVideosPresenter extends Presenter<Presenter.View> {
         TrackingHelper.onMemberShipVideos(getUserId());
         this.adapterController = loaderFactory.create(0, (context, params) -> {
             this.objects = this.sp.getVideos();
+
             ArrayList<Object> result = new ArrayList<>();
             for (Video object : objects) {
-                DownloadVideoEntity e = db.getDownloadVideoEntity(String.valueOf(object.getId()));
+                CachedVideo e = db.getDownloadVideoEntity(String.valueOf(object.getId()));
                 object.setEntity(e);
             }
             result.addAll(objects);
@@ -68,7 +71,23 @@ public class MembershipVideosPresenter extends Presenter<Presenter.View> {
 
     public void onEvent(DownloadVideoRequestEvent event) {
         Intent intent = new Intent(context, DownloadVideoService.class);
-        DownloadVideoEntity entity = event.getVideo().getDownloadEntity();
+        CachedVideo entity = event.getCachedVideo();
         context.startService(intent.putExtra(DownloadVideoService.EXTRA_VIDEO, entity));
+    }
+
+    public void onEvent(DeleteCachedVideoRequestEvent event) {
+        view.showDeleteDialog(event.getVideoEntity());
+    }
+
+    public void onDeleteAction(CachedVideo videoEntity) {
+        new File(videoEntity.getFilePath(context)).delete();
+        view.notifyAdapter();
+    }
+
+
+    public interface View extends Presenter.View {
+        void showDeleteDialog(CachedVideo videoEntity);
+
+        void notifyAdapter();
     }
 }

@@ -7,13 +7,13 @@ import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import java.io.File;
 import java.io.Serializable;
 
-public class DownloadVideoEntity implements Serializable {
+public class CachedVideo implements Serializable {
     String url;
     String id;
     boolean isFailed;
     int progress;
 
-    public DownloadVideoEntity(Video video) {
+    public CachedVideo(Video video) {
         url = video.getMp4Url();
         id = String.valueOf(video.getId());
     }
@@ -27,7 +27,7 @@ public class DownloadVideoEntity implements Serializable {
     }
 
     public boolean isCached(Context context) {
-        return new File(getFilePath(context)).exists();
+        return new File(getFilePath(context)).exists() && getProgress() == 100;
     }
 
     public int getProgress() {

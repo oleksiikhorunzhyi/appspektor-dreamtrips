@@ -8,18 +8,19 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_membership)
-public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements Presenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements MembershipVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -103,5 +104,30 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
         int spanCount = landscape ? 2 : 1;
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    public void showDeleteDialog(CachedVideo videoEntity) {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.delete_cached_video_title)
+                .content(R.string.delete_cached_video_text)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.delete_photo_negative)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().onDeleteAction(videoEntity);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+    @Override
+    public void notifyAdapter() {
+        arrayListAdapter.notifyDataSetChanged();
     }
 }

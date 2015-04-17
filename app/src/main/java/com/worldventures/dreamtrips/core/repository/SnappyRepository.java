@@ -175,7 +175,7 @@ public class SnappyRepository {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
-                snappyDb.put(VIDEO_UPLOAD_ENTITY + e.getId(), e);
+                snappyDb.put(VIDEO_UPLOAD_ENTITY + e.getUrl(), e);
                 snappyDb.close();
             } catch (SnappydbException ex) {
                 Log.e(SnappyRepository.class.getSimpleName(), "", ex);

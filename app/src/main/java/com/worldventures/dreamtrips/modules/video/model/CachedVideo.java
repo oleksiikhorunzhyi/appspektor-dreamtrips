@@ -9,13 +9,11 @@ import java.io.Serializable;
 
 public class CachedVideo implements Serializable {
     String url;
-    String id;
     boolean isFailed;
     int progress;
 
     public CachedVideo(Video video) {
         url = video.getMp4Url();
-        id = String.valueOf(video.getId());
     }
 
     public boolean isFailed() {
@@ -44,10 +42,6 @@ public class CachedVideo implements Serializable {
 
     public String getFilePath(Context context) {
         return context.getFilesDir().toString() + File.separator + getFileName(getUrl());
-    }
-
-    public String getId() {
-        return id;
     }
 
     protected String getFileName(String url) {

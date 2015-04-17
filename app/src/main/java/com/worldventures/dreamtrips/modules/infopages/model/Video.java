@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
-public class Video extends BaseEntity {
+public class Video {
 
     @SerializedName("Caption1")
     private String caption1;
@@ -78,7 +78,6 @@ public class Video extends BaseEntity {
         this.uid = in.readString();
         this.videoName = in.readString();
         this.webmUrl = in.readString();
-        this.id = in.readInt();
     }
 
     public String getCaption1() {

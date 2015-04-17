@@ -60,7 +60,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
             ArrayList<Object> result = new ArrayList<>();
             for (Video object : objects) {
-                CachedVideo e = db.getDownloadVideoEntity(String.valueOf(object.getId()));
+                CachedVideo e = db.getDownloadVideoEntity(object.getMp4Url());
                 object.setEntity(e);
             }
             result.addAll(objects);

@@ -203,6 +203,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private List<ActivityModel> getAcceptedThemes() {
+        if (themeHeaderModel.isChecked()) {
+            return null;
+        }
+
         List<ActivityModel> themesList = null;
         if (parentActivities != null) {
             themesList = new ArrayList<>();
@@ -210,6 +214,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 if (activity.isChecked()) {
                     themesList.addAll(Queryable.from(activities).filter((input) -> input.getParentId()
                             == activity.getId()).toList());
+                    themesList.add(activity);
                 }
             }
         }

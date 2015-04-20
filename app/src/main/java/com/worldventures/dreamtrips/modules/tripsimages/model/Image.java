@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Image extends BaseEntity implements Parcelable {
@@ -70,5 +67,4 @@ public class Image extends BaseEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.url);
     }
-
 }

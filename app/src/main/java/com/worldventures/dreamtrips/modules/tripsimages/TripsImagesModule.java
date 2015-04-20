@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosBaseQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
@@ -65,6 +66,7 @@ import dagger.Provides;
 
                 UploadTripPhotoCommand.class,
                 GetMyPhotosQuery.class,
+                GetMyPhotosBaseQuery.class
         },
         complete = false,
         library = true

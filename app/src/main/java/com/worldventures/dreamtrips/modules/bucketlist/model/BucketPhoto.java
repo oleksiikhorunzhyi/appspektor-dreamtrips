@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -37,20 +36,8 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         this.id = in.readInt();
     }
 
-    public int getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setOriginUrl(String originUrl) {
+        this.originUrl = originUrl;
     }
 
     @Override
@@ -58,18 +45,10 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
         return String.format("%d", super.getId());
     }
 
-    public String getOriginUrl() {
-        return originUrl;
-    }
-
-    public void setOriginUrl(String url) {
-        this.originUrl = url;
-    }
-
     @Override
     public Image getFSImage() {
         Image image = new Image();
-        image.setUrl(getUrl());
+        image.setUrl(url);
         return image;
     }
 

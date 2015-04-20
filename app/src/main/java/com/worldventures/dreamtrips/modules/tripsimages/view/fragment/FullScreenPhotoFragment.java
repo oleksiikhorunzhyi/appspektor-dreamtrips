@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
@@ -22,7 +23,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -34,11 +34,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreen
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
@@ -81,10 +78,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @InjectView(R.id.iv_delete)
     protected ImageView ivDelete;
     @InjectView(R.id.user_photo)
-    protected CircleImageView civUserPhoto;
-
-    @Inject
-    protected UniversalImageLoader imageLoader;
+    protected SimpleDraweeView civUserPhoto;
 
     private SimpleImageLoadingListener simpleImageLoadingListenerOriginal;
     private SimpleImageLoadingListener simpleImageLoadingListenerMedium;
@@ -295,7 +289,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         if (TextUtils.isEmpty(fsPhoto)) {
             civUserPhoto.setVisibility(View.GONE);
         } else {
-            imageLoader.loadImage(fsPhoto, civUserPhoto, UniversalImageLoader.OP_AVATAR_WITH_CACHE);
+            civUserPhoto.setImageURI(Uri.parse(fsPhoto));
         }
     }
 

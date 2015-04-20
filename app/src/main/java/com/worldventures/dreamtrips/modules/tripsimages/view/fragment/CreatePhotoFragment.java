@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -23,8 +22,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhot
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -33,7 +30,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
     @InjectView(R.id.iv_image)
-    protected ImageView ivImage;
+    protected SimpleDraweeView ivImage;
     @InjectView(R.id.btn_save)
     protected FloatingActionButton btnSave;
     @InjectView(R.id.et_title)
@@ -46,8 +43,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected DTEditText etTime;
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
-    @Inject
-    protected  UniversalImageLoader imageLoader;
+
     private Uri uri;
 
     @Override
@@ -61,7 +57,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
-        imageLoader.loadImage(uri, ivImage, null);
+        ivImage.setImageURI(uri);
 
         Date date = new Date();
         Calendar cal = Calendar.getInstance();

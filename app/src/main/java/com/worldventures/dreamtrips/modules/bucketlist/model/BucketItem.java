@@ -119,11 +119,11 @@ public class BucketItem extends BaseEntity {
         }
     }
 
-    public String getCoverUrl() {
+    public String getCoverUrl(int w, int h) {
         if (coverPhoto != null) {
-            return coverPhoto.getUrl();
+            return coverPhoto.getFSImage().getUrl(w, h);
         } else if (getPhotos() != null && !getPhotos().isEmpty()) {
-            return getPhotos().get(0).getUrl();
+            return getPhotos().get(0).getFSImage().getUrl(w, h);
         } else {
             return "";
         }

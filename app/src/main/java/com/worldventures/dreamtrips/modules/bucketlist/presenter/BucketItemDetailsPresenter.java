@@ -50,7 +50,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     protected void syncUI() {
         super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
-        view.setCover(bucketItem.getCoverUrl());
+
+        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
+
+        view.setCover(bucketItem.getCoverUrl(width, width));
         view.updatePhotos();
     }
 

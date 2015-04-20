@@ -55,7 +55,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
         try {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(view.getContext());
             builder.items(R.array.dialog_action_bucket_photo)
-                    .icon(imageViewPhoto.getDrawable())
+                    .icon(imageViewPhoto.getTopLevelDrawable())
                     .title(view.getContext().getString(R.string.bucket_photo_dialog))
                     .itemsCallback((dialog, v, which, text) -> {
                         switch (which) {

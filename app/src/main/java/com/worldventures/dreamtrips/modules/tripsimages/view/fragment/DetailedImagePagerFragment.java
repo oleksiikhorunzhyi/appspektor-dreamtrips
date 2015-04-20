@@ -1,24 +1,26 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -30,13 +32,10 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
     public static final String EXTRA_PHOTO_FULLSCREEN = "isFullscreen";
 
     @InjectView(R.id.imageViewTripImage)
-    protected ImageView ivImage;
+    protected SimpleDraweeView ivImage;
 
     @InjectView(R.id.progressBarImage)
     protected ProgressBar progressBar;
-
-    @Inject
-    protected UniversalImageLoader imageLoader;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -46,7 +45,9 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
         boolean isFullScreen = getArguments().getBoolean(EXTRA_PHOTO_FULLSCREEN, false);
 
         if (isFullScreen) {
-            ivImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        } else {
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         }
 
         getPresenter().setPhoto((TripImage) photo);
@@ -69,15 +70,15 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
     }
 
     private void loadImage(int width, int height) {
-        imageLoader.loadImage(getPresenter().getPhoto().getUrl(width, height), ivImage, UniversalImageLoader.OP_FULL_SCREEN, new SimpleImageLoadingListener() {
-
+        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
-            public void onLoadingStarted(String imageUri, View view) {
+            public void onSubmit(String id, Object callerContext) {
+                super.onSubmit(id, callerContext);
                 progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            public void onFailure(String id, Throwable throwable) {
                 if (isAdded()) {
                     progressBar.setVisibility(View.GONE);
                     informUser(getString(R.string.error_while_loading));
@@ -85,10 +86,18 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             }
 
             @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                super.onFinalImageSet(id, imageInfo, animatable);
                 progressBar.setVisibility(View.GONE);
             }
-        });
+        };
+
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse(getPresenter().getPhoto().getUrl(width, height)))
+                .setControllerListener(controllerListener)
+                .build();
+
+        ivImage.setController(draweeController);
     }
 
     @OnClick(R.id.imageViewTripImage)

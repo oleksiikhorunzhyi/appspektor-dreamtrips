@@ -99,19 +99,6 @@ public class UniversalImageLoader {
         loadImage(url, imageView, displayImageOptions, null);
     }
 
-    public void loadImage(Uri uri, ImageView imageView) {
-        loadImage(uri, imageView, null);
-    }
-
-    public void loadImage(Uri uri, ImageView imageView, DisplayImageOptions displayImageOptions) {
-        String uriS = "";
-        if (uri != null) {
-            uriS = uri.toString();
-        }
-
-        loadImage(uriS, imageView, displayImageOptions, new SimpleImageLoadingListener());
-    }
-
     public void loadImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions, ImageLoadingListener listener) {
         DisplayImageOptions localDisplayImageOptions
                 = displayImageOptions != null ? displayImageOptions : OP_DEF;

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imageViewCover"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bucket_detail_cover_size"
-        android:src="@drawable/ic_trip_image_placeholder"
-        android:scaleType="centerCrop" />
+        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerCrop"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"

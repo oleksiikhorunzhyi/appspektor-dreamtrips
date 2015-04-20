@@ -12,26 +12,17 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-import static com.worldventures.dreamtrips.core.utils.UniversalImageLoader.OP_AVATAR;
-import static com.worldventures.dreamtrips.core.utils.UniversalImageLoader.OP_COVER;
-
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     private int headerSize = 0;
 
@@ -73,9 +64,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     private void bindHeaderViewHolder(HeaderHolder holder, int i) {
-        universalImageLoader.loadImage(navigationHeader.getUserPhoto(), holder.userPhoto, OP_AVATAR);
-        universalImageLoader.loadImage(navigationHeader.getUserCover(), holder.userCover, OP_COVER);
-        holder.userNome.setText(navigationHeader.getUserName());
+        holder.userPhoto.setImageURI(navigationHeader.getUserPhoto());
+        holder.userCover.setImageURI(navigationHeader.getUserCover());
+        holder.userName.setText(navigationHeader.getUserName());
         holder.userEmail.setText(navigationHeader.getUserEmail());
     }
 
@@ -184,12 +175,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         protected ImageView userCover;
         @InjectView(R.id.user_photo)
         protected ImageView userPhoto;
-        @InjectView(R.id.user_photo_2)
-        protected ImageView userPhoto2;
-        @InjectView(R.id.user_photo_3)
-        protected ImageView userPhoto3;
         @InjectView(R.id.user_name)
-        protected TextView userNome;
+        protected TextView userName;
         @InjectView(R.id.user_email)
         protected TextView userEmail;
 

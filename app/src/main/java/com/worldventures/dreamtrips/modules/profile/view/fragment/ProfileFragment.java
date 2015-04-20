@@ -13,12 +13,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -27,8 +27,6 @@ import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import java.util.Calendar;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,13 +40,13 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfilePresenter.View {
 
     @InjectView(R.id.user_cover)
-    protected  ImageView userCover;
+    protected SimpleDraweeView userCover;
 
     @Optional
     @InjectView(R.id.vg_content_container)
     protected ViewGroup vgContentContainer;
     @InjectView(R.id.user_photo)
-    protected ImageView userPhoto;
+    protected SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name)
     protected TextView userName;
     @InjectView(R.id.user_email)
@@ -57,8 +55,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
     protected ProgressBarCircularIndeterminate progressBar;
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
     @Optional
     @InjectView(R.id.sv)
     protected ScrollView sv;
@@ -128,7 +124,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.universalImageLoader.loadImage(uri, this.userPhoto, UniversalImageLoader.OP_AVATAR);
+                    this.userPhoto.setImageURI(uri);
                 }
             });
     }
@@ -138,7 +134,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.universalImageLoader.loadImage(uri, this.userCover, UniversalImageLoader.OP_COVER);
+                    this.userCover.setImageURI(uri);
                 }
             });
     }

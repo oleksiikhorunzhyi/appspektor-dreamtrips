@@ -1,21 +1,19 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.apptentive.android.sdk.Log;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -25,15 +23,12 @@ import mbanje.kurt.fabbutton.FabButton;
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
 public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
-    @InjectView(R.id.iv_photo)
-    protected ImageView ivPhoto;
+    @InjectView(R.id.imageViewPhoto)
+    protected SimpleDraweeView ivPhoto;
     @InjectView(R.id.fab_progress)
     protected FabButton fabProgress;
     @InjectView(R.id.fabbutton_circle)
     protected CircleImageView circleView;
-
-    @Inject
-    protected UniversalImageLoader imageLoader;
 
     public BucketPhotoUploadCell(View view) {
         super(view);
@@ -44,7 +39,7 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
-        imageLoader.loadImage(getModelObject().getFilePath(), ivPhoto, UniversalImageLoader.OP_DEF);
+        ivPhoto.setImageURI(Uri.parse(getModelObject().getFilePath()));
     }
 
     @Override

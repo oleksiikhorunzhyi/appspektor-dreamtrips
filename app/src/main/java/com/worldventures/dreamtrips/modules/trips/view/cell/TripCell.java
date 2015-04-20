@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -26,7 +26,7 @@ import butterknife.OnClick;
 public class TripCell extends AbstractCell<TripModel> {
 
     @InjectView(R.id.imageViewTripImage)
-    protected ImageView imageViewTripImage;
+    protected SimpleDraweeView imageViewTripImage;
     @InjectView(R.id.imageViewLike)
     protected ImageView imageViewLike;
     @InjectView(R.id.textViewName)
@@ -46,10 +46,6 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     public TripCell(View view) {
         super(view);
@@ -78,9 +74,8 @@ public class TripCell extends AbstractCell<TripModel> {
         }
 
         setImageViewLike();
-        universalImageLoader.loadImage(getModelObject().getImageUrl("THUMB"),
-                this.imageViewTripImage,
-                UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
+
+        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getImageUrl("THUMB")));
     }
 
     @OnClick(R.id.imageViewLike)

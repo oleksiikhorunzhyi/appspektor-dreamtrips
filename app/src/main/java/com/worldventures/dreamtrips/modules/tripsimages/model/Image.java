@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Image extends BaseEntity implements Parcelable {
@@ -17,42 +20,42 @@ public class Image extends BaseEntity implements Parcelable {
         }
     };
 
-    private ImageVersion original;
-    private ImageVersion medium;
-    private ImageVersion thumb;
+    private boolean fromFile;
+    private String url;
 
     public Image() {
     }
 
     private Image(Parcel in) {
-        this.original = in.readParcelable(ImageVersion.class.getClassLoader());
-        this.medium = in.readParcelable(ImageVersion.class.getClassLoader());
-        this.thumb = in.readParcelable(ImageVersion.class.getClassLoader());
+        this.url = in.readString();
     }
 
-    public ImageVersion getOriginal() {
-        return original;
+    public String getUrl() {
+        return url;
     }
 
-    public void setOriginal(ImageVersion original) {
-        this.original = original;
+    public String getUrl(int width, int height) {
+        int size = Math.max(width, height);
+        return url + String.format(UniversalImageLoader.PATTERN,
+                size, size);
     }
 
-    public ImageVersion getMedium() {
-        return medium;
+    public String getThumbUrl(Resources resources) {
+        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
+        return url + String.format(UniversalImageLoader.PATTERN,
+                dimensionPixelSize, dimensionPixelSize);
     }
 
-    public void setMedium(ImageVersion medium) {
-        this.medium = medium;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public ImageVersion getThumb() {
-        return thumb;
+    public void setFromFile(boolean fromFile) {
+        this.fromFile = fromFile;
     }
 
-    //thumb medium
-    public void setThumb(ImageVersion thumb) {
-        this.thumb = thumb;
+    public boolean isFromFile() {
+        return fromFile;
     }
 
     @Override
@@ -62,47 +65,6 @@ public class Image extends BaseEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.original, flags);
-        dest.writeParcelable(this.medium, flags);
-        dest.writeParcelable(this.thumb, flags);
-    }
-
-    public static class ImageVersion implements Parcelable {
-
-        public static final Creator<ImageVersion> CREATOR = new Creator<ImageVersion>() {
-            public ImageVersion createFromParcel(Parcel source) {
-                return new ImageVersion(source);
-            }
-
-            public ImageVersion[] newArray(int size) {
-                return new ImageVersion[size];
-            }
-        };
-        protected String url;
-
-        public ImageVersion() {
-        }
-
-        private ImageVersion(Parcel in) {
-            this.url = in.readString();
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.url);
-        }
+        dest.writeString(this.url);
     }
 }

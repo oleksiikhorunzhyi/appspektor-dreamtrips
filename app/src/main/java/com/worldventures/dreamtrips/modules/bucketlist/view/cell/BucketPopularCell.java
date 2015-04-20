@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -23,7 +23,7 @@ import butterknife.OnClick;
 public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
 
     @InjectView(R.id.imageViewImage)
-    protected ImageView imageViewImage;
+    protected SimpleDraweeView imageViewImage;
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
     @InjectView(R.id.textViewDescription)
@@ -34,9 +34,6 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
     protected TextView buttonFlatDone;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     @Inject
     protected Context context;
@@ -51,10 +48,8 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
         textViewName.setText(getModelObject().getName());
 
         int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
-        int height = context.getResources().getDimensionPixelOffset(R.dimen.tripImageHeight);
 
-        universalImageLoader.loadImage(getModelObject().getCoverPhotoUrlThumb(width, height),
-                imageViewImage, UniversalImageLoader.OP_TRIP_PHOTO);
+        imageViewImage.setImageURI(Uri.parse(getModelObject().getCoverPhotoUrl(width, width)));
 
         if (getModelObject().isLoading()) {
             hideButtons();

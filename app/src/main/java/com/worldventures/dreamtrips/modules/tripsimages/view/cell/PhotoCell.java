@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
-
-import javax.inject.Inject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -19,8 +18,8 @@ import butterknife.Optional;
 @Layout(R.layout.adapter_item_photo)
 public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
 
-    @InjectView(R.id.iv_bg)
-    protected  ImageView imageView;
+    @InjectView(R.id.imageViewPhoto)
+    protected SimpleDraweeView draweeViewPhoto;
     @Optional
     @InjectView(R.id.user_photo)
     protected ImageView imageViewUser;
@@ -37,9 +36,6 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
     @InjectView(R.id.shot_location)
     protected TextView shotLocation;
 
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
-
     public PhotoCell(View view) {
         super(view);
     }
@@ -51,13 +47,20 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
             this.shotLocation.setText(getModelObject().getPhotoLocation());
             this.title.setText(getModelObject().getFSTitle());
             this.userName.setText(getModelObject().getUserName());
-            this.universalImageLoader.loadImage(getModelObject().getFsUserPhoto(), this.imageViewUser, null, new SimpleImageLoadingListener());
         }
-        this.universalImageLoader.loadImage(getModelObject().getFSImage().getThumb().getUrl(), this.imageView, UniversalImageLoader.OP_TRIP_PHOTO, new SimpleImageLoadingListener());
+
+        Image fsImage = getModelObject().getFSImage();
+
+        if (fsImage.isFromFile()) {
+            draweeViewPhoto.setImageURI(Uri.parse(fsImage.getUrl()));
+        } else {
+            draweeViewPhoto.setImageURI(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
+        }
     }
+
 
     @Override
     public void prepareForReuse() {
-        imageView.setImageBitmap(null);
+        //nothing to do her
     }
 }

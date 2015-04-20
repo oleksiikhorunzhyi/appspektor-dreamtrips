@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
-    <ImageView
+    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.PinchToZoomDraweeView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,15 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/trip_item_shadow" />
-
-
-    <ProgressBar
-        android:id="@+id/pb"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:id="@+id/ll_global_content_wrapper"
@@ -53,14 +45,14 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_gravity="center_vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/user_photo"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_avatar_placeholder"
-                    android:layout_marginLeft="16dp"
                     android:layout_gravity="center_vertical"
-                    android:visibility="visible" />
+                    android:layout_marginLeft="16dp"
+                    fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+                    fresco:roundAsCircle="true" />
 
                 <LinearLayout
                     android:orientation="vertical"

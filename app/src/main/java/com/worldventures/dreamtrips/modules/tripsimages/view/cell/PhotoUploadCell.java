@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -7,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.filippudak.ProgressPieView.ProgressPieView;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
@@ -28,8 +28,8 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_photo_upload)
 public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
-    @InjectView(R.id.iv_bg)
-    protected ImageView imageView;
+    @InjectView(R.id.imageViewPhoto)
+    protected SimpleDraweeView imageView;
 
     @InjectView(R.id.iv_result)
     protected ImageView ivResult;
@@ -42,10 +42,6 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @InjectView(R.id.btn_action)
     protected ImageButton btnCancelUpload;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
-
     @Inject
     protected SnappyRepository db;
 
@@ -58,7 +54,8 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
-        universalImageLoader.loadImage(getModelObject().getFileUri(), this.imageView, null, new SimpleImageLoadingListener());
+
+        imageView.setImageURI(Uri.parse(getModelObject().getFileUri()));
 
         if (getModelObject().isFailed()) {
             setupViewAsFailed();

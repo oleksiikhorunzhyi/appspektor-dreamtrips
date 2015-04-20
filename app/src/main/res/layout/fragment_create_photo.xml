@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://robobinding.org/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -12,12 +12,13 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_trip_image_placeholder" />
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+            fresco:placeholderImageScaleType="centerCrop"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_save"
@@ -69,8 +70,7 @@
                     android:textSize="@dimen/create_photo_text_size"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
-                    app:primaryColor="#2196F3"
-                    bind:text="${title}" />
+                    app:primaryColor="#2196F3"/>
             </LinearLayout>
 
             <LinearLayout
@@ -104,7 +104,7 @@
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${location}" />
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -142,7 +142,7 @@
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${date}" />
+                     />
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_time"
@@ -159,7 +159,7 @@
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"
-                    bind:text="${time}" />
+                     />
 
 
             </LinearLayout>
@@ -195,7 +195,7 @@
                     app:baseColor="@android:color/black"
                     app:floatingLabel="highlight"
                     app:primaryColor="#2196F3"
-                    bind:text="${tags}" />
+                     />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class PopularBucketItem extends BaseEntity {
@@ -18,14 +17,8 @@ public class PopularBucketItem extends BaseEntity {
     private transient String type;
     private transient boolean loading = false;
 
-    public String getCoverPhotoUrl() {
-        return coverPhoto != null ? coverPhoto.getUrl() : "";
-    }
-
-
-    public String getCoverPhotoUrlThumb(int w, int h) {
-        String args = String.format(UniversalImageLoader.PATTERN, w, h);
-        return getCoverPhotoUrl() + args;
+    public String getCoverPhotoUrl(int w, int h) {
+        return coverPhoto != null ? coverPhoto.getFSImage().getUrl(w, h) : "";
     }
 
     public String getName() {

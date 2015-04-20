@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_bg"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imageViewPhoto"
         android:layout_margin="@dimen/margin_small"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:scaleType="centerCrop" />
+        fresco:actualImageScaleType="centerCrop"
+        fresco:placeholderImageScaleType="fitXY"
+        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
 
 </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>

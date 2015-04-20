@@ -1,25 +1,23 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -30,7 +28,7 @@ import butterknife.Optional;
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.imageViewCover)
-    protected ImageView imageViewCover;
+    protected SimpleDraweeView imageViewCover;
 
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
@@ -63,9 +61,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.lv_items)
     protected BucketPhotosView bucketPhotosView;
 
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -84,8 +79,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setCover(String imageUrl) {
-        universalImageLoader.loadImage(imageUrl, imageViewCover,
-                UniversalImageLoader.OP_FULL_SCREEN);
+        imageViewCover.setImageURI(Uri.parse(imageUrl));
     }
 
     @OnClick(R.id.imageViewEdit)

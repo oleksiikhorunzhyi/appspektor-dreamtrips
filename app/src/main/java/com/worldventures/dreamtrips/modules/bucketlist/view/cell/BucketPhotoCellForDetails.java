@@ -16,13 +16,13 @@ public class BucketPhotoCellForDetails extends BucketPhotoCell {
         super(view);
     }
 
-    @OnLongClick(R.id.iv_photo)
+    @OnLongClick(R.id.imageViewPhoto)
     public boolean onCellLongClick(View view) {
         showItemDialog(view);
         return true;
     }
 
-    @OnClick(R.id.iv_photo)
+    @OnClick(R.id.imageViewPhoto)
     public void onCellClick(View view) {
         openFullScreen();
     }

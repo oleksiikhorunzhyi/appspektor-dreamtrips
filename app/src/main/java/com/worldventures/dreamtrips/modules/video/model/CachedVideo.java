@@ -11,9 +11,15 @@ public class CachedVideo implements Serializable {
     String url;
     boolean isFailed;
     int progress;
+    String uuid;
+    private int downloadId;
 
     public CachedVideo(Video video) {
         url = video.getMp4Url();
+        uuid = video.getUid();
+    }
+
+    public CachedVideo() {
     }
 
     public boolean isFailed() {
@@ -44,7 +50,22 @@ public class CachedVideo implements Serializable {
         return context.getFilesDir().toString() + File.separator + getFileName(getUrl());
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
     protected String getFileName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    @Override
+    public String toString() {
+        return "CachedVideo{" +
+                "url='" + url + '\'' +
+                ", isFailed=" + isFailed +
+                ", progress=" + progress +
+                ", uuid='" + uuid + '\'' +
+                ", downloadId=" + downloadId +
+                '}';
     }
 }

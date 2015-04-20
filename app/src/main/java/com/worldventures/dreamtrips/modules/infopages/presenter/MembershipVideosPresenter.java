@@ -1,22 +1,22 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 
-import com.techery.spares.loader.CollectionController;
-import com.techery.spares.loader.ContentLoader;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.video.DownloadVideoService;
-import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
+import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
+import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +29,42 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
     @Inject
     protected SharedServicesApi sp;
-
     @Inject
     Context context;
-
     @Inject
     SnappyRepository db;
-    private List<Video> objects;
-    private CollectionController<Object> adapterController;
+    @Inject
+    Injector injector;
+
+    CachedVideoManager cachedVideoManager;
+    protected RoboSpiceAdapterController<Video> adapterController
+            = new RoboSpiceAdapterController<Video>() {
+        @Override
+        public SpiceRequest<ArrayList<Video>> getRefreshRequest() {
+            return new MemberVideosRequest() {
+                @Override
+                public ArrayList<Video> loadDataFromNetwork() throws Exception {
+                    ArrayList<Video> videos = super.loadDataFromNetwork();
+                    return cachedVideoManager.attachCacheToVideos(videos);
+                }
+            };
+        }
+
+        @Override
+        public void onStart(LoadType loadType) {
+            view.startLoading();
+        }
+
+        @Override
+        public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
+            view.finishLoading();
+            cachedVideoManager.checkStatus(items);
+        }
+    };
+
 
     public MembershipVideosPresenter(View view) {
         super(view);
-    }
-
-    public ContentLoader<List<Object>> getAdapterController() {
-        return adapterController;
     }
 
     public void actionEnroll() {
@@ -55,39 +76,35 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     public void init() {
         super.init();
         TrackingHelper.onMemberShipVideos(getUserId());
-        this.adapterController = loaderFactory.create(0, (context, params) -> {
-            this.objects = this.sp.getVideos();
-
-            ArrayList<Object> result = new ArrayList<>();
-            for (Video object : objects) {
-                CachedVideo e = db.getDownloadVideoEntity(object.getMp4Url());
-                object.setEntity(e);
-            }
-            result.addAll(objects);
-            return result;
-        });
+        cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
     }
 
-
-    public void onEvent(DownloadVideoRequestEvent event) {
-        Intent intent = new Intent(context, DownloadVideoService.class);
-        CachedVideo entity = event.getCachedVideo();
-        context.startService(intent.putExtra(DownloadVideoService.EXTRA_VIDEO, entity));
+    @Override
+    public void resume() {
+        super.resume();
+        adapterController.setSpiceManager(dreamSpiceManager);
+        adapterController.setAdapter(view.getAdapter());
+        adapterController.reload();
     }
 
-    public void onEvent(DeleteCachedVideoRequestEvent event) {
-        view.showDeleteDialog(event.getVideoEntity());
+    public RoboSpiceAdapterController<Video> getAdapterController() {
+        return adapterController;
     }
+
 
     public void onDeleteAction(CachedVideo videoEntity) {
-        new File(videoEntity.getFilePath(context)).delete();
-        view.notifyAdapter();
+        cachedVideoManager.onDeleteAction(videoEntity);
     }
-
 
     public interface View extends Presenter.View {
         void showDeleteDialog(CachedVideo videoEntity);
 
         void notifyAdapter();
+
+        void startLoading();
+
+        void finishLoading();
+
+        IRoboSpiceAdapter<Video> getAdapter();
     }
 }

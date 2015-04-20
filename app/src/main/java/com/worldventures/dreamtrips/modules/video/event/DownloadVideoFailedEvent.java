@@ -1,33 +1,21 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 public class DownloadVideoFailedEvent {
-    private final int id;
-    private final int errorCode;
-    private final String errorMessage;
+
+    private SpiceException spiceException;
     private CachedVideo entity;
 
+    public DownloadVideoFailedEvent(SpiceException spiceException, CachedVideo entity) {
 
-    public DownloadVideoFailedEvent(int id, int errorCode,
-                                    String errorMessage, CachedVideo entity) {
-
-        this.id = id;
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+        this.spiceException = spiceException;
         this.entity = entity;
     }
 
     public int getId() {
-        return id;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
+        return Integer.parseInt(entity.getUuid());
     }
 
     public CachedVideo getEntity() {

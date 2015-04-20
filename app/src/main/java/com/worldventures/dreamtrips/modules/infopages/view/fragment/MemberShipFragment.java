@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -21,8 +21,6 @@ import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
-
-import java.util.List;
 
 import butterknife.InjectView;
 
@@ -54,25 +52,6 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-
-        this.arrayListAdapter.setContentLoader(getPresenter().getAdapterController());
-
-        getPresenter().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
-            @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
-            }
-        });
     }
 
     @Override
@@ -130,4 +109,21 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     public void notifyAdapter() {
         arrayListAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void finishLoading() {
+        refreshLayout.setRefreshing(false);
+    }
+
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
+    }
+
 }

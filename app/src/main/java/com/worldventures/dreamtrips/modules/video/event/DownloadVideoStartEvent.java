@@ -6,7 +6,7 @@ public class DownloadVideoStartEvent {
     private int id;
     private CachedVideo entity;
 
-    public DownloadVideoStartEvent(int id, CachedVideo entity) {
+    public DownloadVideoStartEvent(CachedVideo entity) {
         this.id = id;
         this.entity = entity;
     }

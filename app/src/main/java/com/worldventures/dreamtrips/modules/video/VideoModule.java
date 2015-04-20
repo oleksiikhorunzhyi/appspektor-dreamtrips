@@ -2,7 +2,8 @@ package com.worldventures.dreamtrips.modules.video;
 
 import com.thin.downloadmanager.ThinDownloadManager;
 import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
-import com.worldventures.dreamtrips.modules.video.request.DownloadVideoRequest;
+import com.worldventures.dreamtrips.modules.video.request.DownloadVideoListener;
+import com.worldventures.dreamtrips.modules.video.request.DownloadVideoPendingListener;
 
 import javax.inject.Singleton;
 
@@ -11,9 +12,9 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                DownloadVideoRequest.class,
+                DownloadVideoListener.class,
+                DownloadVideoPendingListener.class,
                 MembershipVideosPresenter.class,
-                DownloadVideoService.class
         },
         complete = false,
         library = true

@@ -80,8 +80,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView civUserPhoto;
 
-    private SimpleImageLoadingListener simpleImageLoadingListenerOriginal;
-    private SimpleImageLoadingListener simpleImageLoadingListenerMedium;
     private TripImagesListFragment.Type type;
 
     @Override
@@ -93,14 +91,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         IFullScreenAvailableObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
 
         getPresenter().onCreate();
-
-
-        int width = ViewUtils.getScreenWidth(getActivity());
-        int heigh = ViewUtils.getScreenHeight(getActivity());
-
-        ImageSize maxImageSize = new ImageSize(ViewUtils.getScreenWidth(getActivity()),
-                ViewUtils.getScreenHeight(getActivity()));
-        ImageSizeUtils.defineTargetSizeForView(new ImageViewAware(ivImage), maxImageSize);
 
         if (photo != null) {
             getPresenter().setupPhoto((T) photo);

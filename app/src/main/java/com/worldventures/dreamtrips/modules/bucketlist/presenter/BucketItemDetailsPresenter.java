@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;

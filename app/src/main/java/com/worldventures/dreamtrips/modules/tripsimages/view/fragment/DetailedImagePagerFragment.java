@@ -79,10 +79,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
             @Override
             public void onFailure(String id, Throwable throwable) {
-                if (isAdded()) {
-                    progressBar.setVisibility(View.GONE);
-                    informUser(getString(R.string.error_while_loading));
-                }
+                reportError();
             }
 
             @Override
@@ -98,6 +95,13 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
                 .build();
 
         ivImage.setController(draweeController);
+    }
+
+    private void reportError() {
+        if (isAdded()) {
+            progressBar.setVisibility(View.GONE);
+            informUser(getString(R.string.error_while_loading));
+        }
     }
 
     @OnClick(R.id.imageViewTripImage)

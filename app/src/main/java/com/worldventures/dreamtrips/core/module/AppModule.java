@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.regions.Regions;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
@@ -88,7 +87,9 @@ public class AppModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public AppInitializer provideFrescoInitializer() {return new FrescoInitializer();}
+    public AppInitializer provideFrescoInitializer() {
+        return new FrescoInitializer();
+    }
 
     @Provides
     @Singleton

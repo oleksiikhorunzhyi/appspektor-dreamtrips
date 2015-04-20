@@ -49,7 +49,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
             String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
-            BucketPhoto uploadObject = getUploadObject(taskId, urlFromUploadResult);
+            BucketPhoto uploadObject = getUploadObject(urlFromUploadResult);
 
             BucketPhoto photo = null;
             if (isCancelled()) {
@@ -70,7 +70,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         return null;
     }
 
-    private BucketPhoto getUploadObject(int taskId, String urlFromUploadResult) {
+    private BucketPhoto getUploadObject(String urlFromUploadResult) {
         BucketPhoto bucketPhoto = new BucketPhoto();
         bucketPhoto.setOriginUrl(urlFromUploadResult);
         return bucketPhoto;

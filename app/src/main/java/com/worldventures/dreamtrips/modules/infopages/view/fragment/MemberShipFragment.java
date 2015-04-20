@@ -17,9 +17,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 import butterknife.InjectView;

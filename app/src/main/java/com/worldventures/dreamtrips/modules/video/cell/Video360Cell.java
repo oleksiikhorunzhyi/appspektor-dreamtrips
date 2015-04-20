@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.infopages.view.cell;
+package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +9,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.modules.infopages.model.Video360;
+import com.worldventures.dreamtrips.modules.video.model.Video360;
 
 import javax.inject.Inject;
 

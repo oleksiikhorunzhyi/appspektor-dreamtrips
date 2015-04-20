@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.http.GET;
 

@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.video.model;
 
 import android.content.Context;
 
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
-
 import java.io.File;
 import java.io.Serializable;
 

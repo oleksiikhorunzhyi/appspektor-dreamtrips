@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.modules.infopages.presenter;
+package com.worldventures.dreamtrips.modules.video.presenter;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.model.Video360;
-import com.worldventures.dreamtrips.modules.infopages.model.Videos360;
+import com.worldventures.dreamtrips.modules.video.model.Video360;
+import com.worldventures.dreamtrips.modules.video.model.Videos360;
 
 import java.util.List;
 

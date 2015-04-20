@@ -7,13 +7,12 @@ import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
-import com.worldventures.dreamtrips.modules.video.request.DownloadVideoListener;
-import com.worldventures.dreamtrips.modules.video.request.DownloadVideoPendingListener;
+import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -54,8 +53,8 @@ public class CachedVideoManager {
         for (Video item : items) {
             CachedVideo cachedVideo = item.getDownloadEntity();
             if (!cachedVideo.isFailed() && cachedVideo.getProgress() > 0) {
-                DownloadVideoPendingListener listener
-                        = new DownloadVideoPendingListener(cachedVideo);
+                DownloadVideoListener listener
+                        = new DownloadVideoListener(cachedVideo);
                 injector.inject(listener);
                 dreamSpiceManager.addListenerIfPending(
                         InputStream.class,

@@ -10,10 +10,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.infopages.model.Video360;
-import com.worldventures.dreamtrips.modules.infopages.presenter.Video360FragmentPM;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360Cell;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.model.Video360;
+import com.worldventures.dreamtrips.modules.video.presenter.Video360FragmentPM;
+import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
+import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 
 import butterknife.InjectView;
 import butterknife.Optional;

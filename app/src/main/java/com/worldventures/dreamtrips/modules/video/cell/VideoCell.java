@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.infopages.view.cell;
+package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,13 +16,13 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import javax.inject.Inject;
 
@@ -99,7 +99,8 @@ public class VideoCell extends AbstractCell<Video> {
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
         CachedVideo videoEntity = getModelObject().getDownloadEntity();
-        if (!videoEntity.isCached(context) && videoEntity.getProgress() == 0) {
+        if ((!videoEntity.isCached(context) && videoEntity.getProgress() == 0)
+                || videoEntity.isFailed()) {
             getEventBus().post(new DownloadVideoRequestEvent(videoEntity));
         } else if (videoEntity.isCached(context)) {
             getEventBus().post(new DeleteCachedVideoRequestEvent(videoEntity));

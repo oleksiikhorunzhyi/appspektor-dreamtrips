@@ -14,7 +14,7 @@ public class Video360 {
     private String uRL;
     @SerializedName("duration")
     private int duration;
-    private CachedVideo cacheEntity;
+    private CachedEntity cacheEntity;
 
     public int getOrder() {
         return this.order;
@@ -52,14 +52,14 @@ public class Video360 {
         return duration != 0 ? DateTimeUtils.convertSecondsToString(duration) : "";
     }
 
-    public CachedVideo getCacheEntity() {
+    public CachedEntity getCacheEntity() {
         if (cacheEntity == null) {
-            cacheEntity = new CachedVideo(this.getURL(), this.getUid());
+            cacheEntity = new CachedEntity(this.getURL(), this.getUid());
         }
         return cacheEntity;
     }
 
-    public void setCacheEntity(CachedVideo cacheEntity) {
+    public void setCacheEntity(CachedEntity cacheEntity) {
         this.cacheEntity = cacheEntity;
     }
 

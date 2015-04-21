@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 public class DownloadVideoRequestEvent {
 
-    private CachedVideo video;
+    private CachedEntity video;
 
-    public DownloadVideoRequestEvent(CachedVideo video) {
+    public DownloadVideoRequestEvent(CachedEntity video) {
         this.video = video;
     }
 
-    public CachedVideo getCachedVideo() {
+    public CachedEntity getCachedVideo() {
         return video;
     }
 }

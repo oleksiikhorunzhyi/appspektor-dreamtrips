@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -171,7 +171,7 @@ public class SnappyRepository {
         });
     }
 
-    public void saveDownloadVideoEntity(CachedVideo e) {
+    public void saveDownloadVideoEntity(CachedEntity e) {
         executorService.execute(() -> {
             try {
                 DB snappyDb = DBFactory.open(context);
@@ -183,15 +183,15 @@ public class SnappyRepository {
         });
     }
 
-    public CachedVideo getDownloadVideoEntity(String id) {
-        Future<CachedVideo> future = executorService.submit(() -> {
+    public CachedEntity getDownloadVideoEntity(String id) {
+        Future<CachedEntity> future = executorService.submit(() -> {
             DB db = DBFactory.open(context);
 
             try {
                 String[] keys = db.findKeys(VIDEO_UPLOAD_ENTITY + id);
                 for (String key : keys) {
                     Log.v(SnappyRepository.class.getSimpleName(), key);
-                    return db.get(key, CachedVideo.class);
+                    return db.get(key, CachedEntity.class);
                 }
             } catch (SnappydbException e) {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);
@@ -200,7 +200,7 @@ public class SnappyRepository {
             return null;
         });
 
-        CachedVideo entity = null;
+        CachedEntity entity = null;
         try {
             entity = future.get();
         } catch (ExecutionException | InterruptedException e) {

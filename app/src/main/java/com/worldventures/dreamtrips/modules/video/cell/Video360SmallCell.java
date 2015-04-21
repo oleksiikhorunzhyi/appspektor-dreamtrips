@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.infopages.view.cell;
+package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.view.View;
 

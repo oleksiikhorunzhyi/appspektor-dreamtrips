@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class SnappyRepository {
     public static final String TRIP_KEY = "trip_rezopia";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
+    public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
 
     private Context context;
     private ExecutorService executorService;
@@ -167,6 +169,45 @@ public class SnappyRepository {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
+    }
+
+    public void saveDownloadVideoEntity(CachedVideo e) {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e);
+                snappyDb.close();
+            } catch (SnappydbException ex) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", ex);
+            }
+        });
+    }
+
+    public CachedVideo getDownloadVideoEntity(String id) {
+        Future<CachedVideo> future = executorService.submit(() -> {
+            DB db = DBFactory.open(context);
+
+            try {
+                String[] keys = db.findKeys(VIDEO_UPLOAD_ENTITY + id);
+                for (String key : keys) {
+                    Log.v(SnappyRepository.class.getSimpleName(), key);
+                    return db.get(key, CachedVideo.class);
+                }
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+            db.close();
+            return null;
+        });
+
+        CachedVideo entity = null;
+        try {
+            entity = future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        }
+
+        return entity;
     }
 
     public List<TripModel> getTrips() {

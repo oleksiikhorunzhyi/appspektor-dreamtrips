@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -74,6 +75,10 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
         drawerList.setLayoutManager(layoutManager);
 
+        setAdapter();
+    }
+
+    private void setAdapter() {
         adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
         adapter.setNavigationDrawerCallbacks(this);
 
@@ -82,6 +87,12 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         }
 
         drawerList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setAdapter();
     }
 
     private NavigationHeader getNavigationHeader() {

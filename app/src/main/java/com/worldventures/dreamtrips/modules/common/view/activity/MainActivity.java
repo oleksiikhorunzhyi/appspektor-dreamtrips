@@ -50,7 +50,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
 
+    @InjectView(R.id.staticMenuLayout)
+    protected FrameLayout staticMenuLayout;
+
     private NavigationDrawerFragment navigationDrawerFragment;
+    private NavigationDrawerFragment navigationDrawerFragmentStatic;
+
+    private int lastConfig;
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -61,7 +67,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragmentStatic = (NavigationDrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_drawer_static);
 
         checkGoogleServices();
     }
@@ -193,6 +202,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         drawerLayout.closeDrawer(Gravity.END);
     }
 
+    public void disableLeftDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START);
+    }
+
+    public void enableLeftDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.START);
+    }
+
     public void disableRightDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
     }
@@ -205,6 +222,16 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupToolbarLayout();
+
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            enableLeftDrawer();
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            staticMenuLayout.setVisibility(View.GONE);
+        } else {
+            disableLeftDrawer();
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            staticMenuLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setupToolbarLayout() {
@@ -232,6 +259,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         } else {
             if (navigationDrawerFragment != null) {
                 navigationDrawerFragment.onBackPressed();
+                navigationDrawerFragmentStatic.onBackPressed();
             }
 
             if (detailsFrameLayout != null) {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -9,8 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
 
@@ -42,7 +39,7 @@ public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
         return resultList;
     }
 
-    private boolean needUpdate()  {
+    private boolean needUpdate() {
         long current = Calendar.getInstance().getTimeInMillis();
         return current - prefs.getLong(Prefs.LAST_SYNC_BUCKET + type.getName()) > DELTA_BUCKET || snappyRepository.isEmpty(SnappyRepository.BUCKET_LIST);
     }

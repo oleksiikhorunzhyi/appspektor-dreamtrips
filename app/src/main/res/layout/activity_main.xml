@@ -25,8 +25,8 @@
                     android:id="@+id/staticMenuLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:background="#0F2639">
+                    android:background="#0F2639"
+                    android:visibility="gone">
 
                     <fragment
                         android:id="@+id/fragment_drawer_static"
@@ -42,10 +42,23 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_actionbar"
-                style="@style/ToolBarStyle"
-                android:layout_marginTop="0dp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_actionbar"
+                    style="@style/ToolBarStyle"
+                    android:layout_marginTop="0dp" />
+
+                <View
+                    android:id="@+id/homeButtonStub"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/theme_main"/>
+
+            </FrameLayout>
 
         </FrameLayout>
 

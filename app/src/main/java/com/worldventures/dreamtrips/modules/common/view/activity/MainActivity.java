@@ -58,6 +58,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
 
+    @InjectView(R.id.homeButtonStub)
+    protected View homeButtonStub;
+
     @InjectView(R.id.staticMenuLayout)
     protected FrameLayout staticMenuLayout;
 
@@ -101,11 +104,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     private void setUpMenu() {
         if (!ViewUtils.isLandscapeOrientation(this)) {
             enableLeftDrawer();
-            setUpBurger();
+            homeButtonStub.setVisibility(View.GONE);
             staticMenuLayout.setVisibility(View.GONE);
         } else {
             disableLeftDrawer();
-            disableBurger();
+            homeButtonStub.setVisibility(View.VISIBLE);
             staticMenuLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -135,12 +138,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(this.toolbar);
         setUpMenu();
+        setUpBurger();
         onNavigationDrawerItemSelected(rootComponentsProvider.getActiveComponents().get(0));
-    }
-
-    private void disableBurger() {
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        drawerLayout.setDrawerListener(null);
     }
 
     private void setUpBurger() {

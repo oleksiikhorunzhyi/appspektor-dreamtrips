@@ -6,7 +6,7 @@
     android:background="#0F2639">
 
 
-    <android.support.v7.widget.RecyclerView
+    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
         android:id="@+id/recyclerViewAll"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
+            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
                 android:id="@+id/recyclerViewFeatured"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/video_three_sixty_height" />
@@ -35,7 +35,7 @@
                 android:textColor="@android:color/white"
                 android:text="@string/recent_header"/>
 
-            <android.support.v7.widget.RecyclerView
+            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
                 android:id="@+id/recyclerViewRecent"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/video_three_sixty_height_small" />

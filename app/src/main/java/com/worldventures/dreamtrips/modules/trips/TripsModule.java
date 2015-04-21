@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
@@ -58,8 +59,8 @@ import dagger.Provides;
 )
 public class TripsModule {
 
-    public static final String TRIPS = "trips";
-    public static final String OTA = "ota";
+    public static final String TRIPS = Route.DREAMTRIPS.name();
+    public static final String OTA = Route.OTA.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripsComponent() {

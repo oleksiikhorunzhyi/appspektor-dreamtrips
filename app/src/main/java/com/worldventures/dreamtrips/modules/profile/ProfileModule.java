@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 
@@ -18,7 +19,7 @@ import dagger.Provides;
 )
 public class ProfileModule {
 
-    public static final String MY_PROFILE = "my_profile";
+    public static final String MY_PROFILE = Route.MY_PROFILE.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideProfileComponent() {

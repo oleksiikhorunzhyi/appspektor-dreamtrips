@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,11 +13,15 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -31,6 +36,9 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     protected ViewPager pager;
 
     private BaseStatePagerAdapter adapter;
+
+    @Inject
+    protected FragmentCompass fragmentCompass;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -53,6 +61,13 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         pager.setOnPageChangeListener(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        fragmentCompass.pop();
+        fragmentCompass.replace(Route.REP_TOOLS);
     }
 
     @Override

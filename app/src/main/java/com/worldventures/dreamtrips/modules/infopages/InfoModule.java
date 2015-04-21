@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.infopages;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
@@ -55,9 +56,9 @@ import dagger.Provides;
 )
 public class InfoModule {
 
-    public static final String MEMBERSHIP = "membership";
-    public static final String FAQ = "faq";
-    public static final String TERMS_OF_SERVICE = "terms_of_service";
+    public static final String MEMBERSHIP = Route.MEMBERSHIP.name();
+    public static final String FAQ = Route.FAQ.name();
+    public static final String TERMS_OF_SERVICE = Route.TERMS_OF_SERVICE.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMembershipComponent() {

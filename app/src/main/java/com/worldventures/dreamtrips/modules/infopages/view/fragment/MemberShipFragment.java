@@ -106,7 +106,7 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void notifyAdapter() {
+    public void notifyItemChanged(CachedVideo videoEntity) {
         arrayListAdapter.notifyDataSetChanged();
     }
 

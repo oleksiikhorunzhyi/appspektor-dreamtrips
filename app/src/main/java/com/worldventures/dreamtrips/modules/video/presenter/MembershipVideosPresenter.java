@@ -12,11 +12,13 @@ import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
+import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,17 +28,17 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
     @Inject
     protected LoaderFactory loaderFactory;
-
     @Inject
     protected SharedServicesApi sp;
     @Inject
-    Context context;
+    protected Context context;
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
     @Inject
-    Injector injector;
+    protected Injector injector;
 
-    CachedVideoManager cachedVideoManager;
+    protected CachedVideoManager cachedVideoManager;
+
     protected RoboSpiceAdapterController<Video> adapterController
             = new RoboSpiceAdapterController<Video>() {
         @Override
@@ -45,7 +47,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
                 @Override
                 public ArrayList<Video> loadDataFromNetwork() throws Exception {
                     ArrayList<Video> videos = super.loadDataFromNetwork();
-                    return cachedVideoManager.attachCacheToVideos(videos);
+                    return attachCacheToVideos(videos);
                 }
             };
         }
@@ -58,7 +60,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         @Override
         public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
             view.finishLoading();
-            cachedVideoManager.checkStatus(items);
+            attachListeners(items);
         }
     };
 
@@ -97,11 +99,40 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         cachedVideoManager.onDeleteAction(videoEntity);
     }
 
-    public interface View extends Presenter.View {
-        void showDeleteDialog(CachedVideo videoEntity);
 
-        void notifyAdapter();
+    private ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
+        for (Video object : videos) {
+            CachedVideo e = db.getDownloadVideoEntity(object.getUid());
+            object.setEntity(e);
+        }
+        return videos;
+    }
 
+
+    private void attachListeners(List<Video> items) {
+        for (Video item : items) {
+            CachedVideo cachedVideo = item.getCacheEntity();
+            if (!cachedVideo.isFailed() && cachedVideo.getProgress() > 0
+                    && !cachedVideo.isCached(context)) {
+                DownloadVideoListener listener
+                        = new DownloadVideoListener(cachedVideo);
+                injector.inject(listener);
+                dreamSpiceManager.addListenerIfPending(
+                        InputStream.class,
+                        cachedVideo.getUuid(),
+                        listener
+                );
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventBus.unregister(cachedVideoManager);
+    }
+
+    public interface View extends Presenter.View, CachedVideoManager.View {
         void startLoading();
 
         void finishLoading();

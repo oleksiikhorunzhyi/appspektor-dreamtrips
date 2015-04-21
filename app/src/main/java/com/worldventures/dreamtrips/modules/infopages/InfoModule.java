@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
-import com.worldventures.dreamtrips.modules.video.presenter.Video360FragmentPM;
+import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
@@ -27,7 +27,7 @@ import dagger.Provides;
                 ActualTokenStaticInfoFragment.class,
                 ActualTokenStaticInfoFragmentPM.class,
                 StaticInfoFragment.TrainingVideosFragment.class,
-                Video360FragmentPM.class,
+                Video360Presenter.class,
                 MembershipVideosPresenter.class,
                 Video360Fragment.class,
                 StaticInfoFragment.class,

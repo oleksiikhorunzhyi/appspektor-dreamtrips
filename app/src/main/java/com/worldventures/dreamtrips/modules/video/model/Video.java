@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.video.model;
 import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
 public class Video {
 
@@ -164,9 +162,9 @@ public class Video {
         return webmUrl;
     }
 
-    public CachedVideo getDownloadEntity() {
+    public CachedVideo getCacheEntity() {
         if(entity==null){
-            entity = new CachedVideo(this);
+            entity = new CachedVideo(this.getMp4Url(), this.getUid());
         }
         return entity;
     }

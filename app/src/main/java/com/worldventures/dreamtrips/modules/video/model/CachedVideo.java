@@ -12,9 +12,12 @@ public class CachedVideo implements Serializable {
     String uuid;
     private int downloadId;
 
-    public CachedVideo(Video video) {
-        url = video.getMp4Url();
-        uuid = video.getUid();
+
+
+
+    public CachedVideo(String url, String id) {
+        this.url = url;
+        uuid = id;
     }
 
     public CachedVideo() {

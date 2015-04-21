@@ -11,27 +11,23 @@ import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
-import com.worldventures.dreamtrips.modules.video.model.Video;
-import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CachedVideoManager {
 
     private SnappyRepository db;
     private DreamSpiceManager dreamSpiceManager;
     private Context context;
-    private MembershipVideosPresenter.View view;
+    private View view;
     private Injector injector;
 
 
     public CachedVideoManager(SnappyRepository db,
                               DreamSpiceManager dreamSpiceManager,
                               Context context,
-                              MembershipVideosPresenter.View view,
+                              View view,
                               Injector injector) {
         this.db = db;
         this.dreamSpiceManager = dreamSpiceManager;
@@ -39,32 +35,6 @@ public class CachedVideoManager {
         this.view = view;
         this.injector = injector;
     }
-
-    public ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
-        for (Video object : videos) {
-            CachedVideo e = db.getDownloadVideoEntity(object.getUid());
-            object.setEntity(e);
-        }
-        return videos;
-    }
-
-
-    public void checkStatus(List<Video> items) {
-        for (Video item : items) {
-            CachedVideo cachedVideo = item.getDownloadEntity();
-            if (!cachedVideo.isFailed() && cachedVideo.getProgress() > 0) {
-                DownloadVideoListener listener
-                        = new DownloadVideoListener(cachedVideo);
-                injector.inject(listener);
-                dreamSpiceManager.addListenerIfPending(
-                        InputStream.class,
-                        cachedVideo.getUuid(),
-                        listener
-                );
-            }
-        }
-    }
-
 
     public void onEvent(DownloadVideoRequestEvent event) {
         CachedVideo entity = event.getCachedVideo();
@@ -79,7 +49,7 @@ public class CachedVideoManager {
         new File(videoEntity.getFilePath(context)).delete();
         videoEntity.setProgress(0);
         db.saveDownloadVideoEntity(videoEntity);
-        view.notifyAdapter();
+        view.notifyItemChanged(videoEntity);
     }
 
 
@@ -94,5 +64,11 @@ public class CachedVideoManager {
                 entity.getUuid(),
                 DurationInMillis.ALWAYS_RETURNED,
                 requestListener);
+    }
+
+    public interface View {
+        void notifyItemChanged(CachedVideo videoEntity);
+
+        void showDeleteDialog(CachedVideo cachedVideo);
     }
 }

@@ -67,16 +67,13 @@ public class VideoCell extends AbstractCell<Video> {
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
-        CachedVideo downloadEntity = getModelObject().getDownloadEntity();
+        CachedVideo downloadEntity = getModelObject().getCacheEntity();
 
         this.universalImageLoader.loadImage(getModelObject().getImageUrl(), this.ivBg, null);
         this.tvTitle.setText(getModelObject().getVideoName());
 
-        circleView.setColor(blue);
         ivDownload.setProgress(downloadEntity.getProgress());
-        if (downloadEntity.isCached(context)) {
-            ivDownload.setIcon(R.drawable.ic_video_done, R.drawable.ic_video_done);
-        } else if (downloadEntity.isFailed()) {
+        if (downloadEntity.isFailed()) {
             setFailedState();
         } else {
             setInProgressState();
@@ -85,7 +82,7 @@ public class VideoCell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_play)
     public void onPlayClick() {
-        CachedVideo videoEntity = getModelObject().getDownloadEntity();
+        CachedVideo videoEntity = getModelObject().getCacheEntity();
         Uri parse = Uri.parse(getModelObject().getMp4Url());
         if (videoEntity.isCached(context)) {
             parse = Uri.parse(videoEntity.getFilePath(context));
@@ -98,7 +95,7 @@ public class VideoCell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
-        CachedVideo videoEntity = getModelObject().getDownloadEntity();
+        CachedVideo videoEntity = getModelObject().getCacheEntity();
         if ((!videoEntity.isCached(context) && videoEntity.getProgress() == 0)
                 || videoEntity.isFailed()) {
             getEventBus().post(new DownloadVideoRequestEvent(videoEntity));

@@ -14,8 +14,8 @@ public class DownloadVideoFailedEvent {
         this.entity = entity;
     }
 
-    public int getId() {
-        return Integer.parseInt(entity.getUuid());
+    public String  getId() {
+        return entity.getUuid();
     }
 
     public CachedVideo getEntity() {

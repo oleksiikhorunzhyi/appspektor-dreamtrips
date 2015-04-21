@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
             setCurrentComponent(componentDescription);
         } else {
             componentDescription = this.rootComponentsProvider.getActiveComponents().get(0);
-            selectItem(componentDescription);
+            setCurrentComponent(componentDescription);
         }
     }
 
@@ -117,9 +118,9 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     void selectItem(ComponentDescription componentDescription) {
-
         if (this.navigationDrawerListener != null) {
-            final boolean shouldUpdateComponentSelection = currentComponent == null || !componentDescription.getKey().equalsIgnoreCase(currentComponent.getKey());
+            final boolean shouldUpdateComponentSelection = currentComponent == null
+                    || !componentDescription.getKey().equalsIgnoreCase(currentComponent.getKey());
 
             if (shouldUpdateComponentSelection) {
                 this.navigationDrawerListener.onNavigationDrawerItemSelected(componentDescription);
@@ -154,6 +155,13 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
             final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
             setCurrentComponent(this.rootComponentsProvider.getComponentByKey(backEntry.getName()));
         }
+    }
+
+    public void updateSelection() {
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        final int index = fm.getBackStackEntryCount() - 1;
+        final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
+        setCurrentComponent(this.rootComponentsProvider.getComponentByKey(backEntry.getName()));
     }
 
     public void setCurrentComponent(ComponentDescription currentComponent) {

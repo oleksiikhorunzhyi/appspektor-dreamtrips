@@ -22,6 +22,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
@@ -30,6 +31,8 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -58,6 +61,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @InjectView(R.id.staticMenuLayout)
     protected FrameLayout staticMenuLayout;
 
+    @Inject
+    protected RootComponentsProvider rootComponentsProvider;
+
     private NavigationDrawerFragment navigationDrawerFragment;
     private NavigationDrawerFragment navigationDrawerFragmentStatic;
 
@@ -78,6 +84,30 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
                 .findFragmentById(R.id.fragment_drawer_static);
 
         checkGoogleServices();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupToolbarLayout();
+        makeActionBarTransparent(false);
+
+        navigationDrawerFragment.updateSelection();
+        navigationDrawerFragmentStatic.updateSelection();
+
+        setUpMenu();
+    }
+
+    private void setUpMenu() {
+        if (!ViewUtils.isLandscapeOrientation(this)) {
+            enableLeftDrawer();
+            setUpBurger();
+            staticMenuLayout.setVisibility(View.GONE);
+        } else {
+            disableLeftDrawer();
+            disableBurger();
+            staticMenuLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void checkGoogleServices() {
@@ -103,33 +133,35 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-
         setSupportActionBar(this.toolbar);
+        setUpMenu();
+        onNavigationDrawerItemSelected(rootComponentsProvider.getActiveComponents().get(0));
+    }
 
-        if (!ViewUtils.isLandscapeOrientation(this)) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                    toolbar, R.string.drawer_open, R.string.drawer_close) {
+    private void disableBurger() {
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        drawerLayout.setDrawerListener(null);
+    }
 
-                /** Called when a drawer has settled in a completely closed state. */
-                public void onDrawerClosed(View view) {
-                    super.onDrawerClosed(view);
-                    disableRightDrawer();
-                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
+    private void setUpBurger() {
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.drawer_open, R.string.drawer_close) {
 
-                /** Called when a drawer has settled in a completely open state. */
-                public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
-            };
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                disableRightDrawer();
+                invalidateOptionsMenu();
+            }
 
-            // Set the drawer toggle as the DrawerListener
-            drawerLayout.setDrawerListener(mDrawerToggle);
-            this.drawerLayout.post(mDrawerToggle::syncState);
-        }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
 
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        this.drawerLayout.post(mDrawerToggle::syncState);
     }
 
     @Override
@@ -181,7 +213,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, 0, 0, 0);
         } else {
             this.toolbar.getBackground().setAlpha(255);
-            int topMargin = ViewUtils.isLandscapeOrientation(this) ? 0 : getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            ((ViewGroup.MarginLayoutParams) staticMenuLayout.getLayoutParams()).setMargins(0, topMargin, 0, 0);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
         }
     }
@@ -223,22 +256,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setupToolbarLayout();
-
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            enableLeftDrawer();
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            staticMenuLayout.setVisibility(View.GONE);
-        } else {
-            disableLeftDrawer();
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
-            staticMenuLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void setupToolbarLayout() {
         if (toolbar != null) {
             int size = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
@@ -265,10 +282,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             if (navigationDrawerFragment != null) {
                 navigationDrawerFragment.onBackPressed();
                 navigationDrawerFragmentStatic.onBackPressed();
-            }
-
-            if (detailsFrameLayout != null) {
-                detailsFrameLayout.setVisibility(View.GONE);
             }
 
             super.onBackPressed();

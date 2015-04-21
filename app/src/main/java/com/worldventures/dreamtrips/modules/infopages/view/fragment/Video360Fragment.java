@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +11,15 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -34,6 +38,9 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     @Optional
     @InjectView(R.id.recyclerViewAll)
     protected RecyclerView recyclerViewAll;
+
+    @Inject
+    protected FragmentCompass fragmentCompass;
 
     private BaseArrayListAdapter<Video360> adapterFeatured;
     private BaseArrayListAdapter<Video360> adapterRecent;
@@ -67,6 +74,11 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
 
             recyclerViewAll.setAdapter(adapterAll);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

@@ -59,8 +59,8 @@ public class Video360Cell extends AbstractCell<Video360> {
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
+        if (!getEventBus().isRegistered(progressVideoCellHelper)) {
+            getEventBus().register(progressVideoCellHelper);
         }
         this.universalImageLoader.loadImage(getModelObject().getThumbnail(), this.imageViewPreview, null);
         this.textViewTitle.setText(getModelObject().getTitle());

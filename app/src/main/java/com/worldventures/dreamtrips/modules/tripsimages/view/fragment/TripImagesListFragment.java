@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -50,7 +51,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+        setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
@@ -77,6 +78,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupLayoutManager();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -90,7 +97,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
         //nothing to do here
     }
 
-    private void setupLayoutManager(boolean landscape) {
+    private void setupLayoutManager() {
+        boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
         int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
         layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);

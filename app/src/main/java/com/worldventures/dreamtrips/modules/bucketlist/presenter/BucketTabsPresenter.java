@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.techery.spares.module.Annotations.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
@@ -15,8 +14,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
@@ -31,7 +28,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
         @Override
         public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            snappyRepository.putList(categoryItems, SnappyRepository.CATEGORIES);
+            snappyRepository.putList(SnappyRepository.CATEGORIES, categoryItems);
         }
     };
 

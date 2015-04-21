@@ -1,11 +1,17 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
+import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 
+import de.greenrobot.event.EventBus;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -48,14 +54,14 @@ public class ProgressVideoCellHelper {
     }
 
     public void syncUIStateWithModel() {
+        ivDownload.setProgress(cacheEntity.getProgress());
         if (cacheEntity.isFailed()) {
             setFailedState();
         } else {
             setInProgressState();
         }
-        ivDownload.setProgress(cacheEntity.getProgress());
-        if (cacheEntity.getProgress() < 100) {
-            ivDownload.invalidate();
+        if (cacheEntity.getProgress() == 0) {
+            ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_download);
         }
 
     }
@@ -77,5 +83,18 @@ public class ProgressVideoCellHelper {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+
+    public void onDownloadCLick(Context context, EventBus eventBus) {
+        if ((!cacheEntity.isCached(context) && cacheEntity.getProgress() == 0)
+                || cacheEntity.isFailed()) {
+            eventBus.post(new DownloadVideoRequestEvent(cacheEntity));
+        } else if (cacheEntity.isCached(context)) {
+            eventBus.post(new DeleteCachedVideoRequestEvent(cacheEntity));
+        } else {
+            String message = context.getString(R.string.download_in_progress);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

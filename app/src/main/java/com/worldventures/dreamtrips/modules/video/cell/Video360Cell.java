@@ -85,16 +85,7 @@ public class Video360Cell extends AbstractCell<Video360> {
 
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
-        CachedVideo videoEntity = getModelObject().getCacheEntity();
-        if ((!videoEntity.isCached(context) && videoEntity.getProgress() == 0)
-                || videoEntity.isFailed()) {
-            getEventBus().post(new DownloadVideoRequestEvent(videoEntity));
-        } else if (videoEntity.isCached(context)) {
-            getEventBus().post(new DeleteCachedVideoRequestEvent(videoEntity));
-        } else {
-            String message = context.getString(R.string.download_in_progress);
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        }
+      progressVideoCellHelper.onDownloadCLick(context,getEventBus());
     }
 
     @Override

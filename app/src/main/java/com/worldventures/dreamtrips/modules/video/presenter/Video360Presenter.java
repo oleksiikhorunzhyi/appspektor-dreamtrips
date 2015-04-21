@@ -19,15 +19,15 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private CachedVideoManager cachedVideoManager;
 
-    public Video360Presenter(View view) {
-        super(view);
-    }
-
     @Inject
     protected SnappyRepository db;
 
     @Inject
     protected Injector injector;
+
+    public Video360Presenter(View view) {
+        super(view);
+    }
 
     @Override
     public void init() {

@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 public class DeleteCachedVideoRequestEvent {
-    private CachedVideo videoEntity;
+    private CachedEntity videoEntity;
 
-    public DeleteCachedVideoRequestEvent(CachedVideo videoEntity) {
+    public DeleteCachedVideoRequestEvent(CachedEntity videoEntity) {
         this.videoEntity = videoEntity;
     }
 
-    public CachedVideo getVideoEntity() {
+    public CachedEntity getVideoEntity() {
         return videoEntity;
     }
 }

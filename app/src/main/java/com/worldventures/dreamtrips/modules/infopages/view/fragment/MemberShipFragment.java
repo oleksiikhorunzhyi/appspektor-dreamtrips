@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import butterknife.InjectView;
 
@@ -86,7 +86,7 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void showDeleteDialog(CachedVideo videoEntity) {
+    public void showDeleteDialog(CachedEntity videoEntity) {
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.delete_cached_video_title)
                 .content(R.string.delete_cached_video_text)
@@ -106,7 +106,7 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void notifyItemChanged(CachedVideo videoEntity) {
+    public void notifyItemChanged(CachedEntity videoEntity) {
         arrayListAdapter.notifyDataSetChanged();
     }
 

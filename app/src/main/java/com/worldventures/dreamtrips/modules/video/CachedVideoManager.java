@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.File;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public class CachedVideoManager {
     }
 
     public void onEvent(DownloadVideoRequestEvent event) {
-        CachedVideo entity = event.getCachedVideo();
+        CachedEntity entity = event.getCachedVideo();
         startCaching(entity);
     }
 
@@ -45,17 +45,17 @@ public class CachedVideoManager {
         view.showDeleteDialog(event.getVideoEntity());
     }
 
-    public void onDeleteAction(CachedVideo videoEntity) {
-        new File(videoEntity.getFilePath(context)).delete();
+    public void onDeleteAction(CachedEntity videoEntity) {
+        new File(CachedEntity.getFilePath(context, videoEntity.getUrl())).delete();
         videoEntity.setProgress(0);
         db.saveDownloadVideoEntity(videoEntity);
         view.notifyItemChanged(videoEntity);
     }
 
 
-    private void startCaching(CachedVideo entity) {
+    private void startCaching(CachedEntity entity) {
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(entity.getUrl(),
-                new File(entity.getFilePath(context)));
+                new File(CachedEntity.getFilePath(context, entity.getUrl())));
 
         DownloadVideoListener requestListener = new DownloadVideoListener(entity);
         injector.inject(requestListener);
@@ -67,8 +67,8 @@ public class CachedVideoManager {
     }
 
     public interface View {
-        void notifyItemChanged(CachedVideo videoEntity);
+        void notifyItemChanged(CachedEntity videoEntity);
 
-        void showDeleteDialog(CachedVideo cachedVideo);
+        void showDeleteDialog(CachedEntity cachedVideo);
     }
 }

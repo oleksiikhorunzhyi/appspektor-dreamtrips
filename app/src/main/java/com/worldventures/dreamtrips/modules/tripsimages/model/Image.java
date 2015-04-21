@@ -5,10 +5,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class Image extends BaseEntity implements Parcelable {
+
+    public static final String PATTERN = "?width=%d&height=%d";
 
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         public Image createFromParcel(Parcel source) {
@@ -36,13 +37,13 @@ public class Image extends BaseEntity implements Parcelable {
 
     public String getUrl(int width, int height) {
         int size = Math.max(width, height);
-        return url + String.format(UniversalImageLoader.PATTERN,
+        return url + String.format(PATTERN,
                 size, size);
     }
 
     public String getThumbUrl(Resources resources) {
         int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
-        return url + String.format(UniversalImageLoader.PATTERN,
+        return url + String.format(PATTERN,
                 dimensionPixelSize, dimensionPixelSize);
     }
 

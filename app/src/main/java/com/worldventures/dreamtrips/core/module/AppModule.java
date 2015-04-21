@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.ImageLoaderInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -36,7 +35,6 @@ import de.greenrobot.event.EventBus;
         injects = {
                 App.class,
                 InstabugInitializer.class,
-                ImageLoaderInitializer.class,
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 DreamSpiceService.class,
@@ -64,11 +62,6 @@ public class AppModule {
     @Provides
     public BaseApplicationWithInjector provideInjectingApplication() {
         return app;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideImageLoaderInitializer() {
-        return new ImageLoaderInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

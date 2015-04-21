@@ -1,19 +1,16 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
-import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 
 import javax.inject.Inject;
@@ -33,16 +30,13 @@ public class Video360Cell extends AbstractCell<Video360> {
     protected TextView textViewTitle;
 
     @InjectView(R.id.iv_bg)
-    protected ImageView imageViewPreview;
+    protected SimpleDraweeView imageViewPreview;
 
     @InjectView(R.id.iv_download)
     protected FabButton ivDownload;
 
     @InjectView(R.id.fabbutton_circle)
     protected CircleImageView circleView;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     @Inject
     protected ActivityRouter activityRouter;
@@ -62,7 +56,8 @@ public class Video360Cell extends AbstractCell<Video360> {
         if (!getEventBus().isRegistered(progressVideoCellHelper)) {
             getEventBus().register(progressVideoCellHelper);
         }
-        this.universalImageLoader.loadImage(getModelObject().getThumbnail(), this.imageViewPreview, null);
+
+        imageViewPreview.setImageURI(Uri.parse(getModelObject().getThumbnail()));
         this.textViewTitle.setText(getModelObject().getTitle());
         this.textViewDuration.setText(getModelObject().getDuration());
         this.ivDownload.setProgress(getModelObject().getCacheEntity().getProgress());
@@ -74,7 +69,7 @@ public class Video360Cell extends AbstractCell<Video360> {
 
     @OnClick(R.id.iv_bg)
     public void onItemClick() {
-        CachedVideo cacheEntity = getModelObject().getCacheEntity();
+        CachedEntity cacheEntity = getModelObject().getCacheEntity();
         String url = getModelObject().getURL();
         if (cacheEntity.isCached(context)) {
             url = cacheEntity.getUrl();
@@ -85,7 +80,7 @@ public class Video360Cell extends AbstractCell<Video360> {
 
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
-      progressVideoCellHelper.onDownloadCLick(context,getEventBus());
+        progressVideoCellHelper.onDownloadCLick(context, getEventBus());
     }
 
     @Override

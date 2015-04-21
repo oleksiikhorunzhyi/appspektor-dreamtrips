@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.io.InputStream;
@@ -95,14 +95,14 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     }
 
 
-    public void onDeleteAction(CachedVideo videoEntity) {
+    public void onDeleteAction(CachedEntity videoEntity) {
         cachedVideoManager.onDeleteAction(videoEntity);
     }
 
 
     private ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
         for (Video object : videos) {
-            CachedVideo e = db.getDownloadVideoEntity(object.getUid());
+            CachedEntity e = db.getDownloadVideoEntity(object.getUid());
             object.setEntity(e);
         }
         return videos;
@@ -111,7 +111,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
     private void attachListeners(List<Video> items) {
         for (Video item : items) {
-            CachedVideo cachedVideo = item.getCacheEntity();
+            CachedEntity cachedVideo = item.getCacheEntity();
             boolean failed = cachedVideo.isFailed();
             boolean inProgress = cachedVideo.getProgress() > 0;
             boolean cached = cachedVideo.isCached(context);

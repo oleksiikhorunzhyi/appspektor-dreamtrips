@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 import com.worldventures.dreamtrips.modules.video.model.Videos360;
 
@@ -68,14 +68,14 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private List<Video360> attachCacheToVideos(List<Video360> videos) {
         for (Video360 object : videos) {
-            CachedVideo e = db.getDownloadVideoEntity(object.getUid());
+            CachedEntity e = db.getDownloadVideoEntity(object.getUid());
             object.setCacheEntity(e);
         }
         return videos;
     }
 
 
-    public void onDeleteAction(CachedVideo videoEntity) {
+    public void onDeleteAction(CachedEntity videoEntity) {
         cachedVideoManager.onDeleteAction(videoEntity);
     }
 
@@ -87,7 +87,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private void attachListeners(List<Video360> items) {
         for (Video360 item : items) {
-            CachedVideo cachedVideo = item.getCacheEntity();
+            CachedEntity cachedVideo = item.getCacheEntity();
             boolean failed = cachedVideo.isFailed();
             boolean inProgress = cachedVideo.getProgress() > 0;
             boolean cached = cachedVideo.isCached(context);

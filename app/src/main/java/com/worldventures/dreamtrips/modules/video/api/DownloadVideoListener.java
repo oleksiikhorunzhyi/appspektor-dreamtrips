@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
 
@@ -33,11 +33,11 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     @Inject
     protected SnappyRepository db;
 
-    protected CachedVideo entity;
+    protected CachedEntity entity;
 
     protected int lastProgress = -1;
 
-    public DownloadVideoListener(CachedVideo entity) {
+    public DownloadVideoListener(CachedEntity entity) {
         this.entity = entity;
     }
 

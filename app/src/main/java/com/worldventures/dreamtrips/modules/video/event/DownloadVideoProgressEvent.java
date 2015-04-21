@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.modules.video.event;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 public class DownloadVideoProgressEvent {
 
     private final int progress;
-    private CachedVideo entity;
+    private CachedEntity entity;
 
-    public DownloadVideoProgressEvent(int progress, CachedVideo entity) {
+    public DownloadVideoProgressEvent(int progress, CachedEntity entity) {
         this.progress = progress;
         this.entity = entity;
     }
@@ -16,7 +16,7 @@ public class DownloadVideoProgressEvent {
         return progress;
     }
 
-    public CachedVideo getEntity() {
+    public CachedEntity getEntity() {
         return entity;
     }
 }

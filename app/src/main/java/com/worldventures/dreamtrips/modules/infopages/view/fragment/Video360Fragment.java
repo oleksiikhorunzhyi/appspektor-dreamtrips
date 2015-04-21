@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
 
@@ -127,7 +127,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
-    public void notifyItemChanged(CachedVideo videoEntity) {
+    public void notifyItemChanged(CachedEntity videoEntity) {
         if (getFeaturedAdapter() != null) {
             getFeaturedAdapter().notifyDataSetChanged();
         }
@@ -140,7 +140,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
-    public void showDeleteDialog(CachedVideo cachedVideo) {
+    public void showDeleteDialog(CachedEntity cachedVideo) {
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.delete_cached_video_title)
                 .content(R.string.delete_cached_video_text)

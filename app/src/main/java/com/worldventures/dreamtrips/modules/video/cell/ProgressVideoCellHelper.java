@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import de.greenrobot.event.EventBus;
 import mbanje.kurt.fabbutton.CircleImageView;
@@ -23,7 +23,7 @@ public class ProgressVideoCellHelper {
     private int blue;
     private int red;
     private String url;
-    private CachedVideo cacheEntity;
+    private CachedEntity cacheEntity;
 
     ProgressVideoCellHelper(FabButton ivDownload, CircleImageView circleView) {
 
@@ -77,7 +77,7 @@ public class ProgressVideoCellHelper {
         ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_done);
     }
 
-    public void setModelObject(CachedVideo cacheEntity) {
+    public void setModelObject(CachedEntity cacheEntity) {
         this.cacheEntity = cacheEntity;
     }
 

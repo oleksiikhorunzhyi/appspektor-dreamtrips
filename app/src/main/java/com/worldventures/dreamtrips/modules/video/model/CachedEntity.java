@@ -5,7 +5,7 @@ import android.content.Context;
 import java.io.File;
 import java.io.Serializable;
 
-public class CachedVideo implements Serializable {
+public class CachedEntity implements Serializable {
 
     protected static final long serialVersionUID = 12332;
     protected String url;
@@ -15,12 +15,12 @@ public class CachedVideo implements Serializable {
     protected int downloadId;
 
 
-    public CachedVideo(String url, String id) {
+    public CachedEntity(String url, String id) {
         this.url = url;
         uuid = id;
     }
 
-    public CachedVideo() {
+    public CachedEntity() {
     }
 
     public boolean isFailed() {
@@ -32,7 +32,7 @@ public class CachedVideo implements Serializable {
     }
 
     public boolean isCached(Context context) {
-        return new File(getFilePath(context)).exists() && getProgress() == 100;
+        return new File(getFilePath(context,getUrl())).exists() && getProgress() == 100;
     }
 
     public int getProgress() {
@@ -47,15 +47,18 @@ public class CachedVideo implements Serializable {
         return url;
     }
 
-    public String getFilePath(Context context) {
-        return context.getFilesDir().toString() + File.separator + getFileName(getUrl());
+    public static String getFilePath(Context context,String url) {
+        return context.getFilesDir().toString() + File.separator + getFileName(url);
+    }
+    public static String getExternalFilePath(Context context,String url) {
+        return context.getExternalCacheDir().toString() + File.separator + getFileName(url);
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    protected String getFileName(String url) {
+    protected static String getFileName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
 

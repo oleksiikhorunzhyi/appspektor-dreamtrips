@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.infopages.model;
+package com.worldventures.dreamtrips.modules.video.model;
 
 import com.google.gson.annotations.SerializedName;
 

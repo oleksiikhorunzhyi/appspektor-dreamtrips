@@ -8,26 +8,25 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.loader.ContentLoader;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.infopages.model.Video;
-import com.worldventures.dreamtrips.modules.infopages.presenter.MembershipVideosPresenter;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.VideoCell;
-
-import java.util.List;
+import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_membership)
-public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements Presenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements MembershipVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -53,25 +52,6 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-
-        this.arrayListAdapter.setContentLoader(getPresenter().getAdapterController());
-
-        getPresenter().getAdapterController().getContentLoaderObserver().registerObserver(new ContentLoader.ContentLoadingObserving<List<Object>>() {
-            @Override
-            public void onStartLoading() {
-                refreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            public void onFinishLoading(List<Object> result) {
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                refreshLayout.setRefreshing(false);
-            }
-        });
     }
 
     @Override
@@ -104,4 +84,46 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);
     }
+
+    @Override
+    public void showDeleteDialog(CachedEntity videoEntity) {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.delete_cached_video_title)
+                .content(R.string.delete_cached_video_text)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.delete_photo_negative)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().onDeleteAction(videoEntity);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+    @Override
+    public void notifyItemChanged(CachedEntity videoEntity) {
+        arrayListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void finishLoading() {
+        refreshLayout.setRefreshing(false);
+    }
+
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
+        return arrayListAdapter;
+    }
+
 }

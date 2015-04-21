@@ -9,16 +9,19 @@ import java.util.ArrayList;
 public class GetRegionsQuery extends Query<ArrayList<RegionModel>> {
 
     private SnappyRepository db;
+    private boolean fromApi;
 
-    public GetRegionsQuery(SnappyRepository snappyRepository) {
+
+    public GetRegionsQuery(SnappyRepository snappyRepository, boolean fromApi) {
         super((Class<ArrayList<RegionModel>>) new ArrayList<RegionModel>().getClass());
         this.db = snappyRepository;
+        this.fromApi = fromApi;
     }
 
     @Override
     public ArrayList<RegionModel> loadDataFromNetwork() {
         ArrayList<RegionModel> data = new ArrayList<>();
-        if (db.isEmpty(SnappyRepository.REGIONS)) {
+        if (db.isEmpty(SnappyRepository.REGIONS) || fromApi) {
             data.addAll(getService().getRegions());
             db.putList(data, SnappyRepository.REGIONS);
         } else {

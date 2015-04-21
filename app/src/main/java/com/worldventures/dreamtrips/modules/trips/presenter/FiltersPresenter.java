@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.utils.events.SoldOutEvent;
 import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
+import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesQuery;
 import com.worldventures.dreamtrips.modules.trips.api.GetRegionsQuery;
@@ -68,10 +69,15 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         soldOutModel = new SoldOutModel();
     }
 
-    public void loadFilters() {
+    public void onEvent(UpdateRegionsAndThemesEvent event) {
+        loadFilters(true);
+        eventBus.cancelEventDelivery(event);
+    }
+
+    public void loadFilters(boolean fromApi) {
         view.startLoading();
 
-        dreamSpiceManager.execute(new GetActivitiesQuery(db), new RequestListener<ArrayList<ActivityModel>>() {
+        dreamSpiceManager.execute(new GetActivitiesQuery(db, fromApi), new RequestListener<ArrayList<ActivityModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 //nothing to do here
@@ -87,7 +93,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             }
         });
 
-        dreamSpiceManager.execute(new GetRegionsQuery(db), new RequestListener<ArrayList<RegionModel>>() {
+        dreamSpiceManager.execute(new GetRegionsQuery(db, fromApi), new RequestListener<ArrayList<RegionModel>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 //nothing to do here
@@ -197,6 +203,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private List<ActivityModel> getAcceptedThemes() {
+        if (themeHeaderModel.isChecked()) {
+            return null;
+        }
+
         List<ActivityModel> themesList = null;
         if (parentActivities != null) {
             themesList = new ArrayList<>();
@@ -204,6 +214,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 if (activity.isChecked()) {
                     themesList.addAll(Queryable.from(activities).filter((input) -> input.getParentId()
                             == activity.getId()).toList());
+                    themesList.add(activity);
                 }
             }
         }

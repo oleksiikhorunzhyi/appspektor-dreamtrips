@@ -87,10 +87,4 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     protected Converter createConverter() {
         return gsonConverter;
     }
-
-
-    public static interface Callback<T> {
-        void result(T obj, SpiceException spiceException);
-    }
-
 }

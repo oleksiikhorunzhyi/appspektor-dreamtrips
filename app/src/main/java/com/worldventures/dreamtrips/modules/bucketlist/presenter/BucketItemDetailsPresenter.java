@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -50,11 +49,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     protected void syncUI() {
         super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
-        if (!TextUtils.isEmpty(bucketItem.getCoverUrl())) {
-            view.setCover(bucketItem.getCoverUrl());
-        } else if (bucketItem.getPhotos() != null && !bucketItem.getPhotos().isEmpty()) {
-            view.setCover(bucketItem.getPhotos().get(0).getUrl());
-        }
+
+        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
+
+        view.setCover(bucketItem.getCoverUrl(width, width));
         view.updatePhotos();
     }
 

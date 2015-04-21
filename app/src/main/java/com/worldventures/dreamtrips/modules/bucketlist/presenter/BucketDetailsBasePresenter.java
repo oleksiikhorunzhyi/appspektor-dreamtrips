@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.apptentive.android.sdk.Log;
 import com.google.gson.JsonObject;
-import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
@@ -106,24 +105,21 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void startUpload(final BucketPhotoUploadTask task) {
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
-        dreamSpiceManager.execute(uploadBucketPhotoCommand,
-                task.getTaskId(),
-                DurationInMillis.ONE_MINUTE,
-                new RequestListener<BucketPhoto>() {
-                    @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        Log.e(this.getClass().getSimpleName(), "", spiceException);
-                    }
+        dreamSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                Log.e(this.getClass().getSimpleName(), "", spiceException);
+            }
 
-                    @Override
-                    public void onRequestSuccess(BucketPhoto bucketPhoto) {
-                        if (bucketPhoto != null) {
-                            bucketItem.getPhotos().add(bucketPhoto);
-                            resaveItem(bucketItem);
-                            view.getBucketPhotosView().replace(task, bucketPhoto);
-                        }
-                    }
-                });
+            @Override
+            public void onRequestSuccess(BucketPhoto bucketPhoto) {
+                if (bucketPhoto != null) {
+                    bucketItem.getPhotos().add(bucketPhoto);
+                    resaveItem(bucketItem);
+                    view.getBucketPhotosView().replace(task, bucketPhoto);
+                }
+            }
+        });
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {

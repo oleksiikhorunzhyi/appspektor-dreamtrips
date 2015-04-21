@@ -1,11 +1,11 @@
-package com.worldventures.dreamtrips.modules.infopages.model;
+package com.worldventures.dreamtrips.modules.video.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 public class Video360 {
     @SerializedName("Order")
-    private Number order;
+    private int order;
     @SerializedName("Thumbnail")
     private String thumbnail;
     @SerializedName("Title")
@@ -14,12 +14,13 @@ public class Video360 {
     private String uRL;
     @SerializedName("duration")
     private int duration;
+    private CachedEntity cacheEntity;
 
-    public Number getOrder() {
+    public int getOrder() {
         return this.order;
     }
 
-    public void setOrder(Number order) {
+    public void setOrder(int order) {
         this.order = order;
     }
 
@@ -49,5 +50,20 @@ public class Video360 {
 
     public String getDuration() {
         return duration != 0 ? DateTimeUtils.convertSecondsToString(duration) : "";
+    }
+
+    public CachedEntity getCacheEntity() {
+        if (cacheEntity == null) {
+            cacheEntity = new CachedEntity(this.getURL(), this.getUid());
+        }
+        return cacheEntity;
+    }
+
+    public void setCacheEntity(CachedEntity cacheEntity) {
+        this.cacheEntity = cacheEntity;
+    }
+
+    public String getUid() {
+        return getURL();
     }
 }

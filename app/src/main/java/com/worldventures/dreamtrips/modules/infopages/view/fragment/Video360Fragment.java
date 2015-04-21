@@ -5,21 +5,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.infopages.model.Video360;
-import com.worldventures.dreamtrips.modules.infopages.presenter.Video360FragmentPM;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360Cell;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
+import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Video360;
+import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
 
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
-public class Video360Fragment extends BaseFragment<Video360FragmentPM> implements Video360FragmentPM.View {
+public class Video360Fragment extends BaseFragment<Video360Presenter> implements Video360Presenter.View {
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
@@ -84,7 +86,40 @@ public class Video360Fragment extends BaseFragment<Video360FragmentPM> implement
 
 
     @Override
-    protected Video360FragmentPM createPresenter(Bundle savedInstanceState) {
-        return new Video360FragmentPM(this);
+    protected Video360Presenter createPresenter(Bundle savedInstanceState) {
+        return new Video360Presenter(this);
+    }
+
+    @Override
+    public void notifyItemChanged(CachedEntity videoEntity) {
+        if (getFeaturedAdapter() != null) {
+            getFeaturedAdapter().notifyDataSetChanged();
+        }
+        if (getRecentAdapter() != null) {
+            getRecentAdapter().notifyDataSetChanged();
+        }
+        if (getAllAdapter() != null) {
+            getAllAdapter().notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void showDeleteDialog(CachedEntity cachedVideo) {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.delete_cached_video_title)
+                .content(R.string.delete_cached_video_text)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.delete_photo_negative)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().onDeleteAction(cachedVideo);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }

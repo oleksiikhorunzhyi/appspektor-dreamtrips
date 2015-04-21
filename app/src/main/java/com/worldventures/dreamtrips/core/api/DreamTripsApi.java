@@ -102,7 +102,7 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items/{id}/photos")
     public BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
 
-    @GET("/api/trips/{id}/details")
+    @GET("/api/trips/{id}")
     public TripDetails getDetails(@Path("id") String tripId);
 
     @POST("/api/bucket_list_items")

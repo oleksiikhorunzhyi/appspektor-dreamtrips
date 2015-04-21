@@ -50,7 +50,6 @@ public abstract class InjectingIntentService extends IntentService implements In
         List<Object> result = new ArrayList<Object>();
 
         result.add(new InjectingServiceModule(this, this));
-
         Object usedModule = ModuleHelper.getUsedModule(this);
 
         if (usedModule != null) {

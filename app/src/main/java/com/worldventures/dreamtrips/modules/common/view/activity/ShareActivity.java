@@ -20,6 +20,8 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
+import java.io.File;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
@@ -157,7 +159,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     @Override
     public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
         String url = shareUrl;
-        
+
         if (!shareUrl.isEmpty()) {
             url += "\n";
         }
@@ -171,4 +173,5 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
 
         builder.show();
     }
+
 }

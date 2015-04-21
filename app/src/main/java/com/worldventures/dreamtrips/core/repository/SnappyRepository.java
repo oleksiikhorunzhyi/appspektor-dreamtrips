@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class SnappyRepository {
     public static final String TRIP_KEY = "trip_rezopia";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
+    public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
 
     private Context context;
     private ExecutorService executorService;
@@ -40,6 +42,19 @@ public class SnappyRepository {
         this.context = context;
         this.executorService = Executors.newSingleThreadExecutor();
     }
+
+    public void clearAll() {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.destroy();
+                snappyDb.close();
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+        });
+    }
+
 
     public Boolean isEmpty(String key) {
         Boolean empty = null;
@@ -154,6 +169,45 @@ public class SnappyRepository {
                 Log.e(SnappyRepository.class.getSimpleName(), "", e);
             }
         });
+    }
+
+    public void saveDownloadVideoEntity(CachedEntity e) {
+        executorService.execute(() -> {
+            try {
+                DB snappyDb = DBFactory.open(context);
+                snappyDb.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e);
+                snappyDb.close();
+            } catch (SnappydbException ex) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", ex);
+            }
+        });
+    }
+
+    public CachedEntity getDownloadVideoEntity(String id) {
+        Future<CachedEntity> future = executorService.submit(() -> {
+            DB db = DBFactory.open(context);
+
+            try {
+                String[] keys = db.findKeys(VIDEO_UPLOAD_ENTITY + id);
+                for (String key : keys) {
+                    Log.v(SnappyRepository.class.getSimpleName(), key);
+                    return db.get(key, CachedEntity.class);
+                }
+            } catch (SnappydbException e) {
+                Log.e(SnappyRepository.class.getSimpleName(), "", e);
+            }
+            db.close();
+            return null;
+        });
+
+        CachedEntity entity = null;
+        try {
+            entity = future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(SnappyRepository.class.getSimpleName(), "", e);
+        }
+
+        return entity;
     }
 
     public List<TripModel> getTrips() {

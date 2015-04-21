@@ -9,7 +9,6 @@ import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -33,9 +32,6 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Inject
     protected ActivityRouter router;
-
-    @Inject
-    protected UniversalImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

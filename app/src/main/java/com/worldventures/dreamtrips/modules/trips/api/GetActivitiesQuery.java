@@ -9,16 +9,19 @@ import java.util.ArrayList;
 public class GetActivitiesQuery extends Query<ArrayList<ActivityModel>> {
 
     private SnappyRepository db;
+    private boolean fromApi;
 
-    public GetActivitiesQuery(SnappyRepository snappyRepository) {
+
+    public GetActivitiesQuery(SnappyRepository snappyRepository, boolean fromApi) {
         super((Class<ArrayList<ActivityModel>>) new ArrayList<ActivityModel>().getClass());
         this.db = snappyRepository;
+        this.fromApi = fromApi;
     }
 
     @Override
     public ArrayList<ActivityModel> loadDataFromNetwork() {
         ArrayList<ActivityModel> data = new ArrayList<>();
-        if (db.isEmpty(SnappyRepository.ACTIVITIES)) {
+        if (db.isEmpty(SnappyRepository.ACTIVITIES) || fromApi) {
             data.addAll(getService().getActivities());
             db.putList(data, SnappyRepository.ACTIVITIES);
         } else {

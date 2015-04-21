@@ -1,28 +1,18 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.apptentive.android.sdk.Log;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-
-import java.io.File;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -31,11 +21,8 @@ import butterknife.OnLongClick;
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
-    @InjectView(R.id.iv_photo)
-    protected ImageView ivPhoto;
-
-    @Inject
-    protected UniversalImageLoader imageLoader;
+    @InjectView(R.id.imageViewPhoto)
+    protected SimpleDraweeView imageViewPhoto;
 
     public BucketPhotoCell(View view) {
         super(view);
@@ -43,7 +30,8 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     protected void syncUIStateWithModel() {
-        imageLoader.loadImage(getModelObject().getThumbUrl(), ivPhoto, UniversalImageLoader.OP_BUCKET_PHOTO);
+        imageViewPhoto.setImageURI(Uri.parse(getModelObject()
+                .getFSImage().getThumbUrl(itemView.getResources())));
     }
 
     @Override
@@ -52,12 +40,12 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
     }
 
 
-    @OnClick(R.id.iv_photo)
+    @OnClick(R.id.imageViewPhoto)
     public void onCellClick(View view) {
         showItemDialog(view);
     }
 
-    @OnLongClick(R.id.iv_photo)
+    @OnLongClick(R.id.imageViewPhoto)
     public boolean onCellLongClick(View view) {
         showItemDialog(view);
         return true;
@@ -65,12 +53,9 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     protected void showItemDialog(View view) {
         try {
-            String url = getModelObject().getThumbUrl();
-            Resources res = view.getResources();
-            Drawable d = getDrawableFromCache(url, res);
             MaterialDialog.Builder builder = new MaterialDialog.Builder(view.getContext());
             builder.items(R.array.dialog_action_bucket_photo)
-                    .icon(d)
+                    .icon(imageViewPhoto.getTopLevelDrawable())
                     .title(view.getContext().getString(R.string.bucket_photo_dialog))
                     .itemsCallback((dialog, v, which, text) -> {
                         switch (which) {
@@ -107,14 +92,6 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
                         dialog.dismiss();
                     }
                 }).show();
-    }
-
-    private Drawable getDrawableFromCache(String url, Resources res) {
-        File file2 = ImageLoader.getInstance().getDiskCache().get(url);
-        Drawable src = Drawable.createFromPath(file2.getAbsolutePath());
-        Bitmap bitmap = ((BitmapDrawable) src).getBitmap();
-        int newSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, res.getDisplayMetrics());
-        return new BitmapDrawable(res, Bitmap.createScaledBitmap(bitmap, newSize, newSize, true));
     }
 
 }

@@ -52,6 +52,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     private int lastConfig;
     private boolean search;
 
+    private SearchView searchView;
+
     @Override
     public void afterCreateView(View rootView) {
         lastConfig = getResources().getConfiguration().orientation;
@@ -123,7 +125,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;
@@ -179,5 +181,13 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     @Override
     public IRoboSpiceAdapter<TripModel> getAdapter() {
         return adapter;
+    }
+
+    @Override
+    public void clearSearch() {
+        if (searchView != null) {
+            searchView.setQuery("", true);
+            searchView.clearFocus();
+        }
     }
 }

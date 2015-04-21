@@ -4,7 +4,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.infopages.model.Videos360;
+import com.worldventures.dreamtrips.modules.video.model.Videos360;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
 import java.io.UnsupportedEncodingException;
@@ -70,14 +70,8 @@ public class AppConfig {
 
         public static class Config {
 
-            @SerializedName("APIBaseURL")
-            private String aPIBaseURL;
-
             @SerializedName("AuthBaseURL")
             private String authBaseURL;
-
-            @SerializedName("BookingPageBaseURL")
-            private String bookingPageBaseURL;
 
             @SerializedName("EnrollMemeberURL")
             private String enrollMemeberURL;
@@ -87,12 +81,6 @@ public class AppConfig {
 
             @SerializedName("SurveyApiToken")
             private String surveyApiToken;
-
-            @SerializedName("UserGeneratedContentAPIBaseUrl")
-            private String userGeneratedContentAPIBaseUrl;
-
-            @SerializedName("OTAPageBaseURL")
-            private String oTAPageBaseURL;
 
             @SerializedName("TrainingVideosURL")
             private String trainingVideosURL;
@@ -108,23 +96,15 @@ public class AppConfig {
             }
 
             public String getoTAPageURL() {
-                return oTAPageURL;
+                return oTAPageURL != null ? oTAPageURL : "";
             }
 
             public String getEnrollRepURL(String uid) {
                 return replaceWithBase64(uid, enrollRepURL);
             }
 
-            public String getAPIBaseURL() {
-                return this.aPIBaseURL;
-            }
-
             public String getAuthBaseURL() {
                 return this.authBaseURL;
-            }
-
-            public String getBookingPageBaseURL() {
-                return this.bookingPageBaseURL;
             }
 
             public String getEnrollMemeberURL(String uid) {
@@ -133,14 +113,6 @@ public class AppConfig {
 
             public String getSurveyApiToken() {
                 return this.surveyApiToken;
-            }
-
-            public String getUserGeneratedContentAPIBaseUrl() {
-                return this.userGeneratedContentAPIBaseUrl;
-            }
-
-            public String getoTAPageBaseURL() {
-                return oTAPageBaseURL;
             }
 
             public String getTrainingVideosURL() {

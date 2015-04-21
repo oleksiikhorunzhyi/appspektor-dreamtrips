@@ -16,7 +16,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class BucketAddPhotoCell extends AbstractCell<Object> {
 
-    @InjectView(R.id.iv_photo)
+    @InjectView(R.id.imageViewPhoto)
     protected ImageView ivPhoto;
 
     public BucketAddPhotoCell(View view) {
@@ -36,7 +36,7 @@ public class BucketAddPhotoCell extends AbstractCell<Object> {
 
     }
 
-    @OnClick(R.id.iv_photo)
+    @OnClick(R.id.imageViewPhoto)
     public void onClick() {
         getEventBus().post(new BucketAddPhotoClickEvent());
     }

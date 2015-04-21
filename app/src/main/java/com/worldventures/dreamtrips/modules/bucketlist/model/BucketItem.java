@@ -53,6 +53,8 @@ public class BucketItem extends BaseEntity {
     @SerializedName("cover_photo")
     private BucketPhoto coverPhoto;
 
+    private transient boolean selected;
+
     public String getName() {
         return name;
     }
@@ -79,6 +81,14 @@ public class BucketItem extends BaseEntity {
         } else {
             this.status = BucketItem.NEW;
         }
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public List<BucketPhoto> getPhotos() {
@@ -109,9 +119,11 @@ public class BucketItem extends BaseEntity {
         }
     }
 
-    public String getCoverUrl() {
+    public String getCoverUrl(int w, int h) {
         if (coverPhoto != null) {
-            return coverPhoto.getUrl();
+            return coverPhoto.getFSImage().getUrl(w, h);
+        } else if (getPhotos() != null && !getPhotos().isEmpty()) {
+            return getPhotos().get(0).getFSImage().getUrl(w, h);
         } else {
             return "";
         }

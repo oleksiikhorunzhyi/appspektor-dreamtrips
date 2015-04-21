@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -9,16 +10,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,7 +27,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
     @InjectView(R.id.imageViewTripImage)
-    protected ImageView imageViewTripImage;
+    protected SimpleDraweeView imageViewTripImage;
     @InjectView(R.id.imageViewLike)
     protected ImageView imageViewLike;
     @InjectView(R.id.textViewName)
@@ -50,9 +48,6 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
     protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
     protected TextView textViewFeatured;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     @Override
     public void afterCreateView(final View rootView) {
@@ -102,9 +97,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
 
     @Override
     public void setImage(String image) {
-        universalImageLoader.loadImage(image,
-                this.imageViewTripImage,
-                UniversalImageLoader.OP_LIST_SCREEN, new SimpleImageLoadingListener());
+        imageViewTripImage.setImageURI(Uri.parse(image));
     }
 
     @Override

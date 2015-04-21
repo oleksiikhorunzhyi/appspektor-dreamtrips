@@ -1,24 +1,21 @@
 package com.worldventures.dreamtrips.modules.facebook.view.cell;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.Session;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.ItemWrapper;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,9 +23,6 @@ import butterknife.InjectView;
 public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
 
     protected FacebookAlbum photo;
-
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
 
     public FacebookAlbumItem(Injector injector, FacebookAlbum photo) {
         this.photo = photo;
@@ -58,10 +52,9 @@ public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
     @Override
     public void bindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder h = (ViewHolder) holder;
-        //https://graph.facebook.com/<?=$album['id']?>/picture?type=album&access_token=<?=$access_token?>
-        universalImageLoader.loadImage(photo.getCoverUrl(Session.getActiveSession().getAccessToken()), h.ivBg, null, new SimpleImageLoadingListener());
         h.tvTitle.setText(photo.getName());
         h.tvCount.setText(photo.getCount() + "");
+        h.ivBg.setImageURI(Uri.parse(photo.getCoverUrl(Session.getActiveSession().getAccessToken())));
     }
 
     @Override
@@ -76,7 +69,7 @@ public class FacebookAlbumItem implements ItemWrapper<FacebookAlbum> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.iv_bg)
-        public ImageView ivBg;
+        public SimpleDraweeView ivBg;
         @InjectView(R.id.tv_album_title)
         public TextView tvTitle;
         @InjectView(R.id.tv_count)

@@ -2,11 +2,15 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.net.Uri;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.File;
+import java.io.InputStream;
 
 public class SharePresenter extends Presenter<SharePresenter.View> {
     public SharePresenter(View view) {
@@ -17,24 +21,46 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
         if (type.equals(ShareActivity.FB)) {
             view.shareFBDialog(imageUrl, shareLink, text);
         } else if (type.equals(ShareActivity.TW)) {
-            File file = DiskCacheUtils.findInCache(imageUrl, ImageLoader.getInstance().getDiskCache());
-            Uri parse = null;
-            if (file != null) {
-                parse = Uri.fromFile(file);
+            File file = new File(CachedEntity.getExternalFilePath(context, imageUrl));
+            if (file.exists()) {
+                Uri parse = Uri.fromFile(file);
+                view.shareTwitterDialog(parse, shareLink, text);
+            } else {
+                downloadFile(imageUrl, shareLink, text);
             }
-            view.shareTwitterDialog(parse, shareLink, text);
+
+
         }
+    }
+
+    private void downloadFile(String url, final String shareLink, final String text) {
+        File cacheFile = new File(CachedEntity.getExternalFilePath(context, url));
+        BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, cacheFile);
+
+        dreamSpiceManager.execute(bigBinaryRequest,
+                url,
+                DurationInMillis.ALWAYS_RETURNED,
+                new RequestListener<InputStream>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        view.informUser("Can't share file");
+                    }
+
+                    @Override
+                    public void onRequestSuccess(InputStream inputStream) {
+                        Uri parse = Uri.fromFile(cacheFile);
+                        view.shareTwitterDialog(parse, shareLink, text);
+                    }
+                });
     }
 
     public void openShareActivity(String picture, String link, String text) {
         activityRouter.openShareFacebook(picture, link, text);
     }
 
+    public interface View extends Presenter.View {
+        void shareFBDialog(String url, String link, String text);
 
-    public static interface View extends Presenter.View {
-        public void shareFBDialog(String url, String link, String text);
-
-        public void shareTwitterDialog(Uri url, String link, String text);
-
+        void shareTwitterDialog(Uri url, String link, String text);
     }
 }

@@ -136,11 +136,8 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     @Override
     public Image getFSImage() {
         Image image = new Image();
-        Image.ImageVersion version = new Image.ImageVersion();
-        version.setUrl(getFileUri());
-        image.setMedium(version);
-        image.setOriginal(version);
-        image.setThumb(version);
+        image.setUrl(getFileUri());
+        image.setFromFile(true);
         return image;
     }
 

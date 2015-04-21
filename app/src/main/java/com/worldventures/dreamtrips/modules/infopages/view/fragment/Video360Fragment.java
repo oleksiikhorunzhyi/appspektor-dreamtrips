@@ -57,6 +57,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     private void setUp() {
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
             scrollView.setVisibility(View.VISIBLE);
+
             LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             LinearLayoutManager linearLayoutManagerRecent = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewFeatured.setLayoutManager(linearLayoutManagerFeatured);

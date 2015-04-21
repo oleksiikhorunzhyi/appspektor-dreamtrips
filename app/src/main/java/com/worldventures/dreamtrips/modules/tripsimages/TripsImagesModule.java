@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosBaseQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
@@ -73,7 +74,7 @@ import dagger.Provides;
 )
 public class TripsImagesModule {
 
-    public static final String TRIP_IMAGES = "trip_images";
+    public static final String TRIP_IMAGES = Route.TRIP_IMAGES.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripImagesComponent() {

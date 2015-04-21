@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
@@ -32,7 +33,7 @@ import dagger.Provides;
 )
 public class ReptoolsModule {
 
-    public static final String REP_TOOLS = "rep_tools";
+    public static final String REP_TOOLS = Route.REP_TOOLS.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideRepToolsComponent() {

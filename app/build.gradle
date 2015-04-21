@@ -165,7 +165,7 @@ dependencies {
     compile 'com.joooonho:selectableroundedimageview:1.0.0'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.2'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
-    compile 'mbanje.kurt:fabbutton:1.0.7'
+    compile 'mbanje.kurt:fabbutton:1.0.9'
     // Util
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:support-annotations:20.0.0'

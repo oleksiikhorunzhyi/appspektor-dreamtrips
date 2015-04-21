@@ -12,10 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 
@@ -53,13 +50,11 @@ public class Video360Cell extends AbstractCell<Video360> {
     @Inject
     protected Context context;
 
-    int blue;
-    int red;
+    private ProgressVideoCellHelper progressVideoCellHelper;
 
     public Video360Cell(View view) {
         super(view);
-        blue = ivDownload.getContext().getResources().getColor(R.color.bucket_blue);
-        red = ivDownload.getContext().getResources().getColor(R.color.bucket_red);
+        progressVideoCellHelper = new ProgressVideoCellHelper(ivDownload, circleView);
     }
 
     @Override
@@ -72,18 +67,13 @@ public class Video360Cell extends AbstractCell<Video360> {
         this.textViewDuration.setText(getModelObject().getDuration());
         this.ivDownload.setProgress(getModelObject().getCacheEntity().getProgress());
 
-        CachedVideo downloadEntity = getModelObject().getCacheEntity();
-
-        ivDownload.setProgress(downloadEntity.getProgress());
-        if (downloadEntity.isFailed()) {
-            setFailedState();
-        } else {
-            setInProgressState();
-        }
+        progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
+        progressVideoCellHelper.setUrl(getModelObject().getURL());
+        progressVideoCellHelper.syncUIStateWithModel();
     }
 
     @OnClick(R.id.iv_bg)
-    void onItemClick() {
+    public void onItemClick() {
         CachedVideo cacheEntity = getModelObject().getCacheEntity();
         String url = getModelObject().getURL();
         if (cacheEntity.isCached(context)) {
@@ -106,37 +96,6 @@ public class Video360Cell extends AbstractCell<Video360> {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void onEventMainThread(DownloadVideoStartEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getURL())) {
-            ivDownload.setProgress(0);
-            setInProgressState();
-        }
-    }
-
-    public void onEventMainThread(DownloadVideoProgressEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getURL())) {
-            ivDownload.setProgress(event.getProgress());
-        }
-    }
-
-    public void onEventMainThread(DownloadVideoFailedEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getURL())) {
-            setFailedState();
-        }
-    }
-
-    private void setFailedState() {
-        ivDownload.setProgress(0);
-        ivDownload.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        circleView.setColor(red);
-    }
-
-    private void setInProgressState() {
-        ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_done);
-        circleView.setColor(blue);
-    }
-
 
     @Override
     public void prepareForReuse() {

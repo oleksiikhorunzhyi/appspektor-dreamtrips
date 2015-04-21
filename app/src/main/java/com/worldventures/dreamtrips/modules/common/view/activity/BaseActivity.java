@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.video.VideoModule;
 
 import net.hockeyapp.android.CrashManager;
 
@@ -95,7 +94,6 @@ public abstract class BaseActivity extends InjectingActivity {
         result.add(new ReptoolsModule());
         result.add(new TripsModule());
         result.add(new TripsImagesModule());
-        result.add(new VideoModule());
         return result;
     }
 

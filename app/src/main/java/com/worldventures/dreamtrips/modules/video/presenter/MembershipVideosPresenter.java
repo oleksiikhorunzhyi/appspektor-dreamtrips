@@ -112,10 +112,11 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     private void attachListeners(List<Video> items) {
         for (Video item : items) {
             CachedVideo cachedVideo = item.getCacheEntity();
-            if (!cachedVideo.isFailed() && cachedVideo.getProgress() > 0
-                    && !cachedVideo.isCached(context)) {
-                DownloadVideoListener listener
-                        = new DownloadVideoListener(cachedVideo);
+            boolean failed = cachedVideo.isFailed();
+            boolean inProgress = cachedVideo.getProgress() > 0;
+            boolean cached = cachedVideo.isCached(context);
+            if (!failed && inProgress && !cached) {
+                DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                 injector.inject(listener);
                 dreamSpiceManager.addListenerIfPending(
                         InputStream.class,

@@ -6,13 +6,13 @@ import java.io.File;
 import java.io.Serializable;
 
 public class CachedVideo implements Serializable {
-    String url;
-    boolean isFailed;
-    int progress;
-    String uuid;
-    private int downloadId;
 
-
+    protected static final long serialVersionUID = 12332;
+    protected String url;
+    protected boolean failed;
+    protected int progress;
+    protected String uuid;
+    protected int downloadId;
 
 
     public CachedVideo(String url, String id) {
@@ -24,11 +24,11 @@ public class CachedVideo implements Serializable {
     }
 
     public boolean isFailed() {
-        return isFailed;
+        return failed;
     }
 
     public void setIsFailed(boolean isFailed) {
-        this.isFailed = isFailed;
+        this.failed = isFailed;
     }
 
     public boolean isCached(Context context) {
@@ -63,7 +63,7 @@ public class CachedVideo implements Serializable {
     public String toString() {
         return "CachedVideo{" +
                 "url='" + url + '\'' +
-                ", isFailed=" + isFailed +
+                ", failed=" + failed +
                 ", progress=" + progress +
                 ", uuid='" + uuid + '\'' +
                 ", downloadId=" + downloadId +

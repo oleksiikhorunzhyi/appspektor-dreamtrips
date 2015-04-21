@@ -17,10 +17,7 @@ import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -53,31 +50,26 @@ public class VideoCell extends AbstractCell<Video> {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
-    int blue;
-    int red;
+    protected ProgressVideoCellHelper progressVideoCellHelper;
 
     public VideoCell(View view) {
         super(view);
-        blue = ivDownload.getContext().getResources().getColor(R.color.bucket_blue);
-        red = ivDownload.getContext().getResources().getColor(R.color.bucket_red);
+        progressVideoCellHelper = new ProgressVideoCellHelper(ivDownload, circleView);
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
+        if (!getEventBus().isRegistered(progressVideoCellHelper)) {
+            getEventBus().register(progressVideoCellHelper);
         }
-        CachedVideo downloadEntity = getModelObject().getCacheEntity();
 
         this.universalImageLoader.loadImage(getModelObject().getImageUrl(), this.ivBg, null);
         this.tvTitle.setText(getModelObject().getVideoName());
 
-        ivDownload.setProgress(downloadEntity.getProgress());
-        if (downloadEntity.isFailed()) {
-            setFailedState();
-        } else {
-            setInProgressState();
-        }
+        progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
+        progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
+
+        progressVideoCellHelper.syncUIStateWithModel();
     }
 
     @OnClick(R.id.iv_play)
@@ -112,34 +104,4 @@ public class VideoCell extends AbstractCell<Video> {
         ivBg.setImageResource(0);
     }
 
-    public void onEventMainThread(DownloadVideoStartEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getMp4Url())) {
-            ivDownload.setProgress(0);
-            setInProgressState();
-        }
-    }
-
-
-    public void onEventMainThread(DownloadVideoProgressEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getMp4Url())) {
-            ivDownload.setProgress(event.getProgress());
-        }
-    }
-
-    public void onEventMainThread(DownloadVideoFailedEvent event) {
-        if (event.getEntity().getUrl().equals(getModelObject().getMp4Url())) {
-            setFailedState();
-        }
-    }
-
-    private void setFailedState() {
-        ivDownload.setProgress(0);
-        ivDownload.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        circleView.setColor(red);
-    }
-
-    private void setInProgressState() {
-        ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_done);
-        circleView.setColor(blue);
-    }
 }

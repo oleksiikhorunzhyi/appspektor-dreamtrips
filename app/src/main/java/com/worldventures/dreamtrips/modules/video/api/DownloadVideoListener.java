@@ -33,7 +33,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     @Inject
     protected SnappyRepository db;
 
-    CachedVideo entity;
+    protected CachedVideo entity;
 
     protected int lastProgress = -1;
 

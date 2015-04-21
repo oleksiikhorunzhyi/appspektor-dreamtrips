@@ -12,7 +12,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
@@ -20,8 +19,6 @@ import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;

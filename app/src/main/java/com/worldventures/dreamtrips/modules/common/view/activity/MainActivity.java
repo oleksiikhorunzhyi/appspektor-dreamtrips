@@ -1,12 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -70,8 +65,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     private NavigationDrawerFragment navigationDrawerFragment;
     private NavigationDrawerFragment navigationDrawerFragmentStatic;
 
-    private int lastConfig;
-
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         return new MainActivityPresenter(this);
@@ -99,6 +92,16 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         navigationDrawerFragmentStatic.updateSelection();
 
         setUpMenu();
+
+        if (editFrameLayout != null &&
+                editFrameLayout.getVisibility() == View.VISIBLE) {
+            editFrameLayout.setVisibility(View.GONE);
+        }
+
+        if (detailsFrameLayout != null &&
+                detailsFrameLayout.getVisibility() == View.VISIBLE) {
+            detailsFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     private void setUpMenu() {

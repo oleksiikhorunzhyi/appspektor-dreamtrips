@@ -16,7 +16,6 @@
         fresco:placeholderImageScaleType="fitXY"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

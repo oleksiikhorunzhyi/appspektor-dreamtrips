@@ -127,7 +127,6 @@ public class FragmentCompass {
             return Route.restoreByClass(str);
         }
         return Route.DREAMTRIPS;
-
     }
 
     public void disableBackStack() {

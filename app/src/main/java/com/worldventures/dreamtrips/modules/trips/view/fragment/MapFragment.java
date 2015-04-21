@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -56,6 +57,12 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
         }
         initMap();
         return v;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getPresenter().onCameraChanged();
     }
 
     private void initMap() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ScrollView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -12,6 +13,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
@@ -39,8 +41,8 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     @InjectView(R.id.recyclerViewAll)
     protected RecyclerView recyclerViewAll;
 
-    @Inject
-    protected FragmentCompass fragmentCompass;
+    @InjectView(R.id.containerLandscape)
+    protected ScrollView scrollView;
 
     private BaseArrayListAdapter<Video360> adapterFeatured;
     private BaseArrayListAdapter<Video360> adapterRecent;
@@ -49,8 +51,12 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        setUp();
+    }
 
-        if (recyclerViewFeatured != null) {
+    private void setUp() {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            scrollView.setVisibility(View.VISIBLE);
             LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             LinearLayoutManager linearLayoutManagerRecent = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewFeatured.setLayoutManager(linearLayoutManagerFeatured);
@@ -64,8 +70,15 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
 
             recyclerViewFeatured.setAdapter(adapterFeatured);
             recyclerViewRecent.setAdapter(adapterRecent);
-        }
-        if (recyclerViewAll != null) {
+
+            getPresenter().fillFeatured();
+
+            if (adapterAll != null) {
+                adapterAll.clear();
+                adapterAll.notifyDataSetChanged();
+            }
+        } else {
+            scrollView.setVisibility(View.GONE);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerViewAll.setLayoutManager(linearLayoutManager);
 
@@ -73,12 +86,23 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
             adapterAll.registerCell(Video360.class, Video360Cell.class);
 
             recyclerViewAll.setAdapter(adapterAll);
+
+            getPresenter().fillAll();
+            
+            if (adapterFeatured != null) {
+                adapterFeatured.clear();
+                adapterFeatured.notifyDataSetChanged();
+                adapterRecent.clear();
+                adapterRecent.notifyDataSetChanged();
+            }
+
         }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        setUp();
     }
 
     @Override

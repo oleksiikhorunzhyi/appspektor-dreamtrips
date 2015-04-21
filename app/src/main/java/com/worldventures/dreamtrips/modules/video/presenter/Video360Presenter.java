@@ -19,6 +19,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private CachedVideoManager cachedVideoManager;
 
+    private List<Video360> recentVideos;
+    private List<Video360> featuredVideos;
+
     @Inject
     protected SnappyRepository db;
 
@@ -34,19 +37,18 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         super.init();
         cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
         eventBus.register(cachedVideoManager);
-    }
 
-    @Override
-    public void resume() {
-        super.resume();
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 
-        List<Video360> recentVideos = globalConfig.get(1).getVideos();
-        List<Video360> featuredVideos = globalConfig.get(0).getVideos();
+        recentVideos = globalConfig.get(1).getVideos();
+        featuredVideos = globalConfig.get(0).getVideos();
         attachCacheToVideos(recentVideos);
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);
         attachListeners(featuredVideos);
+    }
+
+    public void fillFeatured() {
         if (view.getFeaturedAdapter() != null) {
             view.getFeaturedAdapter().clear();
             view.getFeaturedAdapter().addItems(featuredVideos);
@@ -54,6 +56,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
             view.getRecentAdapter().clear();
             view.getRecentAdapter().addItems(recentVideos);
         }
+    }
+
+    public void fillAll() {
         if (view.getAllAdapter() != null) {
             view.getAllAdapter().clear();
             view.getAllAdapter().addItems(featuredVideos);

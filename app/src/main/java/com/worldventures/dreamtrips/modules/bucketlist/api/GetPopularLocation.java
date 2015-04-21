@@ -2,15 +2,15 @@ package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 import java.util.ArrayList;
 
 public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
 
-    private BucketTabsFragment.Type type;
+    private BucketTabsPresenter.BucketType type;
 
-    public GetPopularLocation(BucketTabsFragment.Type type) {
+    public GetPopularLocation(BucketTabsPresenter.BucketType type) {
         super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
         this.type = type;
     }
@@ -19,7 +19,7 @@ public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucke
     public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
         ArrayList<PopularBucketItem> list = new ArrayList<>();
 
-        if (type.equals(BucketTabsFragment.Type.LOCATIONS)) {
+        if (type.equals(BucketTabsPresenter.BucketType.LOCATIONS)) {
             list.addAll(getService().getPopularLocations());
         } else {
             list.addAll(getService().getPopularActivities());

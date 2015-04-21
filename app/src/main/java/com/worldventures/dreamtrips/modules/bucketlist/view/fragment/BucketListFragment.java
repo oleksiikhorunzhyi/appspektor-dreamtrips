@@ -45,7 +45,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment.Type;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
@@ -77,11 +77,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add),
-                getString(type.res)));
+                getString(type.getRes())));
         this.recyclerView.setEmptyView(emptyView);
 
         mDragDropManager = new RecyclerViewDragDropManager();
@@ -253,7 +253,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     protected BucketListPresenter createPresenter(Bundle savedInstanceState) {
-        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         return new BucketListPresenter(this, type);
     }
 

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -13,18 +14,22 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 
 @Layout(R.layout.fragment_bucket_tab)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
-    @InjectView(R.id.tabs)
-    protected PagerSlidingTabStrip tabs;
-    @InjectView(R.id.pager)
-    protected CustomViewPager pager;
+    @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
+    @InjectView(R.id.pager) CustomViewPager pager;
 
-    private BasePagerAdapter adapter;
+    BasePagerAdapter<DataFragmentItem<BucketType>> adapter;
 
     @Override
     protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -34,38 +39,50 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
         if (adapter == null) {
-            this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
-                @Override
-                public void setArgs(int position, Fragment fragment) {
-                    fragment.setArguments(getPresenter().getBundleForPosition(position));
-                }
-            };
-
-            this.adapter.add(new FragmentItem(BucketListFragment.class, getString(R.string.bucket_locations)));
-            this.adapter.add(new FragmentItem(BucketListFragment.class, getString(R.string.bucket_activities)));
+            adapter = new BucketTabsAdapter(getChildFragmentManager());
         }
 
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
-        tabs.setViewPager(pager);
+        tabStrip.setViewPager(pager);
     }
 
-    public enum Type {
-        LOCATIONS("location", R.string.location),
-        ACTIVITIES("activity", R.string.activity),
-        RESTAURANTS("dinning", R.string.dinning);
-        protected String name;
-        protected int res;
+    @Override
+    public void setTypes(List<BucketType> types) {
+        if (adapter.getCount() > 0) return;
+        //
+        for (BucketType type : types) {
+            adapter.add(new DataFragmentItem<>(BucketListFragment.class, getString(type.getRes()), type));
+        }
+        adapter.notifyDataSetChanged();
+    }
 
-        Type(String name, int res) {
-            this.name = name;
-            this.res = res;
+    @Override
+    public void setRecentBucketItemsCount(Map<BucketType, Integer> items) {
+
+    }
+
+    public static class DataFragmentItem<T extends Serializable> extends FragmentItem {
+        public final T data;
+
+        public DataFragmentItem(Class<? extends Fragment> aClass, String title, T data) {
+            super(aClass, title);
+            this.data = data;
+        }
+    }
+
+    public static class BucketTabsAdapter extends BasePagerAdapter<DataFragmentItem<BucketType>> {
+        public BucketTabsAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        public String getName() {
-            return name;
+        @Override
+        public void setArgs(int position, Fragment fragment) {
+            Bundle args = new Bundle();
+            BucketType type = getFragmentItem(position).data;
+            args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
+            fragment.setArguments(args);
         }
     }
 }

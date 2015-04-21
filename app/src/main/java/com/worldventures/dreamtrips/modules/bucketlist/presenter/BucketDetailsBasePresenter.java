@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
@@ -48,7 +47,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Inject
     protected SnappyRepository db;
 
-    protected BucketTabsFragment.Type type;
+    protected BucketTabsPresenter.BucketType type;
     protected BucketItem bucketItem;
 
     protected List<BucketItem> items = new ArrayList<>();
@@ -88,7 +87,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public BucketDetailsBasePresenter(V view, Bundle bundle) {
         super(view);
-        type = (BucketTabsFragment.Type)
+        type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);
         bucketItem = (BucketItem)
                 bundle.getSerializable(BucketActivity.EXTRA_ITEM);

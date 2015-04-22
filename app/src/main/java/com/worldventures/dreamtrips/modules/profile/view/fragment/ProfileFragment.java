@@ -1,24 +1,24 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
-import java.util.Calendar;
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,14 +37,11 @@ import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class ProfileFragment extends BaseFragment<ProfilePresenter>
-        implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, ProfilePresenter.View {
+        implements ProfilePresenter.View {
 
     @InjectView(R.id.user_cover)
     protected SimpleDraweeView userCover;
 
-    @Optional
-    @InjectView(R.id.vg_content_container)
-    protected ViewGroup vgContentContainer;
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name)
@@ -65,9 +62,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @InjectView(R.id.et_live_in)
     protected DTEditText etLiveIn;
 
-    @Optional
-    @InjectView(R.id.v_top_strip)
-    protected View vTopStirp;
+    @Inject
+    protected FragmentCompass fragmentCompass;
 
     private PickImageDialog pid;
 
@@ -77,33 +73,34 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         layoutConfiguration();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        fragmentCompass.pop();
+        fragmentCompass.replace(Route.MY_PROFILE);
+    }
+
     private void layoutConfiguration() {
-        if (vgContentContainer != null && sv != null && vTopStirp != null) {
+        if (sv != null) {
             int minSideSize = getMinSideSize(getActivity());
             userCover.getLayoutParams().height = minSideSize;
-            vgContentContainer.getLayoutParams().width = minSideSize;
-            int m = 0;
-            if (!ViewUtils.isLandscapeOrientation(getActivity())
-                    && minSideSize < ViewUtils.getScreenWidth(getActivity())) {
-                m = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
-            }
-            ((ViewGroup.MarginLayoutParams) sv.getLayoutParams()).setMargins(0, m, 0, 0);
-            vTopStirp.getLayoutParams().height = m;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!ViewUtils.isLandscapeOrientation(getActivity()))
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
             ((MainActivity) getActivity()).makeActionBarTransparent(true);
+        } else {
+            ((MainActivity) getActivity()).makeActionBarTransparent(false);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (!ViewUtils.isLandscapeOrientation(getActivity()))
-            ((MainActivity) getActivity()).makeActionBarTransparent(false);
+        ((MainActivity) getActivity()).makeActionBarTransparent(false);
     }
 
     @Override
@@ -219,19 +216,4 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
                 .show();
     }
 
-    @Override
-    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        getPresenter().onDataSet(year, month, day);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            Calendar calendar = Calendar.getInstance();
-            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
-            datePickerDialog.setYearRange(1915, 2015);
-            datePickerDialog.show(getActivity().getSupportFragmentManager(), null);
-        }
-        return false;
-    }
 }

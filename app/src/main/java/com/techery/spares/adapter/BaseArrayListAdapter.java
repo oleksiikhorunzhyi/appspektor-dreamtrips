@@ -53,8 +53,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     @Override
     public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("", viewType + "");
-
         Class itemClass = this.viewTypes.get(viewType);
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);

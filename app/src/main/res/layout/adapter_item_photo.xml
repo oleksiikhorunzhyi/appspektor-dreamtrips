@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
+        fresco:placeholderImageScaleType="fitXY"/>
 
 </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>

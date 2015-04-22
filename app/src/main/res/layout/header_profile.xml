@@ -50,24 +50,6 @@
         android:background="@color/theme_main_darker"
         android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/user_photo_2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/photoMarginTop" />
-
-    <ImageView
-        android:id="@+id/user_photo_3"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignTop="@+id/user_photo_2"
-        android:layout_marginRight="16dp"
-        android:layout_toLeftOf="@+id/user_photo_2"
-        android:layout_toStartOf="@+id/user_photo_2" />
-
     <LinearLayout
         android:id="@+id/gradient"
         android:layout_width="wrap_content"

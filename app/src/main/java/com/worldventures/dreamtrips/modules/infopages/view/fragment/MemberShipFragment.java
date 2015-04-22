@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -52,6 +53,12 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
     }
 
     @Override

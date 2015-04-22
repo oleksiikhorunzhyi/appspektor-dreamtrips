@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -80,6 +81,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
         getPresenter().onCreate();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        this.adapter.remove(adapter.getCount() - 1);
+        this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
+        this.adapter.notifyDataSetChanged();
     }
 
     @Override

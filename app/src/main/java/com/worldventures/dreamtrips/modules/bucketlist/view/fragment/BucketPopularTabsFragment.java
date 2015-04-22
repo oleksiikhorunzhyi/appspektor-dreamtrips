@@ -8,6 +8,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -36,7 +37,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
+        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager()) {

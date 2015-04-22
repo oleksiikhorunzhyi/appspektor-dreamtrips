@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.view.viewpager;
 
-public class FragmentItem<T> {
-    protected Class<? extends T> aClass;
-    protected String title;
+import android.support.v4.app.Fragment;
 
-    public FragmentItem(Class<? extends T> aClass, String title) {
+public class FragmentItem {
+    public final Class<? extends Fragment> aClass;
+    public final String title;
+
+    public FragmentItem(Class<? extends Fragment> aClass, String title) {
         this.aClass = aClass;
         this.title = title;
     }

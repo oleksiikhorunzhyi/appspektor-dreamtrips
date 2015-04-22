@@ -13,9 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     @Inject
     protected SnappyRepository db;
 
-    private BucketTabsFragment.Type type;
+    private BucketTabsPresenter.BucketType type;
     private List<BucketItem> realData = new ArrayList<>();
 
     protected RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
@@ -48,7 +46,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     };
 
-    public BucketPopularPresenter(View view, BucketTabsFragment.Type type) {
+    public BucketPopularPresenter(View view, BucketTabsPresenter.BucketType type) {
         super(view);
         this.type = type;
     }
@@ -69,14 +67,14 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     }
 
-    public void onEventMainThread(AddPressedEvent event) {
+    public void onEvent(AddPressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), false, event.getPosition());
             eventBus.cancelEventDelivery(event);
         }
     }
 
-    public void onEventMainThread(DonePressedEvent event) {
+    public void onEvent(DonePressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), true, event.getPosition());
             eventBus.cancelEventDelivery(event);
@@ -101,6 +99,8 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                 eventBus.post(new BucketItemAddedEvent(bucketItem));
                 realData.add(0, bucketItem);
                 db.saveBucketList(realData, type.name());
+                int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
+                db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
             }
         });
     }

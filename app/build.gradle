@@ -172,5 +172,6 @@ dependencies {
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'com.innahema:collections-query:0.2.9'
     compile 'joda-time:joda-time:2.7'
+    compile 'com.badoo.mobile:android-weak-handler:1.0'
 }
 

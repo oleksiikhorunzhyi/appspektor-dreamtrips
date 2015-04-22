@@ -4,18 +4,18 @@ import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class GetBucketListQuery extends Query<ArrayList<BucketItem>> {
 
-    private BucketTabsFragment.Type type;
+    private BucketTabsPresenter.BucketType type;
     private SnappyRepository snappyRepository;
     private Prefs prefs;
 
-    public GetBucketListQuery(Prefs prefs, SnappyRepository snappyRepository, BucketTabsFragment.Type type) {
+    public GetBucketListQuery(Prefs prefs, SnappyRepository snappyRepository, BucketTabsPresenter.BucketType type) {
         super((Class<ArrayList<BucketItem>>) new ArrayList<BucketItem>().getClass());
         this.type = type;
         this.snappyRepository = snappyRepository;

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
@@ -34,7 +35,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-    protected BaseStatePagerAdapter<FullScreenPhotoFragment> adapter;
+    protected BaseStatePagerAdapter adapter;
     protected ArrayList<IFullScreenAvailableObject> photoList = new ArrayList<>();
     protected TripImagesListFragment.Type type;
     private int position;
@@ -97,9 +98,9 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     private void setupAdapter() {
         if (adapter == null) {
-            adapter = new BaseStatePagerAdapter<FullScreenPhotoFragment>(getSupportFragmentManager()) {
+            adapter = new BaseStatePagerAdapter(getSupportFragmentManager()) {
                 @Override
-                public void setArgs(int position, FullScreenPhotoFragment fragment) {
+                public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
                     args.putInt(FullScreenPhotoFragment.EXTRA_POSITION, position);
                     fragment.setArguments(args);
@@ -110,7 +111,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
                     photoList.addAll(baseItemClasses);
                     for (Object item : baseItemClasses) {
-                        adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
+                        adapter.add(new FragmentItem(FullScreenPhotoFragment.class, ""));
                     }
                 }
             };
@@ -159,7 +160,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     public void addAll(List<IFullScreenAvailableObject> items) {
         photoList.addAll(items);
         for (IFullScreenAvailableObject item : items) {
-            adapter.add(new FragmentItem<>(FullScreenPhotoFragment.class, ""));
+            adapter.add(new FragmentItem(FullScreenPhotoFragment.class, ""));
         }
         adapter.notifyDataSetChanged();
     }

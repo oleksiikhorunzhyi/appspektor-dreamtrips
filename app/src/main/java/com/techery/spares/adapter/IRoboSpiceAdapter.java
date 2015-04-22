@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface IRoboSpiceAdapter<T> {
 
-    public int getCount();
+    int getCount();
 
     void clear();
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
@@ -58,9 +59,9 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
             position = 0;
         }
 
-        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter = new BaseStatePagerAdapter<DetailedImagePagerFragment>(getSupportFragmentManager()) {
+        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getSupportFragmentManager()) {
             @Override
-            public void setArgs(int position, DetailedImagePagerFragment fragment) {
+            public void setArgs(int position, Fragment fragment) {
                 Bundle args = new Bundle();
                 args.putBoolean(DetailedImagePagerFragment.EXTRA_PHOTO_FULLSCREEN, true);
                 args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, photoList.get(position));
@@ -69,7 +70,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
         };
 
         for (Serializable ignored : photoList) {
-            adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
+            adapter.add(new FragmentItem(DetailedImagePagerFragment.class, ""));
         }
 
         pager.setAdapter(adapter);

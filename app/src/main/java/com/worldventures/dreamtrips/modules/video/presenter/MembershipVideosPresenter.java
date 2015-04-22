@@ -87,7 +87,9 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
-        eventBus.register(cachedVideoManager);
+        if (!eventBus.isRegistered(cachedVideoManager)) {
+            eventBus.register(cachedVideoManager);
+        }
 
     }
 
@@ -102,7 +104,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
 
     public void onCancelAction(CachedEntity cacheEntity) {
-            cachedVideoManager.onCancelAction(cacheEntity);
+        cachedVideoManager.onCancelAction(cacheEntity);
     }
 
 

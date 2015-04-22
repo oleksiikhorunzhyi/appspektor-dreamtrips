@@ -50,7 +50,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @Override
     public void resume() {
         super.resume();
-        eventBus.register(cachedVideoManager);
+        if (!eventBus.isRegistered(cachedVideoManager)) {
+            eventBus.register(cachedVideoManager);
+        }
     }
 
     public void fillFeatured() {
@@ -79,7 +81,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
             }
         }
     }
-
 
 
     @Override

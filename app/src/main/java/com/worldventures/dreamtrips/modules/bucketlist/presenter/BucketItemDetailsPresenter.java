@@ -19,6 +19,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
+        fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
             fragmentCompass.disableBackStack();

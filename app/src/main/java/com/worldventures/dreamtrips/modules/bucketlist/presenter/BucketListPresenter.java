@@ -202,6 +202,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
+        fragmentCompass.removeDetailed();
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();
             fragmentCompass.disableBackStack();

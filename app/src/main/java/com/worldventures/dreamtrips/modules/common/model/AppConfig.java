@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -73,7 +74,7 @@ public class AppConfig {
             @SerializedName("AuthBaseURL")
             private String authBaseURL;
 
-            @SerializedName("EnrollMemeberURL")
+            @SerializedName("EnrollMemberURL")
             private String enrollMemeberURL;
 
             @SerializedName("EnrollRepURL")
@@ -122,11 +123,13 @@ public class AppConfig {
             private String replaceWithBase64(String uid, String url) {
                 String encodedUrl = "";
 
-                try {
-                    encodedUrl = url.replace(ENROLL_UID,
-                            Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(AppConfig.class.getSimpleName(), "", e);
+                if (!TextUtils.isEmpty(url)) {
+                    try {
+                        encodedUrl = url.replace(ENROLL_UID,
+                                Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e(AppConfig.class.getSimpleName(), "", e);
+                    }
                 }
 
                 return encodedUrl;

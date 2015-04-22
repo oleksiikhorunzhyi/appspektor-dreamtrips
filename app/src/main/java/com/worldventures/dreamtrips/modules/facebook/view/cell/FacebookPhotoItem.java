@@ -25,7 +25,6 @@ public class FacebookPhotoItem implements ItemWrapper<FacebookPhoto> {
     public FacebookPhotoItem(Injector injector, FacebookPhoto photo) {
         this.photo = photo;
         injector.inject(this);
-
     }
 
     public static FacebookPhotoItem convert(Injector injector, FacebookPhoto photo) {

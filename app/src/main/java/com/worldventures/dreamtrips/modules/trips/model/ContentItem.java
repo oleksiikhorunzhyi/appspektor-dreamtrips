@@ -12,7 +12,9 @@ public class ContentItem implements Serializable {
     private String tag;
 
     public String getDescription() {
-        return description.replaceAll("\n", "").replaceAll("\t", "");
+        return description != null
+                ? description.replaceAll("\n", "").replaceAll("\t", "")
+                : "";
     }
 
     public void setDescription(String description) {

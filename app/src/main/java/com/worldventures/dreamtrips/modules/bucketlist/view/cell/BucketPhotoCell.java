@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.View;
 
@@ -54,8 +55,9 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
     protected void showItemDialog(View view) {
         try {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(view.getContext());
+            Drawable topLevelDrawable = imageViewPhoto.getTopLevelDrawable();
             builder.items(R.array.dialog_action_bucket_photo)
-                    .icon(imageViewPhoto.getTopLevelDrawable())
+                    .icon(imageViewPhoto.getHierarchy().getTopLevelDrawable().getCurrent())
                     .title(view.getContext().getString(R.string.bucket_photo_dialog))
                     .itemsCallback((dialog, v, which, text) -> {
                         switch (which) {

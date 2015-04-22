@@ -152,7 +152,9 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
     @Override
     public void clearMap() {
-        googleMap.clear();
+        if (googleMap != null) {
+            googleMap.clear();
+        }
     }
 
     @Override

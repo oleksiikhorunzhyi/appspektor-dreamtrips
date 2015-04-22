@@ -55,7 +55,8 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
     public String getStaticInfoUrl(String title) {
         StaticPageConfig staticPageConfig = appSessionHolder.get().get().getStaticPageConfig();
-        return staticPageConfig.getUrlByTitle(title);
+        if (staticPageConfig != null) return staticPageConfig.getUrlByTitle(title);
+        else return "";
     }
 
     public AppConfig.URLS.Config getConfig() {

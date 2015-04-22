@@ -6,7 +6,7 @@
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.PinchToZoomDraweeView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

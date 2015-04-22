@@ -49,6 +49,39 @@ public class FragmentCompass {
         action(Action.REPLACE, route, bundle);
     }
 
+    public void clear() {
+        removeDetailed();
+        removeEdit();
+    }
+
+    public void removeDetailed() {
+        remove(Route.DETAIL_BUCKET.getClazzName());
+    }
+
+    public void removeEdit() {
+        remove(Route.BUCKET_EDIT.getClazzName());
+    }
+
+    public void remove(String name) {
+        if (validateState()) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentByTag(name);
+
+            if (fragment != null) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(fragment);
+
+                if (BuildConfig.DEBUG) {
+                    fragmentTransaction.commit();
+                } else {
+                    fragmentTransaction.commitAllowingStateLoss();
+                }
+
+            }
+        }
+    }
+
+
     protected void action(Action action, Route route, Bundle bundle) {
         if (validateState()) {
             try {
@@ -61,10 +94,10 @@ public class FragmentCompass {
 
                 switch (action) {
                     case REPLACE:
-                        fragmentTransaction.replace(containerId, fragment);
+                        fragmentTransaction.replace(containerId, fragment, clazzName);
                         break;
                     case ADD:
-                        fragmentTransaction.add(containerId, fragment);
+                        fragmentTransaction.add(containerId, fragment, clazzName);
                         break;
                 }
 

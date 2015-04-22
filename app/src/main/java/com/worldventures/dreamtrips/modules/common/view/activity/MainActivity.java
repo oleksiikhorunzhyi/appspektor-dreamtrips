@@ -95,6 +95,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        fragmentCompass.clear();
         setupToolbarLayout();
         makeActionBarTransparent(false);
 
@@ -299,6 +300,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     public void onBackPressed() {
+        fragmentCompass.clear();
         if (drawerLayout.isDrawerOpen(Gravity.END)) {
             closeRightDrawer();
         } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {

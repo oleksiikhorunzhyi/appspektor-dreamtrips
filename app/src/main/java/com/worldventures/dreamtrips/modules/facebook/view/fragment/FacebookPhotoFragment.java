@@ -12,17 +12,17 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoItem;
+import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,15 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
     protected RecyclerView lvItems;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-    protected BaseRecycleAdapter adapter;
+    protected BaseArrayListAdapter adapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        adapter = new BaseRecycleAdapter();
+        adapter = new BaseArrayListAdapter(getActivity(), (Injector) getActivity());
+        adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
+
         toolbar.setTitle(R.string.fab_select_photo);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> getPresenter().onBackAction());
@@ -51,15 +53,15 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
                     ChosenImage image = new ChosenImage();
-                    FacebookPhoto item = (FacebookPhoto) adapter.getItem(position).getItem();
+                    FacebookPhoto item = (FacebookPhoto) adapter.getItem(position);
                     List<FacebookPhoto.ImageSource> is = item.getImageSources();
                     if (is.size() > 2) {
                         image.setFilePathOriginal(is.get(0).getSource());
                         image.setFileThumbnail(is.get(is.size() / 2 + 1).getSource());
                         image.setFileThumbnailSmall(is.get(is.size() - 1).getSource());
                     } else {
-                        image.setFilePathOriginal(item.getPicture());
-                        image.setFileThumbnail(item.getPicture());
+                        image.setFilePathOriginal(item.getSource());
+                        image.setFileThumbnail(item.getSource());
                         image.setFileThumbnailSmall(item.getPicture());
                     }
                     getPresenter().onPhotoChosen(image);
@@ -99,7 +101,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
             FacebookPhoto photo = FacebookPhoto.create(graphObject);
             photos.add(photo);
         }
-        adapter.addItems(FacebookPhotoItem.convert((Injector) getActivity(), photos));
+        adapter.addItems(photos);
         adapter.notifyDataSetChanged();
     }
 

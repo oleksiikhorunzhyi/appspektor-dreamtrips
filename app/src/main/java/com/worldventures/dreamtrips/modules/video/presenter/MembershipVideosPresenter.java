@@ -79,7 +79,6 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         super.init();
         TrackingHelper.onMemberShipVideos(getUserId());
         cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
-        eventBus.register(cachedVideoManager);
     }
 
     @Override
@@ -88,6 +87,8 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
+        eventBus.register(cachedVideoManager);
+
     }
 
     public RoboSpiceAdapterController<Video> getAdapterController() {
@@ -101,28 +102,32 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
 
     private ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
-        for (Video object : videos) {
-            CachedEntity e = db.getDownloadVideoEntity(object.getUid());
-            object.setEntity(e);
+        if (videos != null) {
+            for (Video object : videos) {
+                CachedEntity e = db.getDownloadVideoEntity(object.getUid());
+                object.setEntity(e);
+            }
         }
         return videos;
     }
 
 
     private void attachListeners(List<Video> items) {
-        for (Video item : items) {
-            CachedEntity cachedVideo = item.getCacheEntity();
-            boolean failed = cachedVideo.isFailed();
-            boolean inProgress = cachedVideo.getProgress() > 0;
-            boolean cached = cachedVideo.isCached(context);
-            if (!failed && inProgress && !cached) {
-                DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
-                injector.inject(listener);
-                dreamSpiceManager.addListenerIfPending(
-                        InputStream.class,
-                        cachedVideo.getUuid(),
-                        listener
-                );
+        if (items != null) {
+            for (Video item : items) {
+                CachedEntity cachedVideo = item.getCacheEntity();
+                boolean failed = cachedVideo.isFailed();
+                boolean inProgress = cachedVideo.getProgress() > 0;
+                boolean cached = cachedVideo.isCached(context);
+                if (!failed && inProgress && !cached) {
+                    DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
+                    injector.inject(listener);
+                    dreamSpiceManager.addListenerIfPending(
+                            InputStream.class,
+                            cachedVideo.getUuid(),
+                            listener
+                    );
+                }
             }
         }
     }

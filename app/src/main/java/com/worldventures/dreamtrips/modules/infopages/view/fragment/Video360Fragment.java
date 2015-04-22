@@ -53,6 +53,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
 
     private void setUp() {
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            recyclerViewAll.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
 
             LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -76,6 +77,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
                 adapterAll.notifyDataSetChanged();
             }
         } else {
+            recyclerViewAll.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerViewAll.setLayoutManager(linearLayoutManager);

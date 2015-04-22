@@ -5,7 +5,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -54,10 +58,20 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
         if (fsImage.isFromFile()) {
             draweeViewPhoto.setImageURI(Uri.parse(fsImage.getUrl()));
         } else {
-            draweeViewPhoto.setImageURI(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
+            loadProgressive(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
         }
     }
 
+    private void loadProgressive(Uri uri) {
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(draweeViewPhoto.getController())
+                .build();
+        draweeViewPhoto.setController(controller);
+    }
 
     @Override
     public void prepareForReuse() {

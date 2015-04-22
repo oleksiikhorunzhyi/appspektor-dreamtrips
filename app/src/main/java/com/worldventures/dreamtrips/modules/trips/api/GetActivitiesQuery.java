@@ -23,7 +23,7 @@ public class GetActivitiesQuery extends Query<ArrayList<ActivityModel>> {
         ArrayList<ActivityModel> data = new ArrayList<>();
         if (db.isEmpty(SnappyRepository.ACTIVITIES) || fromApi) {
             data.addAll(getService().getActivities());
-            db.putList(data, SnappyRepository.ACTIVITIES);
+            db.putList(SnappyRepository.ACTIVITIES, data);
         } else {
             data.addAll(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class));
         }

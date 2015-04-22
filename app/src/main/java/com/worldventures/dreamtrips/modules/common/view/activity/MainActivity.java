@@ -80,6 +80,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
                 .findFragmentById(R.id.fragment_drawer_static);
 
         checkGoogleServices();
+
+        getPresentationModel().loadFilters();
     }
 
     @Override

@@ -9,6 +9,7 @@
     <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
         android:id="@+id/recyclerViewAll"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="match_parent" />
 
     <ScrollView

@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,9 +63,11 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        getPresenter().actionEnroll();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_enroll) {
+            getPresenter().actionEnroll();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

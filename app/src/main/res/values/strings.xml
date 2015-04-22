@@ -91,11 +91,6 @@
     <string name="delete_photo_positiove">Delete</string>
     <string name="delete_photo_negative">Cancel</string>
 
-    <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
-    <string name="cancel_photo_positiove">Yes</string>
-    <string name="cancel_photo_negative">No</string>
-
     <string name="flag_photo_first">WorldVentures personnel will be notified to review this image for </string>
     <string name="flag_photo_second">. Do you want continue?</string>
     <string name="flag_photo_title">Confirm</string>
@@ -237,5 +232,11 @@
     <string name="delete_cached_video_title">Video</string>
     <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
     <string name="fail">Failure</string>
+
+    <string name="cancel_cached_video_title">Video</string>
+    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
+    <string name="cancel_photo_positiove">Yes</string>
+    <string name="cancel_photo_negative">No</string>
+
 
 </resources>

@@ -12,16 +12,16 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.facebook.widget.LoginButton;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.adapter.BaseRecycleAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumPresenter;
-import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumItem;
+import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-    private BaseRecycleAdapter adapter;
+    private BaseArrayListAdapter adapter;
 
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
@@ -52,8 +52,8 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new BaseRecycleAdapter();
-
+        adapter = new BaseArrayListAdapter(getActivity(), (Injector) getActivity());
+        adapter.registerCell(FacebookAlbum.class, FacebookAlbumCell.class);
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> getPresenter().backAction());
@@ -61,7 +61,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
-                    String facebookId = ((FacebookAlbum) adapter.getItem(position).getItem()).getId();
+                    String facebookId = ((FacebookAlbum) adapter.getItem(position)).getId();
                     getPresenter().onItemClick(facebookId);
                 })
 
@@ -113,7 +113,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
                     albums.add(album);
                 }
             }
-            adapter.addItems(FacebookAlbumItem.convert((Injector) getActivity(), albums));
+            adapter.addItems(albums);
             adapter.notifyDataSetChanged();
         } else {
             //TODO handle error

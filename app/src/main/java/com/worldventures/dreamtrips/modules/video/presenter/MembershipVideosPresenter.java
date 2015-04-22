@@ -79,7 +79,6 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         super.init();
         TrackingHelper.onMemberShipVideos(getUserId());
         cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
-        eventBus.register(cachedVideoManager);
     }
 
     @Override
@@ -88,6 +87,8 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
+        eventBus.register(cachedVideoManager);
+
     }
 
     public RoboSpiceAdapterController<Video> getAdapterController() {

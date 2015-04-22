@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.octo.android.robospice.exception.RequestCancelledException;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.PendingRequestListener;
 import com.octo.android.robospice.request.listener.RequestProgress;
@@ -43,10 +44,12 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestFailure(SpiceException spiceException) {
-        Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
-        entity.setIsFailed(true);
-        db.saveDownloadVideoEntity(entity);
-        eventBus.post(new DownloadVideoFailedEvent(spiceException, entity));
+        if (!(spiceException instanceof RequestCancelledException)) {
+            Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
+            entity.setIsFailed(true);
+            db.saveDownloadVideoEntity(entity);
+            eventBus.post(new DownloadVideoFailedEvent(spiceException, entity));
+        }
 
     }
 

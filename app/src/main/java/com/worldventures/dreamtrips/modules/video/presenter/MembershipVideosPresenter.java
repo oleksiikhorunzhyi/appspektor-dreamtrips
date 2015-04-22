@@ -101,6 +101,11 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     }
 
 
+    public void onCancelAction(CachedEntity cacheEntity) {
+            cachedVideoManager.onCancelAction(cacheEntity);
+    }
+
+
     private ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
         if (videos != null) {
             for (Video object : videos) {
@@ -110,7 +115,6 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         }
         return videos;
     }
-
 
     private void attachListeners(List<Video> items) {
         if (items != null) {

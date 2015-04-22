@@ -3,17 +3,16 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.apptentive.android.sdk.Log;
 import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -24,17 +23,21 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import java.util.List;
+
+import icepick.Icepick;
+import icepick.Icicle;
 
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private BucketImageAdapter imagesAdapter;
 
     private PickImageDialog pid;
+    @Icicle int pidTypeShown;
+    @Icicle String filePath;
     private ImagePickCallback selectImageCallback;
     private ImagePickCallback fbImageCallback;
     private Fragment fragment;
@@ -53,6 +56,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
 
     public void init(Fragment fragment, Injector injector, Type type) {
+
         if (imagesAdapter == null) {
             this.fragment = fragment;
 
@@ -75,6 +79,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         }
     }
 
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+    }
 
     @Override
     public void deleteImage(BucketPhoto photo) {
@@ -134,19 +147,22 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     public void actionGallery() {
-        this.pid = new PickImageDialog(getContext(), fragment);
-        this.pid.setTitle("");
-        this.pid.setCallback(selectImageCallback);
-        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
-        this.pid.show();
+        pid = new PickImageDialog(getContext(), fragment);
+        pid.setTitle("");
+        pid.setCallback(selectImageCallback);
+        pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
+        pid.show();
+        pidTypeShown = ChooserType.REQUEST_PICK_PICTURE;
     }
 
     public void actionPhoto() {
-        this.pid = new PickImageDialog(getContext(), fragment);
-        this.pid.setTitle("");
-        this.pid.setCallback(selectImageCallback);
-        this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
-        this.pid.show();
+        pid = new PickImageDialog(getContext(), fragment);
+        pid.setTitle("");
+        pid.setCallback(selectImageCallback);
+        pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
+        pid.show();
+        filePath = pid.getFilePath();
+        pidTypeShown = ChooserType.REQUEST_CAPTURE_PICTURE;
     }
 
     @Override
@@ -166,7 +182,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
                             actionGallery();
                             break;
                         default:
-                            Log.v(this.getClass().getSimpleName(), "default");
                             break;
                     }
                 }).show();
@@ -178,8 +193,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pid != null) {
-            this.pid.onActivityResult(requestCode, resultCode, data);
+        if (pidTypeShown != 0) {
+            if (pid == null) {
+                pid = new PickImageDialog(getContext(), fragment);
+                pid.setCallback(selectImageCallback);
+                pid.setChooserType(pidTypeShown);
+                pid.setFilePath(filePath);
+            }
+            pidTypeShown = 0;
+            pid.onActivityResult(requestCode, resultCode, data);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
             ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);

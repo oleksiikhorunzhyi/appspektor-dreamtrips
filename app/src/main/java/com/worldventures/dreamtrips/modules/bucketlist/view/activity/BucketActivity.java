@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import javax.inject.Inject;
 
@@ -39,7 +40,11 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
         BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) bundleExtra.getSerializable(EXTRA_TYPE);
         Route route = (Route) bundleExtra.getSerializable(EXTRA_STATE);
 
-        fragmentCompass.switchBranch(route, bundleExtra);
+        BaseFragment curFragment = fragmentCompass.getCurrentFragment();
+        boolean theSame = curFragment != null && curFragment.getClass().getName().equals(route.getClazzName());
+        if (!theSame) {
+            fragmentCompass.switchBranch(route, bundleExtra);
+        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -95,7 +95,7 @@
                 android:orientation="vertical">
 
                 <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
-                    android:id="@+id/lv_items"
+                    android:id="@+id/bucket_photos"
                     android:overScrollMode="never"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

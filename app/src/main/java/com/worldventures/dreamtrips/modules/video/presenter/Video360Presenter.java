@@ -81,9 +81,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     }
 
 
-    public void onDeleteAction(CachedEntity videoEntity) {
-        cachedVideoManager.onDeleteAction(videoEntity);
-    }
 
     @Override
     public void onStop() {
@@ -107,6 +104,15 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 }
             }
         }
+    }
+
+    public void onDeleteAction(CachedEntity videoEntity) {
+        cachedVideoManager.onDeleteAction(videoEntity);
+    }
+
+
+    public void onCancelAction(CachedEntity cacheEntity) {
+        cachedVideoManager.onCancelAction(cacheEntity);
     }
 
     public interface View extends Presenter.View, CachedVideoManager.View {

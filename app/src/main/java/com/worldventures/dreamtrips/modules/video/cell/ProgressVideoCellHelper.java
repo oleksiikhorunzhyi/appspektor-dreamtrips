@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
@@ -87,14 +88,15 @@ public class ProgressVideoCellHelper {
 
 
     public void onDownloadCLick(Context context, EventBus eventBus) {
-        if ((!cacheEntity.isCached(context) && cacheEntity.getProgress() == 0)
-                || cacheEntity.isFailed()) {
+        boolean cached = cacheEntity.isCached(context);
+        boolean inProgress = cacheEntity.getProgress() > 0 && cacheEntity.getProgress() < 100;
+        boolean failed = cacheEntity.isFailed();
+        if ((!cached && !inProgress) || failed) {
             eventBus.post(new DownloadVideoRequestEvent(cacheEntity));
-        } else if (cacheEntity.isCached(context)) {
+        } else if (cached) {
             eventBus.post(new DeleteCachedVideoRequestEvent(cacheEntity));
         } else {
-            String message = context.getString(R.string.download_in_progress);
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            eventBus.post(new CancelCachingVideoRequestEvent(cacheEntity));
         }
     }
 }

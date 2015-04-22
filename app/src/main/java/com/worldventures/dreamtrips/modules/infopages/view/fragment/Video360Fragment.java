@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ScrollView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -88,7 +87,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
             recyclerViewAll.setAdapter(adapterAll);
 
             getPresenter().fillAll();
-            
+
             if (adapterFeatured != null) {
                 adapterFeatured.clear();
                 adapterFeatured.notifyDataSetChanged();
@@ -140,22 +139,13 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
-    public void showDeleteDialog(CachedEntity cachedVideo) {
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.delete_cached_video_title)
-                .content(R.string.delete_cached_video_text)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().onDeleteAction(cachedVideo);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
+    public void onDeleteAction(CachedEntity videoEntity) {
+        getPresenter().onDeleteAction(videoEntity);
     }
+
+    @Override
+    public void onCancelCaching(CachedEntity cacheEntity) {
+        getPresenter().onCancelAction(cacheEntity);
+    }
+
 }

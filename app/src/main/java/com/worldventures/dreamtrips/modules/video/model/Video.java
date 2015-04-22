@@ -49,7 +49,7 @@ public class Video {
     @SerializedName("WebmUrl")
     private String webmUrl;
 
-    private CachedVideo entity;
+    private CachedEntity entity;
 
     public Video() {
     }
@@ -162,14 +162,14 @@ public class Video {
         return webmUrl;
     }
 
-    public CachedVideo getCacheEntity() {
+    public CachedEntity getCacheEntity() {
         if(entity==null){
-            entity = new CachedVideo(this.getMp4Url(), this.getUid());
+            entity = new CachedEntity(this.getMp4Url(), this.getUid());
         }
         return entity;
     }
 
-    public void setEntity(CachedVideo entity) {
+    public void setEntity(CachedEntity entity) {
         this.entity = entity;
     }
 }

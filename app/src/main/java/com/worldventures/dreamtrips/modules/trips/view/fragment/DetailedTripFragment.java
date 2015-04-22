@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -124,10 +125,10 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
         getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
 
-        BaseStatePagerAdapter<DetailedImagePagerFragment> adapter =
-                new BaseStatePagerAdapter<DetailedImagePagerFragment>(getChildFragmentManager()) {
+        BaseStatePagerAdapter adapter =
+                new BaseStatePagerAdapter(getChildFragmentManager()) {
                     @Override
-                    public void setArgs(int position, DetailedImagePagerFragment fragment) {
+                    public void setArgs(int position, Fragment fragment) {
                         Bundle args = new Bundle();
                         Object photo = getPresenter().getFilteredImages().get(position);
                         if (photo instanceof Serializable) {
@@ -138,7 +139,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
                 };
 
         for (Object photo : getPresenter().getFilteredImages()) {
-            adapter.add(new FragmentItem<>(DetailedImagePagerFragment.class, ""));
+            adapter.add(new FragmentItem(DetailedImagePagerFragment.class, ""));
         }
 
         viewPagerGallery.setAdapter(adapter);

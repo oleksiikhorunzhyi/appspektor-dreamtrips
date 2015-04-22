@@ -5,14 +5,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ProgressiveDraweeView
         android:id="@+id/imageViewPhoto"
         android:layout_margin="@dimen/margin_small"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
+        fresco:placeholderImageScaleType="fitXY"/>
 
 </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>

@@ -6,19 +6,16 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import javax.inject.Inject;
@@ -32,7 +29,7 @@ import mbanje.kurt.fabbutton.FabButton;
 public class VideoCell extends AbstractCell<Video> {
 
     @InjectView(R.id.iv_bg)
-    protected ImageView ivBg;
+    protected SimpleDraweeView ivBg;
     @InjectView(R.id.iv_play)
     protected ImageView ivPlay;
     @InjectView(R.id.tv_title)
@@ -45,8 +42,6 @@ public class VideoCell extends AbstractCell<Video> {
 
     @Inject
     protected Context context;
-    @Inject
-    protected UniversalImageLoader universalImageLoader;
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
@@ -63,8 +58,8 @@ public class VideoCell extends AbstractCell<Video> {
             getEventBus().register(progressVideoCellHelper);
         }
 
-        this.universalImageLoader.loadImage(getModelObject().getImageUrl(), this.ivBg, null);
-        this.tvTitle.setText(getModelObject().getVideoName());
+        ivBg.setImageURI(Uri.parse(getModelObject().getImageUrl()));
+        tvTitle.setText(getModelObject().getVideoName());
 
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
         progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
@@ -74,10 +69,10 @@ public class VideoCell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_play)
     public void onPlayClick() {
-        CachedVideo videoEntity = getModelObject().getCacheEntity();
+        CachedEntity videoEntity = getModelObject().getCacheEntity();
         Uri parse = Uri.parse(getModelObject().getMp4Url());
         if (videoEntity.isCached(context)) {
-            parse = Uri.parse(videoEntity.getFilePath(context));
+            parse = Uri.parse(CachedEntity.getFilePath(context,videoEntity.getUrl()));
         }
         Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
         String email = appSessionHolder.get().get().getUser().getEmail();

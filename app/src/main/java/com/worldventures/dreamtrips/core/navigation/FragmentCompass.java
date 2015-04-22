@@ -73,7 +73,7 @@ public class FragmentCompass {
                 }
 
                 if (backStackEnabled) {
-                    fragmentTransaction.addToBackStack(clazzName);
+                    fragmentTransaction.addToBackStack(route.name());
                 }
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();
@@ -127,7 +127,6 @@ public class FragmentCompass {
             return Route.restoreByClass(str);
         }
         return Route.DREAMTRIPS;
-
     }
 
     public void disableBackStack() {

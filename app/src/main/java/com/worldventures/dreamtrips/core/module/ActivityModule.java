@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.utils.UniversalImageLoader;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
@@ -46,12 +45,6 @@ public class ActivityModule {
     @Provides
     public ActivityRouter provideActivityCompass() {
         return new ActivityRouter(baseActivity);
-    }
-
-    @Provides
-    @Singleton
-    public UniversalImageLoader provideImageLoader() {
-        return new UniversalImageLoader();
     }
 
     @Provides

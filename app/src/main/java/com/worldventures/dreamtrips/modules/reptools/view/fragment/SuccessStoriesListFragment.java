@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -56,6 +57,12 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
         return new SuccessStoriesListPresenter(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.iv_filter)

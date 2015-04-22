@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,7 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
-import com.worldventures.dreamtrips.modules.video.model.CachedVideo;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import butterknife.InjectView;
 
@@ -55,6 +56,12 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+    }
+
+    @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
         getPresenter().actionEnroll();
@@ -86,7 +93,7 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void showDeleteDialog(CachedVideo videoEntity) {
+    public void showDeleteDialog(CachedEntity videoEntity) {
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.delete_cached_video_title)
                 .content(R.string.delete_cached_video_text)
@@ -106,7 +113,7 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void notifyItemChanged(CachedVideo videoEntity) {
+    public void notifyItemChanged(CachedEntity videoEntity) {
         arrayListAdapter.notifyDataSetChanged();
     }
 

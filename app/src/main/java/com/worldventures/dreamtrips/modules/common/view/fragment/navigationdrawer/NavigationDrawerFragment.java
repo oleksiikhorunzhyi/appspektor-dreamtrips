@@ -90,6 +90,8 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         drawerList.setAdapter(adapter);
     }
 
+
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -109,6 +111,14 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
             adapter.setHeader(getNavigationHeader());
             adapter.notifyItemChanged(0);
         }
+    }
+
+    public void hide() {
+        getView().setVisibility(View.GONE);
+    }
+
+    public void show() {
+        getView().setVisibility(View.VISIBLE);
     }
 
     @Override

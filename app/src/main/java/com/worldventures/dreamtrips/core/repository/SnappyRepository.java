@@ -71,6 +71,7 @@ public class SnappyRepository {
                     try {
                         snappyDb.close();
                     } catch (SnappydbException e) {
+                        Timber.w(e, "DB fails to close");
                     }
             }
         });
@@ -92,6 +93,7 @@ public class SnappyRepository {
                     try {
                         snappyDb.close();
                     } catch (SnappydbException e) {
+                        Timber.w(e, "DB fails to close");
                     }
             }
         });

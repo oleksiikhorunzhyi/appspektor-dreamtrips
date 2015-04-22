@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +9,10 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -78,9 +80,20 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void setCover(String imageUrl) {
-        imageViewCover.setImageURI(Uri.parse(imageUrl));
+    public void setCover() {
+        String medium = getPresenter().getMediumResUrl();
+        String original = getPresenter().getHighResUrl();
+        loadImage(medium, original);
     }
+
+    private void loadImage(String lowUrl, String url) {
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                .setImageRequest(ImageRequest.fromUri(url))
+                .build();
+        imageViewCover.setController(draweeController);
+    }
+
 
     @OnClick(R.id.imageViewEdit)
     protected void onEdit() {
@@ -135,6 +148,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     protected void onCoverClicked() {
         getPresenter().openFullScreen(0);
     }
+
     @Override
     public void disableCheckbox() {
         checkBox.setEnabled(false);

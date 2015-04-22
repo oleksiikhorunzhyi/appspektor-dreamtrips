@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,9 +63,11 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        getPresenter().actionEnroll();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_enroll) {
+            getPresenter().actionEnroll();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -92,24 +95,14 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
         this.recyclerView.setLayoutManager(layoutManager);
     }
 
-    @Override
-    public void showDeleteDialog(CachedEntity videoEntity) {
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.delete_cached_video_title)
-                .content(R.string.delete_cached_video_text)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().onDeleteAction(videoEntity);
-                    }
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
+    public void onDeleteAction(CachedEntity videoEntity) {
+        getPresenter().onDeleteAction(videoEntity);
+    }
+
+    @Override
+    public void onCancelCaching(CachedEntity cacheEntity) {
+        getPresenter().onCancelAction(cacheEntity);
     }
 
     @Override

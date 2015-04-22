@@ -25,7 +25,7 @@ public class FrescoInitializer implements AppInitializer {
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
                 .setProgressiveJpegConfig(jpegConfig)
                 .build();
-        
+
         Fresco.initialize(context, config);
     }
 }

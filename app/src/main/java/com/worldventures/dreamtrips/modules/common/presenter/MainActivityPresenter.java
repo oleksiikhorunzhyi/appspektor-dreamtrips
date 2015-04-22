@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
+import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEvent;
 
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
@@ -10,6 +11,10 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
     public void restoreInstanceState() {
         view.setTitle(fragmentCompass.getCurrentState().getTitle());
+    }
+
+    public void loadFilters() {
+        eventBus.post(new UpdateRegionsAndThemesEvent());
     }
 
     public void onEvent(ServerDownEvent event) {

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import android.text.TextUtils;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
@@ -182,6 +184,14 @@ public class TripModel implements Filterable, Serializable {
                     url = image.getUrl();
                 }
             }
+        }
+        return url;
+    }
+
+    public String getThumb() {
+        String url = getImageUrl("RETINA|THUMB");
+        if (TextUtils.isEmpty(url)) {
+            url = getImageUrl("THUMB");
         }
         return url;
     }

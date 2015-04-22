@@ -150,7 +150,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
                 alpha = 0f;
                 duration = 500l;
                 delay = duration;
-                handler.postDelayed(() -> badge.setText(String.valueOf(count)), duration);
             } else {
                 alpha = 1f;
                 duration = 300l;

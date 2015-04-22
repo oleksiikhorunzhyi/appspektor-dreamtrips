@@ -36,7 +36,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void init() {
         super.init();
         cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
-        eventBus.register(cachedVideoManager);
 
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 
@@ -46,6 +45,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);
         attachListeners(featuredVideos);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        eventBus.register(cachedVideoManager);
     }
 
     public void fillFeatured() {
@@ -104,7 +109,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         }
     }
 
-
     public interface View extends Presenter.View, CachedVideoManager.View {
         BaseArrayListAdapter getFeaturedAdapter();
 
@@ -112,5 +116,4 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
         BaseArrayListAdapter getAllAdapter();
     }
-
 }

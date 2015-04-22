@@ -50,10 +50,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         super.syncUI();
         view.setCategory(bucketItem.getCategoryName());
 
-        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
-
-        view.setCover(bucketItem.getCoverUrl(width, width));
+        view.setCover();
         view.updatePhotos();
+    }
+
+    public String getMediumResUrl() {
+        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
+        return bucketItem.getCoverUrl(width, width);
+    }
+
+    public String getHighResUrl() {
+        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_cover_width);
+        return bucketItem.getCoverUrl(width, width);
     }
 
     @Override
@@ -65,7 +73,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public interface View extends BucketDetailsBasePresenter.View {
         void setCategory(String category);
 
-        void setCover(String imageUrl);
+        void setCover();
 
         void showEditContainer();
 

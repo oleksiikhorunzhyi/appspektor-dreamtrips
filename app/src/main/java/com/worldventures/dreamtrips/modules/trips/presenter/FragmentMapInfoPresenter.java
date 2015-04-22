@@ -13,7 +13,7 @@ public class FragmentMapInfoPresenter extends BaseTripPresenter<FragmentMapInfoP
     @Override
     public void resume() {
         super.resume();
-        view.setImage(trip.getImageUrl("THUMB"));
+        view.setImage(trip.getThumb());
     }
 
     public void onEvent(TripLikedEvent tripEvent) {

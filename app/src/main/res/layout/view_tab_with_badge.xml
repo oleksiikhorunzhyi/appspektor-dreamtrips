@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:addStatesFromChildren="true">
+
+    <TextView
+        android:id="@+id/psts_tab_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        tools:text="BUCKETS" />
+
+    <TextView
+        android:id="@+id/psts_tab_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/psts_tab_title"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="-8dp"
+        android:layout_toRightOf="@+id/psts_tab_title"
+        android:background="@drawable/circle_red"
+        android:gravity="center"
+        android:minWidth="15dp"
+        android:paddingBottom="1dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="1dp"
+        android:textColor="@android:color/white"
+        android:textSize="11sp"
+        tools:text="35" />
+
+</RelativeLayout>

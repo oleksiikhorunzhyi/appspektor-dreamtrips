@@ -30,7 +30,7 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucketItems";
-
+    private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
 
     public static final String TRIP_KEY = "trip_rezopia";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
@@ -143,6 +143,15 @@ public class SnappyRepository {
             else return -1;
         });
         return list;
+    }
+
+    public void saveRecentlyAddedBucketItems(String type, final int count) {
+        act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
+    }
+
+    public int getRecentlyAddedBucketItems(String type) {
+        return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
+                .or(0);
     }
 
     ///////////////////////////////////////////////////////////////////////////

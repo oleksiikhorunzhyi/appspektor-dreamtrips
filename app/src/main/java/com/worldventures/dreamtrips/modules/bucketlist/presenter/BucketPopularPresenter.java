@@ -67,14 +67,14 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     }
 
-    public void onEventMainThread(AddPressedEvent event) {
+    public void onEvent(AddPressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), false, event.getPosition());
             eventBus.cancelEventDelivery(event);
         }
     }
 
-    public void onEventMainThread(DonePressedEvent event) {
+    public void onEvent(DonePressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), true, event.getPosition());
             eventBus.cancelEventDelivery(event);
@@ -99,6 +99,8 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                 eventBus.post(new BucketItemAddedEvent(bucketItem));
                 realData.add(0, bucketItem);
                 db.saveBucketList(realData, type.name());
+                int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
+                db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
             }
         });
     }

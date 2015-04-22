@@ -18,12 +18,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.*;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITIES;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
-    @Inject SnappyRepository repo;
+    @Inject SnappyRepository db;
 
     public BucketTabsPresenter(View view) {
         super(view);
@@ -52,7 +52,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
         @Override
         public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            repo.putList(SnappyRepository.CATEGORIES, categoryItems);
+            db.putList(SnappyRepository.CATEGORIES, categoryItems);
         }
     };
 
@@ -60,10 +60,15 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES));
     }
 
+    public void onTabChange(BucketType type) {
+        db.saveRecentlyAddedBucketItems(type.name, 0);
+        view.resetRecentlyAddedBucketItem(type);
+    }
+
     private void setRecentBucketItemsCounts() {
         Map<BucketType, Integer> recentBucketItems = new HashMap<>();
         for (BucketType type : BucketType.values()) {
-            recentBucketItems.put(type, repo.getRecentlyAddedBucketItems(type.name));
+            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name));
         }
         view.setRecentBucketItemsCount(recentBucketItems);
     }
@@ -71,6 +76,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public interface View extends Presenter.View {
         void setTypes(List<BucketType> type);
         void setRecentBucketItemsCount(Map<BucketType, Integer> items);
+        void resetRecentlyAddedBucketItem(BucketType type);
     }
 
     public enum BucketType {

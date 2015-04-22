@@ -12,7 +12,7 @@ import java.util.List;
 import timber.log.Timber;
 
 public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements IRoboSpiceAdapter {
-    private List<T> fragmentItems = new ArrayList<>();
+    protected List<T> fragmentItems = new ArrayList<>();
 
     public BasePagerAdapter(FragmentManager fm) {
         super(fm);

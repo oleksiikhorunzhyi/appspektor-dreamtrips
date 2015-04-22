@@ -100,7 +100,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     public void reload() {
         loadFromApi = true;
         roboSpiceAdapterController.reload();
-        eventBus.post(new UpdateRegionsAndThemesEvent());
     }
 
     public void onEvent(FilterBusEvent event) {

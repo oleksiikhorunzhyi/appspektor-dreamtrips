@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -154,21 +153,25 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void finishLoading(List<SuccessStory> result) {
         adapter.setFilter(ivSearch.getQuery().toString());
-        new Handler().postDelayed(() -> {
-            if (getActivity() != null) {
-                refreshLayout.setRefreshing(false);
-                if (isLandscape()
-                        && isTablet()
-                        && !result.isEmpty()) {
-                    getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
+        if (refreshLayout != null) {
+            refreshLayout.postDelayed(() -> {
+                if (getActivity() != null) {
+                    refreshLayout.setRefreshing(false);
+                    if (isLandscape()
+                            && isTablet()
+                            && !result.isEmpty()) {
+                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
+                    }
                 }
-            }
-        }, 500);
+            }, 500);
+        }
     }
 
     @Override
     public void startLoading() {
-        new Handler().postDelayed(() -> refreshLayout.setRefreshing(true), 100);
+        if (refreshLayout != null) {
+            refreshLayout.postDelayed(() -> refreshLayout.setRefreshing(true), 100);
+        }
     }
 
     @Override

@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
@@ -78,7 +78,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
-    public void openBucketListPopularActivity(BucketTabsFragment.Type type) {
+    public void openBucketListPopularActivity(BucketTabsPresenter.BucketType type) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.POPULAR_TAB_BUCKER);

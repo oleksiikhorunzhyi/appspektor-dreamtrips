@@ -36,7 +36,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void init() {
         super.init();
         cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
-        eventBus.register(cachedVideoManager);
 
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 
@@ -46,6 +45,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);
         attachListeners(featuredVideos);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        eventBus.register(cachedVideoManager);
     }
 
     public void fillFeatured() {
@@ -66,12 +71,13 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         }
     }
 
-    private List<Video360> attachCacheToVideos(List<Video360> videos) {
-        for (Video360 object : videos) {
-            CachedEntity e = db.getDownloadVideoEntity(object.getUid());
-            object.setCacheEntity(e);
+    private void attachCacheToVideos(List<Video360> videos) {
+        if (videos != null) {
+            for (Video360 object : videos) {
+                CachedEntity e = db.getDownloadVideoEntity(object.getUid());
+                object.setCacheEntity(e);
+            }
         }
-        return videos;
     }
 
 
@@ -86,21 +92,22 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     }
 
     private void attachListeners(List<Video360> items) {
-        for (Video360 item : items) {
-            CachedEntity cachedVideo = item.getCacheEntity();
-            boolean failed = cachedVideo.isFailed();
-            boolean inProgress = cachedVideo.getProgress() > 0;
-            boolean cached = cachedVideo.isCached(context);
-            if (!failed && inProgress && !cached) {
-                DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
-                injector.inject(listener);
-                dreamSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
-                        listener
-                );
+        if (items != null) {
+            for (Video360 item : items) {
+                CachedEntity cachedVideo = item.getCacheEntity();
+                boolean failed = cachedVideo.isFailed();
+                boolean inProgress = cachedVideo.getProgress() > 0;
+                boolean cached = cachedVideo.isCached(context);
+                if (!failed && inProgress && !cached) {
+                    DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
+                    injector.inject(listener);
+                    dreamSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                            listener
+                    );
+                }
             }
         }
     }
-
 
     public interface View extends Presenter.View, CachedVideoManager.View {
         BaseArrayListAdapter getFeaturedAdapter();
@@ -109,5 +116,4 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
         BaseArrayListAdapter getAllAdapter();
     }
-
 }

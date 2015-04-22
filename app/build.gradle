@@ -32,8 +32,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
 
-        versionCode 54
-        versionName "0.2.18"
+        versionCode 55
+        versionName "0.2.19"
 
         multiDexEnabled true
 
@@ -172,5 +172,6 @@ dependencies {
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'com.innahema:collections-query:0.2.9'
     compile 'joda-time:joda-time:2.7'
+    compile 'com.badoo.mobile:android-weak-handler:1.0'
 }
 

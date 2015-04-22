@@ -23,7 +23,7 @@ public class GetRegionsQuery extends Query<ArrayList<RegionModel>> {
         ArrayList<RegionModel> data = new ArrayList<>();
         if (db.isEmpty(SnappyRepository.REGIONS) || fromApi) {
             data.addAll(getService().getRegions());
-            db.putList(data, SnappyRepository.REGIONS);
+            db.putList(SnappyRepository.REGIONS, data);
         } else {
             data.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
         }

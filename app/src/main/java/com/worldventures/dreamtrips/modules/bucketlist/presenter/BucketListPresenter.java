@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
@@ -53,12 +52,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     @Inject
     protected Prefs prefs;
 
-    private BucketTabsFragment.Type type;
+    private BucketTabsPresenter.BucketType type;
     private boolean showToDO = true;
     private boolean showCompleted = true;
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public BucketListPresenter(View view, BucketTabsFragment.Type type) {
+    public BucketListPresenter(View view, BucketTabsPresenter.BucketType type) {
         super(view);
         this.type = type;
     }

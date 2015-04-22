@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 
@@ -36,7 +36,7 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
         super.onCreate(savedInstanceState);
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
-        BucketTabsFragment.Type type = (BucketTabsFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
+        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) bundleExtra.getSerializable(EXTRA_TYPE);
         Route route = (Route) bundleExtra.getSerializable(EXTRA_STATE);
 
         fragmentCompass.switchBranch(route, bundleExtra);

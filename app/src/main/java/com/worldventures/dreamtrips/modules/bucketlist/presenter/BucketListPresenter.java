@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
 
-import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -71,18 +68,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void loadBucketItems() {
         if (isConnected()) {
             view.startLoading();
-            dreamSpiceManager.execute(new GetBucketListQuery(prefs, db, type),
-                    new RequestListener<ArrayList<BucketItem>>() {
-                        @Override
-                        public void onRequestFailure(SpiceException spiceException) {
-                            view.informUser(context.getString(R.string.could_not_load) + type.getName());
-                        }
-
-                        @Override
-                        public void onRequestSuccess(ArrayList<BucketItem> result) {
-                            view.finishLoading();
-                            addItems(result);
-                        }
+            doRequest(new GetBucketListQuery(prefs, db, type),
+                    (result) -> {
+                        view.finishLoading();
+                        addItems(result);
+                    }, (exception) -> {
+                        handleError(exception);
+                        view.finishLoading();
                     });
         } else {
             addItems(db.readBucketList(type.name()));
@@ -151,22 +143,16 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
             BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
 
-            dreamSpiceManager.execute(new MarkBucketItemCommand(event.getBucketItem().getId(),
+            doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(),
                             bucketStatusItem),
-                    new RequestListener<BucketItem>() {
-                        @Override
-                        public void onRequestFailure(SpiceException spiceException) {
-                            handleError(spiceException);
-                        }
-
-                        @Override
-                        public void onRequestSuccess(BucketItem jsonObject) {
-                            //nothing to do here
-                        }
+                    (item) -> {
+                        db.saveBucketList(bucketItems, type.name());
+                    }, (exception) -> {
+                        bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(!bucketItem.isDone());
+                        refresh();
                     });
 
             bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(bucketItem.isDone());
-            db.saveBucketList(bucketItems, type.name());
             refresh();
         }
     }
@@ -220,17 +206,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private DeleteBucketItemCommand deleteDellayed(int id) {
         DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, DELETION_DELAY);
-        dreamSpiceManager.execute(request, new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                handleError(spiceException);
-            }
-
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                db.saveBucketList(bucketItems, type.name());
-            }
-        });
+        doRequest(request, (obj) -> db.saveBucketList(bucketItems, type.name()));
         return request;
     }
 
@@ -274,23 +250,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         BucketOrderModel orderModel = new BucketOrderModel();
         orderModel.setPosition(toPosition);
 
-        dreamSpiceManager.execute(new ReorderBucketItemCommand(
-                        bucketItems.get(fromPosition).getId(),
-                        orderModel),
-                new RequestListener<JsonObject>() {
-                    @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        handleError(spiceException);
-                        refresh();
-                    }
-
-                    @Override
-                    public void onRequestSuccess(JsonObject jsonObject) {
-                        final BucketItem item = bucketItems.remove(fromPosition);
-                        bucketItems.add(toPosition, item);
-                        db.saveBucketList(bucketItems, type.name());
-                    }
-                });
+        doRequest(new ReorderBucketItemCommand(bucketItems.get(fromPosition).getId(),
+                orderModel), (jsonObject) -> {
+            final BucketItem item = bucketItems.remove(fromPosition);
+            bucketItems.add(toPosition, item);
+            db.saveBucketList(bucketItems, type.name());
+        });
     }
 
     public void addToBucketList(String title) {
@@ -299,22 +264,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void addBucketItem(BucketPostItem bucketPostItem) {
-        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem),
-                new RequestListener<BucketItem>() {
-                    @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        handleError(spiceException);
-                    }
+        doRequest(new AddBucketItemCommand(bucketPostItem), (bucketItem) -> {
+            bucketItems.add(0, bucketItem);
+            db.saveBucketList(bucketItems, type.name());
 
-                    @Override
-                    public void onRequestSuccess(BucketItem bucketItem) {
-                        bucketItems.add(0, bucketItem);
-                        db.saveBucketList(bucketItems, type.name());
-
-                        view.getAdapter().addItem(0, bucketItem);
-                        view.getAdapter().notifyDataSetChanged();
-                    }
-                });
+            view.getAdapter().addItem(0, bucketItem);
+            view.getAdapter().notifyDataSetChanged();
+        });
     }
 
     public boolean isShowToDO() {

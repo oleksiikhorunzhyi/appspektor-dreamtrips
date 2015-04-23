@@ -3,12 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.apptentive.android.sdk.Log;
-import com.google.gson.JsonObject;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
@@ -56,18 +51,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected Injector injector;
 
     protected Integer coverId;
-    protected RequestListener<BucketItem> requestListenerUpdate = new RequestListener<BucketItem>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            view.informUser(R.string.bucket_item_edit_error);
-        }
 
-        @Override
-        public void onRequestSuccess(BucketItem bucketItemUpdated) {
-            onSuccess(bucketItemUpdated);
-        }
-    };
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
@@ -104,19 +90,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void startUpload(final BucketPhotoUploadTask task) {
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
-        dreamSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                Log.e(this.getClass().getSimpleName(), "", spiceException);
-            }
-
-            @Override
-            public void onRequestSuccess(BucketPhoto bucketPhoto) {
-                if (bucketPhoto != null) {
-                    bucketItem.getPhotos().add(bucketPhoto);
-                    resaveItem(bucketItem);
-                    view.getBucketPhotosView().replace(task, bucketPhoto);
-                }
+        doRequest(uploadBucketPhotoCommand, (bucketPhoto) -> {
+            if (bucketPhoto != null) {
+                bucketItem.getPhotos().add(bucketPhoto);
+                resaveItem(bucketItem);
+                view.getBucketPhotosView().replace(task, bucketPhoto);
             }
         });
     }
@@ -180,24 +158,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected void saveBucketItem(BucketBasePostItem bucketBasePostItem) {
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketItem.getId(), bucketBasePostItem);
-        dreamSpiceManager.execute(updateBucketItemCommand, requestListenerUpdate);
+        doRequest(updateBucketItemCommand, (bucketItem) -> onSuccess(bucketItem));
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getFsId()), bucketItem.getId()), new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                Log.e(this.getClass().getSimpleName(), "", spiceException);
-            }
-
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                bucketItem.getPhotos().remove(event.getPhoto());
-                resaveItem(bucketItem);
-                view.getBucketPhotosView().deleteImage(event.getPhoto());
-            }
-        });
+        doRequest(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getFsId()), bucketItem.getId()),
+                (jsonObject) -> {
+                    bucketItem.getPhotos().remove(event.getPhoto());
+                    resaveItem(bucketItem);
+                    view.getBucketPhotosView().deleteImage(event.getPhoto());
+                }, this);
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {

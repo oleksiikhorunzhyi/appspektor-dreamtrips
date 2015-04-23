@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -38,27 +39,24 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
 
-        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                trip.setLiked(!trip.isLiked());
-                view.informUser(R.string.smth_went_wrong);
-            }
 
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                eventBus.post(new TripLikedEvent(trip));
-                db.saveTrip(trip);
-            }
-        };
+        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
+                new LikeTripCommand(trip.getLikeId()) :
+                new UnlikeTripCommand(trip.getLikeId());
 
-        if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), callback);
-        } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), callback);
-        }
+        doRequest(request, (object) -> onSuccess());
     }
 
+    private void onSuccess() {
+        eventBus.post(new TripLikedEvent(trip));
+        db.saveTrip(trip);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        trip.setLiked(!trip.isLiked());
+        super.handleError(error);
+    }
 
     @Override
     public void resume() {

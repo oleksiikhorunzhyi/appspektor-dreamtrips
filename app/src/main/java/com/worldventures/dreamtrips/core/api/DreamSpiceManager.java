@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.api;
 
+import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
@@ -13,6 +15,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
@@ -36,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -54,6 +58,9 @@ public class DreamSpiceManager extends SpiceManager {
     @Global
     protected EventBus eventBus;
 
+    @Inject
+    protected Context context;
+
     private Injector injector;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
@@ -62,7 +69,7 @@ public class DreamSpiceManager extends SpiceManager {
         injector.inject(this);
     }
 
-    public <T> void execute(final SpiceRequest<T> request, final RequestListener<T> requestListener) {
+    public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
 
         super.execute(request, new RequestListener<T>() {
@@ -75,9 +82,9 @@ public class DreamSpiceManager extends SpiceManager {
 
                     login(userPassword, username, (loginResponse, spiceError) -> {
                         if (loginResponse != null) {
-                            DreamSpiceManager.super.execute(request, requestListener);
+                            execute(request, successListener, failureListener);
                         } else {
-                            requestListener.onRequestFailure(new SpiceException(spiceError.getMessage()));
+                            failureListener.handleError(new SpiceException(spiceError.getMessage()));
                         }
                     });
 
@@ -85,47 +92,27 @@ public class DreamSpiceManager extends SpiceManager {
                     RetrofitError retrofitError = (RetrofitError) error.getCause();
                     String body = getBody(retrofitError.getResponse());
                     String message = grabDetailedMessage(body);
-                    requestListener.onRequestFailure(new SpiceException(message));
+                    if (message.isEmpty()) {
+                        Throwable t = retrofitError.getCause();
+                        if (t instanceof UnknownHostException) {
+                            failureListener.handleError(new SpiceException(context
+                                    .getResources().getString(R.string.no_connection)));
+                        } else {
+                            failureListener.handleError(new SpiceException(""));
+                        }
+                    } else {
+                        failureListener.handleError(new SpiceException(message));
+                    }
                 } else {
-                    requestListener.onRequestFailure(new SpiceException(""));
+                    failureListener.handleError(new SpiceException(""));
                 }
             }
 
             @Override
             public void onRequestSuccess(T t) {
-                requestListener.onRequestSuccess(t);
+                successListener.onRequestSuccess(t);
             }
         });
-    }
-
-    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig,
-                                  String username, String userPassword) {
-        String sessionToken = session.getToken();
-        User sessionUser = session.getUser();
-
-        UserSession userSession = new UserSession();
-        userSession.setUser(sessionUser);
-        userSession.setApiToken(sessionToken);
-        userSession.setLegacyApiToken(legacyToken);
-
-        userSession.setUsername(username);
-        userSession.setUserPassword(userPassword);
-        userSession.setLastUpdate(System.currentTimeMillis());
-
-        userSession.setGlobalConfig(globalConfig);
-
-        if (sessionUser != null & sessionToken != null) {
-            appSessionHolder.put(userSession);
-            return true;
-        }
-        eventBus.post(new UpdateUserInfoEvent());
-        return false;
-    }
-
-    private void updateSession(StaticPageConfig staticPageConfig) {
-        UserSession userSession = appSessionHolder.get().get();
-        userSession.setStaticPageConfig(staticPageConfig);
-        appSessionHolder.put(userSession);
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
@@ -222,11 +209,6 @@ public class DreamSpiceManager extends SpiceManager {
         }
     }
 
-    private boolean isCredentialExist() {
-        UserSession userSession = appSessionHolder.get().get();
-        return userSession.getUsername() != null && userSession.getUserPassword() != null;
-    }
-
     public static boolean isLoginError(Exception error) {
         if (error instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error;
@@ -238,11 +220,43 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    public interface OnLoginSuccess {
-        void result(LoginResponse loginResponse, SpiceException exception);
+    private boolean isCredentialExist() {
+        UserSession userSession = appSessionHolder.get().get();
+        return userSession.getUsername() != null && userSession.getUserPassword() != null;
     }
 
-    public String getBody(Response response) {
+    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig,
+                                  String username, String userPassword) {
+        String sessionToken = session.getToken();
+        User sessionUser = session.getUser();
+
+        UserSession userSession = new UserSession();
+        userSession.setUser(sessionUser);
+        userSession.setApiToken(sessionToken);
+        userSession.setLegacyApiToken(legacyToken);
+
+        userSession.setUsername(username);
+        userSession.setUserPassword(userPassword);
+        userSession.setLastUpdate(System.currentTimeMillis());
+
+        userSession.setGlobalConfig(globalConfig);
+
+        if (sessionUser != null & sessionToken != null) {
+            appSessionHolder.put(userSession);
+            return true;
+        }
+        eventBus.post(new UpdateUserInfoEvent());
+        return false;
+    }
+
+    private void updateSession(StaticPageConfig staticPageConfig) {
+        UserSession userSession = appSessionHolder.get().get();
+        userSession.setStaticPageConfig(staticPageConfig);
+        appSessionHolder.put(userSession);
+    }
+
+
+    private String getBody(Response response) {
         String result = "";
         try {
             TypedInput body = response.getBody();
@@ -280,4 +294,17 @@ public class DreamSpiceManager extends SpiceManager {
         }
         return "";
     }
+
+    public interface OnLoginSuccess {
+        void result(LoginResponse loginResponse, SpiceException exception);
+    }
+
+    public static interface FailureListener {
+        void handleError(SpiceException spiceException);
+    }
+
+    public static interface SuccessListener<T> {
+        void onRequestSuccess(T t);
+    }
+
 }

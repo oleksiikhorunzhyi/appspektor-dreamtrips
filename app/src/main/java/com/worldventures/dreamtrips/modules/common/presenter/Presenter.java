@@ -11,6 +11,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -18,8 +19,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import retrofit.RetrofitError;
 
-public class Presenter<VT extends Presenter.View> {
+public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
 
     protected final VT view;
 
@@ -99,8 +101,20 @@ public class Presenter<VT extends Presenter.View> {
         }
     }
 
-    protected void handleError(SpiceException error) {
-        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+    protected <T> void doRequest(DreamTripsRequest<T> request,
+                                 DreamSpiceManager.SuccessListener<T> successListener) {
+        dreamSpiceManager.execute(request, successListener, this);
+    }
+
+    protected <T> void doRequest(DreamTripsRequest<T> request,
+                                 DreamSpiceManager.SuccessListener<T> successListener,
+                                 DreamSpiceManager.FailureListener failureListener) {
+        dreamSpiceManager.execute(request, successListener, failureListener);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+       if (error != null && !TextUtils.isEmpty(error.getMessage())) {
             view.informUser(error.getMessage());
         } else {
             view.informUser(R.string.smth_went_wrong);

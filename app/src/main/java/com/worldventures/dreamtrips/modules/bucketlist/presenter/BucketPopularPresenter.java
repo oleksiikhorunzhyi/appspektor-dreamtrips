@@ -43,6 +43,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         @Override
         public void onFinish(LoadType type, List<PopularBucketItem> items, SpiceException spiceException) {
             view.finishLoading();
+            if (spiceException != null) {
+                handleError(spiceException);
+            }
         }
     };
 
@@ -85,24 +88,21 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         BucketBasePostItem bucketPostItem = new BucketBasePostItem(type.getName(),
                 popularBucketItem.getId());
         bucketPostItem.setStatus(done);
-        dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), new RequestListener<BucketItem>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                popularBucketItem.setLoading(false);
-                view.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onRequestSuccess(BucketItem bucketItem) {
-                view.getAdapter().remove(popularBucketItem);
-                view.getAdapter().notifyItemRemoved(position);
-                eventBus.post(new BucketItemAddedEvent(bucketItem));
-                realData.add(0, bucketItem);
-                db.saveBucketList(realData, type.name());
-                int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
-                db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
-            }
-        });
+        doRequest(new AddBucketItemCommand(bucketPostItem),
+                (bucketItem) -> {
+                    view.getAdapter().remove(popularBucketItem);
+                    view.getAdapter().notifyItemRemoved(position);
+                    eventBus.post(new BucketItemAddedEvent(bucketItem));
+                    realData.add(0, bucketItem);
+                    db.saveBucketList(realData, type.name());
+                    int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
+                    db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
+                },
+                (spiceException) -> {
+                    popularBucketItem.setLoading(false);
+                    view.getAdapter().notifyDataSetChanged();
+                    handleError(spiceException);
+                });
     }
 
     @Override

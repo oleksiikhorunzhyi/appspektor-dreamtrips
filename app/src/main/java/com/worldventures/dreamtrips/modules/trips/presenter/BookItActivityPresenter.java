@@ -31,17 +31,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             openBookIt();
         } else {
-            dreamSpiceManager.execute(new GetTripDetailsQuery(view.getTripId()), new RequestListener<TripDetails>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    Timber.e(spiceException, "");
-                }
-
-                @Override
-                public void onRequestSuccess(TripDetails tripDetails) {
-                    openBookIt();
-                }
-            });
+            doRequest(new GetTripDetailsQuery(view.getTripId()), (tripDetails) -> openBookIt());
         }
     }
 

@@ -112,14 +112,13 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
-
 
     @Override
     public BaseArrayListAdapter getAdapter() {

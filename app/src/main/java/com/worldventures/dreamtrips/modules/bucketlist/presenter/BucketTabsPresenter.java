@@ -23,7 +23,8 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
-    @Inject SnappyRepository db;
+    @Inject
+    SnappyRepository db;
 
     public BucketTabsPresenter(View view) {
         super(view);
@@ -42,19 +43,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     private void loadCategories() {
-        dreamSpiceManager.execute(new GetCategoryQuery(), categoriesRequestListener);
+        doRequest(new GetCategoryQuery(),
+                (categoryItems) -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
     }
-
-    private RequestListener<ArrayList<CategoryItem>> categoriesRequestListener = new RequestListener<ArrayList<CategoryItem>>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-        }
-
-        @Override
-        public void onRequestSuccess(ArrayList<CategoryItem> categoryItems) {
-            db.putList(SnappyRepository.CATEGORIES, categoryItems);
-        }
-    };
 
     public void setTabs() {
         view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES));
@@ -75,7 +66,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     public interface View extends Presenter.View {
         void setTypes(List<BucketType> type);
+
         void setRecentBucketItemsCount(Map<BucketType, Integer> items);
+
         void resetRecentlyAddedBucketItem(BucketType type);
     }
 

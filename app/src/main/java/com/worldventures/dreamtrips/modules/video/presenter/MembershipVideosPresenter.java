@@ -61,6 +61,9 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
             view.finishLoading();
             attachListeners(items);
+            if (spiceException != null) {
+                handleError(spiceException);
+            }
         }
     };
 

@@ -182,8 +182,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
             this.pid.onActivityResult(requestCode, resultCode, data);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
-            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-            fbImageCallback.onResult(fragment, image, null);
+            if (fbImageCallback != null) {
+                ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+                fbImageCallback.onResult(fragment, image, null);
+            }
         }
     }
 

@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -50,7 +51,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         if (getActivity() != null && isAdded()) {
             getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.title("Alert").content(s).positiveText("Ok").show();
+                builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
             }));
         }
     }

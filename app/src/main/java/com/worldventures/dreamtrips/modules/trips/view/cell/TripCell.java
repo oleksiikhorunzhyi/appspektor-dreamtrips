@@ -79,19 +79,7 @@ public class TripCell extends AbstractCell<TripModel> {
 
         setImageViewLike();
 
-        loadProgressive(Uri.parse(getModelObject().getThumb()));
-    }
-
-    private void loadProgressive(Uri uri) {
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setProgressiveRenderingEnabled(true)
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(imageViewTripImage.getController())
-                .build();
-        imageViewTripImage.setController(controller);
-
+        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb()));
     }
 
     @OnClick(R.id.imageViewLike)

@@ -50,7 +50,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="4dp"
-                    android:text="Golden Gate Bridge"
                     android:textColor="@color/white"
                     android:textSize="26sp" />
 
@@ -99,7 +98,7 @@
                         android:drawableLeft="@drawable/selector_add_button"
                         android:drawablePadding="5dp"
                         android:padding="15dp"
-                        android:text="ADD"
+                        android:text="@string/popular_add"
                         android:textColor="@color/selector_action_button_popular" />
 
                     <TextView
@@ -111,7 +110,7 @@
                         android:drawableLeft="@drawable/selector_done_button"
                         android:drawablePadding="5dp"
                         android:padding="15dp"
-                        android:text="DONE"
+                        android:text="@string/popular_done"
                         android:textColor="@color/selector_action_button_popular" />
 
                 </LinearLayout>

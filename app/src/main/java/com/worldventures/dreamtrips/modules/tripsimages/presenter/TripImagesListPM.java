@@ -241,6 +241,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                         dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
                     }
                 }
+            } else {
+                handleError(spiceException);
             }
 
             view.finishLoading();

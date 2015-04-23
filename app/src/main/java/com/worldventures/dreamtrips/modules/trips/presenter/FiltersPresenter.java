@@ -77,36 +77,23 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void loadFilters(boolean fromApi) {
         view.startLoading();
 
-        dreamSpiceManager.execute(new GetActivitiesQuery(db, fromApi), new RequestListener<ArrayList<ActivityModel>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
+        doRequest(new GetActivitiesQuery(db, fromApi), (activities) -> {
+            FiltersPresenter.this.activities = activities;
+            parentActivities = getParentActivities();
+            if (regions != null && !regions.isEmpty()) {
+                fillData();
             }
-
-            @Override
-            public void onRequestSuccess(ArrayList<ActivityModel> activities) {
-                FiltersPresenter.this.activities = activities;
-                parentActivities = getParentActivities();
-                if (regions != null && !regions.isEmpty()) {
-                    fillData();
-                }
-            }
+        }, (spiceException) -> {
+            //nothing to do here
         });
 
-        dreamSpiceManager.execute(new GetRegionsQuery(db, fromApi), new RequestListener<ArrayList<RegionModel>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
+        doRequest(new GetRegionsQuery(db, fromApi), (regions) -> {
+            FiltersPresenter.this.regions = regions;
+            if (activities != null && !activities.isEmpty()) {
+                fillData();
             }
-
-            @Override
-            public void onRequestSuccess(ArrayList<RegionModel> regions) {
-                FiltersPresenter.this.regions = regions;
-                if (activities != null && !activities.isEmpty()) {
-                    fillData();
-                }
-
-            }
+        }, (spiceException) -> {
+            //nothing to do here
         });
     }
 

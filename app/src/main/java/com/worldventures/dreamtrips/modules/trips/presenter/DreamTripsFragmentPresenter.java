@@ -8,6 +8,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -62,6 +63,9 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
             view.finishLoading(items);
+            if (spiceException != null) {
+                handleError(spiceException);
+            }
         }
     };
 
@@ -145,24 +149,21 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     }
 
     public void onItemLike(TripModel trip) {
-        RequestListener<JsonObject> requestListener = new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                trip.setLiked(!trip.isLiked());
-                view.dataSetChanged();
-                view.showErrorMessage();
-            }
+        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
+                new LikeTripCommand(trip.getLikeId()) :
+                new UnlikeTripCommand(trip.getLikeId());
 
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                db.saveTrip(trip);
-            }
-        };
-        if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), requestListener);
-        } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), requestListener);
-        }
+        doRequest(request, (object) -> onSuccess(trip), (spiceException) -> onFailure(trip));
+    }
+
+    private void onSuccess(TripModel trip) {
+        db.saveTrip(trip);
+    }
+
+    private void onFailure(TripModel trip) {
+        trip.setLiked(!trip.isLiked());
+        view.dataSetChanged();
+        view.showErrorMessage();
     }
 
     public void actionMap() {

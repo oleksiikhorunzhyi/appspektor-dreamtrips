@@ -224,19 +224,20 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     private void openComponent(ComponentDescription route, boolean backstack) {
-        final String className = route.getFragmentClass().getName();
-        BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
-
-        if (backstack) {
-            fragmentTransaction.addToBackStack(route.getKey());
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        boolean theSame = currentFragment != null && currentFragment.getClass().equals(route.getFragmentClass());
+        if (!theSame) {
+            String className = route.getFragmentClass().getName();
+            BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
+            //
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, fragment);
+            if (backstack) fragmentTransaction.addToBackStack(route.getKey());
+            fragmentTransaction.commit();
+            //
+            setTitle(route.getTitle());
         }
-
-        fragmentTransaction.commit();
-
-        setTitle(route.getTitle());
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {

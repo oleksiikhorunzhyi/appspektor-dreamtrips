@@ -117,6 +117,18 @@ public class PickImageDialog implements ImageChooserListener {
         imageChooserManager.reinitialize(filePath);
     }
 
+    public void setChooserType(int chooserType) {
+        this.chooserType = chooserType;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     public void setCallback(ImagePickCallback callback) {
         this.callback = callback;
     }

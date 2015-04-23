@@ -9,6 +9,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/techery/android' }
     maven { url "https://jitpack.io" }
+    maven { url "https://clojars.org/repo/" }
 }
 
 android {
@@ -173,5 +174,7 @@ dependencies {
     compile 'com.innahema:collections-query:0.2.9'
     compile 'joda-time:joda-time:2.7'
     compile 'com.badoo.mobile:android-weak-handler:1.0'
+    compile 'frankiesardo:icepick:3.0.2'
+    apt 'frankiesardo:icepick-processor:3.0.2'
 }
 

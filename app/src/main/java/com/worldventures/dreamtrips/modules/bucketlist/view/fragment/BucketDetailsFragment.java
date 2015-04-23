@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -60,7 +61,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
-    @InjectView(R.id.lv_items)
+    @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
 
     @Override
@@ -169,10 +170,17 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         }
     }
 
+    WeakHandler handler = new WeakHandler();
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
+        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
+    }
+
+    public void onEvent(ActivityResult event) {
+        eventBus.removeStickyEvent(event);
+        handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
     }
 
     @Override
@@ -195,5 +203,17 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DETAILS);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+    }
+
+    public static class ActivityResult {
+        public final int requestCode;
+        public final int resultCode;
+        public final Intent data;
+
+        public ActivityResult(int requestCode, int resultCode, Intent data) {
+            this.requestCode = requestCode;
+            this.resultCode = resultCode;
+            this.data = data;
+        }
     }
 }

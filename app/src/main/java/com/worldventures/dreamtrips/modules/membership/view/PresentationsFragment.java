@@ -1,16 +1,14 @@
-package com.worldventures.dreamtrips.modules.infopages.view.fragment;
+package com.worldventures.dreamtrips.modules.membership.view;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -19,16 +17,16 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
 import com.worldventures.dreamtrips.modules.video.model.Video;
-import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_member_ship)
+@Layout(R.layout.fragment_presentation)
 @MenuResource(R.menu.menu_membership)
-public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> implements MembershipVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class PresentationsFragment extends BaseFragment<PresentationsPresenter> implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -85,8 +83,8 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
     }
 
     @Override
-    protected MembershipVideosPresenter createPresenter(Bundle savedInstanceState) {
-        return new MembershipVideosPresenter(this);
+    protected PresentationsPresenter createPresenter(Bundle savedInstanceState) {
+        return new PresentationsPresenter(this);
     }
 
     private void setupLayoutManager(boolean landscape) {

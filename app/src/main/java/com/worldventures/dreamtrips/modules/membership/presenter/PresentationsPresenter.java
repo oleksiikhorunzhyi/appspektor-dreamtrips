@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.video.presenter;
+package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Context;
 
@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MembershipVideosPresenter extends Presenter<MembershipVideosPresenter.View> {
+public class PresentationsPresenter extends Presenter<PresentationsPresenter.View> {
 
     @Inject
     protected LoaderFactory loaderFactory;
@@ -65,7 +65,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     };
 
 
-    public MembershipVideosPresenter(View view) {
+    public PresentationsPresenter(View view) {
         super(view);
     }
 

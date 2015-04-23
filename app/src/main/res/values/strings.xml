@@ -237,6 +237,9 @@
     <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
     <string name="cancel_photo_negative">No</string>
+    <string name="presentations">Presentations</string>
+    <string name="enroll_member">Enroll Member</string>
+    <string name="invite_and_share"><![CDATA[Invite&Share]]></string>
 
 
 </resources>

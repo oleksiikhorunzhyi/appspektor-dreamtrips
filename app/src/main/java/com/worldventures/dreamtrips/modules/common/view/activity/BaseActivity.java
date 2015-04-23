@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
@@ -90,6 +91,7 @@ public abstract class BaseActivity extends InjectingActivity {
         result.add(new ReptoolsModule());
         result.add(new TripsModule());
         result.add(new TripsImagesModule());
+        result.add(new MembershipModule());
         return result;
     }
 

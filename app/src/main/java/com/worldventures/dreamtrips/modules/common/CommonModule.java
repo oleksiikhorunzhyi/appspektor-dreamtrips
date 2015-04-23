@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
-import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ import dagger.Provides;
                 NavigationDrawerFragment.class,
                 NavigationDrawerAdapter.class,
                 DownloadVideoListener.class,
-                MembershipVideosPresenter.class,
+                PresentationsPresenter.class,
         },
         complete = false,
         library = true

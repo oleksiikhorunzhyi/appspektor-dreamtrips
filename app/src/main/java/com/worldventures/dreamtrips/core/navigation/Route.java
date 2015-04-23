@@ -11,10 +11,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.MemberShipFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.membership.view.MembershipFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
@@ -45,7 +45,7 @@ public enum Route {
     DREAMTRIPS(DreamTripsFragment.class, R.string.trips),
     OTA(OtaFragment.class, R.string.other_travel),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
-    MEMBERSHIP(MemberShipFragment.class, R.string.membership),
+    MEMBERSHIP(MembershipFragment.class, R.string.membership),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),

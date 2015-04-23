@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
@@ -84,7 +82,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 fillData();
             }
         }, (spiceException) -> {
-            //nothing to do here
+            FiltersPresenter.this.activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
+            parentActivities = getParentActivities();
+            fillData();
+
         });
 
         doRequest(new GetRegionsQuery(db, fromApi), (regions) -> {
@@ -93,7 +94,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 fillData();
             }
         }, (spiceException) -> {
-            //nothing to do here
+            FiltersPresenter.this.regions = db.readList(SnappyRepository.REGIONS, RegionModel.class);
+            fillData();
         });
     }
 

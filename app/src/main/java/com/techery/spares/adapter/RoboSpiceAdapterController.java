@@ -1,46 +1,16 @@
 package com.techery.spares.adapter;
 
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.octo.android.robospice.request.listener.RequestListener;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RoboSpiceAdapterController<BaseItemClass> {
 
-    private SpiceManager spiceManager;
+    private DreamSpiceManager spiceManager;
     private IRoboSpiceAdapter<BaseItemClass> adapter;
-
-    private RequestListener<ArrayList<BaseItemClass>> refreshListener = new RequestListener<ArrayList<BaseItemClass>>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            onFinish(LoadType.RELOAD, null, spiceException);
-        }
-
-        @Override
-        public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-            adapter.clear();
-            adapter.addItems(baseItemClasses);
-            adapter.notifyDataSetChanged();
-            onFinish(LoadType.RELOAD, baseItemClasses, null);
-
-        }
-    };
-    private RequestListener<ArrayList<BaseItemClass>> requestListener = new RequestListener<ArrayList<BaseItemClass>>() {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            onFinish(LoadType.APPEND, null, spiceException);
-        }
-
-        @Override
-        public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-            adapter.addItems(baseItemClasses);
-            adapter.notifyDataSetChanged();
-            onFinish(LoadType.APPEND, baseItemClasses, null);
-        }
-    };
 
     public abstract SpiceRequest<ArrayList<BaseItemClass>> getRefreshRequest();
 
@@ -54,7 +24,7 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
     public void onFinish(LoadType type, List<BaseItemClass> items, SpiceException spiceException) {
     }
 
-    public void setSpiceManager(SpiceManager spiceManager) {
+    public void setSpiceManager(DreamSpiceManager spiceManager) {
         this.spiceManager = spiceManager;
     }
 
@@ -65,18 +35,39 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
 
     public void reload() {
         onStart(LoadType.RELOAD);
-        spiceManager.execute(getRefreshRequest(), refreshListener);
+        spiceManager.execute(getRefreshRequest(), (baseItemClasses) -> onRefresh(baseItemClasses),
+                (exception) -> onFailure(exception));
     }
 
     public void loadNext() {
         onStart(LoadType.APPEND);
         SpiceRequest<ArrayList<BaseItemClass>> nextPageRequest = getNextPageRequest(adapter.getCount());
         if (nextPageRequest != null) {
-            spiceManager.execute(nextPageRequest, requestListener);
+            spiceManager.execute(nextPageRequest, (baseItemClasses) -> onRequestSuccess(baseItemClasses),
+                    (exception) -> onFailure(exception));
         }
+    }
+
+    private void onFailure(SpiceException spiceException) {
+        onFinish(LoadType.APPEND, null, spiceException);
+    }
+
+    private void onRefresh(ArrayList<BaseItemClass> baseItemClasses) {
+        adapter.clear();
+        adapter.addItems(baseItemClasses);
+        adapter.notifyDataSetChanged();
+        onFinish(LoadType.RELOAD, baseItemClasses, null);
+
+    }
+
+    private void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+        adapter.addItems(baseItemClasses);
+        adapter.notifyDataSetChanged();
+        onFinish(LoadType.APPEND, baseItemClasses, null);
     }
 
     public static enum LoadType {
         RELOAD, APPEND;
     }
+
 }

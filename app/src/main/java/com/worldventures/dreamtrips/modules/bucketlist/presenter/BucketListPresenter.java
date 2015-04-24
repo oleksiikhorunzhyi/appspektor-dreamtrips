@@ -69,10 +69,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (isConnected()) {
             view.startLoading();
             doRequest(new GetBucketListQuery(prefs, db, type),
-                    (result) -> {
+                    result -> {
                         view.finishLoading();
                         addItems(result);
-                    }, (exception) -> {
+                    }, exception -> {
                         handleError(exception);
                         view.finishLoading();
                     });
@@ -145,9 +145,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
             doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(),
                             bucketStatusItem),
-                    (item) -> {
+                    item -> {
                         db.saveBucketList(bucketItems, type.name());
-                    }, (exception) -> {
+                    }, exception -> {
                         bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(!bucketItem.isDone());
                         refresh();
                     });
@@ -206,7 +206,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private DeleteBucketItemCommand deleteDellayed(int id) {
         DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, DELETION_DELAY);
-        doRequest(request, (obj) -> db.saveBucketList(bucketItems, type.name()));
+        doRequest(request, obj -> db.saveBucketList(bucketItems, type.name()));
         return request;
     }
 
@@ -251,7 +251,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         orderModel.setPosition(toPosition);
 
         doRequest(new ReorderBucketItemCommand(bucketItems.get(fromPosition).getId(),
-                orderModel), (jsonObject) -> {
+                orderModel), jsonObject -> {
             final BucketItem item = bucketItems.remove(fromPosition);
             bucketItems.add(toPosition, item);
             db.saveBucketList(bucketItems, type.name());
@@ -264,7 +264,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void addBucketItem(BucketPostItem bucketPostItem) {
-        doRequest(new AddBucketItemCommand(bucketPostItem), (bucketItem) -> {
+        doRequest(new AddBucketItemCommand(bucketPostItem), bucketItem -> {
             bucketItems.add(0, bucketItem);
             db.saveBucketList(bucketItems, type.name());
 

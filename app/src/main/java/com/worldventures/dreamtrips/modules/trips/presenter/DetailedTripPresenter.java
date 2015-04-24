@@ -46,7 +46,7 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
     }
 
     public void loadTripDetails() {
-        doRequest(new GetTripDetailsQuery(trip.getTripId()), (tripDetails) -> onSuccess(tripDetails));
+        doRequest(new GetTripDetailsQuery(trip.getTripId()), this::onSuccess);
     }
 
     @Override

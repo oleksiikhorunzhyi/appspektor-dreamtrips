@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import retrofit.RetrofitError;
 
 public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
 

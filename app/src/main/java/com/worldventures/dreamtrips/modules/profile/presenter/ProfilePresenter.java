@@ -37,7 +37,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
             doRequest(new UploadAvatarCommand(typedFile),
-                    (user) -> onSuccess(user));
+                    this::onSuccess);
 
         } else {
             Log.e(ProfilePresenter.class.getSimpleName(), error);

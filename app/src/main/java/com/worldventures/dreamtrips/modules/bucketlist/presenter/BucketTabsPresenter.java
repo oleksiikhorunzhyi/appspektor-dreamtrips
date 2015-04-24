@@ -2,15 +2,11 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.support.annotation.StringRes;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +40,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     private void loadCategories() {
         doRequest(new GetCategoryQuery(),
-                (categoryItems) -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
+                categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
     }
 
     public void setTabs() {

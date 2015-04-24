@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
@@ -44,7 +42,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
                 new LikeTripCommand(trip.getLikeId()) :
                 new UnlikeTripCommand(trip.getLikeId());
 
-        doRequest(request, (object) -> onSuccess());
+        doRequest(request, object -> onSuccess());
     }
 
     private void onSuccess() {

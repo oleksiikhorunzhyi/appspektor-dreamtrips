@@ -75,21 +75,21 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void loadFilters(boolean fromApi) {
         view.startLoading();
 
-        doRequest(new GetActivitiesQuery(db, fromApi), (activities) -> {
-            FiltersPresenter.this.activities = activities;
+        doRequest(new GetActivitiesQuery(db, fromApi), resultActivities -> {
+            FiltersPresenter.this.activities = resultActivities;
             parentActivities = getParentActivities();
             if (regions != null && !regions.isEmpty()) {
                 fillData();
             }
-        }, (spiceException) -> {
+        }, spiceException -> {
             FiltersPresenter.this.activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
             parentActivities = getParentActivities();
             fillData();
 
         });
 
-        doRequest(new GetRegionsQuery(db, fromApi), (regions) -> {
-            FiltersPresenter.this.regions = regions;
+        doRequest(new GetRegionsQuery(db, fromApi), (resultRegions) -> {
+            FiltersPresenter.this.regions = resultRegions;
             if (activities != null && !activities.isEmpty()) {
                 fillData();
             }

@@ -39,7 +39,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
         if (description != null) {
             desc = description;
         }
-        doRequest(new FlagPhotoCommand(photo.getFsId(), title + ". " + desc), (obj) -> {
+        doRequest(new FlagPhotoCommand(photo.getFsId(), title + ". " + desc), obj -> {
             view.informUser(context.getString(R.string.photo_flagged));
             TrackingHelper.flag(type, String.valueOf(photo.getFsId()), getUserId());
         });
@@ -49,7 +49,7 @@ public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
         DreamTripsRequest dreamTripsRequest = !photo.isLiked() ?
                 new LikePhotoCommand(photo.getFsId()) :
                 new UnlikePhotoCommand(photo.getFsId());
-        doRequest(dreamTripsRequest, (obj) -> onLikeSuccess(), (exc) -> onLikeFailure());
+        doRequest(dreamTripsRequest, obj -> onLikeSuccess(), exc -> onLikeFailure());
     }
 
     private void onLikeFailure() {

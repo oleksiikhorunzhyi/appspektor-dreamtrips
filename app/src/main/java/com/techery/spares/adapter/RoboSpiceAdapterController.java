@@ -35,16 +35,16 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
 
     public void reload() {
         onStart(LoadType.RELOAD);
-        spiceManager.execute(getRefreshRequest(), (baseItemClasses) -> onRefresh(baseItemClasses),
-                (exception) -> onFailure(exception));
+        spiceManager.execute(getRefreshRequest(), this::onRefresh,
+                this::onFailure);
     }
 
     public void loadNext() {
         onStart(LoadType.APPEND);
         SpiceRequest<ArrayList<BaseItemClass>> nextPageRequest = getNextPageRequest(adapter.getCount());
         if (nextPageRequest != null) {
-            spiceManager.execute(nextPageRequest, (baseItemClasses) -> onRequestSuccess(baseItemClasses),
-                    (exception) -> onFailure(exception));
+            spiceManager.execute(nextPageRequest, this::onRequestSuccess,
+                    this::onFailure);
         }
     }
 

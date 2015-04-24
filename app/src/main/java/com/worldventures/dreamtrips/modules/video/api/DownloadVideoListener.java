@@ -40,7 +40,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     protected int lastProgress = -1;
     private long timeFromLastSync = 0;
 
-    public static final int DELTA = 500;
+    public static final long DELTA = 500L;
 
     public DownloadVideoListener(CachedEntity entity) {
         this.entity = entity;
@@ -64,7 +64,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
-        if (Calendar.getInstance().getTimeInMillis() - timeFromLastSync > 0) {
+        if (Calendar.getInstance().getTimeInMillis() - timeFromLastSync > DELTA) {
             timeFromLastSync = Calendar.getInstance().getTimeInMillis();
             int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
             if (progress > lastProgress) {

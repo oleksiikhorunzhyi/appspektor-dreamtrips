@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -98,8 +99,10 @@ public class CachedVideoManager {
     private void startCaching(CachedEntity entity) {
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(entity.getUrl(),
                 new File(CachedEntity.getFilePath(context, entity.getUrl())));
+        bigBinaryRequest.setPriority(SpiceRequest.PRIORITY_LOW);
 
         DownloadVideoListener requestListener = new DownloadVideoListener(entity);
+
         injector.inject(requestListener);
         dreamSpiceManager.cancel(InputStream.class, entity.getUuid());
         dreamSpiceManager.execute(bigBinaryRequest,

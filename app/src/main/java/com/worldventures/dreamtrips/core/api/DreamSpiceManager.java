@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
@@ -80,7 +81,7 @@ public class DreamSpiceManager extends SpiceManager {
                     final String username = userSession.getUsername();
                     final String userPassword = userSession.getUserPassword();
 
-                    login(userPassword, username, (loginResponse, spiceError) -> {
+                    loadGlobalConfig(userPassword, username, (loginResponse, spiceError) -> {
                         if (loginResponse != null) {
                             execute(request, successListener, failureListener);
                         } else {
@@ -88,23 +89,8 @@ public class DreamSpiceManager extends SpiceManager {
                         }
                     });
 
-                } else if (error != null && error.getCause() instanceof RetrofitError) {
-                    RetrofitError retrofitError = (RetrofitError) error.getCause();
-                    String body = getBody(retrofitError.getResponse());
-                    String message = grabDetailedMessage(body);
-                    if (message.isEmpty()) {
-                        Throwable t = retrofitError.getCause();
-                        if (t instanceof UnknownHostException) {
-                            failureListener.handleError(new SpiceException(context
-                                    .getResources().getString(R.string.no_connection)));
-                        } else {
-                            failureListener.handleError(new SpiceException(""));
-                        }
-                    } else {
-                        failureListener.handleError(new SpiceException(message));
-                    }
                 } else {
-                    failureListener.handleError(new SpiceException(""));
+                    failureListener.handleError(new SpiceException(getErrorMessage(error)));
                 }
             }
 
@@ -122,7 +108,7 @@ public class DreamSpiceManager extends SpiceManager {
             String username = userSession.getUsername();
             String userPassword = userSession.getUserPassword();
 
-            login(userPassword, username, (loginResponse, error) -> {
+            loadGlobalConfig(userPassword, username, (loginResponse, error) -> {
                 if (requestListener != null) {
                     if (loginResponse != null) {
                         requestListener.onRequestSuccess(loginResponse);
@@ -134,57 +120,44 @@ public class DreamSpiceManager extends SpiceManager {
         }
     }
 
-    public void login(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
+    public void loadGlobalConfig(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
+        execute(new GlobalConfigQuery.GetConfigRequest(), appConfig -> {
+            ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
+            String status = serv.getStatus();
+            String message = serv.getMessage();
 
-        DreamSpiceManager.super.execute(new GlobalConfigQuery.GetConfigRequest(), new RequestListener<AppConfig>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                onLoginSuccess.result(null, spiceException);
+            if (!"up".equalsIgnoreCase(status)) {
+                onLoginSuccess.result(null, new SpiceException(message));
+                eventBus.post(new ServerDownEvent(message));
+            } else {
+                loginUser(userPassword, username, onLoginSuccess, appConfig);
             }
 
-            @Override
-            public void onRequestSuccess(AppConfig appConfig) {
-                ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
-                String status = serv.getStatus();
-                String message = serv.getMessage();
-
-                if (!"up".equalsIgnoreCase(status)) {
-                    onLoginSuccess.result(null, new SpiceException(message));
-                    eventBus.post(new ServerDownEvent(message));
-                } else {
-                    DreamSpiceManager.super.execute(new LoginCommand(username, userPassword), new RequestListener<Session>() {
-                        @Override
-                        public void onRequestFailure(SpiceException spiceException) {
-                            onLoginSuccess.result(null, new SpiceException(""));
-                        }
-
-                        @Override
-                        public void onRequestSuccess(Session session) {
-                            LoginResponse loginResponse = new LoginResponse();
-                            loginResponse.setSession(session);
-                            loginResponse.setConfig(appConfig);
-                            handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
-                                    loginResponse.getConfig(), username, userPassword);
-                            loadStaticPagesContent(loginResponse, onLoginSuccess);
-                        }
-                    });
-                }
-            }
+        }, spiceError -> {
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
         });
     }
 
-    public void loadStaticPagesContent(LoginResponse loginResponse, OnLoginSuccess onLoginSuccess) {
-        DreamSpiceManager.super.execute(new StaticPagesQuery(), new RequestListener<StaticPageConfig>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                onLoginSuccess.result(null, spiceException);
-            }
+    private void loginUser(String userPassword, String username,
+                           OnLoginSuccess onLoginSuccess, AppConfig appConfig) {
+        execute(new LoginCommand(username, userPassword), session -> {
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setSession(session);
+            loginResponse.setConfig(appConfig);
+            handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
+                    loginResponse.getConfig(), username, userPassword);
+            loadStaticPagesContent(loginResponse, onLoginSuccess);
+        }, spiceError -> {
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
+        });
+    }
 
-            @Override
-            public void onRequestSuccess(StaticPageConfig staticPageConfig) {
-                updateSession(staticPageConfig);
-                onLoginSuccess.result(loginResponse, null);
-            }
+    private void loadStaticPagesContent(LoginResponse loginResponse, OnLoginSuccess onLoginSuccess) {
+        execute(new StaticPagesQuery(), staticPageConfig -> {
+            updateSession(staticPageConfig);
+            onLoginSuccess.result(loginResponse, null);
+        }, spiceError -> {
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
         });
     }
 
@@ -221,8 +194,13 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     private boolean isCredentialExist() {
-        UserSession userSession = appSessionHolder.get().get();
-        return userSession.getUsername() != null && userSession.getUserPassword() != null;
+        Optional<UserSession> userSessionOptional = appSessionHolder.get();
+        if (userSessionOptional.isPresent()) {
+            UserSession userSession = appSessionHolder.get().get();
+            return userSession.getUsername() != null && userSession.getUserPassword() != null;
+        } else {
+            return false;
+        }
     }
 
     private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig,
@@ -255,6 +233,27 @@ public class DreamSpiceManager extends SpiceManager {
         appSessionHolder.put(userSession);
     }
 
+    private String getErrorMessage(SpiceException error) {
+        String errorMessage = "";
+        if (error != null && error.getCause() instanceof RetrofitError) {
+            RetrofitError retrofitError = (RetrofitError) error.getCause();
+            String body = getBody(retrofitError.getResponse());
+            String message = grabDetailedMessage(body);
+
+            if (message.isEmpty()) {
+                Throwable t = retrofitError.getCause();
+                if (t instanceof UnknownHostException) {
+                    errorMessage = context
+                            .getResources().getString(R.string.no_connection);
+                }
+            } else {
+                errorMessage = message;
+            }
+        } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+            errorMessage = error.getMessage();
+        }
+        return errorMessage;
+    }
 
     private String getBody(Response response) {
         String result = "";

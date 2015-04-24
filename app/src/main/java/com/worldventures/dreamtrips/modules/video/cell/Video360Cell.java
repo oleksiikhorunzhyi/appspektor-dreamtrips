@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -72,7 +73,7 @@ public class Video360Cell extends AbstractCell<Video360> {
         CachedEntity cacheEntity = getModelObject().getCacheEntity();
         String url = getModelObject().getURL();
         if (cacheEntity.isCached(context)) {
-            url = cacheEntity.getUrl();
+            url = cacheEntity.getFilePath(context, getModelObject().getURL());
         }
         activityRouter.open360Activity(url);
     }

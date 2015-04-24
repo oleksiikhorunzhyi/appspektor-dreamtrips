@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
@@ -54,11 +56,13 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     private SearchView searchView;
 
+    private int lastScrollPosition = 0;
+
     @Override
     public void afterCreateView(View rootView) {
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+        setupLayoutManager();
 
         this.recyclerView.setEmptyView(emptyView);
 
@@ -82,17 +86,29 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         return false;
     }
 
-    private void setupLayoutManager(boolean landscape) {
+    private void saveScrollPosition() {
+        lastScrollPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+    }
+
+    private void setupLayoutManager() {
+        if (recyclerView.getLayoutManager() != null) {
+            saveScrollPosition();
+        }
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), getSpanCount());
+        this.recyclerView.setLayoutManager(layoutManager);
+        layoutManager.scrollToPosition(lastScrollPosition);
+    }
+
+    private int getSpanCount() {
         int spanCount;
-        if (landscape) {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
             spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 2;
         } else {
             spanCount = ViewUtils.isTablet(getActivity()) ? 2 : 1;
         }
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
-        this.recyclerView.setLayoutManager(layoutManager);
+        return spanCount;
     }
-
 
     @Override
     public void dataSetChanged() {
@@ -117,7 +133,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         super.onConfigurationChanged(newConfig);
         if (lastConfig != newConfig.orientation) {
             lastConfig = newConfig.orientation;
-            setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+            setupLayoutManager();
         }
     }
 

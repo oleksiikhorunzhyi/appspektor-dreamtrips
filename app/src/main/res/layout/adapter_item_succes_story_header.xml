@@ -16,7 +16,6 @@
         android:paddingTop="14dp"
         android:paddingBottom="14dp"
         android:singleLine="true"
-        android:text="Title"
         android:textSize="18dp"
         android:textColor="@color/theme_main_darker" />
 </LinearLayout>

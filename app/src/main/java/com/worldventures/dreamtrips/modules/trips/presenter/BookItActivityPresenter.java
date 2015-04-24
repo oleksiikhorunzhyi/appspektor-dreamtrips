@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.os.Bundle;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -11,11 +9,8 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
-import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 
 import java.util.concurrent.TimeUnit;
-
-import timber.log.Timber;
 
 public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.View> {
 
@@ -31,17 +26,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
             openBookIt();
         } else {
-            dreamSpiceManager.execute(new GetTripDetailsQuery(view.getTripId()), new RequestListener<TripDetails>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    Timber.e(spiceException, "");
-                }
-
-                @Override
-                public void onRequestSuccess(TripDetails tripDetails) {
-                    openBookIt();
-                }
-            });
+            doRequest(new GetTripDetailsQuery(view.getTripId()), tripDetails -> openBookIt());
         }
     }
 

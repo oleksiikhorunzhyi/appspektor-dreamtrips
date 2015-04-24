@@ -4,16 +4,14 @@ import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.techery.spares.module.Annotations.Global;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
-import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
@@ -24,12 +22,9 @@ import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPresenter.View> {
 
@@ -62,6 +57,9 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
             view.finishLoading(items);
+            if (spiceException != null) {
+                handleError(spiceException);
+            }
         }
     };
 
@@ -145,24 +143,21 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     }
 
     public void onItemLike(TripModel trip) {
-        RequestListener<JsonObject> requestListener = new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                trip.setLiked(!trip.isLiked());
-                view.dataSetChanged();
-                view.showErrorMessage();
-            }
+        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
+                new LikeTripCommand(trip.getLikeId()) :
+                new UnlikeTripCommand(trip.getLikeId());
 
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                db.saveTrip(trip);
-            }
-        };
-        if (trip.isLiked()) {
-            dreamSpiceManager.execute(new LikeTripCommand(trip.getLikeId()), requestListener);
-        } else {
-            dreamSpiceManager.execute(new UnlikeTripCommand(trip.getLikeId()), requestListener);
-        }
+        doRequest(request, (object) -> onSuccess(trip), (spiceException) -> onFailure(trip));
+    }
+
+    private void onSuccess(TripModel trip) {
+        db.saveTrip(trip);
+    }
+
+    private void onFailure(TripModel trip) {
+        trip.setLiked(!trip.isLiked());
+        view.dataSetChanged();
+        view.showErrorMessage();
     }
 
     public void actionMap() {

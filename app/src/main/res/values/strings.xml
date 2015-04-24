@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">DreamTrips</string>
-
     <string name="web_title">Web</string>
     <string name="new_photo">Web</string>
     <string name="detailed_trip">Detailed Trip</string>
@@ -15,7 +13,6 @@
     <string name="faq">FAQ</string>
     <string name="privacy">Privacy Policy</string>
     <string name="cookie">Cookie Policy</string>
-
     <string name="action_settings">Settings</string>
     <string name="action_quick_input">Quick Add</string>
     <string name="action_popular_string">Add From Popular</string>
@@ -49,7 +46,6 @@
     <string name="user_id_hint">WV Member Id</string>
     <string name="user_password_hint">WV Member Password</string>
     <string name="type_your_reason">Type your reason</string>
-
     <string name="filter_region_header">REGION</string>
     <string name="filter_duration_header">DURATION (NIGHTS)</string>
     <string name="filter_price_header">PRICE ($)</string>
@@ -60,20 +56,16 @@
     <string name="filter_apply_all">APPLY FILTERS</string>
     <string name="filter_reset_all">RESET ALL</string>
     <string name="filter_reset">Reset Filters</string>
-
     <string name="trip_details">Trip Details</string>
     <string name="trip_featured">FEATURED TRIP</string>
-
     <string name="profile_from_hint">From</string>
     <string name="profile_location_hint">Lives In</string>
     <string name="profile_birth_hint">Date of Birth</string>
     <string name="profile_user_id_hint">User ID</string>
-
     <string name="bucket_show_favorites">Show Favorites Only</string>
     <string name="bucket_locations">Locations</string>
     <string name="bucket_activities">Activities</string>
     <string name="bucket_restaurants">Dining</string>
-
     <string name="photo_what">What</string>
     <string name="photo_what_hint">Write a brief description for your photo</string>
     <string name="photo_where">Where</string>
@@ -85,61 +77,41 @@
     <string name="photo_tags_hint">Add comma separated tags here</string>
     <string name="photo_deleted">Photo has been Deleted</string>
     <string name="photo_flagged">Photo has been Flagged</string>
-
     <string name="delete_photo_title">Delete Photo</string>
     <string name="delete_photo_text">Are you sure you want to delete this photo?</string>
     <string name="delete_photo_positiove">Delete</string>
     <string name="delete_photo_negative">Cancel</string>
-
     <string name="flag_photo_first">WorldVentures personnel will be notified to review this image for </string>
     <string name="flag_photo_second">. Do you want continue?</string>
     <string name="flag_photo_title">Confirm</string>
     <string name="flag_photo_positive">Send</string>
     <string name="flag_photo_negative">Cancel</string>
-
     <string name="flag_description_title">Flag</string>
     <string name="flag_description_positive">Accept</string>
     <string name="flag_description_negative">Cancel</string>
-
     <string name="log_in">Log in</string>
     <string name="error_log_in">Your login-id and/or password are incorrect - please use your WorldVentures Member-ID and Password to login</string>
-
     <string name="error_image_not_loaded">Image is not loaded yet</string>
     <string name="error_while_loading">Error while loading image</string>
-
     <string name="fab_select_album">Select Album</string>
     <string name="fab_select_photo">Select Photo</string>
     <string name="fab_posted">Successfully posted to Facebook</string>
-
     <string-array name="photo_dialog_items">
-        <item>Take Photo</item>
-        <item>Choose Photo</item>
+    <item>Take Photo</item>
+    <item>Choose Photo</item>
     </string-array>
     <string-array name="share_dialog_items">
-        <item>Facebook</item>
-        <item>Twitter</item>
+    <item>Facebook</item>
+    <item>Twitter</item>
     </string-array>
-    <string-array name="dialog_add_bucket_photo">
-        <item>Choose from Facebook</item>
-        <item>Take Photo</item>
-        <item>Choose Photo</item>
-    </string-array>
-    <string-array name="dialog_action_bucket_photo">
-        <item>Set as cover</item>
-        <item>Delete</item>
-    </string-array>
-
     <string name="buffering">Buffering...</string>
-
     <string name="profile_select_avatar_header">Select Avatar</string>
     <string name="profile_select_cover_header">Select Cover</string>
     <string name="error_internal_server">Internal Server Error</string>
-
     <string name="username_empty">Username is empty</string>
     <string name="username_not_valid">Username is not valid</string>
     <string name="password_empty">Password is empty</string>
     <string name="password_not_valid">Password is not valid</string>
-
     <string name="bucket_list_my_title">Add items to Bucket List</string>
     <string name="bucket_list_location_popular">Popular Bucket Lists</string>
     <string name="bucket_list_activity_popular">Popular Bucket Lists Activities</string>
@@ -164,37 +136,28 @@
     <string name="bucket_item_edit_done">Bucket item was saved!</string>
     <string name="bucket_item_edit_error">Error encountered while saving item</string>
     <string name="bucket_item_photos">Add pictures</string>
-
     <string name="category">Category</string>
-
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>
-
     <string name="location">location</string>
     <string name="activity">activity</string>
     <string name="dinning">dining</string>
-
     <string name="show_all">Show all</string>
     <string name="show_completed">Show completed</string>
     <string name="show_to_do">Show TO-DO</string>
     <string name="rep_tools">Rep tools</string>
     <string name="success_stories">Success stories</string>
-
     <string name="to_do">To-Do</string>
     <string name="completed">Done</string>
     <string name="action_share">Share</string>
-
     <string name="recent_header">Recent Added 360 Experience</string>
     <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
     <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
     <string name="show_favorites">Show Favorites</string>
     <string name="other_travel">Book other travel</string>
     <string name="training_videos">Training Videos</string>
-    <string name="rep_enrollment">Rep Enrollment</string>
-
     <string name="error_while_sync">Something went wrong</string>
     <string name="can_not_like_photo">Can\'t like photo</string>
     <string name="likes">" Likes"</string>
@@ -206,9 +169,26 @@
     <string name="who">Who: </string>
     <string name="tags">Tags: </string>
     <string name="my_pictures">My pictures</string>
-
     <string name="today">Today</string>
-
+    <string name="add_pictures">Add pictures</string>
+    <string name="select_photo">Select photo</string>
+    <string name="bucket_photo_dialog">Bucket photo</string>
+    <string name="download_in_progress">Download in progress</string>
+    <string name="delete_cached_video_title">Video</string>
+    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
+    <string name="fail">Failure</string>
+    <string name="cancel_cached_video_title">Video</string>
+    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
+    <string name="cancel_photo_positiove">Yes</string>
+    <string name="cancel_photo_negative">No</string>
+    <string name="rep_enrollment">Rep Enrollment</string>
+    <string name="no_connection">No Internet Connection</string>
+    <string name="popular_add">ADD</string>
+    <string name="popular_done">DONE</string>
+    <string name="see_more">See more</string>
+    <string name="alert">Alert</string>
+    <string name="OK">OK</string>
+    <string name="share_error">Can\'t share file</string>
     <string-array name="bucket_date_items">
         <item>Specific date</item>
         <item>Tomorrow</item>
@@ -221,22 +201,16 @@
         <item>Next year</item>
         <item>@string/someday</item> //do not translate
     </string-array>
+    <string-array name="dialog_add_bucket_photo">
+        <item>Choose from Facebook</item>
+        <item>Take Photo</item>
+        <item>Choose Photo</item>
+    </string-array>
+    <string-array name="dialog_action_bucket_photo">
+        <item>Set as cover</item>
+        <item>Delete</item>
+    </string-array>
 
     <string name="facebook_app_id">761667837261383</string>//do not translate
     <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>//do not translate
-
-    <string name="add_pictures">Add pictures</string>
-    <string name="select_photo">Select photo</string>
-    <string name="bucket_photo_dialog">Bucket photo</string>
-    <string name="download_in_progress">Download in progress</string>
-    <string name="delete_cached_video_title">Video</string>
-    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
-    <string name="fail">Failure</string>
-
-    <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
-    <string name="cancel_photo_positiove">Yes</string>
-    <string name="cancel_photo_negative">No</string>
-
-
 </resources>

@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
@@ -48,23 +46,19 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
     }
 
     public void loadTripDetails() {
-        RequestListener<TripDetails> callback = new RequestListener<TripDetails>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.informUser(R.string.smth_went_wrong);
-                view.setContent(null);
-            }
-
-            @Override
-            public void onRequestSuccess(TripDetails tripDetails) {
-                view.setContent(tripDetails.getContent());
-                TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
-            }
-        };
-
-        dreamSpiceManager.execute(new GetTripDetailsQuery(trip.getTripId()), callback);
+        doRequest(new GetTripDetailsQuery(trip.getTripId()), this::onSuccess);
     }
 
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.setContent(null);
+    }
+
+    private void onSuccess(TripDetails tripDetails) {
+        view.setContent(tripDetails.getContent());
+        TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
+    }
 
     public void onItemClick(int position) {
         if (filteredImages.get(position) instanceof TripImage) {

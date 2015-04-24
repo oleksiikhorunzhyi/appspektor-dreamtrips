@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -37,6 +38,9 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     protected CachedEntity entity;
 
     protected int lastProgress = -1;
+    private long timeFromLastSync = 0;
+
+    public static final int DELTA = 500;
 
     public DownloadVideoListener(CachedEntity entity) {
         this.entity = entity;
@@ -60,18 +64,20 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
-        int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
-        if (progress > lastProgress) {
-
-            if (progress == START_VALUE) {
-                entity.setIsFailed(false);
+        if (Calendar.getInstance().getTimeInMillis() - timeFromLastSync > 0) {
+            timeFromLastSync = Calendar.getInstance().getTimeInMillis();
+            int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
+            if (progress > lastProgress) {
+                if (progress == START_VALUE) {
+                    entity.setIsFailed(false);
+                    db.saveDownloadVideoEntity(entity);
+                    eventBus.post(new DownloadVideoStartEvent(entity));
+                }
+                lastProgress = progress;
+                entity.setProgress(progress);
                 db.saveDownloadVideoEntity(entity);
-                eventBus.post(new DownloadVideoStartEvent(entity));
+                eventBus.post(new DownloadVideoProgressEvent(progress, entity));
             }
-            lastProgress = progress;
-            entity.setProgress(progress);
-            db.saveDownloadVideoEntity(entity);
-            eventBus.post(new DownloadVideoProgressEvent(progress, entity));
         }
     }
 

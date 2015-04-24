@@ -108,6 +108,6 @@ public class TripCell extends AbstractCell<TripModel> {
         textViewName.setText("");
         textViewPlace.setText("");
         textViewPrice.setText("");
-        imageViewTripImage.setImageBitmap(null);
+        imageViewTripImage.setImageURI(null);
     }
 }

@@ -60,6 +60,6 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
 
     @Override
     public void prepareForReuse() {
-        //nothing to do her
+        this.draweeViewPhoto.setImageURI(null);
     }
 }

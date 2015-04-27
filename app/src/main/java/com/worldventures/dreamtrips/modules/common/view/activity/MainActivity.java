@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
@@ -91,12 +90,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         checkGoogleServices();
 
         getPresentationModel().loadFilters();
-    }
-
-    @Override
-    protected void beforeCreateView(Bundle savedInstanceState) {
-        super.beforeCreateView(savedInstanceState);
-        Fresco.initialize(this);
     }
 
     @Override

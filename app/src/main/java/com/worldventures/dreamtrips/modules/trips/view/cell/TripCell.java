@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
@@ -75,7 +76,9 @@ public class TripCell extends AbstractCell<TripModel> {
 
         setImageViewLike();
 
-        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb()));
+        PointF pointF = new PointF(0, 0);
+        imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
+        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }
 
     @OnClick(R.id.imageViewLike)
@@ -105,9 +108,5 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Override
     public void prepareForReuse() {
-        textViewName.setText("");
-        textViewPlace.setText("");
-        textViewPrice.setText("");
-        imageViewTripImage.setImageURI(null);
     }
 }

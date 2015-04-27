@@ -18,15 +18,15 @@ import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
-import java.util.Calendar;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
 public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
-    public static final int START_VALUE = 10;
+    public static final int START_VALUE = 1;
     public static final int RESIDUE = 90;
+
     @Inject
     @Global
     protected EventBus eventBus;
@@ -38,9 +38,6 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     protected CachedEntity entity;
 
     protected int lastProgress = -1;
-    private long timeFromLastSync = 0;
-
-    public static final long DELTA = 500L;
 
     public DownloadVideoListener(CachedEntity entity) {
         this.entity = entity;
@@ -48,6 +45,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestFailure(SpiceException spiceException) {
+        Log.v(this.getClass().getSimpleName(), "onRequestFailure");
         if (!(spiceException instanceof RequestCancelledException)) {
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
@@ -64,25 +62,25 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
-        if (Calendar.getInstance().getTimeInMillis() - timeFromLastSync > DELTA) {
-            timeFromLastSync = Calendar.getInstance().getTimeInMillis();
-            int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
-            if (progress > lastProgress) {
-                if (progress == START_VALUE) {
-                    entity.setIsFailed(false);
-                    db.saveDownloadVideoEntity(entity);
-                    eventBus.post(new DownloadVideoStartEvent(entity));
-                }
-                lastProgress = progress;
-                entity.setProgress(progress);
+        Log.v(this.getClass().getSimpleName(), "onRequestProgressUpdate");
+        int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
+        if (progress > lastProgress) {
+            if (progress == START_VALUE) {
+                entity.setIsFailed(false);
                 db.saveDownloadVideoEntity(entity);
-                eventBus.post(new DownloadVideoProgressEvent(progress, entity));
+                eventBus.post(new DownloadVideoStartEvent(entity));
             }
+            lastProgress = progress;
+            entity.setProgress(progress);
+            db.saveDownloadVideoEntity(entity);
+            eventBus.post(new DownloadVideoProgressEvent(progress, entity));
         }
     }
 
+
     @Override
     public void onRequestNotFound() {
+        Log.v(this.getClass().getSimpleName(), "onRequestNotFound");
         entity.setIsFailed(true);
         db.saveDownloadVideoEntity(entity);
         eventBus.post(new DownloadVideoFailedEvent(new SpiceException("onRequestNotFound"), entity));

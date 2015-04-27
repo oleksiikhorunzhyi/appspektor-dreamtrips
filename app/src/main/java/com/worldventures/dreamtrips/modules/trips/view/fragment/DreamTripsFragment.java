@@ -38,7 +38,8 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements
+        DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)
     protected EmptyRecyclerView recyclerView;

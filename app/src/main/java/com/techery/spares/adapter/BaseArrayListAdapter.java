@@ -2,7 +2,6 @@ package com.techery.spares.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -57,6 +56,8 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
+        this.injector.inject(cell);
+        cell.afterInject();
         return cell;
     }
 
@@ -76,8 +77,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         BaseItemClass item = this.getItem(position);
 
         cell.prepareForReuse();
-        this.injector.inject(cell);
-        cell.afterInject();
         cell.fillWithItem(item);
     }
 

@@ -18,6 +18,14 @@ public class Schedule implements Serializable {
     @SerializedName("end_on")
     private Date endOn;
 
+    private SimpleDateFormat simpleDateFormatMonthDay;
+    private SimpleDateFormat simpleDateFormatDay;
+
+    public Schedule() {
+        simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
+        simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.US);
+    }
+
     public java.util.Date getStartDate() {
         return startOn;
     }
@@ -45,14 +53,12 @@ public class Schedule implements Serializable {
         Calendar calendarEnd = Calendar.getInstance();
         calendarEnd.setTimeInMillis(endOn.getTime());
 
-        SimpleDateFormat simpleDateFormatFirst = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
-        SimpleDateFormat simpleDateFormatSecond = new SimpleDateFormat(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH)
-                ? PATTERN_MONTH_AND_DAY : PATTERN_DAY, Locale.US);
-
         StringBuilder builder = new StringBuilder();
-        builder.append(simpleDateFormatFirst.format(getStartDate()));
+        builder.append(simpleDateFormatMonthDay.format(getStartDate()));
         builder.append(" - ");
-        builder.append(simpleDateFormatSecond.format(getEndDate()));
+        builder.append(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH) ?
+                simpleDateFormatMonthDay.format(getEndDate()) :
+                simpleDateFormatDay.format(getEndDate()));
         return builder.toString();
     }
 }

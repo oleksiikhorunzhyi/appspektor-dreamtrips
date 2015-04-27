@@ -149,6 +149,9 @@
         <service
             android:name=".core.api.DreamSpiceService"
             android:exported="false" />
+        <service
+            android:name=".core.api.VideoCachingService"
+            android:exported="false" />
 
 
     </application>

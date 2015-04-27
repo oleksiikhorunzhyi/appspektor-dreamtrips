@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.ApiModule;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
+import com.worldventures.dreamtrips.core.api.VideoCachingService;
+import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
@@ -24,6 +26,7 @@ import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 
 import javax.inject.Singleton;
 
@@ -38,7 +41,10 @@ import de.greenrobot.event.EventBus;
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 DreamSpiceService.class,
+                VideoCachingService.class,
                 DreamSpiceManager.class,
+                VideoCachingSpiceManager.class,
+                VideoCachingDelegate.class,
         },
         includes = {
                 InjectingApplicationModule.class,

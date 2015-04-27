@@ -175,7 +175,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         bucketCoverModel.setCoverId(coverId);
         bucketCoverModel.setStatus(bucketItem.getStatus());
         bucketCoverModel.setType(bucketItem.getType());
-        bucketCoverModel.setId(bucketItem.getId());
+        bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
         saveBucketItem(bucketCoverModel);
     }
 

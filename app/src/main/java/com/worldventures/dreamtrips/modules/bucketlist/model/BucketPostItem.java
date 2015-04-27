@@ -19,7 +19,7 @@ public class BucketPostItem  extends BucketBasePostItem {
     public BucketPostItem() {
     }
 
-    public BucketPostItem(String type, Integer id) {
+    public BucketPostItem(String type, String id) {
         this("", type, id, "");
     }
 
@@ -27,7 +27,7 @@ public class BucketPostItem  extends BucketBasePostItem {
         this(name, type, null, status);
     }
 
-    public BucketPostItem(String name, String type, Integer id, String status) {
+    public BucketPostItem(String name, String type, String id, String status) {
         super(id, type.toLowerCase(), status);
         this.name = name;
     }

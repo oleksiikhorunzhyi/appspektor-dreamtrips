@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
@@ -68,9 +71,19 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         }
     }
 
-    public static interface View extends BaseTripPresenter.View {
-        void setContent(List<ContentItem> contentItems);
+    public void actionAddToBucket() {
+        doRequest(new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId())), bucketItem -> {
+            String type = bucketItem.getType();
+            List<BucketItem> bucketItems = db.readBucketList(type);
+            bucketItems.add(0, bucketItem);
+            db.saveBucketList(bucketItems, type);
+            // TODO show
+            view.informUser("WoW SUCH A NEW BUCKET ITEM");
+        });
+    }
 
+    public interface View extends BaseTripPresenter.View {
+        void setContent(List<ContentItem> contentItems);
         void hideBookIt();
     }
 }

@@ -11,6 +11,7 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -35,6 +36,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
+
+    @Inject
+    protected VideoCachingSpiceManager videoCachingSpiceManager;
 
     @Inject
     @Global
@@ -76,6 +80,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         return dreamSpiceManager;
     }
 
+    public VideoCachingSpiceManager getVideoCachingSpiceManager() {
+        return videoCachingSpiceManager;
+    }
+
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();
     }
@@ -88,6 +96,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
+        if (videoCachingSpiceManager.isStarted()) {
+            videoCachingSpiceManager.shouldStop();
+        }
     }
 
     public void onStart() {
@@ -97,6 +108,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     private void startSpiceManager() {
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
+        }
+        if (!videoCachingSpiceManager.isStarted()) {
+            videoCachingSpiceManager.start(context);
         }
     }
 
@@ -113,7 +127,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     @Override
     public void handleError(SpiceException error) {
-       if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
             view.informUser(error.getMessage());
         } else {
             view.informUser(R.string.smth_went_wrong);

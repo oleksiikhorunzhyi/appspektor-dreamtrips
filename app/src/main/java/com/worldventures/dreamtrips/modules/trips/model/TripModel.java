@@ -177,7 +177,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public String getImageUrl(String type) {
-        String url = null;
+        String url = "";
         if (images != null) {
             for (TripImage image : images) {
                 if (image.getType().equals(type)) {

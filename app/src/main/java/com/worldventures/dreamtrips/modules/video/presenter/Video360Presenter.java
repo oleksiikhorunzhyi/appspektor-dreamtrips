@@ -35,7 +35,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @Override
     public void init() {
         super.init();
-        cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
+        cachedVideoManager = new CachedVideoManager(db, context, videoCachingSpiceManager, view, injector);
 
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 

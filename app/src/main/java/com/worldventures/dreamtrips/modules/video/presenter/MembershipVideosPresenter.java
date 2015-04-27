@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.video.presenter;
 
-import android.content.Context;
-
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -30,8 +28,6 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     protected LoaderFactory loaderFactory;
     @Inject
     protected SharedServicesApi sp;
-    @Inject
-    protected Context context;
     @Inject
     protected SnappyRepository db;
     @Inject
@@ -81,7 +77,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     public void init() {
         super.init();
         TrackingHelper.onMemberShipVideos(getUserId());
-        cachedVideoManager = new CachedVideoManager(db, dreamSpiceManager, context, view, injector);
+        cachedVideoManager = new CachedVideoManager(db, context, videoCachingSpiceManager, view, injector);
     }
 
     @Override

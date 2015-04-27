@@ -13,6 +13,8 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
+import com.worldventures.dreamtrips.core.api.VideoCachingService;
+import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -72,6 +74,11 @@ public class ActivityModule {
     @Provides
     public DreamSpiceManager provideSpiceManager(Injector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
+    }
+
+    @Provides
+    public VideoCachingSpiceManager provideVideoCachingSpiceManager() {
+        return new VideoCachingSpiceManager(VideoCachingService.class);
     }
 
     @Provides

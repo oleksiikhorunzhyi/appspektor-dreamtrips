@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -60,18 +59,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     @Override
     protected void onResume() {
         super.onResume();
-        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
-        if (!dreamSpiceManager.isStarted()) {
-            dreamSpiceManager.start(this);
-        }
+        getPresentationModel().onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        DreamSpiceManager dreamSpiceManager = getPresentationModel().getDreamSpiceManager();
-        if (dreamSpiceManager.isStarted()) {
-            dreamSpiceManager.shouldStop();
-        }
+        getPresentationModel().onStop();
     }
 }

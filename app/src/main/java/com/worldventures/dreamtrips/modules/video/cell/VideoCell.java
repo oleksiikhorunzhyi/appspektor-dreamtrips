@@ -39,7 +39,6 @@ public class VideoCell extends AbstractCell<Video> {
     @InjectView(R.id.fabbutton_circle)
     protected CircleImageView circleView;
 
-
     @Inject
     protected Context context;
     @Inject

@@ -7,12 +7,9 @@ import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.techery.spares.ui.view.cell.BaseCell;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import butterknife.ButterKnife;
 
 
 public class AdapterHelper {
@@ -31,9 +28,9 @@ public class AdapterHelper {
 
         try {
 
-            Constructor constructor = cellClass.getConstructor(View.class);
+            Constructor<? extends AbstractCell> constructor = cellClass.getConstructor(View.class);
 
-            cellObject = (AbstractCell)constructor.newInstance(cellView);
+            cellObject = constructor.newInstance(cellView);
 
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             Log.e(AdapterHelper.class.getSimpleName(),"", e);

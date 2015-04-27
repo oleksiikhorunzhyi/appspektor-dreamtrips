@@ -108,9 +108,5 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Override
     public void prepareForReuse() {
-        textViewName.setText("");
-        textViewPlace.setText("");
-        textViewPrice.setText("");
-        imageViewTripImage.setImageURI(null);
     }
 }

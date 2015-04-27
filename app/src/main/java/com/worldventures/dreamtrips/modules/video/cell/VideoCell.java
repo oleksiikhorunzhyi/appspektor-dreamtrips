@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -64,6 +65,15 @@ public class VideoCell extends AbstractCell<Video> {
         progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
 
         progressVideoCellHelper.syncUIStateWithModel();
+    }
+
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        EventBus eventBus = getEventBus();
+        if (eventBus != null && eventBus.isRegistered(progressVideoCellHelper)) {
+            eventBus.unregister(progressVideoCellHelper);
+        }
     }
 
     @OnClick(R.id.iv_play)

@@ -118,6 +118,12 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menuItemAdd = menu.findItem(R.id.action_quick);

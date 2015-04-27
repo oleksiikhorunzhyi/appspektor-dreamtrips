@@ -50,6 +50,7 @@ public class TripModel implements Filterable, Serializable {
     private RewardsRuleModel rewardsRules;
     @SerializedName("recent")
     private boolean recentlyAdded;
+    private boolean inBucketList;
 
 
     public String getLikeId() {
@@ -271,6 +272,14 @@ public class TripModel implements Filterable, Serializable {
 
     public boolean isPlatinum() {
         return platinum;
+    }
+
+    public boolean isInBucketList() {
+        return inBucketList;
+    }
+
+    public void setInBucketList(boolean inBucketList) {
+        this.inBucketList = inBucketList;
     }
 
     @Override

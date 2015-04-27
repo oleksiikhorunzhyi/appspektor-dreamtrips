@@ -86,7 +86,6 @@ public class ActivityModule {
     @Provides
     public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
                                                             Context context,
-                                                            VideoCachingSpiceManager videoCachingSpiceManager,
                                                             Injector injector) {
         return new VideoCachingDelegate(snappyRepository, context, injector);
     }

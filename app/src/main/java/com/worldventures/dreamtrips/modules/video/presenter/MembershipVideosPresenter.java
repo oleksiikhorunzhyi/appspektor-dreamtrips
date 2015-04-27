@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
+import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -33,7 +33,8 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     @Inject
     protected Injector injector;
 
-    protected CachedVideoManager cachedVideoManager;
+    @Inject
+    protected VideoCachingDelegate videoCachingDelegate;
 
     protected RoboSpiceAdapterController<Video> adapterController
             = new RoboSpiceAdapterController<Video>() {
@@ -77,7 +78,8 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     public void init() {
         super.init();
         TrackingHelper.onMemberShipVideos(getUserId());
-        cachedVideoManager = new CachedVideoManager(db, context, videoCachingSpiceManager, view, injector);
+        videoCachingDelegate.setView(view);
+        videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
     }
 
     @Override
@@ -86,8 +88,8 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
-        if (!eventBus.isRegistered(cachedVideoManager)) {
-            eventBus.register(cachedVideoManager);
+        if (!eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.register(videoCachingDelegate);
         }
 
     }
@@ -98,12 +100,12 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
 
 
     public void onDeleteAction(CachedEntity videoEntity) {
-        cachedVideoManager.onDeleteAction(videoEntity);
+        videoCachingDelegate.onDeleteAction(videoEntity);
     }
 
 
     public void onCancelAction(CachedEntity cacheEntity) {
-        cachedVideoManager.onCancelAction(cacheEntity);
+        videoCachingDelegate.onCancelAction(cacheEntity);
     }
 
 
@@ -127,7 +129,7 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    dreamSpiceManager.addListenerIfPending(
+                    videoCachingSpiceManager.addListenerIfPending(
                             InputStream.class,
                             cachedVideo.getUuid(),
                             listener
@@ -140,10 +142,10 @@ public class MembershipVideosPresenter extends Presenter<MembershipVideosPresent
     @Override
     public void onStop() {
         super.onStop();
-        eventBus.unregister(cachedVideoManager);
+        eventBus.unregister(videoCachingDelegate);
     }
 
-    public interface View extends Presenter.View, CachedVideoManager.View {
+    public interface View extends Presenter.View, VideoCachingDelegate.View {
         void startLoading();
 
         void finishLoading();

@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
-import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -46,6 +45,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestFailure(SpiceException spiceException) {
+        Log.v(this.getClass().getSimpleName(), "onRequestFailure");
         if (!(spiceException instanceof RequestCancelledException)) {
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
@@ -62,6 +62,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
+        Log.v(this.getClass().getSimpleName(), "onRequestProgressUpdate");
         int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
         if (progress > lastProgress) {
             if (progress == START_VALUE) {
@@ -79,6 +80,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestNotFound() {
+        Log.v(this.getClass().getSimpleName(), "onRequestNotFound");
         entity.setIsFailed(true);
         db.saveDownloadVideoEntity(entity);
         eventBus.post(new DownloadVideoFailedEvent(new SpiceException("onRequestNotFound"), entity));

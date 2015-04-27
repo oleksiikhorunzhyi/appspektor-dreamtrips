@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class TripImage implements Serializable {
+
     public static final long serialVersionUID = 128L;
 
     private String id;
@@ -23,7 +24,7 @@ public class TripImage implements Serializable {
     }
 
     public String getUrl() {
-        return url;
+        return url != null ? url : "";
     }
 
     public void setUrl(String url) {
@@ -31,7 +32,7 @@ public class TripImage implements Serializable {
     }
 
     public String getUrl(int width, int height) {
-        return url + String.format(Image.PATTERN, width, height);
+        return getUrl() + String.format(Image.PATTERN, width, height);
     }
 
     public String getType() {

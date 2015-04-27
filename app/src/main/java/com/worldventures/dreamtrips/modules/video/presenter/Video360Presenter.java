@@ -4,7 +4,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.video.CachedVideoManager;
+import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video360;
@@ -17,13 +17,15 @@ import javax.inject.Inject;
 
 public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
-    private CachedVideoManager cachedVideoManager;
 
     private List<Video360> recentVideos;
     private List<Video360> featuredVideos;
 
     @Inject
     protected SnappyRepository db;
+
+    @Inject
+    protected VideoCachingDelegate videoCachingDelegate;
 
     @Inject
     protected Injector injector;
@@ -35,7 +37,8 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @Override
     public void init() {
         super.init();
-        cachedVideoManager = new CachedVideoManager(db, context, videoCachingSpiceManager, view, injector);
+        videoCachingDelegate.setView(view);
+        videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
 
         List<Videos360> globalConfig = appSessionHolder.get().get().getGlobalConfig().getVideos360();
 
@@ -50,8 +53,8 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @Override
     public void resume() {
         super.resume();
-        if (!eventBus.isRegistered(cachedVideoManager)) {
-            eventBus.register(cachedVideoManager);
+        if (!eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.register(videoCachingDelegate);
         }
     }
 
@@ -86,7 +89,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @Override
     public void onStop() {
         super.onStop();
-        eventBus.unregister(cachedVideoManager);
+        eventBus.unregister(videoCachingDelegate);
     }
 
     private void attachListeners(List<Video360> items) {
@@ -99,7 +102,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    dreamSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                    videoCachingSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
                             listener
                     );
                 }
@@ -108,15 +111,15 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     }
 
     public void onDeleteAction(CachedEntity videoEntity) {
-        cachedVideoManager.onDeleteAction(videoEntity);
+        videoCachingDelegate.onDeleteAction(videoEntity);
     }
 
 
     public void onCancelAction(CachedEntity cacheEntity) {
-        cachedVideoManager.onCancelAction(cacheEntity);
+        videoCachingDelegate.onCancelAction(cacheEntity);
     }
 
-    public interface View extends Presenter.View, CachedVideoManager.View {
+    public interface View extends Presenter.View, VideoCachingDelegate.View {
         BaseArrayListAdapter getFeaturedAdapter();
 
         BaseArrayListAdapter getRecentAdapter();

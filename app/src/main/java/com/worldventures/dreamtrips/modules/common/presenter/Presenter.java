@@ -76,23 +76,15 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         //nothing to do here
     }
 
-    public DreamSpiceManager getDreamSpiceManager() {
-        return dreamSpiceManager;
-    }
-
-    public VideoCachingSpiceManager getVideoCachingSpiceManager() {
-        return videoCachingSpiceManager;
-    }
-
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();
     }
 
     public void onStop() {
-        stopSpiceManager();
+        stopSpiceManagers();
     }
 
-    private void stopSpiceManager() {
+    private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
@@ -102,10 +94,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     }
 
     public void onStart() {
-        startSpiceManager();
+        startSpiceManagers();
     }
 
-    private void startSpiceManager() {
+    private void startSpiceManagers() {
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }

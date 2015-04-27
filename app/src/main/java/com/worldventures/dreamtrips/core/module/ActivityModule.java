@@ -17,8 +17,10 @@ import com.worldventures.dreamtrips.core.api.VideoCachingService;
 import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
+import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -79,6 +81,14 @@ public class ActivityModule {
     @Provides
     public VideoCachingSpiceManager provideVideoCachingSpiceManager() {
         return new VideoCachingSpiceManager(VideoCachingService.class);
+    }
+
+    @Provides
+    public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
+                                                            Context context,
+                                                            VideoCachingSpiceManager videoCachingSpiceManager,
+                                                            Injector injector) {
+        return new VideoCachingDelegate(snappyRepository, context, injector);
     }
 
     @Provides

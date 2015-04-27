@@ -75,7 +75,7 @@ public class TripCell extends AbstractCell<TripModel> {
 
         setImageViewLike();
 
-        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb()));
+        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }
 
     @OnClick(R.id.imageViewLike)

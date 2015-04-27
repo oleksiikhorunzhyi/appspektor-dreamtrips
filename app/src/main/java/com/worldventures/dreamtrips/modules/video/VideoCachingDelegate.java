@@ -5,8 +5,6 @@ import android.content.Context;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.PendingRequestListener;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -20,24 +18,28 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import java.io.File;
 import java.io.InputStream;
 
-public class CachedVideoManager {
+public class VideoCachingDelegate {
 
     private SnappyRepository db;
     private Context context;
-    private View view;
     private Injector injector;
     private SpiceManager spiceManager;
+    private View view;
 
-    public CachedVideoManager(SnappyRepository db,
-                              Context context,
-                              SpiceManager spiceManager,
-                              View view,
-                              Injector injector) {
+    public VideoCachingDelegate(SnappyRepository db,
+                                Context context,
+                                Injector injector) {
         this.db = db;
         this.context = context;
-        this.view = view;
         this.injector = injector;
+    }
+
+    public void setSpiceManager(SpiceManager spiceManager) {
         this.spiceManager = spiceManager;
+    }
+
+    public void setView(View view) {
+        this.view = view;
     }
 
     public void onEvent(DownloadVideoRequestEvent event) {

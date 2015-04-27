@@ -92,7 +92,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         void setRedemption(String count);
 
         void setLike(boolean like);
-
         void setPointsInvisible();
 
         void setFeatured();

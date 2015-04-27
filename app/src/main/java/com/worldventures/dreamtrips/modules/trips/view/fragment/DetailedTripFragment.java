@@ -82,6 +82,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     protected Toolbar toolbarLanscape;
 
     protected MenuItem likeItem;
+    protected MenuItem addToBucketItem;
 
     @Override
     protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
+        addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
         if (getPresenter() != null) {
             getPresenter().menuLoaded();
         }
@@ -104,8 +106,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_like) {
-            getPresenter().actionLike();
+        switch (item.getItemId()) {
+            case R.id.action_like:
+                getPresenter().actionLike();
+                return true;
+            case R.id.action_add_to_bucket:
+                getPresenter().actionAddToBucket();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -218,6 +225,11 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void hideBookIt() {
         layoutBookIt.setEnabled(false);
         textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
+    }
+
+    @Override
+    public void setInBucket(boolean inBucket) {
+        addToBucketItem.setVisible(!inBucket);
     }
 
     @Override

@@ -21,6 +21,7 @@
     <string name="action_filter">Filter</string>
     <string name="action_map">Map</string>
     <string name="action_like">Like</string>
+    <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="trips">DreamTrips</string>
     <string name="drawer_open">Menu Opened</string>

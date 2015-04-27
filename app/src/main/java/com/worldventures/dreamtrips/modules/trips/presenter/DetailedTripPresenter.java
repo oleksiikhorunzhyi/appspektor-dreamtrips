@@ -47,6 +47,7 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
     public void menuLoaded() {
         if (trip != null) {
             view.setLike(trip.isLiked());
+            view.setInBucket(trip.isInBucketList());
         }
     }
 
@@ -77,13 +78,15 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
             List<BucketItem> bucketItems = db.readBucketList(type);
             bucketItems.add(0, bucketItem);
             db.saveBucketList(bucketItems, type);
-            // TODO show
-            view.informUser("WoW SUCH A NEW BUCKET ITEM");
+            trip.setInBucketList(true);
+            view.setInBucket(true);
+            view.informUser("Added to Bucket list"); // TODO show a better info
         });
     }
 
     public interface View extends BaseTripPresenter.View {
         void setContent(List<ContentItem> contentItems);
         void hideBookIt();
+        void setInBucket(boolean inBucket);
     }
 }

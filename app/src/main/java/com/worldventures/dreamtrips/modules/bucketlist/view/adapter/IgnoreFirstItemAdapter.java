@@ -7,8 +7,8 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
-public class BucketImageAdapter extends BaseArrayListAdapter {
-    public BucketImageAdapter(Context context, Injector injector) {
+public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
+    public IgnoreFirstItemAdapter(Context context, Injector injector) {
         super(context, injector);
     }
 

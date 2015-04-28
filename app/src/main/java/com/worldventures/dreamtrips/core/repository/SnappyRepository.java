@@ -9,6 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -36,6 +37,7 @@ public class SnappyRepository {
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
+    public static final String INVITE_MEMBER = "INVITE_MEMBER ";
 
     private Context context;
     private ExecutorService executorService;
@@ -238,5 +240,21 @@ public class SnappyRepository {
 
     public void removeBucketPhotoTask(BucketPhotoUploadTask task) {
         act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
+    }
+
+
+    public void addInviteMember(Member member) {
+        act(db -> db.put(INVITE_MEMBER + member.getId(), member));
+    }
+
+    public List<Member> getInviteMembers(){
+        return actWithResult(db -> {
+            List<Member> members = new ArrayList<>();
+            String[] keys = db.findKeys(INVITE_MEMBER);
+            for (String key : keys) {
+                members.add(db.get(key, Member.class));
+            }
+            return members;
+        }).or(Collections.emptyList());
     }
 }

@@ -4,18 +4,71 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/subtoolbar"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.Toolbar>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lv_users"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="60dp"
+        android:background="@android:color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-    </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:text="Select contacts"
+            android:textColor="@android:color/black"
+            android:textSize="18dp" />
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:nestedScrollingEnabled="false"
+            android:src="@drawable/ic_ss_filters_normal" />
+
+        <ImageView
+            android:id="@+id/iv_add_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@+id/spinner"
+            android:layout_toStartOf="@+id/spinner"
+            android:src="@drawable/ic_invite_add_contacts" />
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/tv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/spinner"
+            android:layout_toLeftOf="@+id/iv_add_contact"
+            android:layout_toStartOf="@+id/iv_add_contact"
+            android:background="@android:color/white"
+            android:src="@drawable/ic_ss_search" />
+    </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lv_users"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

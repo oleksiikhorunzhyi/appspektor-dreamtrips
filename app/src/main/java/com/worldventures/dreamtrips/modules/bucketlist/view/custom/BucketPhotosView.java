@@ -17,7 +17,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
@@ -33,7 +33,7 @@ import icepick.Icicle;
 
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
-    private BucketImageAdapter imagesAdapter;
+    private IgnoreFirstItemAdapter imagesAdapter;
 
     private PickImageDialog pid;
     @Icicle int pidTypeShown;
@@ -60,7 +60,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         if (imagesAdapter == null) {
             this.fragment = fragment;
 
-            imagesAdapter = new BucketImageAdapter(getContext(), injector);
+            imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
             if (type == Type.EDIT) {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
             } else {

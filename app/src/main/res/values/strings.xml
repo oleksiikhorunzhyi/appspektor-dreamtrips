@@ -240,6 +240,11 @@
     <string name="presentations">Presentations</string>
     <string name="enroll_member">Enroll Member</string>
     <string name="invite_and_share"><![CDATA[Invite&Share]]></string>
+    <string name="add_contact">Add contact</string>
+    <string name="add">Add</string>
+    <string name="invite_add_name">Name</string>
+    <string name="invite_email">Email</string>
+    <string name="invite_phone">Phone</string>
 
 
 </resources>

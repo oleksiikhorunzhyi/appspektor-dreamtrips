@@ -312,9 +312,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             if (navigationDrawerFragment != null) {
                 FragmentManager fm = getSupportFragmentManager();
                 if (fm.getBackStackEntryCount() >= 2) {
-                    final int index = fm.getBackStackEntryCount() - 2;
-                    final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
-                    ComponentDescription componentByKey = this.rootComponentsProvider.getComponentByKey(backEntry.getName());
+                    ComponentDescription componentByKey = this.rootComponentsProvider.getComponent(fm, 1);
                     navigationDrawerFragment.setCurrentComponent(componentByKey);
                     navigationDrawerFragmentStatic.setCurrentComponent(componentByKey);
                     setTitle(componentByKey.getTitle());

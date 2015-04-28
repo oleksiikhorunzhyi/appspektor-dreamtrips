@@ -212,7 +212,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     public void onNavigationDrawerItemReselected(ComponentDescription route) {
         if (route.getKey().equals(TripsModule.OTA) ||
                 route.getKey().equals(InfoModule.FAQ) ||
-                route.getKey().equals(InfoModule.TERMS_OF_SERVICE)) {
+                route.getKey().equals(InfoModule.TERMS)) {
             openComponent(route, false);
             eventBus.post(new WebViewReloadEvent());
         }

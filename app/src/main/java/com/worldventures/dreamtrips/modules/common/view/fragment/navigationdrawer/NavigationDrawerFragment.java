@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdraw
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -29,8 +28,6 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_navigation_drawer)
 public class NavigationDrawerFragment extends BaseFragment<Presenter> implements Presenter.View, NavigationDrawerListener {
-
-    private static final String STATE_SELECTED_STATE = "selected_navigation_drawer_state";
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
@@ -59,25 +56,23 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
-        adapter.setNavigationDrawerCallbacks(this);
-        adapter.setHasStableIds(true);
-        drawerList.setAdapter(adapter);
-        drawerList.setLayoutManager(
-                new LinearLayoutManager(rootView.getContext(), LinearLayoutManager.VERTICAL, false)
-        );
-        updateHeader();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        adapter.notifyDataSetChanged();
+        initUI();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        initUI();
+        setCurrentComponent(currentComponent);
+    }
+
+    private void initUI() {
+        drawerList.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
+        );
+        adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
+        adapter.setNavigationDrawerCallbacks(this);
+        drawerList.setAdapter(adapter);
         updateHeader();
     }
 
@@ -135,8 +130,8 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         //nothing to do here
     }
 
-    public void setCurrentComponent(ComponentDescription currentComponent) {
-        this.currentComponent = currentComponent;
-        adapter.selectComponent(currentComponent);
+    public void setCurrentComponent(ComponentDescription newComponent) {
+        currentComponent = newComponent;
+        adapter.selectComponent(newComponent);
     }
 }

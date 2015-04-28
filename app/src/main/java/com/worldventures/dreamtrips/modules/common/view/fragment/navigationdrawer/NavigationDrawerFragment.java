@@ -131,7 +131,9 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     public void setCurrentComponent(ComponentDescription newComponent) {
-        currentComponent = newComponent;
-        adapter.selectComponent(newComponent);
+        drawerList.post(() -> {
+            currentComponent = newComponent;
+            adapter.selectComponent(newComponent);
+        });
     }
 }

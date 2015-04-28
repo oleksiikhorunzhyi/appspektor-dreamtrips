@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -19,10 +17,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.video.model.Video;
-import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.presenter.MembershipVideosPresenter;
 
 import butterknife.InjectView;
 
@@ -54,6 +52,12 @@ public class MemberShipFragment extends BaseFragment<MembershipVideosPresenter> 
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     @Override

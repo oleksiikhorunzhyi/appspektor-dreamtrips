@@ -50,7 +50,7 @@ public enum Route {
     MY_PROFILE(ProfileFragment.class, R.string.my_profile),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),
     FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq),
-    TERMS(TermsTabFragment.class, R.string.terms_of_service),
+    TERMS(TermsTabFragment.class, R.string.terms),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie);

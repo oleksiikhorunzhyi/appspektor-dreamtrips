@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdraw
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,13 +23,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
+    private NavigationHeader navigationHeader;
     private int headerSize = 0;
 
     private List<ComponentDescription> componentDescriptions;
-    private NavigationDrawerListener mNavigationDrawerListener;
-    private int mSelectedPosition;
-    private int mTouchedPosition = -1;
-    private NavigationHeader navigationHeader;
+    private NavigationDrawerListener navigationDrawerListener;
+    private int selectedComponent;
 
     public NavigationDrawerAdapter(List<ComponentDescription> data, Injector injector) {
         injector.inject(this);
@@ -38,28 +36,33 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void setNavigationDrawerCallbacks(NavigationDrawerListener navigationDrawerListener) {
-        mNavigationDrawerListener = navigationDrawerListener;
+        this.navigationDrawerListener = navigationDrawerListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
-        if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_item_navigation_drawer, viewGroup, false);
-            return new ItemHolder(v);
-        } else if (viewType == TYPE_HEADER) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_navigation_drawer, viewGroup, false);
-            return new HeaderHolder(v);
+        switch (viewType) {
+            case TYPE_ITEM: {
+                View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_item_navigation_drawer, viewGroup, false);
+                return new ItemHolder(v);
+            }
+            case TYPE_HEADER: {
+                View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_navigation_drawer, viewGroup, false);
+                return new HeaderHolder(v);
+            }
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if (viewHolder instanceof ItemHolder) {
-            bindItemViewHolder((ItemHolder) viewHolder, i);
-        } else if (viewHolder instanceof HeaderHolder) {
-            bindHeaderViewHolder((HeaderHolder) viewHolder, i);
+        switch (getItemViewType(i)) {
+            case TYPE_HEADER:
+                bindHeaderViewHolder((HeaderHolder) viewHolder, i);
+                break;
+            case TYPE_ITEM:
+                bindItemViewHolder((ItemHolder) viewHolder, i);
+                break;
         }
     }
 
@@ -72,115 +75,86 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private void bindItemViewHolder(ItemHolder holder, int i) {
         ComponentDescription item = getItem(i);
-
+        //
         holder.sectionIcon.setImageResource(item.getIcon());
-        holder.itemView.setOnTouchListener((v, event) -> {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            touchPosition(i);
-                            return false;
-                        case MotionEvent.ACTION_CANCEL:
-                        case MotionEvent.ACTION_UP:
-                            touchPosition(-1);
-                            return false;
-                        case MotionEvent.ACTION_MOVE:
-                            return false;
-                    }
-                    return true;
-                }
-        );
-
-        holder.itemView.setOnClickListener(v -> {
-            selectPosition(i);
-            if (mNavigationDrawerListener != null) {
-                mNavigationDrawerListener.onNavigationDrawerItemSelected(componentDescriptions.get(i - headerSize));
-            }
-
-        });
-
-        final boolean isSelected = mSelectedPosition == i
-                || mTouchedPosition == i;
-
         if (holder.itemName != null) {
             holder.itemName.setText(item.getTitle());
-            holder.itemName.setSelected(isSelected);
         }
 
-        holder.sectionIcon.setSelected(isSelected);
+        boolean isSelected = isComponentSelected(i);
+        holder.itemView.setActivated(isSelected);
+
+        holder.itemView.setOnClickListener(v -> {
+            navigationDrawerListener.onNavigationDrawerItemSelected(item);
+        });
     }
 
-    private void touchPosition(int position) {
-        int lastPosition = mTouchedPosition;
-        mTouchedPosition = position;
-        if (lastPosition >= 0) {
-            notifyItemChanged(lastPosition);
-        }
-
-        if (position >= 0) {
-            notifyItemChanged(position);
-        }
+    public void selectComponent(ComponentDescription component) {
+        int lastPosition = selectedComponent;
+        selectedComponent = componentDescriptions.indexOf(component);
+        notifyItemChanged(lastPosition + headerSize);
+        notifyItemChanged(selectedComponent + headerSize);
     }
 
-    public void selectPosition(int position) {
-        int lastPosition = mSelectedPosition;
-        mSelectedPosition = position;
-        notifyItemChanged(lastPosition);
-        notifyItemChanged(position);
+    private boolean isComponentSelected(int i) {
+        return (selectedComponent + headerSize) == i;
     }
 
     @Override
     public int getItemCount() {
-        return navigationHeader != null ? componentDescriptions.size() + 1 : componentDescriptions.size();
+        return componentDescriptions.size() + headerSize;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position)) {
-            return TYPE_HEADER;
-        }
-
-        return TYPE_ITEM;
+        return isHeader(position) ? TYPE_HEADER : TYPE_ITEM;
     }
 
-    private boolean isPositionHeader(int position) {
+    private boolean isHeader(int position) {
         return navigationHeader != null && position == 0;
     }
 
-    public ComponentDescription getItem(int position) {
-        return componentDescriptions.get(navigationHeader != null ? position - 1 : position);
-    }
-
-    public void setHeader(NavigationHeader navigationHeader) {
+    public boolean setHeader(NavigationHeader navigationHeader) {
+        boolean isChange = (this.navigationHeader == null && navigationHeader != null)
+                || (this.navigationHeader != null && navigationHeader == null);
         this.navigationHeader = navigationHeader;
-        headerSize = 1;
+        headerSize = navigationHeader == null ? 0 : 1;
+        return isChange;
     }
 
-    public static class ItemHolder extends RecyclerView.ViewHolder {
+    public ComponentDescription getItem(int position) {
+        return componentDescriptions.get(position - headerSize);
+    }
 
-        @Optional
-        @InjectView(R.id.item_name)
-        protected TextView itemName;
+    @Override
+    public long getItemId(int position) {
+        switch (getItemViewType(position)) {
+            case TYPE_HEADER:
+                return 0;
+            case TYPE_ITEM:
+                return getItem(position).hashCode();
+        }
+        return super.getItemId(position);
+    }
 
-        @InjectView(R.id.section_icon)
-        protected ImageView sectionIcon;
+    static class HeaderHolder extends RecyclerView.ViewHolder {
+        @InjectView(R.id.user_cover) public ImageView userCover;
+        @InjectView(R.id.user_photo) public ImageView userPhoto;
+        @InjectView(R.id.user_name) public TextView userName;
+        @InjectView(R.id.user_email) public TextView userEmail;
 
-        public ItemHolder(View itemView) {
+        public HeaderHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
     }
 
-    public static class HeaderHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.user_cover)
-        protected ImageView userCover;
-        @InjectView(R.id.user_photo)
-        protected ImageView userPhoto;
-        @InjectView(R.id.user_name)
-        protected TextView userName;
-        @InjectView(R.id.user_email)
-        protected TextView userEmail;
+    static class ItemHolder extends RecyclerView.ViewHolder {
+        @Optional
+        @InjectView(R.id.item_name) public TextView itemName;
+        @InjectView(R.id.section_icon) public ImageView sectionIcon;
 
-        public HeaderHolder(View itemView) {
+        public ItemHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }

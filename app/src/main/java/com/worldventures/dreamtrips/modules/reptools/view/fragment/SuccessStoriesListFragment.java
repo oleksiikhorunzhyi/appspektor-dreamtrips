@@ -121,6 +121,12 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }

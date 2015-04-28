@@ -58,7 +58,7 @@ public class InfoModule {
 
     public static final String MEMBERSHIP = Route.MEMBERSHIP.name();
     public static final String FAQ = Route.FAQ.name();
-    public static final String TERMS_OF_SERVICE = Route.TERMS_OF_SERVICE.name();
+    public static final String TERMS = Route.TERMS.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMembershipComponent() {
@@ -67,7 +67,7 @@ public class InfoModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTermsOfServiceComponent() {
-        return new ComponentDescription(TERMS_OF_SERVICE, R.string.terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
+        return new ComponentDescription(TERMS, R.string.terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

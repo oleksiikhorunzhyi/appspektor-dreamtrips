@@ -70,7 +70,6 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
         lvItems.setLayoutManager(new GridLayoutManager(getActivity(), 3));
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -88,6 +87,13 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
             ).executeAsync();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        this.lvItems.setAdapter(null);
+        super.onDestroyView();
+    }
+
 
     @Override
     protected FacebookPhotoPresenter createPresenter(Bundle savedInstanceState) {

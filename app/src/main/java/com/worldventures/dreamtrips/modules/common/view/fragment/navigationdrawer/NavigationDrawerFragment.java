@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 
 import java.util.ArrayList;
 
@@ -42,25 +41,9 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
-    private NavigationDrawerListener navigationDrawerListener;
+    private NavigationDrawerListener targetDrawerListener;
     private NavigationDrawerAdapter adapter;
     private ComponentDescription currentComponent;
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        this.navigationDrawerListener = (NavigationDrawerListener) getActivity();
-
-        ComponentDescription componentDescription;
-        if (savedInstanceState != null) {
-            componentDescription = this.rootComponentsProvider.getActiveComponents().get(savedInstanceState.getInt(STATE_SELECTED_STATE));
-            setCurrentComponent(componentDescription);
-        } else {
-            componentDescription = this.rootComponentsProvider.getActiveComponents().get(0);
-            setCurrentComponent(componentDescription);
-        }
-    }
 
     @Override
     protected Presenter createPresenter(Bundle savedInstanceState) {
@@ -68,48 +51,62 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.targetDrawerListener = (NavigationDrawerListener) activity;
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        drawerList.setLayoutManager(layoutManager);
-
-        setAdapter();
-    }
-
-    private void setAdapter() {
         adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
         adapter.setNavigationDrawerCallbacks(this);
-
-        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            adapter.setHeader(getNavigationHeader());
-        }
-
+        adapter.setHasStableIds(true);
         drawerList.setAdapter(adapter);
+        drawerList.setLayoutManager(
+                new LinearLayoutManager(rootView.getContext(), LinearLayoutManager.VERTICAL, false)
+        );
+        updateHeader();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setAdapter();
+        updateHeader();
     }
 
-    private NavigationHeader getNavigationHeader() {
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.targetDrawerListener = null;
+    }
+
+    private NavigationHeader createNavigationHeader() {
         return new NavigationHeader(appSessionHolder.get().get().getUser());
+    }
+
+    private void updateHeader() {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            if (adapter.setHeader(null)) {
+                adapter.notifyItemRemoved(0);
+            }
+        } else {
+            if (adapter.setHeader(createNavigationHeader())) {
+                adapter.notifyItemInserted(0);
+            } else {
+                adapter.notifyItemChanged(0);
+            }
+        }
     }
 
     public void onEvent(UpdateUserInfoEvent event) {
         updateHeader();
-    }
-
-    private void updateHeader() {
-        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            adapter.setHeader(getNavigationHeader());
-            adapter.notifyItemChanged(0);
-        }
     }
 
     public void hide() {
@@ -121,35 +118,16 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        this.navigationDrawerListener = null;
-    }
+    public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
+        if (this.targetDrawerListener != null) {
+            boolean updateComponentSelection = !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey());
 
-    void selectItem(ComponentDescription componentDescription) {
-        if (this.navigationDrawerListener != null) {
-            final boolean shouldUpdateComponentSelection = currentComponent == null
-                    || !componentDescription.getKey().equalsIgnoreCase(currentComponent.getKey());
-
-            if (shouldUpdateComponentSelection) {
-                this.navigationDrawerListener.onNavigationDrawerItemSelected(componentDescription);
+            if (updateComponentSelection) {
+                this.targetDrawerListener.onNavigationDrawerItemSelected(newComponent);
             } else {
-                this.navigationDrawerListener.onNavigationDrawerItemReselected(componentDescription);
+                this.targetDrawerListener.onNavigationDrawerItemReselected(newComponent);
             }
         }
-
-        setCurrentComponent(componentDescription);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_STATE, this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent));
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(ComponentDescription componentDescription) {
-        selectItem(componentDescription);
     }
 
     @Override
@@ -157,34 +135,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         //nothing to do here
     }
 
-    public void onBackPressed() {
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() >= 2) {
-            final int index = fm.getBackStackEntryCount() - 2;
-            final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
-            setCurrentComponent(this.rootComponentsProvider.getComponentByKey(backEntry.getName()));
-        }
-    }
-
-    public void updateSelection() {
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        final int index = fm.getBackStackEntryCount() - 1;
-        final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
-        setCurrentComponent(this.rootComponentsProvider.getComponentByKey(backEntry.getName()));
-    }
-
     public void setCurrentComponent(ComponentDescription currentComponent) {
-        this.currentComponent = currentComponent;
-        if (currentComponent == null) {
-            currentComponent = rootComponentsProvider.getActiveComponents().get(0);
-        }
-
-        final int componentIndex = this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent);
-        adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
-                componentIndex : componentIndex + 1);
-
-        if (getActivity() != null) {
-            getActivity().setTitle(currentComponent.getTitle());
-        }
+       adapter.selectComponent(currentComponent);
     }
 }

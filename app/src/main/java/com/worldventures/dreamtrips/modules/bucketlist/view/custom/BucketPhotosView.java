@@ -89,6 +89,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
+    protected void onDetachedFromWindow() {
+        this.setAdapter(null);
+        super.onDetachedFromWindow();
+    }
+
     @Override
     public void deleteImage(BucketPhoto photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {

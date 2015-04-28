@@ -4,14 +4,13 @@ import android.app.Activity;
 
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
-import com.apptentive.android.sdk.Log;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.util.Map;
 
-public class AdobeTracker implements ITracker {
+import timber.log.Timber;
 
-    private static final String TAG = AdobeTracker.class.getSimpleName();
+public class AdobeTracker implements ITracker {
 
     @Override
     public void onCreate(BaseActivity activity) {
@@ -21,17 +20,17 @@ public class AdobeTracker implements ITracker {
 
     @Override
     public void onStart(Activity activity) {
-        Log.v(TAG, "onStart");
+        Timber.v("onStart");
 
     }
 
     @Override
     public void onStop(Activity activity) {
-        Log.v(TAG, "onStop");
+        Timber.v("onStop");
     }
 
     public void onResume(Activity activity) {
-        Config.collectLifecycleData(activity);
+        Config.collectLifecycleData();
     }
 
     public void onPause(Activity activity) {

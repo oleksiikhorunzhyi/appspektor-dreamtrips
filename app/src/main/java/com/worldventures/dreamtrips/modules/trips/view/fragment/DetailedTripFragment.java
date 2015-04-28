@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.view.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,13 +112,13 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (toolbar != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         } else if (toolbarLanscape != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbarLanscape);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarLanscape);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbarLanscape.setBackgroundColor(getResources().getColor(R.color.theme_main));
             toolbarLanscape.getBackground().setAlpha(255);
         }
@@ -175,7 +175,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void setName(String name) {
         textViewName.setText(name);
         if (toolbarLanscape != null)
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(name);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(name);
     }
 
     @Override

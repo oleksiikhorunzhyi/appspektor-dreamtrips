@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -68,9 +68,9 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (toolbar != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
     }

@@ -108,7 +108,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         return appSessionHolder.get().get().getGlobalConfig().getFlagContent().getDefault();
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void setTitle(String title);
 
         void setDate(String date);
@@ -131,9 +131,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
         void setLikeVisibility(boolean isVisible);
 
-        public void showFlagConfirmDialog(String reason, String desc);
+        void showFlagConfirmDialog(String reason, String desc);
 
-        public void showFlagDescription(String reason);
+        void showFlagDescription(String reason);
 
         void setLikeCountVisibility(boolean likeCountVisible);
 

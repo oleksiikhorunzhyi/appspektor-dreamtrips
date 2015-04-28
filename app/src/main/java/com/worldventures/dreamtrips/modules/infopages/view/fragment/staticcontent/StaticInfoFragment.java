@@ -10,6 +10,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
@@ -101,6 +102,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
+    @MenuResource(R.menu.menu_mock)
     public static class FAQFragment extends StaticInfoFragment {
 
         @Override

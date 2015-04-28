@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -15,7 +16,9 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 
 import butterknife.InjectView;
 
+
 @Layout(R.layout.fragment_tab_info)
+@MenuResource(R.menu.menu_mock)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
 
     @InjectView(R.id.tabs)

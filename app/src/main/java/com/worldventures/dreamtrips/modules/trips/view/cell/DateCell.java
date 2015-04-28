@@ -54,6 +54,11 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
 
     private void showDatePickerDialog(String tag) {
         Calendar calendar = Calendar.getInstance();
+
+        if (tag.equals(END)) {
+            calendar.add(Calendar.MONTH, 6);
+        }
+
         fragmentCompass.showDatePickerDialog(this, calendar, 2015, 2020, tag);
     }
 
@@ -66,14 +71,39 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
         if (tag.equals(END)) {
-            textViewEnd.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
-            getModelObject().setEndDate(calendar.getTime());
+            processEndDate(calendar);
         } else {
-            textViewStart.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
-            getModelObject().setStartDate(calendar.getTime());
+            processStartDate(calendar);
         }
     }
 
+    private void processEndDate(Calendar calendar) {
+        if (validateEndDate(calendar)) {
+            textViewEnd.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
+            getModelObject().setEndDate(calendar.getTime());
+        } else {
+            textViewEnd.setText(DateTimeUtils.convertDateForFilters(getModelObject().getStartDate()));
+            getModelObject().setEndDate(getModelObject().getStartDate());
+        }
+    }
+
+    private void processStartDate(Calendar calendar) {
+        if (validateStartDate(calendar)) {
+            textViewStart.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
+            getModelObject().setStartDate(calendar.getTime());
+        } else {
+            textViewStart.setText(DateTimeUtils.convertDateForFilters(getModelObject().getEndDate()));
+            getModelObject().setStartDate(getModelObject().getEndDate());
+        }
+    }
+
+    private boolean validateEndDate(Calendar selectedEndDate) {
+        return selectedEndDate.getTimeInMillis() > getModelObject().getStartDate().getTime();
+    }
+
+    private boolean validateStartDate(Calendar selectedStartDate) {
+        return selectedStartDate.getTimeInMillis() < getModelObject().getEndDate().getTime();
+    }
     @Override
     public void prepareForReuse() {
         //nothing to do here

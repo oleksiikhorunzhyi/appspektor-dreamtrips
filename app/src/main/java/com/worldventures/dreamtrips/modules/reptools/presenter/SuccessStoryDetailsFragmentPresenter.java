@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
-import com.google.gson.JsonObject;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
@@ -16,24 +13,18 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
     }
 
     public void like(SuccessStory successStory) {
-        RequestListener<JsonObject> callback = new RequestListener<JsonObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
-            }
-
-            @Override
-            public void onRequestSuccess(JsonObject jsonObject) {
-                view.likeRequestSuccess();
-                eventBus.post(new SuccessStoryLikedEvent());
-            }
-        };
-
         if (successStory.isLiked()) {
-            dreamSpiceManager.execute(new UnlikeSuccessStoryCommand(successStory.getId()), callback);
+            doRequest(new UnlikeSuccessStoryCommand(successStory.getId()),
+                    (object) -> onLiked());
         } else {
-            dreamSpiceManager.execute(new LikeSuccessStoryCommand(successStory.getId()), callback);
+            doRequest(new LikeSuccessStoryCommand(successStory.getId()),
+                    (object) -> onLiked());
         }
+    }
+
+    private void onLiked() {
+        view.likeRequestSuccess();
+        eventBus.post(new SuccessStoryLikedEvent());
     }
 
     public void share() {

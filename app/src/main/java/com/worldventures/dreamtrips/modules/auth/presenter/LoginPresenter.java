@@ -26,7 +26,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
             return;
         }
 
-        dreamSpiceManager.login(userPassword, username, (loginResponse, error) -> {
+        dreamSpiceManager.loadGlobalConfig(userPassword, username, (loginResponse, error) -> {
             if (error != null) {
                 if (TextUtils.isEmpty(error.getMessage())) {
                     view.showLoginErrorMessage();

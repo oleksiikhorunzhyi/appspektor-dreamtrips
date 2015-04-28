@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripModel implements Filterable, Serializable {
+    public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
 
@@ -177,7 +180,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public String getImageUrl(String type) {
-        String url = null;
+        String url = "";
         if (images != null) {
             for (TripImage image : images) {
                 if (image.getType().equals(type)) {
@@ -188,12 +191,11 @@ public class TripModel implements Filterable, Serializable {
         return url;
     }
 
-    public String getThumb() {
-        String url = getImageUrl("RETINA|THUMB");
-        if (TextUtils.isEmpty(url)) {
-            url = getImageUrl("THUMB");
-        }
-        return url;
+    public String getThumb(Resources resources) {
+        String url = getImageUrl("THUMB");
+        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
+        return url + String.format(PATTERN,
+                dimensionPixelSize, dimensionPixelSize);
     }
 
     public List<ActivityModel> getActivities() {
@@ -247,7 +249,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-        return  acceptedThemes == null
+        return acceptedThemes == null
                 || !Collections.disjoint(acceptedThemes, getActivities());
     }
 

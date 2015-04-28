@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
@@ -7,11 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -79,19 +76,9 @@ public class TripCell extends AbstractCell<TripModel> {
 
         setImageViewLike();
 
-        loadProgressive(Uri.parse(getModelObject().getThumb()));
-    }
-
-    private void loadProgressive(Uri uri) {
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setProgressiveRenderingEnabled(true)
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(imageViewTripImage.getController())
-                .build();
-        imageViewTripImage.setController(controller);
-
+        PointF pointF = new PointF(0, 0);
+        imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
+        imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }
 
     @OnClick(R.id.imageViewLike)
@@ -121,9 +108,5 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Override
     public void prepareForReuse() {
-        textViewName.setText("");
-        textViewPlace.setText("");
-        textViewPrice.setText("");
-        imageViewTripImage.setImageBitmap(null);
     }
 }

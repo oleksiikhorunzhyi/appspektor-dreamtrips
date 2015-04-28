@@ -47,6 +47,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     private Type type;
     private LinearLayoutManager layoutManager;
 
+    private int lastScrollPosition;
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -93,15 +95,30 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    @Override
     public void setSelection() {
         //nothing to do here
     }
 
+    private void saveScrollPosition() {
+        lastScrollPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+    }
+
     private void setupLayoutManager() {
+        if (recyclerView.getLayoutManager() != null) {
+            saveScrollPosition();
+        }
         boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
         int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
         layoutManager = new GridLayoutManager(getActivity(), spanCount);
         this.recyclerView.setLayoutManager(layoutManager);
+        layoutManager.scrollToPosition(lastScrollPosition);
     }
 
     @Override

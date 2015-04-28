@@ -56,6 +56,12 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
     }
 
     @Override
+    public void alert(String s) {
+        super.alert(s);
+        dismissProgressDialog();
+    }
+
+    @Override
     public void showLoginErrorMessage() {
         dismissProgressDialog();
         informUser(getString(R.string.error_log_in));

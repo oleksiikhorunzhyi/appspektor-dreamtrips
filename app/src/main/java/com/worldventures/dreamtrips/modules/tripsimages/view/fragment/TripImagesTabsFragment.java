@@ -17,7 +17,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
@@ -49,14 +49,14 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @InjectView(R.id.fab_photo)
     protected FloatingActionButton fabPhoto;
 
-    private BasePagerAdapter adapter;
+    private BaseStatePagerAdapter adapter;
     private PickImageDialog pid;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (adapter == null) {
-            this.adapter = new BasePagerAdapter(getChildFragmentManager()) {
+            this.adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     if (fragment instanceof TripImagesListFragment) {

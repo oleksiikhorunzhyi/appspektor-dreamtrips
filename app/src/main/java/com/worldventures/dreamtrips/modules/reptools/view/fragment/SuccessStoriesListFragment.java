@@ -121,6 +121,12 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -159,6 +165,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
                     refreshLayout.setRefreshing(false);
                     if (isLandscape()
                             && isTablet()
+                            && result != null
                             && !result.isEmpty()) {
                         getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
                     }

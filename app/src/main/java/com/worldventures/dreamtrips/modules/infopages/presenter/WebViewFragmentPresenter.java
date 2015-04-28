@@ -36,7 +36,8 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public void onEvent(WebViewReloadEvent event) {
-        if (view instanceof StaticInfoFragment.TrainingVideosFragment) {
+        if (view instanceof StaticInfoFragment.TrainingVideosFragment
+                || view instanceof StaticInfoFragment.EnrollRepFragment) {
             view.reload();
         }
     }

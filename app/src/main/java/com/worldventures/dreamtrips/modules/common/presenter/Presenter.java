@@ -11,6 +11,8 @@ import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -19,7 +21,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class Presenter<VT extends Presenter.View> {
+public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
 
     protected final VT view;
 
@@ -34,6 +36,9 @@ public class Presenter<VT extends Presenter.View> {
 
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
+
+    @Inject
+    protected VideoCachingSpiceManager videoCachingSpiceManager;
 
     @Inject
     @Global
@@ -71,35 +76,49 @@ public class Presenter<VT extends Presenter.View> {
         //nothing to do here
     }
 
-    public DreamSpiceManager getDreamSpiceManager() {
-        return dreamSpiceManager;
-    }
-
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();
     }
 
     public void onStop() {
-        stopSpiceManager();
+        stopSpiceManagers();
     }
 
-    private void stopSpiceManager() {
+    private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
+        }
+        if (videoCachingSpiceManager.isStarted()) {
+            videoCachingSpiceManager.shouldStop();
         }
     }
 
     public void onStart() {
-        startSpiceManager();
+        startSpiceManagers();
     }
 
-    private void startSpiceManager() {
+    private void startSpiceManagers() {
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
+        if (!videoCachingSpiceManager.isStarted()) {
+            videoCachingSpiceManager.start(context);
+        }
     }
 
-    protected void handleError(SpiceException error) {
+    protected <T> void doRequest(DreamTripsRequest<T> request,
+                                 DreamSpiceManager.SuccessListener<T> successListener) {
+        dreamSpiceManager.execute(request, successListener, this);
+    }
+
+    protected <T> void doRequest(DreamTripsRequest<T> request,
+                                 DreamSpiceManager.SuccessListener<T> successListener,
+                                 DreamSpiceManager.FailureListener failureListener) {
+        dreamSpiceManager.execute(request, successListener, failureListener);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
         if (error != null && !TextUtils.isEmpty(error.getMessage())) {
             view.informUser(error.getMessage());
         } else {

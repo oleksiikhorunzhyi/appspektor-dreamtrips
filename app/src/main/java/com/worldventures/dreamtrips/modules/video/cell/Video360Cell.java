@@ -67,12 +67,18 @@ public class Video360Cell extends AbstractCell<Video360> {
         progressVideoCellHelper.syncUIStateWithModel();
     }
 
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        getEventBus().unregister(progressVideoCellHelper);
+    }
+
     @OnClick(R.id.iv_bg)
     public void onItemClick() {
         CachedEntity cacheEntity = getModelObject().getCacheEntity();
         String url = getModelObject().getURL();
         if (cacheEntity.isCached(context)) {
-            url = cacheEntity.getUrl();
+            url = cacheEntity.getFilePath(context, getModelObject().getURL());
         }
         activityRouter.open360Activity(url);
     }

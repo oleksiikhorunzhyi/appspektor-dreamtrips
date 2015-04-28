@@ -2,7 +2,6 @@ package com.techery.spares.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -35,17 +34,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     public BaseArrayListAdapter(Context context, Injector injector) {
         this.injector = injector;
-
         this.injector.inject(this);
-
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
     public void registerCell(Class itemClass, Class<? extends AbstractCell> cellClass) {
         this.itemCellMapping.put(itemClass, cellClass);
-
         int type = this.viewTypes.indexOf(itemClass);
-
         if (type == -1) {
             this.viewTypes.add(itemClass);
         }
@@ -57,6 +52,8 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
+        this.injector.inject(cell);
+        cell.afterInject();
         return cell;
     }
 
@@ -70,15 +67,18 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         return index;
     }
 
-
     @Override
     public void onBindViewHolder(AbstractCell cell, int position) {
         BaseItemClass item = this.getItem(position);
 
         cell.prepareForReuse();
-        this.injector.inject(cell);
-        cell.afterInject();
         cell.fillWithItem(item);
+    }
+
+
+    @Override
+    public void onViewDetachedFromWindow(AbstractCell holder) {
+        holder.clearResources();
     }
 
     @Override

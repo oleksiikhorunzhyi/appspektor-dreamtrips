@@ -44,6 +44,9 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         @Override
         public void onFinish(LoadType type, List<SuccessStory> items, SpiceException spiceException) {
             view.finishLoading(items);
+            if (spiceException != null) {
+                handleError(spiceException);
+            }
         }
     };
 

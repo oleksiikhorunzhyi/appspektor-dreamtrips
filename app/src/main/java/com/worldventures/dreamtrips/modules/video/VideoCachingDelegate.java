@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.video;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
@@ -18,25 +18,28 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import java.io.File;
 import java.io.InputStream;
 
-public class CachedVideoManager {
+public class VideoCachingDelegate {
 
     private SnappyRepository db;
-    private DreamSpiceManager dreamSpiceManager;
     private Context context;
-    private View view;
     private Injector injector;
+    private SpiceManager spiceManager;
+    private View view;
 
-
-    public CachedVideoManager(SnappyRepository db,
-                              DreamSpiceManager dreamSpiceManager,
-                              Context context,
-                              View view,
-                              Injector injector) {
+    public VideoCachingDelegate(SnappyRepository db,
+                                Context context,
+                                Injector injector) {
         this.db = db;
-        this.dreamSpiceManager = dreamSpiceManager;
         this.context = context;
-        this.view = view;
         this.injector = injector;
+    }
+
+    public void setSpiceManager(SpiceManager spiceManager) {
+        this.spiceManager = spiceManager;
+    }
+
+    public void setView(View view) {
+        this.view = view;
     }
 
     public void onEvent(DownloadVideoRequestEvent event) {
@@ -91,7 +94,7 @@ public class CachedVideoManager {
 
 
     public void onCancelAction(CachedEntity cacheEntity) {
-        dreamSpiceManager.cancel(InputStream.class, cacheEntity.getUuid());
+        spiceManager.cancel(InputStream.class, cacheEntity.getUuid());
         onDeleteAction(cacheEntity);
     }
 
@@ -100,9 +103,10 @@ public class CachedVideoManager {
                 new File(CachedEntity.getFilePath(context, entity.getUrl())));
 
         DownloadVideoListener requestListener = new DownloadVideoListener(entity);
+
         injector.inject(requestListener);
-        dreamSpiceManager.cancel(InputStream.class, entity.getUuid());
-        dreamSpiceManager.execute(bigBinaryRequest,
+        spiceManager.cancel(InputStream.class, entity.getUuid());
+        spiceManager.execute(bigBinaryRequest,
                 entity.getUuid(),
                 DurationInMillis.ALWAYS_RETURNED,
                 requestListener);

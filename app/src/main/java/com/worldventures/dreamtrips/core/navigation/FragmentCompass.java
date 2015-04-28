@@ -216,7 +216,7 @@ public class FragmentCompass {
         ADD, REPLACE, POP
     }
 
-    public static interface OnTransactionListener {
-        public void onTransactionDone(Route route, Action action);
+    public interface OnTransactionListener {
+        void onTransactionDone(Route route, Action action);
     }
 }

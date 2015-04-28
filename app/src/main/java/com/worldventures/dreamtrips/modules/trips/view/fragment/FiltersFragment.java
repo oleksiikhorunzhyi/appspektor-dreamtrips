@@ -59,6 +59,12 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         this.recyclerView.setAdapter(this.arrayListAdapter);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.recyclerView.setAdapter(null);
+    }
+
     @OnClick(R.id.textViewApplyFilter)
     void applyFilter() {
         ((MainActivity) getActivity()).closeRightDrawer();

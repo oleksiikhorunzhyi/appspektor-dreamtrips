@@ -54,4 +54,10 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
 
     }
 
+    @Override
+    public void clearResources(){
+        if (eventBus != null && eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+        }
+    }
 }

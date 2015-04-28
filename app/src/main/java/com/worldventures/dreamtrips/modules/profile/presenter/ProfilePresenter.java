@@ -4,13 +4,11 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -38,26 +36,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             final File file = new File(image.getFileThumbnail());
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
-            dreamSpiceManager.execute(new UploadAvatarCommand(typedFile), new RequestListener<User>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    view.avatarProgressVisible(false);
-                    Log.e(this.getClass().getSimpleName(), "", spiceException);
-                    view.informUser(context.getString(R.string.error_internal_server));
-                }
-
-                @Override
-                public void onRequestSuccess(User obj) {
-                    UserSession userSession = appSessionHolder.get().get();
-                    User user = userSession.getUser();
-                    user.setAvatar(obj.getAvatar());
-
-                    appSessionHolder.put(userSession);
-                    view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-                    view.avatarProgressVisible(false);
-                    eventBus.post(new UpdateUserInfoEvent());
-                }
-            });
+            doRequest(new UploadAvatarCommand(typedFile),
+                    this::onSuccess);
 
         } else {
             Log.e(ProfilePresenter.class.getSimpleName(), error);
@@ -102,6 +82,23 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        view.avatarProgressVisible(false);
+        super.handleError(error);
+    }
+
+    private void onSuccess(User obj) {
+        UserSession userSession = appSessionHolder.get().get();
+        User user = userSession.getUser();
+        user.setAvatar(obj.getAvatar());
+
+        appSessionHolder.put(userSession);
+        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
+        view.avatarProgressVisible(false);
+        eventBus.post(new UpdateUserInfoEvent());
     }
 
     public void logout() {

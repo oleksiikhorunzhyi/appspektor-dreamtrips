@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
@@ -77,36 +75,27 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void loadFilters(boolean fromApi) {
         view.startLoading();
 
-        dreamSpiceManager.execute(new GetActivitiesQuery(db, fromApi), new RequestListener<ArrayList<ActivityModel>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
+        doRequest(new GetActivitiesQuery(db, fromApi), resultActivities -> {
+            FiltersPresenter.this.activities = resultActivities;
+            parentActivities = getParentActivities();
+            if (regions != null && !regions.isEmpty()) {
+                fillData();
             }
+        }, spiceException -> {
+            FiltersPresenter.this.activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
+            parentActivities = getParentActivities();
+            fillData();
 
-            @Override
-            public void onRequestSuccess(ArrayList<ActivityModel> activities) {
-                FiltersPresenter.this.activities = activities;
-                parentActivities = getParentActivities();
-                if (regions != null && !regions.isEmpty()) {
-                    fillData();
-                }
-            }
         });
 
-        dreamSpiceManager.execute(new GetRegionsQuery(db, fromApi), new RequestListener<ArrayList<RegionModel>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                //nothing to do here
+        doRequest(new GetRegionsQuery(db, fromApi), (resultRegions) -> {
+            FiltersPresenter.this.regions = resultRegions;
+            if (activities != null && !activities.isEmpty()) {
+                fillData();
             }
-
-            @Override
-            public void onRequestSuccess(ArrayList<RegionModel> regions) {
-                FiltersPresenter.this.regions = regions;
-                if (activities != null && !activities.isEmpty()) {
-                    fillData();
-                }
-
-            }
+        }, (spiceException) -> {
+            FiltersPresenter.this.regions = db.readList(SnappyRepository.REGIONS, RegionModel.class);
+            fillData();
         });
     }
 

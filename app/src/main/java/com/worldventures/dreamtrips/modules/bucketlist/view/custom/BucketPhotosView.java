@@ -89,6 +89,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
+    protected void onDetachedFromWindow() {
+        this.setAdapter(null);
+        super.onDetachedFromWindow();
+    }
+
     @Override
     public void deleteImage(BucketPhoto photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
@@ -203,7 +208,9 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
             pidTypeShown = 0;
             pid.onActivityResult(requestCode, resultCode, data);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
+        if (resultCode == Activity.RESULT_OK
+                && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO
+                && fbImageCallback != null) {
             ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
             fbImageCallback.onResult(fragment, image, null);
         }

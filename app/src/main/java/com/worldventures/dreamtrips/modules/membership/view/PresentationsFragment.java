@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import butterknife.InjectView;
 
@@ -52,6 +52,12 @@ public class PresentationsFragment extends BaseFragment<PresentationsPresenter> 
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     @Override
@@ -110,14 +116,13 @@ public class PresentationsFragment extends BaseFragment<PresentationsPresenter> 
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
-
 
     @Override
     public BaseArrayListAdapter getAdapter() {

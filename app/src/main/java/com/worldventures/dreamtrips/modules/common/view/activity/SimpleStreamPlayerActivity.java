@@ -12,6 +12,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -54,8 +55,13 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
 
         frameContainer.setBackgroundColor(0xFF000000);
 
-        // Apple's reference example
-        loadVideo(getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getString(EXTRA_URL));
+        String url = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getString(EXTRA_URL);
+
+        if (TextUtils.isEmpty(url)) {
+            finish();
+        } else {
+            loadVideo(url);
+        }
     }
 
     @Override
@@ -68,9 +74,13 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
 
     @Override
     protected void onDestroy() {
+        if (pfAsset != null) {
+            pfAsset.release();
+        }
+        if (pfView != null) {
+            pfView.release();
+        }
         super.onDestroy();
-        pfAsset.release();
-        pfView.release();
     }
 
     @Override

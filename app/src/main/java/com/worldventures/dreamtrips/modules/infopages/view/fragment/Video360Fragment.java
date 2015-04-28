@@ -99,6 +99,14 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerViewAll.setAdapter(null);
+        this.recyclerViewFeatured.setAdapter(null);
+        this.recyclerViewRecent.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setUp();

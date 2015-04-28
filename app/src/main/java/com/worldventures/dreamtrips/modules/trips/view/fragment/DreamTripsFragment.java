@@ -36,7 +36,8 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements
+        DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)
     protected EmptyRecyclerView recyclerView;
@@ -54,11 +55,13 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     private SearchView searchView;
 
+    private int lastScrollPosition = 0;
+
     @Override
     public void afterCreateView(View rootView) {
         lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+        setupLayoutManager();
 
         this.recyclerView.setEmptyView(emptyView);
 
@@ -71,6 +74,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
+
+
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
@@ -82,17 +87,29 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         return false;
     }
 
-    private void setupLayoutManager(boolean landscape) {
+    private void saveScrollPosition() {
+        lastScrollPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+    }
+
+    private void setupLayoutManager() {
+        if (recyclerView.getLayoutManager() != null) {
+            saveScrollPosition();
+        }
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), getSpanCount());
+        this.recyclerView.setLayoutManager(layoutManager);
+        layoutManager.scrollToPosition(lastScrollPosition);
+    }
+
+    private int getSpanCount() {
         int spanCount;
-        if (landscape) {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
             spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 2;
         } else {
             spanCount = ViewUtils.isTablet(getActivity()) ? 2 : 1;
         }
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
-        this.recyclerView.setLayoutManager(layoutManager);
+        return spanCount;
     }
-
 
     @Override
     public void dataSetChanged() {
@@ -117,7 +134,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         super.onConfigurationChanged(newConfig);
         if (lastConfig != newConfig.orientation) {
             lastConfig = newConfig.orientation;
-            setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+            setupLayoutManager();
         }
     }
 
@@ -154,6 +171,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
         super.onDestroyView();
         getPresenter().onPause();
     }

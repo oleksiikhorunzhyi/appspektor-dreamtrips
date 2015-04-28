@@ -72,11 +72,6 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
         btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
     }
 
-    @Override
-    public void afterInject() {
-        super.afterInject();
-    }
-
     @OnClick(R.id.btn_action)
     public void onBtnAction() {
         //TODO

@@ -90,7 +90,7 @@ public class CommonModule {
         }
 
         activeComponents.add(InfoModule.FAQ);
-        activeComponents.add(InfoModule.TERMS_OF_SERVICE);
+        activeComponents.add(InfoModule.TERMS);
 
         return new ComponentsConfig(activeComponents);
     }

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -82,11 +83,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragmentStatic = (NavigationDrawerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_drawer_static);
-
         checkGoogleServices();
 
         getPresentationModel().loadFilters();
@@ -98,9 +94,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         fragmentCompass.clear();
         setupToolbarLayout();
         makeActionBarTransparent(false);
-
-        navigationDrawerFragment.updateSelection();
-        navigationDrawerFragmentStatic.updateSelection();
 
         setUpMenu();
 
@@ -155,10 +148,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
-        super.afterCreateView(savedInstanceState);
         setSupportActionBar(this.toolbar);
         setUpBurger();
         setUpMenu();
+        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragmentStatic = (NavigationDrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_drawer_static);
 
         if (savedInstanceState != null) {
             String lastKey = savedInstanceState.getString(LAST_SELECTED_ITEM);
@@ -168,8 +164,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         }
 
         if (componentDescription == null) {
-            onNavigationDrawerItemSelected(rootComponentsProvider.getActiveComponents().get(0));
+            componentDescription = rootComponentsProvider.getActiveComponents().get(0);
         }
+        onNavigationDrawerItemSelected(componentDescription);
     }
 
     private void setUpBurger() {
@@ -201,24 +198,23 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         closeLeftDrawer();
         makeActionBarTransparent(false);
 
-        if (route != null) {
-            openComponent(route, true);
+        navigationDrawerFragment.setCurrentComponent(route);
+        navigationDrawerFragmentStatic.setCurrentComponent(route);
 
-            if (detailsFrameLayout != null) {
-                detailsFrameLayout.setVisibility(View.GONE);
-            }
+        openComponent(route, true);
+
+        if (detailsFrameLayout != null) {
+            detailsFrameLayout.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onNavigationDrawerItemReselected(ComponentDescription route) {
-        eventBus.post(new WebViewReloadEvent());
-        if (route != null) {
-            if (route.getKey().equals(TripsModule.OTA) ||
-                    route.getKey().equals(InfoModule.FAQ) ||
-                    route.getKey().equals(InfoModule.TERMS_OF_SERVICE)) {
-                openComponent(route, false);
-            }
+        if (route.getKey().equals(TripsModule.OTA) ||
+                route.getKey().equals(InfoModule.FAQ) ||
+                route.getKey().equals(InfoModule.TERMS)) {
+            openComponent(route, false);
+            eventBus.post(new WebViewReloadEvent());
         }
         closeLeftDrawer();
     }
@@ -314,8 +310,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             detailsFrameLayout.setVisibility(View.GONE);
         } else {
             if (navigationDrawerFragment != null) {
-                navigationDrawerFragment.onBackPressed();
-                navigationDrawerFragmentStatic.onBackPressed();
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.getBackStackEntryCount() >= 2) {
+                    final int index = fm.getBackStackEntryCount() - 2;
+                    final FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(index);
+                    ComponentDescription componentByKey = this.rootComponentsProvider.getComponentByKey(backEntry.getName());
+                    navigationDrawerFragment.setCurrentComponent(componentByKey);
+                    navigationDrawerFragmentStatic.setCurrentComponent(componentByKey);
+                    setTitle(componentByKey.getTitle());
+                }
             }
 
             super.onBackPressed();

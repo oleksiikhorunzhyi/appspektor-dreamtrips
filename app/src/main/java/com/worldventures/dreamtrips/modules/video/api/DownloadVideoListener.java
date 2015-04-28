@@ -24,8 +24,9 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
-    public static final int START_VALUE = 10;
+    public static final int START_VALUE = 1;
     public static final int RESIDUE = 90;
+
     @Inject
     @Global
     protected EventBus eventBus;
@@ -44,6 +45,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestFailure(SpiceException spiceException) {
+        Log.v(this.getClass().getSimpleName(), "onRequestFailure");
         if (!(spiceException instanceof RequestCancelledException)) {
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
@@ -60,9 +62,9 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
+        Log.v(this.getClass().getSimpleName(), "onRequestProgressUpdate");
         int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
         if (progress > lastProgress) {
-
             if (progress == START_VALUE) {
                 entity.setIsFailed(false);
                 db.saveDownloadVideoEntity(entity);
@@ -75,8 +77,10 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
         }
     }
 
+
     @Override
     public void onRequestNotFound() {
+        Log.v(this.getClass().getSimpleName(), "onRequestNotFound");
         entity.setIsFailed(true);
         db.saveDownloadVideoEntity(entity);
         eventBus.post(new DownloadVideoFailedEvent(new SpiceException("onRequestNotFound"), entity));

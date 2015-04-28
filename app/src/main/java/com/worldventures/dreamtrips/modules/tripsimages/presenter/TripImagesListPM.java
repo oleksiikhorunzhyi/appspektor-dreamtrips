@@ -221,7 +221,6 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                     list = new ArrayList<>();
                     list.addAll(items);
                     resetLazyLoadFields();
-
                 } else {
                     list = new ArrayList<>(view.getPhotosFromAdapter());
                     for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
@@ -232,8 +231,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                     }
                     list.addAll(items);
                 }
-                eventBus.postSticky(FSUploadEvent.create(type, list));
 
+                eventBus.postSticky(FSUploadEvent.create(type, list));
 
                 for (T item : items) {
                     if (item instanceof ImageUploadTask
@@ -241,6 +240,8 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
                         dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
                     }
                 }
+            } else {
+                handleError(spiceException);
             }
 
             view.finishLoading();

@@ -24,8 +24,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
-    public static final int START_VALUE = 1;
-    public static final int RESIDUE = 90;
+    public static final int START_VALUE = 0;
+    public static final int RESIDUE = 100;
 
     @Inject
     @Global
@@ -63,10 +63,11 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
         Log.v(this.getClass().getSimpleName(), "onRequestProgressUpdate");
-        int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
+        int progress = (int) (p.getProgress() * RESIDUE);
         if (progress > lastProgress) {
             if (progress == START_VALUE) {
                 entity.setIsFailed(false);
+                progress = 1;
                 db.saveDownloadVideoEntity(entity);
                 eventBus.post(new DownloadVideoStartEvent(entity));
             }

@@ -32,7 +32,7 @@ public class CachedEntity implements Serializable {
     }
 
     public boolean isCached(Context context) {
-        return new File(getFilePath(context,getUrl())).exists() && getProgress() == 100;
+        return new File(getFilePath(context, getUrl())).exists() && getProgress() == 100;
     }
 
     public int getProgress() {

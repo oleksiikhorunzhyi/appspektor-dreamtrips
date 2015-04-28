@@ -34,7 +34,6 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 
 @Layout(R.layout.fragment_bucket_tab)
-@MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
@@ -74,6 +73,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             }
         });
     }
+
 
     @Override
     public void onResume() {

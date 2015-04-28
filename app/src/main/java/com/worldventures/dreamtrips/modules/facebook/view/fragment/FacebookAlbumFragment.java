@@ -87,6 +87,13 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     }
 
     @Override
+    public void onDestroyView() {
+        this.lvItems.setAdapter(null);
+        super.onDestroyView();
+    }
+
+
+    @Override
     protected FacebookAlbumPresenter createPresenter(Bundle savedInstanceState) {
         return new FacebookAlbumPresenter(this);
     }

@@ -52,6 +52,13 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     }
 
     @Override
+    public void onDestroyView() {
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setManager();

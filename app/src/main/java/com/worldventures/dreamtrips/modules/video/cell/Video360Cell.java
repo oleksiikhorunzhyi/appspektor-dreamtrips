@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -66,6 +65,12 @@ public class Video360Cell extends AbstractCell<Video360> {
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
         progressVideoCellHelper.setUrl(getModelObject().getURL());
         progressVideoCellHelper.syncUIStateWithModel();
+    }
+
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        getEventBus().unregister(progressVideoCellHelper);
     }
 
     @OnClick(R.id.iv_bg)

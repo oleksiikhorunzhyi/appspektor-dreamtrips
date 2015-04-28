@@ -34,17 +34,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     public BaseArrayListAdapter(Context context, Injector injector) {
         this.injector = injector;
-
         this.injector.inject(this);
-
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
     public void registerCell(Class itemClass, Class<? extends AbstractCell> cellClass) {
         this.itemCellMapping.put(itemClass, cellClass);
-
         int type = this.viewTypes.indexOf(itemClass);
-
         if (type == -1) {
             this.viewTypes.add(itemClass);
         }
@@ -71,13 +67,18 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         return index;
     }
 
-
     @Override
     public void onBindViewHolder(AbstractCell cell, int position) {
         BaseItemClass item = this.getItem(position);
 
         cell.prepareForReuse();
         cell.fillWithItem(item);
+    }
+
+
+    @Override
+    public void onViewDetachedFromWindow(AbstractCell holder) {
+        holder.clearResources();
     }
 
     @Override

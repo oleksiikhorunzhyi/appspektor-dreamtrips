@@ -3,23 +3,24 @@ package com.worldventures.dreamtrips.core.utils.tracksystem;
 import android.app.Activity;
 
 import com.apptentive.android.sdk.Apptentive;
-import com.apptentive.android.sdk.Log;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
+
+import timber.log.Timber;
 
 public class ApptentiveTracker implements ITracker {
 
-    private static final String TAG = ApptentiveTracker.class.getSimpleName();
-    private Activity activity;
+    private WeakReference<Activity> activity;
 
     @Override
     public void onCreate(BaseActivity activity) {
-        Log.v(TAG, "onCreate");
+        Timber.v("onCreate");
     }
 
     public void onStart(Activity activity) {
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
         Apptentive.onStart(activity);
     }
 
@@ -30,17 +31,20 @@ public class ApptentiveTracker implements ITracker {
 
     @Override
     public void onResume(Activity activity) {
-        Log.v(TAG, "onResume");
+        Timber.v("onResume");
 
     }
 
     @Override
     public void onPause(Activity activity) {
-        Log.v(TAG, "onPause");
+        Timber.v("onPause");
     }
 
     @Override
     public void trackMemberAction(String action, Map<String, Object> data) {
-        Apptentive.engage(activity, action, data);
+        Activity activity = this.activity.get();
+        if (activity != null) {
+            Apptentive.engage(activity, action, data);
+        }
     }
 }

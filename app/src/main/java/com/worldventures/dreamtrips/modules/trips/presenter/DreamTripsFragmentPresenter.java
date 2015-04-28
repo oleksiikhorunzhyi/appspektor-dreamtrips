@@ -35,6 +35,8 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     protected SnappyRepository db;
 
     private boolean loadFromApi;
+    private boolean goneToMap = false;
+
     private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
             = new RoboSpiceAdapterController<TripModel>() {
 
@@ -85,6 +87,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     @Override
     public void resume() {
         if (view.getAdapter().getCount() == 0) {
+            goneToMap = false;
             roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
             roboSpiceAdapterController.setAdapter(view.getAdapter());
             roboSpiceAdapterController.reload();
@@ -161,7 +164,10 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     }
 
     public void actionMap() {
-        fragmentCompass.replace(Route.MAP, null);
+        if (!goneToMap) {
+            fragmentCompass.replace(Route.MAP, null);
+            goneToMap = true;
+        }
     }
 
     public void onItemClick(TripModel trip) {
@@ -169,7 +175,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     }
 
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void dataSetChanged();
 
         void showErrorMessage();

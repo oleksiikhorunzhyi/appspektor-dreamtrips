@@ -91,7 +91,6 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -176,15 +175,16 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
     public void setCurrentComponent(ComponentDescription currentComponent) {
         this.currentComponent = currentComponent;
+        if (currentComponent == null) {
+            currentComponent = rootComponentsProvider.getActiveComponents().get(0);
+        }
 
-        if (this.currentComponent != null) {
-            final int componentIndex = this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent);
-            adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
-                    componentIndex : componentIndex + 1);
+        final int componentIndex = this.rootComponentsProvider.getActiveComponents().indexOf(currentComponent);
+        adapter.selectPosition(ViewUtils.isLandscapeOrientation(getActivity()) ?
+                componentIndex : componentIndex + 1);
 
-            if (getActivity() != null) {
-                getActivity().setTitle(currentComponent.getTitle());
-            }
+        if (getActivity() != null) {
+            getActivity().setTitle(currentComponent.getTitle());
         }
     }
 }

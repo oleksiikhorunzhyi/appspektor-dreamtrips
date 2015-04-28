@@ -100,7 +100,6 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
     private void reportError() {
         if (isAdded()) {
             progressBar.setVisibility(View.GONE);
-            informUser(getString(R.string.error_while_loading));
         }
     }
 

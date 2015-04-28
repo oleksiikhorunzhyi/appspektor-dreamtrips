@@ -19,11 +19,9 @@ public class FrescoInitializer implements AppInitializer {
 
     @Override
     public void initialize(Injector injector) {
-        SimpleProgressiveJpegConfig jpegConfig = new SimpleProgressiveJpegConfig();
-        jpegConfig.getNextScanNumberToDecode(1);
-        jpegConfig.getQualityInfo(1);
         injector.inject(this);
 
+        SimpleProgressiveJpegConfig jpegConfig = new SimpleProgressiveJpegConfig();
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(context, new OkHttpClient())
                 .setProgressiveJpegConfig(jpegConfig)
                 .setResizeAndRotateEnabledForNetwork(true)

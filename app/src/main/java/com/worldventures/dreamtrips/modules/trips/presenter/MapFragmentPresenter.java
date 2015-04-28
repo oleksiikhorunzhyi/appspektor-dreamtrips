@@ -37,6 +37,8 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     private DateFilterItem dateFilterItem = new DateFilterItem();
     private String query;
 
+    private boolean popped = false;
+
     public MapFragmentPresenter(MapFragmentPresenter.View view) {
         super(view);
     }
@@ -145,14 +147,17 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     }
 
     public void actionList() {
-        fragmentCompass.pop();
+        if (!popped) {
+            fragmentCompass.pop();
+            popped = true;
+        }
     }
 
     public interface View extends Presenter.View {
-        public void addPin(LatLng latLng, String id);
+        void addPin(LatLng latLng, String id);
 
-        public void clearMap();
+        void clearMap();
 
-        public void showInfoWindow(int offset);
+        void showInfoWindow(int offset);
     }
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -32,6 +33,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_trip_tabs_images)
+@MenuResource(R.menu.menu_mock)
 public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresenter> implements TripImagesTabsFragmentPresenter.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)

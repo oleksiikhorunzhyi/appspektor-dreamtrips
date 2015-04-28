@@ -104,9 +104,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     }
 
     @Override
-    public void loadImage(Image images) {
-        String medium = images.getThumbUrl(getResources());
-        String original = images.getUrl(ViewUtils.getScreenWidth(getActivity()),
+    public void loadImage(Image image) {
+        String medium = image.getThumbUrl(getResources());
+        String original = image.getUrl(ViewUtils.getScreenWidth(getActivity()),
                 ViewUtils.getScreenHeight(getActivity()));
         loadImage(medium, original);
     }

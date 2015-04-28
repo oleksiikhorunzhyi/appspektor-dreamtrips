@@ -82,7 +82,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         view.setLike(trip.isLiked());
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void setName(String text);
 
         void setLocation(String text);

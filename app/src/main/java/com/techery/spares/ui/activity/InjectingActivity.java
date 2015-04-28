@@ -1,7 +1,7 @@
 package com.techery.spares.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import de.greenrobot.event.EventBus;
 
-public abstract class InjectingActivity extends ActionBarActivity implements Injector {
+public abstract class InjectingActivity extends AppCompatActivity implements Injector {
 
     private ObjectGraph objectGraph;
 

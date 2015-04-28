@@ -44,15 +44,6 @@ public class RootComponentsProvider {
     }
 
     public ComponentDescription getComponentByKey(String key) {
-        ComponentDescription component = null;
-
-        for (final ComponentDescription componentDescription : activeComponents) {
-            if (componentDescription.getKey().equals(key)) {
-                component = componentDescription;
-                break;
-            }
-        }
-
-        return component;
+        return Queryable.from(activeComponents).first(c -> c.getKey().equalsIgnoreCase(key));
     }
 }

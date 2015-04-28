@@ -149,10 +149,10 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        public void addPin(LatLng latLng, String id);
+        void addPin(LatLng latLng, String id);
 
-        public void clearMap();
+        void clearMap();
 
-        public void showInfoWindow(int offset);
+        void showInfoWindow(int offset);
     }
 }

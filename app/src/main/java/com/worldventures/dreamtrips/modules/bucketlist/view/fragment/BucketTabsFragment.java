@@ -82,7 +82,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         if (adapter.getCount() > 0) {
             BucketType currentType = adapter.getFragmentItem(pager.getCurrentItem()).data;
             handler.postDelayed(() -> getPresenter().onTabChange(currentType), 600l);
-            adapter.notifyDataSetChanged();
         }
     }
 

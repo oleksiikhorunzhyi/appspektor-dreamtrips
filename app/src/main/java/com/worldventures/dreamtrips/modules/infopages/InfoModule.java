@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
-import com.worldventures.dreamtrips.modules.membership.view.MembershipFragment;
-import com.worldventures.dreamtrips.modules.membership.view.PresentationsFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;

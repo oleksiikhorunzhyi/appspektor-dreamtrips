@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
@@ -140,4 +141,18 @@ public interface DreamTripsApi {
 
     @GET("/api/activity_suggestions")
     public ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
+
+    @GET("/api/invitations/templates")
+    public ArrayList<InviteTemplate> getInviteTemplates();
+
+    @GET("/api/invitations/")
+    public ArrayList<InviteTemplate> getInvitations();
+
+    @POST("/api/invitations/")
+    public ArrayList<InviteTemplate> sendInvitations();
+
+    @POST("/api/invitations/filled_templates/{id}")
+    public ArrayList<InviteTemplate> getInviteTemplate(@Part("id") int id);
+
+
 }

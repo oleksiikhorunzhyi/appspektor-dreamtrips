@@ -5,11 +5,13 @@ import android.content.Context;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.event.SelectAllEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-import com.worldventures.dreamtrips.modules.membership.request.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +56,20 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         });
     }
 
-    public void onEventMainThread(SelectAllEvent event) {
+    public void onEventMainThread(MemberCellSelectAllRequestEvent event) {
         for (Member member : view.getItems()) {
             member.setIsChecked(event.isSelectAll());
         }
         view.notifyAdapter();
+    }
+
+    public void onEventMainThread(MemberCellSelectedEvent event) {
+        boolean isVisible = false;
+        for (Member member : view.getItems()) {
+            isVisible = member.isChecked();
+            if (isVisible) break;
+        }
+        view.showNextStepButtonVisibility(isVisible);
     }
 
     public void onMemberAdded(Member member) {
@@ -66,6 +77,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.addItem(member);
     }
 
+    public void continueAction() {
+        fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
+    }
 
     public interface View extends Presenter.View {
         void addItems(List<Member> memberList);
@@ -82,5 +96,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void notifyAdapter();
 
         void addItem(Member member);
+
+        void showNextStepButtonVisibility(boolean isVisible);
     }
 }

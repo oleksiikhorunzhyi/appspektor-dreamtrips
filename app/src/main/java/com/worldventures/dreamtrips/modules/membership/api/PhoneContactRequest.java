@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.request;
+package com.worldventures.dreamtrips.modules.membership.api;
 
 import android.content.ContentResolver;
 import android.content.Context;

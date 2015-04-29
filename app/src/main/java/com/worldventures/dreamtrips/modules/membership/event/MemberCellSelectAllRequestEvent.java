@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.membership.event;
 
-public class SelectAllEvent {
+public class MemberCellSelectAllRequestEvent {
 
     boolean selectAll;
 
-    public SelectAllEvent(boolean selectAll) {
+    public MemberCellSelectAllRequestEvent(boolean selectAll) {
         this.selectAll = selectAll;
     }
 

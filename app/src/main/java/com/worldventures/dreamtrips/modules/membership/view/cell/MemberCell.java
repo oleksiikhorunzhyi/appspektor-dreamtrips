@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import butterknife.InjectView;
@@ -52,6 +53,7 @@ public class MemberCell extends AbstractCell<Member> {
     @OnCheckedChanged(R.id.cb_checked)
     public void onChecked(boolean checked) {
         getModelObject().setIsChecked(checked);
+        getEventBus().post(new MemberCellSelectedEvent(checked));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.view;
+package com.worldventures.dreamtrips.modules.membership.view.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

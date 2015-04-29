@@ -4,15 +4,18 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
-import com.worldventures.dreamtrips.modules.membership.request.PhoneContactRequest;
-import com.worldventures.dreamtrips.modules.membership.view.InviteFragment;
-import com.worldventures.dreamtrips.modules.membership.view.MembershipFragment;
-import com.worldventures.dreamtrips.modules.membership.view.PresentationsFragment;
+import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
+import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCellSelectAll;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationsFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,7 +31,10 @@ import dagger.Provides;
                 InvitePresenter.class,
                 MemberCell.class,
                 PhoneContactRequest.class,
-                MemberCellSelectAll.class
+                MemberCellSelectAll.class,
+                SelectTemplateFragment.class,
+                SelectTemplatePresenter.class,
+                InviteTemplateCell.class
         },
         complete = false,
         library = true

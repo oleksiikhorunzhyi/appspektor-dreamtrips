@@ -12,7 +12,6 @@
         android:focusableInTouchMode="true">
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -25,7 +24,7 @@
 
         <Spinner
             android:id="@+id/spinner"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -58,9 +57,10 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_weight="1"
         android:visibility="visible">
 
 
@@ -71,4 +71,25 @@
 
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_continue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/theme_main_darker"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:text="Continue"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+    </LinearLayout>
+
 </LinearLayout>

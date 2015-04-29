@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.modules.membership.view;
+package com.worldventures.dreamtrips.modules.membership.view.dialog;
 
 import android.content.Context;
-import android.support.v7.internal.widget.TintButton;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -19,11 +19,11 @@ public class AddContactDialog {
     private MaterialEditText etName;
     private MaterialEditText etPhone;
     private MaterialEditText etEmail;
-    private TintButton btn;
+    private Button btn;
     private final MaterialDialog md;
     private Callback callback;
 
-    protected AddContactDialog(Context context) {
+    public AddContactDialog(Context context) {
         md = new MaterialDialog.Builder(context)
                 .title(R.string.add_contact)
                 .customView(R.layout.dialog_add_contact)

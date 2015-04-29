@@ -97,12 +97,12 @@
     <string name="fab_select_photo">Select Photo</string>
     <string name="fab_posted">Successfully posted to Facebook</string>
     <string-array name="photo_dialog_items">
-    <item>Take Photo</item>
-    <item>Choose Photo</item>
+        <item>Take Photo</item>
+        <item>Choose Photo</item>
     </string-array>
     <string-array name="share_dialog_items">
-    <item>Facebook</item>
-    <item>Twitter</item>
+        <item>Facebook</item>
+        <item>Twitter</item>
     </string-array>
     <string name="buffering">Buffering...</string>
     <string name="profile_select_avatar_header">Select Avatar</string>
@@ -170,17 +170,6 @@
     <string name="tags">Tags: </string>
     <string name="my_pictures">My pictures</string>
     <string name="today">Today</string>
-    <string name="add_pictures">Add pictures</string>
-    <string name="select_photo">Select photo</string>
-    <string name="bucket_photo_dialog">Bucket photo</string>
-    <string name="download_in_progress">Download in progress</string>
-    <string name="delete_cached_video_title">Video</string>
-    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
-    <string name="fail">Failure</string>
-    <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
-    <string name="cancel_photo_positiove">Yes</string>
-    <string name="cancel_photo_negative">No</string>
     <string name="rep_enrollment">Rep Enrollment</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="popular_add">ADD</string>
@@ -195,11 +184,12 @@
         <item>This week</item>
         <item>Next week</item>
         <item>This month</item>
-        <item>Next month</item>
+        <item>Next month</item>w
         <item>In six month</item>
         <item>This year</item>
         <item>Next year</item>
-        <item>@string/someday</item> //do not translate
+        <item>@string/someday</item>
+        //do not translate
     </string-array>
     <string-array name="dialog_add_bucket_photo">
         <item>Choose from Facebook</item>
@@ -212,7 +202,8 @@
     </string-array>
 
     <string name="facebook_app_id">761667837261383</string>//do not translate
-    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>//do not translate
+    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
+    //do not translate
 
     <string name="add_pictures">Add pictures</string>
     <string name="select_photo">Select photo</string>

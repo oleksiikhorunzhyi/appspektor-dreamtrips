@@ -1,13 +1,16 @@
-package com.worldventures.dreamtrips.modules.membership.view;
+package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -17,13 +20,16 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
-import com.worldventures.dreamtrips.modules.membership.request.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.view.adapter.SimpleImageArrayAdapter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCellSelectAll;
+import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDialog;
+import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -39,32 +45,43 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
     ImageView ivAddContact;
     @InjectView(R.id.tv_search)
     SearchView tvSearch;
+    @InjectView(R.id.ll_continue)
+    LinearLayout llContinue;
     @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
+    SwipeRefreshLayout refreshLayout;
+
     protected BaseArrayListAdapter adapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
-        lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         adapter = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
         adapter.registerCell(Member.class, MemberCell.class);
         adapter.registerCell(Object.class, MemberCellSelectAll.class);
 
         lvUsers.setAdapter(adapter);
 
-        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(getActivity(), new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
+        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(getActivity(),
+                new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        llContinue.setVisibility(View.GONE);
     }
 
 
     @OnClick(R.id.iv_add_contact)
     public void addContact() {
         new AddContactDialog(getActivity()).show(member -> getPresenter().onMemberAdded(member));
+    }
+
+    @OnClick(R.id.ll_continue)
+    public void continueAction() {
+        getPresenter().continueAction();
     }
 
     @Override
@@ -82,12 +99,12 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override
@@ -98,7 +115,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
 
     @Override
     public List<Member> getItems() {
-        return adapter.getItems();
+        return adapter.getItems().subList(1, adapter.getCount());
     }
 
     @Override
@@ -126,4 +143,10 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
         adapter.addItem(1, member);
         adapter.notifyItemInserted(1);
     }
+
+    @Override
+    public void showNextStepButtonVisibility(boolean isVisible) {
+        llContinue.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
 }

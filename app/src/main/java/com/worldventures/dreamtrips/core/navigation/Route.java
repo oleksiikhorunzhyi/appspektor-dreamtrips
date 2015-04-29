@@ -14,7 +14,8 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhoto
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.view.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
@@ -46,6 +47,7 @@ public enum Route {
     OTA(OtaFragment.class, R.string.other_travel),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class, R.string.membership),
+    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.membership),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
     MY_PROFILE(ProfileFragment.class, R.string.my_profile),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),

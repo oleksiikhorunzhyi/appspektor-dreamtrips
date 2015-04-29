@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.view;
+package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

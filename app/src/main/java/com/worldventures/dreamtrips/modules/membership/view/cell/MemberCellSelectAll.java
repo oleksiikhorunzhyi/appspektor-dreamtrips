@@ -7,7 +7,8 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.membership.event.SelectAllEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -46,6 +47,8 @@ public class MemberCellSelectAll extends AbstractCell<Object> {
         } else {
             tvName.setText("Select All");
         }
-        getEventBus().post(new SelectAllEvent(checked));
+        getEventBus().post(new MemberCellSelectAllRequestEvent(checked));
+        getEventBus().post(new MemberCellSelectedEvent(checked));
+
     }
 }

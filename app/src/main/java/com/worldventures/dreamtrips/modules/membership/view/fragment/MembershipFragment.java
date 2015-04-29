@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.view;
+package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;

@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
-public class CoverImage {
+import java.io.Serializable;
+
+public class CoverImage implements Serializable {
 
     private String originUrl;
     private String url;

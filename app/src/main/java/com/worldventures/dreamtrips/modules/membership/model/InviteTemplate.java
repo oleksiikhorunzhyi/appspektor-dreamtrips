@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class InviteTemplate extends BaseEntity {
 
+
     String title;
     CoverImage coverImage;
     String video;

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,9 +11,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
+
+import java.util.List;
 
 import butterknife.InjectView;
 
@@ -39,6 +43,16 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
                 getPresenter().updatePreview();
                 break;
             case R.id.action_send:
+                List<String> membersAddress = getPresenter().getMembersAddress();
+                String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
+
+                Intent intent = Share.newEmailIntent(
+                        addresses,
+                        getPresenter().getSubject(),
+                        getPresenter().getBody()
+                );
+                Intent smsIntent = Share.newSmsIntent(addresses, getPresenter().getSmsBody());
+                startActivity(Intent.createChooser(smsIntent, "Share"));
                 break;
         }
         return super.onOptionsItemSelected(item);

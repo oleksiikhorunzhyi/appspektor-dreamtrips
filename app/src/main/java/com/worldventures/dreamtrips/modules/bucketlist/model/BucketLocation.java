@@ -8,7 +8,8 @@ public class BucketLocation extends BaseEntity{
     private String name;
     private String url;
     private String description;
-    private String short_description;
+    @SerializedName("shortDescription")
+    private String shortDescription;
     private boolean liked;
     @SerializedName("likes_count")
     private int likesCount;
@@ -41,11 +42,11 @@ public class BucketLocation extends BaseEntity{
     }
 
     public String getShort_description() {
-        return short_description;
+        return shortDescription;
     }
 
-    public void setShort_description(String short_description) {
-        this.short_description = short_description;
+    public void setShort_description(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     public boolean isLiked() {

@@ -7,6 +7,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 
 import butterknife.InjectView;
@@ -35,6 +36,6 @@ public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
 
     @OnClick(R.id.btn_select)
     public void onSelectAction() {
-
+        getEventBus().post(new TemplateSelectedEvent(getModelObject()));
     }
 }

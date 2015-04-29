@@ -5,9 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,18 +16,18 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
-import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.view.adapter.SimpleImageArrayAdapter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCellSelectAll;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDialog;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -114,8 +112,8 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
     }
 
     @Override
-    public List<Member> getItems() {
-        return adapter.getItems().subList(1, adapter.getCount());
+    public ArrayList<Member> getItems() {
+        return new ArrayList<>(adapter.getItems().subList(1, adapter.getCount()));
     }
 
     @Override

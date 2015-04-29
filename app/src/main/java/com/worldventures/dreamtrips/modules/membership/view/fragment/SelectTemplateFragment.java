@@ -12,6 +12,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 
@@ -22,6 +23,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_select_template)
 public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter> implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String BUNDLE_TO = "BUNDLE_TO";
     @InjectView(R.id.lv_templates)
     RecyclerView lvTemplates;
     @InjectView(R.id.swipe_container)
@@ -31,7 +33,8 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     protected SelectTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        return new SelectTemplatePresenter(this);
+        ArrayList<Member> members = (ArrayList<Member>) getArguments().getSerializable(BUNDLE_TO);
+        return new SelectTemplatePresenter(this, members);
     }
 
     @Override
@@ -42,8 +45,6 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
         lvTemplates.setAdapter(adapter);
         swipeContainer.setOnRefreshListener(this);
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-
-
     }
 
     @Override

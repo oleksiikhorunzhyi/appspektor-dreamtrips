@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplateP
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCellSelectAll;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationsFragment;
@@ -34,7 +36,9 @@ import dagger.Provides;
                 MemberCellSelectAll.class,
                 SelectTemplateFragment.class,
                 SelectTemplatePresenter.class,
-                InviteTemplateCell.class
+                InviteTemplateCell.class,
+                EditTemplateFragment.class,
+                EditTemplatePresenter.class
         },
         complete = false,
         library = true

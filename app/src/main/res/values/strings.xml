@@ -225,6 +225,9 @@
     <string name="invite_add_name">Name</string>
     <string name="invite_email">Email</string>
     <string name="invite_phone">Phone</string>
+    <string name="invite_add_message">Add Personal Message</string>
+    <string name="action_send">Send</string>
+    <string name="action_preview">Preview</string>
 
 
 </resources>

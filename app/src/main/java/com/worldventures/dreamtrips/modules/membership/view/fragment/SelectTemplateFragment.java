@@ -59,6 +59,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void addItems(ArrayList<InviteTemplate> inviteTemplates) {
+        adapter.clear();
         adapter.addItems(inviteTemplates);
     }
 

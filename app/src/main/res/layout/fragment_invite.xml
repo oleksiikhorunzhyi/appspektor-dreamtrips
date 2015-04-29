@@ -78,7 +78,6 @@
         android:layout_height="50dp"
         android:background="@color/theme_main_darker"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:gravity="center"
         android:visibility="visible">
 

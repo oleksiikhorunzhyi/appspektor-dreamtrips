@@ -57,7 +57,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
 
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        InviteTemplate template = (InviteTemplate) getArguments().getSerializable(TEMPLATE);
+        InviteTemplate template = getArguments().getParcelable(TEMPLATE);
         return new EditTemplatePresenter(this, template);
     }
 

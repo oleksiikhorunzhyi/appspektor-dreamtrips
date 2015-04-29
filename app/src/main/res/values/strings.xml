@@ -228,6 +228,8 @@
     <string name="invite_add_message">Add Personal Message</string>
     <string name="action_send">Send</string>
     <string name="action_preview">Preview</string>
+    <string name="title_activity_invite">InviteActivity</string>
+    <string name="title_edit_template">Edit template</string>
 
 
 </resources>

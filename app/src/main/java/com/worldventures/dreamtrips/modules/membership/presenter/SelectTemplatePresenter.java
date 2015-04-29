@@ -38,7 +38,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         inviteTemplate.setFrom(getCurrentUserEmail());
         inviteTemplate.setType(members.get(0).isEmailMain() ? InviteTemplate.EMAIL : InviteTemplate.SMS);
         bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
-        fragmentCompass.add(Route.EDIT_INVITE_TEMPLATE, bundle);
+        activityRouter.openEditInviteActivity(inviteTemplate);
     }
 
     private void handleFail(SpiceException e) {
@@ -46,6 +46,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
     }
 
     private void handleResponse(ArrayList<InviteTemplate> inviteTemplates) {
+
         view.finishLoading();
         view.addItems(inviteTemplates);
     }

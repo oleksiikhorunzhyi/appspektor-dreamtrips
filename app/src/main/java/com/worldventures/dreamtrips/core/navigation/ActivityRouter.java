@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -127,5 +129,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
         startActivity(SuccessStoryDetailsActivity.class, bundle);
+    }
+
+    public void openEditInviteActivity(InviteTemplate inviteTemplate) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PreviewInviteActivity.BUNDLE_TEMPLATE, inviteTemplate);
+        startActivity(PreviewInviteActivity.class, bundle);
+
     }
 }

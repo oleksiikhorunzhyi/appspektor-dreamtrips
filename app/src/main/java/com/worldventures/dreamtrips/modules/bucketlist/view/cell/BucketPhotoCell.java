@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,6 +34,7 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     protected void syncUIStateWithModel() {
+        imageViewPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0.0f, 0.0f));
         imageViewPhoto.setImageURI(Uri.parse(getModelObject()
                 .getFSImage().getThumbUrl(itemView.getResources())));
     }

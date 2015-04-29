@@ -165,10 +165,23 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.cancelEventDelivery(event);
         doRequest(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getFsId()), bucketItem.getId()),
                 (jsonObject) -> {
+                    deleted(event.getPhoto());
                     bucketItem.getPhotos().remove(event.getPhoto());
                     resaveItem(bucketItem);
                     view.getBucketPhotosView().deleteImage(event.getPhoto());
                 }, this);
+    }
+
+    protected void deleted(BucketPhoto bucketPhoto) {
+        bucketItem.getPhotos().remove(bucketPhoto);
+
+        if (bucketItem.getCoverPhoto() != null &&
+                bucketItem.getCoverPhoto().equals(bucketPhoto)) {
+            bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
+        }
+
+        resaveItem(bucketItem);
+        view.getBucketPhotosView().deleteImage(bucketPhoto);
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {

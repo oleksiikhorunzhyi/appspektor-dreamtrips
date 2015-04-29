@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
@@ -81,6 +82,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         if (adapter.getCount() > 0) {
             BucketType currentType = adapter.getFragmentItem(pager.getCurrentItem()).data;
             handler.postDelayed(() -> getPresenter().onTabChange(currentType), 600l);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -115,7 +117,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         }
     }
 
-    public static class BucketTabsAdapter extends BaseStatePagerAdapter<DataFragmentItem<BucketType>> implements CustomTabProvider {
+    public static class BucketTabsAdapter extends BasePagerAdapter<DataFragmentItem<BucketType>> implements CustomTabProvider {
         ViewGroup tabHolder;
         WeakHandler handler = new WeakHandler();
 

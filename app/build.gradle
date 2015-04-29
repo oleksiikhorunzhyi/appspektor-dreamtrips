@@ -27,8 +27,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
 
-        versionCode 59
-        versionName "0.2.23"
+        versionCode 60
+        versionName "0.2.24"
 
         multiDexEnabled true
 
@@ -41,7 +41,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("eddebug.keystore")
+            storeFile file("../eddebug.keystore")
         }
         release {
             if (project.hasProperty("signing.properties")

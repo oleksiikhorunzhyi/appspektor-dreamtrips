@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
@@ -34,7 +35,6 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 
 @Layout(R.layout.fragment_bucket_tab)
-@MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
@@ -74,6 +74,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             }
         });
     }
+
 
     @Override
     public void onResume() {
@@ -115,7 +116,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         }
     }
 
-    public static class BucketTabsAdapter extends BaseStatePagerAdapter<DataFragmentItem<BucketType>> implements CustomTabProvider {
+    public static class BucketTabsAdapter extends BasePagerAdapter<DataFragmentItem<BucketType>> implements CustomTabProvider {
         ViewGroup tabHolder;
         WeakHandler handler = new WeakHandler();
 

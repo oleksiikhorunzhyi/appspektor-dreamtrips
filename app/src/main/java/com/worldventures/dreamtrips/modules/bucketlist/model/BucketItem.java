@@ -53,6 +53,9 @@ public class BucketItem extends BaseEntity {
     @SerializedName("cover_photo")
     private BucketPhoto coverPhoto;
 
+    @TaggedFieldSerializer.Tag(13)
+    private BucketLocation location;
+
     private transient boolean selected;
 
     public String getName() {
@@ -69,6 +72,10 @@ public class BucketItem extends BaseEntity {
 
     public Date getCompletion_date() {
         return completionDate;
+    }
+
+    public BucketLocation getLocation() {
+        return location;
     }
 
     public boolean isDone() {
@@ -127,6 +134,18 @@ public class BucketItem extends BaseEntity {
         } else {
             return "";
         }
+    }
+
+    public BucketPhoto getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(BucketPhoto coverPhoto) {
+        this.coverPhoto = coverPhoto;
+    }
+
+    public BucketPhoto getFirstPhoto() {
+        return Queryable.from(photos).firstOrDefault();
     }
 
     public String getFriends() {

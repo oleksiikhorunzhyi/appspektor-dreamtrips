@@ -46,6 +46,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
     }
 
+
     @Override
     protected void syncUI() {
         super.syncUI();

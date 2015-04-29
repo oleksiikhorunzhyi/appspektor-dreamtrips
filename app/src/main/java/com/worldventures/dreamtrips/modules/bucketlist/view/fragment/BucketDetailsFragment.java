@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -67,6 +68,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);

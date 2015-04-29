@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 
 import java.util.ArrayList;
 
-public class GetInvitationsTemplate extends Query<ArrayList<InviteTemplate>> {
+public class GetInvitationsTemplateQuery extends Query<ArrayList<InviteTemplate>> {
 
-    public GetInvitationsTemplate() {
+    public GetInvitationsTemplateQuery() {
         super((Class<ArrayList<InviteTemplate>>) new ArrayList<InviteTemplate>().getClass());
     }
 

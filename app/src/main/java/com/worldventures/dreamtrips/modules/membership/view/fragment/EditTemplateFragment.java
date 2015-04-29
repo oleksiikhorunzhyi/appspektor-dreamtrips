@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -32,8 +33,15 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     MaterialEditText etMessage;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_preview:
+                getPresenter().updatePreview();
+                break;
+            case R.id.action_send:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -67,5 +75,20 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void setWebViewContent(String content) {
         wvPreview.loadData(content, "text/html", "UTF-8");
+    }
+
+    @Override
+    public String getMessage() {
+        return etMessage.getText().toString();
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void finishLoading() {
+
     }
 }

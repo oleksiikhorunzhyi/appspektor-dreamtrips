@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
@@ -10,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
+    public static final String TAG = EditTemplatePresenter.class.getSimpleName();
     private InviteTemplate template;
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
@@ -28,7 +32,26 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             to.add(member.getSubtitle());
         }
         view.setTo(TextUtils.join(", ", to));
-        view.setWebViewContent(template.getContent());
+        handleNewContent(template);
+    }
+
+    public void updatePreview() {
+        view.startLoading();
+        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(
+                        template.getId(),
+                        view.getMessage()),
+                this::handleNewContent,
+                this::handleFail);
+    }
+
+    private void handleFail(SpiceException spiceException) {
+        view.finishLoading();
+        Log.e(TAG, "", spiceException);
+    }
+
+    private void handleNewContent(InviteTemplate inviteTemplate) {
+        view.finishLoading();
+        view.setWebViewContent(inviteTemplate.getContent());
     }
 
     public interface View extends Presenter.View {
@@ -40,5 +63,12 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         void setTo(String s);
 
         void setWebViewContent(String content);
+
+        String getMessage();
+
+        void startLoading();
+
+        void finishLoading();
+
     }
 }

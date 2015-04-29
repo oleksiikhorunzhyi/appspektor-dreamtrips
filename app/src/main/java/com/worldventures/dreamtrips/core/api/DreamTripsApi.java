@@ -151,8 +151,9 @@ public interface DreamTripsApi {
     @POST("/api/invitations/")
     public ArrayList<InviteTemplate> sendInvitations();
 
-    @POST("/api/invitations/filled_templates/{id}")
-    public ArrayList<InviteTemplate> getInviteTemplate(@Part("id") int id);
+    @FormUrlEncoded
+    @POST("/api/invitations/templates/{id}")
+    public InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
 
 
 }

@@ -41,6 +41,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     }
 
     public void afterCreateView(View rootView) {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setupMenuIfNeed();
     }
 

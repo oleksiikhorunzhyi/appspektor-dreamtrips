@@ -17,6 +17,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.adapter.SimpleImageArrayAdapter;
@@ -108,7 +109,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
     @Override
     public int getSelectedType() {
         int pos = spinner.getSelectedItemPosition();
-        return pos == 0 ? PhoneContactRequest.EMAIL : PhoneContactRequest.SMS;
+        return pos == 0 ? InviteTemplate.EMAIL : InviteTemplate.SMS;
     }
 
     @Override

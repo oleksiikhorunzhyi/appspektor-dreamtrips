@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -67,7 +67,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
         }
 
         if (getActivity() instanceof SuccessStoryDetailsActivity) {
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
         } else {
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);

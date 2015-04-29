@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -59,16 +61,34 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         view.setWebViewContent(inviteTemplate.getContent());
     }
 
-    public String getSubject() {
+    private String getSubject() {
         return template.getTitle();
     }
 
-    public String getBody() {
+    private String getBody() {
         return template.getContent();
     }
 
-    public String getSmsBody() {
+    private String getSmsBody() {
         return "Hello world";
+    }
+
+
+    public Intent getShareIntent() {
+        int type = template.getType();
+        List<String> membersAddress = getMembersAddress();
+        String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
+        Intent intent;
+        if (type == InviteTemplate.EMAIL) {
+            intent = Share.newEmailIntent(addresses, getSubject(), getBody());
+        } else {
+            intent = Share.newSmsIntent(addresses, getSmsBody());
+        }
+        return intent;
+    }
+
+    public void notifyServer() {
+        //TODO
     }
 
     public interface View extends Presenter.View {

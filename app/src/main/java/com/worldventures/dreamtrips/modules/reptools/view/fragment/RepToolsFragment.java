@@ -27,7 +27,7 @@ import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_rep_tools)
-@MenuResource(R.menu.menu_empty)
+@MenuResource(R.menu.menu_mock)
 public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)

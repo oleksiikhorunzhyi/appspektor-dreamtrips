@@ -21,7 +21,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         view.alert(event.getMessage());
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void setTitle(int title);
     }
 }

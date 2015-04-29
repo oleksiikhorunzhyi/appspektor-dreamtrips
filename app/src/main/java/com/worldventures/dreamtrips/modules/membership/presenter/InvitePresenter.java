@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
@@ -97,7 +98,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void finishLoading();
 
-        @PhoneContactRequest.Type
+        @InviteTemplate.Type
         int getSelectedType();
 
         ArrayList<Member> getItems();

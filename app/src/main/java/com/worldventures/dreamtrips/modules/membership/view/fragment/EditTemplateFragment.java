@@ -11,12 +11,9 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
-
-import java.util.List;
 
 import butterknife.InjectView;
 
@@ -35,6 +32,8 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     WebView wvPreview;
     @InjectView(R.id.et_email)
     MaterialEditText etMessage;
+    @InjectView(R.id.ll_progress)
+    View progressView;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -43,20 +42,18 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
                 getPresenter().updatePreview();
                 break;
             case R.id.action_send:
-                List<String> membersAddress = getPresenter().getMembersAddress();
-                String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
-
-                Intent intent = Share.newEmailIntent(
-                        addresses,
-                        getPresenter().getSubject(),
-                        getPresenter().getBody()
-                );
-                Intent smsIntent = Share.newSmsIntent(addresses, getPresenter().getSmsBody());
-                startActivity(Intent.createChooser(smsIntent, "Share"));
+                shareAction();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void shareAction() {
+        Intent smsIntent = getPresenter().getShareIntent();
+        startActivity(Intent.createChooser(smsIntent, "Share"));
+        getPresenter().notifyServer();
+    }
+
 
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
@@ -69,6 +66,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         super.afterCreateView(rootView);
         wvPreview.getSettings().setLoadWithOverviewMode(true);
         wvPreview.getSettings().setUseWideViewPort(true);
+        progressView.setVisibility(View.GONE);
     }
 
     @Override
@@ -98,11 +96,12 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
 
     @Override
     public void startLoading() {
+        progressView.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void finishLoading() {
-
+        progressView.setVisibility(View.GONE);
     }
 }

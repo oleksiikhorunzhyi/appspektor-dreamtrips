@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.component;
 
+import android.support.v4.app.FragmentManager;
+
 import com.innahema.collections.query.queriables.Queryable;
 
 import org.apache.commons.lang3.Validate;
@@ -44,6 +46,19 @@ public class RootComponentsProvider {
     }
 
     public ComponentDescription getComponentByKey(String key) {
-        return Queryable.from(activeComponents).first(c -> c.getKey().equalsIgnoreCase(key));
+        return Queryable.from(activeComponents)
+                .firstOrDefault(c -> c.getKey().equalsIgnoreCase(key));
+    }
+
+    public ComponentDescription getComponent(FragmentManager fm, int backstackOffset) {
+        int size = fm.getBackStackEntryCount();
+        int sizeWithOffset = size - backstackOffset;
+        for (int i = sizeWithOffset - 1; i >= 0; i--) {
+            ComponentDescription component = getComponentByKey(fm.getBackStackEntryAt(i).getName());
+            if (component != null) {
+                return component;
+            }
+        }
+        return null;
     }
 }

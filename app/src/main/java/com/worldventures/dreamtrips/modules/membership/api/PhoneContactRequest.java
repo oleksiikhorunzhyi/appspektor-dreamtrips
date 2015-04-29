@@ -4,16 +4,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.IntDef;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +19,6 @@ import javax.inject.Inject;
 
 public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
-    public static final int EMAIL = 0;
-    public static final int SMS = 1;
     private int type;
 
     @Inject
@@ -30,7 +26,8 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
     @Inject
     Context context;
-    public PhoneContactRequest(@Type int type) {
+
+    public PhoneContactRequest(@InviteTemplate.Type int type) {
         super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
         this.type = type;
     }
@@ -54,7 +51,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                 member.setName(name);
                 extractSms(cr, cur, member, id);
                 extractEmail(cr, member, id);
-                if (type == EMAIL) {
+                if (type == InviteTemplate.EMAIL) {
                     if (!TextUtils.isEmpty(member.getEmail())) {
                         if (TextUtils.isEmpty(member.getName())) {
                             member.setName(member.getEmail());
@@ -62,7 +59,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                         member.setEmailIsMain(true);
                         result.add(member);
                     }
-                } else if (type == SMS) {
+                } else if (type == InviteTemplate.SMS) {
                     if (!TextUtils.isEmpty(member.getPhone())) {
                         if (TextUtils.isEmpty(member.getName())) {
                             member.setName(member.getPhone());
@@ -77,9 +74,9 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
         List<Member> inviteMembers = db.getInviteMembers();
         List<Member> members = null;
-        if (type == EMAIL) {
+        if (type == InviteTemplate.EMAIL) {
             members = Queryable.from(inviteMembers).filter(element -> !element.getEmail().isEmpty()).toList();
-        } else if (type == SMS) {
+        } else if (type == InviteTemplate.SMS) {
             members = Queryable.from(inviteMembers).filter(element -> !element.getPhone().isEmpty()).toList();
         }
         result.addAll(0, members);
@@ -88,7 +85,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     }
 
     private void extractEmail(ContentResolver cr, Member member, String id) {
-        if (type == EMAIL) {
+        if (type == InviteTemplate.EMAIL) {
             // get email and type
             Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     null,
@@ -103,7 +100,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     }
 
     private void extractSms(ContentResolver cr, Cursor cur, Member member, String id) {
-        if (type == SMS) {
+        if (type == InviteTemplate.SMS) {
             if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                 // get the phone number
                 Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
@@ -117,10 +114,5 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                 pCur.close();
             }
         }
-    }
-
-    @IntDef({EMAIL, SMS})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Type {
     }
 }

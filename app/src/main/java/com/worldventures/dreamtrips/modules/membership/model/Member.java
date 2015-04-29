@@ -58,4 +58,8 @@ public class Member implements Serializable {
     public void setIsChecked(boolean isChecked) {
         this.isChecked = isChecked;
     }
+
+    public boolean isEmailMain() {
+        return emailIsMain;
+    }
 }

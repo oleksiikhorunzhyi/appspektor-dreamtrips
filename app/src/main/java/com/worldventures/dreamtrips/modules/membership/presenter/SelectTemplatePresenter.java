@@ -36,6 +36,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         InviteTemplate inviteTemplate = event.getInviteTemplate();
         inviteTemplate.setTo(members);
         inviteTemplate.setFrom(getCurrentUserEmail());
+        inviteTemplate.setType(members.get(0).isEmailMain() ? InviteTemplate.EMAIL : InviteTemplate.SMS);
         bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
         fragmentCompass.add(Route.EDIT_INVITE_TEMPLATE, bundle);
     }

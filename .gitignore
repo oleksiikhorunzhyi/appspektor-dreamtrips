@@ -53,3 +53,5 @@ log*.txt
 
 # svn
 *.svn*
+
+signing.properties

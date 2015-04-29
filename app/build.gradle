@@ -21,12 +21,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    signingConfigs {
-        debug {
-            storeFile rootProject.file("eddebug.keystore")
-        }
-    }
-
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
 
@@ -44,12 +38,34 @@ android {
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
     }
 
+
+    signingConfigs {
+        debug {
+            storeFile file("eddebug.keystore")
+        }
+        release {
+            if (project.hasProperty("signing.properties")
+                    && new File(project.property("signing.properties")).exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(file(project.property("signing.properties"))))
+
+                storeFile file(props['keystore'])
+                storePassword props['keystore.password']
+                keyAlias props['keyAlias']
+                keyPassword props['keyPassword']
+            }
+        }
+    }
+
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
         }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

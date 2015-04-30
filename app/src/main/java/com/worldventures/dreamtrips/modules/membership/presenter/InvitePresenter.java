@@ -25,8 +25,10 @@ import javax.inject.Inject;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
-    @Inject SnappyRepository db;
-    @Inject Injector injector;
+    @Inject
+    SnappyRepository db;
+    @Inject
+    Injector injector;
 
     private List<Member> members;
 
@@ -41,7 +43,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void loadMembers() {
         view.startLoading();
-        PhoneContactRequest request = new PhoneContactRequest(view.getSelectedType());
+        InviteTemplate.Type from = InviteTemplate.Type.from(view.getSelectedType());
+        PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
         dreamSpiceManager.execute(request, new RequestListener<ArrayList<Member>>() {
             @Override
@@ -63,14 +66,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         db.addInviteMember(member);
         //
         boolean addToLoadedMembers = false;
-        switch (view.getSelectedType()) {
-            case InviteTemplate.EMAIL:
+        switch (InviteTemplate.Type.from(view.getSelectedType())) {
+            case EMAIL:
                 addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
                 break;
-            case InviteTemplate.SMS:
+            case SMS:
                 addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
                 break;
-
         }
         if (addToLoadedMembers) {
             members.add(member);
@@ -112,7 +114,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void finishLoading();
 
-        @InviteTemplate.Type
         int getSelectedType();
 
         void setMembers(List<Member> memberList);

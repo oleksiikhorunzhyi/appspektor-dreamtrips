@@ -117,7 +117,7 @@ public class InviteFragment
     @Override
     public int getSelectedType() {
         int pos = spinner.getSelectedItemPosition();
-        return pos == 0 ? InviteTemplate.EMAIL : InviteTemplate.SMS;
+        return pos;
     }
 
     @OnCheckedChanged(R.id.cb_select_all)

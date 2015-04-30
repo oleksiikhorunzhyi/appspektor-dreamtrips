@@ -20,13 +20,14 @@ import javax.inject.Inject;
 
 public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
-    @InviteTemplate.Type
-    private int type;
+    private InviteTemplate.Type type;
 
-    @Inject Context context;
-    @Inject SnappyRepository db;
+    @Inject
+    Context context;
+    @Inject
+    SnappyRepository db;
 
-    public PhoneContactRequest(@InviteTemplate.Type int type) {
+    public PhoneContactRequest(InviteTemplate.Type type) {
         super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
         this.type = type;
     }
@@ -43,14 +44,14 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
         String[] selectionArgs = new String[0];
         String order = ContactsContract.Contacts.DISPLAY_NAME + " ASC";
         switch (type) {
-            case InviteTemplate.EMAIL:
+            case EMAIL:
                 contentURI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
                 projection = new String[]{
                         ContactsContract.Contacts.DISPLAY_NAME,
                         ContactsContract.Contacts._ID,
                         ContactsContract.CommonDataKinds.Email.DATA};
                 break;
-            case InviteTemplate.SMS:
+            case SMS:
                 contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
                 projection = new String[]{
                         ContactsContract.Contacts._ID,
@@ -71,7 +72,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
             String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             member.setName(name);
             switch (type) {
-                case InviteTemplate.EMAIL:
+                case EMAIL:
                     String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     member.setEmail(email);
                     if (TextUtils.isEmpty(member.getEmail())) break;
@@ -79,7 +80,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                     member.setEmailIsMain(true);
                     result.add(member);
                     break;
-                case InviteTemplate.SMS:
+                case SMS:
                     String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     member.setPhone(phone);
                     if (TextUtils.isEmpty(phone)) break;
@@ -94,10 +95,10 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
         // Load members from db and filter out with empty phone/email
         Predicate<Member> memberPredicate = null;
         switch (type) {
-            case InviteTemplate.EMAIL:
+            case EMAIL:
                 memberPredicate = element -> !element.getEmail().isEmpty();
                 break;
-            case InviteTemplate.SMS:
+            case SMS:
                 memberPredicate = element -> !element.getPhone().isEmpty();
                 break;
         }

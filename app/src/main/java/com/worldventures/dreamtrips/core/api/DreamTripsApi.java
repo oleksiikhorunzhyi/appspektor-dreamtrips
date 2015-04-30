@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,11 +152,15 @@ public interface DreamTripsApi {
     public ArrayList<InviteTemplate> getInvitations();
 
     @POST("/api/invitations/")
-    public ArrayList<InviteTemplate> sendInvitations();
+    public JSONObject sendInvitations(@Body InviteBody body);
 
     @FormUrlEncoded
     @POST("/api/invitations/templates/{id}")
     public InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
+
+    @FormUrlEncoded
+    @POST("/api/invitations/filled_templates/")
+    public InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message);
 
 
 }

@@ -2,17 +2,12 @@ package com.worldventures.dreamtrips.modules.membership.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
 
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 public class InviteTemplate extends BaseEntity implements Parcelable {
-    public static final int EMAIL = 0;
-    public static final int SMS = 1;
 
     private String title;
     private CoverImage coverImage;
@@ -21,8 +16,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     private String content;
     private ArrayList<Member> to = new ArrayList<>(0);
     private String from;
-    @Type
-    private int type;
+    private Type type;
     private String link;
 
     public ArrayList<Member> getTo() {
@@ -61,14 +55,34 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         return content;
     }
 
-    public int getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setType(Type type) {
         this.type = type;
     }
 
+
+    public InviteTemplate() {
+    }
+
+
+    public enum Type {
+        EMAIL, SMS;
+
+        public static Type from(int i) {
+            return i == 0 ? EMAIL : SMS;
+        }
+    }
 
     @Override
     public int describeContents() {
@@ -84,12 +98,9 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         dest.writeString(this.content);
         dest.writeSerializable(this.to);
         dest.writeString(this.from);
-        dest.writeInt(this.type);
-        dest.writeInt(this.id);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeString(this.link);
-    }
-
-    public InviteTemplate() {
+        dest.writeInt(this.id);
     }
 
     private InviteTemplate(Parcel in) {
@@ -100,12 +111,17 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         this.content = in.readString();
         this.to = (ArrayList<Member>) in.readSerializable();
         this.from = in.readString();
-        this.type = in.readInt();
-        this.id = in.readInt();
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : Type.values()[tmpType];
         this.link = in.readString();
+        this.id = in.readInt();
     }
 
-    public static final Parcelable.Creator<InviteTemplate> CREATOR = new Parcelable.Creator<InviteTemplate>() {
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public static final Creator<InviteTemplate> CREATOR = new Creator<InviteTemplate>() {
         public InviteTemplate createFromParcel(Parcel source) {
             return new InviteTemplate(source);
         }
@@ -114,9 +130,4 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
             return new InviteTemplate[size];
         }
     };
-
-    @IntDef({EMAIL, SMS})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Type {
-    }
 }

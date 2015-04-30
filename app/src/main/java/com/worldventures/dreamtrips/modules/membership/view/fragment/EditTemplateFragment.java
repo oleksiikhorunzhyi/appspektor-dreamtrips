@@ -42,16 +42,15 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
                 getPresenter().updatePreview();
                 break;
             case R.id.action_send:
-                shareAction();
+                getPresenter().shareRequest();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void shareAction() {
+    public void shareAction() {
         Intent smsIntent = getPresenter().getShareIntent();
         startActivity(Intent.createChooser(smsIntent, "Share"));
-        getPresenter().notifyServer();
     }
 
 

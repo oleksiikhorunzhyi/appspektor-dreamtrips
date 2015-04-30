@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Patterns;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
@@ -36,7 +35,8 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         InviteTemplate inviteTemplate = event.getInviteTemplate();
         inviteTemplate.setTo(members);
         inviteTemplate.setFrom(getCurrentUserEmail());
-        inviteTemplate.setType(members.get(0).isEmailMain() ? InviteTemplate.EMAIL : InviteTemplate.SMS);
+        inviteTemplate.setType(members.get(0).isEmailMain() ?
+                InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
         bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
         activityRouter.openEditInviteActivity(inviteTemplate);
     }
@@ -53,7 +53,10 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     public void reload() {
         view.startLoading();
-        dreamSpiceManager.execute(new GetInvitationsTemplateQuery(), this::handleResponse, this::handleFail);
+        dreamSpiceManager.execute(new GetInvitationsTemplateQuery(),
+                this::handleResponse,
+                this::handleFail
+        );
     }
 
     public interface View extends Presenter.View {

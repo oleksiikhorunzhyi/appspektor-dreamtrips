@@ -5,11 +5,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
+import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
+import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
+import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +37,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         view.setSubject(template.getTitle());
         List<String> to = getMembersAddress();
         view.setTo(TextUtils.join(", ", to));
-        handleNewContent(template);
+        getFilledInvitationsTemplateSuccess(template);
     }
 
     public List<String> getMembersAddress() {
@@ -47,18 +53,20 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(
                         template.getId(),
                         view.getMessage()),
-                this::handleNewContent,
-                this::handleFail);
+                this::getFilledInvitationsTemplateSuccess,
+                this::getFilledInvitationsTemplateFailed);
     }
 
-    private void handleFail(SpiceException spiceException) {
+    private void getFilledInvitationsTemplateFailed(SpiceException spiceException) {
         view.finishLoading();
         Log.e(TAG, "", spiceException);
     }
 
-    private void handleNewContent(InviteTemplate inviteTemplate) {
+    private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        view.setWebViewContent(inviteTemplate.getContent());
+        template.setLink(inviteTemplate.getLink());
+        template.setContent(inviteTemplate.getContent());
+        view.setWebViewContent(template.getContent());
     }
 
     private String getSubject() {
@@ -70,15 +78,15 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private String getSmsBody() {
-        return "Hello world";
+        return template.getLink();
     }
 
     public Intent getShareIntent() {
-        int type = template.getType();
+        InviteTemplate.Type type = template.getType();
         List<String> membersAddress = getMembersAddress();
         String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
         Intent intent;
-        if (type == InviteTemplate.EMAIL) {
+        if (type == InviteTemplate.Type.EMAIL) {
             intent = Share.newEmailIntent(addresses, getSubject(), getBody());
         } else {
             intent = Share.newSmsIntent(addresses, getSmsBody());
@@ -86,8 +94,55 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return intent;
     }
 
-    public void notifyServer() {
-        //TODO
+    private void notifyServer() {
+        InviteBody body = new InviteBody();
+        body.setContacts(getContactAddress());
+        body.setTemplateId(template.getId());
+        body.setType(template.getType());
+        dreamSpiceManager.execute(
+                new SendInvitationsQuery(body),
+                this::sentInviteSuccess,
+                this::sentInvitesFailed
+        );
+    }
+
+    private void sentInvitesFailed(SpiceException spiceException) {
+        Log.e(TAG, "", spiceException);
+    }
+
+    private void sentInviteSuccess(JSONObject aVoid) {
+        Log.i(TAG, "sentInviteSuccess");
+        eventBus.post(new InvitesSentEvent());
+    }
+
+    private List<String> getContactAddress() {
+        ArrayList<Member> to = template.getTo();
+        List<String> result = new ArrayList<>();
+        for (Member member : to) {
+            result.add(member.getSubtitle());
+        }
+        return result;
+    }
+
+    public void shareRequest() {
+        if (view.getMessage().trim().isEmpty()) {
+            view.informUser(context.getString(R.string.error_personal_message_is_empty));
+        } else {
+            dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
+                    this::createInviteSuccess,
+                    this::createInviteFailed);
+        }
+    }
+
+    private void createInviteSuccess(InviteTemplate template) {
+        Log.i(TAG, "createInviteSuccess");
+        getFilledInvitationsTemplateSuccess(template);
+        view.shareAction();
+        notifyServer();
+    }
+
+    private void createInviteFailed(SpiceException spiceException) {
+        Log.e(TAG, "", spiceException);
     }
 
     public interface View extends Presenter.View {
@@ -106,5 +161,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
         void finishLoading();
 
+        void shareAction();
     }
 }

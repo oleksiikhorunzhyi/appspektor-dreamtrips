@@ -16,19 +16,21 @@ android {
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    // App version
+    def versionMajor = 1
+    def versionMinor = 0
+    def versionPatch = 0
+    def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
 
+        archivesBaseName = "DreamTrips"
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
         minSdkVersion 14
         targetSdkVersion 21
-
-        versionCode 60
-        versionName "0.2.24"
 
         multiDexEnabled true
 
@@ -37,39 +39,6 @@ android {
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
     }
-
-
-    signingConfigs {
-        debug {
-            storeFile file("../eddebug.keystore")
-        }
-        release {
-            if (project.hasProperty("signing.properties")
-                    && new File(project.property("signing.properties")).exists()) {
-                Properties props = new Properties()
-                props.load(new FileInputStream(file(project.property("signing.properties"))))
-
-                storeFile file(props['keystore'])
-                storePassword props['keystore.password']
-                keyAlias props['keyAlias']
-                keyPassword props['keyPassword']
-            }
-        }
-    }
-
-
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-            applicationIdSuffix ".debug"
-        }
-        release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
     productFlavors {
         dev {
             // the same as stage but with minSdk=21
@@ -125,16 +94,44 @@ android {
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
         }
     }
-
-
-    lintOptions {
-        abortOnError false
+    signingConfigs {
+        debug {
+            storeFile rootProject.file('debug.keystore')
+        }
+        release {
+            Properties signingProperties = new Properties()
+            def pFile = rootProject.file('signing/signing.properties')
+            if (pFile.exists()) {
+                signingProperties.load(new FileInputStream(pFile))
+                storeFile rootProject.file("signing/" + signingProperties.storeFile)
+                storePassword signingProperties.storePassword
+                keyAlias signingProperties.keyAlias
+                keyPassword signingProperties.keyPassword
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+        }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     dexOptions {
         javaMaxHeapSize "4g"
     }
-
+    lintOptions {
+        abortOnError false
+    }
     packagingOptions {
         exclude 'LICENSE.txt'
         exclude 'META-INF/services/javax.annotation.processing.Processor'

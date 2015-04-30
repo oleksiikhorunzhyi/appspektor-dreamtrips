@@ -40,7 +40,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void reload() {
         view.startLoading();
-        PhoneContactRequest request = new PhoneContactRequest(view.getSelectedType());
+        InviteTemplate.Type from = InviteTemplate.Type.from(view.getSelectedType());
+        PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
         dreamSpiceManager.execute(request, new RequestListener<ArrayList<Member>>() {
             @Override
@@ -94,7 +95,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void finishLoading();
 
-        @InviteTemplate.Type
         int getSelectedType();
 
         ArrayList<Member> getItems();

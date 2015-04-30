@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
-    private int type;
+    private InviteTemplate.Type type;
 
     @Inject
     SnappyRepository db;
@@ -27,7 +27,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     @Inject
     Context context;
 
-    public PhoneContactRequest(@InviteTemplate.Type int type) {
+    public PhoneContactRequest(InviteTemplate.Type type) {
         super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
         this.type = type;
     }
@@ -51,7 +51,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                 member.setName(name);
                 extractSms(cr, cur, member, id);
                 extractEmail(cr, member, id);
-                if (type == InviteTemplate.EMAIL) {
+                if (type == InviteTemplate.Type.EMAIL) {
                     if (!TextUtils.isEmpty(member.getEmail())) {
                         if (TextUtils.isEmpty(member.getName())) {
                             member.setName(member.getEmail());
@@ -59,7 +59,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                         member.setEmailIsMain(true);
                         result.add(member);
                     }
-                } else if (type == InviteTemplate.SMS) {
+                } else if (type == InviteTemplate.Type.SMS) {
                     if (!TextUtils.isEmpty(member.getPhone())) {
                         if (TextUtils.isEmpty(member.getName())) {
                             member.setName(member.getPhone());
@@ -74,9 +74,9 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
         List<Member> inviteMembers = db.getInviteMembers();
         List<Member> members = null;
-        if (type == InviteTemplate.EMAIL) {
+        if (type == InviteTemplate.Type.EMAIL) {
             members = Queryable.from(inviteMembers).filter(element -> !element.getEmail().isEmpty()).toList();
-        } else if (type == InviteTemplate.SMS) {
+        } else if (type == InviteTemplate.Type.SMS) {
             members = Queryable.from(inviteMembers).filter(element -> !element.getPhone().isEmpty()).toList();
         }
         result.addAll(0, members);
@@ -85,7 +85,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     }
 
     private void extractEmail(ContentResolver cr, Member member, String id) {
-        if (type == InviteTemplate.EMAIL) {
+        if (type == InviteTemplate.Type.EMAIL) {
             // get email and type
             Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     null,
@@ -100,7 +100,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     }
 
     private void extractSms(ContentResolver cr, Cursor cur, Member member, String id) {
-        if (type == InviteTemplate.SMS) {
+        if (type == InviteTemplate.Type.SMS) {
             if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                 // get the phone number
                 Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,

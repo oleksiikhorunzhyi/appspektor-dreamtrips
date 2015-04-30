@@ -109,7 +109,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
     @Override
     public int getSelectedType() {
         int pos = spinner.getSelectedItemPosition();
-        return pos == 0 ? InviteTemplate.EMAIL : InviteTemplate.SMS;
+        return pos;
     }
 
     @Override

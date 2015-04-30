@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.api;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -19,13 +20,11 @@ import javax.inject.Inject;
 
 public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
+    @InviteTemplate.Type
     private int type;
 
-    @Inject
-    SnappyRepository db;
-
-    @Inject
-    Context context;
+    @Inject Context context;
+    @Inject SnappyRepository db;
 
     public PhoneContactRequest(@InviteTemplate.Type int type) {
         super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
@@ -37,82 +36,76 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
         return readContacts();
     }
 
-
     public ArrayList<Member> readContacts() {
-        ArrayList<Member> result = new ArrayList<>();
-        ContentResolver cr = context.getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        Uri contentURI = null;
+        String[] projection = null;
+        String selection = null;
+        String[] selectionArgs = new String[0];
+        String order = ContactsContract.Contacts.DISPLAY_NAME + " ASC";
+        switch (type) {
+            case InviteTemplate.EMAIL:
+                contentURI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+                projection = new String[]{
+                        ContactsContract.Contacts.DISPLAY_NAME,
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.CommonDataKinds.Email.DATA};
+                break;
+            case InviteTemplate.SMS:
+                contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                projection = new String[]{
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.Contacts.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.TYPE};
+                selection = ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
+                selectionArgs = new String[]{String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)};
+                break;
+        }
+        Cursor cur = context.getContentResolver().query(contentURI, projection, selection, selectionArgs, order);
 
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                Member member = new Member();
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                member.setName(name);
-                extractSms(cr, cur, member, id);
-                extractEmail(cr, member, id);
-                if (type == InviteTemplate.EMAIL) {
-                    if (!TextUtils.isEmpty(member.getEmail())) {
-                        if (TextUtils.isEmpty(member.getName())) {
-                            member.setName(member.getEmail());
-                        }
-                        member.setEmailIsMain(true);
-                        result.add(member);
-                    }
-                } else if (type == InviteTemplate.SMS) {
-                    if (!TextUtils.isEmpty(member.getPhone())) {
-                        if (TextUtils.isEmpty(member.getName())) {
-                            member.setName(member.getPhone());
-                        }
-                        member.setEmailIsMain(false);
-                        result.add(member);
-                    }
-                }
+        ArrayList<Member> result = new ArrayList<>();
+        while (cur.moveToNext()) {
+            Member member = new Member();
+            String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+            member.setId(id);
+            String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            member.setName(name);
+            switch (type) {
+                case InviteTemplate.EMAIL:
+                    String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    member.setEmail(email);
+                    if (TextUtils.isEmpty(member.getEmail())) break;
+                    if (TextUtils.isEmpty(member.getName())) member.setName(email);
+                    member.setEmailIsMain(true);
+                    result.add(member);
+                    break;
+                case InviteTemplate.SMS:
+                    String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    member.setPhone(phone);
+                    if (TextUtils.isEmpty(phone)) break;
+                    if (TextUtils.isEmpty(member.getName())) member.setName(phone);
+                    member.setEmailIsMain(false);
+                    result.add(member);
+                    break;
             }
         }
         cur.close();
 
-        List<Member> inviteMembers = db.getInviteMembers();
-        List<Member> members = null;
-        if (type == InviteTemplate.EMAIL) {
-            members = Queryable.from(inviteMembers).filter(element -> !element.getEmail().isEmpty()).toList();
-        } else if (type == InviteTemplate.SMS) {
-            members = Queryable.from(inviteMembers).filter(element -> !element.getPhone().isEmpty()).toList();
+        // Load members from db and filter out with empty phone/email
+        Predicate<Member> memberPredicate = null;
+        switch (type) {
+            case InviteTemplate.EMAIL:
+                memberPredicate = element -> !element.getEmail().isEmpty();
+                break;
+            case InviteTemplate.SMS:
+                memberPredicate = element -> !element.getPhone().isEmpty();
+                break;
         }
-        result.addAll(0, members);
+        List<Member> cachedMembers = db.getInviteMembers();
+        cachedMembers = Queryable.from(cachedMembers).filter(memberPredicate).toList();
+        result.addAll(0, cachedMembers);
 
         return result;
     }
 
-    private void extractEmail(ContentResolver cr, Member member, String id) {
-        if (type == InviteTemplate.EMAIL) {
-            // get email and type
-            Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                    null,
-                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                    new String[]{id}, null);
-            while (emailCur.moveToNext()) {
-                String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                member.setEmail(email);
-            }
-            emailCur.close();
-        }
-    }
-
-    private void extractSms(ContentResolver cr, Cursor cur, Member member, String id) {
-        if (type == InviteTemplate.SMS) {
-            if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                // get the phone number
-                Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                        new String[]{id}, null);
-                while (pCur.moveToNext()) {
-                    String phone = pCur.getString(
-                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    member.setPhone(phone);
-                }
-                pCur.close();
-            }
-        }
-    }
 }

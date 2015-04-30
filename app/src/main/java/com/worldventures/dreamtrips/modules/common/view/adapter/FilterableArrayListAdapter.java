@@ -16,6 +16,7 @@ import java.util.List;
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
     protected List<BaseItemClass> cachedItems;
+    protected String query;
 
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
@@ -30,16 +31,12 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         filterHandler = new WeakHandler(filterThread.getLooper());
     }
 
-    public void flushFilter() {
-        if (!cachedItems.isEmpty()) {
-            items.clear();
-            items.addAll(cachedItems);
-            cachedItems.clear();
-            notifyDataSetChanged();
-        }
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Filter manipulation
+    ///////////////////////////////////////////////////////////////////////////
 
     public void setFilter(String query) {
+        this.query = query;
         if (TextUtils.isEmpty(query)) {
             flushFilter();
         } else {
@@ -48,7 +45,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
             }
 
             filterHandler.post(() -> {
-                String queryLowerCased = query.toLowerCase();
+                String queryLowerCased = this.query.toLowerCase();
                 List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(item -> item.containsQuery(queryLowerCased)).toList();
                 mainHandler.post(() -> {
                     items.clear();
@@ -57,5 +54,91 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
                 });
             });
         }
+    }
+
+    public void flushFilter() {
+        query = null;
+        if (!cachedItems.isEmpty()) {
+            items.clear();
+            items.addAll(cachedItems);
+            cachedItems.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Items modification proxy
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void addItem(int location, BaseItemClass obj) {
+        if (query == null) super.addItem(location, obj);
+        else {
+            cachedItems.add(location, obj);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void addItems(ArrayList<BaseItemClass> baseItemClasses) {
+        if (query == null) super.addItems(baseItemClasses);
+        else {
+            cachedItems.addAll(baseItemClasses);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void addItems(List<BaseItemClass> result) {
+        if (query == null) super.addItems(result);
+        else {
+            cachedItems.addAll(result);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void replaceItem(int location, BaseItemClass obj) {
+        if (query == null) super.replaceItem(location, obj);
+        else {
+            cachedItems.set(location, obj);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void remove(int location) {
+        if (query == null) super.remove(location);
+        else {
+            cachedItems.remove(location);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void setItems(List<BaseItemClass> baseItemClasses) {
+        super.setItems(baseItemClasses);
+        if (query != null) {
+            cachedItems.clear();
+            cachedItems.addAll(baseItemClasses);
+            setFilter(query);
+        }
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        cachedItems.clear();
+    }
+
+    @Override
+    public void onFinishLoading(List<BaseItemClass> result) {
+        super.onFinishLoading(result);
+        if (query != null) {
+            cachedItems.clear();
+            cachedItems.addAll(items);
+            setFilter(query);
+        }
+
     }
 }

@@ -32,6 +32,7 @@ public class FragmentMapInfoPresenter extends BaseTripPresenter<FragmentMapInfoP
     }
 
     public void onClick() {
+        fragmentCompass.pop();
         activityRouter.openTripDetails(trip);
     }
 

@@ -56,7 +56,9 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
         Calendar calendar = Calendar.getInstance();
 
         if (tag.equals(END)) {
-            calendar.add(Calendar.MONTH, 6);
+            calendar.setTime(getModelObject().getEndDate());
+        } else {
+            calendar.setTime(getModelObject().getStartDate());
         }
 
         fragmentCompass.showDatePickerDialog(this, calendar, 2015, 2020, tag);

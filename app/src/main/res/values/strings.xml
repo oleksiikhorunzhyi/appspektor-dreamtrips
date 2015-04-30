@@ -201,10 +201,6 @@
         <item>Delete</item>
     </string-array>
 
-    <string name="facebook_app_id">761667837261383</string>//do not translate
-    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
-    //do not translate
-
     <string name="add_pictures">Add pictures</string>
     <string name="select_photo">Select photo</string>
     <string name="bucket_photo_dialog">Bucket photo</string>
@@ -219,7 +215,7 @@
     <string name="cancel_photo_negative">No</string>
     <string name="presentations">Presentations</string>
     <string name="enroll_member">Enroll Member</string>
-    <string name="invite_and_share"><![CDATA[Invite&Share]]></string>
+    <string name="invite_and_share">Invite&amp;Share</string>
     <string name="add_contact">Add contact</string>
     <string name="add">Add</string>
     <string name="invite_add_name">Name</string>
@@ -228,8 +224,21 @@
     <string name="invite_add_message">Add Personal Message</string>
     <string name="action_send">Send</string>
     <string name="action_preview">Preview</string>
-    <string name="title_activity_invite">InviteActivity</string>
-    <string name="title_edit_template">Edit template</string>
 
+    <string name="title_edit_template">Edit template</string>
+    <string name="title_activity_invite">Invite</string>
+
+    <string name="invitation_continue">Continue</string>
+    <string name="invitation_select_contacts">Select contacts</string>
+    <string name="invitation_select_all">Select All</string>
+    <string name="invitation_select_template">Select invitation Template</string>
+    <string name="invitation_select">Select</string>
+    <string name="invitation_from">From:</string>
+    <string name="invitation_to">To:</string>
+    <string name="invitation_subject">Subject:</string>
+
+
+    <string name="facebook_app_id">761667837261383</string>//do not translate
+    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
 
 </resources>

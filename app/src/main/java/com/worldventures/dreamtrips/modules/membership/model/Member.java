@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
+import android.telephony.PhoneNumberUtils;
+
+import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+
 import java.io.Serializable;
 
-public class Member implements Serializable {
+public class Member implements Serializable, Filterable {
 
     String id;
     String name;
@@ -61,5 +65,12 @@ public class Member implements Serializable {
 
     public boolean isEmailMain() {
         return emailIsMain;
+    }
+
+    @Override
+    public boolean containsQuery(String query) {
+        return (name != null && name.toLowerCase().contains(query))
+                || (email != null && email.toLowerCase().contains(query))
+                || PhoneNumberUtils.normalizeNumber(phone).contains(query);
     }
 }

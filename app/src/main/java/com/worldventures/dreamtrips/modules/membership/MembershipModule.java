@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplateP
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
-import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCellSelectAll;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
@@ -35,7 +34,6 @@ import dagger.Provides;
                 InvitePresenter.class,
                 MemberCell.class,
                 PhoneContactRequest.class,
-                MemberCellSelectAll.class,
                 SelectTemplateFragment.class,
                 SelectTemplatePresenter.class,
                 InviteTemplateCell.class,

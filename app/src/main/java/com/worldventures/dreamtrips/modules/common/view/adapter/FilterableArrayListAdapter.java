@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
+import android.os.HandlerThread;
 import android.text.TextUtils;
 
+import com.badoo.mobile.util.WeakHandler;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -10,19 +13,28 @@ import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdapter<BaseItemClass> {
+public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
-    protected List<BaseItemClass> cashedItems = new ArrayList<>();
+    protected List<BaseItemClass> cachedItems;
+
+    protected WeakHandler mainHandler;
+    protected WeakHandler filterHandler;
 
     public FilterableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);
+        cachedItems = new ArrayList<>();
+
+        mainHandler = new WeakHandler();
+        HandlerThread filterThread = new HandlerThread("filter");
+        filterThread.start();
+        filterHandler = new WeakHandler(filterThread.getLooper());
     }
 
     public void flushFilter() {
-        if (!cashedItems.isEmpty()) {
+        if (!cachedItems.isEmpty()) {
             items.clear();
-            items.addAll(cashedItems);
-            cashedItems.clear();
+            items.addAll(cachedItems);
+            cachedItems.clear();
             notifyDataSetChanged();
         }
     }
@@ -31,21 +43,19 @@ public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdap
         if (TextUtils.isEmpty(query)) {
             flushFilter();
         } else {
-            if (cashedItems.isEmpty())
-                cashedItems.addAll(items);
-
-            items.clear();
-            String queryLowerCased = query.toLowerCase();
-
-            for (BaseItemClass item : cashedItems) {
-                if (item instanceof Filterable) {
-                    Filterable filterable = (Filterable) item;
-                    if (filterable.containsQuery(queryLowerCased))
-                        items.add(item);
-                }
+            if (cachedItems.isEmpty()) {
+                cachedItems.addAll(items);
             }
 
-            notifyDataSetChanged();
+            filterHandler.post(() -> {
+                String queryLowerCased = query.toLowerCase();
+                List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(item -> item.containsQuery(queryLowerCased)).toList();
+                mainHandler.post(() -> {
+                    items.clear();
+                    items.addAll(filtered);
+                    notifyDataSetChanged();
+                });
+            });
         }
     }
 }

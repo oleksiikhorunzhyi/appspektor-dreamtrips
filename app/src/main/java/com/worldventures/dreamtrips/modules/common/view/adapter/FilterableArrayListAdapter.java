@@ -71,37 +71,37 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void addItem(int location, BaseItemClass obj) {
-        if (query == null) super.addItem(location, obj);
+    public void addItem(int location, BaseItemClass item) {
+        if (query == null) super.addItem(location, item);
         else {
-            cachedItems.add(location, obj);
+            cachedItems.add(location, item);
             setFilter(query);
         }
     }
 
     @Override
-    public void addItems(ArrayList<BaseItemClass> baseItemClasses) {
-        if (query == null) super.addItems(baseItemClasses);
+    public void addItems(ArrayList<BaseItemClass> items) {
+        if (query == null) super.addItems(items);
         else {
-            cachedItems.addAll(baseItemClasses);
+            cachedItems.addAll(items);
             setFilter(query);
         }
     }
 
     @Override
-    public void addItems(List<BaseItemClass> result) {
-        if (query == null) super.addItems(result);
+    public void addItems(List<BaseItemClass> items) {
+        if (query == null) super.addItems(items);
         else {
-            cachedItems.addAll(result);
+            cachedItems.addAll(items);
             setFilter(query);
         }
     }
 
     @Override
-    public void replaceItem(int location, BaseItemClass obj) {
-        if (query == null) super.replaceItem(location, obj);
+    public void replaceItem(int location, BaseItemClass item) {
+        if (query == null) super.replaceItem(location, item);
         else {
-            cachedItems.set(location, obj);
+            cachedItems.set(location, item);
             setFilter(query);
         }
     }
@@ -116,11 +116,12 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     }
 
     @Override
-    public void setItems(List<BaseItemClass> baseItemClasses) {
-        super.setItems(baseItemClasses);
-        if (query != null) {
+    public void setItems(List<BaseItemClass> items) {
+        this.items = items;
+        if (query == null) notifyDataSetChanged();
+        else {
             cachedItems.clear();
-            cachedItems.addAll(baseItemClasses);
+            cachedItems.addAll(items);
             setFilter(query);
         }
     }

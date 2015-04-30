@@ -141,9 +141,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void setItems(List<BaseItemClass> baseItemClasses) {
-        if (items != null) {
-            clear();
-        }
         this.items = baseItemClasses;
         this.notifyDataSetChanged();
     }

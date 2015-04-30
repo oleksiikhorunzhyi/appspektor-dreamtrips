@@ -49,4 +49,6 @@
     <dimen name="bucket_popular_cover_width">512dp</dimen>
 
     <dimen name="photo_thumb_size">100dp</dimen>
+    <dimen name="trip_thumb_height">200dp</dimen>
+
 </resources>

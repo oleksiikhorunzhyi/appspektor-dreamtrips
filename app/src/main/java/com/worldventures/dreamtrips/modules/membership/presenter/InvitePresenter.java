@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -60,9 +61,22 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void addMember(Member member) {
         db.addInviteMember(member);
-        members.add(member);
-        sortByName();
-        setMembers();
+        //
+        boolean addToLoadedMembers = false;
+        switch (view.getSelectedType()) {
+            case InviteTemplate.EMAIL:
+                addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
+                break;
+            case InviteTemplate.SMS:
+                addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
+                break;
+
+        }
+        if (addToLoadedMembers) {
+            members.add(member);
+            sortByName();
+            setMembers();
+        }
     }
 
     public void onEventMainThread(MemberCellSelectAllRequestEvent event) {

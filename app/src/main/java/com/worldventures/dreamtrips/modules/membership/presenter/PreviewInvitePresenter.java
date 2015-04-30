@@ -15,12 +15,12 @@ public class PreviewInvitePresenter extends Presenter {
         this.template = template;
     }
 
-
     @Override
-    public void onStart() {
-        super.onStart();
+    public void resume() {
+        super.resume();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EditTemplateFragment.TEMPLATE, template);
-        fragmentCompass.add(Route.EDIT_INVITE_TEMPLATE, bundle);
+        fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);
     }
+
 }

@@ -73,7 +73,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return "Hello world";
     }
 
-
     public Intent getShareIntent() {
         int type = template.getType();
         List<String> membersAddress = getMembersAddress();

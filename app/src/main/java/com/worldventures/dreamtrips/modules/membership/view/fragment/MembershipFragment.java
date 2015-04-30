@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPrese
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
+@MenuResource(R.menu.menu_mock)
 public class MembershipFragment extends BaseFragment<MembershipPresenter> {
 
     @InjectView(R.id.tabs)

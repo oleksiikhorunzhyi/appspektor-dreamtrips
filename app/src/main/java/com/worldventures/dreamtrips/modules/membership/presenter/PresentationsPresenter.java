@@ -69,11 +69,6 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
         super(view);
     }
 
-    public void actionEnroll() {
-        TrackingHelper.enroll(getUserId());
-        activityRouter.openEnroll();
-    }
-
     @Override
     public void init() {
         super.init();

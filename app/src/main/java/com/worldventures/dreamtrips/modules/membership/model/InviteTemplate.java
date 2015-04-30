@@ -23,6 +23,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     private String from;
     @Type
     private int type;
+    private String link;
 
     public ArrayList<Member> getTo() {
         return to;
@@ -85,6 +86,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         dest.writeString(this.from);
         dest.writeInt(this.type);
         dest.writeInt(this.id);
+        dest.writeString(this.link);
     }
 
     public InviteTemplate() {
@@ -100,6 +102,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         this.from = in.readString();
         this.type = in.readInt();
         this.id = in.readInt();
+        this.link = in.readString();
     }
 
     public static final Parcelable.Creator<InviteTemplate> CREATOR = new Parcelable.Creator<InviteTemplate>() {

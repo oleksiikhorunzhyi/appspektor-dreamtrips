@@ -123,7 +123,7 @@ public class InviteFragment
 
     @OnCheckedChanged(R.id.cb_select_all)
     public void onCheckedChanged(CompoundButton cb, boolean checked) {
-        cb.setText(checked ? "Unselect All" : "Select All");
+        cb.setText(checked ? R.string.invitation_select_all : R.string.invitation_unselect_all);
         getEventBus().post(new MemberCellSelectAllRequestEvent(checked));
         getEventBus().post(new MemberCellSelectedEvent(checked));
     }

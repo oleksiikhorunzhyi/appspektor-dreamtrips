@@ -231,6 +231,7 @@
     <string name="invitation_continue">Continue</string>
     <string name="invitation_select_contacts">Select contacts</string>
     <string name="invitation_select_all">Select All</string>
+    <string name="invitation_unselect_all">Unselect All</string>
     <string name="invitation_select_template">Select invitation Template</string>
     <string name="invitation_select">Select</string>
     <string name="invitation_from">From:</string>

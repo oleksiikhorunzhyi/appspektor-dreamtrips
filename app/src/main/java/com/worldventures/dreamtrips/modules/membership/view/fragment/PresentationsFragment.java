@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.modules.video.model.Video;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation)
-@MenuResource(R.menu.menu_membership)
 public class PresentationsFragment extends BaseFragment<PresentationsPresenter> implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
@@ -64,14 +63,6 @@ public class PresentationsFragment extends BaseFragment<PresentationsPresenter> 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_enroll) {
-            getPresenter().actionEnroll();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

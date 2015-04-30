@@ -88,8 +88,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void addItems(List<Member> memberList);
-
         void startLoading();
 
         void finishLoading();
@@ -97,11 +95,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         @InviteTemplate.Type
         int getSelectedType();
 
+        void addItems(List<Member> memberList);
+
+        void addItem(Member member);
+
         ArrayList<Member> getItems();
 
         void notifyAdapter();
-
-        void addItem(Member member);
 
         void showNextStepButtonVisibility(boolean isVisible);
     }

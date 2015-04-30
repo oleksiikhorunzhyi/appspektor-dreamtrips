@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -70,7 +72,6 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         llContinue.setVisibility(View.GONE);
     }
-
 
     @OnClick(R.id.iv_add_contact)
     public void addContact() {

@@ -28,12 +28,6 @@ public class PreviewInviteActivity extends ActivityWithPresenter<PreviewInvitePr
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.clear();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);

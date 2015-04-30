@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -23,9 +22,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
-
-    @Inject
-    Context context;
 
     @Inject
     SnappyRepository db;

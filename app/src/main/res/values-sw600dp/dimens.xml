@@ -4,5 +4,6 @@
     <dimen name="tripImageHeightDetailed">300dp</dimen>
 
     <dimen name="photo_thumb_size">200dp</dimen>
+    <dimen name="tripImageHeight">300dp</dimen>
 
 </resources>

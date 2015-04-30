@@ -5,6 +5,8 @@ import android.content.Context;
 import com.worldventures.dreamtrips.R;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -147,8 +149,12 @@ public class DateTimeUtils {
             return dateArray[SOMETIME];
         }
 
-        DateTime dateTimeToday = new DateTime(Calendar.getInstance().getTime());
+        Calendar calendar = Calendar.getInstance();
+        DateTime dateTimeToday = new DateTime(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), 0, 0);
         DateTime dateTimeTarget = new DateTime(dateTarget);
+
 
         if (dateTimeToday.isAfter(dateTimeTarget)) {
             return convertDateToString(dateTarget, DATE_FORMAT);
@@ -159,23 +165,29 @@ public class DateTimeUtils {
         int monthsBetween = Months.monthsBetween(dateTimeToday, dateTimeTarget).getMonths();
         int yearsBetween = Years.yearsBetween(dateTimeToday, dateTimeTarget).getYears();
 
+        boolean thisYear = dateTimeToday.get(DateTimeFieldType.year())
+                == dateTimeTarget.get(DateTimeFieldType.year());
         String result;
-        
+
         if (daysBetween == 0) {
             result = today;
         } else if (daysBetween == 1) {
             result = dateArray[TOMORROW];
-        } else if (daysBetween > 1 && weeksBetween == 0) {
+        } else if (thisYear
+                && dateTimeTarget.get(DateTimeFieldType.weekOfWeekyear())
+                == dateTimeToday.get(DateTimeFieldType.weekOfWeekyear())) {
             result = dateArray[THIS_WEEK];
         } else if (weeksBetween == 1) {
             result = dateArray[NEXT_WEEK];
-        } else if (monthsBetween == 0) {
+        } else if (thisYear
+                && dateTimeTarget.get(DateTimeFieldType.monthOfYear())
+                == dateTimeToday.get(DateTimeFieldType.monthOfYear())) {
             result = dateArray[THIS_MONTH];
         } else if (monthsBetween == 1) {
             result = dateArray[NEXT_MONTH];
         } else if (monthsBetween > 1 && monthsBetween <= 6) {
             result = dateArray[IN_SIX_MONTH];
-        } else if (monthsBetween >= 6 && yearsBetween == 0) {
+        } else if (thisYear) {
             result = dateArray[THIS_YEAR];
         } else if (yearsBetween == 1) {
             result = dateArray[NEXT_YEAR];
@@ -213,7 +225,7 @@ public class DateTimeUtils {
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case THIS_YEAR:
-                calendar.add(Calendar.MONTH, 7);
+                calendar.set(Calendar.MONTH, Calendar.DECEMBER);
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
             case NEXT_YEAR:

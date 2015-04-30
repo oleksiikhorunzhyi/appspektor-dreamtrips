@@ -180,7 +180,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void done() {
+    public void  done() {
         getActivity().onBackPressed();
         hideSoftInput(editTextDescription);
     }

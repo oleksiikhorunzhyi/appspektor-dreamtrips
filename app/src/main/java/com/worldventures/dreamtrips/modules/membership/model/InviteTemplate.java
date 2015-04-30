@@ -14,14 +14,13 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     public static final int EMAIL = 0;
     public static final int SMS = 1;
 
-
-    String title;
-    CoverImage coverImage;
-    String video;
-    String locale;
-    String content;
-    ArrayList<Member> to = new ArrayList<>(0);
-    String from;
+    private String title;
+    private CoverImage coverImage;
+    private String video;
+    private String locale;
+    private String content;
+    private ArrayList<Member> to = new ArrayList<>(0);
+    private String from;
     @Type
     private int type;
 
@@ -70,11 +69,6 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     }
 
 
-    @IntDef({EMAIL, SMS})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Type {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -117,4 +111,9 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
             return new InviteTemplate[size];
         }
     };
+
+    @IntDef({EMAIL, SMS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
+    }
 }

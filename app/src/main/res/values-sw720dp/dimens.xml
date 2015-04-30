@@ -2,6 +2,6 @@
 <resources>
 
     <dimen name="photo_thumb_size">300dp</dimen>
-    <dimen name="tripImageHeight">450dp</dimen>
+    <dimen name="trip_thumb_height">450dp</dimen>
 
 </resources>

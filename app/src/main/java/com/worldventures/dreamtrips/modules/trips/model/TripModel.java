@@ -193,7 +193,7 @@ public class TripModel implements Filterable, Serializable {
 
     public String getThumb(Resources resources) {
         String url = getImageUrl("THUMB");
-        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
+        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.trip_thumb_height);
         return url + String.format(PATTERN,
                 dimensionPixelSize, dimensionPixelSize);
     }

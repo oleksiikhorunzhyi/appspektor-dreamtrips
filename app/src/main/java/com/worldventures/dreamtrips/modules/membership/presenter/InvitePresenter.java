@@ -17,17 +17,17 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
-    @Inject
-    SnappyRepository db;
+    @Inject SnappyRepository db;
+    @Inject Injector injector;
 
-    @Inject
-    Injector injector;
+    private List<Member> members;
 
     public InvitePresenter(View view) {
         super(view);
@@ -38,7 +38,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         super.resume();
     }
 
-    public void reload() {
+    public void loadMembers() {
         view.startLoading();
         PhoneContactRequest request = new PhoneContactRequest(view.getSelectedType());
         injector.inject(request);
@@ -51,30 +51,28 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             @Override
             public void onRequestSuccess(ArrayList<Member> members) {
                 view.finishLoading();
-                view.addItems(members);
+                InvitePresenter.this.members = members;
+                sortByName();
+                setMembers();
             }
         });
     }
 
+    public void addMember(Member member) {
+        db.addInviteMember(member);
+        members.add(member);
+        sortByName();
+        setMembers();
+    }
+
     public void onEventMainThread(MemberCellSelectAllRequestEvent event) {
-        for (Member member : view.getItems()) {
-            member.setIsChecked(event.isSelectAll());
-        }
-        view.notifyAdapter();
+        Queryable.from(members).forEachR(m -> m.setIsChecked(event.isSelectAll()));
+        setMembers();
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
-        boolean isVisible = false;
-        for (Member member : view.getItems()) {
-            isVisible = member.isChecked();
-            if (isVisible) break;
-        }
+        boolean isVisible = Queryable.from(members).any(Member::isChecked);
         view.showNextStepButtonVisibility(isVisible);
-    }
-
-    public void onMemberAdded(Member member) {
-        db.addInviteMember(member);
-        view.addItem(member);
     }
 
     public void continueAction() {
@@ -83,8 +81,16 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE, bundle);
     }
 
+    private void setMembers() {
+        view.setMembers(new ArrayList<>(members));
+    }
+
+    private void sortByName() {
+        Collections.sort(members, ((lhs, rhs) -> lhs.getName().compareTo(rhs.getName())));
+    }
+
     private ArrayList<Member> getSelectedMembers() {
-        return new ArrayList<>(Queryable.from(view.getItems()).filter(Member::isChecked).toList());
+        return new ArrayList<>(Queryable.from(members).filter(Member::isChecked).toList());
     }
 
     public interface View extends Presenter.View {
@@ -95,13 +101,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         @InviteTemplate.Type
         int getSelectedType();
 
-        void addItems(List<Member> memberList);
-
-        void addItem(Member member);
-
-        ArrayList<Member> getItems();
-
-        void notifyAdapter();
+        void setMembers(List<Member> memberList);
 
         void showNextStepButtonVisibility(boolean isVisible);
     }

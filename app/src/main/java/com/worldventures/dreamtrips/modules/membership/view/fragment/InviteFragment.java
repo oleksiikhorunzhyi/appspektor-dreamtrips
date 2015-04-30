@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDialog;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -107,12 +106,12 @@ public class InviteFragment
 
     @Override
     public void onRefresh() {
-        getPresenter().reload();
+        getPresenter().loadMembers();
     }
 
     @OnClick(R.id.iv_add_contact)
     public void addContact() {
-        new AddContactDialog(getActivity()).show(member -> getPresenter().onMemberAdded(member));
+        new AddContactDialog(getActivity()).show(getPresenter()::addMember);
     }
 
     @Override
@@ -129,31 +128,13 @@ public class InviteFragment
     }
 
     @Override
-    public void addItem(Member member) {
-        adapter.addItem(0, member);
-        adapter.notifyItemInserted(0);
-    }
-
-    @Override
-    public void addItems(List<Member> memberList) {
-        adapter.clear();
-        adapter.addItems(memberList);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public ArrayList<Member> getItems() {
-        return new ArrayList<>(adapter.getItems());
-    }
-
-    @Override
-    public void notifyAdapter() {
-        adapter.notifyDataSetChanged();
+    public void setMembers(List<Member> memberList) {
+        adapter.setItems(memberList);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        getPresenter().reload();
+        getPresenter().loadMembers();
     }
 
     @Override
@@ -162,14 +143,14 @@ public class InviteFragment
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        // adapter already has items filtered, nothing to do
+    public boolean onQueryTextChange(String newText) {
+        adapter.setFilter(newText);
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        adapter.setFilter(newText);
+    public boolean onQueryTextSubmit(String query) {
+        // adapter already has items filtered, nothing to do
         return false;
     }
 

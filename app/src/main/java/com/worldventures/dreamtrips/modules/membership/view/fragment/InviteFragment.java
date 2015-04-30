@@ -73,6 +73,13 @@ public class InviteFragment
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                refreshLayout.setEnabled(firstPos == 0);
+            }
+        });
 
         SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(getActivity(),
                 new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});

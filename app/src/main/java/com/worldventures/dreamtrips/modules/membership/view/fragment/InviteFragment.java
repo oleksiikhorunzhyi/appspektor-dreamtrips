@@ -70,8 +70,8 @@ public class InviteFragment
 
         lvUsers.setAdapter(adapter);
 
-        this.refreshLayout.setOnRefreshListener(this);
-        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -116,8 +116,7 @@ public class InviteFragment
 
     @Override
     public int getSelectedType() {
-        int pos = spinner.getSelectedItemPosition();
-        return pos;
+        return spinner.getSelectedItemPosition();
     }
 
     @OnCheckedChanged(R.id.cb_select_all)

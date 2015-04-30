@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.membership.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
 
 
     public enum Type {
-        EMAIL, SMS;
+        @SerializedName("email") EMAIL,
+        @SerializedName("sms")  SMS;
 
         public static Type from(int i) {
             return i == 0 ? EMAIL : SMS;

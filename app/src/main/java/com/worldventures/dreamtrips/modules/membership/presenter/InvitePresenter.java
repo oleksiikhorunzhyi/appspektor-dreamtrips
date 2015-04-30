@@ -10,9 +10,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
@@ -58,13 +60,35 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                 InvitePresenter.this.members = members;
                 sortByName();
                 setMembers();
+                getInvitations();
             }
         });
     }
 
+    private void getInvitations() {
+        dreamSpiceManager.execute(new GetInvitationsQuery(),
+                inviteTemplates -> {
+                    linkHistoryWithMembers(inviteTemplates);
+                    setMembers();
+                },
+                spiceException -> {
+
+                });
+    }
+
+    private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
+        for (History history : inviteTemplates) {
+            for (Member member : members) {
+                String contact = history.getContact();
+                if (contact.equals(member.getSubtitle())) {
+                    member.setHistory(history);
+                }
+            }
+        }
+    }
+
     public void addMember(Member member) {
         db.addInviteMember(member);
-        //
         boolean addToLoadedMembers = false;
         switch (InviteTemplate.Type.from(view.getSelectedType())) {
             case EMAIL:

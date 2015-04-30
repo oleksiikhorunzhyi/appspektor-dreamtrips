@@ -14,6 +14,16 @@ public class Member implements Serializable, Filterable {
     String phone;
     boolean emailIsMain = true;
     boolean isChecked;
+    History history;
+
+
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(History history) {
+        this.history = history;
+    }
 
     public void setEmailIsMain(boolean emailIsMain) {
         this.emailIsMain = emailIsMain;

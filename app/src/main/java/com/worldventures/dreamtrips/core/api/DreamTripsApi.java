@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
+import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -149,7 +150,7 @@ public interface DreamTripsApi {
     public ArrayList<InviteTemplate> getInviteTemplates();
 
     @GET("/api/invitations/")
-    public ArrayList<InviteTemplate> getInvitations();
+    public ArrayList<History> getInvitations();
 
     @POST("/api/invitations/")
     public JSONObject sendInvitations(@Body InviteBody body);

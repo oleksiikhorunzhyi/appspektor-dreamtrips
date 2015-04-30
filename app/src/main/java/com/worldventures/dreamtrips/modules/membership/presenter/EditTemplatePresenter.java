@@ -69,6 +69,26 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         view.setWebViewContent(template.getContent());
     }
 
+    private void sentInvitesFailed(SpiceException spiceException) {
+        Log.e(TAG, "", spiceException);
+    }
+
+    private void createInviteSuccess(InviteTemplate template) {
+        Log.i(TAG, "createInviteSuccess");
+        getFilledInvitationsTemplateSuccess(template);
+        view.shareAction();
+        notifyServer();
+    }
+
+    private void createInviteFailed(SpiceException spiceException) {
+        Log.e(TAG, "", spiceException);
+    }
+
+    private void sentInviteSuccess(JSONObject aVoid) {
+        Log.i(TAG, "sentInviteSuccess");
+        eventBus.post(new InvitesSentEvent());
+    }
+
     private String getSubject() {
         return template.getTitle();
     }
@@ -106,15 +126,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         );
     }
 
-    private void sentInvitesFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
-    }
-
-    private void sentInviteSuccess(JSONObject aVoid) {
-        Log.i(TAG, "sentInviteSuccess");
-        eventBus.post(new InvitesSentEvent());
-    }
-
     private List<String> getContactAddress() {
         ArrayList<Member> to = template.getTo();
         List<String> result = new ArrayList<>();
@@ -132,17 +143,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
                     this::createInviteSuccess,
                     this::createInviteFailed);
         }
-    }
-
-    private void createInviteSuccess(InviteTemplate template) {
-        Log.i(TAG, "createInviteSuccess");
-        getFilledInvitationsTemplateSuccess(template);
-        view.shareAction();
-        notifyServer();
-    }
-
-    private void createInviteFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
     }
 
     public interface View extends Presenter.View {

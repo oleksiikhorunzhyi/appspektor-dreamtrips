@@ -5,7 +5,6 @@ import android.content.Context;
 import com.worldventures.dreamtrips.R;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeField;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Days;
 import org.joda.time.Months;
@@ -35,6 +34,7 @@ public class DateTimeUtils {
 
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
+    public static final String MEMBER_FORMAT = "MMM dd, hha";
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";

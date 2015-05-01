@@ -81,6 +81,6 @@ public class Member implements Serializable, Filterable {
     public boolean containsQuery(String query) {
         return (name != null && name.toLowerCase().contains(query))
                 || (email != null && email.toLowerCase().contains(query))
-                || PhoneNumberUtils.normalizeNumber(phone).contains(query);
+                || (phone != null && PhoneNumberUtils.normalizeNumber(phone).contains(query));
     }
 }

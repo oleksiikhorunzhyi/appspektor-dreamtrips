@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
 import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 public class Member implements Serializable, Filterable {
 
@@ -78,9 +80,33 @@ public class Member implements Serializable, Filterable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Member member = (Member) o;
+
+        boolean nameEq = name != null ? name.equals(member.name) : member.name == null;
+        boolean emailEq = email != null ? email.equals(member.email) : member.email == null;
+        boolean phoneEq = phone != null ? phone.equals(member.phone) : member.phone == null;
+        if (emailIsMain && nameEq && emailEq) return true;
+        else if (nameEq && phoneEq) return true;
+        else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public boolean containsQuery(String query) {
+        if (query == null || TextUtils.isEmpty(query.trim())) return false;
         return (name != null && name.toLowerCase().contains(query))
                 || (email != null && email.toLowerCase().contains(query))
-                || (phone != null && PhoneNumberUtils.normalizeNumber(phone).contains(query));
+                || (phone != null && phone.contains(PhoneNumberUtils.normalizeNumber(query)));
     }
 }

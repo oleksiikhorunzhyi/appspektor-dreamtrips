@@ -48,14 +48,14 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         InviteTemplate.Type from = InviteTemplate.Type.from(view.getSelectedType());
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
-        dreamSpiceManager.execute(request, new RequestListener<ArrayList<Member>>() {
+        dreamSpiceManager.execute(request, new RequestListener<List<Member>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 view.finishLoading();
             }
 
             @Override
-            public void onRequestSuccess(ArrayList<Member> members) {
+            public void onRequestSuccess(List<Member> members) {
                 view.finishLoading();
                 InvitePresenter.this.members = members;
                 sortByName();

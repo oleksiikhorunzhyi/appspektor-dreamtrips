@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
+import com.amazonaws.com.google.gson.reflect.TypeToken;
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -18,7 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
+public class PhoneContactRequest extends SpiceRequest<List<Member>> {
 
     private InviteTemplate.Type type;
 
@@ -28,16 +30,16 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
     SnappyRepository db;
 
     public PhoneContactRequest(InviteTemplate.Type type) {
-        super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
+        super((Class<List<Member>>) new TypeToken<List<Member>>(){}.getRawType());
         this.type = type;
     }
 
     @Override
-    public ArrayList<Member> loadDataFromNetwork() {
+    public List<Member> loadDataFromNetwork() {
         return readContacts();
     }
 
-    public ArrayList<Member> readContacts() {
+    public List<Member> readContacts() {
         Uri contentURI = null;
         String[] projection = null;
         String selection = null;
@@ -58,8 +60,6 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                         ContactsContract.Contacts.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.NUMBER,
                         ContactsContract.CommonDataKinds.Phone.TYPE};
-                selection = ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
-                selectionArgs = new String[]{String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)};
                 break;
         }
         Cursor cur = context.getContentResolver().query(contentURI, projection, selection, selectionArgs, order);
@@ -84,7 +84,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
                     String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     member.setPhone(phone);
                     if (TextUtils.isEmpty(phone)) break;
-                    if (TextUtils.isEmpty(member.getName())) member.setName(phone);
+                    if (TextUtils.isEmpty(member.getName())) member.setName(PhoneNumberUtils.normalizeNumber(phone));
                     member.setEmailIsMain(false);
                     result.add(member);
                     break;
@@ -106,7 +106,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
         cachedMembers = Queryable.from(cachedMembers).filter(memberPredicate).toList();
         result.addAll(0, cachedMembers);
 
-        return result;
+        return Queryable.from(result).distinct().toList();
     }
 
 }

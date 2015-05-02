@@ -26,9 +26,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         cachedItems = new ArrayList<>();
 
         mainHandler = new WeakHandler();
-        HandlerThread filterThread = new HandlerThread("filter");
-        filterThread.start();
-        filterHandler = new WeakHandler(filterThread.getLooper());
+        filterHandler = new WeakHandler();
     }
 
     ///////////////////////////////////////////////////////////////////////////

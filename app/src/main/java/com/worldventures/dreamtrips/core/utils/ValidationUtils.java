@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Patterns;
 
 import com.worldventures.dreamtrips.R;
 
@@ -28,6 +29,14 @@ public class ValidationUtils {
         }
         return new VResult(true, 0);
     }
+
+
+    public static VResult isEmailValid(String email) {
+        boolean valid = Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches();
+        return new VResult(valid, R.string.email_is_not_valid);
+    }
+
 
     public static VResult isPasswordValid(String password) {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);

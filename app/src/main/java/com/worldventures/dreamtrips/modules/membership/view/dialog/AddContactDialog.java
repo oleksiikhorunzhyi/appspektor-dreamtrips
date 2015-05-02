@@ -13,15 +13,18 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import butterknife.ButterKnife;
 
+import static com.worldventures.dreamtrips.core.utils.ValidationUtils.VResult;
+import static com.worldventures.dreamtrips.core.utils.ValidationUtils.isEmailValid;
+
 public class AddContactDialog {
 
-    private TextWatcherAdapter watcher;
     private MaterialEditText etName;
     private MaterialEditText etPhone;
     private MaterialEditText etEmail;
     private Button btn;
     private final MaterialDialog md;
     private Callback callback;
+    private String emailError;
 
     public AddContactDialog(Context context) {
         md = new MaterialDialog.Builder(context)
@@ -50,16 +53,26 @@ public class AddContactDialog {
         this.callback = callback;
         md.show();
 
-        watcher = new TextWatcherAdapter() {
+        TextWatcherAdapter watcher = new TextWatcherAdapter() {
             @Override
             public void afterTextChanged(Editable s) {
-                boolean nameExist = TextUtils.isEmpty(etName.getText());
-                boolean emailExist = TextUtils.isEmpty(etEmail.getText());
-                boolean phoneExist = TextUtils.isEmpty(etPhone.getText());
 
-                btn.setEnabled(!nameExist && (!emailExist || !phoneExist));
+                VResult emailValid = isEmailValid(etEmail.getText().toString());
+                boolean emailExist = !TextUtils.isEmpty(etEmail.getText());
+                boolean nameExist = !TextUtils.isEmpty(etName.getText());
+                boolean phoneExist = !TextUtils.isEmpty(etPhone.getText());
+
+
+                if (emailExist && !emailValid.isValid()) {
+                    if (emailError == null) {
+                        emailError = etEmail.getResources().getString(emailValid.getMessage());
+                    }
+                    etEmail.setError(emailError);
+                }
+                btn.setEnabled(nameExist && (emailExist || phoneExist));
             }
         };
+
         etName = ButterKnife.findById(md, R.id.et_name);
         etPhone = ButterKnife.findById(md, R.id.et_phone);
         etEmail = ButterKnife.findById(md, R.id.et_email);

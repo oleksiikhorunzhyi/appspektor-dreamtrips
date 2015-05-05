@@ -76,15 +76,15 @@
                         android:src="@drawable/ic_ss_search" />
                 </RelativeLayout>
 
-                <CheckBox
-                    android:id="@+id/cb_select_all"
+                <TextView
+                    android:id="@+id/textViewContactCount"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/listPreferredItemHeightSmall"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
+                    android:gravity="end"
                     android:paddingLeft="12dp"
-                    android:text="@string/invitation_select_all"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/theme_main_darker"
                     android:textSize="18dp" />
 
                 <android.support.v7.widget.RecyclerView

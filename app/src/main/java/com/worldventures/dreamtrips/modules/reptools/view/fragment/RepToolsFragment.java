@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 
 import javax.inject.Inject;
@@ -55,7 +56,10 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
             this.adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
             this.adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
             this.adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
-
+            
+            if (getPresenter().showInvite()) {
+                adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
+            }
         }
         this.pager.setAdapter(adapter);
         this.tabs.setViewPager(pager);

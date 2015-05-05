@@ -138,7 +138,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         boolean isVisible = Queryable.from(members).any(Member::isChecked);
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         eventBus.removeStickyEvent(MemberStickyEvent.class);
-        eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(Member::isChecked).toList()));
+        List<Member> selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
+        eventBus.postSticky(new MemberStickyEvent(selectedMembers));
+        view.setMemberCount(selectedMembers.size());
     }
 
     public void continueAction() {
@@ -176,5 +178,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void setFilter(String newText);
 
         void showNextStepButtonVisibility(boolean isVisible);
+
+        void setMemberCount(int count);
     }
 }

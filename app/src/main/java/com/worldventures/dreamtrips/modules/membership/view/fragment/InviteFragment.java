@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -30,6 +31,7 @@ import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDia
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -56,6 +58,8 @@ public class InviteFragment
     FrameLayout containerTemplates;
     @InjectView(R.id.bt_continue)
     Button buttonContinue;
+    @InjectView(R.id.textViewContactCount)
+    TextView textViewContactCount;
 
     FilterableArrayListAdapter<Member> adapter;
 
@@ -123,6 +127,13 @@ public class InviteFragment
     }
 
     @Override
+    public void setMemberCount(int count) {
+        textViewContactCount.setText(count > 0 ?
+                String.format(Locale.getDefault(), getString(R.string.selected), count) :
+                "");
+    }
+
+    @Override
     public void startLoading() {
         refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
@@ -145,13 +156,6 @@ public class InviteFragment
     @Override
     public int getSelectedType() {
         return spinner.getSelectedItemPosition();
-    }
-
-    @OnCheckedChanged(R.id.cb_select_all)
-    public void onSelectAllChange(CompoundButton cb, boolean checked) {
-        cb.setText(checked ? R.string.invitation_unselect_all : R.string.invitation_select_all);
-        getEventBus().post(new MemberCellSelectAllRequestEvent(checked));
-        getEventBus().post(new MemberCellSelectedEvent(checked));
     }
 
     @Override

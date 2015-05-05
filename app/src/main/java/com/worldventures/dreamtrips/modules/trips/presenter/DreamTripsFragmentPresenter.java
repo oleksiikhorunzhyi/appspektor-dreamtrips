@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.util.Log;
+
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,6 +38,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     protected SnappyRepository db;
 
     private boolean loadFromApi;
+    private boolean loadWithStatus;
     private boolean goneToMap = false;
 
     private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
@@ -42,7 +46,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
-            return new GetTripsQuery(db, prefs, loadFromApi) {
+            return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
                 @Override
                 public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
                     return performFiltering(super.loadDataFromNetwork());
@@ -50,17 +54,34 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             };
         }
 
+        private Boolean cacheEmpty() {
+            return db.isEmpty(SnappyRepository.TRIP_KEY);
+        }
+
+        private boolean shouldUpdate() {
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+        }
+
         @Override
         public void onStart(LoadType loadType) {
-            view.startLoading();
+            if (loadWithStatus || cacheEmpty()) {
+                view.startLoading();
+            }
         }
 
         @Override
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
+            loadWithStatus = false;
             view.finishLoading(items);
             if (spiceException != null) {
                 handleError(spiceException);
+            } else {
+                if (shouldUpdate()) {
+                    loadFromApi = true;
+                    reload();
+                }
             }
         }
     };
@@ -100,6 +121,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
     public void reload() {
         loadFromApi = true;
+        loadWithStatus = true;
         roboSpiceAdapterController.reload();
     }
 

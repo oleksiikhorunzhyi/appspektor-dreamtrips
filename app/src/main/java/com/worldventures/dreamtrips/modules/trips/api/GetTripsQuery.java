@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.modules.trips.api;
 
-import android.util.Log;
-
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
 public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
 
@@ -27,7 +23,7 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
     @Override
     public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
         ArrayList<TripModel> data = new ArrayList<>();
-        if (needUpdate() || fromApi) {
+        if (fromApi) {
             this.fromApi = false;
             db.saveTrips(getService().getTrips());
             data.addAll(db.getTrips());
@@ -36,11 +32,6 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
             data.addAll(db.getTrips());
         }
         return data;
-    }
-
-    private boolean needUpdate() {
-        long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DELTA || db.isEmpty(SnappyRepository.TRIP_KEY);
     }
 
 }

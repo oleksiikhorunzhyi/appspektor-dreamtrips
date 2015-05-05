@@ -5,16 +5,14 @@ import android.support.v7.widget.Toolbar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_invite)
-public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
+public class SelectTemplateActivity extends ActivityWithPresenter<Presenter> {
 
     public static final String BUNDLE_TEMPLATE = "BUNDLE_TEMPLATE";
     @InjectView(R.id.toolbar_actionbar)
@@ -29,17 +27,10 @@ public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title_edit_template);
+        getSupportActionBar().setTitle(R.string.select_template);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EditTemplateFragment.TEMPLATE,
-                getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE));
-        fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);
+        fragmentCompass.replace(Route.SELECT_INVITE_TEMPLATE);
     }
 }
+

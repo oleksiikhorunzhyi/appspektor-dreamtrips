@@ -237,4 +237,11 @@
     <string name="invitation_from">From:</string>
     <string name="invitation_to">To:</string>
     <string name="invitation_subject">Subject:</string>
+
+    <string name="invitation_unselect_all">Unselect All</string>
+    <string name="facebook_app_id">761667837261383</string>//do not translate
+    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
+    <string name="error_personal_message_is_empty">Personal message should be not empty</string>
+    <string name="email_is_not_valid">Email is not valid</string>
+
 </resources>

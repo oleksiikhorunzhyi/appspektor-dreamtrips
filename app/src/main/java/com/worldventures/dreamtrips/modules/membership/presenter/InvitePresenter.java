@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
-import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -10,6 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -17,10 +17,10 @@ import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,13 +136,20 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
         boolean isVisible = Queryable.from(members).any(Member::isChecked);
-        view.showNextStepButtonVisibility(isVisible);
+        view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
+        eventBus.removeStickyEvent(MemberStickyEvent.class);
+        eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(Member::isChecked).toList()));
     }
 
     public void continueAction() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SelectTemplateFragment.BUNDLE_TO, getSelectedMembers());
-        fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE, bundle);
+        if (view.isTabletLandscape()) {
+            fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.container_templates);
+            fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
+        } else {
+            activityRouter.openSelectTemplateActivity();
+        }
     }
 
     private void setMembers() {

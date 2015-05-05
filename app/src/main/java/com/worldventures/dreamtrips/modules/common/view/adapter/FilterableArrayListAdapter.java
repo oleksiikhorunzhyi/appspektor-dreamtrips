@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
@@ -17,6 +18,15 @@ public class FilterableArrayListAdapter<BaseItemClass> extends LoaderRecycleAdap
     public FilterableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);
     }
+
+    @Override
+    public long getItemId(int position) {
+        if (getItem(position) instanceof BaseEntity) {
+            return ((BaseEntity) getItem(position)).getId();
+        }
+        return super.getItemId(position);
+    }
+
 
     public void flushFilter() {
         if (!cashedItems.isEmpty()) {

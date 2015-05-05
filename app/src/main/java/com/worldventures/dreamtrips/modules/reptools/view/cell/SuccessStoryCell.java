@@ -33,11 +33,21 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
             getEventBus().register(this);
         }
 
+        updateSelection();
         tvTitle.setText(getModelObject().getAuthor());
     }
 
     public void onEventMainThread(SuccessStoryItemSelectedEvent event) {
         if (getPosition() == event.getPosition()) {
+            getModelObject().setSelected(true);
+        } else {
+            getModelObject().setSelected(false);
+        }
+        updateSelection();
+    }
+
+    private void updateSelection() {
+        if (getModelObject().isSelected()) {
             vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.selected_success_story));
         } else {
             vgParent.setBackgroundColor(Color.WHITE);

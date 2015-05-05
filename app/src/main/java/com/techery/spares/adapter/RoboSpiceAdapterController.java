@@ -66,8 +66,8 @@ public abstract class RoboSpiceAdapterController<BaseItemClass> {
         onFinish(LoadType.APPEND, baseItemClasses, null);
     }
 
-    public static enum LoadType {
-        RELOAD, APPEND;
+    public enum LoadType {
+        RELOAD, APPEND
     }
 
 }

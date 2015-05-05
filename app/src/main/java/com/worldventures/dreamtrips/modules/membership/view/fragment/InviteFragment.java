@@ -88,6 +88,7 @@ public class InviteFragment
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        setUpView();
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
@@ -112,12 +113,6 @@ public class InviteFragment
         spinner.setOnItemSelectedListener(this);
         tvSearch.setOnQueryTextListener(this);
         buttonContinue.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setUpView();
     }
 
     @Override

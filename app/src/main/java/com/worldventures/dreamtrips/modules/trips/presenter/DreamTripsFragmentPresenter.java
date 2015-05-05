@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.util.Log;
+
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -55,6 +58,11 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             return db.isEmpty(SnappyRepository.TRIP_KEY);
         }
 
+        private boolean shouldUpdate() {
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+        }
+
         @Override
         public void onStart(LoadType loadType) {
             if (loadWithStatus || cacheEmpty()) {
@@ -69,6 +77,11 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             view.finishLoading(items);
             if (spiceException != null) {
                 handleError(spiceException);
+            } else {
+                if (shouldUpdate()) {
+                    loadFromApi = true;
+                    reload();
+                }
             }
         }
     };

@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
-import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.adapter.SimpleImageArrayAdapter;
@@ -143,7 +142,7 @@ public class InviteFragment
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter.setFilter(newText);
+        getPresenter().onFilter(newText);
         return false;
     }
 
@@ -151,6 +150,11 @@ public class InviteFragment
     public boolean onQueryTextSubmit(String query) {
         // adapter already has items filtered, nothing to do
         return false;
+    }
+
+    @Override
+    public void setFilter(String newText) {
+        adapter.setFilter(newText);
     }
 
     @OnClick(R.id.bt_continue)

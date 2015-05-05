@@ -82,9 +82,9 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
                     break;
                 case SMS:
                     String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    member.setPhone(phone);
+                    member.setPhone(PhoneNumberUtils.normalizeNumber(phone));
                     if (TextUtils.isEmpty(phone)) break;
-                    if (TextUtils.isEmpty(member.getName())) member.setName(PhoneNumberUtils.normalizeNumber(phone));
+                    if (TextUtils.isEmpty(member.getName())) member.setName(phone);
                     member.setEmailIsMain(false);
                     result.add(member);
                     break;

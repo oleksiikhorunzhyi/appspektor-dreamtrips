@@ -15,8 +15,8 @@ import java.util.List;
 
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
-    protected List<BaseItemClass> cachedItems;
-    protected String query;
+    protected volatile List<BaseItemClass> cachedItems;
+    protected volatile String query;
 
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
@@ -38,11 +38,9 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         if (TextUtils.isEmpty(query)) {
             flushFilter();
         } else {
-            if (cachedItems.isEmpty()) {
-                cachedItems.addAll(items);
-            }
-
             filterHandler.post(() -> {
+                if (cachedItems.isEmpty()) cachedItems.addAll(items);
+                //
                 String queryLowerCased = this.query.toLowerCase();
                 List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(item -> item.containsQuery(queryLowerCased)).toList();
                 mainHandler.post(() -> {
@@ -55,12 +53,12 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     }
 
     public void flushFilter() {
-        query = null;
-        if (!cachedItems.isEmpty()) {
+        if (query != null) {
+            query = null;
             items.clear();
             items.addAll(cachedItems);
-            cachedItems.clear();
             notifyDataSetChanged();
+            filterHandler.post(() -> cachedItems.clear());
         }
     }
 
@@ -72,7 +70,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     public void addItem(int location, BaseItemClass item) {
         if (query == null) super.addItem(location, item);
         else {
-            cachedItems.add(location, item);
+            filterHandler.post(() -> cachedItems.add(location, item));
             setFilter(query);
         }
     }
@@ -81,7 +79,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     public void addItems(ArrayList<BaseItemClass> items) {
         if (query == null) super.addItems(items);
         else {
-            cachedItems.addAll(items);
+            filterHandler.post(() -> cachedItems.addAll(items));
             setFilter(query);
         }
     }
@@ -90,7 +88,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     public void addItems(List<BaseItemClass> items) {
         if (query == null) super.addItems(items);
         else {
-            cachedItems.addAll(items);
+            filterHandler.post(() -> cachedItems.addAll(items));
             setFilter(query);
         }
     }
@@ -99,7 +97,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     public void replaceItem(int location, BaseItemClass item) {
         if (query == null) super.replaceItem(location, item);
         else {
-            cachedItems.set(location, item);
+            filterHandler.post(() -> cachedItems.set(location, item));
             setFilter(query);
         }
     }
@@ -108,7 +106,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     public void remove(int location) {
         if (query == null) super.remove(location);
         else {
-            cachedItems.remove(location);
+            filterHandler.post(() -> cachedItems.remove(location));
             setFilter(query);
         }
     }
@@ -118,8 +116,10 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         this.items = items;
         if (query == null) notifyDataSetChanged();
         else {
-            cachedItems.clear();
-            cachedItems.addAll(items);
+            filterHandler.post(() -> {
+                cachedItems.clear();
+                cachedItems.addAll(items);
+            });
             setFilter(query);
         }
     }
@@ -127,15 +127,17 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     @Override
     public void clear() {
         super.clear();
-        cachedItems.clear();
+        filterHandler.post(() -> cachedItems.clear());
     }
 
     @Override
     public void onFinishLoading(List<BaseItemClass> result) {
         super.onFinishLoading(result);
         if (query != null) {
-            cachedItems.clear();
-            cachedItems.addAll(items);
+            filterHandler.post(() -> {
+                cachedItems.clear();
+                cachedItems.addAll(items);
+            });
             setFilter(query);
         }
 

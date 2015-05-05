@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
+import android.util.Patterns;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -15,7 +18,7 @@ import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
-import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
@@ -45,7 +48,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void loadMembers() {
         view.startLoading();
-        InviteTemplate.Type from = InviteTemplate.Type.from(view.getSelectedType());
+        Type from = Type.from(view.getSelectedType());
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
         dreamSpiceManager.execute(request, new RequestListener<List<Member>>() {
@@ -90,7 +93,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     public void addMember(Member member) {
         db.addInviteMember(member);
         boolean addToLoadedMembers = false;
-        switch (InviteTemplate.Type.from(view.getSelectedType())) {
+        switch (Type.from(view.getSelectedType())) {
             case EMAIL:
                 addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
                 break;
@@ -103,6 +106,27 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             sortByName();
             setMembers();
         }
+    }
+
+    WeakHandler queryHandler = new WeakHandler();
+
+    public void onFilter(String newText) {
+        queryHandler.removeCallbacksAndMessages(null);
+        queryHandler.postDelayed(() -> {
+            String query = null;
+            switch (Type.from(view.getSelectedType())) {
+                case SMS:
+                    if (Patterns.PHONE.matcher(newText).matches()) {
+                        query = PhoneNumberUtils.normalizeNumber(newText);
+                    } else {
+                        query = newText.toLowerCase();
+                    }
+                    break;
+                default:
+                    query = newText.toLowerCase();
+            }
+            view.setFilter(query);
+        }, 150L);
     }
 
     public void onEventMainThread(MemberCellSelectAllRequestEvent event) {
@@ -141,6 +165,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         int getSelectedType();
 
         void setMembers(List<Member> memberList);
+
+        void setFilter(String newText);
 
         void showNextStepButtonVisibility(boolean isVisible);
     }

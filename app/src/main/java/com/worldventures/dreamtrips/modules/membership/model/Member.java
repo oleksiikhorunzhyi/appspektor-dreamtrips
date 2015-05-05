@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 public class Member implements Serializable, Filterable {
 
@@ -106,7 +104,7 @@ public class Member implements Serializable, Filterable {
     public boolean containsQuery(String query) {
         if (query == null || TextUtils.isEmpty(query.trim())) return false;
         return (name != null && name.toLowerCase().contains(query))
-                || (email != null && email.toLowerCase().contains(query))
-                || (phone != null && phone.contains(PhoneNumberUtils.normalizeNumber(query)));
+                || (email != null && email.contains(query))
+                || (phone != null && phone.contains(query));
     }
 }

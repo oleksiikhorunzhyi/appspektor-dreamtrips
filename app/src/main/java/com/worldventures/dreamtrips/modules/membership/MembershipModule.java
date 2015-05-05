@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPrese
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
-import com.worldventures.dreamtrips.modules.membership.view.activity.SelectTemplateActivity;
+import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -40,7 +40,7 @@ import dagger.Provides;
                 EditTemplateFragment.class,
                 EditTemplatePresenter.class,
                 PreviewInviteActivity.class,
-                SelectTemplateActivity.class,
+                InviteTemplateSelectorActivity.class,
         },
         complete = false,
         library = true

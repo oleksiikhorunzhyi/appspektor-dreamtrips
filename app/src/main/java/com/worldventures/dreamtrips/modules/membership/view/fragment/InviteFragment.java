@@ -124,8 +124,8 @@ public class InviteFragment
     @Override
     public void setMemberCount(int count) {
         textViewContactCount.setText(count > 0 ?
-                String.format(Locale.getDefault(), getString(R.string.selected), count) :
-                "");
+                String.format(getString(R.string.selected), count) :
+                null);
     }
 
     @Override

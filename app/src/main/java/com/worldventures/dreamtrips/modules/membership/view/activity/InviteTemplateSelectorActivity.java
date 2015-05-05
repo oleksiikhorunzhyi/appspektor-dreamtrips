@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_invite)
-public class SelectTemplateActivity extends ActivityWithPresenter<Presenter> {
+public class InviteTemplateSelectorActivity extends ActivityWithPresenter<Presenter> {
 
     public static final String BUNDLE_TEMPLATE = "BUNDLE_TEMPLATE";
     @InjectView(R.id.toolbar_actionbar)

@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickP
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
-import com.worldventures.dreamtrips.modules.membership.view.activity.SelectTemplateActivity;
+import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -139,6 +139,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openSelectTemplateActivity() {
-        startActivity(SelectTemplateActivity.class);
+        startActivity(InviteTemplateSelectorActivity.class);
     }
 }

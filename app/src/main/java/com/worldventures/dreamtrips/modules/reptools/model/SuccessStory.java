@@ -28,6 +28,8 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
     private String sharingUrl = "";
     private boolean liked;
 
+    private boolean selected = false;
+
     public SuccessStory() {
     }
 
@@ -96,6 +98,14 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override

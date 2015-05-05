@@ -35,6 +35,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     protected SnappyRepository db;
 
     private boolean loadFromApi;
+    private boolean loadWithStatus;
     private boolean goneToMap = false;
 
     private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
@@ -42,7 +43,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
-            return new GetTripsQuery(db, prefs, loadFromApi) {
+            return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
                 @Override
                 public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
                     return performFiltering(super.loadDataFromNetwork());
@@ -50,14 +51,21 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             };
         }
 
+        private Boolean cacheEmpty() {
+            return db.isEmpty(SnappyRepository.TRIP_KEY);
+        }
+
         @Override
         public void onStart(LoadType loadType) {
-            view.startLoading();
+            if (loadWithStatus || cacheEmpty()) {
+                view.startLoading();
+            }
         }
 
         @Override
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
+            loadWithStatus = false;
             view.finishLoading(items);
             if (spiceException != null) {
                 handleError(spiceException);
@@ -100,6 +108,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
     public void reload() {
         loadFromApi = true;
+        loadWithStatus = true;
         roboSpiceAdapterController.reload();
     }
 

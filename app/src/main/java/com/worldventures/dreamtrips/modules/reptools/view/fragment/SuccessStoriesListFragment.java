@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
@@ -41,8 +40,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @InjectView(R.id.detail_container)
     protected FrameLayout flDetailContainer;
-    @InjectView(R.id.masterContainer)
-    protected LinearLayout linearLayout;
 
     @InjectView(R.id.iv_search)
     protected SearchView ivSearch;
@@ -64,7 +61,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
-        linearLayout.requestLayout();
         adapter.notifyDataSetChanged();
         openFirst();
     }
@@ -87,7 +83,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
-        linearLayout.requestLayout();
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);

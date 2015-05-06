@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -33,7 +33,7 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
 
-    @InjectView(R.id.recyclerViewTrips)
+    @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.swipe_container)
@@ -41,6 +41,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @InjectView(R.id.detail_container)
     protected FrameLayout flDetailContainer;
+    @InjectView(R.id.masterContainer)
+    protected LinearLayout linearLayout;
 
     @InjectView(R.id.iv_search)
     protected SearchView ivSearch;
@@ -51,7 +53,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
 
-    private FilterableArrayListAdapter adapter;
+    private FilterableArrayListAdapter<SuccessStory> adapter;
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
@@ -61,7 +63,10 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
+        linearLayout.requestLayout();
         adapter.notifyDataSetChanged();
+        openFirst();
     }
 
     @OnClick(R.id.iv_filter)
@@ -81,6 +86,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
+        linearLayout.requestLayout();
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
@@ -137,41 +144,27 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
-    public boolean isTablet() {
-        return ViewUtils.isTablet(getActivity());
-    }
-
-    @Override
-    public boolean isLandscape() {
-        return ViewUtils.isLandscapeOrientation(getActivity());
-    }
-
-    @Override
-    public void setDetailsContainerVisibility(boolean b) {
-        flDetailContainer.setVisibility(b ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
     public FilterableArrayListAdapter getAdapter() {
         return adapter;
     }
 
     @Override
     public void finishLoading(List<SuccessStory> result) {
-        adapter.setFilter(ivSearch.getQuery().toString());
         if (refreshLayout != null) {
             refreshLayout.postDelayed(() -> {
                 if (getActivity() != null) {
                     refreshLayout.setRefreshing(false);
-                    if (isLandscape()
-                            && isTablet()
-                            && result != null
-                            && !result.isEmpty()) {
-                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
-                    }
+                    openFirst();
                 }
             }, 500);
         }
+    }
+
+    private void openFirst() {
+        if (isTabletLandscape()) {
+            getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
+        }
+
     }
 
     @Override

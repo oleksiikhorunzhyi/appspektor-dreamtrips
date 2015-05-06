@@ -42,20 +42,6 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         activityRouter.openEditInviteActivity(inviteTemplate);
     }
 
-    private void getMembers() {
-        MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
-        members.clear();
-        members.addAll(event.getMembers());
-    }
-    private void handleFail(SpiceException e) {
-        view.finishLoading();
-    }
-
-    private void handleResponse(ArrayList<InviteTemplate> inviteTemplates) {
-        view.finishLoading();
-        view.addItems(inviteTemplates);
-    }
-
     public void reload() {
         view.startLoading();
         dreamSpiceManager.execute(new GetInvitationsTemplateQuery(),
@@ -64,14 +50,23 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         );
     }
 
-    public interface View extends Presenter.View {
-
-        void startLoading();
-
-        void finishLoading();
-
-        void addItems(ArrayList<InviteTemplate> inviteTemplates);
+    private void getMembers() {
+        MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
+        members.clear();
+        members.addAll(event.getMembers());
     }
+
+
+    private void handleFail(SpiceException exception) {
+        handleError(exception);
+        view.finishLoading();
+    }
+
+    private void handleResponse(ArrayList<InviteTemplate> inviteTemplates) {
+        view.finishLoading();
+        view.addItems(inviteTemplates);
+    }
+
 
     private String getCurrentUserEmail() {
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -83,5 +78,15 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         }
         return "";
     }
+
+    public interface View extends Presenter.View {
+
+        void startLoading();
+
+        void finishLoading();
+
+        void addItems(ArrayList<InviteTemplate> inviteTemplates);
+    }
+
 }
 

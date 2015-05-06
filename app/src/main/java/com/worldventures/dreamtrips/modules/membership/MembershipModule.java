@@ -7,8 +7,10 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.InviteTemplateSelectorPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.PreviewInvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
@@ -41,6 +43,8 @@ import dagger.Provides;
                 EditTemplatePresenter.class,
                 PreviewInviteActivity.class,
                 InviteTemplateSelectorActivity.class,
+                PreviewInvitePresenter.class,
+                InviteTemplateSelectorPresenter.class,
         },
         complete = false,
         library = true

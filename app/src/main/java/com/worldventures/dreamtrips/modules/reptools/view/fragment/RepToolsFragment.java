@@ -68,13 +68,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        fragmentCompass.pop();
-        fragmentCompass.replace(Route.REP_TOOLS);
-    }
-
-    @Override
     protected RepToolsPresenter createPresenter(Bundle savedInstanceState) {
         return new RepToolsPresenter(this);
     }

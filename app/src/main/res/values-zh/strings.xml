@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DreamTrips</string>
-    <string name="web_title">Web</string>
-    <string name="new_photo">Web</string>
-    <string name="detailed_trip">Detailed Trip</string>
-    <string name="membership">Membership</string>
-    <string name="trip_images">Trip Images</string>
-    <string name="bucket_list">Bucket list</string>
-    <string name="my_profile">My profile</string>
-    <string name="terms">Terms</string>
-    <string name="terms_of_service">Terms of Service</string>
-    <string name="faq">FAQ</string>
-    <string name="privacy">Privacy Policy</string>
-    <string name="cookie">Cookie Policy</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_quick_input">Quick Add</string>
-    <string name="action_popular_string">Add From Popular</string>
+    <string name="web_title">捲筒紙</string>
+    <string name="new_photo">捲筒紙</string>
+    <string name="detailed_trip">詳細行程Trip</string>
+    <string name="membership">會籍</string>
+    <string name="trip_images">圖片之旅</string>
+    <string name="bucket_list">遺願清單</string>
+    <string name="my_profile">我的個人資料</string>
+    <string name="terms">條款</string>
+    <string name="terms_of_service">服務條款</string>
+    <string name="faq">常問問題</string>
+    <string name="privacy">隱私政策</string>
+    <string name="cookie"> Cookie政策</string>
+    <string name="action_settings">設置</string>
+    <string name="action_quick_input">快速添加</string>
+    <string name="action_popular_string">從添加流行</string>
     <string name="action_done">Done</string>
-    <string name="action_enroll">Enroll</string>
-    <string name="action_filter">Filter</string>
-    <string name="action_map">Map</string>
-    <string name="action_like">Like</string>
+    <string name="action_enroll">注冊</string>
+    <string name="action_filter">過濾器</string>
+    <string name="action_map">地圖</string>
+    <string name="action_like">喜歡</string>
     <string name="title_activity_login">登錄活動</string>
     <string name="trips">DreamTrips</string>
     <string name="drawer_open">已打開的目錄</string>
     <string name="drawer_close">已關閉的目錄</string>
-    <string name="empty"></string>
+    <string name="empty"/>
     <string name="logout_dialog_title">退出</string>
     <string name="logout_dialog_message">您確定您要退出嗎?</string>
     <string name="logout_dialog_positive_btn">Logout</string>
@@ -38,7 +38,7 @@
     <string name="duration">%d Nights,\n Standard Acc</string>
     <string name="smth_went_wrong">出現問題=(</string>
     <string name="inspire_me">給我靈感</string>
-    <string name="three_sixty">360 Degree Experience</string>
+    <string name="three_sixty">360度體驗</string>
     <string name="book_it">預訂!</string>
     <string name="reload_trip_details">重新載入旅行詳情</string>
     <string name="title_book_it">預訂</string>
@@ -47,7 +47,7 @@
     <string name="user_password_hint"> WV 會員密碼</string>
     <string name="type_your_reason">輸入您的原因</string>
     <string name="filter_region_header">地區</string>
-    <string name="filter_duration_header">旅行期（  晚）</string>
+    <string name="filter_duration_header">旅行期（ 晚）</string>
     <string name="filter_price_header">價格 ($)</string>
     <string name="filter_select_all">選擇全部</string>
     <string name="filter_show_sold_out">顯示已售完旅行</string>
@@ -95,14 +95,14 @@
     <string name="error_while_loading">載入圖片時出現錯誤</string>
     <string name="fab_select_album">選擇相冊</string>
     <string name="fab_select_photo">選擇照片</string>
-    <string name="fab_posted">成功在 Facebook 發佈</string>
+    <string name="fab_posted">成功在 Facebook 發佈</string>-
     <string-array name="photo_dialog_items">
-    <item>拍攝照片</item>
-    <item>選擇照片</item>
-    </string-array>
+        <item>拍攝照片</item>
+        <item>選擇照片</item>
+    </string-array>-
     <string-array name="share_dialog_items">
-    <item>Facebook</item>
-    <item>Twitter</item>
+        <item>Facebook</item>
+        <item>Twitter</item>
     </string-array>
     <string name="buffering">正在緩衝。...</string>
     <string name="profile_select_avatar_header">選擇頭像</string>
@@ -114,8 +114,8 @@
     <string name="password_not_valid">密碼無效</string>
     <string name="bucket_list_my_title">添加項目到目標清單</string>
     <string name="bucket_list_location_popular">受歡迎的目標清單</string>
-    <string name="bucket_list_activity_popular">受歡迎的目標清單  活動</string>
-    <string name="bucket_list_dinning_popular">受歡迎的目標清單  餐飲&amp;娛樂</string>
+    <string name="bucket_list_activity_popular">受歡迎的目標清單 活動</string>
+    <string name="bucket_list_dinning_popular">受歡迎的目標清單 餐飲&amp;娛樂</string>
     <string name="bucket_list_edit_header">編輯清單項目</string>
     <string name="bucket_list_add">添加 %s 至您的目標清單</string>
     <string name="bucket_list_create_message">目前您沒有目標清單項目。您可以從受歡迎的目標清單項目中選擇，或創建您自己的目標</string>
@@ -164,81 +164,75 @@
     <string name="comments">"評論"</string>
     <string name="wrong_image">錯誤圖片</string>
     <string name="could_not_load">"不能載入"</string>
-
-
-    <string name="someday">Someday</string>
-    <string name="who">Who: </string>
-    <string name="tags">Tags: </string>
-    <string name="my_pictures">My pictures</string>
-    <string name="today">Today</string>
-    <string name="rep_enrollment">Rep Enrollment</string>
-    <string name="no_connection">No Internet Connection</string>
+    <string name="someday">日後</string>
+    <string name="who">誰: </string>
+    <string name="tags">標籤: </string>
+    <string name="my_pictures">我的圖片</string>
+    <string name="today">今兒</string>
+    <string name="rep_enrollment">眾議員招生</string>
+    <string name="no_connection">沒有互聯網連接</string>
     <string name="popular_add">ADD</string>
     <string name="popular_done">DONE</string>
-    <string name="see_more">See more</string>
-    <string name="alert">Alert</string>
-    <string name="OK">OK</string>
-    <string name="share_error">Can\'t share file</string>
+    <string name="see_more">查看更多</string>
+    <string name="alert">警戒</string>
+    <string name="OK">行</string>
+    <string name="share_error">不能共享文件</string>
     <string-array name="bucket_date_items">
-        <item>Specific date</item>
-        <item>Tomorrow</item>
-        <item>This week</item>
-        <item>Next week</item>
-        <item>This month</item>
-        <item>Next month</item>w
-        <item>In six month</item>
-        <item>This year</item>
-        <item>Next year</item>
+        <item>具體日期</item>
+        <item>明日</item>
+        <item>本星期</item>
+        <item>下週</item>
+        <item>這個月</item>
+        <item>下個月</item>
+        <item>在6個月</item>
+        <item>今年</item>
+        <item>明年</item>
         <item>@string/someday</item>
         //do not translate
-    </string-array>
+    </string-array>-
     <string-array name="dialog_add_bucket_photo">
-        <item>Choose from Facebook</item>
-        <item>Take Photo</item>
-        <item>Choose Photo</item>
-    </string-array>
+        <item>從Facebook的選擇</item>
+        <item>拍照</item>
+        <item>選擇照片</item>
+    </string-array>-
     <string-array name="dialog_action_bucket_photo">
-        <item>Set as cover</item>
-        <item>Delete</item>
+        <item>設為封面</item>
+        <item>刪</item>
     </string-array>
-
-    <string name="add_pictures">Add pictures</string>
-    <string name="select_photo">Select photo</string>
-    <string name="bucket_photo_dialog">Bucket photo</string>
-    <string name="download_in_progress">Download in progress</string>
-    <string name="delete_cached_video_title">Video</string>
-    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
+    <string name="add_pictures">添加圖片</string>
+    <string name="select_photo">選擇照片</string>
+    <string name="bucket_photo_dialog">鬥照片</string>
+    <string name="download_in_progress">正在下載</string>
+    <string name="delete_cached_video_title">視頻</string>
+    <string name="delete_cached_video_text">你確定你想從您的設備刪除</string>
     <string name="fail">Failure</string>
+    <string name="cancel_cached_video_title">視頻</string>
+    <string name="cancel_cached_video_text">您確定要取消文件下載?</string>
+    <string name="cancel_photo_positiove">對</string>
+    <string name="cancel_photo_negative">不</string>
+    <string name="presentations">贈送</string>
+    <string name="enroll_member">註冊會員</string>
+    <string name="invite_and_share">邀請和共享</string>
+    <string name="add_contact">添加聯繫人</string>
+    <string name="add">還說</string>
+    <string name="invite_add_name">名義</string>
+    <string name="invite_email">電子郵件</string>
+    <string name="invite_phone">電話號碼</string>
+    <string name="invite_add_message">添加個人信息</string>
+    <string name="action_send">遞送</string>
+    <string name="action_preview">預覽</string>
+    <string name="title_edit_template">編輯模板</string>
+    <string name="title_activity_invite">邀請</string>
+    <string name="invitation_continue">賡</string>
+    <string name="invitation_select_contacts">選擇聯繫人</string>
+    <string name="invitation_select_template">選擇模板邀請函</string>
+    <string name="invitation_select">芼</string>
+    <string name="invitation_from">從:</string>
+    <string name="invitation_to">遏:</string>
+    <string name="invitation_subject">主題:</string>
 
-    <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
-    <string name="cancel_photo_positiove">Yes</string>
-    <string name="cancel_photo_negative">No</string>
-    <string name="presentations">Presentations</string>
-    <string name="enroll_member">Enroll Member</string>
-    <string name="invite_and_share">Invite&amp;Share</string>
-    <string name="add_contact">Add contact</string>
-    <string name="add">Add</string>
-    <string name="invite_add_name">Name</string>
-    <string name="invite_email">Email</string>
-    <string name="invite_phone">Phone</string>
-    <string name="invite_add_message">Add Personal Message</string>
-    <string name="action_send">Send</string>
-    <string name="action_preview">Preview</string>
-
-    <string name="title_edit_template">Edit template</string>
-    <string name="title_activity_invite">Invite</string>
-
-    <string name="invitation_continue">Continue</string>
-    <string name="invitation_select_contacts">Select contacts</string>
-    <string name="invitation_select_template">Select invitation Template</string>
-    <string name="invitation_select">Select</string>
-    <string name="invitation_from">From:</string>
-    <string name="invitation_to">To:</string>
-    <string name="invitation_subject">Subject:</string>
-
-    <string name="facebook_app_id">761667837261383</string>//do not translate
-    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
+    <string name="select_template">Select template</string>
+    <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should be not empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
 

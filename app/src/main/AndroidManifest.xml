@@ -51,7 +51,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".modules.membership.view.activity.InviteTemplateSelectorActivity"
-            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".modules.common.view.activity.MainActivity"

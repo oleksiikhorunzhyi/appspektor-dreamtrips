@@ -14,14 +14,14 @@ import com.worldventures.dreamtrips.modules.membership.presenter.PreviewInvitePr
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_invite)
-public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
+public class PreviewInviteActivity extends ActivityWithPresenter<PreviewInvitePresenter> {
 
     public static final String BUNDLE_TEMPLATE = "BUNDLE_TEMPLATE";
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
     @Override
-    protected Presenter createPresentationModel(Bundle savedInstanceState) {
+    protected PreviewInvitePresenter createPresentationModel(Bundle savedInstanceState) {
         InviteTemplate template = getIntent()
                 .getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE);
         return new PreviewInvitePresenter(this, template);

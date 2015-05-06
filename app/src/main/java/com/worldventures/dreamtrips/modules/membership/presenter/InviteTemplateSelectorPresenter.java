@@ -9,8 +9,7 @@ public class InviteTemplateSelectorPresenter extends Presenter {
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onStart() {
         fragmentCompass.replace(Route.SELECT_INVITE_TEMPLATE);
     }
 }

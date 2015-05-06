@@ -125,7 +125,7 @@
 
         <meta-data
             android:name="apptentive_api_key"
-            android:value="@string/survey_api_token" />
+            android:value="${surveyApiToken}"/>
 
         <activity
             android:name="com.apptentive.android.sdk.ViewActivity"

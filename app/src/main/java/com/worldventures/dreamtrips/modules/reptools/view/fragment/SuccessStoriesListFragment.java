@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
@@ -51,6 +52,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     protected ViewGroup emptyView;
 
     private FilterableArrayListAdapter<SuccessStory> adapter;
+
+    private WeakHandler handler = new WeakHandler();
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
@@ -145,14 +148,10 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @Override
     public void finishLoading(List<SuccessStory> result) {
-        if (refreshLayout != null) {
-            refreshLayout.postDelayed(() -> {
-                if (getActivity() != null) {
-                    refreshLayout.setRefreshing(false);
-                    openFirst();
-                }
-            }, 500);
-        }
+        handler.post(() -> {
+            refreshLayout.setRefreshing(false);
+            openFirst();
+        });
     }
 
     private void openFirst() {

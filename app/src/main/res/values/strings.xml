@@ -235,7 +235,4 @@
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
-
-    <string name="facebook_app_id" translatable="false">761667837261383</string>
-    <string name="survey_api_token" translatable="false">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
 </resources>

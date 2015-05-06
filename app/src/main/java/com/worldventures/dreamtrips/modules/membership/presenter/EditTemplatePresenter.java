@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,9 +21,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
+
     public static final String TAG = EditTemplatePresenter.class.getSimpleName();
     private InviteTemplate template;
+
+    @Inject Context context;
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
         super(view);
@@ -108,7 +114,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         if (type == InviteTemplate.Type.EMAIL) {
             intent = Share.newEmailIntent(addresses, getSubject(), getBody());
         } else {
-            intent = Share.newSmsIntent(addresses, getSmsBody());
+            intent = Share.newSmsIntent(context, getSmsBody(), addresses);
         }
         return intent;
     }

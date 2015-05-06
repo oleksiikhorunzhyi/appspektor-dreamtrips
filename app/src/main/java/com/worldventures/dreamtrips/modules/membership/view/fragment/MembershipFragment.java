@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
@@ -41,7 +43,9 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> {
 
         adapter.add(new FragmentItem(PresentationsFragment.class, getString(R.string.presentations)));
         adapter.add(new FragmentItem(StaticInfoFragment.EnrollFragment.class, getString(R.string.enroll_member)));
-        adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
+        if (getPresenter().showInvite()) {
+            adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
+        }
         adapter.notifyDataSetChanged();
 
     }

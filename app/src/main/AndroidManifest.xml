@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.worldventures.dreamtrips"
-    android:installLocation="preferExternal" >
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -30,7 +30,7 @@
         android:icon="@drawable/ic_dt_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.DreamTripsTheme"
-        tools:replace="icon, label" >
+        tools:replace="icon, label">
         <meta-data
             android:name="com.instabug.DevelopmentAppToken"
             android:value="a3060506f058a57fcc3ef8d80d189e6e" />
@@ -49,6 +49,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".modules.membership.view.activity.InviteTemplateSelectorActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name" />
         <activity
             android:name=".modules.common.view.activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -77,10 +81,9 @@
         <activity
             android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -128,7 +131,7 @@
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/Apptentive.Theme.Transparent" />
 
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -150,8 +153,7 @@
 
         <activity
             android:name=".modules.membership.view.activity.PreviewInviteActivity"
-            android:label="@string/title_activity_invite" >
-        </activity>
+            android:label="@string/title_activity_invite"/>
     </application>
 
 </manifest>

@@ -12,7 +12,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
-import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 
@@ -33,8 +32,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     protected SelectTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        ArrayList<Member> members = (ArrayList<Member>) getArguments().getSerializable(BUNDLE_TO);
-        return new SelectTemplatePresenter(this, members);
+        return new SelectTemplatePresenter(this);
     }
 
     @Override

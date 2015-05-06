@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
@@ -75,6 +76,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     public void resume() {
         //nothing to do here
     }
+
+    public User getUser() {return appSessionHolder.get().get().getUser();};
 
     public String getUserId() {
         return appSessionHolder.get().get().getUser().getEmail();

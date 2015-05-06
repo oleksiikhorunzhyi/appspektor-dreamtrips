@@ -8,19 +8,19 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 
 public class PreviewInvitePresenter extends Presenter {
+
     private InviteTemplate template;
 
-    public PreviewInvitePresenter(View view, InviteTemplate template) {
+    public PreviewInvitePresenter(View view, InviteTemplate inviteTemplate) {
         super(view);
-        this.template = template;
+        this.template = inviteTemplate;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void resume() {
+        super.resume();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EditTemplateFragment.TEMPLATE, template);
         fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);
     }
-
 }

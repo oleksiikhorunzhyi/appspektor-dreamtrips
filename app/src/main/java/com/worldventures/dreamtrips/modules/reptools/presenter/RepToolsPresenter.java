@@ -6,4 +6,8 @@ public class RepToolsPresenter extends Presenter {
     public RepToolsPresenter(View view) {
         super(view);
     }
+
+    public boolean showInvite() {
+        return getUser().isRep();
+    }
 }

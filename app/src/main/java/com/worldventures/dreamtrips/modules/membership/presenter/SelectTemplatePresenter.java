@@ -8,6 +8,7 @@ import android.util.Patterns;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
+import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
 import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -17,11 +18,10 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
-    private ArrayList<Member> members;
+    private ArrayList<Member> members = new ArrayList<>();
 
-    public SelectTemplatePresenter(View view, ArrayList<Member> members) {
+    public SelectTemplatePresenter(View view) {
         super(view);
-        this.members = members;
     }
 
     @Override
@@ -33,20 +33,25 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
     public void onEvent(TemplateSelectedEvent event) {
         Bundle bundle = new Bundle();
         InviteTemplate inviteTemplate = event.getInviteTemplate();
-        inviteTemplate.setTo(members);
         inviteTemplate.setFrom(getCurrentUserEmail());
+        getMembers();
+        inviteTemplate.setTo(members);
         inviteTemplate.setType(members.get(0).isEmailMain() ?
                 InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
         bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
         activityRouter.openEditInviteActivity(inviteTemplate);
     }
 
+    private void getMembers() {
+        MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
+        members.clear();
+        members.addAll(event.getMembers());
+    }
     private void handleFail(SpiceException e) {
         view.finishLoading();
     }
 
     private void handleResponse(ArrayList<InviteTemplate> inviteTemplates) {
-
         view.finishLoading();
         view.addItems(inviteTemplates);
     }

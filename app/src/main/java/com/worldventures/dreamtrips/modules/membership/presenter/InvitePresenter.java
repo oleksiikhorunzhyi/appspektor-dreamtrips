@@ -36,6 +36,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     Injector injector;
 
     private List<Member> members;
+    private List<Member> selectedMembers;
 
     public InvitePresenter(View view) {
         super(view);
@@ -64,6 +65,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                 InvitePresenter.this.members = members;
                 sortByName();
                 setMembers();
+                resetSelected();
                 getInvitations();
             }
         });
@@ -139,9 +141,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         boolean isVisible = Queryable.from(members).any(Member::isChecked);
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         eventBus.removeStickyEvent(MemberStickyEvent.class);
-        List<Member> selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
+        selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
         eventBus.postSticky(new MemberStickyEvent(selectedMembers));
-        view.setMemberCount(selectedMembers.size());
+        view.setSelectedCount(selectedMembers.size());
     }
 
     public void continueAction() {
@@ -163,8 +165,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         Collections.sort(members, ((lhs, rhs) -> lhs.getName().compareTo(rhs.getName())));
     }
 
-    private ArrayList<Member> getSelectedMembers() {
-        return new ArrayList<>(Queryable.from(members).filter(Member::isChecked).toList());
+    private void resetSelected() {
+        Queryable.from(members).forEachR(m -> m.setIsChecked(false));
+        if (selectedMembers != null) selectedMembers.clear();
+        view.setSelectedCount(0);
     }
 
     public interface View extends Presenter.View {
@@ -180,6 +184,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void showNextStepButtonVisibility(boolean isVisible);
 
-        void setMemberCount(int count);
+        void setSelectedCount(int count);
     }
 }

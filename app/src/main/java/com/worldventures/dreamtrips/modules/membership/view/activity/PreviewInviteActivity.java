@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.PreviewInvitePresenter;
@@ -14,14 +13,14 @@ import com.worldventures.dreamtrips.modules.membership.presenter.PreviewInvitePr
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_invite)
-public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
+public class PreviewInviteActivity extends ActivityWithPresenter<PreviewInvitePresenter> {
 
     public static final String BUNDLE_TEMPLATE = "BUNDLE_TEMPLATE";
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
     @Override
-    protected Presenter createPresentationModel(Bundle savedInstanceState) {
+    protected PreviewInvitePresenter createPresentationModel(Bundle savedInstanceState) {
         InviteTemplate template = getIntent()
                 .getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE);
         return new PreviewInvitePresenter(this, template);

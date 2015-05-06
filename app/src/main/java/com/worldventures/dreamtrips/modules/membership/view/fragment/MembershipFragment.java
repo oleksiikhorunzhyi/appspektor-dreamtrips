@@ -47,6 +47,5 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> {
             adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
         }
         adapter.notifyDataSetChanged();
-
     }
 }

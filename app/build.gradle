@@ -38,6 +38,9 @@ android {
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
+
+        manifestPlaceholders = [surveyApiToken:"48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+
     }
     productFlavors {
         dev {
@@ -45,6 +48,7 @@ android {
             // to speed up multiDex dramatically
             minSdkVersion 21
             applicationId "com.worldventures.dreamtrips.dev"
+
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
@@ -55,9 +59,11 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761667837261383"
         }
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
+
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
@@ -68,9 +74,12 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761667837261383"
         }
         preprod {
             applicationId "com.worldventures.dreamtrips.preprod"
+            manifestPlaceholders = [ surveyApiToken:"48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+
             buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz"'
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
@@ -80,9 +89,13 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
+
+            resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
             applicationId "com.worldventures.dreamtrips"
+            manifestPlaceholders = [surveyApiToken:"48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 
             buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
@@ -92,6 +105,7 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
+            resValue "string", "facebook_app_id", "761062457321921"
         }
     }
     signingConfigs {

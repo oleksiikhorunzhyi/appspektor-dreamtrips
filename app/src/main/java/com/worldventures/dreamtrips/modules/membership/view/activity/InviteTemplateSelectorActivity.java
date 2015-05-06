@@ -5,21 +5,20 @@ import android.support.v7.widget.Toolbar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.InviteTemplateSelectorPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_invite)
-public class InviteTemplateSelectorActivity extends ActivityWithPresenter<Presenter> {
+public class InviteTemplateSelectorActivity extends ActivityWithPresenter<InviteTemplateSelectorPresenter> {
 
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
     @Override
-    protected Presenter createPresentationModel(Bundle savedInstanceState) {
-        return new Presenter(this);
+    protected InviteTemplateSelectorPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new InviteTemplateSelectorPresenter(this);
     }
 
     @Override

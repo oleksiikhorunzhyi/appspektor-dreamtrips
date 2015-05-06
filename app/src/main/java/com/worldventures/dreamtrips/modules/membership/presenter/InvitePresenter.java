@@ -54,6 +54,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         dreamSpiceManager.execute(request, new RequestListener<List<Member>>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
+                handleError(spiceException);
                 view.finishLoading();
             }
 
@@ -144,8 +145,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void continueAction() {
+        fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
         if (view.isTabletLandscape()) {
-            fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
             fragmentCompass.disableBackStack();
             fragmentCompass.setContainerId(R.id.container_templates);
             fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);

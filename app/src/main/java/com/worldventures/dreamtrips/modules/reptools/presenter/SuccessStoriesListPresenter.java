@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStorie
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
@@ -54,6 +53,60 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         super(view);
     }
 
+    @Override
+    public void resume() {
+        adapterController.setSpiceManager(dreamSpiceManager);
+        adapterController.setAdapter(view.getAdapter());
+        adapterController.reload();
+    }
+
+    @Override
+    public void destroyView() {
+        eventBus.unregister(this);
+        super.destroyView();
+    }
+
+    public void reload() {
+        adapterController.reload();
+    }
+
+    public void onEvent(OnSuccessStoryCellClickEvent event) {
+        handleListItemClick(event.getModelObject(), event.getPosition());
+        view.onStoryClicked();
+    }
+
+    public void onEvent(SuccessStoryLikedEvent event) {
+        reload();
+    }
+
+    public void reloadWithFilter(int filterId) {
+        switch (filterId) {
+            case R.id.action_show_all:
+                onlyFavorites = false;
+                break;
+            case R.id.action_show_favorites:
+                onlyFavorites = true;
+                break;
+        }
+        reload();
+    }
+
+    public boolean isFilterFavorites() {
+        return onlyFavorites;
+    }
+
+    private void handleListItemClick(SuccessStory successStory, int position) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
+        if (view.isTabletLandscape()) {
+            fragmentCompass.setContainerId(R.id.detail_container);
+            fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
+            eventBus.post(new SuccessStoryItemSelectedEvent(position));
+        } else {
+            activityRouter.openSuccessStoryDetails(successStory);
+        }
+    }
+
     private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
         ArrayList<SuccessStory> result = new ArrayList<>();
         if (isFilterFavorites()) {
@@ -72,75 +125,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         return result;
     }
 
-    @Override
-    public void resume() {
-        adapterController.setSpiceManager(dreamSpiceManager);
-        adapterController.setAdapter(view.getAdapter());
-        adapterController.reload();
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        boolean isLandTablet = view.isLandscape() && view.isTablet();
-        view.setDetailsContainerVisibility(isLandTablet);
-    }
-
-    public void reload() {
-        adapterController.reload();
-    }
-
-    public void onEvent(OnSuccessStoryCellClickEvent event) {
-        handleListItemClick(event.getModelObject(), event.getPosition());
-        view.onStoryClicked();
-    }
-
-    public void onEvent(SuccessStoryLikedEvent event) {
-        reload();
-    }
-
-
-    private void handleListItemClick(SuccessStory successStory, int position) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
-        if (view.isLandscape() && view.isTablet()) {
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
-            eventBus.post(new SuccessStoryItemSelectedEvent(position));
-        } else {
-            activityRouter.openSuccessStoryDetails(successStory);
-        }
-    }
-
-    public void reloadWithFilter(int filterId) {
-        switch (filterId) {
-            case R.id.action_show_all:
-                onlyFavorites = false;
-                break;
-            case R.id.action_show_favorites:
-                onlyFavorites = true;
-                break;
-        }
-        reload();
-    }
-
-    @Override
-    public void destroyView() {
-        eventBus.unregister(this);
-        super.destroyView();
-    }
-
-    public boolean isFilterFavorites() {
-        return onlyFavorites;
-    }
-
     public interface View extends Presenter.View {
-
-        boolean isTablet();
-
-        boolean isLandscape();
-
-        void setDetailsContainerVisibility(boolean b);
 
         FilterableArrayListAdapter getAdapter();
 

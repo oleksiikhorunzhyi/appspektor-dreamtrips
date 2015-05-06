@@ -17,8 +17,7 @@ public class PreviewInvitePresenter extends Presenter {
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onStart() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EditTemplateFragment.TEMPLATE, template);
         fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);

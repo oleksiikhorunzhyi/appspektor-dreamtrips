@@ -29,7 +29,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         this.template = template;
     }
 
-
     @Override
     public void resume() {
         super.resume();

@@ -164,7 +164,6 @@
     <string name="comments">" Comments"</string>
     <string name="wrong_image">Wrong image</string>
     <string name="could_not_load">"Could not load "</string>
-
     <string name="someday">Someday</string>
     <string name="who">Who: </string>
     <string name="tags">Tags: </string>
@@ -184,7 +183,7 @@
         <item>This week</item>
         <item>Next week</item>
         <item>This month</item>
-        <item>Next month</item>w
+        <item>Next month</item>
         <item>In six month</item>
         <item>This year</item>
         <item>Next year</item>
@@ -200,7 +199,6 @@
         <item>Set as cover</item>
         <item>Delete</item>
     </string-array>
-
     <string name="add_pictures">Add pictures</string>
     <string name="select_photo">Select photo</string>
     <string name="bucket_photo_dialog">Bucket photo</string>
@@ -208,7 +206,6 @@
     <string name="delete_cached_video_title">Video</string>
     <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
     <string name="fail">Failure</string>
-
     <string name="cancel_cached_video_title">Video</string>
     <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
@@ -224,10 +221,8 @@
     <string name="invite_add_message">Add Personal Message</string>
     <string name="action_send">Send</string>
     <string name="action_preview">Preview</string>
-
     <string name="title_edit_template">Edit template</string>
     <string name="title_activity_invite">Invite</string>
-
     <string name="invitation_continue">Continue</string>
     <string name="invitation_select_contacts">Select contacts</string>
     <string name="invitation_select_template">Select invitation Template</string>
@@ -240,7 +235,4 @@
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
-
-    <string name="facebook_app_id">761667837261383</string>//do not translate
-    <string name="survey_api_token">48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa</string>
 </resources>

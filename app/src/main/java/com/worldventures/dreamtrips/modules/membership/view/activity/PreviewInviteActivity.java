@@ -6,10 +6,10 @@ import android.support.v7.widget.Toolbar;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.membership.presenter.PreviewInvitePresenter;
 
 import butterknife.InjectView;
 
@@ -22,7 +22,9 @@ public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
 
     @Override
     protected Presenter createPresentationModel(Bundle savedInstanceState) {
-        return new Presenter(this);
+        InviteTemplate template = getIntent()
+                .getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE);
+        return new PreviewInvitePresenter(this, template);
     }
 
     @Override
@@ -34,12 +36,4 @@ public class PreviewInviteActivity extends ActivityWithPresenter<Presenter> {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EditTemplateFragment.TEMPLATE,
-                getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE));
-        fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);
-    }
 }

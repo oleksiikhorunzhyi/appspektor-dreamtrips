@@ -14,7 +14,6 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_invite)
 public class InviteTemplateSelectorActivity extends ActivityWithPresenter<Presenter> {
 
-    public static final String BUNDLE_TEMPLATE = "BUNDLE_TEMPLATE";
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 
@@ -30,7 +29,6 @@ public class InviteTemplateSelectorActivity extends ActivityWithPresenter<Presen
         getSupportActionBar().setTitle(R.string.select_template);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        fragmentCompass.replace(Route.SELECT_INVITE_TEMPLATE);
     }
 }
 

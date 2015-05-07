@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
@@ -23,9 +23,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
-    public static final String TAG = EditTemplatePresenter.class.getSimpleName();
     private InviteTemplate template;
 
     @Inject Context context;
@@ -64,7 +65,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateFailed(SpiceException spiceException) {
         view.finishLoading();
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
@@ -75,22 +76,22 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private void sentInvitesFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void createInviteSuccess(InviteTemplate template) {
-        Log.i(TAG, "createInviteSuccess");
+        Timber.i("createInviteSuccess");
         getFilledInvitationsTemplateSuccess(template);
-        view.shareAction();
+        activityRouter.openDefaultShareIntent(getShareIntent());
         notifyServer();
     }
 
     private void createInviteFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void sentInviteSuccess(JSONObject aVoid) {
-        Log.i(TAG, "sentInviteSuccess");
+        Timber.i("sentInviteSuccess");
         eventBus.post(new InvitesSentEvent());
     }
 
@@ -112,7 +113,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
         Intent intent;
         if (type == InviteTemplate.Type.EMAIL) {
-            intent = Share.newEmailIntent(addresses, getSubject(), getBody());
+            intent = Share.newEmailIntent(getSubject(), getBody(), addresses);
         } else {
             intent = Share.newSmsIntent(context, getSmsBody(), addresses);
         }
@@ -132,12 +133,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private List<String> getContactAddress() {
-        ArrayList<Member> to = template.getTo();
-        List<String> result = new ArrayList<>();
-        for (Member member : to) {
-            result.add(member.getSubtitle());
-        }
-        return result;
+        return Queryable.from(template.getTo()).map(Member::getSubtitle).toList();
     }
 
     public void shareRequest() {
@@ -166,6 +162,5 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
         void finishLoading();
 
-        void shareAction();
     }
 }

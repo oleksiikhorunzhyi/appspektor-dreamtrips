@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;

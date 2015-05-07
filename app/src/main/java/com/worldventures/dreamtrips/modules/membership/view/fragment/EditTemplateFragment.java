@@ -48,12 +48,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         return super.onOptionsItemSelected(item);
     }
 
-    public void shareAction() {
-        Intent smsIntent = getPresenter().getShareIntent();
-        startActivity(Intent.createChooser(smsIntent, "Share"));
-    }
-
-
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
         InviteTemplate template = getArguments().getParcelable(TEMPLATE);

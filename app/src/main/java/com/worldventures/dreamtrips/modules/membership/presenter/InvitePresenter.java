@@ -129,8 +129,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void deselectAll() {
-        Queryable.from(members).forEachR(m -> m.setIsChecked(false));
-        selectedMembers.clear();
+        resetSelected();
         eventBus.removeStickyEvent(MemberStickyEvent.class);
         setMembers();
     }
@@ -181,6 +180,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         Queryable.from(members).forEachR(m -> m.setIsChecked(false));
         if (selectedMembers != null) selectedMembers.clear();
         view.setSelectedCount(0);
+        view.showNextStepButtonVisibility(false);
     }
 
     public interface View extends Presenter.View {

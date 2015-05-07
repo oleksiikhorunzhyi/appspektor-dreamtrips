@@ -100,6 +100,7 @@ public class InviteFragment
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 refreshLayout.setEnabled(firstPos == 0);
+                tvSearch.clearFocus();
             }
         });
 
@@ -115,10 +116,8 @@ public class InviteFragment
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    frameContactCount.setVisibility(View.VISIBLE);
                     buttonContinue.setVisibility(View.GONE);
                 } else {
-                    frameContactCount.setVisibility(View.GONE);
                     getPresenter().searchHiden();
                 }
             }
@@ -182,7 +181,7 @@ public class InviteFragment
     public void move(int from, int to) {
         adapter.moveItem(from, to);
         adapter.notifyItemMoved(from, to);
-        lvUsers.scrollToPosition(to);
+        lvUsers.scrollToPosition(0);
     }
 
     @Override
@@ -219,6 +218,8 @@ public class InviteFragment
 
     @Override
     public void showNextStepButtonVisibility(boolean isVisible) {
-        buttonContinue.setVisibility(!tvSearch.hasFocus() && isVisible ? View.VISIBLE : View.GONE);
+        int visibility = isVisible ? View.VISIBLE : View.GONE;
+        frameContactCount.setVisibility(visibility);
+        if (!tvSearch.hasFocus()) buttonContinue.setVisibility(visibility);
     }
 }

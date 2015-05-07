@@ -106,6 +106,16 @@ public class InviteFragment
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         tvSearch.setOnQueryTextListener(this);
+        tvSearch.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    buttonContinue.setVisibility(View.GONE);
+                } else {
+                    buttonContinue.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         buttonContinue.setVisibility(View.GONE);
     }
 

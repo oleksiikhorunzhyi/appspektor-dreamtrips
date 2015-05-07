@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import android.content.Intent;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -7,14 +8,19 @@ import android.util.Patterns;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
+import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
+import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
@@ -27,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
@@ -47,39 +55,34 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         super.resume();
     }
 
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.finishLoading();
+    }
+
     public void loadMembers() {
         view.startLoading();
         Type from = Type.from(view.getSelectedType());
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
-        dreamSpiceManager.execute(request, new RequestListener<List<Member>>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                handleError(spiceException);
-                view.finishLoading();
-            }
-
-            @Override
-            public void onRequestSuccess(List<Member> members) {
-                view.finishLoading();
-                InvitePresenter.this.members = members;
-                sortByName();
-                setMembers();
-                resetSelected();
-                getInvitations();
-            }
+        doRequest(request, members -> {
+            view.finishLoading();
+            InvitePresenter.this.members = members;
+            sortByName();
+            setMembers();
+            resetSelected();
+            getInvitations();
         });
     }
 
     private void getInvitations() {
-        dreamSpiceManager.execute(new GetInvitationsQuery(),
-                inviteTemplates -> {
-                    linkHistoryWithMembers(inviteTemplates);
-                    setMembers();
-                },
-                spiceException -> {
-
-                });
+        view.startLoading();
+        doRequest(new GetInvitationsQuery(), inviteTemplates -> {
+            view.finishLoading();
+            linkHistoryWithMembers(inviteTemplates);
+            setMembers();
+        });
     }
 
     private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
@@ -146,6 +149,38 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
         eventBus.postSticky(new MemberStickyEvent(selectedMembers));
         view.setSelectedCount(selectedMembers.size());
+    }
+
+    public void onEventMainThread(MemberCellResendEvent event) {
+        doResend(event.history);
+    }
+
+    /** Get pre-filled template by id, and try to resend */
+    private void doResend(History history) {
+        view.startLoading();
+        doRequest(new GetFilledInvitationTemplateQuery(history.getTemplateId()), template -> {
+            // open share intent
+            Intent intent = null;
+            switch (history.getType()) {
+                case EMAIL:
+                    intent = Share.newEmailIntent(template.getTitle(), template.getContent(), history.getContact());
+                    break;
+                case SMS:
+                    intent = Share.newSmsIntent(context, template.getLink(), history.getContact());
+                    break;
+            }
+            activityRouter.openDefaultShareIntent(intent);
+            // notify server
+            InviteBody body = new InviteBody();
+            body.setContacts(Collections.singletonList(history.getContact()));
+            body.setTemplateId(history.getTemplateId());
+            body.setType(history.getType());
+            doRequest(new SendInvitationsQuery(body), stub -> {
+                Timber.i("Invitation sending succeeded");
+                view.finishLoading();
+                eventBus.post(new InvitesSentEvent());
+            });
+        });
     }
 
     public void continueAction() {

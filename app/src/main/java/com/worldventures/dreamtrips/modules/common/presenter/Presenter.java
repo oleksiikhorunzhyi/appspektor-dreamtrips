@@ -7,12 +7,12 @@ import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Log;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -109,12 +109,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         }
     }
 
-    protected <T> void doRequest(DreamTripsRequest<T> request,
+    protected <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);
     }
 
-    protected <T> void doRequest(DreamTripsRequest<T> request,
+    protected <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         dreamSpiceManager.execute(request, successListener, failureListener);

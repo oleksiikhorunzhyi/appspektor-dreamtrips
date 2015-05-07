@@ -11,9 +11,11 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import butterknife.InjectView;
@@ -37,11 +39,13 @@ public class MemberCell extends AbstractCell<Member> {
     @InjectView(R.id.ll_resend)
     LinearLayout llResend;
 
-    private final String country;
+    String country;
+    SimpleDateFormat resendFormat;
 
     public MemberCell(View view) {
         super(view);
         country = Locale.getDefault().getCountry();
+        resendFormat = new SimpleDateFormat(DateTimeUtils.MEMBER_FORMAT);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class MemberCell extends AbstractCell<Member> {
             llResend.setVisibility(View.VISIBLE);
             tvDate.setText(DateTimeUtils.convertDateToString(
                             getModelObject().getHistory().getDate()
-                            , DateTimeUtils.MEMBER_FORMAT)
+                            , resendFormat)
             );
         } else {
             llResend.setVisibility(View.GONE);
@@ -75,7 +79,7 @@ public class MemberCell extends AbstractCell<Member> {
 
     @OnClick(R.id.ll_resend)
     public void onResendClick() {
-
+        getEventBus().post(new MemberCellResendEvent(getModelObject().getHistory()));
     }
 
     @Override

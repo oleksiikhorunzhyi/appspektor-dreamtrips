@@ -163,5 +163,8 @@ public interface DreamTripsApi {
     @POST("/api/invitations/filled_templates/")
     public InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message);
 
+    @GET("/api/invitations/filled_templates/{id} ")
+    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
+
 
 }

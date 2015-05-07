@@ -14,16 +14,18 @@ public class Share {
         //nothing
     }
 
-    private static final String MIME_TYPE_EMAIL = "message/rfc822";
+    public static Intent newEmailIntent(String subject, String body, String... addresses) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
 
-    public static Intent newEmailIntent(String[] addresses, String subject, String body) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.putExtra(Intent.EXTRA_BCC, addresses);
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
-        i.setType(MIME_TYPE_EMAIL);
-
-        return i;
+        if (addresses != null && addresses.length == 1) {
+            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        } else {
+            intent.putExtra(Intent.EXTRA_BCC, addresses);
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+        intent.putExtra(Intent.EXTRA_HTML_TEXT, Html.fromHtml(body));
+        return intent;
     }
 
     public static Intent newSmsIntent(Context context, String body, String... phoneNumber) {

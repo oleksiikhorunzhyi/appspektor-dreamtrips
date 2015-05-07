@@ -18,12 +18,10 @@ public class Schedule implements Serializable {
     @SerializedName("end_on")
     private Date endOn;
 
-    private transient SimpleDateFormat simpleDateFormatMonthDay;
-    private transient SimpleDateFormat simpleDateFormatDay;
+    private transient SimpleDateFormat simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.getDefault());
+    private transient SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.getDefault());
 
     public Schedule() {
-        simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
-        simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.US);
     }
 
     public java.util.Date getStartDate() {

@@ -75,7 +75,7 @@ public class MemberCell extends AbstractCell<Member> {
 
     @OnClick(R.id.ll_resend)
     public void onResendClick() {
-
+        getEventBus().post(new MemberCellResendEvent(getModelObject().getHistory()));
     }
 
     @Override

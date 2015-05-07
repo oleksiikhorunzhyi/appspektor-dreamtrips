@@ -16,6 +16,10 @@ public class ActivityBoundRouter extends BaseRouter {
         this.activity = activity;
     }
 
+    protected Activity getActivity() {
+        return activity;
+    }
+
     public void finish() {
         activity.finish();
     }

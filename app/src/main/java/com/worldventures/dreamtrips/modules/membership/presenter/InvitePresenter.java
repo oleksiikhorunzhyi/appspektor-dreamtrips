@@ -148,6 +148,38 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.setSelectedCount(selectedMembers.size());
     }
 
+    public void onEventMainThread(MemberCellResendEvent event) {
+        doResend(event.history);
+    }
+
+    /** Get pre-filled template by id, and try to resend */
+    private void doResend(History history) {
+        view.startLoading();
+        doRequest(new GetFilledInvitationTemplateQuery(history.getTemplateId()), template -> {
+            // open share intent
+            Intent intent = null;
+            switch (history.getType()) {
+                case EMAIL:
+                    intent = Share.newEmailIntent(template.getTitle(), template.getContent(), history.getContact());
+                    break;
+                case SMS:
+                    intent = Share.newSmsIntent(context, template.getLink(), history.getContact());
+                    break;
+            }
+            activityRouter.openDefaultShareIntent(intent);
+            // notify server
+            InviteBody body = new InviteBody();
+            body.setContacts(Collections.singletonList(history.getContact()));
+            body.setTemplateId(history.getTemplateId());
+            body.setType(history.getType());
+            doRequest(new SendInvitationsQuery(body), stub -> {
+                Timber.i("Invitation sending succeeded");
+                view.finishLoading();
+                eventBus.post(new InvitesSentEvent());
+            });
+        });
+    }
+
     public void continueAction() {
         fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
         if (view.isTabletLandscape()) {

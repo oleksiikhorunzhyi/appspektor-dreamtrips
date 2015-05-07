@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
@@ -15,8 +17,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPla
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
-import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
+import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -124,6 +126,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
         bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
         startActivity(ShareActivity.class, bundle);
+    }
+
+    public void openDefaultShareIntent(Intent intent) {
+        startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
     }
 
     public void openSuccessStoryDetails(SuccessStory successStory) {

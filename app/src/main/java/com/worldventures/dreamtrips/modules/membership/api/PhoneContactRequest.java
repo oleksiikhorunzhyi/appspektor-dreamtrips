@@ -69,8 +69,11 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
             Member member = new Member();
             String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
             member.setId(id);
+
             String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            member.setName(name);
+            if (TextUtils.isEmpty(name)) continue;
+            else member.setName(name);
+
             switch (type) {
                 case EMAIL:
                     String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));

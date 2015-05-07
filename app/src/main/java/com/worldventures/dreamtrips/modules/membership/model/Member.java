@@ -15,7 +15,7 @@ public class Member implements Serializable, Filterable {
     boolean emailIsMain = true;
     boolean isChecked;
     History history;
-
+    int originalPosition;
 
     public History getHistory() {
         return history;
@@ -75,6 +75,18 @@ public class Member implements Serializable, Filterable {
 
     public boolean isEmailMain() {
         return emailIsMain;
+    }
+
+    public boolean isEmailIsMain() {
+        return emailIsMain;
+    }
+
+    public int getOriginalPosition() {
+        return originalPosition;
+    }
+
+    public void setOriginalPosition(int originalPosition) {
+        this.originalPosition = originalPosition;
     }
 
     @Override

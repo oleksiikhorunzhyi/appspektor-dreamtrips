@@ -18,8 +18,8 @@ public class Schedule implements Serializable {
     @SerializedName("end_on")
     private Date endOn;
 
-    private SimpleDateFormat simpleDateFormatMonthDay;
-    private SimpleDateFormat simpleDateFormatDay;
+    private transient SimpleDateFormat simpleDateFormatMonthDay;
+    private transient SimpleDateFormat simpleDateFormatDay;
 
     public Schedule() {
         simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);

@@ -69,8 +69,16 @@ public class MemberCell extends AbstractCell<Member> {
 
     @OnCheckedChanged(R.id.cb_checked)
     public void onChecked(boolean checked) {
-        getModelObject().setIsChecked(checked);
-        getEventBus().post(new MemberCellSelectedEvent(checked));
+        if (getModelObject().isChecked() != checked) {
+            getModelObject().setIsChecked(checked);
+
+            if (checked) {
+                getModelObject().setOriginalPosition(getAdapterPosition());
+            }
+
+            getEventBus().post(new MemberCellSelectedEvent(checked, getAdapterPosition(), checked
+                    ? 0 : getModelObject().getOriginalPosition()));
+        }
     }
 
     @OnClick(R.id.ll_resend)

@@ -212,7 +212,7 @@
     <string name="cancel_photo_negative">No</string>
     <string name="presentations">Presentations</string>
     <string name="enroll_member">Enroll Member</string>
-    <string name="invite_and_share">Invite&amp;Share</string>
+    <string name="invite_and_share">Invite &amp; Share</string>
     <string name="add_contact">Add contact</string>
     <string name="add">Add</string>
     <string name="invite_add_name">Name</string>
@@ -235,4 +235,5 @@
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
+    <string name="invitation_deselect_all">Deselect All</string>
 </resources>

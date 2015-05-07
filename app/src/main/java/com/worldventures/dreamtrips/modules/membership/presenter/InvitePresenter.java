@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -40,11 +39,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public InvitePresenter(View view) {
         super(view);
-    }
-
-    @Override
-    public void resume() {
-        super.resume();
     }
 
     public void loadMembers() {
@@ -134,18 +128,34 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }, 150L);
     }
 
-    public void onEventMainThread(MemberCellSelectAllRequestEvent event) {
-        Queryable.from(members).forEachR(m -> m.setIsChecked(event.isSelectAll()));
+    public void deselectAll() {
+        Queryable.from(members).forEachR(m -> m.setIsChecked(false));
+        selectedMembers.clear();
+        eventBus.removeStickyEvent(MemberStickyEvent.class);
         setMembers();
+    }
+
+    public void searchHiden() {
+        if (selectedMembers != null && selectedMembers.size() > 0) {
+            view.showContinue();
+        }
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
         boolean isVisible = Queryable.from(members).any(Member::isChecked);
-        view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
-        eventBus.removeStickyEvent(MemberStickyEvent.class);
         selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
+
+        eventBus.removeStickyEvent(MemberStickyEvent.class);
         eventBus.postSticky(new MemberStickyEvent(selectedMembers));
+
+        view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         view.setSelectedCount(selectedMembers.size());
+
+        moveItem(event.getFrom(), event.getTo());
+    }
+
+    private void moveItem(int from, int to) {
+        view.move(from, to);
     }
 
     public void continueAction() {
@@ -187,5 +197,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void showNextStepButtonVisibility(boolean isVisible);
 
         void setSelectedCount(int count);
+
+        void showContinue();
+
+        void move(int from, int to);
     }
 }

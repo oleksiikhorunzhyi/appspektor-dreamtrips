@@ -27,10 +27,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Edward on 22.01.15.
- * filters fragment for right side nav drawer
- */
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 

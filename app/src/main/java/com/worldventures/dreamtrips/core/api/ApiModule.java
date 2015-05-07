@@ -16,9 +16,7 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Singleton;
@@ -67,11 +65,8 @@ public class ApiModule {
                 request.addHeader("Authorization", authToken);
             }
             Locale locale = context.getResources().getConfiguration().locale;
-            List<String> codes = new ArrayList<>();
-            codes.add(locale.getLanguage());
-            codes.add(locale.getCountry());
-            String header = TextUtils.join("-", codes);
-            request.addHeader("Accept-Language", header);
+            request.addHeader("Accept-Language", TextUtils.join("-",
+                    new String[]{locale.getLanguage(), locale.getCountry()}));
         };
     }
 

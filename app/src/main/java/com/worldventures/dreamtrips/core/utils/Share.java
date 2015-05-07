@@ -24,7 +24,9 @@ public class Share {
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
-        intent.putExtra(Intent.EXTRA_HTML_TEXT, Html.fromHtml(body));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            intent.putExtra(Intent.EXTRA_HTML_TEXT, Html.fromHtml(body));
+        }
         return intent;
     }
 

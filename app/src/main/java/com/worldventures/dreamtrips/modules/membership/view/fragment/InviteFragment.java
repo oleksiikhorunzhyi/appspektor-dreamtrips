@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -37,7 +38,8 @@ public class InviteFragment
         implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
 
-
+    @InjectView(R.id.frameContactCount)
+    LinearLayout frameContactCount;
     @InjectView(R.id.lv_users)
     RecyclerView lvUsers;
     @InjectView(R.id.spinner)
@@ -98,6 +100,7 @@ public class InviteFragment
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 refreshLayout.setEnabled(firstPos == 0);
+                tvSearch.clearFocus();
             }
         });
 
@@ -106,7 +109,26 @@ public class InviteFragment
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         tvSearch.setOnQueryTextListener(this);
+        tvSearch.clearFocus();
+        tvSearch.setIconifiedByDefault(false);
+        setSelectedCount(0);
+        tvSearch.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    buttonContinue.setVisibility(View.GONE);
+                } else {
+                    getPresenter().searchHiden();
+                }
+            }
+        });
+
         buttonContinue.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.textViewDeselectAll)
+    public void deselectOnClick() {
+        getPresenter().deselectAll();
     }
 
     @Override
@@ -117,8 +139,12 @@ public class InviteFragment
 
     @Override
     public void setSelectedCount(int count) {
-        textViewSelectedCount.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-        if (count > 0) textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
+        textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
+    }
+
+    @Override
+    public void showContinue() {
+        buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
     }
 
     @Override
@@ -149,6 +175,13 @@ public class InviteFragment
     @Override
     public void setMembers(List<Member> memberList) {
         adapter.setItems(memberList);
+    }
+
+    @Override
+    public void move(int from, int to) {
+        adapter.moveItem(from, to);
+        adapter.notifyItemMoved(from, to);
+        lvUsers.scrollToPosition(0);
     }
 
     @Override
@@ -185,6 +218,8 @@ public class InviteFragment
 
     @Override
     public void showNextStepButtonVisibility(boolean isVisible) {
-        buttonContinue.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        int visibility = isVisible ? View.VISIBLE : View.GONE;
+        frameContactCount.setVisibility(visibility);
+        if (!tvSearch.hasFocus()) buttonContinue.setVisibility(visibility);
     }
 }

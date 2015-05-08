@@ -22,7 +22,6 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_select_template)
 public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter> implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String BUNDLE_TO = "BUNDLE_TO";
     @InjectView(R.id.lv_templates)
     RecyclerView lvTemplates;
     @InjectView(R.id.swipe_container)

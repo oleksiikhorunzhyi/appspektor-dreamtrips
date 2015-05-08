@@ -143,6 +143,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setIconifiedByDefault(false);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;

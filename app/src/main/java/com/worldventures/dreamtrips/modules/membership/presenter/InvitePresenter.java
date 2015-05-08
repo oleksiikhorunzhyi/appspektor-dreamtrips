@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
+import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -111,6 +112,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     WeakHandler queryHandler = new WeakHandler();
+
+    public void searchToggle(boolean hasFocus) {
+        eventBus.post(new SearchFocusChangedEvent(hasFocus));
+    }
 
     public void onFilter(String newText) {
         queryHandler.removeCallbacksAndMessages(null);

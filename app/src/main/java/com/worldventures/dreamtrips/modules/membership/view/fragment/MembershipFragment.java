@@ -20,7 +20,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_mock)
-public class MembershipFragment extends BaseFragment<MembershipPresenter> {
+public class MembershipFragment extends BaseFragment<MembershipPresenter> implements MembershipPresenter.View {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabStrip;
@@ -32,6 +32,11 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> {
     @Override
     protected MembershipPresenter createPresenter(Bundle savedInstanceState) {
         return new MembershipPresenter(this);
+    }
+
+    @Override
+    public void toggleTabStripVisibility(boolean isVisible) {
+        tabStrip.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

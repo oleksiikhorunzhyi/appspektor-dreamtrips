@@ -77,7 +77,7 @@ public class InviteFragment
             getPresenter().continueAction();
         } else {
             containerTemplates.setVisibility(View.GONE);
-            buttonContinue.setVisibility(View.VISIBLE);
+            if (!tvSearch.hasFocus()) buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -112,15 +112,14 @@ public class InviteFragment
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
         setSelectedCount(0);
-        tvSearch.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    buttonContinue.setVisibility(View.GONE);
-                } else {
-                    getPresenter().searchHiden();
-                }
+        tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                buttonContinue.setVisibility(View.GONE);
+            } else {
+                getPresenter().searchHiden();
             }
+
+            getPresenter().searchToggle(hasFocus);
         });
 
         buttonContinue.setVisibility(View.GONE);

@@ -232,6 +232,7 @@
     <string name="invitation_subject">Subject:</string>
 
     <string name="select_template">Select template</string>
+    <string name="preview_template">Preview template</string>
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>

@@ -31,7 +31,7 @@ import dagger.Provides;
                 PresentationsPresenter.class,
                 Video360Fragment.class,
                 StaticInfoFragment.class,
-                StaticInfoFragment.BookIt.class,
+                StaticInfoFragment.BookItFragment.class,
                 StaticInfoFragment.BundleUrlFragment.class,
                 StaticInfoFragment.TermsOfServiceFragment.class,
                 StaticInfoFragment.PrivacyPolicyFragment.class,

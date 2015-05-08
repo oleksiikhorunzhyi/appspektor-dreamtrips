@@ -152,7 +152,10 @@
             android:exported="false" />
 
         <activity
-            android:name=".modules.membership.view.activity.PreviewInviteActivity"
+            android:name=".modules.membership.view.activity.EditTemplateActivity"
+            android:label="@string/title_activity_invite"/>
+        <activity
+            android:name=".modules.membership.view.activity.PreviewTemplateActivity"
             android:label="@string/title_activity_invite"/>
     </application>
 

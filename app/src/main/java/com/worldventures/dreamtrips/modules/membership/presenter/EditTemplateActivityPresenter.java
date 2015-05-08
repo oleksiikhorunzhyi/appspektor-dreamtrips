@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 
-public class PreviewInvitePresenter extends Presenter {
+public class EditTemplateActivityPresenter extends Presenter {
 
     private InviteTemplate template;
 
-    public PreviewInvitePresenter(View view, InviteTemplate inviteTemplate) {
+    public EditTemplateActivityPresenter(View view, InviteTemplate inviteTemplate) {
         super(view);
         this.template = inviteTemplate;
     }

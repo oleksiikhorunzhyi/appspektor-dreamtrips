@@ -37,6 +37,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         InviteTemplate inviteTemplate = event.getInviteTemplate();
         inviteTemplate.setFrom(getCurrentUserEmail());
         getMembers();
+        inviteTemplate.setName(members.get(0).getName());
         inviteTemplate.setTo(members);
         inviteTemplate.setType(members.get(0).isEmailMain() ?
                 InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);

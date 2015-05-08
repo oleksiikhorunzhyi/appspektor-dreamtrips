@@ -31,8 +31,7 @@ import timber.log.Timber;
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
     private InviteTemplate template;
-
-    @Inject Context context;
+    private boolean preview = false;
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
         super(view);
@@ -57,9 +56,14 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return to;
     }
 
-    public void updatePreview() {
+    public void previewAction() {
+        preview = true;
+        updatePreview();
+    }
+
+    private void updatePreview() {
         view.startLoading();
-        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(
+        doRequest(new GetFilledInvitationsTemplateQuery(
                         template.getId(),
                         view.getMessage()),
                 this::getFilledInvitationsTemplateSuccess,
@@ -73,8 +77,12 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        activityRouter.openPreviewActivity(inviteTemplate.getLink());
- }
+        template.setLink(inviteTemplate.getLink());
+        if (preview) {
+            preview = false;
+            activityRouter.openPreviewActivity(inviteTemplate.getLink());
+        }
+    }
 
     private void sentInvitesFailed(SpiceException spiceException) {
         Timber.e(spiceException, "");
@@ -101,12 +109,20 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private String getBody() {
-        return template.getContent();
+        return String.format(context.getString(R.string.invitation_text_template),
+                getUsername(),
+                view.getMessage(),
+                template.getLink());
     }
 
     private String getSmsBody() {
         return template.getLink();
     }
+
+    private String getUsername() {
+        return getMembersAddress().size() > 1 ? "" : " " + template.getName();
+    }
+
 
     public Intent getShareIntent() {
         InviteTemplate.Type type = template.getType();

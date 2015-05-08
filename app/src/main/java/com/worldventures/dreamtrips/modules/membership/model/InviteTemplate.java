@@ -19,6 +19,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     private String from;
     private Type type;
     private String link;
+    private String name;
 
     public ArrayList<Member> getTo() {
         return to;
@@ -42,6 +43,14 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
 
     public CoverImage getCoverImage() {
         return coverImage;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getVideo() {
@@ -103,6 +112,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeString(this.link);
         dest.writeInt(this.id);
+        dest.writeString(this.name);
     }
 
     private InviteTemplate(Parcel in) {
@@ -117,6 +127,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         this.type = tmpType == -1 ? null : Type.values()[tmpType];
         this.link = in.readString();
         this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public void setContent(String content) {

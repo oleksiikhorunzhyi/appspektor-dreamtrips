@@ -39,7 +39,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_preview:
-                getPresenter().updatePreview();
+                getPresenter().previewAction();
                 break;
             case R.id.action_send:
                 getPresenter().shareRequest();

@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 
 public class PreviewTemplateActivityPresenter extends Presenter {
 
-    public String url;
+    private String url;
 
     public PreviewTemplateActivityPresenter(View view, String url) {
         super(view);

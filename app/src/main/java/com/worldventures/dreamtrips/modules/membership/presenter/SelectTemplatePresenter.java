@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.util.Patterns;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
@@ -19,14 +17,8 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplat
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
-import static com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery.MEMBER;
-import static com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery.REP;
-
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
 
-    @Inject SessionHolder<UserSession> sessionHolder;
     private ArrayList<Member> members;
 
     public SelectTemplatePresenter(View view) {
@@ -54,11 +46,9 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     public void reload() {
         view.startLoading();
-        String type = sessionHolder.get().get().getUser().isRep() ? REP : MEMBER;
-        dreamSpiceManager.execute(new GetInvitationsTemplateQuery(type),
+        doRequest(new GetInvitationsTemplateQuery(),
                 this::handleResponse,
-                this::handleFail
-        );
+                this::handleFail);
     }
 
     private void getMembers() {

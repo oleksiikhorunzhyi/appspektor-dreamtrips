@@ -147,7 +147,7 @@ public interface DreamTripsApi {
     public ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
 
     @GET("/api/invitations/templates")
-    public ArrayList<InviteTemplate> getInviteTemplates(@Query("type") String type);
+    public ArrayList<InviteTemplate> getInviteTemplates();
 
     @GET("/api/invitations")
     public ArrayList<History> getInvitations();

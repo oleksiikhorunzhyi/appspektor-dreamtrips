@@ -16,9 +16,11 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
-import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewInviteActivity;
+import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -83,6 +85,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BookItActivity.class, bundle);
     }
 
+    public void openPreviewActivity(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
+        startActivity(PreviewTemplateActivity.class, bundle);
+    }
+
     public void openBucketListPopularActivity(BucketTabsPresenter.BucketType type) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
@@ -140,8 +148,8 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openEditInviteActivity(InviteTemplate inviteTemplate) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PreviewInviteActivity.BUNDLE_TEMPLATE, inviteTemplate);
-        startActivity(PreviewInviteActivity.class, bundle);
+        bundle.putParcelable(EditTemplateActivity.BUNDLE_TEMPLATE, inviteTemplate);
+        startActivity(EditTemplateActivity.class, bundle);
     }
 
     public void openSelectTemplateActivity() {

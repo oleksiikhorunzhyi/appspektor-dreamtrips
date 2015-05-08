@@ -2,13 +2,16 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
@@ -43,7 +46,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         view.setSubject(template.getTitle());
         List<String> to = getMembersAddress();
         view.setTo(TextUtils.join(", ", to));
-        getFilledInvitationsTemplateSuccess(template);
+        view.setWebViewContent(template.getContent());
     }
 
     public List<String> getMembersAddress() {
@@ -70,10 +73,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        template.setLink(inviteTemplate.getLink());
-        template.setContent(inviteTemplate.getContent());
-        view.setWebViewContent(template.getContent());
-    }
+        activityRouter.openPreviewActivity(inviteTemplate.getLink());
+ }
 
     private void sentInvitesFailed(SpiceException spiceException) {
         Timber.e(spiceException, "");

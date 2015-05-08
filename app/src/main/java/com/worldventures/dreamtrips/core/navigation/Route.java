@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
@@ -35,7 +36,7 @@ public enum Route {
     PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
     MAP_INFO(FragmentMapTripInfo.class, 0),
-    BOOK_IT(StaticInfoFragment.BookIt.class, R.string.title_book_it),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
     SUCCESS_STORES_DETAILS(SuccessStoriesDetailsFragment.class, R.string.success_stories),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_my_title),
@@ -57,7 +58,8 @@ public enum Route {
     TERMS(TermsTabFragment.class, R.string.terms),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie);
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie),
+    PREVIEW_TEMPLATE(PreviewTemplateFragment.class, R.string.preview_template);
 
     private Class<? extends BaseFragment> fragmentClass;
     private int titleRes;

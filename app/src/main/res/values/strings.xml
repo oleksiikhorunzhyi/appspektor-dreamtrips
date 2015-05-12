@@ -240,4 +240,5 @@
     <string name="invitation_deselect_all">Deselect All</string>
     <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, <br/><br/>   %s.
         <br/>Check it out <a href="%s">here</a>.]]></string>
+    <string name="terms_and_conditions"><![CDATA[I have read and accept the <a href="http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html">Terms & Conditions</a>]]></string>
 </resources>

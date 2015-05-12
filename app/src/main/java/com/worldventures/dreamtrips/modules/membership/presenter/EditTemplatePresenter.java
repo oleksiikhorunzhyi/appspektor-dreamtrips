@@ -1,17 +1,13 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
@@ -23,8 +19,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -154,13 +148,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     public void shareRequest() {
-        if (view.getMessage().trim().isEmpty()) {
-            view.informUser(context.getString(R.string.error_personal_message_is_empty));
-        } else {
-            dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
-                    this::createInviteSuccess,
-                    this::createInviteFailed);
-        }
+        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
+                this::createInviteSuccess,
+                this::createInviteFailed);
     }
 
     public interface View extends Presenter.View {

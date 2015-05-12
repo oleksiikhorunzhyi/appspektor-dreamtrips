@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
@@ -99,7 +99,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), false)
+                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                        R.layout.adapter_item_succes_story_header), false)
                 .build();
 
         recyclerView.addItemDecoration(decoration);

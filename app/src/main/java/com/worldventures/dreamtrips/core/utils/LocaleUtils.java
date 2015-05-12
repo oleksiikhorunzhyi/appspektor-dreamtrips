@@ -17,7 +17,7 @@ public class LocaleUtils {
     public static String substituteActualLocale(Context context, String url) {
         Locale locale = getLocale(context);
         return url
-                .replaceAll("\\{locale\\}", locale.getLanguage())
+                .replaceAll("\\{locale\\}", getAcceptLanguage(locale))
                 .replaceAll("\\{language\\}", locale.getLanguage())
                 .replaceAll("\\{country\\}", locale.getCountry());
     }

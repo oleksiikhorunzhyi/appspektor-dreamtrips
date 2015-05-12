@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 
 import java.util.ArrayList;
 
-public class InviteTemplate extends BaseEntity implements Parcelable {
+public class InviteTemplate extends BaseEntity implements Parcelable, HeaderAdapter.HeaderItem {
 
     private String title;
     private CoverImage coverImage;
@@ -20,6 +21,15 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     private Type type;
     private String link;
     private String name;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public ArrayList<Member> getTo() {
         return to;
@@ -85,10 +95,15 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     public InviteTemplate() {
     }
 
+    @Override
+    public String getHeaderTitle() {
+        return getCategory();
+    }
+
 
     public enum Type {
-        @SerializedName("email") EMAIL,
-        @SerializedName("sms")  SMS;
+        @SerializedName("email")EMAIL,
+        @SerializedName("sms")SMS;
 
         public static Type from(int i) {
             return i == 0 ? EMAIL : SMS;

@@ -2,15 +2,35 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 
 import android.text.TextUtils;
 
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
+import javax.inject.Inject;
+
 public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
+
+    @Inject
+    protected Prefs prefs;
+
+    private boolean isTermsAccepted;
 
     public LoginPresenter(View view) {
         super(view);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        isTermsAccepted = prefs.getBoolean(Prefs.TERMS_ACCEPTED);
+
+        if (!isTermsAccepted) {
+            view.showTerms();
+        } else {
+            view.hideTerms();
+        }
     }
 
     public void loginAction() {
@@ -26,6 +46,10 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
             return;
         }
 
+        if (!isTermsAccepted && !view.isTermsChecked()) {
+            return;
+        }
+
         dreamSpiceManager.loadGlobalConfig(userPassword, username, (loginResponse, error) -> {
             if (error != null) {
                 if (TextUtils.isEmpty(error.getMessage())) {
@@ -34,6 +58,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
                     view.alert(error.getMessage());
                 }
             } else {
+                prefs.put(Prefs.TERMS_ACCEPTED, true);
                 TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
                 activityRouter.openMain();
                 activityRouter.finish();
@@ -56,5 +81,11 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
         String getUsername();
 
         String getUserPassword();
+
+        void showTerms();
+
+        void hideTerms();
+
+        boolean isTermsChecked();
     }
 }

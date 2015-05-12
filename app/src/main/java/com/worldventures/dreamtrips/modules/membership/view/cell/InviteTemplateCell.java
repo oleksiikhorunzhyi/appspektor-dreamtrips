@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.membership.view.cell;
 
 import android.net.Uri;
 import android.view.View;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
@@ -19,6 +20,9 @@ public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
     @InjectView(R.id.imageViewPhoto)
     SimpleDraweeView imageViewPhoto;
 
+    @InjectView(R.id.textViewTitle)
+    TextView textViewTitle;
+
     public InviteTemplateCell(View view) {
         super(view);
     }
@@ -26,6 +30,7 @@ public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
     @Override
     protected void syncUIStateWithModel() {
         imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverImage().getUrl()));
+        textViewTitle.setText(getModelObject().getTitle());
     }
 
     @Override

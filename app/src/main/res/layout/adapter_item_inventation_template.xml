@@ -17,6 +17,18 @@
         fresco:placeholderImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/trip_item_shadow" />
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"/>
+
     <Button
         android:id="@+id/btn_select"
         android:layout_width="wrap_content"

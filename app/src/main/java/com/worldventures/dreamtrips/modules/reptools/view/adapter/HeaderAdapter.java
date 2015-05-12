@@ -8,37 +8,37 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
+public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.SuccessHeaderViewHolder> {
 
-    private List<SuccessStory> items;
+    private List<? extends HeaderItem> items;
+    private int layout;
 
-    public SuccessStoryHeaderAdapter(List<SuccessStory> items) {
-
+    public HeaderAdapter(List<? extends HeaderItem> items, int layout) {
         this.items = items;
+        this.layout = layout;
     }
 
     @Override
     public SuccessHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_item_succes_story_header, viewGroup, false);
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
 
         return new SuccessHeaderViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(SuccessHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText(items.get(i).getCategory().toUpperCase());
+        headerViewHolder.letter.setText(items.get(i).getHeaderTitle().toUpperCase());
     }
 
     @Override
     public long getHeaderId(int i) {
-        String category = items.get(i).getCategory();
+        String category = items.get(i).getHeaderTitle();
         int index = 0;
         for (int i1 = 0; i1 < category.length(); i1++) {
             index += category.charAt(i1);
@@ -55,5 +55,9 @@ public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessSt
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
+    }
+
+    public interface HeaderItem {
+        String getHeaderTitle();
     }
 }

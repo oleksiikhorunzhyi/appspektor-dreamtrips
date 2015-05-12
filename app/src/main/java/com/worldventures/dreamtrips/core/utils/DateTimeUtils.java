@@ -61,6 +61,14 @@ public class DateTimeUtils {
         };
     }
 
+    public static String convertDateToString(Date date, DateFormat format) {
+        if (date != null) {
+            return format.format(date);
+        } else {
+            return null;
+        }
+    }
+
     public static String convertDateToString(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
         if (date != null) {

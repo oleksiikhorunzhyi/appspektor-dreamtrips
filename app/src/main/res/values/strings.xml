@@ -212,7 +212,7 @@
     <string name="cancel_photo_negative">No</string>
     <string name="presentations">Presentations</string>
     <string name="enroll_member">Enroll Member</string>
-    <string name="invite_and_share">Invite&amp;Share</string>
+    <string name="invite_and_share">Invite &amp; Share</string>
     <string name="add_contact">Add contact</string>
     <string name="add">Add</string>
     <string name="invite_add_name">Name</string>
@@ -231,8 +231,14 @@
     <string name="invitation_to">To:</string>
     <string name="invitation_subject">Subject:</string>
 
+    <string name="invite_add_last_name">Last Name</string>
     <string name="select_template">Select template</string>
+    <string name="preview_template">Preview template</string>
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
+    <string name="invitation_deselect_all">Deselect All</string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, <br/><br/>   %s.
+        <br/>Check it out <a href="%s">here</a>.]]></string>
+    <string name="terms_and_conditions"><![CDATA[I have read and accept the <a href="http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html">Terms & Conditions</a>]]></string>
 </resources>

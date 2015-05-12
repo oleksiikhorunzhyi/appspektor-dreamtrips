@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
@@ -43,15 +44,13 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public String getEnrollUrl() {
-        return setLocale(getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername()));
+        String url = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+        return LocaleUtils.substituteActualLocale(context, url);
     }
 
     public String getEnrollRepUrl() {
-        return setLocale(getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername()));
-    }
-
-    public String setLocale(String url) {
-        return url.replace("{locale}", context.getResources().getConfiguration().locale.getLanguage());
+        String url = getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
+        return LocaleUtils.substituteActualLocale(context, url);
     }
 
     public String getStaticInfoUrl(String title) {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,10 +35,15 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     View progressView;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_preview:
-                getPresenter().updatePreview();
+                getPresenter().previewAction();
                 break;
             case R.id.action_send:
                 getPresenter().shareRequest();
@@ -47,12 +51,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public void shareAction() {
-        Intent smsIntent = getPresenter().getShareIntent();
-        startActivity(Intent.createChooser(smsIntent, "Share"));
-    }
-
 
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {

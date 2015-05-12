@@ -13,17 +13,15 @@ public class Schedule implements Serializable {
     private static final String PATTERN_MONTH_AND_DAY = "MMM d";
     private static final String PATTERN_DAY = "d";
 
+    private final static SimpleDateFormat simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.getDefault());
+    private final static SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.getDefault());
+
     @SerializedName("start_on")
     private Date startOn;
     @SerializedName("end_on")
     private Date endOn;
 
-    private SimpleDateFormat simpleDateFormatMonthDay;
-    private SimpleDateFormat simpleDateFormatDay;
-
     public Schedule() {
-        simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.US);
-        simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.US);
     }
 
     public java.util.Date getStartDate() {

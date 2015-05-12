@@ -178,7 +178,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookIt extends BundleUrlFragment {
+    public static class BookItFragment extends BundleUrlFragment {
     }
 
     @Layout(R.layout.fragment_webview)

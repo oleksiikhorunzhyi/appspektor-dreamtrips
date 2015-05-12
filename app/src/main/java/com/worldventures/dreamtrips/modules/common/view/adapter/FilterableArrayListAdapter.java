@@ -46,13 +46,12 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     ///////////////////////////////////////////////////////////////////////////
 
     public void setFilter(String query) {
+        if (cachedItems.isEmpty()) cachedItems.addAll(items);
         this.query = query;
         if (TextUtils.isEmpty(query)) {
             flushFilter();
         } else {
             filterHandler.post(() -> {
-                if (cachedItems.isEmpty()) cachedItems.addAll(items);
-                //
                 String queryLowerCased = this.query.toLowerCase();
                 List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(item -> item.containsQuery(queryLowerCased)).toList();
                 mainHandler.post(() -> {

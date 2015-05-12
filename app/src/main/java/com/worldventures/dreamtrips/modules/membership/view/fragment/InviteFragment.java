@@ -9,20 +9,17 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectAllRequestEvent;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.adapter.SimpleImageArrayAdapter;
@@ -31,10 +28,8 @@ import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDia
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_invite)
@@ -43,7 +38,8 @@ public class InviteFragment
         implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
 
-
+    @InjectView(R.id.frameContactCount)
+    LinearLayout frameContactCount;
     @InjectView(R.id.lv_users)
     RecyclerView lvUsers;
     @InjectView(R.id.spinner)
@@ -59,7 +55,7 @@ public class InviteFragment
     @InjectView(R.id.bt_continue)
     Button buttonContinue;
     @InjectView(R.id.textViewContactCount)
-    TextView textViewContactCount;
+    TextView textViewSelectedCount;
 
     FilterableArrayListAdapter<Member> adapter;
 
@@ -81,7 +77,7 @@ public class InviteFragment
             getPresenter().continueAction();
         } else {
             containerTemplates.setVisibility(View.GONE);
-            buttonContinue.setVisibility(View.VISIBLE);
+            if (!tvSearch.hasFocus()) buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -104,6 +100,7 @@ public class InviteFragment
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 refreshLayout.setEnabled(firstPos == 0);
+                tvSearch.clearFocus();
             }
         });
 
@@ -112,7 +109,25 @@ public class InviteFragment
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         tvSearch.setOnQueryTextListener(this);
+        tvSearch.clearFocus();
+        tvSearch.setIconifiedByDefault(false);
+        setSelectedCount(0);
+        tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                buttonContinue.setVisibility(View.GONE);
+            } else {
+                getPresenter().searchHiden();
+            }
+
+            getPresenter().searchToggle(hasFocus);
+        });
+
         buttonContinue.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.textViewDeselectAll)
+    public void deselectOnClick() {
+        getPresenter().deselectAll();
     }
 
     @Override
@@ -122,10 +137,13 @@ public class InviteFragment
     }
 
     @Override
-    public void setMemberCount(int count) {
-        textViewContactCount.setText(count > 0 ?
-                String.format(getString(R.string.selected), count) :
-                null);
+    public void setSelectedCount(int count) {
+        textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
+    }
+
+    @Override
+    public void showContinue() {
+        buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
     }
 
     @Override
@@ -156,6 +174,13 @@ public class InviteFragment
     @Override
     public void setMembers(List<Member> memberList) {
         adapter.setItems(memberList);
+    }
+
+    @Override
+    public void move(int from, int to) {
+        adapter.moveItem(from, to);
+        adapter.notifyItemMoved(from, to);
+        lvUsers.scrollToPosition(0);
     }
 
     @Override
@@ -192,6 +217,8 @@ public class InviteFragment
 
     @Override
     public void showNextStepButtonVisibility(boolean isVisible) {
-        buttonContinue.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        int visibility = isVisible ? View.VISIBLE : View.GONE;
+        frameContactCount.setVisibility(visibility);
+        if (!tvSearch.hasFocus()) buttonContinue.setVisibility(visibility);
     }
 }

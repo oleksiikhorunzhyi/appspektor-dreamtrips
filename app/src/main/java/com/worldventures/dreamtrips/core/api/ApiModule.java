@@ -10,6 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
@@ -62,7 +63,7 @@ public class ApiModule {
                 String authToken = "Token token=" + userSession.getApiToken();
                 request.addHeader("Authorization", authToken);
             }
-            request.addHeader("Accept-Language", context.getResources().getConfiguration().locale.getLanguage());
+            request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
         };
     }
 

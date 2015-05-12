@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
@@ -20,9 +21,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
-    public static final String TAG = EditTemplatePresenter.class.getSimpleName();
+
     private InviteTemplate template;
+    private boolean preview = false;
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
         super(view);
@@ -36,7 +40,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         view.setSubject(template.getTitle());
         List<String> to = getMembersAddress();
         view.setTo(TextUtils.join(", ", to));
-        getFilledInvitationsTemplateSuccess(template);
+        view.setWebViewContent(template.getContent());
     }
 
     public List<String> getMembersAddress() {
@@ -47,9 +51,14 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return to;
     }
 
-    public void updatePreview() {
+    public void previewAction() {
+        preview = true;
+        updatePreview();
+    }
+
+    private void updatePreview() {
         view.startLoading();
-        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(
+        doRequest(new GetFilledInvitationsTemplateQuery(
                         template.getId(),
                         view.getMessage()),
                 this::getFilledInvitationsTemplateSuccess,
@@ -58,33 +67,38 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateFailed(SpiceException spiceException) {
         view.finishLoading();
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
         template.setLink(inviteTemplate.getLink());
+        view.setWebViewContent(inviteTemplate.getContent());
         template.setContent(inviteTemplate.getContent());
-        view.setWebViewContent(template.getContent());
+        template.setLink(inviteTemplate.getLink());
+        if (preview) {
+            preview = false;
+            activityRouter.openPreviewActivity(inviteTemplate.getLink());
+        }
     }
 
     private void sentInvitesFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void createInviteSuccess(InviteTemplate template) {
-        Log.i(TAG, "createInviteSuccess");
+        Timber.i("createInviteSuccess");
         getFilledInvitationsTemplateSuccess(template);
-        view.shareAction();
+        activityRouter.openDefaultShareIntent(getShareIntent());
         notifyServer();
     }
 
     private void createInviteFailed(SpiceException spiceException) {
-        Log.e(TAG, "", spiceException);
+        Timber.e(spiceException, "");
     }
 
     private void sentInviteSuccess(JSONObject aVoid) {
-        Log.i(TAG, "sentInviteSuccess");
+        Timber.i("sentInviteSuccess");
         eventBus.post(new InvitesSentEvent());
     }
 
@@ -93,12 +107,20 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private String getBody() {
-        return template.getContent();
+        return String.format(context.getString(R.string.invitation_text_template),
+                getUsername(),
+                view.getMessage(),
+                template.getLink());
     }
 
     private String getSmsBody() {
         return template.getLink();
     }
+
+    private String getUsername() {
+        return getMembersAddress().size() > 1 ? "" : " " + template.getName();
+    }
+
 
     public Intent getShareIntent() {
         InviteTemplate.Type type = template.getType();
@@ -106,9 +128,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
         Intent intent;
         if (type == InviteTemplate.Type.EMAIL) {
-            intent = Share.newEmailIntent(addresses, getSubject(), getBody());
+            intent = Share.newEmailIntent(getSubject(), getBody(), addresses);
         } else {
-            intent = Share.newSmsIntent(addresses, getSmsBody());
+            intent = Share.newSmsIntent(context, getSmsBody(), addresses);
         }
         return intent;
     }
@@ -126,22 +148,17 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private List<String> getContactAddress() {
-        ArrayList<Member> to = template.getTo();
-        List<String> result = new ArrayList<>();
-        for (Member member : to) {
-            result.add(member.getSubtitle());
-        }
-        return result;
+        return Queryable.from(template.getTo()).map(Member::getSubtitle).toList();
     }
 
     public void shareRequest() {
-        if (view.getMessage().trim().isEmpty()) {
-            view.informUser(context.getString(R.string.error_personal_message_is_empty));
-        } else {
-            dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
-                    this::createInviteSuccess,
-                    this::createInviteFailed);
-        }
+        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
+                this::createInviteSuccess,
+                this::createInviteFailed);
+    }
+
+    public Parcelable getTemplate() {
+        return template;
     }
 
     public interface View extends Presenter.View {
@@ -160,6 +177,5 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
         void finishLoading();
 
-        void shareAction();
     }
 }

@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
-    private ArrayList<Member> members = new ArrayList<>();
+
+    private ArrayList<Member> members;
 
     public SelectTemplatePresenter(View view) {
         super(view);
+        members = new ArrayList<>();
     }
 
     @Override
@@ -35,6 +37,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         InviteTemplate inviteTemplate = event.getInviteTemplate();
         inviteTemplate.setFrom(getCurrentUserEmail());
         getMembers();
+        inviteTemplate.setName(members.get(0).getName());
         inviteTemplate.setTo(members);
         inviteTemplate.setType(members.get(0).isEmailMain() ?
                 InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
@@ -44,10 +47,9 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     public void reload() {
         view.startLoading();
-        dreamSpiceManager.execute(new GetInvitationsTemplateQuery(),
+        doRequest(new GetInvitationsTemplateQuery(),
                 this::handleResponse,
-                this::handleFail
-        );
+                this::handleFail);
     }
 
     private void getMembers() {

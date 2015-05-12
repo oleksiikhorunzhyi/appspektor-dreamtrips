@@ -29,7 +29,8 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_rep_tools)
 @MenuResource(R.menu.menu_mock)
-public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements ViewPager.OnPageChangeListener {
+public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
+        ViewPager.OnPageChangeListener, RepToolsPresenter.View {
 
     @InjectView(R.id.tabs)
     protected PagerSlidingTabStrip tabs;
@@ -65,6 +66,11 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         pager.setOnPageChangeListener(this);
+    }
+
+    @Override
+    public void toggleTabStripVisibility(boolean isVisible) {
+        tabs.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

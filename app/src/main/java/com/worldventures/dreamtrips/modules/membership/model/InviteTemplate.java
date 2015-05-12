@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 
 import java.util.ArrayList;
 
-public class InviteTemplate extends BaseEntity implements Parcelable {
+public class InviteTemplate extends BaseEntity implements Parcelable, HeaderAdapter.HeaderItem {
 
     private String title;
     private CoverImage coverImage;
@@ -19,6 +20,16 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     private String from;
     private Type type;
     private String link;
+    private String name;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public ArrayList<Member> getTo() {
         return to;
@@ -42,6 +53,14 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
 
     public CoverImage getCoverImage() {
         return coverImage;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getVideo() {
@@ -76,10 +95,15 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
     public InviteTemplate() {
     }
 
+    @Override
+    public String getHeaderTitle() {
+        return getCategory();
+    }
+
 
     public enum Type {
-        @SerializedName("email") EMAIL,
-        @SerializedName("sms")  SMS;
+        @SerializedName("email")EMAIL,
+        @SerializedName("sms")SMS;
 
         public static Type from(int i) {
             return i == 0 ? EMAIL : SMS;
@@ -103,6 +127,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeString(this.link);
         dest.writeInt(this.id);
+        dest.writeString(this.name);
     }
 
     private InviteTemplate(Parcel in) {
@@ -117,6 +142,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable {
         this.type = tmpType == -1 ? null : Type.values()[tmpType];
         this.link = in.readString();
         this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public void setContent(String content) {

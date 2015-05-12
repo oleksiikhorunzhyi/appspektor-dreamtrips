@@ -149,10 +149,10 @@ public interface DreamTripsApi {
     @GET("/api/invitations/templates")
     public ArrayList<InviteTemplate> getInviteTemplates();
 
-    @GET("/api/invitations/")
+    @GET("/api/invitations")
     public ArrayList<History> getInvitations();
 
-    @POST("/api/invitations/")
+    @POST("/api/invitations")
     public JSONObject sendInvitations(@Body InviteBody body);
 
     @FormUrlEncoded
@@ -160,8 +160,11 @@ public interface DreamTripsApi {
     public InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
 
     @FormUrlEncoded
-    @POST("/api/invitations/filled_templates/")
+    @POST("/api/invitations/filled_templates")
     public InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message);
+
+    @GET("/api/invitations/filled_templates/{id} ")
+    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
 
 }

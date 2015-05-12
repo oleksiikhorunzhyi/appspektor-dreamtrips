@@ -69,14 +69,17 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
             Member member = new Member();
             String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
             member.setId(id);
+
             String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            member.setName(name);
+            if (TextUtils.isEmpty(name)) continue;
+            else member.setName(name);
+
             switch (type) {
                 case EMAIL:
                     String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     member.setEmail(email);
                     if (TextUtils.isEmpty(member.getEmail())) break;
-                    if (TextUtils.isEmpty(member.getName())) member.setName(email);
+                    if (TextUtils.isEmpty(member.getName())) break;
                     member.setEmailIsMain(true);
                     result.add(member);
                     break;
@@ -84,7 +87,7 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
                     String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     member.setPhone(PhoneNumberUtils.normalizeNumber(phone));
                     if (TextUtils.isEmpty(phone)) break;
-                    if (TextUtils.isEmpty(member.getName())) member.setName(phone);
+                    if (TextUtils.isEmpty(member.getName())) break;
                     member.setEmailIsMain(false);
                     result.add(member);
                     break;
@@ -96,10 +99,16 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
         Predicate<Member> memberPredicate = null;
         switch (type) {
             case EMAIL:
-                memberPredicate = element -> !element.getEmail().isEmpty();
+                memberPredicate = element -> {
+                    element.setEmailIsMain(true);
+                    return !element.getEmail().isEmpty();
+                };
                 break;
             case SMS:
-                memberPredicate = element -> !element.getPhone().isEmpty();
+                memberPredicate = element -> {
+                    element.setEmailIsMain(false);
+                    return !element.getPhone().isEmpty();
+                };
                 break;
         }
         List<Member> cachedMembers = db.getInviteMembers();

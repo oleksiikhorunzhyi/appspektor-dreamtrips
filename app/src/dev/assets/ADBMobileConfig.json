@@ -1,5 +1,5 @@
 {
-  "lastModified": "2015-03-04T15:37:16.876Z",
+  "lastModified": "2015-02-09T18:27:50.420Z",
   "marketingCloud": {
     "org": "9DAE34FA53D8F8490A490D44@AdobeOrg"
   },
@@ -12,10 +12,10 @@
   },
   "acquisition": {
     "server": "c00.adobe.com",
-    "appid": "4f5251b8ad92dc80cd466d51874149c53c0f0193d6fcb704521806b8943bd080"
+    "appid": "79b23e1262060f8d04137d9f01e7ce354ff5a05ba809aab07e876ae2356a2af7"
   },
   "analytics": {
-    "rsids": "rovdreamtrips2-mobile-proda",
+    "rsids": "rovdreamtrips.2.android.development.rs",
     "server": "roviallc.sc.omtrdc.net",
     "ssl": false,
     "offlineEnabled": false,
@@ -23,14 +23,14 @@
     "lifecycleTimeout": 300,
     "privacyDefault": "optedin",
     "batchLimit": 0,
-    "timezone": "CDT",
-    "timezoneOffset": -300,
+    "timezone": "CST",
+    "timezoneOffset": -360,
     "referrerTimeout": 0,
     "poi": []
   },
   "messages": [],
   "remotes": {
-    "analytics.poi": "https://assets.adobedtm.com/b213090c5204bf94318f4ef0539a38b487d10368/scripts/satellite-5527dc5963663278b0830000.json",
-    "messages": "https://assets.adobedtm.com/b213090c5204bf94318f4ef0539a38b487d10368/scripts/satellite-5527dc593935380017fe0000.json"
+    "analytics.poi": "https://assets.adobedtm.com/b213090c5204bf94318f4ef0539a38b487d10368/scripts/satellite-54d4de216431310016190500.json",
+    "messages": "https://assets.adobedtm.com/b213090c5204bf94318f4ef0539a38b487d10368/scripts/satellite-54d4de216431310019480600.json"
   }
 }

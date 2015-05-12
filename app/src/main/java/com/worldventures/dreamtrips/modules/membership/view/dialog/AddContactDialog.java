@@ -21,6 +21,7 @@ public class AddContactDialog {
     private MaterialEditText etName;
     private MaterialEditText etPhone;
     private MaterialEditText etEmail;
+    private MaterialEditText etLastName;
     private Button btn;
     private final MaterialDialog md;
     private Callback callback;
@@ -37,7 +38,8 @@ public class AddContactDialog {
                         if (callback != null) {
                             Member member = new Member();
                             member.setId(String.valueOf(System.currentTimeMillis()));
-                            member.setName(etName.getText().toString());
+                            member.setName(TextUtils.join(" ",
+                                    new String[]{etName.getText().toString(), etLastName.getText().toString()}));
                             member.setEmail(etEmail.getText().toString());
                             member.setPhone(etPhone.getText().toString());
                             callback.add(member);
@@ -62,20 +64,23 @@ public class AddContactDialog {
                 boolean nameExist = !TextUtils.isEmpty(etName.getText());
                 boolean phoneExist = !TextUtils.isEmpty(etPhone.getText());
 
-
                 if (emailExist && !emailValid.isValid()) {
                     if (emailError == null) {
                         emailError = etEmail.getResources().getString(emailValid.getMessage());
                     }
                     etEmail.setError(emailError);
                 }
-                btn.setEnabled(nameExist && (emailExist || phoneExist));
+
+                btn.setEnabled(nameExist &&
+                        ((emailExist && emailValid.isValid()) ||
+                                phoneExist));
             }
         };
 
         etName = ButterKnife.findById(md, R.id.et_name);
         etPhone = ButterKnife.findById(md, R.id.et_phone);
         etEmail = ButterKnife.findById(md, R.id.et_email);
+        etLastName = ButterKnife.findById(md, R.id.et_lastname);
         btn = ButterKnife.findById(md, R.id.buttonDefaultPositive);
         btn.setEnabled(false);
 

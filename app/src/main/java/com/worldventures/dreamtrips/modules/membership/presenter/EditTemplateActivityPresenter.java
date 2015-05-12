@@ -16,8 +16,7 @@ public class EditTemplateActivityPresenter extends Presenter {
         this.template = inviteTemplate;
     }
 
-    @Override
-    public void onStart() {
+    public void onCreate() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EditTemplateFragment.TEMPLATE, template);
         fragmentCompass.replace(Route.EDIT_INVITE_TEMPLATE, bundle);

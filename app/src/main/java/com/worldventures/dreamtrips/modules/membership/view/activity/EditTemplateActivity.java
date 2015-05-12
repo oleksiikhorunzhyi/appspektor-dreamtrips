@@ -22,6 +22,12 @@ public class EditTemplateActivity extends ToolbarActivity<EditTemplateActivityPr
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getPresentationModel().onCreate();
+    }
+
+    @Override
     protected int getToolbarTitle() {
         return R.string.title_edit_template;
     }

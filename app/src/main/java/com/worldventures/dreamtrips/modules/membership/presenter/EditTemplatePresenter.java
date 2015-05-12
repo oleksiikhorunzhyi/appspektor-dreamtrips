@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -71,6 +72,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
+        template.setLink(inviteTemplate.getLink());
+        view.setWebViewContent(inviteTemplate.getContent());
+        template.setContent(inviteTemplate.getContent());
         template.setLink(inviteTemplate.getLink());
         if (preview) {
             preview = false;
@@ -151,6 +155,10 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
                 this::createInviteSuccess,
                 this::createInviteFailed);
+    }
+
+    public Parcelable getTemplate() {
+        return template;
     }
 
     public interface View extends Presenter.View {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +33,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     MaterialEditText etMessage;
     @InjectView(R.id.ll_progress)
     View progressView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

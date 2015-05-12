@@ -38,9 +38,8 @@ public class AddContactDialog {
                         if (callback != null) {
                             Member member = new Member();
                             member.setId(String.valueOf(System.currentTimeMillis()));
-                            member.setName(etName.getText().toString() +
-                                    " " +
-                                    etLastName.getText().toString());
+                            member.setName(TextUtils.join(" ",
+                                    new String[]{etName.getText().toString(), etLastName.getText().toString()}));
                             member.setEmail(etEmail.getText().toString());
                             member.setPhone(etPhone.getText().toString());
                             callback.add(member);

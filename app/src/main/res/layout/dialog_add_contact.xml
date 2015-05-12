@@ -22,7 +22,7 @@
         android:id="@+id/et_lastname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/invite_add_name"
+        android:hint="@string/invite_add_last_name"
         android:imeOptions="actionNext"
         android:singleLine="true"
         android:textColor="@android:color/black"

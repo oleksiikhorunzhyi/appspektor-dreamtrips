@@ -81,6 +81,7 @@ public class AddContactDialog {
         etName = ButterKnife.findById(md, R.id.et_name);
         etPhone = ButterKnife.findById(md, R.id.et_phone);
         etEmail = ButterKnife.findById(md, R.id.et_email);
+        etLastName = ButterKnife.findById(md, R.id.et_lastname);
         btn = ButterKnife.findById(md, R.id.buttonDefaultPositive);
         btn.setEnabled(false);
 

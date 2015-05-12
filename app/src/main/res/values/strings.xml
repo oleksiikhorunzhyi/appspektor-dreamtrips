@@ -231,7 +231,7 @@
     <string name="invitation_to">To:</string>
     <string name="invitation_subject">Subject:</string>
 
-    <string name="invite_add_name">Last Name</string>
+    <string name="invite_add_last_name">Last Name</string>
     <string name="select_template">Select template</string>
     <string name="preview_template">Preview template</string>
     <string name="selected">%d selected</string>

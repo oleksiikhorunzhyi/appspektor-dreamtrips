@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -11,13 +10,13 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Singleton;
 
@@ -64,9 +63,7 @@ public class ApiModule {
                 String authToken = "Token token=" + userSession.getApiToken();
                 request.addHeader("Authorization", authToken);
             }
-            Locale locale = context.getResources().getConfiguration().locale;
-            request.addHeader("Accept-Language", TextUtils.join("-",
-                    new String[]{locale.getLanguage(), locale.getCountry()}));
+            request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
         };
     }
 

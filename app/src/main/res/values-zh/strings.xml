@@ -231,9 +231,14 @@
     <string name="invitation_to">遏:</string>
     <string name="invitation_subject">主題:</string>
 
+    <string name="invite_add_name">Last Name</string>
     <string name="select_template">Select template</string>
+    <string name="preview_template">Preview template</string>
     <string name="selected">%d selected</string>
-    <string name="error_personal_message_is_empty">Personal message should be not empty</string>
+    <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
+    <string name="invitation_deselect_all">Deselect All</string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, <br/><br/>   %s.
+        <br/>Check it out <a href="%s">here</a>.]]></string>
 
 </resources>

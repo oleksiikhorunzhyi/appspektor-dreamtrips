@@ -166,18 +166,25 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void onEventMainThread(MemberCellResendEvent event) {
-        doResend(event.history);
+        doResend(event.history, event.userName);
     }
 
-    /** Get pre-filled template by id, and try to resend */
-    private void doResend(History history) {
+    /**
+     * Get pre-filled template by id, and try to resend
+     */
+    private void doResend(History history, String username) {
         view.startLoading();
         doRequest(new GetFilledInvitationTemplateQuery(history.getTemplateId()), template -> {
             // open share intent
             Intent intent = null;
             switch (history.getType()) {
                 case EMAIL:
-                    intent = Share.newEmailIntent(template.getTitle(), template.getContent(), history.getContact());
+                    intent = Share.newEmailIntent(template.getTitle(),
+                            String.format(context.getString(R.string.invitation_text_template),
+                                    " " + username,
+                                    "",
+                                    template.getLink()),
+                            history.getContact());
                     break;
                 case SMS:
                     intent = Share.newSmsIntent(context, template.getLink(), history.getContact());

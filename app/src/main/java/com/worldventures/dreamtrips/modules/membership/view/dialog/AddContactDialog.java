@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.membership.view.dialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.widget.Button;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -22,7 +22,7 @@ public class AddContactDialog {
     private MaterialEditText etPhone;
     private MaterialEditText etEmail;
     private MaterialEditText etLastName;
-    private Button btn;
+    private View btn;
     private final MaterialDialog md;
     private Callback callback;
     private String emailError;
@@ -30,7 +30,7 @@ public class AddContactDialog {
     public AddContactDialog(Context context) {
         md = new MaterialDialog.Builder(context)
                 .title(R.string.add_contact)
-                .customView(R.layout.dialog_add_contact)
+                .customView(R.layout.dialog_add_contact, true)
                 .positiveText(R.string.add)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override

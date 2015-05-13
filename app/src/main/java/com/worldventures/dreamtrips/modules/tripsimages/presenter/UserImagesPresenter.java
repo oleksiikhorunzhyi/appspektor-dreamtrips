@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class UserImagesPM extends TripImagesListPM<Photo> {
-    public UserImagesPM(View view) {
+public class UserImagesPresenter extends TripImagesListPresenter<Photo> {
+    public UserImagesPresenter(View view) {
         super(view, Type.MEMBER_IMAGES);
     }
 

@@ -226,6 +226,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
 
     public enum Type {
-        DETAILS, EDIT
+        DETAILS, EDIT, DEFAULT
     }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -8,16 +9,20 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationsTemplateQuery;
+import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
+import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +32,41 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private InviteTemplate template;
     private boolean preview = false;
+
+    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
+            handlePhotoPick(uri);
+        }
+    };
+
+    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.parse(image.getFilePathOriginal());
+            handlePhotoPick(uri);
+        }
+    };
+
+    private void handlePhotoPick(Uri uri) {
+        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
+        task.setTaskId((int) System.currentTimeMillis());
+        task.setBucketId(template.getId());
+        task.setFilePath(uri.toString());
+        startUpload(task);
+    }
+
+    private void startUpload(final BucketPhotoUploadTask task) {
+        view.startLoading();
+        UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
+                getMessage());
+        doRequest(uploadBucketPhotoCommand,
+                this::getFilledInvitationsTemplateSuccess,
+                this::getFilledInvitationsTemplateFailed);
+    }
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
         super(view);
@@ -51,23 +91,35 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return to;
     }
 
+    public ImagePickCallback getPhotoChooseCallback() {
+        return selectImageCallback;
+    }
+
+    public ImagePickCallback getFbCallback() {
+        return fbCallback;
+    }
+
+    public Intent getShareIntent() {
+        InviteTemplate.Type type = template.getType();
+        List<String> membersAddress = getMembersAddress();
+        String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
+        Intent intent;
+        if (type == InviteTemplate.Type.EMAIL) {
+            intent = Share.newEmailIntent(getSubject(), getBody(), addresses);
+        } else {
+            intent = Share.newSmsIntent(context, getSmsBody(), addresses);
+        }
+        return intent;
+    }
+
     public void previewAction() {
         preview = true;
         updatePreview();
     }
 
-    private void updatePreview() {
-        view.startLoading();
-        doRequest(new GetFilledInvitationsTemplateQuery(
-                        template.getId(),
-                        view.getMessage()),
-                this::getFilledInvitationsTemplateSuccess,
-                this::getFilledInvitationsTemplateFailed);
-    }
-
     private void getFilledInvitationsTemplateFailed(SpiceException spiceException) {
         view.finishLoading();
-        Timber.e(spiceException, "");
+        handleError(spiceException);
     }
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
@@ -83,7 +135,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private void sentInvitesFailed(SpiceException spiceException) {
-        Timber.e(spiceException, "");
+        handleError(spiceException);
     }
 
     private void createInviteSuccess(InviteTemplate template) {
@@ -126,20 +178,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return getMembersAddress().size() > 1 ? "" : " " + template.getName();
     }
 
-
-    public Intent getShareIntent() {
-        InviteTemplate.Type type = template.getType();
-        List<String> membersAddress = getMembersAddress();
-        String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
-        Intent intent;
-        if (type == InviteTemplate.Type.EMAIL) {
-            intent = Share.newEmailIntent(getSubject(), getBody(), addresses);
-        } else {
-            intent = Share.newSmsIntent(context, getSmsBody(), addresses);
-        }
-        return intent;
-    }
-
     private void notifyServer() {
         InviteBody body = new InviteBody();
         body.setContacts(getContactAddress());
@@ -156,8 +194,19 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return Queryable.from(template.getTo()).map(Member::getSubtitle).toList();
     }
 
+    private void updatePreview() {
+        view.startLoading();
+        doRequest(new CreateFilledInvitationsTemplateQuery(
+                        template.getId(),
+                        view.getMessage(),
+                        null),
+                this::getFilledInvitationsTemplateSuccess,
+                this::getFilledInvitationsTemplateFailed);
+    }
+
     public void shareRequest() {
-        dreamSpiceManager.execute(new GetFilledInvitationsTemplateQuery(template.getId(), view.getMessage()),
+        dreamSpiceManager.execute(new CreateFilledInvitationsTemplateQuery(template.getId(),
+                        view.getMessage(), null),
                 this::createInviteSuccess,
                 this::createInviteFailed);
     }

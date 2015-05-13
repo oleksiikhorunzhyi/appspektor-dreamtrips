@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class MyImagesPM extends TripImagesListPM<IFullScreenAvailableObject> {
-    public MyImagesPM(View view) {
+public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenAvailableObject> {
+    public MyImagesPresenter(View view) {
         super(view, Type.MY_IMAGES);
     }
 

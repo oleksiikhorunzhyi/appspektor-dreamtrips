@@ -161,7 +161,9 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
-    public InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message);
+    public InviteTemplate createInviteTemplate(@Field("template_id") int id,
+                                               @Field("message") String message,
+                                               @Field("cover_photo_url") String photoUrl);
 
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);

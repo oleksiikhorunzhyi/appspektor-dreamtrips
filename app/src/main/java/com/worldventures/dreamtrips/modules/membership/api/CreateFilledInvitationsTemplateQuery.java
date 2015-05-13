@@ -6,15 +6,17 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 public class CreateFilledInvitationsTemplateQuery extends Query<InviteTemplate> {
     private int id;
     private String message;
+    private String photoUrl;
 
-    public CreateFilledInvitationsTemplateQuery(int id, String message) {
+    public CreateFilledInvitationsTemplateQuery(int id, String message, String photoUrl) {
         super(InviteTemplate.class);
         this.id = id;
         this.message = message;
+        this.photoUrl = photoUrl;
     }
 
     @Override
     public InviteTemplate loadDataFromNetwork() throws Exception {
-        return getService().createInviteTemplate(id, message);
+        return getService().createInviteTemplate(id, message, photoUrl);
     }
 }

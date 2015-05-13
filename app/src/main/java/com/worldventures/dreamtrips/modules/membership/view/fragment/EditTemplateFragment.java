@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
@@ -34,10 +37,8 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @InjectView(R.id.ll_progress)
     View progressView;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    @InjectView(R.id.bucket_photos)
+    protected BucketPhotosView bucketPhotosView;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -64,6 +65,16 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         wvPreview.getSettings().setLoadWithOverviewMode(true);
         wvPreview.getSettings().setUseWideViewPort(true);
         progressView.setVisibility(View.GONE);
+
+        bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DETAILS);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

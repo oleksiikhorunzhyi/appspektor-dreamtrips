@@ -100,9 +100,15 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:background="@android:color/darker_gray" />
+
+            <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+                android:id="@+id/bucket_photos"
+                android:overScrollMode="never"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="20dp" />
 
             <WebView
                 android:id="@+id/wv_preview"

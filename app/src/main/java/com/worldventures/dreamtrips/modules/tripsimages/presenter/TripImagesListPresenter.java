@@ -21,7 +21,7 @@ import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPM.View> {
+public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPresenter.View> {
 
     public static final int PER_PAGE = 15;
 
@@ -36,25 +36,25 @@ public abstract class TripImagesListPM<T extends IFullScreenAvailableObject> ext
     private int visibleThreshold = 5;
     private TripImagesRoboSpiceController roboSpiceAdapterController;
 
-    public TripImagesListPM(View view, Type type) {
+    public TripImagesListPresenter(View view, Type type) {
         super(view);
         this.type = type;
     }
 
-    public static TripImagesListPM create(Type type, View view) {
+    public static TripImagesListPresenter create(Type type, View view) {
         switch (type) {
             case MEMBER_IMAGES:
-                return new UserImagesPM(view);
+                return new UserImagesPresenter(view);
             case MY_IMAGES:
-                return new MyImagesPM(view);
+                return new MyImagesPresenter(view);
             case YOU_SHOULD_BE_HERE:
                 return new YSBHPM(view);
             case INSPIRE_ME:
-                return new InspireMePM(view);
+                return new InspireMePresenter(view);
             case BUCKET_PHOTOS:
                 return new BucketPhotoFsPresenter(view);
         }
-        return new MyImagesPM(view);
+        return new MyImagesPresenter(view);
     }
 
     public void onEventMainThread(FSUploadEvent.InspireMeImagesFSEvent event) {

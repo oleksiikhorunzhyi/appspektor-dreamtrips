@@ -187,7 +187,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                             history.getContact());
                     break;
                 case SMS:
-                    intent = Share.newSmsIntent(context, template.getLink(), history.getContact());
+                    intent = Share.newSmsIntent(context,
+                            template.getTitle() + " " + template.getLink(),
+                            history.getContact());
                     break;
             }
             activityRouter.openDefaultShareIntent(intent);

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.membership.api;
 
 import android.util.Log;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -16,10 +17,13 @@ public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate
     protected BucketPhotoUploadTask photoUploadTask;
 
 
-    public UploadTemplatePhotoCommand(BucketPhotoUploadTask photoUploadTask, String personalMessage) {
+    public UploadTemplatePhotoCommand(BucketPhotoUploadTask photoUploadTask,
+                                      String personalMessage,
+                                      Injector injector) {
         super(InviteTemplate.class);
         this.photoUploadTask = photoUploadTask;
         this.personalMessage = personalMessage;
+        injector.inject(s3uploader);
     }
 
     @Override

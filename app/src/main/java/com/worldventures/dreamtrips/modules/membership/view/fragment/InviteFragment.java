@@ -201,6 +201,7 @@ public class InviteFragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        tvSearch.clearFocus();
         // adapter already has items filtered, nothing to do
         return false;
     }

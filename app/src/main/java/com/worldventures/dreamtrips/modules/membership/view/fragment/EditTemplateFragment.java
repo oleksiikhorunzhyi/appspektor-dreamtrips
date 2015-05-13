@@ -13,6 +13,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
@@ -105,7 +106,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void startLoading() {
         progressView.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
     }
 
     @Override

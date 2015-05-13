@@ -6,10 +6,13 @@ import com.worldventures.dreamtrips.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -52,8 +56,8 @@ public class DateTimeUtils {
 
     public static DateFormat[] getISO1DateFormats() {
         return new DateFormat[]{
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
                 new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault()),
@@ -64,6 +68,18 @@ public class DateTimeUtils {
     public static String convertDateToString(Date date, DateFormat format) {
         if (date != null) {
             return format.format(date);
+        } else {
+            return null;
+        }
+    }
+
+    public static String convertDateToJodaString(Date date, String format) {
+        if (date != null) {
+            DateTime dt = new DateTime(date);
+            dt = dt.withZoneRetainFields(DateTimeZone.UTC);
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(format);
+            fmt = fmt.withZone(DateTimeZone.getDefault());
+            return fmt.print(dt);
         } else {
             return null;
         }

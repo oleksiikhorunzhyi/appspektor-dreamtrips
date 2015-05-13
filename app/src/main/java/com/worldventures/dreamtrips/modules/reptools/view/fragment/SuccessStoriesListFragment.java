@@ -155,11 +155,14 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         });
     }
 
-    private void openFirst() {
-        if (isTabletLandscape()) {
-            getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
-        }
+    private WeakHandler weakHandler = new WeakHandler();
 
+    private void openFirst() {
+        weakHandler.post(() -> {
+            if (isTabletLandscape()) {
+                getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
+            }
+        });
     }
 
     @Override

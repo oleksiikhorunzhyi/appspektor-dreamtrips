@@ -7,9 +7,12 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -26,12 +29,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
     private InviteTemplate template;
     private boolean preview = false;
+
+    @Inject
+    Injector injector;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -62,7 +70,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void startUpload(final BucketPhotoUploadTask task) {
         view.startLoading();
         UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
-                getMessage());
+                getMessage(), injector);
         doRequest(uploadBucketPhotoCommand,
                 this::getFilledInvitationsTemplateSuccess,
                 this::getFilledInvitationsTemplateFailed);
@@ -89,6 +97,11 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             to.add(member.getSubtitle());
         }
         return to;
+    }
+
+    public void onEvent(BucketAddPhotoClickEvent event) {
+        eventBus.cancelEventDelivery(event);
+        view.getBucketPhotosView().showAddPhotoDialog();
     }
 
     public ImagePickCallback getPhotoChooseCallback() {
@@ -124,13 +137,18 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        template.setLink(inviteTemplate.getLink());
-        view.setWebViewContent(inviteTemplate.getContent());
-        template.setContent(inviteTemplate.getContent());
-        template.setLink(inviteTemplate.getLink());
-        if (preview) {
-            preview = false;
-            activityRouter.openPreviewActivity(inviteTemplate.getLink());
+        if (inviteTemplate != null) {
+            template.setLink(inviteTemplate.getLink());
+            view.setWebViewContent(inviteTemplate.getContent());
+            template.setContent(inviteTemplate.getContent());
+            template.setLink(inviteTemplate.getLink());
+            if (preview) {
+                preview = false;
+                activityRouter.openPreviewActivity(inviteTemplate.getLink());
+            }
+        } else {
+          handleError(new SpiceException(""));
+
         }
     }
 
@@ -166,7 +184,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private String getSmsBody() {
-        return template.getLink();
+        return template.getTitle() + " " + template.getLink();
     }
 
     private String getMessage() {
@@ -231,5 +249,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
         void finishLoading();
 
+        IBucketPhotoView getBucketPhotosView();
     }
 }

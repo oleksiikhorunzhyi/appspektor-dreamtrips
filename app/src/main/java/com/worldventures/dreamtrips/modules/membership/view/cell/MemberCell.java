@@ -40,12 +40,10 @@ public class MemberCell extends AbstractCell<Member> {
     LinearLayout llResend;
 
     String country;
-    SimpleDateFormat resendFormat;
 
     public MemberCell(View view) {
         super(view);
         country = Locale.getDefault().getCountry();
-        resendFormat = new SimpleDateFormat(DateTimeUtils.MEMBER_FORMAT);
     }
 
     @Override
@@ -62,11 +60,12 @@ public class MemberCell extends AbstractCell<Member> {
         ivPhone.setVisibility(View.GONE);
         if (getModelObject().getHistory() != null) {
             llResend.setVisibility(View.VISIBLE);
-            tvDate.setText(DateTimeUtils.convertDateToString(
+            tvDate.setText(DateTimeUtils.convertDateToJodaString(
                             getModelObject().getHistory().getDate()
-                            , resendFormat)
+                            , DateTimeUtils.MEMBER_FORMAT)
             );
         } else {
+            tvDate.setText("");
             llResend.setVisibility(View.GONE);
         }
     }

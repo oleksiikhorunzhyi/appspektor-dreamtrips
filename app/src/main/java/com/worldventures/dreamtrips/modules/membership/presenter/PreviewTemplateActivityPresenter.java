@@ -19,7 +19,7 @@ public class PreviewTemplateActivityPresenter extends Presenter {
     public void showPreview() {
         Bundle bundle = new Bundle();
         bundle.putString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
-        fragmentCompass.replace(Route.PREVIEW_TEMPLATE, bundle);
+        fragmentCompass.switchBranch(Route.PREVIEW_TEMPLATE, bundle);
     }
 
 }

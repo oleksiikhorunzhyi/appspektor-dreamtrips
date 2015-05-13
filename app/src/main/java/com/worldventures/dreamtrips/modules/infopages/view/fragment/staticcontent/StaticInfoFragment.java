@@ -134,7 +134,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
             webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setBuiltInZoomControls(true);
             webView.getSettings().setUseWideViewPort(true);
         }
     }
@@ -172,7 +171,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
             webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setBuiltInZoomControls(true);
             webView.getSettings().setUseWideViewPort(true);
         }
     }

@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
+import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
@@ -36,8 +38,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     private IgnoreFirstItemAdapter imagesAdapter;
 
     private PickImageDialog pid;
-    @Icicle int pidTypeShown;
-    @Icicle String filePath;
+    @Icicle
+    int pidTypeShown;
+    @Icicle
+    String filePath;
     private ImagePickCallback selectImageCallback;
     private ImagePickCallback fbImageCallback;
     private Fragment fragment;
@@ -61,7 +65,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
             this.fragment = fragment;
 
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
-            if (type == Type.EDIT) {
+
+            if (type == Type.DEFAULT) {
+                imagesAdapter.registerCell(TemplatePhoto.class, TemplatePhotoCell.class);
+            } else if (type == Type.EDIT) {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
             } else {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForDetails.class);
@@ -144,6 +151,18 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void addImage(BucketPhotoUploadTask image) {
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
+    }
+
+    @Override
+    public void addTemplatePhoto(TemplatePhoto templatePhoto) {
+        imagesAdapter.addItem(templatePhoto);
+        imagesAdapter.notifyItemInserted(0);
+    }
+
+    @Override
+    public void deleteAtPosition(int position) {
+        imagesAdapter.remove(0);
+        imagesAdapter.notifyItemRemoved(0);
     }
 
     public void actionFacebook() {

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCo
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import org.json.JSONObject;
@@ -37,6 +38,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private InviteTemplate template;
     private boolean preview = false;
+
+    private Uri selectedImageUri;
 
     @Inject
     Injector injector;
@@ -60,6 +63,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     };
 
     private void handlePhotoPick(Uri uri) {
+        selectedImageUri = uri;
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
         task.setTaskId((int) System.currentTimeMillis());
         task.setBucketId(template.getId());
@@ -72,8 +76,15 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
                 getMessage(), injector);
         doRequest(uploadBucketPhotoCommand,
-                this::getFilledInvitationsTemplateSuccess,
+                this::photoUploaded,
                 this::getFilledInvitationsTemplateFailed);
+    }
+
+    private void photoUploaded(InviteTemplate inviteTemplate) {
+        template.setCoverImage(inviteTemplate.getCoverImage());
+        view.getBucketPhotosView().deleteAtPosition(0);
+        view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
+        getFilledInvitationsTemplateSuccess(inviteTemplate);
     }
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
@@ -138,7 +149,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
         view.finishLoading();
         if (inviteTemplate != null) {
-            template.setLink(inviteTemplate.getLink());
             view.setWebViewContent(inviteTemplate.getContent());
             template.setContent(inviteTemplate.getContent());
             template.setLink(inviteTemplate.getLink());
@@ -147,8 +157,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
                 activityRouter.openPreviewActivity(inviteTemplate.getLink());
             }
         } else {
-          handleError(new SpiceException(""));
-
+            handleError(new SpiceException(""));
         }
     }
 

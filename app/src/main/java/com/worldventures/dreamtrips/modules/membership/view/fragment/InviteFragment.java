@@ -113,10 +113,6 @@ public class InviteFragment
         tvSearch.setOnQueryTextListener(this);
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
-        tvSearch.setOnCloseListener(() -> {
-            getPresenter().searchCanceled();
-            return false;
-        });
 
         setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {

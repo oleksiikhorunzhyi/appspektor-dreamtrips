@@ -65,16 +65,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         doRequest(request, members -> {
             view.finishLoading();
             InvitePresenter.this.members = members;
-            sortContacts();
             setMembers();
             resetSelected();
+            sortContacts();
             getInvitations();
         });
-    }
-
-    public void searchCanceled() {
-        sortContacts();
-        setMembers();
     }
 
     private void getInvitations() {

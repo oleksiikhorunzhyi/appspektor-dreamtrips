@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEve
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import butterknife.InjectView;
@@ -75,12 +74,7 @@ public class MemberCell extends AbstractCell<Member> {
         if (getModelObject().isChecked() != checked) {
             getModelObject().setIsChecked(checked);
 
-            if (checked) {
-                getModelObject().setOriginalPosition(getAdapterPosition());
-            }
-
-            getEventBus().post(new MemberCellSelectedEvent(checked, getAdapterPosition(), checked
-                    ? 0 : getModelObject().getOriginalPosition()));
+            getEventBus().post(new MemberCellSelectedEvent(checked));
         }
     }
 

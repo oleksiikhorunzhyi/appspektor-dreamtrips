@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,6 +76,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         sortContacts();
         setMembers();
     }
+
     private void getInvitations() {
         view.startLoading();
         doRequest(new GetInvitationsQuery(), inviteTemplates -> {
@@ -137,6 +139,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                     query = newText.toLowerCase();
             }
             view.setFilter(query);
+            sortSelected();
         }, 150L);
     }
 
@@ -162,11 +165,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         view.setSelectedCount(selectedMembers.size());
 
-        moveItem(event.getFrom(), event.getTo());
-    }
+        sortContacts();
 
-    private void moveItem(int from, int to) {
-        view.move(from, to);
+        if (event.isSelected()) {
+            view.moved();
+        }
     }
 
     public void onEventMainThread(MemberCellResendEvent event) {
@@ -226,12 +229,14 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void sortContacts() {
-        Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
-        Collections.sort(members, (lhs, rhs) -> {
-            return lhs.isChecked() && !rhs.isChecked() ? 1 :
-                    !lhs.isChecked() && rhs.isChecked() ? -1 :
-                            0;
-        });
+        view.sort((lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+        sortSelected();
+    }
+
+    private void sortSelected() {
+        view.sort((lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 :
+                !lhs.isChecked() && rhs.isChecked() ? 1 :
+                        0);
     }
 
     private void resetSelected() {
@@ -252,12 +257,14 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void setFilter(String newText);
 
+        void sort(Comparator<Member> comparator);
+
         void showNextStepButtonVisibility(boolean isVisible);
 
         void setSelectedCount(int count);
 
         void showContinue();
 
-        void move(int from, int to);
+        void moved();
     }
 }

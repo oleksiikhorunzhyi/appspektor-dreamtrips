@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
@@ -61,6 +63,11 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
                 });
             });
         }
+    }
+
+    public void sort(Comparator comparator) {
+        Collections.sort(items, comparator);
+        notifyDataSetChanged();
     }
 
     public void flushFilter() {

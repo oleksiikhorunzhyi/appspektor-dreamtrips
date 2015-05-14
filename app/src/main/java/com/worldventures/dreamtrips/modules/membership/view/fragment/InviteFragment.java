@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDialog;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -183,9 +184,7 @@ public class InviteFragment
     }
 
     @Override
-    public void move(int from, int to) {
-        adapter.moveItem(from, to);
-        adapter.notifyItemMoved(from, to);
+    public void moved() {
         lvUsers.scrollToPosition(0);
     }
 
@@ -215,6 +214,11 @@ public class InviteFragment
     @Override
     public void setFilter(String newText) {
         adapter.setFilter(newText);
+    }
+
+    @Override
+    public void sort(Comparator comparator) {
+        adapter.sort(comparator);
     }
 
     @OnClick(R.id.bt_continue)

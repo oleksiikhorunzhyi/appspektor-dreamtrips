@@ -80,6 +80,10 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         List<String> to = getMembersAddress();
         view.setTo(TextUtils.join(", ", to));
         view.setWebViewContent(template.getContent());
+        if (!TextUtils.isEmpty(template.getVideo())) {
+            view.hidePhotoUpload();
+        }
+
     }
 
     public List<String> getMembersAddress() {
@@ -147,6 +151,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void delete() {
         selectedImageUri = null;
+        template.setCoverImage(null);
         view.getBucketPhotosView().deleteAtPosition(0);
         view.getBucketPhotosView().addFirstItem();
     }
@@ -274,5 +279,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         void finishLoading();
 
         IBucketPhotoView getBucketPhotosView();
+
+        void hidePhotoUpload();
     }
 }

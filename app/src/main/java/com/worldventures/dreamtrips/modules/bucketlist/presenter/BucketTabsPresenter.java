@@ -72,7 +72,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public enum BucketType {
         LOCATIONS("location", R.string.bucket_locations),
         ACTIVITIES("activity", R.string.bucket_activities),
-        RESTAURANTS("dinning", R.string.bucket_restaurants);
+        RESTAURANTS("dining", R.string.bucket_restaurants);
 
         protected String name;
         protected int res;

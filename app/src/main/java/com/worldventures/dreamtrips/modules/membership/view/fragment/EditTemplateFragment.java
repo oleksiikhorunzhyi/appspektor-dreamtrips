@@ -70,6 +70,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DEFAULT);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+        bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());
     }
 
     @Override

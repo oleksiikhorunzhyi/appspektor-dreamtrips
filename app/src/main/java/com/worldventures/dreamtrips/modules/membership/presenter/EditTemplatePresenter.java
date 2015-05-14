@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
@@ -62,30 +63,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         }
     };
 
-    private void handlePhotoPick(Uri uri) {
-        selectedImageUri = uri;
-        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId((int) System.currentTimeMillis());
-        task.setBucketId(template.getId());
-        task.setFilePath(uri.toString());
-        startUpload(task);
-    }
-
-    private void startUpload(final BucketPhotoUploadTask task) {
-        view.startLoading();
-        UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
-                getMessage(), injector);
-        doRequest(uploadBucketPhotoCommand,
-                this::photoUploaded,
-                this::getFilledInvitationsTemplateFailed);
-    }
-
-    private void photoUploaded(InviteTemplate inviteTemplate) {
-        template.setCoverImage(inviteTemplate.getCoverImage());
-        view.getBucketPhotosView().deleteAtPosition(0);
-        view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
-        getFilledInvitationsTemplateSuccess(inviteTemplate);
-    }
+    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = () -> {
+        delete();
+    };
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
         super(view);
@@ -112,7 +92,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     public void onEvent(BucketAddPhotoClickEvent event) {
         eventBus.cancelEventDelivery(event);
-        view.getBucketPhotosView().showAddPhotoDialog();
+        view.getBucketPhotosView().showAddPhotoDialog(selectedImageUri != null);
     }
 
     public ImagePickCallback getPhotoChooseCallback() {
@@ -121,6 +101,10 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     public ImagePickCallback getFbCallback() {
         return fbCallback;
+    }
+
+    public BucketPhotosView.DeleteButtonCallback getDeleteCallback() {
+        return deleteButtonCallback;
     }
 
     public Intent getShareIntent() {
@@ -159,6 +143,12 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         } else {
             handleError(new SpiceException(""));
         }
+    }
+
+    private void delete() {
+        selectedImageUri = null;
+        view.getBucketPhotosView().deleteAtPosition(0);
+        view.getBucketPhotosView().addFirstItem();
     }
 
     private void sentInvitesFailed(SpiceException spiceException) {
@@ -236,6 +226,31 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
                         view.getMessage(), null),
                 this::createInviteSuccess,
                 this::createInviteFailed);
+    }
+
+    private void handlePhotoPick(Uri uri) {
+        selectedImageUri = uri;
+        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
+        task.setTaskId((int) System.currentTimeMillis());
+        task.setBucketId(template.getId());
+        task.setFilePath(uri.toString());
+        startUpload(task);
+    }
+
+    private void startUpload(final BucketPhotoUploadTask task) {
+        view.startLoading();
+        UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
+                getMessage(), injector);
+        doRequest(uploadBucketPhotoCommand,
+                this::photoUploaded,
+                this::getFilledInvitationsTemplateFailed);
+    }
+
+    private void photoUploaded(InviteTemplate inviteTemplate) {
+        view.finishLoading();
+        template.setCoverImage(inviteTemplate.getCoverImage());
+        view.getBucketPhotosView().deleteAtPosition(0);
+        view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
     }
 
     public Parcelable getTemplate() {

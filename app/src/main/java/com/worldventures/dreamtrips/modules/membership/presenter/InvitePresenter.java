@@ -64,7 +64,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         doRequest(request, members -> {
             view.finishLoading();
             InvitePresenter.this.members = members;
-            sortByName();
+            sortContacts();
             setMembers();
             resetSelected();
             getInvitations();
@@ -106,7 +106,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }
         if (addToLoadedMembers) {
             members.add(member);
-            sortByName();
+            sortContacts();
             setMembers();
         }
     }
@@ -221,8 +221,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.setMembers(new ArrayList<>(members));
     }
 
-    private void sortByName() {
-        Collections.sort(members, ((lhs, rhs) -> lhs.getName().compareTo(rhs.getName())));
+    private void sortContacts() {
+        Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+        Collections.sort(members, (lhs, rhs) -> {
+            return lhs.isChecked() && !rhs.isChecked() ? 1 :
+                    !lhs.isChecked() && rhs.isChecked() ? -1 :
+                            0;
+        });
     }
 
     private void resetSelected() {

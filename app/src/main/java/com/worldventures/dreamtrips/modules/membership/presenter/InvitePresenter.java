@@ -71,6 +71,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         });
     }
 
+    public void searchCanceled() {
+        sortContacts();
+        setMembers();
+    }
     private void getInvitations() {
         view.startLoading();
         doRequest(new GetInvitationsQuery(), inviteTemplates -> {

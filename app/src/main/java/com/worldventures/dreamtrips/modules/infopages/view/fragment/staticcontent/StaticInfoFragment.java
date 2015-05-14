@@ -15,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -77,13 +78,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 progressBarWeb.setVisibility(View.GONE);
             }
         });
-        webView.loadUrl(getURL());
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL()));
     }
 
     @Override
     public void reload() {
         webView.loadUrl("about:blank");
-        webView.loadUrl(getURL());
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL()));
     }
 
     abstract protected String getURL();

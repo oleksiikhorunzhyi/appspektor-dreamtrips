@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     MaterialEditText etMessage;
     @InjectView(R.id.ll_progress)
     View progressView;
+    @InjectView(R.id.photoContainer)
+    ViewGroup photoContainer;
 
     @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
@@ -58,6 +61,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
         InviteTemplate template = getArguments().getParcelable(TEMPLATE);
         return new EditTemplatePresenter(this, template);
+    }
+
+    @Override
+    public void hidePhotoUpload() {
+        photoContainer.setVisibility(View.GONE);
     }
 
     @Override

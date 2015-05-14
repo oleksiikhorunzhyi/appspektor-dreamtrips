@@ -108,9 +108,15 @@ public class InviteFragment
                 new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
         tvSearch.setOnQueryTextListener(this);
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
+        tvSearch.setOnCloseListener(() -> {
+            getPresenter().searchCanceled();
+            return false;
+        });
+
         setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {

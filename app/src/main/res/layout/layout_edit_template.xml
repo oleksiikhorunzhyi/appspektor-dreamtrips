@@ -121,34 +121,41 @@
                 android:layout_margin="16dp" />
 
             <LinearLayout
+                android:id="@+id/photoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="vertical">
 
-                <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
-                    android:id="@+id/bucket_photos"
-                    android:overScrollMode="never"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginLeft="20dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
 
-                <TextView
+                    <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+                        android:id="@+id/bucket_photos"
+                        android:overScrollMode="never"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="12dp"
+                        android:gravity="center"
+                        android:text="@string/invite_add_photo"/>
+
+                </LinearLayout>
+
+                <View
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="12dp"
-                    android:gravity="center"
-                    android:text="@string/invite_add_photo"/>
-
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@android:color/darker_gray" />
             </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@android:color/darker_gray" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/et_email"

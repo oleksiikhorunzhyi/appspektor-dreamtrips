@@ -41,9 +41,10 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private boolean preview = false;
 
     private Uri selectedImageUri;
+    private String uploadedPhotoUrl;
 
     @Inject
-    Injector injector;
+    protected Injector injector;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -61,10 +62,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             Uri uri = Uri.parse(image.getFilePathOriginal());
             handlePhotoPick(uri);
         }
-    };
-
-    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = () -> {
-        delete();
     };
 
     public EditTemplatePresenter(View view, InviteTemplate template) {
@@ -149,13 +146,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         }
     }
 
-    private void delete() {
-        selectedImageUri = null;
-        template.setCoverImage(null);
-        view.getBucketPhotosView().deleteAtPosition(0);
-        view.getBucketPhotosView().addFirstItem();
-    }
-
     private void sentInvitesFailed(SpiceException spiceException) {
         handleError(spiceException);
     }
@@ -221,16 +211,29 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         doRequest(new CreateFilledInvitationsTemplateQuery(
                         template.getId(),
                         view.getMessage(),
-                        null),
+                        uploadedPhotoUrl),
                 this::getFilledInvitationsTemplateSuccess,
                 this::getFilledInvitationsTemplateFailed);
     }
 
     public void shareRequest() {
         dreamSpiceManager.execute(new CreateFilledInvitationsTemplateQuery(template.getId(),
-                        view.getMessage(), null),
+                        view.getMessage(), uploadedPhotoUrl),
                 this::createInviteSuccess,
                 this::createInviteFailed);
+    }
+
+    //Photo upload staff
+
+    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = () -> {
+        delete();
+    };
+
+    private void delete() {
+        selectedImageUri = null;
+        uploadedPhotoUrl = null;
+        view.getBucketPhotosView().deleteAtPosition(0);
+        view.getBucketPhotosView().addFirstItem();
     }
 
     private void handlePhotoPick(Uri uri) {
@@ -253,7 +256,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void photoUploaded(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        template.setCoverImage(inviteTemplate.getCoverImage());
+        uploadedPhotoUrl = inviteTemplate.getCoverImage().getOriginUrl();
         view.getBucketPhotosView().deleteAtPosition(0);
         view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
     }

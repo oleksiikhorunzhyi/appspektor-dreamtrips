@@ -45,13 +45,11 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public String getEnrollUrl() {
-        String url = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
-        return LocaleUtils.substituteActualLocale(context, url);
+        return getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
     }
 
     public String getEnrollRepUrl() {
-        String url = getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
-        return LocaleUtils.substituteActualLocale(context, url);
+        return getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
     }
 
     public String getStaticInfoUrl(String title) {

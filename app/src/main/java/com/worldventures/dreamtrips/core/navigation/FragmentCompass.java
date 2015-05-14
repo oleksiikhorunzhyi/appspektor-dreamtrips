@@ -184,7 +184,10 @@ public class FragmentCompass {
     }
 
     public Route getCurrentState() {
-        return Route.restoreByClass(getCurrentFragment().getClass().getName());
+        if (getCurrentFragment() != null) {
+            return Route.restoreByClass(getCurrentFragment().getClass().getName());
+        }
+        return Route.DREAMTRIPS;
     }
 
     protected void clearBackStack() {

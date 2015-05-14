@@ -72,6 +72,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     public void onEventMainThread(FSUploadEvent.MemberImagesFSEvent event) {
         handleNewPhotoEvent(event);
     }
+
     public void onEventMainThread(FSUploadEvent.BucketPhotoFsEvent event) {
         handleNewPhotoEvent(event);
     }
@@ -113,14 +114,16 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     }
 
     public void onItemClick(int position) {
-        List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
-        IFullScreenAvailableObject obj = objects.get(position);
-        if (obj instanceof ImageUploadTask) {
-            if (((ImageUploadTask) obj).isFailed()) {
-                dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+        if (position != -1) {
+            List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
+            IFullScreenAvailableObject obj = objects.get(position);
+            if (obj instanceof ImageUploadTask) {
+                if (((ImageUploadTask) obj).isFailed()) {
+                    dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+                }
+            } else {
+                this.activityRouter.openFullScreenPhoto(position, type);
             }
-        } else {
-            this.activityRouter.openFullScreenPhoto(position, type);
         }
     }
 

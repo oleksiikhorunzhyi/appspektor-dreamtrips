@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
+import com.innahema.collections.query.functions.Predicate;
+import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.module.Injector;
@@ -25,6 +27,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUplo
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
@@ -213,7 +216,12 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public List getImages() {
-        return imagesAdapter.getItems();
+        return Queryable.from(imagesAdapter.getItems()).filter(new Predicate() {
+            @Override
+            public boolean apply(Object element) {
+                return element instanceof IFullScreenAvailableObject;
+            }
+        }).toList();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -69,5 +69,4 @@ public class PlayerActivity extends BaseActivity {
         videoView.pause();
     }
 
-
 }

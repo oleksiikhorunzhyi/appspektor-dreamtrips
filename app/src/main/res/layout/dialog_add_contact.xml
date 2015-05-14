@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/invite_email"
-        android:imeOptions="actionNext"
+        android:imeOptions="actionDone"
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
@@ -49,11 +49,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/invite_phone"
-        android:imeOptions="actionNext"
+        android:imeOptions="actionDone"
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
         app:floatingLabel="normal"
         app:primaryColor="@color/theme_main_darker"
         android:inputType="phone" />
+
 </LinearLayout>

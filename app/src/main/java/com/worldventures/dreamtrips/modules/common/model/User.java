@@ -27,11 +27,11 @@ public class User extends BaseEntity implements Parcelable, Serializable {
 
     private String username;
     private String email;
+    private Avatar avatar;
     private String firstName;
     private String lastName;
-    private Date birthDate;
     private String location;
-    private Avatar avatar;
+    private Date birthDate;
 
     private String coverPath;
 

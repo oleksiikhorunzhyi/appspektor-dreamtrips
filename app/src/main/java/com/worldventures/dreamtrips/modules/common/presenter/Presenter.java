@@ -33,6 +33,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     protected ActivityRouter activityRouter;
 
     @Inject
+    @Global
+    protected EventBus eventBus;
+
+    @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
     @Inject
@@ -40,10 +44,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     @Inject
     protected VideoCachingSpiceManager videoCachingSpiceManager;
-
-    @Inject
-    @Global
-    protected EventBus eventBus;
 
     @Inject
     protected Context context;
@@ -120,6 +120,13 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         dreamSpiceManager.execute(request, successListener, failureListener);
     }
 
+    public boolean isConnected() {
+        ConnectivityManager conMgr = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        return i != null && i.isConnected() && i.isAvailable();
+    }
+
     @Override
     public void handleError(SpiceException error) {
         if (error != null && !TextUtils.isEmpty(error.getMessage())) {
@@ -127,13 +134,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         } else {
             view.informUser(R.string.smth_went_wrong);
         }
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager conMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo i = conMgr.getActiveNetworkInfo();
-        return i != null && i.isConnected() && i.isAvailable();
     }
 
     public interface View {

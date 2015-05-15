@@ -33,6 +33,10 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
         }
     }
 
+    public void openShareActivity(String picture, String link, String text) {
+        activityRouter.openShareFacebook(picture, link, text);
+    }
+
     private void downloadFile(String url, final String shareLink, final String text) {
         File cacheFile = new File(CachedEntity.getExternalFilePath(context, url));
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, cacheFile);
@@ -54,13 +58,9 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
                 });
     }
 
-    public void openShareActivity(String picture, String link, String text) {
-        activityRouter.openShareFacebook(picture, link, text);
-    }
-
     public interface View extends Presenter.View {
-        void shareFBDialog(String url, String link, String text);
-
         void shareTwitterDialog(Uri url, String link, String text);
+
+        void shareFBDialog(String url, String link, String text);
     }
 }

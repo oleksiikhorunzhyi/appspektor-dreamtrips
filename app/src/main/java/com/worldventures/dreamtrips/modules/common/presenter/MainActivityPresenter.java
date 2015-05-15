@@ -13,12 +13,12 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         view.setTitle(fragmentCompass.getCurrentState().getTitle());
     }
 
-    public void loadFilters() {
-        eventBus.post(new UpdateRegionsAndThemesEvent());
-    }
-
     public void onEvent(ServerDownEvent event) {
         view.alert(event.getMessage());
+    }
+
+    public void loadFilters() {
+        eventBus.post(new UpdateRegionsAndThemesEvent());
     }
 
     public interface View extends Presenter.View {

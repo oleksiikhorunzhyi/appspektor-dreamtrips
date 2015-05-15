@@ -25,6 +25,10 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         doRequest(getLocaleQuery, (locales) -> onSuccess(locales));
     }
 
+    public boolean isLogged() {
+        return appSessionHolder.get().isPresent();
+    }
+
     public void onSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
 
@@ -36,12 +40,4 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
         activityRouter.finish();
     }
-
-    private void saveLocales() {
-    }
-
-    public boolean isLogged() {
-        return appSessionHolder.get().isPresent();
-    }
-
 }

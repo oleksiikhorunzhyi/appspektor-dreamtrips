@@ -213,8 +213,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
                 route.getKey().equals(InfoModule.FAQ) ||
                 route.getKey().equals(InfoModule.TERMS)) {
             openComponent(route, false);
-            eventBus.post(new WebViewReloadEvent());
         }
+        eventBus.post(new WebViewReloadEvent());
         closeLeftDrawer();
     }
 

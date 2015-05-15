@@ -1,20 +1,21 @@
 package com.worldventures.dreamtrips.modules.video.api;
 
-import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.ArrayList;
 
-public class MemberVideosRequest extends RetrofitSpiceRequest<ArrayList<Video>, SharedServicesApi> {
+public class MemberVideosRequest extends Query<ArrayList<Video>> {
 
-    public MemberVideosRequest() {
-        super((Class<ArrayList<Video>>) new ArrayList<Video>().getClass(),
-                SharedServicesApi.class);
+    private String type;
+
+    public MemberVideosRequest(String type) {
+        super((Class<ArrayList<Video>>) new ArrayList<Video>().getClass());
+        this.type = type;
     }
 
     @Override
     public ArrayList<Video> loadDataFromNetwork() throws Exception {
-        return getService().getVideos();
+        return getService().getVideos(type);
     }
 }

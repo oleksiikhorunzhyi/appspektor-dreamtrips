@@ -24,7 +24,7 @@ public class BookItActivity extends ToolbarActivity<BookItActivityPresenter> imp
 
     @Override
     protected int getToolbarTitle() {
-        return R.string.select_template;
+        return R.string.book_it;
     }
 
     @Override

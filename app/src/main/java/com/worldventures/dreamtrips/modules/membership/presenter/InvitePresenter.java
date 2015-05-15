@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,9 +65,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         doRequest(request, members -> {
             view.finishLoading();
             InvitePresenter.this.members = members;
-            sortByName();
-            setMembers();
+            sortContacts();
             resetSelected();
+            setMembers();
             getInvitations();
         });
     }
@@ -106,7 +107,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }
         if (addToLoadedMembers) {
             members.add(member);
-            sortByName();
+            sortContacts();
             setMembers();
         }
     }
@@ -133,6 +134,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                     query = newText.toLowerCase();
             }
             view.setFilter(query);
+            sortSelected();
         }, 150L);
     }
 
@@ -158,29 +160,41 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         view.setSelectedCount(selectedMembers.size());
 
-        moveItem(event.getFrom(), event.getTo());
-    }
-
-    private void moveItem(int from, int to) {
-        view.move(from, to);
+        if (event.isSelected()) {
+            view.move(event.getMember(), 0);
+        } else {
+            int to = event.getMember().getOriginalPosition();
+            Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
+            int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
+            view.move(event.getMember(), to < lastSelected ? lastSelected : to);
+        }
     }
 
     public void onEventMainThread(MemberCellResendEvent event) {
-        doResend(event.history);
+        doResend(event.history, event.userName);
     }
 
-    /** Get pre-filled template by id, and try to resend */
-    private void doResend(History history) {
+    /**
+     * Get pre-filled template by id, and try to resend
+     */
+    private void doResend(History history, String username) {
         view.startLoading();
         doRequest(new GetFilledInvitationTemplateQuery(history.getTemplateId()), template -> {
             // open share intent
             Intent intent = null;
             switch (history.getType()) {
                 case EMAIL:
-                    intent = Share.newEmailIntent(template.getTitle(), template.getContent(), history.getContact());
+                    intent = Share.newEmailIntent(template.getTitle(),
+                            String.format(context.getString(R.string.invitation_text_template),
+                                    " " + username,
+                                    "",
+                                    template.getLink()),
+                            history.getContact());
                     break;
                 case SMS:
-                    intent = Share.newSmsIntent(context, template.getLink(), history.getContact());
+                    intent = Share.newSmsIntent(context,
+                            template.getTitle() + " " + template.getLink(),
+                            history.getContact());
                     break;
             }
             activityRouter.openDefaultShareIntent(intent);
@@ -209,11 +223,18 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void setMembers() {
+        Queryable.from(members).forEachR((member) -> member.setOriginalPosition(members.indexOf(member)));
         view.setMembers(new ArrayList<>(members));
     }
 
-    private void sortByName() {
-        Collections.sort(members, ((lhs, rhs) -> lhs.getName().compareTo(rhs.getName())));
+    private void sortContacts() {
+        Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+    }
+
+    private void sortSelected() {
+        view.sort((lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 :
+                !lhs.isChecked() && rhs.isChecked() ? 1 :
+                        0);
     }
 
     private void resetSelected() {
@@ -234,12 +255,14 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void setFilter(String newText);
 
+        void sort(Comparator<Member> comparator);
+
         void showNextStepButtonVisibility(boolean isVisible);
 
         void setSelectedCount(int count);
 
         void showContinue();
 
-        void move(int from, int to);
+        void move(Member member, int to);
     }
 }

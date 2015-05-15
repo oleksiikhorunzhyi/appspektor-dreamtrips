@@ -1,15 +1,20 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
@@ -33,11 +38,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     MaterialEditText etMessage;
     @InjectView(R.id.ll_progress)
     View progressView;
+    @InjectView(R.id.photoContainer)
+    ViewGroup photoContainer;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    @InjectView(R.id.bucket_photos)
+    protected BucketPhotosView bucketPhotosView;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -59,11 +64,27 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     }
 
     @Override
+    public void hidePhotoUpload() {
+        photoContainer.setVisibility(View.GONE);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         wvPreview.getSettings().setLoadWithOverviewMode(true);
         wvPreview.getSettings().setUseWideViewPort(true);
         progressView.setVisibility(View.GONE);
+
+        bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DEFAULT);
+        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+        bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -94,7 +115,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void startLoading() {
         progressView.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public IBucketPhotoView getBucketPhotosView() {
+        return bucketPhotosView;
     }
 
     @Override

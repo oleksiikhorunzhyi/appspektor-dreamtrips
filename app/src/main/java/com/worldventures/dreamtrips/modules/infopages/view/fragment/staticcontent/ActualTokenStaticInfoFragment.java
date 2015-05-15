@@ -6,6 +6,7 @@ import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
 
 import butterknife.InjectView;
@@ -35,6 +36,6 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
 
     @Override
     public void loadContent() {
-        webView.loadUrl(getURL());
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
     }
 }

@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEve
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import butterknife.InjectView;
@@ -40,12 +39,10 @@ public class MemberCell extends AbstractCell<Member> {
     LinearLayout llResend;
 
     String country;
-    SimpleDateFormat resendFormat;
 
     public MemberCell(View view) {
         super(view);
         country = Locale.getDefault().getCountry();
-        resendFormat = new SimpleDateFormat(DateTimeUtils.MEMBER_FORMAT);
     }
 
     @Override
@@ -62,11 +59,12 @@ public class MemberCell extends AbstractCell<Member> {
         ivPhone.setVisibility(View.GONE);
         if (getModelObject().getHistory() != null) {
             llResend.setVisibility(View.VISIBLE);
-            tvDate.setText(DateTimeUtils.convertDateToString(
+            tvDate.setText(DateTimeUtils.convertDateToJodaString(
                             getModelObject().getHistory().getDate()
-                            , resendFormat)
+                            , DateTimeUtils.MEMBER_FORMAT)
             );
         } else {
+            tvDate.setText("");
             llResend.setVisibility(View.GONE);
         }
     }
@@ -76,18 +74,13 @@ public class MemberCell extends AbstractCell<Member> {
         if (getModelObject().isChecked() != checked) {
             getModelObject().setIsChecked(checked);
 
-            if (checked) {
-                getModelObject().setOriginalPosition(getAdapterPosition());
-            }
-
-            getEventBus().post(new MemberCellSelectedEvent(checked, getAdapterPosition(), checked
-                    ? 0 : getModelObject().getOriginalPosition()));
+            getEventBus().post(new MemberCellSelectedEvent(getModelObject()));
         }
     }
 
     @OnClick(R.id.ll_resend)
     public void onResendClick() {
-        getEventBus().post(new MemberCellResendEvent(getModelObject().getHistory()));
+        getEventBus().post(new MemberCellResendEvent(getModelObject().getHistory(), getModelObject().getName()));
     }
 
     @Override

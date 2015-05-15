@@ -11,6 +11,7 @@ import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -26,7 +27,10 @@ import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
+
+import java.util.ArrayList;
 
 import javax.inject.Singleton;
 
@@ -55,6 +59,8 @@ import de.greenrobot.event.EventBus;
 )
 public class AppModule {
     protected App app;
+
+    public static final String LOCALES_KEY = "locales";
 
     public AppModule(App app) {
         this.app = app;
@@ -94,6 +100,14 @@ public class AppModule {
     @Singleton
     public SessionHolder<UserSession> provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    public ComplexObjectStorage<ArrayList<AvailableLocale>> provideLocalesStorage(SimpleKeyValueStorage simpleKeyValueStorage) {
+        return new ComplexObjectStorage<ArrayList<AvailableLocale>>(simpleKeyValueStorage,
+                LOCALES_KEY,
+                (Class<ArrayList<AvailableLocale>>) new ArrayList<AvailableLocale>().getClass());
     }
 
     @Provides

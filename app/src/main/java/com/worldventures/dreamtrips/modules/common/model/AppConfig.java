@@ -5,11 +5,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.video.model.Videos360;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 public class AppConfig {
     public static final String TRIP_ID = "{tripid}";
@@ -23,9 +21,6 @@ public class AppConfig {
     @SerializedName("URLS")
     protected URLS urls;
 
-    @SerializedName("Videos360")
-    protected List<Videos360> videos360;
-
     @SerializedName("server_status")
     protected ServerStatus serverStatus;
 
@@ -35,10 +30,6 @@ public class AppConfig {
 
     public URLS getUrls() {
         return this.urls;
-    }
-
-    public List<Videos360> getVideos360() {
-        return this.videos360;
     }
 
     public ServerStatus getServerStatus() {

@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
@@ -30,7 +30,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment extends BaseFragment<TripImagesListPM> implements TripImagesListPM.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
 
@@ -127,9 +127,9 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPM> imple
     }
 
     @Override
-    protected TripImagesListPM createPresenter(Bundle savedInstanceState) {
+    protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
         type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return TripImagesListPM.create(type, this);
+        return TripImagesListPresenter.create(type, this);
     }
 
     @Override

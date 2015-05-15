@@ -13,7 +13,7 @@ import java.io.File;
 public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
+        if (error != null || image.getFileThumbnail() == null) {
             view.informUser(error);
         } else {
             activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFileThumbnail())));

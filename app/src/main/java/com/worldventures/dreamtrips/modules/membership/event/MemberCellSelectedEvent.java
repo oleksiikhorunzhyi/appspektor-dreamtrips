@@ -1,25 +1,20 @@
 package com.worldventures.dreamtrips.modules.membership.event;
 
+import com.worldventures.dreamtrips.modules.membership.model.Member;
+
 public class MemberCellSelectedEvent {
     private boolean selected;
-    private int from;
-    private int to;
+    private Member member;
 
-    public MemberCellSelectedEvent(boolean selected, int from, int to) {
-        this.selected = selected;
-        this.from = from;
-        this.to = to;
+    public MemberCellSelectedEvent(Member member) {
+        this.member = member;
     }
 
     public boolean isSelected() {
-        return selected;
+        return member.isChecked();
     }
 
-    public int getFrom() {
-        return from;
-    }
-
-    public int getTo() {
-        return to;
+    public Member getMember() {
+        return member;
     }
 }

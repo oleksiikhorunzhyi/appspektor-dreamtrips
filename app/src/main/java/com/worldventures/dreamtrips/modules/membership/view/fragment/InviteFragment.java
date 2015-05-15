@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.AddContactDialog;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -108,9 +109,11 @@ public class InviteFragment
                 new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
         tvSearch.setOnQueryTextListener(this);
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
+
         setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -177,10 +180,9 @@ public class InviteFragment
     }
 
     @Override
-    public void move(int from, int to) {
-        adapter.moveItem(from, to);
-        adapter.notifyItemMoved(from, to);
+    public void move(Member member, int to) {
         lvUsers.scrollToPosition(0);
+        adapter.moveItemSafely(member, to);
     }
 
     @Override
@@ -201,6 +203,7 @@ public class InviteFragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        tvSearch.clearFocus();
         // adapter already has items filtered, nothing to do
         return false;
     }
@@ -208,6 +211,11 @@ public class InviteFragment
     @Override
     public void setFilter(String newText) {
         adapter.setFilter(newText);
+    }
+
+    @Override
+    public void sort(Comparator comparator) {
+        adapter.sort(comparator);
     }
 
     @OnClick(R.id.bt_continue)

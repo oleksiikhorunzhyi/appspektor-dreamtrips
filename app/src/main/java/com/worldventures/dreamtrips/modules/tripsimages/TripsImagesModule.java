@@ -9,11 +9,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoComma
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSInspireMePM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSPhotoPresenter;
@@ -40,10 +40,10 @@ import dagger.Provides;
                 FullScreenTripImageActivity.class,
                 CreatePhotoActivity.class,
                 TripImagesTabsFragmentPresenter.class,
-                TripImagesListPM.class,
-                InspireMePM.class,
-                MyImagesPM.class,
-                UserImagesPM.class,
+                TripImagesListPresenter.class,
+                InspireMePresenter.class,
+                MyImagesPresenter.class,
+                UserImagesPresenter.class,
                 YSBHPM.class,
                 FullScreenParentPresenter.class,
                 FullScreenPhotoFragment.class,

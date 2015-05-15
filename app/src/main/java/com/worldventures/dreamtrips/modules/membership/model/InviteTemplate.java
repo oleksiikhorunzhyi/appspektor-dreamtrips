@@ -91,6 +91,9 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderAdap
         this.type = type;
     }
 
+    public void setCoverImage(CoverImage coverImage) {
+        this.coverImage = coverImage;
+    }
 
     public InviteTemplate() {
     }

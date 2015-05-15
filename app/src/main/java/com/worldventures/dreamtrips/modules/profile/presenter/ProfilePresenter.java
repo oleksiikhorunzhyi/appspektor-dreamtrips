@@ -39,8 +39,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             doRequest(new UploadAvatarCommand(typedFile),
                     this::onSuccess);
 
-        } else {
-            Log.e(ProfilePresenter.class.getSimpleName(), error);
         }
     };
 

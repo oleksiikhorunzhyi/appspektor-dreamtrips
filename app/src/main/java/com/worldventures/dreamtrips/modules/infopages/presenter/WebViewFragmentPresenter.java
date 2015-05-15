@@ -38,19 +38,18 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
     public void onEvent(WebViewReloadEvent event) {
         if (view instanceof StaticInfoFragment.TrainingVideosFragment
-                || view instanceof StaticInfoFragment.EnrollRepFragment) {
+                || view instanceof StaticInfoFragment.EnrollRepFragment
+                || view instanceof StaticInfoFragment.EnrollFragment) {
             view.reload();
         }
     }
 
     public String getEnrollUrl() {
-        String url = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
-        return LocaleUtils.substituteActualLocale(context, url);
+        return getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
     }
 
     public String getEnrollRepUrl() {
-        String url = getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
-        return LocaleUtils.substituteActualLocale(context, url);
+        return getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
     }
 
     public String getStaticInfoUrl(String title) {

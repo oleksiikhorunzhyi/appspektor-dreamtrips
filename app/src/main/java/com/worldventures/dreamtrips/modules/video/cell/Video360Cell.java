@@ -11,7 +11,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.modules.video.model.Video360;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import javax.inject.Inject;
 
@@ -21,7 +21,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_video_360)
-public class Video360Cell extends AbstractCell<Video360> {
+public class Video360Cell extends AbstractCell<Video> {
 
     @InjectView(R.id.textViewDuration)
     protected TextView textViewDuration;
@@ -57,13 +57,13 @@ public class Video360Cell extends AbstractCell<Video360> {
             getEventBus().register(progressVideoCellHelper);
         }
 
-        imageViewPreview.setImageURI(Uri.parse(getModelObject().getThumbnail()));
-        this.textViewTitle.setText(getModelObject().getTitle());
+        imageViewPreview.setImageURI(Uri.parse(getModelObject().getImageUrl()));
+        this.textViewTitle.setText(getModelObject().getVideoName());
         this.textViewDuration.setText(getModelObject().getDuration());
         this.ivDownload.setProgress(getModelObject().getCacheEntity().getProgress());
 
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
-        progressVideoCellHelper.setUrl(getModelObject().getURL());
+        progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
         progressVideoCellHelper.syncUIStateWithModel();
     }
 
@@ -76,9 +76,9 @@ public class Video360Cell extends AbstractCell<Video360> {
     @OnClick(R.id.iv_bg)
     public void onItemClick() {
         CachedEntity cacheEntity = getModelObject().getCacheEntity();
-        String url = getModelObject().getURL();
+        String url = getModelObject().getMp4Url();
         if (cacheEntity.isCached(context)) {
-            url = cacheEntity.getFilePath(context, getModelObject().getURL());
+            url = cacheEntity.getFilePath(context, getModelObject().getMp4Url());
         }
         activityRouter.open360Activity(url);
     }

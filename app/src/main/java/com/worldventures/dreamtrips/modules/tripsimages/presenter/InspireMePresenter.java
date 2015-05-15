@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class InspireMePM extends TripImagesListPM<Inspiration> {
+public class InspireMePresenter extends TripImagesListPresenter<Inspiration> {
     protected double randomSeed;
 
-    public InspireMePM(View view) {
+    public InspireMePresenter(View view) {
         super(view, Type.INSPIRE_ME);
     }
 

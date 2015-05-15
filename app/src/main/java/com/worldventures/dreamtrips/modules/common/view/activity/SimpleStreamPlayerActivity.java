@@ -74,11 +74,15 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
 
     @Override
     protected void onDestroy() {
-        if (pfAsset != null) {
-            pfAsset.release();
-        }
-        if (pfView != null) {
-            pfView.release();
+        try {
+            if (pfAsset != null) {
+                pfAsset.release();
+            }
+            if (pfView != null) {
+                pfView.release();
+            }
+        } catch (Exception e) {
+            Log.e(SimpleStreamPlayerActivity.class.getSimpleName(), "", e);
         }
         super.onDestroy();
     }

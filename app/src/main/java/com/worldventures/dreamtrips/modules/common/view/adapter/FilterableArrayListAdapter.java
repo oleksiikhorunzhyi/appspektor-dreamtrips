@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
@@ -63,6 +65,11 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         }
     }
 
+    public void sort(Comparator comparator) {
+        Collections.sort(items, comparator);
+        notifyDataSetChanged();
+    }
+
     public void flushFilter() {
         if (query != null) {
             query = null;
@@ -76,6 +83,18 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     ///////////////////////////////////////////////////////////////////////////
     // Items modification proxy
     ///////////////////////////////////////////////////////////////////////////
+
+    public void moveItemSafely(BaseItemClass itemClass, int to) {
+        int indexOfItem = items.indexOf(itemClass);
+        int targetPosition = to;
+
+        if (targetPosition >= getCount()) {
+            targetPosition = getCount();
+        }
+
+        moveItem(indexOfItem, targetPosition);
+        notifyItemMoved(indexOfItem, targetPosition);
+    }
 
     @Override
     public void addItem(int location, BaseItemClass item) {

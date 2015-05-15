@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTempl
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
+import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
@@ -51,6 +52,7 @@ import dagger.Provides;
                 PreviewTemplateActivityPresenter.class,
                 PreviewTemplateActivity.class,
                 PreviewTemplateFragment.class,
+                TemplatePhotoCell.class,
         },
         complete = false,
         library = true

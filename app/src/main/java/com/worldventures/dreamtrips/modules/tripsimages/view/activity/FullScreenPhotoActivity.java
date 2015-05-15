@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
@@ -25,7 +25,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_full_screen_photo)
-public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesListPM> implements TripImagesListPM.View {
+public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesListPresenter> implements TripImagesListPresenter.View {
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String OUT_STATE_IMAGES = "OUT_STATE_IMAGES";
@@ -41,8 +41,8 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     private int position;
 
     @Override
-    protected TripImagesListPM createPresentationModel(Bundle savedInstanceState) {
-        return TripImagesListPM.create(type, this);
+    protected TripImagesListPresenter createPresentationModel(Bundle savedInstanceState) {
+        return TripImagesListPresenter.create(type, this);
     }
 
     @Override

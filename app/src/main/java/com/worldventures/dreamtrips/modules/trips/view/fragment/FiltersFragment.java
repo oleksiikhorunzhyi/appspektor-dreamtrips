@@ -56,9 +56,9 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroyView() {
         this.recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     @OnClick(R.id.textViewApplyFilter)

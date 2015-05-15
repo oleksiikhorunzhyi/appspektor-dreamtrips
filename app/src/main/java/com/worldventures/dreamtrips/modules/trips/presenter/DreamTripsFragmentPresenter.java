@@ -113,10 +113,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         }
     }
 
-    public void onPause() {
-        eventBus.unregister(this);
-    }
-
     public void reload() {
         loadFromApi = true;
         loadWithStatus = true;

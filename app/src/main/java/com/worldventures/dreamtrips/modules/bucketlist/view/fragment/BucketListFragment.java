@@ -28,7 +28,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -151,9 +150,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         });
 
         quickInputEditText.setThreshold(MIN_SYMBOL_COUNT);
-        AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getActivity());
+        AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getView().getContext());
         adapter.setLoader(getPresenter().getSuggestionLoader());
-        ((Injector) getActivity()).inject(adapter);
 
         quickInputEditText.setAdapter(adapter);
 

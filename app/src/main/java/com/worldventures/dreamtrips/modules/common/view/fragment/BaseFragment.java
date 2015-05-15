@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.ButterKnife;
 
+
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
 
     private PM presenter;
@@ -26,6 +26,71 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     public PM getPresenter() {
         return presenter;
     }
+
+    protected abstract PM createPresenter(Bundle savedInstanceState);
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.presenter = createPresenter(savedInstanceState);
+
+        if (this.presenter == null) {
+            throw new IllegalArgumentException("Presenter can't be null");
+        }
+
+        inject(this.presenter);
+
+        Layout layout = this.getClass().getAnnotation(Layout.class);
+
+        if (layout == null) {
+            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
+        }
+
+        View view = inflater.inflate(layout.value(), container, false);
+        ButterKnife.inject(this, view);
+
+        this.presenter.init();
+        afterCreateView(view);
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getPresenter().onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null) {
+            getPresenter().resume();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getPresenter().onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getPresenter() != null) {
+            getPresenter().destroyView();
+        }
+        this.presenter = null;
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Notif helpers
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void informUser(String stringId) {
@@ -56,71 +121,13 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Misc helpers
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean isTabletLandscape() {
         return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getPresenter().onStop();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getPresenter().onStart();
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (getPresenter() != null) {
-            getPresenter().destroyView();
-        }
-        super.onDestroyView();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.presenter = createPresenter(savedInstanceState);
-
-        if (this.presenter == null) {
-            throw new IllegalArgumentException("Presenter can't be null");
-        }
-
-        inject(this.presenter);
-
-        Layout layout = this.getClass().getAnnotation(Layout.class);
-
-        if (layout == null) {
-            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
-        }
-
-        View view = inflater.inflate(layout.value(), container, false);
-        ButterKnife.inject(this, view);
-
-        this.presenter.init();
-        afterCreateView(view);
-
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() != null) {
-            getPresenter().resume();
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (this.presenter != null) {
-            inject(this.presenter);
-        }
     }
 
     public void hideSoftInput(View view) {
@@ -129,5 +136,4 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    abstract protected PM createPresenter(Bundle savedInstanceState);
 }

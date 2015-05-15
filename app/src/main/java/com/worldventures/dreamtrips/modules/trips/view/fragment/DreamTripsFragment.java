@@ -174,7 +174,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     public void onDestroyView() {
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
-        getPresenter().onPause();
     }
 
     @Override

@@ -67,6 +67,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     public void destroyView() {
         try {
             eventBus.unregister(this);
+            context = null;
+            activityRouter = null;
+            fragmentCompass = null;
         } catch (Exception ignored) {
             //Ignored
             Log.e(this.getClass().getSimpleName(), "", ignored);

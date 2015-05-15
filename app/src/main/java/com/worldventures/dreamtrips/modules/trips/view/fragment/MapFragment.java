@@ -128,7 +128,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getPresenter().onPause();
     }
 
     @Override

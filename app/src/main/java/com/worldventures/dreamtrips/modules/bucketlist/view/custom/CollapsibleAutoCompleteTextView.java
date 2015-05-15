@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView;
 
 public class CollapsibleAutoCompleteTextView extends AutoCompleteTextView implements CollapsibleActionView {
 
-
     public CollapsibleAutoCompleteTextView(Context context) {
         super(context);
     }

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.regions.Regions;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.Annotations.Global;
@@ -23,6 +25,7 @@ import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
+import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -42,6 +45,7 @@ import de.greenrobot.event.EventBus;
         injects = {
                 App.class,
                 InstabugInitializer.class,
+                LeakCanaryInitializer.class,
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 DreamSpiceService.class,
@@ -82,6 +86,11 @@ public class AppModule {
     }
 
     @Provides(type = Provides.Type.SET)
+    public AppInitializer provideLeakCanaryInitializer() {
+        return new LeakCanaryInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
     public AppInitializer provideLoggingInitializer() {
         return new LoggingInitializer();
     }
@@ -94,6 +103,12 @@ public class AppModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideFrescoInitializer() {
         return new FrescoInitializer();
+    }
+
+    @Provides
+    @Singleton
+    public RefWatcher provideRefWatcher(App app) {
+        return LeakCanary.install(app);
     }
 
     @Provides

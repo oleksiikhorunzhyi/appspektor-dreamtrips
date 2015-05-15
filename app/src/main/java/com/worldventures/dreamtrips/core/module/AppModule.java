@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -115,6 +116,12 @@ public class AppModule {
     @Singleton
     public SessionHolder<UserSession> provideAppSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    public StaticPageHolder provideStaticPageHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
+        return new StaticPageHolder(simpleKeyValueStorage);
     }
 
     @Provides

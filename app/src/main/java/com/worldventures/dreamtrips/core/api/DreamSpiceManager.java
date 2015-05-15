@@ -14,6 +14,7 @@ import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -23,11 +24,10 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
-import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -53,6 +54,9 @@ public class DreamSpiceManager extends SpiceManager {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
+
+    @Inject
+    protected ComplexObjectStorage<ArrayList<AvailableLocale>> localeStorage;
 
     @Inject
     @Global
@@ -146,15 +150,6 @@ public class DreamSpiceManager extends SpiceManager {
             loginResponse.setConfig(appConfig);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
                     loginResponse.getConfig(), username, userPassword);
-            loadStaticPagesContent(loginResponse, onLoginSuccess);
-        }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
-        });
-    }
-
-    private void loadStaticPagesContent(LoginResponse loginResponse, OnLoginSuccess onLoginSuccess) {
-        execute(new StaticPagesQuery(), staticPageConfig -> {
-            updateSession(staticPageConfig);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
             onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
@@ -225,12 +220,6 @@ public class DreamSpiceManager extends SpiceManager {
         }
         eventBus.post(new UpdateUserInfoEvent());
         return false;
-    }
-
-    private void updateSession(StaticPageConfig staticPageConfig) {
-        UserSession userSession = appSessionHolder.get().get();
-        userSession.setStaticPageConfig(staticPageConfig);
-        appSessionHolder.put(userSession);
     }
 
     private String getErrorMessage(SpiceException error) {

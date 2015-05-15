@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
@@ -12,8 +13,13 @@ import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
+import javax.inject.Inject;
+
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
+
+    @Inject
+    StaticPageHolder staticPageHolder;
 
     public WebViewFragmentPresenter(T view) {
         super(view);
@@ -53,7 +59,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public String getStaticInfoUrl(String title) {
-        StaticPageConfig staticPageConfig = appSessionHolder.get().get().getStaticPageConfig();
+        StaticPageConfig staticPageConfig = staticPageHolder.get().get();
         if (staticPageConfig != null) return staticPageConfig.getUrlByTitle(title);
         else return "";
     }

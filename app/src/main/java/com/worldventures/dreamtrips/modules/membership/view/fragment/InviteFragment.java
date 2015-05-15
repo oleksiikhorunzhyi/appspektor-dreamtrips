@@ -180,8 +180,9 @@ public class InviteFragment
     }
 
     @Override
-    public void moved() {
+    public void move(Member member, int to) {
         lvUsers.scrollToPosition(0);
+        adapter.moveItemSafely(member, to);
     }
 
     @Override

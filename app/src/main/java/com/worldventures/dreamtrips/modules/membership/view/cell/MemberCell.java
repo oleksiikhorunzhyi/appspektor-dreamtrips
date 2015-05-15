@@ -74,7 +74,7 @@ public class MemberCell extends AbstractCell<Member> {
         if (getModelObject().isChecked() != checked) {
             getModelObject().setIsChecked(checked);
 
-            getEventBus().post(new MemberCellSelectedEvent(checked));
+            getEventBus().post(new MemberCellSelectedEvent(getModelObject()));
         }
     }
 

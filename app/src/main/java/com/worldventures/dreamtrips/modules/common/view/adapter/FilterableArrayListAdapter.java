@@ -84,6 +84,18 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     // Items modification proxy
     ///////////////////////////////////////////////////////////////////////////
 
+    public void moveItemSafely(BaseItemClass itemClass, int to) {
+        int indexOfItem = items.indexOf(itemClass);
+        int targetPosition = to;
+
+        if (targetPosition >= getCount()) {
+            targetPosition = getCount();
+        }
+
+        moveItem(indexOfItem, targetPosition);
+        notifyItemMoved(indexOfItem, targetPosition);
+    }
+
     @Override
     public void addItem(int location, BaseItemClass item) {
         if (query == null) super.addItem(location, item);

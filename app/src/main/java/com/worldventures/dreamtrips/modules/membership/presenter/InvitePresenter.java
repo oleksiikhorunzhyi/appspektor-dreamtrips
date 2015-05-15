@@ -65,9 +65,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         doRequest(request, members -> {
             view.finishLoading();
             InvitePresenter.this.members = members;
-            setMembers();
-            resetSelected();
             sortContacts();
+            resetSelected();
+            setMembers();
             getInvitations();
         });
     }
@@ -160,10 +160,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
         view.setSelectedCount(selectedMembers.size());
 
-        sortContacts();
-
         if (event.isSelected()) {
-            view.moved();
+            view.move(event.getMember(), 0);
+        } else {
+            int to = event.getMember().getOriginalPosition();
+            Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
+            int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
+            view.move(event.getMember(), to < lastSelected ? lastSelected : to);
         }
     }
 
@@ -220,12 +223,12 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void setMembers() {
+        Queryable.from(members).forEachR((member) -> member.setOriginalPosition(members.indexOf(member)));
         view.setMembers(new ArrayList<>(members));
     }
 
     private void sortContacts() {
-        view.sort((lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
-        sortSelected();
+        Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
     }
 
     private void sortSelected() {
@@ -260,6 +263,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
         void showContinue();
 
-        void moved();
+        void move(Member member, int to);
     }
 }

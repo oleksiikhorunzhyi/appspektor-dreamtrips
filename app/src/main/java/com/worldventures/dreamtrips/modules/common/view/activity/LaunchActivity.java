@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
 
+import com.techery.spares.annotations.Layout;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 
+@Layout(R.layout.activity_launch)
 public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresenter> {
 
     @Override
@@ -11,16 +14,4 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
         return new LaunchActivityPresenter(this);
     }
 
-    @Override
-    protected void afterCreateView(Bundle savedInstanceState) {
-        super.afterCreateView(savedInstanceState);
-
-        if (getPresentationModel().isLogged()) {
-            router.openMain();
-        } else {
-            router.openLogin();
-        }
-
-        router.finish();
-    }
 }

@@ -3,6 +3,10 @@ package com.worldventures.dreamtrips.core.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class LocaleUtils {
@@ -14,8 +18,10 @@ public class LocaleUtils {
         return getAcceptLanguage(locale);
     }
 
-    public static String substituteActualLocale(Context context, String url) {
+    public static String substituteActualLocale(Context context, String url,
+                                                ComplexObjectStorage<ArrayList<AvailableLocale>> localseStorage) {
         Locale locale = getLocale(context);
+
         return url
                 .replaceAll("\\{locale\\}", getAcceptLanguage(locale))
                 .replaceAll("\\{language\\}", locale.getLanguage())

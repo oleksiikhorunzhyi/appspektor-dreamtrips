@@ -13,15 +13,20 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -39,6 +44,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @InjectView(R.id.progressBarWeb)
     protected ProgressBar progressBarWeb;
+
+    @Inject
+    ComplexObjectStorage<ArrayList<AvailableLocale>> localesStorage;
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
@@ -78,13 +86,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 progressBarWeb.setVisibility(View.GONE);
             }
         });
-        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL()));
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
     }
 
     @Override
     public void reload() {
         webView.loadUrl("about:blank");
-        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL()));
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
     }
 
     abstract protected String getURL();

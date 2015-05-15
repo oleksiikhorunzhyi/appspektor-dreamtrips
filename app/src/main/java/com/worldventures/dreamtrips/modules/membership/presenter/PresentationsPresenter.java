@@ -6,6 +6,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -26,10 +27,10 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
 
     @Inject
     protected LoaderFactory loaderFactory;
-    @Inject
-    protected SharedServicesApi sp;
+
     @Inject
     protected SnappyRepository db;
+
     @Inject
     protected Injector injector;
 
@@ -40,7 +41,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
             = new RoboSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getRefreshRequest() {
-            return new MemberVideosRequest() {
+            return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER) {
                 @Override
                 public ArrayList<Video> loadDataFromNetwork() throws Exception {
                     ArrayList<Video> videos = super.loadDataFromNetwork();
@@ -108,7 +109,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
         if (videos != null) {
             for (Video object : videos) {
                 CachedEntity e = db.getDownloadVideoEntity(object.getUid());
-                object.setEntity(e);
+                object.setCacheEntity(e);
             }
         }
         return videos;

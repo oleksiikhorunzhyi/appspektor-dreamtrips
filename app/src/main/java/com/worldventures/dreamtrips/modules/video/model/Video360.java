@@ -14,6 +14,7 @@ public class Video360 {
     private String uRL;
     @SerializedName("duration")
     private int duration;
+
     private CachedEntity cacheEntity;
 
     public int getOrder() {

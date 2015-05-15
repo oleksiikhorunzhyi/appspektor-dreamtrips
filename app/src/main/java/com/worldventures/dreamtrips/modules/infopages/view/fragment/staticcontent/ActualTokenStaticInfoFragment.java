@@ -36,6 +36,6 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
 
     @Override
     public void loadContent() {
-        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL()));
+        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
     }
 }

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
 
@@ -43,6 +45,9 @@ import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
+
+    public static final String TYPE_MEMBER = "DTAPP";
+    public static final String TYPE_MEMBER_360 = "DTAPP360";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -168,5 +173,9 @@ public interface DreamTripsApi {
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
+    @GET("/api/locales")
+    public ArrayList<AvailableLocale> getLocales();
 
+    @GET("/api/member_videos/")
+    ArrayList<Video> getVideos(@Query("type") String type);
 }

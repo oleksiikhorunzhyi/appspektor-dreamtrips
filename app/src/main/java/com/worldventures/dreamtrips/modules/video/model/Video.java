@@ -13,7 +13,7 @@ public class Video {
     private String mp4Url;
     private String name;
     private String category;
-    private int duration;
+    private String duration;
 
     private transient CachedEntity entity;
 
@@ -34,6 +34,10 @@ public class Video {
 
     public String getVideoName() {
         return name;
+    }
+
+    public String getDuration() {
+        return duration;
     }
 
     public boolean isFeatured() {

@@ -15,8 +15,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITIES;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.DINING;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.RESTAURANTS;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
@@ -45,7 +45,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, RESTAURANTS));
+        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, DINING));
     }
 
     public void onTabChange(BucketType type) {
@@ -72,7 +72,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public enum BucketType {
         LOCATIONS("location", R.string.bucket_locations),
         ACTIVITIES("activity", R.string.bucket_activities),
-        RESTAURANTS("dining", R.string.bucket_restaurants);
+        DINING("dining", R.string.bucket_restaurants);
 
         protected String name;
         protected int res;

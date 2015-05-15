@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -273,8 +274,12 @@ public class DreamSpiceManager extends SpiceManager {
 
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                JSONArray o = errors.getJSONArray(key);
-                return o.getString(0);
+                try {
+                    JSONArray o = errors.getJSONArray(key);
+                    return o.getString(0);
+                } catch (JSONException e) {
+                    return errors.getString(key);
+                }
             }
 
         } catch (Exception e) {

@@ -139,6 +139,9 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/activities")
     public ArrayList<PopularBucketItem> getPopularActivities();
 
+    @GET("/api/bucket_list/dinings")
+    public ArrayList<PopularBucketItem> getPopularDining();
+
     @PUT("/api/bucket_list_items/{id}/position")
     public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 

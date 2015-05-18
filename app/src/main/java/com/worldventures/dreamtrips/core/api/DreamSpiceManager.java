@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
@@ -88,7 +87,7 @@ public class DreamSpiceManager extends SpiceManager {
                     final String username = userSession.getUsername();
                     final String userPassword = userSession.getUserPassword();
 
-                    loadGlobalConfig(userPassword, username, (loginResponse, spiceError) -> {
+                    loginUser(userPassword, username, (loginResponse, spiceError) -> {
                         if (loginResponse != null) {
                             execute(request, successListener, failureListener);
                         } else {
@@ -109,13 +108,12 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
-        Optional<UserSession> userSessionOptional = appSessionHolder.get();
-        if (userSessionOptional.isPresent()) {
-            UserSession userSession = userSessionOptional.get();
+        if (isCredentialExist()) {
+            UserSession userSession = appSessionHolder.get().get();
             String username = userSession.getUsername();
             String userPassword = userSession.getUserPassword();
 
-            loadGlobalConfig(userPassword, username, (loginResponse, error) -> {
+            loginUser(userPassword, username, (loginResponse, error) -> {
                 if (requestListener != null) {
                     if (loginResponse != null) {
                         requestListener.onRequestSuccess(loginResponse);
@@ -127,32 +125,13 @@ public class DreamSpiceManager extends SpiceManager {
         }
     }
 
-    public void loadGlobalConfig(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
-        execute(new GlobalConfigQuery.GetConfigRequest(), appConfig -> {
-            ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
-            String status = serv.getStatus();
-            String message = serv.getMessage();
-
-            if (!"up".equalsIgnoreCase(status)) {
-                onLoginSuccess.result(null, new SpiceException(message));
-                eventBus.post(new ServerDownEvent(message));
-            } else {
-                loginUser(userPassword, username, onLoginSuccess, appConfig);
-            }
-
-        }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
-        });
-    }
-
-    private void loginUser(String userPassword, String username,
-                           OnLoginSuccess onLoginSuccess, AppConfig appConfig) {
+    public void loginUser(String userPassword, String username,
+                           OnLoginSuccess onLoginSuccess) {
         execute(new LoginCommand(username, userPassword), session -> {
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setSession(session);
-            loginResponse.setConfig(appConfig);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
-                    loginResponse.getConfig(), username, userPassword);
+                    username, userPassword);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
             onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
@@ -201,12 +180,12 @@ public class DreamSpiceManager extends SpiceManager {
         }
     }
 
-    private boolean handleSession(Session session, String legacyToken, AppConfig globalConfig,
+    private boolean handleSession(Session session, String legacyToken,
                                   String username, String userPassword) {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
-        UserSession userSession = new UserSession();
+        UserSession userSession = appSessionHolder.get().get();
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
         userSession.setLegacyApiToken(legacyToken);
@@ -214,8 +193,6 @@ public class DreamSpiceManager extends SpiceManager {
         userSession.setUsername(username);
         userSession.setUserPassword(userPassword);
         userSession.setLastUpdate(System.currentTimeMillis());
-
-        userSession.setGlobalConfig(globalConfig);
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);

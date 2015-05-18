@@ -2,12 +2,18 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
+import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
+import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 
 import java.util.ArrayList;
@@ -33,8 +39,9 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         });
     }
 
-    private boolean isLogged() {
-        return appSessionHolder.get().isPresent();
+    private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
+        localeStorage.put(locales);
+        loadStaticPagesContent();
     }
 
     private void loadStaticPagesContent() {
@@ -42,6 +49,45 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         StaticPagesQuery staticPagesQuery = new StaticPagesQuery(locale.getCountry().toUpperCase(locale),
                 locale.getLanguage().toUpperCase(locale));
         doRequest(staticPagesQuery, staticPageConfig -> onStaticPagesSuccess(staticPageConfig));
+    }
+
+    private void onStaticPagesSuccess(StaticPageConfig staticPageConfig) {
+        staticPageHolder.put(staticPageConfig);
+        loadGlobalConfig();
+    }
+
+    private void loadGlobalConfig() {
+        GlobalConfigQuery.GetConfigRequest getConfigRequest = new GlobalConfigQuery.GetConfigRequest();
+        doRequest(getConfigRequest, appConfig -> proccessAppConfig(appConfig));
+    }
+
+    private void proccessAppConfig(AppConfig appConfig) {
+        ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
+        String status = serv.getStatus();
+        String message = serv.getMessage();
+
+        if (!"up".equalsIgnoreCase(status)) {
+            view.alert(message);
+        } else {
+            UserSession userSession = new UserSession();
+            userSession.setGlobalConfig(appConfig);
+            appSessionHolder.put(userSession);
+            done();
+        }
+
+    }
+
+    private void done() {
+        if (isLogged()) {
+            activityRouter.openMain();
+        } else {
+            activityRouter.openLogin();
+        }
+        activityRouter.finish();
+    }
+
+    private boolean isLogged() {
+        return appSessionHolder.get().isPresent();
     }
 
     private Locale getLocale() {
@@ -59,23 +105,4 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         return !contains ? Locale.US : localeCurrent;
     }
 
-
-    private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
-        localeStorage.put(locales);
-        loadStaticPagesContent();
-    }
-
-    private void onStaticPagesSuccess(StaticPageConfig staticPageConfig) {
-        staticPageHolder.put(staticPageConfig);
-        done();
-    }
-
-    private void done() {
-        if (isLogged()) {
-            activityRouter.openMain();
-        } else {
-            activityRouter.openLogin();
-        }
-        activityRouter.finish();
-    }
 }

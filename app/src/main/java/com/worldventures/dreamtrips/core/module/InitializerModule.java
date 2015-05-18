@@ -22,6 +22,11 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
+    AppInitializer provideLifecycleInitializer() {
+        return new LifecycleInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
     public AppInitializer provideInstabugInitializer() {
         return new InstabugInitializer();
     }

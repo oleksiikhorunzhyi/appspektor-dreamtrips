@@ -12,5 +12,6 @@ public class VideoCachingSpiceManager extends SpiceManager {
 
     public VideoCachingSpiceManager(Class<? extends SpiceService> spiceServiceClass) {
         super(spiceServiceClass);
+        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR);
     }
 }

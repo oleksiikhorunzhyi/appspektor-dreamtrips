@@ -73,6 +73,7 @@ public class DreamSpiceManager extends SpiceManager {
         super(spiceServiceClass);
         this.injector = injector;
         injector.inject(this);
+        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR);
     }
 
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,

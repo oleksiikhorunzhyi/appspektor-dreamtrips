@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.InjectingActivityModule;
 import com.techery.spares.module.Injector;
 

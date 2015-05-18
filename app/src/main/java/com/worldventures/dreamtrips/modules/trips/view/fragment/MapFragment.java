@@ -55,8 +55,12 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
         } else {
             mapView.onCreate(savedInstanceState);
         }
-        initMap();
         return v;
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        initMap();
     }
 
     @Override
@@ -78,12 +82,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
             this.mapView.setMapTouchListener(() -> getPresenter().onCameraChanged());
             this.googleMap.setMyLocationEnabled(true);
         });
-    }
-
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
     }
 
     @Override
@@ -127,6 +125,8 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
     @Override
     public void onDestroyView() {
+        if (mapView != null)
+            mapView.onDestroy();
         super.onDestroyView();
     }
 
@@ -135,13 +135,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
         super.onSaveInstanceState(outState);
         if (mapView != null)
             mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mapView != null)
-            mapView.onDestroy();
-        super.onDestroy();
     }
 
     @Override

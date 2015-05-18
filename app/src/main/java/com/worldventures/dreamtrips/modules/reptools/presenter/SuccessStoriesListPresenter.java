@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
@@ -24,7 +24,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
     private boolean onlyFavorites = false;
 
-    private RoboSpiceAdapterController<SuccessStory> adapterController = new RoboSpiceAdapterController<SuccessStory>() {
+    private DreamSpiceAdapterController<SuccessStory> adapterController = new DreamSpiceAdapterController<SuccessStory>() {
         @Override
         public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
             return new GetSuccessStoriesQuery() {

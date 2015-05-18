@@ -5,11 +5,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -39,8 +39,8 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private boolean loadWithStatus;
     private boolean goneToMap = false;
 
-    private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
-            = new RoboSpiceAdapterController<TripModel>() {
+    private DreamSpiceAdapterController<TripModel> roboSpiceAdapterController
+            = new DreamSpiceAdapterController<TripModel>() {
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {

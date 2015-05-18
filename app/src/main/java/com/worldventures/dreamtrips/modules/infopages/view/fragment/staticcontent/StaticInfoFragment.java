@@ -13,18 +13,13 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -46,7 +41,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     protected ProgressBar progressBarWeb;
 
     @Inject
-    ComplexObjectStorage<ArrayList<AvailableLocale>> localesStorage;
+    LocalesHolder localesStorage;
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
@@ -107,6 +102,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public void onPause() {
         super.onPause();
         webView.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        webView.destroy();
+        super.onDestroyView();
     }
 
     @Layout(R.layout.fragment_webview)

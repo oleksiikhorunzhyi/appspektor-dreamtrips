@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import com.apptentive.android.sdk.Log;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;

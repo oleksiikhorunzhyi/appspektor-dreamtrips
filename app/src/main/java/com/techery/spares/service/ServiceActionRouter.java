@@ -3,7 +3,7 @@ package com.techery.spares.service;
 import android.content.Intent;
 
 import com.google.gson.Gson;
-import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.techery.spares.utils.ValidationUtils;
 
 import java.util.HashMap;
 import java.util.Map;

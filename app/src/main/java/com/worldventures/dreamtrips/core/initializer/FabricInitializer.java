@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.core.initializer;
 
+import android.app.Application;
+
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-import com.worldventures.dreamtrips.App;
 
 import javax.inject.Inject;
 
@@ -17,7 +18,7 @@ public class FabricInitializer implements AppInitializer {
     private static final String TWITTER_SECRET = "OflDXDujTfJiqMkdFk5z5eDV1woeNxOvWszXRLonpVbURF4hx1";
 
     @Inject
-    protected App application;
+    protected Application application;
 
     @Override
     public void initialize(Injector injector) {

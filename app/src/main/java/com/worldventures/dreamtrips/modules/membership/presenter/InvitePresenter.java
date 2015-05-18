@@ -9,6 +9,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -42,6 +43,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @Inject
     SnappyRepository db;
     @Inject
+    @ForApplication
     Injector injector;
 
     private List<Member> members;

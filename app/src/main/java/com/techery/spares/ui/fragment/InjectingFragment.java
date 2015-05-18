@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
 

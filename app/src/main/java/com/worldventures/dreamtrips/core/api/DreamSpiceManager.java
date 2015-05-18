@@ -11,12 +11,13 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.retry.DefaultRetryPolicy;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ServerDownEvent;
@@ -25,7 +26,6 @@ import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -50,6 +49,7 @@ import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
+import roboguice.util.temp.Ln;
 
 public class DreamSpiceManager extends SpiceManager {
 
@@ -57,7 +57,7 @@ public class DreamSpiceManager extends SpiceManager {
     protected SessionHolder<UserSession> appSessionHolder;
 
     @Inject
-    protected ComplexObjectStorage<ArrayList<AvailableLocale>> localeStorage;
+    protected LocalesHolder localeStorage;
 
     @Inject
     @Global
@@ -292,11 +292,11 @@ public class DreamSpiceManager extends SpiceManager {
         void result(LoginResponse loginResponse, SpiceException exception);
     }
 
-    public static interface FailureListener {
+    public interface FailureListener {
         void handleError(SpiceException spiceException);
     }
 
-    public static interface SuccessListener<T> {
+    public interface SuccessListener<T> {
         void onRequestSuccess(T t);
     }
 

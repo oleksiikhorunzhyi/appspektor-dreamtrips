@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.api;
+package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
@@ -9,6 +9,11 @@ import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.api.ConfigApi;
+import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
+import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
@@ -27,17 +32,8 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
-@Module(injects =
-        {
-        },
-        complete = false,
-        library = true
-)
+@Module(complete = false, library = true)
 public class ApiModule {
-
-    public ApiModule() {
-
-    }
 
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {

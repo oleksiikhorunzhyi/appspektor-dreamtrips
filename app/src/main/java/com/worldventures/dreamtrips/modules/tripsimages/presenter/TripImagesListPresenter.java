@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -205,7 +206,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         void inject(Object getMyPhotos);
     }
 
-    public abstract class TripImagesRoboSpiceController extends RoboSpiceAdapterController<T> {
+    public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<T> {
 
         @Override
         public void onStart(LoadType loadType) {

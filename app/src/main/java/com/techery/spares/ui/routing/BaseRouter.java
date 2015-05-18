@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 public class BaseRouter {
     public static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
@@ -44,7 +43,7 @@ public class BaseRouter {
         startActivityIntent(intent);
     }
 
-    protected void startActivity(Class<? extends BaseActivity> activityClass, Bundle bundle) {
+    protected void startActivity(Class<? extends InjectingActivity> activityClass, Bundle bundle) {
         Intent intent = new Intent(getContext(), activityClass);
         if (bundle != null) {
             intent.putExtra(EXTRA_BUNDLE, bundle);

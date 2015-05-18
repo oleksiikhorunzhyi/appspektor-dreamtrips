@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.video.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -30,6 +31,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     protected VideoCachingDelegate videoCachingDelegate;
 
     @Inject
+    @ForApplication
     protected Injector injector;
 
     public Video360Presenter(View view) {

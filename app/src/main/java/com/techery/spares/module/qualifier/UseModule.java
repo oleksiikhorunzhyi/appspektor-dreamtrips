@@ -1,4 +1,4 @@
-package com.techery.spares.module.Annotations;
+package com.techery.spares.module.qualifier;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

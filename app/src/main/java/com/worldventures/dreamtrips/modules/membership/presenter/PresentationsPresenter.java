@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -32,13 +32,14 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     protected SnappyRepository db;
 
     @Inject
+    @ForApplication
     protected Injector injector;
 
     @Inject
     protected VideoCachingDelegate videoCachingDelegate;
 
-    protected RoboSpiceAdapterController<Video> adapterController
-            = new RoboSpiceAdapterController<Video>() {
+    protected DreamSpiceAdapterController<Video> adapterController
+            = new DreamSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getRefreshRequest() {
             return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER) {
@@ -90,7 +91,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
 
     }
 
-    public RoboSpiceAdapterController<Video> getAdapterController() {
+    public DreamSpiceAdapterController<Video> getAdapterController() {
         return adapterController;
     }
 

@@ -1,4 +1,4 @@
-package com.techery.spares.module.Annotations;
+package com.techery.spares.module.qualifier;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -15,5 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD, PARAMETER, METHOD})
 @Documented
 @Retention(RUNTIME)
-public @interface Private {
+public @interface ForApplication {
+
 }

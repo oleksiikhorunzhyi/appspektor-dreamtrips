@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class SoldOutModel {
+public class FilterSoldOutModel {
 
     protected boolean showSoldOut = false;
 

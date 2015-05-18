@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
+import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllRegionsPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.RangeBarDurationEvent;
@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.utils.events.RangeBarPriceEvent;
 import com.worldventures.dreamtrips.core.utils.events.RegionSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
-import com.worldventures.dreamtrips.core.utils.events.SoldOutEvent;
 import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
@@ -19,11 +18,15 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEven
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesQuery;
 import com.worldventures.dreamtrips.modules.trips.api.GetRegionsQuery;
+import com.worldventures.dreamtrips.modules.trips.event.FilterShowFavoritesEvent;
+import com.worldventures.dreamtrips.modules.trips.event.FilterShowSoldOutEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.SoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 
 import java.util.ArrayList;
@@ -48,9 +51,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
     private boolean showSoldOut = false;
+    private boolean showFavorites = false;
     private FilterModel filterModel;
     private ThemeHeaderModel themeHeaderModel;
-    private SoldOutModel soldOutModel;
+    private RegionHeaderModel regionHeaderModel;
+    private FilterSoldOutModel soldOutModel;
+    private FilterFavoriteModel favoriteModel;
     private DateFilterItem dateFilterItem;
 
     public FiltersPresenter(View view) {
@@ -64,7 +70,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         dateFilterItem = new DateFilterItem();
         dateFilterItem.reset();
         themeHeaderModel = new ThemeHeaderModel();
-        soldOutModel = new SoldOutModel();
+        soldOutModel = new FilterSoldOutModel();
+        favoriteModel = new FilterFavoriteModel();
+        regionHeaderModel = new RegionHeaderModel();
     }
 
     public void onEvent(UpdateRegionsAndThemesEvent event) {
@@ -107,7 +115,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             data.clear();
             data.add(dateFilterItem);
             data.add(filterModel);
-            if (!filterModel.isHide()) {
+            data.add(soldOutModel);
+            data.add(favoriteModel);
+            data.add(regionHeaderModel);
+            if (!regionHeaderModel.isHide()) {
                 data.addAll(regions);
             }
 
@@ -117,7 +128,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 data.addAll(parentActivities);
             }
 
-            setRegionsChecked(filterModel.isChecked());
+            setRegionsChecked(regionHeaderModel.isChecked());
             setThemesChecked(themeHeaderModel.isChecked());
 
             view.getAdapter().clear();
@@ -150,6 +161,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         filterBusEvent.setAcceptedRegions(getAcceptedRegions());
         filterBusEvent.setAcceptedActivities(getAcceptedThemes());
         filterBusEvent.setShowSoldOut(showSoldOut);
+        filterBusEvent.setShowFavorites(showFavorites);
         filterBusEvent.setDateFilterItem(dateFilterItem);
 
         eventBus.removeAllStickyEvents();
@@ -161,6 +173,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         filterModel.reset();
         themeHeaderModel.setChecked(true);
         soldOutModel.setShowSoldOut(false);
+        favoriteModel.setShowFavorites(false);
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
@@ -235,15 +248,19 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     public void onEvent(ToggleRegionVisibilityEvent event) {
-        filterModel.setHide(!filterModel.isHide());
+        regionHeaderModel.setHide(!regionHeaderModel.isHide());
         fillData();
     }
 
-    public void onEvent(SoldOutEvent soldOutEvent) {
+    public void onEvent(FilterShowSoldOutEvent soldOutEvent) {
         showSoldOut = soldOutEvent.isSoldOut();
     }
 
-    public void onEvent(CheckBoxAllPressedEvent event) {
+    public void onEvent(FilterShowFavoritesEvent soldOutEvent) {
+        showFavorites = soldOutEvent.isShowFavorites();
+    }
+
+    public void onEvent(CheckBoxAllRegionsPressedEvent event) {
         setRegionsChecked(event.isChecked());
         view.dataSetChanged();
     }
@@ -277,7 +294,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 break;
             }
         }
-        filterModel.setChecked(allIsChecked);
+        regionHeaderModel.setChecked(allIsChecked);
         view.dataSetChanged();
     }
 

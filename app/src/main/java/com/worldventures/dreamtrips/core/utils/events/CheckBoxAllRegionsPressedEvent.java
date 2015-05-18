@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
 
-public class CheckBoxAllPressedEvent {
+public class CheckBoxAllRegionsPressedEvent {
     private boolean checked;
 
-    public CheckBoxAllPressedEvent(boolean checked) {
+    public CheckBoxAllRegionsPressedEvent(boolean checked) {
         this.checked = checked;
     }
 

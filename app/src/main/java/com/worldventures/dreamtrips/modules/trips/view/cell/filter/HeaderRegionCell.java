@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.view.cell;
+package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
 import android.view.View;
 import android.widget.CheckBox;
@@ -6,20 +6,20 @@ import android.widget.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
-import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllRegionsPressedEvent;
+import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
+import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_activity_header)
-public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
+@Layout(R.layout.adapter_item_region_header)
+public class HeaderRegionCell extends AbstractCell<RegionHeaderModel> {
 
-    @InjectView(R.id.checkBoxSelectAllTheme)
+    @InjectView(R.id.checkBoxSelectAllRegion)
     protected CheckBox checkBoxSelectAll;
 
-    public ThemeHeaderCell(View view) {
+    public HeaderRegionCell(View view) {
         super(view);
     }
 
@@ -28,22 +28,22 @@ public class ThemeHeaderCell extends AbstractCell<ThemeHeaderModel> {
         checkBoxSelectAll.setChecked(getModelObject().isChecked());
     }
 
-    @OnClick(R.id.checkBoxSelectAllTheme)
+    @OnClick(R.id.checkBoxSelectAllRegion)
     void checkBoxClicked() {
         getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        getEventBus().post(new CheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked()));
+        getEventBus().post(new CheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked()));
     }
 
-    @OnClick(R.id.textViewSelectAllTheme)
+    @OnClick(R.id.textViewSelectAllRegion)
     void checkBoxTextViewClicked() {
         checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
         getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        getEventBus().post(new CheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked()));
+        getEventBus().post(new CheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked()));
     }
 
     @OnClick(R.id.listHeader)
     void toggleVisibility() {
-        getEventBus().post(new ToggleThemeVisibilityEvent());
+        getEventBus().post(new ToggleRegionVisibilityEvent());
     }
 
     @Override

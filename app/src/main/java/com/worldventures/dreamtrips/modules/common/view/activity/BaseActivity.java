@@ -79,7 +79,7 @@ public abstract class BaseActivity extends InjectingActivity {
                 finish();
             }
         } catch (IllegalStateException e) {
-            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+            Timber.w(e, "Problem on back pressed");
         }
     }
 

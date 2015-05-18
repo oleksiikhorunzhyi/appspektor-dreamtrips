@@ -2,12 +2,13 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
 import java.io.UnsupportedEncodingException;
+
+import timber.log.Timber;
 
 public class AppConfig {
     public static final String TRIP_ID = "{tripid}";
@@ -119,7 +120,7 @@ public class AppConfig {
                         encodedUrl = url.replace(ENROLL_UID,
                                 Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
                     } catch (UnsupportedEncodingException e) {
-                        Log.e(AppConfig.class.getSimpleName(), "", e);
+                        Timber.e(e, "Can't base64");
                     }
                 }
 

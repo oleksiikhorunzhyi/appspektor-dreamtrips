@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
 
-import com.apptentive.android.sdk.Log;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.qualifier.Global;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
 
@@ -59,7 +59,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
             eventBus.registerSticky(this, priorityEventBus);
         } catch (Exception ignored) {
             //Ignored
-            Log.e(this.getClass().getSimpleName(), "", ignored);
+            Timber.w(ignored, "Problem on registering sticky");
 
         }
     }
@@ -72,7 +72,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
             fragmentCompass = null;
         } catch (Exception ignored) {
             //Ignored
-            Log.e(this.getClass().getSimpleName(), "", ignored);
+            Timber.w(ignored, "Problem on destroyView");
         }
     }
 

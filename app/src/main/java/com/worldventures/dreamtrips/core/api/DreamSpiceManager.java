@@ -11,8 +11,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.retry.DefaultRetryPolicy;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -50,6 +50,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
+import timber.log.Timber;
 
 public class DreamSpiceManager extends SpiceManager {
 
@@ -172,7 +173,7 @@ public class DreamSpiceManager extends SpiceManager {
                 }
             });
         } catch (Exception e) {
-            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
+            Timber.e(e, "Can't upload photo");
             new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
 
         }
@@ -260,7 +261,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             result = out.toString();
         } catch (Exception e) {
-            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
+            Timber.e(e, "Cant parse response body");
         }
         return result;
     }

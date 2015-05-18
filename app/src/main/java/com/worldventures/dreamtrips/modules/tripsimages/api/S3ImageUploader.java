@@ -21,6 +21,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class S3ImageUploader {
 
@@ -49,7 +50,7 @@ public class S3ImageUploader {
                     new FileInputStream(file), metadata
             );
         } catch (FileNotFoundException e) {
-            Log.e(S3ImageUploader.class.getSimpleName(), "", e);
+            Timber.e(e, "Problem on uploading image");
         }
 
         ProgressListener progressListener = progressEvent -> {

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.video.api;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.octo.android.robospice.exception.RequestCancelledException;
@@ -22,6 +21,7 @@ import java.io.InputStream;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
     public static final int START_VALUE = 10;
@@ -45,7 +45,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestFailure(SpiceException spiceException) {
-        Log.v(this.getClass().getSimpleName(), "onRequestFailure");
+        Timber.v("onRequestFailure");
         if (!(spiceException instanceof RequestCancelledException)) {
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
@@ -57,12 +57,12 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestSuccess(final InputStream result) {
-        Log.v(this.getClass().getSimpleName(), "onRequestSuccess");
+        Timber.v("onRequestSuccess");
     }
 
     @Override
     public void onRequestProgressUpdate(RequestProgress p) {
-        Log.v(this.getClass().getSimpleName(), "onRequestProgressUpdate");
+        Timber.v("onRequestProgressUpdate");
         int progress = (int) (p.getProgress() * RESIDUE) + START_VALUE;
         if (progress > lastProgress) {
             if (progress == START_VALUE) {
@@ -79,7 +79,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
 
     @Override
     public void onRequestNotFound() {
-        Log.v(this.getClass().getSimpleName(), "onRequestNotFound");
+        Timber.v("onRequestNotFound");
         entity.setIsFailed(true);
         db.saveDownloadVideoEntity(entity);
         eventBus.post(new DownloadVideoFailedEvent(new SpiceException("onRequestNotFound"), entity));

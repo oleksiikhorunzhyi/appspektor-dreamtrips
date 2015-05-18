@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.core.api;
 
-import android.util.Log;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -13,6 +11,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
+import timber.log.Timber;
+
 public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
 
@@ -23,7 +23,7 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
             try {
                 return format.parse(json.getAsString());
             } catch (ParseException e) {
-                Log.v(DateTimeDeserializer.class.getSimpleName(), e.getMessage());
+                Timber.e(e, "Can't parse");
             }
         }
         return null;

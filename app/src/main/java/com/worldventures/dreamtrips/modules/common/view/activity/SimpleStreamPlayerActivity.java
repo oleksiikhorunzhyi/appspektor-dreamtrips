@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 
 import butterknife.InjectView;
+import timber.log.Timber;
 
 @Layout(R.layout.activity_360)
 public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetObserver {
@@ -82,7 +83,7 @@ public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetO
                 pfView.release();
             }
         } catch (Exception e) {
-            Log.e(SimpleStreamPlayerActivity.class.getSimpleName(), "", e);
+            Timber.e(e, "Problem on destroy");
         }
         super.onDestroy();
     }

@@ -15,6 +15,8 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.worldventures.dreamtrips.R;
 
+import timber.log.Timber;
+
 public class PickImageDialog implements ImageChooserListener {
 
 
@@ -72,7 +74,7 @@ public class PickImageDialog implements ImageChooserListener {
         try {
             filePath = imageChooserManager.choose();
         } catch (Exception e) {
-            Log.e(PickImageDialog.class.getSimpleName(), "", e);
+            Timber.e(e, "Problem on image picking");
         }
     }
 

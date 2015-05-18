@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.membership.view.cell;
 
 import android.graphics.PointF;
-import android.net.Uri;
 import android.view.View;
 
-import com.apptentive.android.sdk.Log;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -34,7 +32,6 @@ public class TemplatePhotoCell extends AbstractCell<TemplatePhoto> {
 
     @Override
     public void prepareForReuse() {
-        Log.v(this.getClass().getSimpleName(), "prepareForReuse");
     }
 
     @OnClick(R.id.imageViewPhoto)

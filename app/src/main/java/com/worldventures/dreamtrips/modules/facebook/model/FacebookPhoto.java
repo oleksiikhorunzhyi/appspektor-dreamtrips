@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.facebook.model.GraphObject;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
@@ -12,6 +11,8 @@ import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class FacebookPhoto {
 
@@ -288,7 +289,7 @@ public class FacebookPhoto {
             try {
                 mParcelable = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
             } catch (FileNotFoundException e) {
-                Log.e(FacebookPhoto.class.getSimpleName(), "", e);
+                Timber.e(e, "Problem on setting image");
 
             }
             return this;

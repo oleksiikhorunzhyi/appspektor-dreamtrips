@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
-import com.apptentive.android.sdk.Log;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
@@ -16,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
@@ -63,7 +63,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             return photo;
 
         } catch (Exception e) {
-            Log.e(this.getClass().getSimpleName(), e);
+            Timber.e(e, "Can't load from network");
             eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
         }
 

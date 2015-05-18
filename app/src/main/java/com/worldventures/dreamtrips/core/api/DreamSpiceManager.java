@@ -82,7 +82,7 @@ public class DreamSpiceManager extends SpiceManager {
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
-                if (isLoginError(error) && isCredentialExist()) {
+                if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
                     final UserSession userSession = appSessionHolder.get().get();
                     final String username = userSession.getUsername();
                     final String userPassword = userSession.getUserPassword();
@@ -108,7 +108,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
-        if (isCredentialExist()) {
+        if (isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
             String username = userSession.getUsername();
             String userPassword = userSession.getUserPassword();
@@ -170,7 +170,7 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    private boolean isCredentialExist() {
+    public static boolean isCredentialExist(SessionHolder<UserSession> appSessionHolder) {
         Optional<UserSession> userSessionOptional = appSessionHolder.get();
         if (userSessionOptional.isPresent()) {
             UserSession userSession = appSessionHolder.get().get();

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
@@ -69,7 +68,13 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         if (!"up".equalsIgnoreCase(status)) {
             view.alert(message);
         } else {
-            UserSession userSession = new UserSession();
+            UserSession userSession;
+            if (appSessionHolder.get().isPresent()) {
+                userSession = appSessionHolder.get().get();
+            } else {
+                userSession = new UserSession();
+            }
+
             userSession.setGlobalConfig(appConfig);
             appSessionHolder.put(userSession);
             done();
@@ -78,16 +83,12 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     }
 
     private void done() {
-        if (isLogged()) {
+        if (dreamSpiceManager.isCredentialExist(appSessionHolder)) {
             activityRouter.openMain();
         } else {
             activityRouter.openLogin();
         }
         activityRouter.finish();
-    }
-
-    private boolean isLogged() {
-        return appSessionHolder.get().isPresent();
     }
 
     private Locale getLocale() {

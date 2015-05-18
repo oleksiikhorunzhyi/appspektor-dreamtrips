@@ -58,8 +58,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         try {
             eventBus.registerSticky(this, priorityEventBus);
         } catch (Exception ignored) {
-            //Ignored
-            Timber.w(ignored, "Problem on registering sticky");
+            Timber.v(ignored, "Problem on registering sticky");
 
         }
     }
@@ -67,13 +66,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     public void destroyView() {
         try {
             eventBus.unregister(this);
-            context = null;
-            activityRouter = null;
-            fragmentCompass = null;
         } catch (Exception ignored) {
-            //Ignored
-            Timber.w(ignored, "Problem on destroyView");
+            Timber.v(ignored, "Problem on unregistering");
         }
+        context = null;
+        activityRouter = null;
+        fragmentCompass = null;
     }
 
     public void resume() {

@@ -5,8 +5,8 @@ import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
-import com.worldventures.dreamtrips.core.initializer.LifecycleInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 
 import dagger.Module;
 import dagger.Provides;
@@ -17,6 +17,7 @@ import dagger.Provides;
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
                 FrescoInitializer.class,
+                SoftInputInitializer.class,
         },
         library = true, complete = false)
 public class InitializerModule {
@@ -29,8 +30,13 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideLifecycleInitializer() {
-        return new LifecycleInitializer();
+    AppInitializer provideSoftInputInitializer() {
+        return new SoftInputInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    AppInitializer provideHockeyInitializer() {
+        return new HockeyInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

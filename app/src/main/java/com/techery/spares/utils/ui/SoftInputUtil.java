@@ -10,7 +10,9 @@ public class SoftInputUtil {
 
     /** Show soft keyboard explicitly */
     public static void showSoftInputMethod(View view) {
-        showSoftInputMethod(view.getContext());
+        InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.showSoftInput(view, 0);
+        view.requestFocus();
     }
 
     /** Show soft keyboard explicitly */
@@ -22,11 +24,14 @@ public class SoftInputUtil {
     /** Hide soft keyboard if visible */
     public static void hideSoftInputMethod(Activity activity) {
         InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         try {
             View currentFocus = activity.getWindow().getCurrentFocus();
-            if (currentFocus != null)
+            if (currentFocus != null) {
+                inputManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
                 currentFocus.clearFocus();
+            } else {
+                inputManager.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+            }
         } catch (Exception e) {
             // current focus could be out of visibility
         }

@@ -10,7 +10,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 
 import javax.inject.Inject;
 
-public class LifecycleInitializer implements AppInitializer {
+public class SoftInputInitializer implements AppInitializer {
 
     @Inject
     protected Application app;
@@ -19,9 +19,9 @@ public class LifecycleInitializer implements AppInitializer {
     public void initialize(Injector injector) {
         injector.inject(this);
         //
-        app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks(){
+        app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
             @Override
-            public void onActivityDestroyed(Activity activity) {
+            public void onActivityStopped(Activity activity) {
                 SoftInputUtil.hideSoftInputMethod(activity);
             }
         });

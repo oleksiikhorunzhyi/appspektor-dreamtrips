@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.view.CollapsibleActionView;
 import android.util.AttributeSet;
 import android.widget.AutoCompleteTextView;
@@ -24,23 +23,13 @@ public class CollapsibleAutoCompleteTextView extends AutoCompleteTextView implem
 
     @Override
     public void onActionViewExpanded() {
-        requestFocus();
         SoftInputUtil.showSoftInputMethod(this);
     }
 
     @Override
     public void onActionViewCollapsed() {
-        clearFocus();
-        setText("");
+        setText(null);
         SoftInputUtil.hideSoftInputMethod(this);
-    }
-
-    @Override
-    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
-        super.onFocusChanged(focused, direction, previouslyFocusedRect);
-        if (!focused) {
-            SoftInputUtil.hideSoftInputMethod(this);
-        }
     }
 
 }

@@ -67,7 +67,8 @@ public class SnappyRepository {
                 snappyDb = DBFactory.open(context);
                 action.call(snappyDb);
             } catch (SnappydbException e) {
-                Timber.w(e, "DB fails to act with result");
+                if (isNotFound(e)) Timber.v("Nothing found");
+                else Timber.w(e, "DB fails to act", e);
             } finally {
                 if (snappyDb != null)
                     try {
@@ -88,7 +89,8 @@ public class SnappyRepository {
                 Timber.v("DB action result: %s", result);
                 return result;
             } catch (SnappydbException e) {
-                Timber.w(e, "DB fails to act with result", e);
+                if (isNotFound(e)) Timber.v("Nothing found");
+                else Timber.w(e, "DB fails to act with result", e);
                 return null;
             } finally {
                 if (snappyDb != null)
@@ -105,6 +107,10 @@ public class SnappyRepository {
             Timber.w(e, "DB fails to act with result");
             return Optional.absent();
         }
+    }
+
+    private boolean isNotFound(SnappydbException e) {
+        return e.getMessage().contains("NotFound");
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -247,7 +253,7 @@ public class SnappyRepository {
         act(db -> db.put(INVITE_MEMBER + member.getId(), member));
     }
 
-    public List<Member> getInviteMembers(){
+    public List<Member> getInviteMembers() {
         return actWithResult(db -> {
             List<Member> members = new ArrayList<>();
             String[] keys = db.findKeys(INVITE_MEMBER);

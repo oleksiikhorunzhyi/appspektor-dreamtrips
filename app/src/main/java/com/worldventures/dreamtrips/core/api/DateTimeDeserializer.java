@@ -15,17 +15,22 @@ import timber.log.Timber;
 
 public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
+    private DateFormat[] dateFormats;
+
+    public DateTimeDeserializer() {
+        dateFormats = DateTimeUtils.getISO1DateFormats();
+    }
 
     @Override
     public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-        for (DateFormat format : DateTimeUtils.getISO1DateFormats()) {
+        for (DateFormat format : dateFormats) {
             try {
                 return format.parse(json.getAsString());
             } catch (ParseException e) {
-                Timber.e(e, "Can't parse");
             }
         }
+        Timber.e("Can't parse date with any format, date string: %s", json);
         return null;
     }
 }

@@ -8,6 +8,8 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -24,11 +26,18 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @InjectView(R.id.recyclerViewRegions)
     protected EmptyRecyclerView recyclerView;
@@ -44,7 +53,7 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         this.recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), injector);
         this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(ActivityModel.class, ActivityCell.class);
@@ -102,6 +111,6 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
     @Override
     protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
-        return new FiltersPresenter(this);
+        return new FiltersPresenter();
     }
 }

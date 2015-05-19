@@ -10,7 +10,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class YSBHPM extends TripImagesListPresenter<Photo> {
     public YSBHPM(View view) {
-        super(view, Type.YOU_SHOULD_BE_HERE);
+        super(Type.YOU_SHOULD_BE_HERE);
     }
 
     @Override

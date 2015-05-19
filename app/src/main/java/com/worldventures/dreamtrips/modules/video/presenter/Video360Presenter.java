@@ -34,20 +34,16 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     @ForApplication
     protected Injector injector;
 
-    public Video360Presenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
-        videoCachingDelegate.setView(view);
+    public void takeView(View view) {
+        super.takeView(view);
+        videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
         }

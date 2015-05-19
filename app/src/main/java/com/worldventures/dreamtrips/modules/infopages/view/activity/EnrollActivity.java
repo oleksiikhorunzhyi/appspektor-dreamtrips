@@ -32,6 +32,6 @@ public class EnrollActivity extends ActivityWithPresenter<EnrollActivityPresente
 
     @Override
     protected EnrollActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new EnrollActivityPresenter(this);
+        return new EnrollActivityPresenter();
     }
 }

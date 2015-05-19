@@ -26,7 +26,7 @@ public class PreviewTemplateActivity extends ToolbarActivity<PreviewTemplateActi
     @Override
     protected PreviewTemplateActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
-        return new PreviewTemplateActivityPresenter(this,
+        return new PreviewTemplateActivityPresenter(
                 bundleExtra.getString(StaticInfoFragment.BundleUrlFragment.URL_EXTRA));
     }
 }

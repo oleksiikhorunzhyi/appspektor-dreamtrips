@@ -11,7 +11,14 @@ import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, complete = false)
+@Module(
+        injects = {
+                InstabugInitializer.class,
+                LeakCanaryInitializer.class,
+                FabricInitializer.class,
+                FrescoInitializer.class,
+        },
+        library = true, complete = false)
 public class InitializerModule {
 
     @Provides(type = Provides.Type.SET)

@@ -9,36 +9,45 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.VideoCachingService;
 import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
         injects = {
-                DownloadVideoListener.class
+                DreamSpiceManager.class,
+                DreamSpiceService.class,
+                VideoCachingSpiceManager.class,
+                VideoCachingService.class,
+                VideoCachingDelegate.class,
+                //
+                DownloadVideoListener.class,
+                PhoneContactRequest.class,
+                S3ImageUploader.class,
+                UploadBucketPhotoCommand.class,
+                UploadTemplatePhotoCommand.class,
         },
         library = true, complete = false
 )
 public class ManagerModule {
 
     @Provides
-    @Singleton
     public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
     @Provides
-    @Singleton
     public VideoCachingSpiceManager provideVideoCachingSpiceManager() {
         return new VideoCachingSpiceManager(VideoCachingService.class);
     }
 
     @Provides
-    @Singleton
     public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
                                                             Context context,
                                                             @ForApplication Injector injector) {

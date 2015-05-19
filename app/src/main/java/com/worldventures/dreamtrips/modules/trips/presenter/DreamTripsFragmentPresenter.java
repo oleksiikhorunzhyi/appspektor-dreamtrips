@@ -92,19 +92,15 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private List<Integer> acceptedRegions;
     private List<ActivityModel> acceptedThemes;
 
-    public DreamTripsFragmentPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         dateFilterItem.reset();
         TrackingHelper.dreamTrips(getUserId());
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
         if (view.getAdapter().getCount() == 0) {
             goneToMap = false;
             roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);

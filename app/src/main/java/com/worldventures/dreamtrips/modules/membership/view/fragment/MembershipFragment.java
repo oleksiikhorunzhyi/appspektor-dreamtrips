@@ -14,8 +14,6 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
@@ -31,7 +29,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
 
     @Override
     protected MembershipPresenter createPresenter(Bundle savedInstanceState) {
-        return new MembershipPresenter(this);
+        return new MembershipPresenter();
     }
 
     @Override

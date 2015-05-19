@@ -15,10 +15,6 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
 
     private List<Object> filteredImages;
 
-    public DetailedTripPresenter(View view) {
-        super(view);
-    }
-
     public void setTrip(TripModel trip) {
         super.setTrip(trip);
         filteredImages = new ArrayList<>();
@@ -28,8 +24,8 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
 
         if (!appSessionHolder.get().get().getUser().isPlatinum() && trip.isPlatinum()) {
             view.hideBookIt();

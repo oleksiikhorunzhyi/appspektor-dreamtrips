@@ -19,6 +19,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -32,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,6 +43,10 @@ import butterknife.Optional;
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -126,7 +132,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemEditPresenter(this, getArguments());
+        return new BucketItemEditPresenter(getArguments());
     }
 
     @Override
@@ -135,7 +141,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
-        bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.EDIT);
+        bucketPhotosView.init(this, injector, BucketPhotosView.Type.EDIT);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }

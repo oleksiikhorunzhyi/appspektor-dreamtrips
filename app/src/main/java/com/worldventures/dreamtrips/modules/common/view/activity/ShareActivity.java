@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
-import java.io.File;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
@@ -93,7 +91,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
 
     @Override
     protected SharePresenter createPresentationModel(Bundle savedInstanceState) {
-        return new SharePresenter(this);
+        return new SharePresenter();
     }
 
 

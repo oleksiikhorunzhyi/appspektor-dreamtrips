@@ -54,14 +54,14 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private boolean showCompleted = true;
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public BucketListPresenter(View view, BucketTabsPresenter.BucketType type) {
-        super(view);
+    public BucketListPresenter(BucketTabsPresenter.BucketType type) {
+        super();
         this.type = type;
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         TrackingHelper.bucketList(getUserId());
     }
 
@@ -279,12 +279,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public boolean isShowCompleted() {
         return showCompleted;
-    }
-
-    @Override
-    public void destroyView() {
-        super.destroyView();
-        eventBus.unregister(this);
     }
 
     public AutoCompleteAdapter.Loader getSuggestionLoader() {

@@ -49,21 +49,17 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         }
     };
 
-    public SuccessStoriesListPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void resume() {
+    public void onResume() {
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
     }
 
     @Override
-    public void destroyView() {
+    public void dropView() {
         eventBus.unregister(this);
-        super.destroyView();
+        super.dropView();
     }
 
     public void reload() {

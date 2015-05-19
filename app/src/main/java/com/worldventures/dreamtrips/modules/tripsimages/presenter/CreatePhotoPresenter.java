@@ -33,10 +33,6 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     @Inject
     protected Context context;
 
-    public CreatePhotoPresenter(View view) {
-        super(view);
-    }
-
     public void onDataSet(int year, int month, int day) {
         String format = DateTimeUtils.convertDateToString(year, month, day);
         view.setDate(format);

@@ -85,7 +85,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
-        return new DetailedTripPresenter(this);
+        return new DetailedTripPresenter();
     }
 
     @OnClick(R.id.layoutBookIt)

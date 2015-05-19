@@ -5,12 +5,10 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -46,8 +44,8 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
     private LatLng lastClickedLocation;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         MapsInitializer.initialize(getActivity());
         if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) != ConnectionResult.SUCCESS) {
             mapView.setVisibility(View.GONE);
@@ -55,7 +53,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
         } else {
             mapView.onCreate(savedInstanceState);
         }
-        return v;
     }
 
     @Override
@@ -119,14 +116,15 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
     @Override
     public void onPause() {
         super.onPause();
-        if (mapView != null)
-            mapView.onPause();
+        mapView.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        if (mapView != null)
-            mapView.onDestroy();
+        mapView.removeAllViews();
+        mapView.onDestroy();
+        mapView = null;
+        googleMap = null;
         super.onDestroyView();
     }
 
@@ -139,7 +137,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
     @Override
     protected MapFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new MapFragmentPresenter(this);
+        return new MapFragmentPresenter();
     }
 
     @Override

@@ -30,7 +30,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
 
     @Override
     protected BucketPopularTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketPopularTabsPresenter(this);
+        return new BucketPopularTabsPresenter();
     }
 
     @Override

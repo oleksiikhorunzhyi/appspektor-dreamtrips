@@ -67,6 +67,6 @@ public class BucketActivity extends ActivityWithPresenter<ActivityPresenter> {
 
     @Override
     protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new ActivityPresenter(this);
+        return new ActivityPresenter();
     }
 }

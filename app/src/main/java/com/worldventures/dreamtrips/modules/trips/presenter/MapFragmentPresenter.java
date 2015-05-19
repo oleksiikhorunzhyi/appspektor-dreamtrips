@@ -39,13 +39,9 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     private boolean popped = false;
 
-    public MapFragmentPresenter(MapFragmentPresenter.View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         dateFilterItem.reset();
     }
 

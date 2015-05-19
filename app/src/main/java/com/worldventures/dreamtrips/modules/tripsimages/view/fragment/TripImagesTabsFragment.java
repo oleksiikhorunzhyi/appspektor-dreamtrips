@@ -100,7 +100,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
 
     @Override
     protected TripImagesTabsFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripImagesTabsFragmentPresenter(this);
+        return new TripImagesTabsFragmentPresenter();
     }
 
     @Override

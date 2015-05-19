@@ -73,8 +73,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     };
 
-    public BucketDetailsBasePresenter(V view, Bundle bundle) {
-        super(view);
+    public BucketDetailsBasePresenter(Bundle bundle) {
+        super();
         type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);
         bucketItem = (BucketItem)
@@ -137,8 +137,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void destroyView() {
-        super.destroyView();
+    public void dropView() {
+        super.dropView();
         eventBus.unregister(this);
     }
 
@@ -192,8 +192,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         items.clear();
         items.addAll(db.readBucketList(type.name()));
         syncUI();

@@ -11,8 +11,8 @@ public class PreviewTemplateActivityPresenter extends Presenter {
 
     private String url;
 
-    public PreviewTemplateActivityPresenter(View view, String url) {
-        super(view);
+    public PreviewTemplateActivityPresenter(String url) {
+        super();
         this.url = url;
     }
 

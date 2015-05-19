@@ -19,16 +19,11 @@ import java.util.regex.Pattern;
 
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
 
-    private ArrayList<Member> members;
-
-    public SelectTemplatePresenter(View view) {
-        super(view);
-        members = new ArrayList<>();
-    }
+    private ArrayList<Member> members = new ArrayList<>();
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         reload();
     }
 

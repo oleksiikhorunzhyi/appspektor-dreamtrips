@@ -8,16 +8,6 @@ import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.VideoCachingService;
-import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
-import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
-import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
-import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
-import com.worldventures.dreamtrips.core.initializer.LifecycleInitializer;
-import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,18 +15,6 @@ import dagger.Provides;
 @Module(
         injects = {
                 App.class,
-                //
-                LifecycleInitializer.class,
-                InstabugInitializer.class,
-                LeakCanaryInitializer.class,
-                FabricInitializer.class,
-                FrescoInitializer.class,
-                //
-                DreamSpiceManager.class,
-                DreamSpiceService.class,
-                VideoCachingSpiceManager.class,
-                VideoCachingService.class,
-                VideoCachingDelegate.class,
         },
         includes = {
                 // base injection and helpers/drivers
@@ -50,6 +28,8 @@ import dagger.Provides;
                 //
                 ApiModule.class,
                 AmazonModule.class,
+                //
+                UiBindingModule.class
         },
         library = true,
         complete = false,

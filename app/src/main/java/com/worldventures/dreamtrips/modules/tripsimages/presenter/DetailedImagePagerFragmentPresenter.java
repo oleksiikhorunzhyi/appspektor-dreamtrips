@@ -8,10 +8,6 @@ public class DetailedImagePagerFragmentPresenter extends Presenter<Presenter.Vie
 
     protected TripImage photo;
 
-    public DetailedImagePagerFragmentPresenter(View view) {
-        super(view);
-    }
-
     public TripImage getPhoto() {
         return photo;
     }

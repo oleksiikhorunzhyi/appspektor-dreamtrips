@@ -49,10 +49,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     private List<Member> members;
     private List<Member> selectedMembers;
 
-    public InvitePresenter(View view) {
-        super(view);
-    }
-
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);

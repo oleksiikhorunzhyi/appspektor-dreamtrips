@@ -66,22 +66,17 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
         }
     };
 
-
-    public PresentationsPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         TrackingHelper.onMemberShipVideos(getUserId());
-        videoCachingDelegate.setView(view);
+        videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();

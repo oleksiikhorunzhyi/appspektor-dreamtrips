@@ -66,14 +66,14 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         }
     };
 
-    public EditTemplatePresenter(View view, InviteTemplate template) {
-        super(view);
+    public EditTemplatePresenter(InviteTemplate template) {
+        super();
         this.template = template;
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         view.setFrom(template.getFrom());
         view.setSubject(template.getTitle());
         List<String> to = getMembersAddress();

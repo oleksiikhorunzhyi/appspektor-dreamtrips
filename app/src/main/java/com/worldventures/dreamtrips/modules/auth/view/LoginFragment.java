@@ -51,6 +51,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vgContentContainer.getLayoutParams().width = getMinSideSize(getActivity());
     }
 
@@ -113,7 +114,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     @Override
     protected LoginPresenter createPresenter(Bundle savedInstanceState) {
-        return new LoginPresenter(this);
+        return new LoginPresenter();
     }
 
     @OnClick(R.id.iv_title)

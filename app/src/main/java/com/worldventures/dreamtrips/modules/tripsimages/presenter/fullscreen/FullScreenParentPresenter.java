@@ -5,7 +5,4 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public class FullScreenParentPresenter extends Presenter {
 
-    public FullScreenParentPresenter(View view) {
-        super(view);
-    }
 }

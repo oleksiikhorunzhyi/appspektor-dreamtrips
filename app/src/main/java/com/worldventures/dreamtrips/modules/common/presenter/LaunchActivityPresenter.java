@@ -24,15 +24,13 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     @Inject
     StaticPageHolder staticPageHolder;
 
-    public LaunchActivityPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
-        doRequest(getLocaleQuery, (locales) -> onLocaleSuccess(locales));
+        doRequest(getLocaleQuery, (locales) -> {
+            onLocaleSuccess(locales);
+        });
     }
 
     private boolean isLogged() {
@@ -78,7 +76,6 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         } else {
             activityRouter.openLogin();
         }
-
         activityRouter.finish();
     }
 }

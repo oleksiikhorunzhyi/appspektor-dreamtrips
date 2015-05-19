@@ -147,7 +147,7 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
 
     @Override
     protected FragmentMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new FragmentMapInfoPresenter(this);
+        return new FragmentMapInfoPresenter();
     }
 
     @Override

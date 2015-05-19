@@ -23,18 +23,14 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
-    public BucketTabsPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         loadCategories();
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
         setTabs();
         setRecentBucketItemsCounts();
     }

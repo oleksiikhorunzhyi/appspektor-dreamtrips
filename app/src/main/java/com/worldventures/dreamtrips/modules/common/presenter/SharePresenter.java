@@ -13,9 +13,6 @@ import java.io.File;
 import java.io.InputStream;
 
 public class SharePresenter extends Presenter<SharePresenter.View> {
-    public SharePresenter(View view) {
-        super(view);
-    }
 
     public void create(String imageUrl, String shareLink, String text, String type) {
         if (type.equals(ShareActivity.FB)) {

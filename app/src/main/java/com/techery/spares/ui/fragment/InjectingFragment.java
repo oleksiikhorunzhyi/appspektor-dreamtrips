@@ -21,7 +21,75 @@ import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public abstract class InjectingFragment extends Fragment implements ConfigurableFragment, Injector {
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Injection
+    ///////////////////////////////////////////////////////////////////////////
+
     private ObjectGraph objectGraph;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.objectGraph = getInitialObjectGraph();
+        FragmentHelper.inject(activity, this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        objectGraph = null;
+    }
+
+    protected ObjectGraph getInitialObjectGraph() {
+        return ((InjectingActivity) getActivity()).getObjectGraph();
+    }
+
+    @Override
+    public void inject(Object target) {
+        this.objectGraph.inject(target);
+    }
+
+    @Override
+    public ObjectGraph getObjectGraph() {
+        return this.objectGraph;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // UI
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupMenuIfNeed();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return FragmentHelper.onCreateView(inflater, container, this);
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+    }
+
+    private void setupMenuIfNeed() {
+        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        setHasOptionsMenu(menuResource != null);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        if (menuResource != null) {
+            inflater.inflate(menuResource.value(), menu);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Event handling
+    ///////////////////////////////////////////////////////////////////////////
 
     @Inject
     @Global
@@ -40,69 +108,22 @@ public abstract class InjectingFragment extends Fragment implements Configurable
         return eventBus;
     }
 
-    public void afterCreateView(View rootView) {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupMenuIfNeed();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return FragmentHelper.onCreateView(inflater, container, this);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         try {
             this.eventBus.registerSticky(this);
         } catch (Exception e) {
-            Timber.e(e, "Can't register");
+            Timber.v(e, "Can't register");
         }
-    }
-
-    private void setupMenuIfNeed() {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
-        setHasOptionsMenu(menuResource != null);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        this.eventBus.unregister(this);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        this.objectGraph = getInitialObjectGraph();
-
-        FragmentHelper.inject(activity, this);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
-        if (menuResource != null) {
-            inflater.inflate(menuResource.value(), menu);
+        if (this.eventBus.isRegistered(this)) {
+            this.eventBus.unregister(this);
         }
     }
 
-    protected ObjectGraph getInitialObjectGraph() {
-        return ((InjectingActivity) getActivity()).getObjectGraph();
-    }
-
-    @Override
-    public void inject(Object target) {
-        this.objectGraph.inject(target);
-    }
-
-    @Override
-    public ObjectGraph getObjectGraph() {
-        return this.objectGraph;
-    }
 }

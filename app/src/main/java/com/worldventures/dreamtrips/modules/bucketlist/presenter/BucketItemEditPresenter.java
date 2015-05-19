@@ -22,20 +22,20 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     private boolean savingItem = false;
 
-    public BucketItemEditPresenter(BucketItemEditPresenterView view, Bundle bundle) {
-        super(view, bundle);
+    public BucketItemEditPresenter(Bundle bundle) {
+        super(bundle);
         selectedDate = bucketItem.getTarget_date();
     }
 
     @Override
-    public void init() {
+    public void takeView(BucketItemEditPresenterView view) {
         priorityEventBus = 1;
-        super.init();
+        super.takeView(view);
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
         if (!list.isEmpty()) {
             view.setCategoryItems(list);

@@ -18,7 +18,7 @@ public class EditTemplateActivity extends ToolbarActivity<EditTemplateActivityPr
     protected EditTemplateActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         InviteTemplate template = getIntent()
                 .getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_TEMPLATE);
-        return new EditTemplateActivityPresenter(this, template);
+        return new EditTemplateActivityPresenter(template);
     }
 
     @Override

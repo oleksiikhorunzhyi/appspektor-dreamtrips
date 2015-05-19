@@ -71,7 +71,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
     @Override
     protected RepToolsPresenter createPresenter(Bundle savedInstanceState) {
-        return new RepToolsPresenter(this);
+        return new RepToolsPresenter();
     }
 
     @Override

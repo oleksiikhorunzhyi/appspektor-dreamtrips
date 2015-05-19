@@ -20,13 +20,9 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
     private boolean isTermsAccepted;
 
-    public LoginPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         isTermsAccepted = prefs.getBoolean(Prefs.TERMS_ACCEPTED);
 
         if (!isTermsAccepted) {

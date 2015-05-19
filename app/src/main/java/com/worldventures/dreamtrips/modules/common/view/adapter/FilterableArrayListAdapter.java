@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Provider;
+
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
     protected volatile List<BaseItemClass> cachedItems;
@@ -24,7 +26,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
 
-    public FilterableArrayListAdapter(Context context, Injector injector) {
+    public FilterableArrayListAdapter(Context context, Provider<Injector> injector) {
         super(context, injector);
         cachedItems = new ArrayList<>();
 

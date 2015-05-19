@@ -105,7 +105,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     protected ProfilePresenter createPresenter(Bundle savedInstanceState) {
-        return new ProfilePresenter(this);
+        return new ProfilePresenter();
     }
 
     @OnClick(R.id.user_photo)

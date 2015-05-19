@@ -48,20 +48,20 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     };
 
-    public BucketPopularPresenter(View view, BucketTabsPresenter.BucketType type) {
-        super(view);
+    public BucketPopularPresenter(BucketTabsPresenter.BucketType type) {
+        super();
         this.type = type;
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         realData.addAll(db.readBucketList(type.name()));
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         if (view.getAdapter().getCount() == 0) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
@@ -105,9 +105,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     @Override
-    public void destroyView() {
+    public void dropView() {
         eventBus.unregister(this);
-        super.destroyView();
+        super.dropView();
     }
 
     public void reload() {

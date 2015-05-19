@@ -33,6 +33,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import java.util.List;
 
+import javax.inject.Provider;
+
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -63,7 +65,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Fragment fragment, Injector injector, Type type) {
+    public void init(Fragment fragment, Provider<Injector> injector, Type type) {
 
         if (imagesAdapter == null) {
             this.fragment = fragment;

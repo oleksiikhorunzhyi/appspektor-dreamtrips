@@ -21,10 +21,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
     protected TripModel trip;
 
-    public BaseTripPresenter(V view) {
-        super(view);
-    }
-
     public void setTrip(TripModel trip) {
         this.trip = trip;
     }
@@ -57,8 +53,8 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         view.setName(trip.getName());
         view.setDates(trip.getAvailabilityDates().toString());
         view.setDesription(trip.getDescription());

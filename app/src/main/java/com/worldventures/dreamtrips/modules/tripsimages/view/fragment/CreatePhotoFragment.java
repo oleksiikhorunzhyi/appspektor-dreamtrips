@@ -75,7 +75,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     @Override
     protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
-        return new CreatePhotoPresenter(this);
+        return new CreatePhotoPresenter();
     }
 
 

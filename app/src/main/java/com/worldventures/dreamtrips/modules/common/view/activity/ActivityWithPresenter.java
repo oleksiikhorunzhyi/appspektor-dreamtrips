@@ -22,7 +22,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     protected void beforeCreateView(Bundle savedInstanceState) {
         this.presentationModel = createPresentationModel(savedInstanceState);
         inject(this.presentationModel);
-        this.presentationModel.init();
+    }
+
+    @Override
+    protected void afterCreateView(Bundle savedInstanceState) {
+        super.afterCreateView(savedInstanceState);
+        this.presentationModel.takeView(this);
     }
 
     public void informUser(String st) {
@@ -48,23 +53,23 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
-    public void onDestroy() {
-        if (getPresentationModel() != null) {
-            getPresentationModel().destroyView();
-        }
-        super.onDestroy();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         getPresentationModel().onStart();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         getPresentationModel().onStop();
     }
+
+    @Override
+    public void onDestroy() {
+        if (getPresentationModel() != null) {
+            getPresentationModel().dropView();
+        }
+        super.onDestroy();
+    }
+
 }

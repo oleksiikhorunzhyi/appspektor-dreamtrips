@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -30,6 +31,9 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -38,6 +42,10 @@ public class InviteFragment
         extends BaseFragment<InvitePresenter>
         implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.frameContactCount)
     LinearLayout frameContactCount;
@@ -62,7 +70,7 @@ public class InviteFragment
 
     @Override
     protected InvitePresenter createPresenter(Bundle savedInstanceState) {
-        return new InvitePresenter(this);
+        return new InvitePresenter();
     }
 
     @Override
@@ -89,7 +97,7 @@ public class InviteFragment
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(Member.class, MemberCell.class);
 
         lvUsers.setAdapter(adapter);
@@ -135,8 +143,8 @@ public class InviteFragment
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         lvUsers.setAdapter(null);
+        super.onDestroyView();
     }
 
     @Override

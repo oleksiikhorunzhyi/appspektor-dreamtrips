@@ -8,7 +8,7 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
@@ -21,6 +21,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class S3ImageUploader {
 
@@ -49,7 +50,7 @@ public class S3ImageUploader {
                     new FileInputStream(file), metadata
             );
         } catch (FileNotFoundException e) {
-            Log.e(S3ImageUploader.class.getSimpleName(), "", e);
+            Timber.e(e, "Problem on uploading image");
         }
 
         ProgressListener progressListener = progressEvent -> {

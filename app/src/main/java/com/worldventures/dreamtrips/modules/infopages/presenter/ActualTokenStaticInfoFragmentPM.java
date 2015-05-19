@@ -11,10 +11,9 @@ import timber.log.Timber;
 public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<ActualTokenStaticInfoFragmentPM.View> {
     public static final int LIFE_DURATION = 30;
 
-    public ActualTokenStaticInfoFragmentPM(View view) {
-        super(view);
+    public ActualTokenStaticInfoFragmentPM(String url) {
+        super(url);
     }
-
 
     public void loadUrl() {
         UserSession userSession = appSessionHolder.get().get();
@@ -24,7 +23,7 @@ public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<Ac
             dreamSpiceManager.login(new RequestListener() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-                    Timber.e(spiceException, "");
+                    Timber.e(spiceException, "Can't login during WebView loading");
                 }
 
                 @Override
@@ -35,7 +34,7 @@ public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<Ac
         }
     }
 
-    public static interface View extends WebViewFragmentPresenter.View {
+    public interface View extends WebViewFragmentPresenter.View {
         void loadContent();
     }
 

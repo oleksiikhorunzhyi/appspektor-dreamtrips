@@ -14,9 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -76,16 +75,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new MainActivityPresenter(this);
+        return new MainActivityPresenter();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        checkGoogleServices();
-
-        getPresentationModel().loadFilters();
     }
 
     @Override
@@ -125,19 +120,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         }
     }
 
-    private void checkGoogleServices() {
-        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (code != ConnectionResult.SUCCESS) {
-            GooglePlayServicesUtil.getErrorDialog(code, this, 0).show();
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        getPresentationModel().restoreInstanceState();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -150,6 +132,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         setSupportActionBar(this.toolbar);
         setUpBurger();
         setUpMenu();
+        //
+        super.afterCreateView(savedInstanceState);
+        //
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragmentStatic = (NavigationDrawerFragment) getSupportFragmentManager()
@@ -181,6 +166,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
+                SoftInputUtil.hideSoftInputMethod(MainActivity.this);
             }
         };
 

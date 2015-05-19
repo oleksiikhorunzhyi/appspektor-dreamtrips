@@ -208,7 +208,7 @@ public class FragmentCompass {
                 activity.finish();
             }
         } catch (IllegalStateException e) {
-            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+            Timber.e(e, "Can't pop fragment"); //for avoid application crash when called at runtime
         }
         if (onTransactionListener != null) {
             onTransactionListener.onTransactionDone(null, Action.POP);

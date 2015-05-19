@@ -15,6 +15,7 @@ import com.facebook.widget.LoginButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -26,10 +27,17 @@ import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.dialog_facebook_select_album)
 public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @InjectView(R.id.lv_items)
     protected RecyclerView lvItems;
@@ -52,7 +60,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new BaseArrayListAdapter(getActivity(), (Injector) getActivity());
+        adapter = new BaseArrayListAdapter(getActivity(), injector);
         adapter.registerCell(FacebookAlbum.class, FacebookAlbumCell.class);
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -95,7 +103,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
     @Override
     protected FacebookAlbumPresenter createPresenter(Bundle savedInstanceState) {
-        return new FacebookAlbumPresenter(this);
+        return new FacebookAlbumPresenter();
     }
 
     private void loadData() {

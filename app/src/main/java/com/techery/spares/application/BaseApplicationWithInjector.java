@@ -23,7 +23,6 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
         super.onCreate();
 
         this.objectGraph = ObjectGraph.create(getModules().toArray());
-
         inject(this);
 
         runInitializers();
@@ -37,9 +36,7 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
 
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<>();
-
         result.add(getApplicationModule());
-
         return result;
     }
 

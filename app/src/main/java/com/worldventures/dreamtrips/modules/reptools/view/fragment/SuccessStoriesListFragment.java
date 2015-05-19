@@ -15,6 +15,8 @@ import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -27,11 +29,18 @@ import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
@@ -57,7 +66,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
-        return new SuccessStoriesListPresenter(this);
+        return new SuccessStoriesListPresenter();
     }
 
     @Override
@@ -87,7 +96,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         super.afterCreateView(rootView);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
 
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
         this.adapter.setHasStableIds(true);
         this.recyclerView.setEmptyView(emptyView);

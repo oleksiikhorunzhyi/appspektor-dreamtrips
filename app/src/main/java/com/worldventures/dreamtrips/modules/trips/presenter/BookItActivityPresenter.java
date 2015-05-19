@@ -17,7 +17,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
     public static final int LIFE_DURATION = 30;
 
     public BookItActivityPresenter(BookItActivityPresenter.View view) {
-        super(view);
+        super();
     }
 
     public void onCreate() {

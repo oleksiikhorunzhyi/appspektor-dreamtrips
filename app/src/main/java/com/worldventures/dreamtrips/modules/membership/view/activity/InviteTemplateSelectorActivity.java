@@ -12,7 +12,7 @@ public class InviteTemplateSelectorActivity extends ToolbarActivity<InviteTempla
 
     @Override
     protected InviteTemplateSelectorPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new InviteTemplateSelectorPresenter(this);
+        return new InviteTemplateSelectorPresenter();
     }
 
     @Override

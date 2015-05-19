@@ -1,7 +1,17 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.app.Activity;
+
+import javax.inject.Inject;
+
 public class ActivityPresenter<VT extends Presenter.View> extends Presenter<VT> {
-    public ActivityPresenter(VT view) {
-        super(view);
+
+    @Inject
+    protected Activity activity;
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        activity = null;
     }
 }

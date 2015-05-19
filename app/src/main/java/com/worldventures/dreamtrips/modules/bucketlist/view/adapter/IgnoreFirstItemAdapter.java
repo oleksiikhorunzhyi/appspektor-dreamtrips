@@ -7,8 +7,11 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
+import javax.inject.Provider;
+
 public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
-    public IgnoreFirstItemAdapter(Context context, Injector injector) {
+
+    public IgnoreFirstItemAdapter(Context context, Provider<Injector> injector) {
         super(context, injector);
     }
 
@@ -23,7 +26,6 @@ public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
             addItem(item);
         }
     }
-
 
     @Override
     public List getItems() {

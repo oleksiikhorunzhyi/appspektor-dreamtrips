@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import javax.inject.Inject;
@@ -19,10 +18,16 @@ import javax.inject.Inject;
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
     @Inject
+    StaticPageProvider staticPageProvider;
+    @Inject
     StaticPageHolder staticPageHolder;
+    @Inject
+    LocalesHolder localesStorage;
 
-    public WebViewFragmentPresenter(T view) {
-        super(view);
+    private final String url;
+
+    public WebViewFragmentPresenter(String url) {
+        this.url = url;
     }
 
     public void track(Route route) {
@@ -50,27 +55,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
-    public String getEnrollUrl() {
-        return getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+    public String getLocalizedUrl() {
+        return LocaleUtils.substituteActualLocale(context, url, localesStorage);
     }
-
-    public String getEnrollRepUrl() {
-        return getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
-    }
-
-    public String getStaticInfoUrl(String title) {
-        StaticPageConfig staticPageConfig = staticPageHolder.get().get();
-        if (staticPageConfig != null) return staticPageConfig.getUrlByTitle(title);
-        else return "";
-    }
-
-    public AppConfig.URLS.Config getConfig() {
-        AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
-        AppConfig.URLS urls = appConfig.getUrls();
-
-        return BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
-    }
-
 
     public UserSession getCurrentUser() {
         return appSessionHolder.get().get();

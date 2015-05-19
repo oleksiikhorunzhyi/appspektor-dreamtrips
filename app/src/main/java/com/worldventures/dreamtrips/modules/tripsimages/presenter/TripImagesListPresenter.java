@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -36,25 +37,25 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     private int visibleThreshold = 5;
     private TripImagesRoboSpiceController roboSpiceAdapterController;
 
-    public TripImagesListPresenter(View view, Type type) {
-        super(view);
+    public TripImagesListPresenter(Type type) {
+        super();
         this.type = type;
     }
 
     public static TripImagesListPresenter create(Type type, View view) {
         switch (type) {
             case MEMBER_IMAGES:
-                return new UserImagesPresenter(view);
+                return new UserImagesPresenter();
             case MY_IMAGES:
-                return new MyImagesPresenter(view);
+                return new MyImagesPresenter();
             case YOU_SHOULD_BE_HERE:
                 return new YSBHPM(view);
             case INSPIRE_ME:
-                return new InspireMePresenter(view);
+                return new InspireMePresenter();
             case BUCKET_PHOTOS:
-                return new BucketPhotoFsPresenter(view);
+                return new BucketPhotoFsPresenter();
         }
-        return new MyImagesPresenter(view);
+        return new MyImagesPresenter();
     }
 
     public void onEventMainThread(FSUploadEvent.InspireMeImagesFSEvent event) {
@@ -109,7 +110,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         }
     }
 
-    public void destroyView() {
+    public void dropView() {
         eventBus.unregister(this);
     }
 
@@ -205,7 +206,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         void inject(Object getMyPhotos);
     }
 
-    public abstract class TripImagesRoboSpiceController extends RoboSpiceAdapterController<T> {
+    public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<T> {
 
         @Override
         public void onStart(LoadType loadType) {

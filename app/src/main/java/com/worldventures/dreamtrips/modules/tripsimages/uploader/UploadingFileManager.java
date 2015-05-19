@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.techery.spares.utils.ValidationUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,9 +17,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import timber.log.Timber;
+
 
 public class UploadingFileManager {
-    private static final String TAG = UploadingFileManager.class.getSimpleName();
 
     private UploadingFileManager() {
     }
@@ -90,20 +91,20 @@ public class UploadingFileManager {
             }
             out.flush();
         } catch (IOException e) {
-            Log.e(TAG, "", e);
+            Timber.e(e, "Problem on file copying");
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "", e);
+                    Timber.e(e, "Problem on file copying");
                 }
             }
             if (out != null) {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "", e);
+                    Timber.e(e, "Problem on file copying");
                 }
             }
         }

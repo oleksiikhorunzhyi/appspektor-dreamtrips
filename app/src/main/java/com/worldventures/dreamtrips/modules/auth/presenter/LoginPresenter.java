@@ -3,12 +3,15 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
+
+import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
@@ -17,13 +20,9 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
     private boolean isTermsAccepted;
 
-    public LoginPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         isTermsAccepted = prefs.getBoolean(Prefs.TERMS_ACCEPTED);
 
         if (!isTermsAccepted) {
@@ -38,8 +37,8 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
         String username = view.getUsername();
         String userPassword = view.getUserPassword();
 
-        ValidationUtils.VResult usernameValid = ValidationUtils.isUsernameValid(username);
-        ValidationUtils.VResult passwordValid = ValidationUtils.isPasswordValid(userPassword);
+        ValidationUtils.VResult usernameValid = isUsernameValid(username);
+        ValidationUtils.VResult passwordValid = isPasswordValid(userPassword);
 
         if (!usernameValid.isValid() || !passwordValid.isValid()) {
             view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());

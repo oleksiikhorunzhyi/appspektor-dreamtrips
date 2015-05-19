@@ -53,13 +53,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     private SoldOutModel soldOutModel;
     private DateFilterItem dateFilterItem;
 
-    public FiltersPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         filterModel = new FilterModel();
         dateFilterItem = new DateFilterItem();
         dateFilterItem.reset();

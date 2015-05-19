@@ -13,8 +13,8 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class InspireMePresenter extends TripImagesListPresenter<Inspiration> {
     protected double randomSeed;
 
-    public InspireMePresenter(View view) {
-        super(view, Type.INSPIRE_ME);
+    public InspireMePresenter() {
+        super(Type.INSPIRE_ME);
     }
 
     @Override

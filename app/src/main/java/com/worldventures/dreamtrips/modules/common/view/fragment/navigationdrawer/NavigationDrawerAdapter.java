@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
@@ -30,8 +29,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private NavigationDrawerListener navigationDrawerListener;
     private int selectedComponent;
 
-    public NavigationDrawerAdapter(List<ComponentDescription> data, Injector injector) {
-        injector.inject(this);
+    public NavigationDrawerAdapter(List<ComponentDescription> data) {
         componentDescriptions = data;
     }
 

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -57,19 +56,15 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         }
     };
 
-    public ProfilePresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         TrackingHelper.profile(getUserId());
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
 
         User user = this.appSessionHolder.get().get().getUser();
         view.setUserName(user.getUsername());

@@ -28,10 +28,6 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         }
     };
 
-    public TripImagesTabsFragmentPresenter(View view) {
-        super(view);
-    }
-
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
             TrackingHelper.mine(getUserId());
@@ -47,8 +43,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
     }
 
     @Override
-    public void destroyView() {
-        super.destroyView();
+    public void dropView() {
+        super.dropView();
     }
 
     public void onCreate() {

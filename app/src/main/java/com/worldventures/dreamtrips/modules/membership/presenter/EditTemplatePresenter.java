@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -44,6 +45,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private String uploadedPhotoUrl;
 
     @Inject
+    @ForApplication
     protected Injector injector;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
@@ -64,14 +66,14 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         }
     };
 
-    public EditTemplatePresenter(View view, InviteTemplate template) {
-        super(view);
+    public EditTemplatePresenter(InviteTemplate template) {
+        super();
         this.template = template;
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         view.setFrom(template.getFrom());
         view.setSubject(template.getTitle());
         List<String> to = getMembersAddress();

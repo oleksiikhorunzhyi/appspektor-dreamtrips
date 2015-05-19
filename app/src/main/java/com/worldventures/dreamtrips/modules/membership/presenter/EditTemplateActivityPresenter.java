@@ -11,8 +11,8 @@ public class EditTemplateActivityPresenter extends Presenter {
 
     private InviteTemplate template;
 
-    public EditTemplateActivityPresenter(View view, InviteTemplate inviteTemplate) {
-        super(view);
+    public EditTemplateActivityPresenter(InviteTemplate inviteTemplate) {
+        super();
         this.template = inviteTemplate;
     }
 

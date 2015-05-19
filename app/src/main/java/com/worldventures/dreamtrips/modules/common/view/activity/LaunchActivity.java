@@ -11,7 +11,7 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
 
     @Override
     protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new LaunchActivityPresenter(this);
+        return new LaunchActivityPresenter();
     }
 
 }

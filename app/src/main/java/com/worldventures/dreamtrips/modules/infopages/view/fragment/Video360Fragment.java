@@ -10,6 +10,7 @@ import android.widget.ScrollView;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -19,11 +20,18 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
 public class Video360Fragment extends BaseFragment<Video360Presenter> implements Video360Presenter.View {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
@@ -47,13 +55,13 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapterFeatured = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
-        adapterRecent = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        adapterFeatured = new BaseArrayListAdapter<>(getActivity(), injector);
+        adapterRecent = new BaseArrayListAdapter<>(getActivity(), injector);
 
         adapterFeatured.registerCell(Video.class, Video360Cell.class);
         adapterRecent.registerCell(Video.class, Video360SmallCell.class);
 
-        adapterAll = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
         adapterAll.registerCell(Video.class, Video360Cell.class);
 
         recyclerViewAll.setAdapter(adapterAll);
@@ -100,7 +108,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
 
     @Override
     protected Video360Presenter createPresenter(Bundle savedInstanceState) {
-        return new Video360Presenter(this);
+        return new Video360Presenter();
     }
 
     @Override

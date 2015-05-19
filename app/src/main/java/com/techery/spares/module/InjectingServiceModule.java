@@ -2,7 +2,7 @@ package com.techery.spares.module;
 
 import android.content.Context;
 
-import com.techery.spares.module.Annotations.Application;
+import com.techery.spares.module.qualifier.ForApplication;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -38,7 +38,7 @@ public class InjectingServiceModule {
 
     @Provides
     @Singleton
-    @Application
+    @ForApplication
     public Context provideApplicationContext() {
         return this.service.getApplicationContext();
     }

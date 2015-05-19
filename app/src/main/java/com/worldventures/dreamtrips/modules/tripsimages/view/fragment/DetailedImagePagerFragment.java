@@ -69,6 +69,12 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        ivImage.getController().onDetach();
+        super.onDestroyView();
+    }
+
     private void loadImage(int width, int height) {
         ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -110,6 +116,6 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
     @Override
     protected DetailedImagePagerFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new DetailedImagePagerFragmentPresenter(this);
+        return new DetailedImagePagerFragmentPresenter();
     }
 }

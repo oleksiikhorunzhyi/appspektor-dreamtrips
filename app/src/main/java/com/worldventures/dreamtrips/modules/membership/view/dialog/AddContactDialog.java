@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import butterknife.ButterKnife;
 
-import static com.worldventures.dreamtrips.core.utils.ValidationUtils.VResult;
-import static com.worldventures.dreamtrips.core.utils.ValidationUtils.isEmailValid;
+import static com.techery.spares.utils.ValidationUtils.VResult;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isEmailValid;
 
 public class AddContactDialog {
 

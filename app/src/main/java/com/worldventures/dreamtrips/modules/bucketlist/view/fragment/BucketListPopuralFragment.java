@@ -11,6 +11,8 @@ import android.view.View;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
@@ -20,10 +22,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCe
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
 public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresenter> implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewBuckets)
     protected EmptyRecyclerView recyclerView;
@@ -43,7 +52,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         setManager();
 
         this.recyclerView.setEmptyView(emptyView);
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         this.arrayListAdapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -98,6 +107,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
-        return new BucketPopularPresenter(this, type);
+        return new BucketPopularPresenter(type);
     }
 }

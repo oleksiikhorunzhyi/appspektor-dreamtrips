@@ -30,6 +30,6 @@ public class SuccessStoryDetailsActivity extends ActivityWithPresenter<SuccessSt
 
     @Override
     protected SuccessStoryDetailsPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsPresenter(this);
+        return new SuccessStoryDetailsPresenter();
     }
 }

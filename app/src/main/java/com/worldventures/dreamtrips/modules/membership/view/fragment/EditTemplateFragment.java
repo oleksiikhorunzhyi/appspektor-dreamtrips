@@ -12,6 +12,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
@@ -19,12 +20,19 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_edit_template)
 @MenuResource(R.menu.menu_edit_template)
 public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> implements EditTemplatePresenter.View {
     public static final String TEMPLATE = "TEMPLATE";
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @InjectView(R.id.tv_from)
     TextView tvFrom;
@@ -60,7 +68,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
         InviteTemplate template = getArguments().getParcelable(TEMPLATE);
-        return new EditTemplatePresenter(this, template);
+        return new EditTemplatePresenter(template);
     }
 
     @Override
@@ -75,7 +83,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         wvPreview.getSettings().setUseWideViewPort(true);
         progressView.setVisibility(View.GONE);
 
-        bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DEFAULT);
+        bucketPhotosView.init(this, injector, BucketPhotosView.Type.DEFAULT);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());

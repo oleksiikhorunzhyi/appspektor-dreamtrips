@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.View;
 
@@ -41,7 +39,6 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
 
     @Override
     public void prepareForReuse() {
-        Log.v(this.getClass().getSimpleName(), "prepareForReuse");
     }
 
 

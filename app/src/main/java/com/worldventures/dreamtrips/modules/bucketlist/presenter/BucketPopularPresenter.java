@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
@@ -28,7 +28,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     private BucketTabsPresenter.BucketType type;
     private List<BucketItem> realData = new ArrayList<>();
 
-    protected RoboSpiceAdapterController<PopularBucketItem> adapterController = new RoboSpiceAdapterController<PopularBucketItem>() {
+    protected DreamSpiceAdapterController<PopularBucketItem> adapterController = new DreamSpiceAdapterController<PopularBucketItem>() {
         @Override
         public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
             return new GetPopularLocation(type);
@@ -48,20 +48,20 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     };
 
-    public BucketPopularPresenter(View view, BucketTabsPresenter.BucketType type) {
-        super(view);
+    public BucketPopularPresenter(BucketTabsPresenter.BucketType type) {
+        super();
         this.type = type;
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         realData.addAll(db.readBucketList(type.name()));
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         if (view.getAdapter().getCount() == 0) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
@@ -105,9 +105,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     @Override
-    public void destroyView() {
+    public void dropView() {
         eventBus.unregister(this);
-        super.destroyView();
+        super.dropView();
     }
 
     public void reload() {

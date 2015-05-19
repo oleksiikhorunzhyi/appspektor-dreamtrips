@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -19,20 +19,18 @@ import javax.inject.Inject;
 public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
     @Inject
-    ComplexObjectStorage<ArrayList<AvailableLocale>> localeStorage;
+    LocalesHolder localeStorage;
 
     @Inject
     StaticPageHolder staticPageHolder;
 
-    public LaunchActivityPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
-        doRequest(getLocaleQuery, (locales) -> onLocaleSuccess(locales));
+        doRequest(getLocaleQuery, (locales) -> {
+            onLocaleSuccess(locales);
+        });
     }
 
     private boolean isLogged() {
@@ -78,7 +76,6 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         } else {
             activityRouter.openLogin();
         }
-
         activityRouter.finish();
     }
 }

@@ -20,12 +20,9 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public class FSPhotoPresenter extends FullScreenPresenter<Photo> {
+
     @Inject
     protected Context context;
-
-    public FSPhotoPresenter(View view) {
-        super(view);
-    }
 
     public void onDeleteAction() {
         doRequest(new DeletePhotoCommand(photo.getFsId()), (jsonObject) -> {

@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-
-    <com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView
-        android:id="@+id/editTextQuickInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:hint="@string/bucket_hint_title"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textColorHint="#979797"
-        android:visibility="visible">
-
-        <requestFocus />
-    </com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView>
-
-
-</RelativeLayout>
+<com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editTextQuickInput"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:hint="@string/bucket_hint_title"
+    android:inputType="text|textAutoComplete|textNoSuggestions"
+    android:minWidth="@dimen/abc_search_view_text_min_width"
+    android:singleLine="true"
+    android:textColor="@android:color/white"
+    android:textColorHint="#979797" />

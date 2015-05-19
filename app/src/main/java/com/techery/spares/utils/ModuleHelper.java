@@ -1,7 +1,7 @@
 package com.techery.spares.utils;
 
 
-import com.techery.spares.module.Annotations.UseModule;
+import com.techery.spares.module.qualifier.UseModule;
 
 public class ModuleHelper {
 

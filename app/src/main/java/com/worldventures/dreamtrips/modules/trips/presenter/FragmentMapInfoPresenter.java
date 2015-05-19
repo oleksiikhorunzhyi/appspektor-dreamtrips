@@ -6,13 +6,9 @@ import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 
 public class FragmentMapInfoPresenter extends BaseTripPresenter<FragmentMapInfoPresenter.View> {
 
-    public FragmentMapInfoPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         view.setImage(trip.getThumb(context.getResources()));
     }
 

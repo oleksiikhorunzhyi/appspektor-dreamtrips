@@ -7,9 +7,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 
 public class FacebookAlbumPresenter extends Presenter<Presenter.View> {
-    public FacebookAlbumPresenter(View view) {
-        super(view);
-    }
 
     public void backAction() {
         fragmentCompass.pop();

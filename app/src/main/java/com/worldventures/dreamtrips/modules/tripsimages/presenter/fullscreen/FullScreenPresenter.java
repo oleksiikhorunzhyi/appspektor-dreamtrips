@@ -21,13 +21,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     protected User user;
     protected T photo;
 
-    public FullScreenPresenter(View view) {
-        super(view);
-    }
-
     public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
-            return new FSPhotoPresenter(view);
+            return new FSPhotoPresenter();
         } else if (photo instanceof Inspiration) {
             return new FSInspireMePM(view);
         }

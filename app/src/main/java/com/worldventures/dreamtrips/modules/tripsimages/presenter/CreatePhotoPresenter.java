@@ -5,7 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -32,10 +32,6 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
 
     @Inject
     protected Context context;
-
-    public CreatePhotoPresenter(View view) {
-        super(view);
-    }
 
     public void onDataSet(int year, int month, int day) {
         String format = DateTimeUtils.convertDateToString(year, month, day);

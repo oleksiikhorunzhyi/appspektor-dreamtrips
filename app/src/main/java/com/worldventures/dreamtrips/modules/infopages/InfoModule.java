@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -57,6 +60,10 @@ public class InfoModule {
     public static final String FAQ = Route.FAQ.name();
     public static final String TERMS = Route.TERMS.name();
 
+    @Provides
+    StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> session, StaticPageHolder holder) {
+        return new StaticPageProvider(session, holder);
+    }
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTermsOfServiceComponent() {

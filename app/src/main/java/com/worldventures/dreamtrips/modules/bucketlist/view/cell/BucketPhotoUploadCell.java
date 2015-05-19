@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 import android.net.Uri;
 import android.view.View;
 
-import com.apptentive.android.sdk.Log;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -44,7 +43,6 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
     @Override
     public void prepareForReuse() {
-        Log.i(this.getClass().getSimpleName(), "prepareForReuse");
     }
 
     @OnClick(R.id.fab_progress)

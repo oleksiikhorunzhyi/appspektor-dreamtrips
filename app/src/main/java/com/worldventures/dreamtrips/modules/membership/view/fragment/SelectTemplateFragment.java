@@ -11,6 +11,7 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -20,10 +21,17 @@ import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_select_template)
 public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter> implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @InjectView(R.id.lv_templates)
     RecyclerView lvTemplates;
@@ -34,13 +42,13 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     protected SelectTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        return new SelectTemplatePresenter(this);
+        return new SelectTemplatePresenter();
     }
 
     @Override
     public void afterCreateView(View rootView) {
         lvTemplates.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
+        adapter = new BaseArrayListAdapter<>(getActivity(), injector);
         adapter.registerCell(InviteTemplate.class, InviteTemplateCell.class);
         adapter.setHasStableIds(true);
         lvTemplates.setAdapter(adapter);

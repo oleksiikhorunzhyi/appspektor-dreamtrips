@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenAvailableObject> {
-    public MyImagesPresenter(View view) {
-        super(view, Type.MY_IMAGES);
-    }
 
+    public MyImagesPresenter() {
+        super(Type.MY_IMAGES);
+    }
 
     @Override
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {

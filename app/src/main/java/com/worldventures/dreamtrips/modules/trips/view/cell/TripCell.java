@@ -76,7 +76,7 @@ public class TripCell extends AbstractCell<TripModel> {
 
         setImageViewLike();
 
-        PointF pointF = new PointF(0, 0);
+        PointF pointF = new PointF(.5f, .5f);
         imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
         imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }

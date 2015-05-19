@@ -15,10 +15,7 @@ import com.worldventures.dreamtrips.core.utils.events.SoldOutEvent;
 import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
-import com.worldventures.dreamtrips.core.utils.events.UpdateRegionsAndThemesEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesQuery;
-import com.worldventures.dreamtrips.modules.trips.api.GetRegionsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
@@ -63,40 +60,20 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         soldOutModel = new SoldOutModel();
     }
 
-    public void onEvent(UpdateRegionsAndThemesEvent event) {
-        loadFilters(true);
-        eventBus.cancelEventDelivery(event);
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadFilters();
     }
 
-    public void loadFilters(boolean fromApi) {
-        view.startLoading();
-
-        doRequest(new GetActivitiesQuery(db, fromApi), resultActivities -> {
-            FiltersPresenter.this.activities = resultActivities;
-            parentActivities = getParentActivities();
-            if (regions != null && !regions.isEmpty()) {
-                fillData();
-            }
-        }, spiceException -> {
-            FiltersPresenter.this.activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
-            parentActivities = getParentActivities();
-            fillData();
-
-        });
-
-        doRequest(new GetRegionsQuery(db, fromApi), (resultRegions) -> {
-            FiltersPresenter.this.regions = resultRegions;
-            if (activities != null && !activities.isEmpty()) {
-                fillData();
-            }
-        }, (spiceException) -> {
-            FiltersPresenter.this.regions = db.readList(SnappyRepository.REGIONS, RegionModel.class);
-            fillData();
-        });
+    public void loadFilters() {
+        activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
+        parentActivities = getParentActivities();
+        regions = db.readList(SnappyRepository.REGIONS, RegionModel.class);
+        fillData();
     }
 
     public void fillData() {
-        view.finishLoading();
         if (regions != null && activities != null) {
 
             List<Object> data = new ArrayList<>();
@@ -207,10 +184,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         return themesList;
     }
 
-    private boolean needUpdate() {
-        return db.isEmpty(SnappyRepository.REGIONS) && db.isEmpty(SnappyRepository.ACTIVITIES);
-    }
-
     public void onEvent(RequestFilterDataEvent event) {
         acceptFilters();
     }
@@ -278,12 +251,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void dataSetChanged();
-
-        void startLoading();
-
-        void finishLoading();
 
         BaseArrayListAdapter getAdapter();
     }

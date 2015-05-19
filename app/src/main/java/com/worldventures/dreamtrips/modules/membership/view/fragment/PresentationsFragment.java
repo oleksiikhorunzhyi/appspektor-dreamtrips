@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPr
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.view.BaseVideoFragment;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -28,7 +30,8 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation)
-public class PresentationsFragment extends BaseFragment<PresentationsPresenter> implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class PresentationsFragment extends BaseVideoFragment<PresentationsPresenter>
+        implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity
@@ -97,14 +100,14 @@ public class PresentationsFragment extends BaseFragment<PresentationsPresenter> 
         this.recyclerView.setLayoutManager(layoutManager);
     }
 
-
-    public void onDeleteAction(CachedEntity videoEntity) {
-        getPresenter().onDeleteAction(videoEntity);
+    @Override
+    public void onDeleteAction(CachedEntity cacheEntity) {
+        showDeleteDialog(() -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
     public void onCancelCaching(CachedEntity cacheEntity) {
-        getPresenter().onCancelAction(cacheEntity);
+        showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
     }
 
     @Override

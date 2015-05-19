@@ -13,12 +13,12 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
+import com.worldventures.dreamtrips.modules.video.view.BaseVideoFragment;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
-public class Video360Fragment extends BaseFragment<Video360Presenter> implements Video360Presenter.View {
+public class Video360Fragment extends BaseVideoFragment<Video360Presenter> implements Video360Presenter.View {
 
     @Inject
     @ForActivity
@@ -125,13 +125,13 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
-    public void onDeleteAction(CachedEntity videoEntity) {
-        getPresenter().onDeleteAction(videoEntity);
+    public void onDeleteAction(CachedEntity cacheEntity) {
+        showDeleteDialog(() -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
     public void onCancelCaching(CachedEntity cacheEntity) {
-        getPresenter().onCancelAction(cacheEntity);
+        showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
     }
 
     private void setUp() {

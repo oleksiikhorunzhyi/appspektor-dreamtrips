@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
-
     private List<Video> recentVideos;
     private List<Video> featuredVideos;
 

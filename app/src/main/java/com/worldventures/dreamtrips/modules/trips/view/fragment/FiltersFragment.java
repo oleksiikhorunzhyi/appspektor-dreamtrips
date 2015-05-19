@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -41,8 +40,6 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
     @InjectView(R.id.recyclerViewRegions)
     protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.progressBarFilters)
-    protected ProgressBar progressBar;
 
     protected BaseArrayListAdapter<Object> arrayListAdapter;
 
@@ -88,25 +85,8 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     }
 
     @Override
-    public void startLoading() {
-        if (arrayListAdapter.getItemCount() == 0)
-            progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void finishLoading() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
     public BaseArrayListAdapter getAdapter() {
         return arrayListAdapter;
-    }
-
-    public void refresh() {
-        this.recyclerView.post(() ->
-                        getPresenter().fillData()
-        );
     }
 
     @Override

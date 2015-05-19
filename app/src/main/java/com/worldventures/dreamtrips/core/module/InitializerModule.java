@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
+import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
@@ -13,6 +14,7 @@ import dagger.Provides;
 
 @Module(
         injects = {
+                HockeyInitializer.class,
                 InstabugInitializer.class,
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,

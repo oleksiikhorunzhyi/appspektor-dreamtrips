@@ -15,10 +15,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.utils.LocaleUtils;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 
 import javax.inject.Inject;
@@ -34,18 +32,18 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static final String FAQ_TITLE = "FAQ";
     public static final String TERMS_TITLE = "Terms of Use";
 
+    @Inject
+    protected StaticPageProvider provider;
+
     @InjectView(R.id.web_view)
     protected WebView webView;
 
     @InjectView(R.id.progressBarWeb)
     protected ProgressBar progressBarWeb;
 
-    @Inject
-    LocalesHolder localesStorage;
-
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        return (T) new WebViewFragmentPresenter(this);
+        return (T) new WebViewFragmentPresenter(getURL());
     }
 
     @Override
@@ -78,16 +76,18 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                progressBarWeb.setVisibility(View.GONE);
+                if (progressBarWeb != null) {
+                    progressBarWeb.setVisibility(View.GONE);
+                }
             }
         });
-        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
+        webView.loadUrl(getPresenter().getLocalizedUrl());
     }
 
     @Override
     public void reload() {
         webView.loadUrl("about:blank");
-        webView.loadUrl(LocaleUtils.substituteActualLocale(getActivity(), getURL(), localesStorage));
+        webView.loadUrl(getPresenter().getLocalizedUrl());
     }
 
     abstract protected String getURL();
@@ -106,47 +106,60 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Override
     public void onDestroyView() {
+        webView.loadUrl("about:blank");
         webView.destroy();
+        webView = null;
         super.onDestroyView();
     }
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {
-
         @Override
         protected String getURL() {
+            return provider.getStaticInfoUrl(TERMS_TITLE);
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.TERMS_OF_SERVICE);
-            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(TERMS_TITLE);
         }
     }
 
     @Layout(R.layout.fragment_webview)
     @MenuResource(R.menu.menu_mock)
     public static class FAQFragment extends StaticInfoFragment {
-
         @Override
         protected String getURL() {
+            return provider.getStaticInfoUrl(FAQ_TITLE);
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.FAQ);
-            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(FAQ_TITLE);
         }
     }
 
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
-
         @Override
         protected String getURL() {
+            return provider.getStaticInfoUrl(PRIVACY_TITLE);
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.PRIVACY_POLICY);
-            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(PRIVACY_TITLE);
         }
     }
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
-
         @Override
         protected String getURL() {
-            return getPresenter().getEnrollUrl();
+            return provider.getEnrollUrl();
         }
 
         @Override
@@ -160,11 +173,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class CookiePolicyFragment extends StaticInfoFragment {
-
         @Override
         protected String getURL() {
+            return provider.getStaticInfoUrl(COOKIE_TITLE);
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
-            return ((WebViewFragmentPresenter) getPresenter()).getStaticInfoUrl(COOKIE_TITLE);
         }
     }
 
@@ -173,17 +190,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TrainingVideosFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            AppConfig.URLS.Config config = ((WebViewFragmentPresenter) getPresenter()).getConfig();
-            return config.getTrainingVideosURL();
+            return provider.getTrainingVideosURL();
         }
     }
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollRepFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
-
         @Override
         protected String getURL() {
-            return getPresenter().getEnrollRepUrl();
+            return provider.getEnrollRepUrl();
         }
 
         @Override
@@ -213,11 +228,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         public void afterCreateView(View rootView) {
             webView.getSettings().setDomStorageEnabled(true);
             super.afterCreateView(rootView);
-        }
-
-        @Override
-        public void onDestroyView() {
-            super.onDestroy();
         }
 
         @Override

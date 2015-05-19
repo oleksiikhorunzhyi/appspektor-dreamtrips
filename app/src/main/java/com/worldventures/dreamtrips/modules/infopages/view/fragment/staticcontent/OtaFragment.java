@@ -1,21 +1,20 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
 import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleUtils;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+
+import javax.inject.Inject;
 
 @Layout(R.layout.fragment_webview)
 public class OtaFragment extends ActualTokenStaticInfoFragment {
 
+    @Inject
+    StaticPageProvider provider;
+
     @Override
     protected String getURL() {
-        UserSession userSession = getPresenter().getCurrentUser();
-        return  getPresenter().getConfig().getoTAPageURL()
-                        .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                        .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+        return provider.getoTAPageURL();
     }
 
 }

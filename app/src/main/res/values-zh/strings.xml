@@ -231,14 +231,15 @@
     <string name="invitation_to">遏:</string>
     <string name="invitation_subject">主題:</string>
 
-    <string name="invite_add_last_name">Last Name</string>
-    <string name="select_template">Select template</string>
-    <string name="preview_template">Preview template</string>
-    <string name="selected">%d selected</string>
-    <string name="error_personal_message_is_empty">Personal message should not be empty</string>
-    <string name="email_is_not_valid">Email is not valid</string>
-    <string name="invitation_deselect_all">Deselect All</string>
-    <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, <br/><br/>   %s.
-        <br/>Check it out <a href="%s">here</a>.]]></string>
+    <string name="invite_add_last_name">姓名</string>
+    <string name="select_template">選取範本</string>
+    <string name="preview_template">預覽範本</string>
+    <string name="selected">已選取 %1$d</string>
+    <string name="error_personal_message_is_empty">個人訊息不應該是空的</string>
+    <string name="email_is_not_valid">電子郵件無效</string>
+    <string name="invitation_deselect_all">全部取消</string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[%1$s 您好，%2$s <br/>若要深入瞭解，請按 <a href=\"%3$s\">這裡</a>。]]></string>
+    <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
+    <string name="invite_add_photo">新增照片</string>
 
 </resources>

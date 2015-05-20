@@ -25,6 +25,9 @@ public class TrackingHelper {
     private static final String ACTION_PRIVACY = "nav_menu:terms-privacy";
     private static final String ACTION_COOKIE = "nav_menu:terms-cookie";
     private static final String ACTION_SERVICE = "nav_menu:terms-service";
+    private static final String ACTION_PHOTO_UPLOAD = "photo_upload";
+    private static final String ACTION_PHOTOS_INSPIRE_ME = "nav_menu:photos-inspireme";
+    
 
     private static final String FIELD_MEMBER_ID = "member_id";
 

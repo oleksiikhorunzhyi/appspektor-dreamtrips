@@ -43,7 +43,7 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
         activityRouter.openSuccessStoryDetails(story);
     }
 
-    public static interface View extends WebViewFragmentPresenter.View {
+    public interface View extends WebViewFragmentPresenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();

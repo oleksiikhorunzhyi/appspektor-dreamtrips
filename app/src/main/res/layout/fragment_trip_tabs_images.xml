@@ -61,7 +61,7 @@
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
             fab:fab_icon="@drawable/ic_fab_facebook"
-            fab:fab_title="Choose from facebook" />
+            fab:fab_title="@string/choose_fb" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_gallery"
@@ -71,7 +71,7 @@
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
             fab:fab_icon="@drawable/ic_fab_gallery"
-            fab:fab_title="Choose from a gallery" />
+            fab:fab_title="@string/choose_gallery" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -81,7 +81,7 @@
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
             fab:fab_icon="@drawable/ic_fab_photo"
-            fab:fab_title="Take a photo" />
+            fab:fab_title="@string/choose_camera" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

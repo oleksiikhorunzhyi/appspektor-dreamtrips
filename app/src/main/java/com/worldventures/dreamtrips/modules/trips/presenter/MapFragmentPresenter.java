@@ -74,10 +74,6 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
         }
     }
 
-    public void onPause() {
-        eventBus.unregister(this);
-    }
-
     private void reloadPins() {
         view.clearMap();
         for (TripModel trip : filteredTrips) {

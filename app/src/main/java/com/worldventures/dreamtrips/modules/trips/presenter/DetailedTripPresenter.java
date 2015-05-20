@@ -41,6 +41,12 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         activityRouter.openBookItActivity(trip.getTripId());
     }
 
+    public void menuLoaded() {
+        if (trip != null) {
+            view.setLike(trip.isLiked());
+        }
+    }
+
     public void loadTripDetails() {
         doRequest(new GetTripDetailsQuery(trip.getTripId()), this::onSuccess);
     }

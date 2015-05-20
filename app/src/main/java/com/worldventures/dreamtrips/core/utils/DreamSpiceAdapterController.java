@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class DreamSpiceAdapterController<BaseItemClass> extends RoboSpiceAdapterController<DreamSpiceManager, BaseItemClass> {
 
     @Override
-    protected void executeRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
+    protected void executeNextRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
         spiceManager.execute(request, new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
             @Override
             public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
@@ -25,7 +25,7 @@ public abstract class DreamSpiceAdapterController<BaseItemClass> extends RoboSpi
     }
 
     @Override
-    protected void executeRefresh(SpiceRequest<ArrayList<BaseItemClass>> request) {
+    protected void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
         spiceManager.execute(request, new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
             @Override
             public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {

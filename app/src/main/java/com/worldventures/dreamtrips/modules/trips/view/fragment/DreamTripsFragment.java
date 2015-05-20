@@ -201,7 +201,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     }
 
     @Override
-    public void finishLoading(List<TripModel> items) {
+    public void finishLoading() {
         refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 

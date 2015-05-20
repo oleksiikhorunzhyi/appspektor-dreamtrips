@@ -72,7 +72,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
             loadWithStatus = false;
-            view.finishLoading(items);
+            view.finishLoading();
             if (spiceException != null) {
                 handleError(spiceException);
             } else {
@@ -117,6 +117,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
+            view.startLoading();
             if (event.isReset()) {
                 resetFilters();
             } else {
@@ -194,7 +195,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
         void startLoading();
 
-        void finishLoading(List<TripModel> items);
+        void finishLoading();
 
         void clearSearch();
 

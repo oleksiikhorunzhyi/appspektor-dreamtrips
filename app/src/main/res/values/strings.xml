@@ -191,10 +191,13 @@
         //do not translate
     </string-array>
     <string-array name="dialog_add_bucket_photo">
-        <item>Choose from Facebook</item>
-        <item>Take Photo</item>
-        <item>Choose Photo</item>
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_gallery</item>
     </string-array>
+    <string name="choose_fb">Choose from Facebook</string>
+    <string name="choose_camera">Take a Photo</string>
+    <string name="choose_gallery">Choose a Photo</string>
     <string-array name="dialog_action_bucket_photo">
         <item>Set as cover</item>
         <item>Delete</item>

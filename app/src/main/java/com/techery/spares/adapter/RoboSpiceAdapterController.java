@@ -35,20 +35,20 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
 
     public void reload() {
         onStart(LoadType.RELOAD);
-        executeRequest(getRefreshRequest());
+        executeBaseRequest(getRefreshRequest());
     }
 
     public void loadNext() {
         onStart(LoadType.APPEND);
         SpiceRequest<ArrayList<BaseItemClass>> nextPageRequest = getNextPageRequest(adapter.getCount());
         if (nextPageRequest != null) {
-            executeRequest(nextPageRequest);
+            executeNextRequest(nextPageRequest);
         }
     }
 
-    protected abstract void executeRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
+    protected abstract void executeNextRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
 
-    protected abstract void executeRefresh(SpiceRequest<ArrayList<BaseItemClass>> request);
+    protected abstract void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
 
     protected void onSuccess(ArrayList<BaseItemClass> baseItemClasses) {
         adapter.addItems(baseItemClasses);

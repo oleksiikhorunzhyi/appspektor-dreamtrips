@@ -191,10 +191,13 @@
         //do not translate
     </string-array>-
     <string-array name="dialog_add_bucket_photo">
-        <item>從Facebook的選擇</item>
-        <item>拍照</item>
-        <item>選擇照片</item>
-    </string-array>-
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_gallery</item>
+    </string-array>
+    <string name="choose_fb">從Facebook的選擇</string>
+    <string name="choose_camera">拍照</string>
+    <string name="choose_gallery">選擇照片</string>
     <string-array name="dialog_action_bucket_photo">
         <item>設為封面</item>
         <item>刪</item>

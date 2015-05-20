@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -36,6 +37,8 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
     @InjectView(R.id.progressBarImage)
     protected ProgressBar progressBar;
+
+    private WeakHandler weakHandler = new WeakHandler();
 
     @Override
     public void afterCreateView(View rootView) {
@@ -91,7 +94,7 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             @Override
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                 super.onFinalImageSet(id, imageInfo, animatable);
-                progressBar.setVisibility(View.GONE);
+                weakHandler.post(() -> progressBar.setVisibility(View.GONE));
             }
         };
 

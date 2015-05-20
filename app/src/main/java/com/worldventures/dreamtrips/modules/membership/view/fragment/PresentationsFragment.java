@@ -78,8 +78,7 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     @Override
     public void onResume() {
         super.onResume();
-
-        if (this.arrayListAdapter.getItemCount() == 0) {
+        if (this.arrayListAdapter.getItemCount() == 0 && refreshLayout != null) {
             this.refreshLayout.post(() -> getPresenter().getAdapterController().reload());
         }
     }
@@ -118,13 +117,13 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     @Override
     public void startLoading() {
         if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+            refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
         if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+            refreshLayout.setRefreshing(false);
     }
 
     @Override

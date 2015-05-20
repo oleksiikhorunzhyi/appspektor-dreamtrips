@@ -251,7 +251,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        this.recyclerView.post(() -> getPresenter().loadBucketItems());
+        if (recyclerView != null) {
+            getPresenter().loadBucketItems();
+        }
     }
 
     @Override

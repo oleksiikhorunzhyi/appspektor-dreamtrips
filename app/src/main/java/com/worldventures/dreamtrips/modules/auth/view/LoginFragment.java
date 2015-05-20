@@ -87,8 +87,10 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     private void dismissProgressDialog() {
         new Handler().postDelayed(() -> {
-            loginButton.setVisibility(View.VISIBLE);
-            loginButton.setClickable(true);
+            if (loginButton != null) {
+                loginButton.setVisibility(View.VISIBLE);
+                loginButton.setClickable(true);
+            }
         }, 50);
     }
 

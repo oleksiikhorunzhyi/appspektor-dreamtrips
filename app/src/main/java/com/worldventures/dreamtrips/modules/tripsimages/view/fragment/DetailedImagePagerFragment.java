@@ -94,7 +94,9 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
             @Override
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                 super.onFinalImageSet(id, imageInfo, animatable);
-                weakHandler.post(() -> progressBar.setVisibility(View.GONE));
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         };
 

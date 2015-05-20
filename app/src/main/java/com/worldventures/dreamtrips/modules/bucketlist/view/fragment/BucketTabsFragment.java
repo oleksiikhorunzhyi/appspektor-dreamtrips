@@ -37,8 +37,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
     @InjectView(R.id.pager) CustomViewPager pager;
     BucketTabsAdapter adapter;
-    //
-    WeakHandler handler = new WeakHandler();
 
     @Override
     protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -71,6 +69,11 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (adapter.getCount() > 0) {
             BucketType currentType = adapter.getFragmentItem(pager.getCurrentItem()).data;
             getPresenter().onTabChange(currentType);

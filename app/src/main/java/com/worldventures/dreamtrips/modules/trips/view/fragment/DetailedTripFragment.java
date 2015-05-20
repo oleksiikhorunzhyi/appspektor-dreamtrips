@@ -97,7 +97,9 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
-        getPresenter().menuLoaded();
+        if (getPresenter() != null) {
+            getPresenter().menuLoaded();
+        }
     }
 
     @Override

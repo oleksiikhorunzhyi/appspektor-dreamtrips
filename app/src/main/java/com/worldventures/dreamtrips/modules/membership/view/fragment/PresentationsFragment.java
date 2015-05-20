@@ -117,12 +117,14 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

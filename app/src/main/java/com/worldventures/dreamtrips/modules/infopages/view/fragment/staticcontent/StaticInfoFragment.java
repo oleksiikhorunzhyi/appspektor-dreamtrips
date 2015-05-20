@@ -70,7 +70,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                progressBarWeb.setVisibility(View.VISIBLE);
+                if (progressBarWeb != null)
+                    progressBarWeb.setVisibility(View.VISIBLE);
             }
 
             @Override

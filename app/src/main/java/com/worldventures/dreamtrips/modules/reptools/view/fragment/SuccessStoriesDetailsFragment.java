@@ -77,7 +77,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     protected String getURL() {
-        return story.getUrl();
+        return story != null ? story.getUrl() : "";
     }
 
     @Override

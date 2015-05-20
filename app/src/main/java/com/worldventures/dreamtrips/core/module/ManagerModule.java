@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoComm
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
+import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 
@@ -30,6 +31,7 @@ import dagger.Provides;
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
                 S3ImageUploader.class,
+                UploadTripPhotoCommand.class,
                 UploadBucketPhotoCommand.class,
                 UploadTemplatePhotoCommand.class,
         },

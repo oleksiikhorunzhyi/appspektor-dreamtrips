@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosBaseQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
@@ -65,7 +64,6 @@ import dagger.Provides;
                 PhotoCell.class,
                 PhotoUploadCell.class,
 
-                UploadTripPhotoCommand.class,
                 GetMyPhotosQuery.class,
                 GetMyPhotosBaseQuery.class
         },

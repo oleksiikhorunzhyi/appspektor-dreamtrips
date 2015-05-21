@@ -86,7 +86,7 @@ public class InviteFragment
             getPresenter().continueAction();
         } else {
             containerTemplates.setVisibility(View.GONE);
-            if (!tvSearch.hasFocus() && getPresenter().) buttonContinue.setVisibility(View.VISIBLE);
+            if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 

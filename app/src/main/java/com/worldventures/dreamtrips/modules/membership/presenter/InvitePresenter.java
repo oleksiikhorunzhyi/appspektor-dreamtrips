@@ -149,7 +149,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
-        boolean isVisible = Queryable.from(members).any(Member::isChecked);
+        boolean isVisible = isVisible();
         selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
@@ -166,6 +166,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
             view.move(event.getMember(), to < lastSelected ? lastSelected : to);
         }
+    }
+
+    public boolean isVisible() {
+        return members != null && Queryable.from(members).any(Member::isChecked);
     }
 
     public void onEventMainThread(MemberCellResendEvent event) {

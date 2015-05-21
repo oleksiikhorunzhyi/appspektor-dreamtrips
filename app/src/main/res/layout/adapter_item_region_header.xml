@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#CCCCCC" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,18 +16,30 @@
         android:padding="5dp">
 
         <TextView
+            android:id="@+id/listHeader"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/textViewSoldOut"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
-            android:text="@string/filter_show_sold_out"
+            android:text="@string/filter_region_header"
             android:textColor="@color/myNavigationColor"
             />
 
+        <TextView
+            android:id="@+id/textViewSelectAllRegion"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/textViewFilterDisabled"
+            android:paddingLeft="20dp"
+            android:text="@string/filter_select_all"
+            />
+
+
         <CheckBox
-            android:id="@+id/checkBoxSold"
+            android:id="@+id/checkBoxSelectAllRegion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"

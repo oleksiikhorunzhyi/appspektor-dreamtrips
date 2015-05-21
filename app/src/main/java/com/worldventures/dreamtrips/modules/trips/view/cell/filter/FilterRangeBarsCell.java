@@ -1,13 +1,11 @@
-package com.worldventures.dreamtrips.modules.trips.view.cell;
+package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
 import android.view.View;
-import android.widget.CheckBox;
 
 import com.appyvet.rangebar.RangeBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.RangeBarDurationEvent;
 import com.worldventures.dreamtrips.core.utils.events.RangeBarPriceEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
@@ -18,21 +16,19 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_filters)
-public class FiltersCell extends AbstractCell<FilterModel> {
+public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
 
     @InjectView(R.id.rangeBarDay)
     protected RangeBar rangeBarDay;
     @InjectView(R.id.rangeBarPrice)
     protected RangeBar rangeBarPrice;
-    @InjectView(R.id.checkBoxSelectAll)
-    protected CheckBox checkBoxSelectAll;
 
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
     private int maxNights = Integer.MAX_VALUE;
     private int minNights = 0;
 
-    public FiltersCell(View view) {
+    public FilterRangeBarsCell(View view) {
         super(view);
     }
 
@@ -54,26 +50,7 @@ public class FiltersCell extends AbstractCell<FilterModel> {
             getModelObject().setIndexRightPrice(i2);
             getEventBus().post(new RangeBarPriceEvent(minPrice, maxPrice));
         });
-        checkBoxSelectAll.setChecked(getModelObject().isChecked());
 
-    }
-
-    @OnClick(R.id.checkBoxSelectAll)
-    void checkBoxClicked() {
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        getEventBus().post(new CheckBoxAllPressedEvent(checkBoxSelectAll.isChecked()));
-    }
-
-    @OnClick(R.id.listHeader)
-    void toggleVisibility() {
-        getEventBus().post(new ToggleRegionVisibilityEvent());
-    }
-
-    @OnClick(R.id.textViewSelectAll)
-    void checkBoxTextViewClicked() {
-        checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        getEventBus().post(new CheckBoxAllPressedEvent(checkBoxSelectAll.isChecked()));
     }
 
     @Override

@@ -5,45 +5,32 @@ import android.os.Bundle;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
-
-    @Inject
-    protected SnappyRepository db;
+public class MapFragmentPresenter extends BaseDreamTripsPresenter<MapFragmentPresenter.View> {
 
     private List<TripModel> trips = new ArrayList<>();
     private List<TripModel> filteredTrips = new ArrayList<>();
-    private double maxPrice = Double.MAX_VALUE;
-    private double minPrice = 0.0d;
-    private int maxNights = Integer.MAX_VALUE;
-    private int minNights = 0;
-    private boolean showSoldOut;
-    private List<Integer> acceptedRegions;
-    private List<ActivityModel> acceptedThemes;
-    private DateFilterItem dateFilterItem = new DateFilterItem();
     private String query;
 
     private boolean popped = false;
 
+    public MapFragmentPresenter() {
+        super();
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dateFilterItem.reset();
     }
 
     public void onMapLoaded() {
@@ -53,20 +40,6 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
         performFiltering();
     }
 
-    public void setFilters(FilterBusEvent event) {
-        if (event == null || event.isReset()) {
-            resetFilters();
-        } else {
-            maxPrice = event.getMaxPrice();
-            minNights = event.getMinNights();
-            minPrice = event.getMinPrice();
-            maxNights = event.getMaxNights();
-            acceptedRegions = event.getAcceptedRegions();
-            acceptedThemes = event.getAcceptedActivities();
-            showSoldOut = event.isShowSoldOut();
-            dateFilterItem = event.getDateFilterItem();
-        }
-    }
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
@@ -84,14 +57,9 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     private void performFiltering() {
         if (trips != null) {
-            List<TripModel> tempList = new ArrayList<>();
-            tempList.addAll(Queryable.from(trips).filter((input) ->
-                    input.isPriceAccepted(maxPrice, minPrice)
-                            && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
-                            && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)).toList());
-
+            ArrayList<TripModel> filterdTrips = performFiltering(trips);
             filteredTrips.clear();
-            filteredTrips.addAll(Queryable.from(tempList).filter((input) -> input.containsQuery(query)).toList());
+            filteredTrips.addAll(Queryable.from(filterdTrips).filter((input) -> input.containsQuery(query)).toList());
             reloadPins();
         }
     }
@@ -99,16 +67,6 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
     public void applySearch(String query) {
         this.query = query;
         performFiltering();
-    }
-
-    public void resetFilters() {
-        this.maxNights = Integer.MAX_VALUE;
-        this.maxPrice = Double.MAX_VALUE;
-        this.minPrice = 0;
-        this.minNights = 0;
-        this.acceptedRegions = null;
-        this.acceptedThemes = null;
-        dateFilterItem.reset();
     }
 
     public void onEvent(InfoWindowSizeEvent event) {

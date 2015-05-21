@@ -1,10 +1,10 @@
-package com.worldventures.dreamtrips.core.utils.events;
+package com.worldventures.dreamtrips.modules.trips.event;
 
-public class SoldOutEvent {
+public class FilterShowSoldOutEvent {
 
     private boolean soldOut;
 
-    public SoldOutEvent(boolean soldOut) {
+    public FilterShowSoldOutEvent(boolean soldOut) {
         this.soldOut = soldOut;
     }
 

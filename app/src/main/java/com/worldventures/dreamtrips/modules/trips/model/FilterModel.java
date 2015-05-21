@@ -7,16 +7,6 @@ public class FilterModel {
     private int indexRightPrice = 4;
     private int indexLeftDuration = 0;
     private int indexRightDuration = 3;
-    private boolean checked = true;
-    private boolean hide = true;
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
 
     public int getIndexLeftPrice() {
         return indexLeftPrice;
@@ -50,16 +40,7 @@ public class FilterModel {
         this.indexRightDuration = indexRightDuration;
     }
 
-    public boolean isHide() {
-        return hide;
-    }
-
-    public void setHide(boolean hide) {
-        this.hide = hide;
-    }
-
     public void reset() {
-        checked = true;
         indexLeftPrice = 0;
         indexRightPrice = 4;
         indexLeftDuration = 0;

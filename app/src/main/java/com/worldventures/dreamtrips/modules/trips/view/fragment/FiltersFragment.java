@@ -15,15 +15,21 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.DateCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.FiltersCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -52,10 +58,13 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), injector);
         this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
-        this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
-        this.arrayListAdapter.registerCell(ActivityModel.class, ActivityCell.class);
-        this.arrayListAdapter.registerCell(ThemeHeaderModel.class, ThemeHeaderCell.class);
+        this.arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
+        this.arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
+        this.arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
+        this.arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+        this.arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
+        this.arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
 
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);

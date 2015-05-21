@@ -17,8 +17,7 @@
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="@string/filter_duration_header"
-            android:textColor="@color/myNavigationColor"
-             />
+            android:textColor="@color/myNavigationColor" />
 
         <com.appyvet.rangebar.RangeBar
             android:id="@+id/rangeBarDay"
@@ -26,10 +25,10 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:pinColor="#54B5FC"
             custom:connectingLineColor="#54B5FC"
-            custom:selectorColor="#54B5FC"
+            custom:pinColor="#54B5FC"
             custom:rangeBar="true"
+            custom:selectorColor="#54B5FC"
             custom:tickEnd="9"
             custom:tickInterval="3"
             custom:tickStart="0" />
@@ -37,8 +36,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="25dp"
             android:layout_gravity="bottom"
+            android:paddingLeft="25dp"
             android:paddingTop="15dp"
             android:text="0"
             android:textColor="@color/myNavigationColor"
@@ -47,8 +46,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="25dp"
             android:layout_gravity="bottom|end"
+            android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="9+"
             android:textColor="@color/myNavigationColor"
@@ -72,8 +71,7 @@
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="@string/filter_price_header"
-            android:textColor="@color/myNavigationColor"
-             />
+            android:textColor="@color/myNavigationColor" />
 
         <com.appyvet.rangebar.RangeBar
             android:id="@+id/rangeBarPrice"
@@ -81,8 +79,8 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:pinColor="#54B5FC"
             custom:connectingLineColor="#54B5FC"
+            custom:pinColor="#54B5FC"
             custom:selectorColor="#54B5FC"
             custom:tickEnd="500"
             custom:tickInterval="100"
@@ -91,8 +89,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
             android:layout_gravity="bottom"
+            android:paddingLeft="15dp"
             android:paddingTop="15dp"
             android:text="100"
             android:textColor="@color/myNavigationColor"
@@ -101,8 +99,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="15dp"
             android:layout_gravity="bottom|end"
+            android:paddingRight="15dp"
             android:paddingTop="15dp"
             android:text="500+"
             android:textColor="@color/myNavigationColor"
@@ -116,42 +114,10 @@
         android:layout_height="1px"
         android:background="#CCCCCC" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
-
-        <TextView
-            android:id="@+id/listHeader"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="@string/filter_region_header"
-            android:textColor="@color/myNavigationColor"
-             />
-
-        <TextView
-            android:id="@+id/textViewSelectAll"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|end"
-            android:textColor="@color/textViewFilterDisabled"
-            android:paddingLeft="20dp"
-            android:text="@string/filter_select_all"
-             />
-
-
-        <CheckBox
-            android:id="@+id/checkBoxSelectAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:paddingRight="15dp" />
-    </LinearLayout>
+        android:layout_height="1px"
+        android:background="#CCCCCC" />
 
 
 </LinearLayout>

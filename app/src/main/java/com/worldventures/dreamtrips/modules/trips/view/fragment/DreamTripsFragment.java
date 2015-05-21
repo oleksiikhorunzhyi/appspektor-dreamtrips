@@ -186,7 +186,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     public void onRefresh() {
-        getPresenter().reload();
+        getPresenter().loadFromApi();
     }
 
     @Override

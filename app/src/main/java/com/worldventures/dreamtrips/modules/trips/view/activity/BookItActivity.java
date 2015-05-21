@@ -19,6 +19,11 @@ public class BookItActivity extends ToolbarActivity<BookItActivityPresenter> imp
         super.onCreate(savedInstanceState);
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
         tripId = bundleExtra.getString(EXTRA_TRIP_ID);
+    }
+
+    @Override
+    protected void afterCreateView(Bundle savedInstanceState) {
+        super.afterCreateView(savedInstanceState);
         getPresentationModel().onCreate();
     }
 

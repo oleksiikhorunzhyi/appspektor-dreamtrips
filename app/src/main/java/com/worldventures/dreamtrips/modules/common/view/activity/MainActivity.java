@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -167,6 +168,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
                 SoftInputUtil.hideSoftInputMethod(MainActivity.this);
+                eventBus.post(new MenuPressedEvent());
             }
         };
 
@@ -180,6 +182,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription route) {
+        eventBus.post(new MenuPressedEvent());
         closeLeftDrawer();
         makeActionBarTransparent(false);
 

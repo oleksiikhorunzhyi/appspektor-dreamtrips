@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -164,14 +165,20 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         });
     }
 
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        return getChildFragmentManager();
+    }
+
     private WeakHandler weakHandler = new WeakHandler();
 
     private void openFirst() {
-        weakHandler.post(() -> {
-            if (isTabletLandscape()) {
-                getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
-            }
-        });
+        if (refreshLayout != null)
+            weakHandler.post(() -> {
+                if (isTabletLandscape()) {
+                    getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
+                }
+            });
     }
 
     @Override

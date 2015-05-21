@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
@@ -32,6 +33,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 
 @Layout(R.layout.fragment_bucket_tab)
+@MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;

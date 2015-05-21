@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -96,6 +97,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
         if (view.isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.detail_container);
+            fragmentCompass.setSupportFragmentManager(view.getSupportFragmentManager());
             fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
             eventBus.post(new SuccessStoryItemSelectedEvent(position));
         } else {
@@ -130,6 +132,8 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         void startLoading();
 
         void onStoryClicked();
+
+        FragmentManager getSupportFragmentManager();
     }
 }
 

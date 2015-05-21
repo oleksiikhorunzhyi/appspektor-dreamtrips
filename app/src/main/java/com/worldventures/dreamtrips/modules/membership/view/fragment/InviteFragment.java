@@ -164,7 +164,8 @@ public class InviteFragment
 
     @Override
     public void finishLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

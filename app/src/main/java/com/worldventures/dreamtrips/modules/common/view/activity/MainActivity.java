@@ -131,10 +131,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         setSupportActionBar(this.toolbar);
+        super.afterCreateView(savedInstanceState);
+        //
         setUpBurger();
         setUpMenu();
-        //
-        super.afterCreateView(savedInstanceState);
         //
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_drawer);

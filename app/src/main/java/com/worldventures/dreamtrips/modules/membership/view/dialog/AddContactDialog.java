@@ -70,8 +70,8 @@ public class AddContactDialog {
                 }
 
                 btn.setEnabled(nameExist &&
-                        ((emailExist && emailValid.isValid()) ||
-                                phoneExist));
+                        ((emailExist || phoneExist)) &&
+                        ((emailValid.isValid())));
             }
         };
 

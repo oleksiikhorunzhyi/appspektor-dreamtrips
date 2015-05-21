@@ -245,4 +245,5 @@
         <br/>Check it out <a href="%s">here</a>.]]></string>
     <string name="terms_and_conditions"><![CDATA[I have read and accept the <a href="http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html">Terms & Conditions</a>]]></string>
     <string name="invite_add_photo">Add Photo</string>
+    <string name="invite_select_first">Select contacts at first</string>
 </resources>

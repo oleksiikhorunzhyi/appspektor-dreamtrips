@@ -244,5 +244,6 @@
     <string name="invitation_text_template" formatted="false"><![CDATA[%1$s 您好，%2$s <br/>若要深入瞭解，請按 <a href=\"%3$s\">這裡</a>。]]></string>
     <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
     <string name="invite_add_photo">新增照片</string>
+    <string name="invite_select_first">在第一選擇聯繫人</string>
 
 </resources>

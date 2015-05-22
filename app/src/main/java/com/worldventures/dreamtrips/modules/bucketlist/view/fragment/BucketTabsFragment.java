@@ -64,6 +64,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             public void onPageSelected(int position) {
                 BucketType bucketType = adapter.getFragmentItem(position).data;
                 getPresenter().onTabChange(bucketType);
+
             }
 
             @Override

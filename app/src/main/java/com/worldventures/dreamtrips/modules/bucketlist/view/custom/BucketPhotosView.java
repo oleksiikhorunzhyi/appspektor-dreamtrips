@@ -48,6 +48,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     @Icicle
     String filePath;
     private ImagePickCallback selectImageCallback;
+    private ImagePickCallback chooseImageCallback;
     private ImagePickCallback fbImageCallback;
     private DeleteButtonCallback deleteButtonCallback;
     private Fragment fragment;
@@ -179,7 +180,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void actionGallery() {
         pid = new PickImageDialog(getContext(), fragment);
         pid.setTitle("");
-        pid.setCallback(selectImageCallback);
+        pid.setCallback(chooseImageCallback);
         pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         pid.show();
         pidTypeShown = ChooserType.REQUEST_PICK_PICTURE;
@@ -286,6 +287,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public void setSelectImageCallback(ImagePickCallback selectImageCallback) {
         this.selectImageCallback = selectImageCallback;
+    }
+
+    public void setChooseImageCallback(ImagePickCallback chooseImageCallback) {
+        this.chooseImageCallback = chooseImageCallback;
     }
 
     public void setFbImageCallback(ImagePickCallback fbImageCallback) {

@@ -7,6 +7,7 @@ public class BucketPhotoUploadTask {
     private int progress;
     private int bucketId;
     private boolean failed;
+    private String type;
 
     public int getProgress() {
         return progress;
@@ -16,6 +17,13 @@ public class BucketPhotoUploadTask {
         this.progress = progress;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
 
     public String getFilePath() {
         return filePath;

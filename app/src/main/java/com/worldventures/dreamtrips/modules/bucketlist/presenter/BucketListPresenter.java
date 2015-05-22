@@ -81,6 +81,14 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }
     }
 
+    public void trackAddStart() {
+        TrackingHelper.bucketAddStart(type.name);
+    }
+
+    public void trackAddFinish() {
+        TrackingHelper.bucketAddFinish(type.name);
+    }
+
     private void addItems(Collection<? extends BucketItem> result) {
         bucketItems.clear();
         bucketItems.addAll(result);
@@ -268,6 +276,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketItems.add(0, bucketItem);
             db.saveBucketList(bucketItems, type.name());
 
+            trackAddFinish();
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
         });

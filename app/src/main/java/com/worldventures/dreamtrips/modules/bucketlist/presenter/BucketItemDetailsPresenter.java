@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
@@ -46,6 +47,11 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
     }
 
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        TrackingHelper.bucketItemView(bucketItem.getType(), bucketItem.getId());
+    }
 
     @Override
     protected void syncUI() {

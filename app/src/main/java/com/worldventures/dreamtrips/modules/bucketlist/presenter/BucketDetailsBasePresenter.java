@@ -8,6 +8,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
@@ -70,7 +71,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.informUser(error);
         } else {
             Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri,  "album");
+            handlePhotoPick(uri, "album");
         }
     };
 
@@ -79,7 +80,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.informUser(error);
         } else {
             Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri,  "facebook");
+            handlePhotoPick(uri, "facebook");
         }
     };
 
@@ -96,7 +97,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         task.setTaskId((int) System.currentTimeMillis());
         task.setBucketId(bucketItem.getId());
         task.setFilePath(uri.toString());
+        task.setType(type);
         view.getBucketPhotosView().addImage(task);
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
         startUpload(task);
     }
 
@@ -104,6 +107,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
         doRequest(uploadBucketPhotoCommand, (bucketPhoto) -> {
             if (bucketPhoto != null) {
+                TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
+                        task.getType(),
+                        bucketItem.getType());
                 bucketItem.getPhotos().add(bucketPhoto);
                 resaveItem(bucketItem);
                 view.getBucketPhotosView().replace(task, bucketPhoto);
@@ -113,11 +119,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
         eventBus.cancelEventDelivery(event);
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
+                event.getTask().getType(),
+                bucketItem.getType());
         startUpload(event.getTask());
     }
 
     public void onEvent(BucketPhotoUploadCancelEvent event) {
         view.getBucketPhotosView().deleteImage(event.getTask());
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_CANCEL,
+                event.getTask().getType(),
+                bucketItem.getType());
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
@@ -236,7 +248,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
     }
 
-    public ImagePickCallback getGalleryChooseCallback() {return chooseImageCallback;}
+    public ImagePickCallback getGalleryChooseCallback() {
+        return chooseImageCallback;
+    }
 
     public ImagePickCallback getPhotoChooseCallback() {
         return selectImageCallback;

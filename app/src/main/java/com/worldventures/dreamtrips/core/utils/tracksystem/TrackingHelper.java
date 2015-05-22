@@ -341,7 +341,7 @@ public class TrackingHelper {
         trackMemberAction(action, data);
     }
 
-    public static void bucketItemView(String type, String id) {
+    public static void bucketItemView(String type, int id) {
         Map<String, Object> data = new HashMap<>();
         data.put(ID, id);
         data.put("bl_type", type);
@@ -365,5 +365,5 @@ public class TrackingHelper {
         data.put("bl_type", type);
         trackMemberAction(ACTION_ADD_BL_FINISH, data);
     }
-
+    
 }

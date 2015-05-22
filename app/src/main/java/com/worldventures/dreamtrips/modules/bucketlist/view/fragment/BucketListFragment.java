@@ -164,6 +164,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 quickInputEditText.onActionViewExpanded();
+                getPresenter().trackAddStart();
                 return true;
             }
 

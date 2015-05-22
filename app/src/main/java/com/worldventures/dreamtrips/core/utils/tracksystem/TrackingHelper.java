@@ -17,17 +17,56 @@ public class TrackingHelper {
     private static final String ACTION_PHOTOS_YSBH = "nav_menu:photos-ysbh";
     private static final String ACTION_PHOTOS_ALL_USERS = "nav_menu:photos-allusers";
     private static final String ACTION_PHOTOS_MINE = "nav_menu:photos-mine";
-    private static final String ACTION_MEMBERSHIP = "nav_menu:membership-videos";
     private static final String ACTION_ENROLL = "nav_menu:membership-enroll";
-    private static final String ACTION_BUCKET_LIST = "nav_menu:bucketlist";
-    private static final String ACTION_PROFILE = "nav_menu:profile";
     private static final String ACTION_FAQ = "nav_menu:faq";
     private static final String ACTION_PRIVACY = "nav_menu:terms-privacy";
     private static final String ACTION_COOKIE = "nav_menu:terms-cookie";
     private static final String ACTION_SERVICE = "nav_menu:terms-service";
-    private static final String ACTION_PHOTO_UPLOAD = "photo_upload";
-    private static final String ACTION_PHOTOS_INSPIRE_ME = "nav_menu:photos-inspireme";
-    
+
+    private static final String ACTION_PHOTO_UPLOAD = "photo_upload_start";
+    private static final String ACTION_PHOTO_FINISHED = "photo_upload_finish";
+
+    private static final String ACTION_PHOTOS_INSPR = "nav_menu:photos-inspireme";
+    private static final String ACTION_INSPR_DETAILS = "inspireme_details:%s";
+    private static final String ACTION_INSPR_SHARE = "inspireme_share";
+
+   v
+    private static final String ACTION_OTA = "nav_menu:ota_booking";
+    private static final String ACTION_REP_ENROLL = "nav_menu:rep_enroll";
+    private static final String ACTION_TRAINING_VIDEOS = "nav_menu:training_videos";
+
+    private static final String ACTION_SS = "nav_menu:success_stories";
+    private static final String ACTION_SS_VIEW = "success_story_view:%s";
+    private static final String ACTION_SS_LIKE = "success_story_like:%s";
+    private static final String ACTION_SS_UNLIKE = "success_story_like:%s";
+    private static final String ACTION_SS_SHARE = "success_story_share";
+
+    private static final String ACTION_INVITE = "nav_menu:invite_share";
+    private static final String ACTION_INVITE_CONTACTS = "invite_share_select_contacts";
+    private static final String ACTION_TEMPLATE = "invite_share_template:%s";
+    private static final String ACTION_SEND_EMAIL = "invite_share_send_email";
+    private static final String ACTION_SEND_SMS = "invite_share_send_sms";
+    private static final String ACTION_RESEND_EMAIL = "invite_share_resend_email";
+    private static final String ACTION_RESEND_SMS = "invite_share_resend_sms";
+
+    private static final String ACTION_BUCKET_LIST = "nav_menu:bucketlist";
+    private static final String ACTION_BUCKET_PHOTO_UPLOAD_START = "bl_photo_upload_start";
+    private static final String ACTION_BUCKET_PHOTO_UPLOAD_FINISH = "bl_photo_upload_start";
+    private static final String ACTION_BUCKET_PHOTO_UPLOAD_CANCEL = "bl_photo_upload_start";
+    private static final String ACTION_BL_ITEM_VIEW = "bl_item_view";
+    private static final String ACTION_BL_POPULAR = "bucketlist_popular";
+    private static final String ACTION_ADD_BL_START = "bl_add_item_start";
+    private static final String ACTION_ADD_BL_FINISH = "bl_add_item_finish";
+
+    private static final String ACTION_PROFILE = "nav_menu:profile";
+    private static final String ACTION_PROFILE_PHOTO_UPLOAD_START = "nav_menu:profile";
+    private static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "nav_menu:profile";
+
+    private static final String ACTION_MEMBERSHIP = "nav_menu:membership-videos";
+    private static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play:%s";
+    private static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start:%s";
+    private static final String ACTION_MEMBERSHIP_LOAD_FINISHED = "member_videos_download_finish:%s";
+    private static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel:%s";
 
     private static final String FIELD_MEMBER_ID = "member_id";
 

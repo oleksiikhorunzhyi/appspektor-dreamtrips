@@ -20,7 +20,7 @@ public class StaticPageProvider {
         AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
         AppConfig.URLS urls = appConfig.getUrls();
 
-        return BuildConfig.DEBUG ? urls.getQA() : urls.getProduction();
+        return urls.getProduction();
     }
 
     public String getStaticInfoUrl(String title) {

@@ -107,9 +107,12 @@ public class InviteFragment
         lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                refreshLayout.setEnabled(firstPos == 0);
-                tvSearch.clearFocus();
+                if (lvUsers != null) {
+                    int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager())
+                            .findFirstCompletelyVisibleItemPosition();
+                    refreshLayout.setEnabled(firstPos == 0);
+                    tvSearch.clearFocus();
+                }
             }
         });
 

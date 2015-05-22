@@ -35,7 +35,7 @@
     <string name="you_should_be_here">You Should Be Here</string>
     <string name="title_activity_full_screen_photo">DreamTrips</string>
     <string name="skip_login">Skip Login</string>
-    <string name="duration">%d Nights,\n Standard Acc</string>
+    <string name="duration">%d Nights</string>
     <string name="smth_went_wrong">Something went wrong =(</string>
     <string name="inspire_me">Inspire Me</string>
     <string name="three_sixty">360 Degree Experience</string>

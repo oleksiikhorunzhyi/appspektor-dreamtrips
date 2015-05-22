@@ -10,20 +10,28 @@ import android.widget.ScrollView;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.modules.video.model.Video360;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
+import com.worldventures.dreamtrips.modules.video.view.BaseVideoFragment;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
-public class Video360Fragment extends BaseFragment<Video360Presenter> implements Video360Presenter.View {
+public class Video360Fragment extends BaseVideoFragment<Video360Presenter> implements Video360Presenter.View {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
@@ -40,62 +48,27 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     @InjectView(R.id.containerLandscape)
     protected ScrollView scrollView;
 
-    private BaseArrayListAdapter<Video360> adapterFeatured;
-    private BaseArrayListAdapter<Video360> adapterRecent;
-    private BaseArrayListAdapter<Video360> adapterAll;
+    private BaseArrayListAdapter<Video> adapterFeatured;
+    private BaseArrayListAdapter<Video> adapterRecent;
+    private BaseArrayListAdapter<Video> adapterAll;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        adapterFeatured = new BaseArrayListAdapter<>(getActivity(), injector);
+        adapterRecent = new BaseArrayListAdapter<>(getActivity(), injector);
+
+        adapterFeatured.registerCell(Video.class, Video360Cell.class);
+        adapterRecent.registerCell(Video.class, Video360SmallCell.class);
+
+        adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
+        adapterAll.registerCell(Video.class, Video360Cell.class);
+
+        recyclerViewAll.setAdapter(adapterAll);
+        recyclerViewFeatured.setAdapter(adapterFeatured);
+        recyclerViewRecent.setAdapter(adapterRecent);
+
         setUp();
-    }
-
-    private void setUp() {
-        if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            recyclerViewAll.setVisibility(View.GONE);
-            scrollView.setVisibility(View.VISIBLE);
-
-            LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            LinearLayoutManager linearLayoutManagerRecent = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            recyclerViewFeatured.setLayoutManager(linearLayoutManagerFeatured);
-            recyclerViewRecent.setLayoutManager(linearLayoutManagerRecent);
-
-            adapterFeatured = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
-            adapterRecent = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
-
-            adapterFeatured.registerCell(Video360.class, Video360Cell.class);
-            adapterRecent.registerCell(Video360.class, Video360SmallCell.class);
-
-            recyclerViewFeatured.setAdapter(adapterFeatured);
-            recyclerViewRecent.setAdapter(adapterRecent);
-
-            getPresenter().fillFeatured();
-
-            if (adapterAll != null) {
-                adapterAll.clear();
-                adapterAll.notifyDataSetChanged();
-            }
-        } else {
-            recyclerViewAll.setVisibility(View.VISIBLE);
-            scrollView.setVisibility(View.GONE);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-            recyclerViewAll.setLayoutManager(linearLayoutManager);
-
-            adapterAll = new BaseArrayListAdapter<>(getActivity(), (Injector) getActivity());
-            adapterAll.registerCell(Video360.class, Video360Cell.class);
-
-            recyclerViewAll.setAdapter(adapterAll);
-
-            getPresenter().fillAll();
-
-            if (adapterFeatured != null) {
-                adapterFeatured.clear();
-                adapterFeatured.notifyDataSetChanged();
-                adapterRecent.clear();
-                adapterRecent.notifyDataSetChanged();
-            }
-
-        }
     }
 
     @Override
@@ -104,6 +77,11 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
         this.recyclerViewFeatured.setAdapter(null);
         this.recyclerViewRecent.setAdapter(null);
         super.onDestroyView();
+    }
+
+    @Override
+    public void finishLoading() {
+        setUp();
     }
 
     @Override
@@ -130,7 +108,7 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
 
     @Override
     protected Video360Presenter createPresenter(Bundle savedInstanceState) {
-        return new Video360Presenter(this);
+        return new Video360Presenter();
     }
 
     @Override
@@ -147,13 +125,49 @@ public class Video360Fragment extends BaseFragment<Video360Presenter> implements
     }
 
     @Override
-    public void onDeleteAction(CachedEntity videoEntity) {
-        getPresenter().onDeleteAction(videoEntity);
+    public void onDeleteAction(CachedEntity cacheEntity) {
+        showDeleteDialog(() -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
     public void onCancelCaching(CachedEntity cacheEntity) {
-        getPresenter().onCancelAction(cacheEntity);
+        showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
+    }
+
+    private void setUp() {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            recyclerViewAll.setVisibility(View.GONE);
+            scrollView.setVisibility(View.VISIBLE);
+
+            LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(),
+                    LinearLayoutManager.HORIZONTAL, false);
+            LinearLayoutManager linearLayoutManagerRecent = new LinearLayoutManager(getActivity(),
+                    LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewFeatured.setLayoutManager(linearLayoutManagerFeatured);
+            recyclerViewRecent.setLayoutManager(linearLayoutManagerRecent);
+
+            getPresenter().fillFeatured();
+
+            if (adapterAll != null) {
+                adapterAll.clear();
+                adapterAll.notifyDataSetChanged();
+            }
+        } else {
+            recyclerViewAll.setVisibility(View.VISIBLE);
+            scrollView.setVisibility(View.GONE);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerViewAll.setLayoutManager(linearLayoutManager);
+
+            getPresenter().fillAll();
+
+            if (adapterFeatured != null) {
+                adapterFeatured.clear();
+                adapterFeatured.notifyDataSetChanged();
+                adapterRecent.clear();
+                adapterRecent.notifyDataSetChanged();
+            }
+        }
     }
 
 }

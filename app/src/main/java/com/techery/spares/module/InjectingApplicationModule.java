@@ -1,11 +1,10 @@
 package com.techery.spares.module;
 
+import android.app.Application;
 import android.content.Context;
 
-import com.techery.spares.application.AppInitializer;
 import com.techery.spares.application.BaseApplicationWithInjector;
-import com.techery.spares.module.Annotations.Application;
-import com.techery.spares.service.ServiceActionRunner;
+import com.techery.spares.module.qualifier.ForApplication;
 
 import javax.inject.Singleton;
 
@@ -15,6 +14,7 @@ import dagger.Provides;
 
 @Module(
         includes = {
+                // base helpers and drivers
                 EventBusModule.class,
                 AndroidServicesModule.class,
                 ConcurentModule.class,
@@ -27,37 +27,34 @@ import dagger.Provides;
 public class InjectingApplicationModule {
 
     @Provides
-    @Singleton
-    Context provideContext(BaseApplicationWithInjector baseApplicationWithInjector) {
-        return baseApplicationWithInjector.getApplicationContext();
+    public Application provideApplication(Application application) {
+        return application;
+    }
+
+    @Provides
+    @ForApplication
+    Context provideAppContext(Application application) {
+        return application.getApplicationContext();
     }
 
     @Provides
     @Singleton
-    @Application
+    Context provideContext(Application application) {
+        return application.getApplicationContext();
+    }
+
+    @Provides
+    @Singleton
+    @ForApplication
     ObjectGraph provideObjectGraph(BaseApplicationWithInjector baseApplicationWithInjector) {
         return baseApplicationWithInjector.getObjectGraph();
     }
 
     @Provides
     @Singleton
-    @Application
+    @ForApplication
     Injector provideInjector(BaseApplicationWithInjector baseApplicationWithInjector) {
         return baseApplicationWithInjector;
     }
 
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideEmptyInitializer() {
-        return new AppInitializer() {
-            @Override
-            public void initialize(Injector injector) {
-                //nothing to do here
-            }
-        };
-    }
-
-    @Provides
-    ServiceActionRunner provideServiceActionRunner(Context context) {
-        return new ServiceActionRunner(context);
-    }
 }

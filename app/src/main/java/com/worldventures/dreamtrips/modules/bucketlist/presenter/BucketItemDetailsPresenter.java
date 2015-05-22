@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActiv
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
-    public BucketItemDetailsPresenter(View view, Bundle bundle) {
-        super(view, bundle);
+    public BucketItemDetailsPresenter(Bundle bundle) {
+        super(bundle);
     }
 
     public void onEdit() {

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
@@ -105,7 +105,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     protected ProfilePresenter createPresenter(Bundle savedInstanceState) {
-        return new ProfilePresenter(this);
+        return new ProfilePresenter();
     }
 
     @OnClick(R.id.user_photo)
@@ -184,7 +184,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         if (this.pid != null) {
             this.pid.onActivityResult(requestCode, resultCode, data);
         } else {
-            Log.e(ProfileFragment.class.getSimpleName(), "Pid is NULL");
+            Timber.w("Pick image dialog is null");
         }
     }
 

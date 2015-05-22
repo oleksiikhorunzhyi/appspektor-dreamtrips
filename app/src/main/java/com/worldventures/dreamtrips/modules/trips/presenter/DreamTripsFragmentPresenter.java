@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -41,8 +39,8 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private boolean loadWithStatus;
     private boolean goneToMap = false;
 
-    private RoboSpiceAdapterController<TripModel> roboSpiceAdapterController
-            = new RoboSpiceAdapterController<TripModel>() {
+    private DreamSpiceAdapterController<TripModel> roboSpiceAdapterController
+            = new DreamSpiceAdapterController<TripModel>() {
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
@@ -74,7 +72,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
             loadFromApi = false;
             loadWithStatus = false;
-            view.finishLoading(items);
+            view.finishLoading();
             if (spiceException != null) {
                 handleError(spiceException);
             } else {
@@ -94,29 +92,21 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     private List<Integer> acceptedRegions;
     private List<ActivityModel> acceptedThemes;
 
-    public DreamTripsFragmentPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         dateFilterItem.reset();
         TrackingHelper.dreamTrips(getUserId());
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
         if (view.getAdapter().getCount() == 0) {
             goneToMap = false;
             roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
             roboSpiceAdapterController.setAdapter(view.getAdapter());
             roboSpiceAdapterController.reload();
         }
-    }
-
-    public void onPause() {
-        eventBus.unregister(this);
     }
 
     public void reload() {
@@ -127,6 +117,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
+            view.startLoading();
             if (event.isReset()) {
                 resetFilters();
             } else {
@@ -204,7 +195,7 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
 
         void startLoading();
 
-        void finishLoading(List<TripModel> items);
+        void finishLoading();
 
         void clearSearch();
 

@@ -17,11 +17,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -30,6 +34,10 @@ import butterknife.Optional;
 
 @Layout(R.layout.layout_detailed_bucket_item)
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
@@ -79,7 +87,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     protected BucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemDetailsPresenter(this, getArguments());
+        return new BucketItemDetailsPresenter(getArguments());
     }
 
     @Override
@@ -202,7 +210,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void updatePhotos() {
-        bucketPhotosView.init(this, (Injector) getActivity(), BucketPhotosView.Type.DETAILS);
+        bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }

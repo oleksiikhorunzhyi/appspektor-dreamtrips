@@ -13,7 +13,7 @@ import java.io.File;
 public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
+        if (error != null || image.getFileThumbnail() == null) {
             view.informUser(error);
         } else {
             activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFileThumbnail())));
@@ -27,10 +27,6 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
             activityRouter.openCreatePhoto(fragment, Uri.parse(image.getFilePathOriginal()));
         }
     };
-
-    public TripImagesTabsFragmentPresenter(View view) {
-        super(view);
-    }
 
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
@@ -47,8 +43,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
     }
 
     @Override
-    public void destroyView() {
-        super.destroyView();
+    public void dropView() {
+        super.dropView();
     }
 
     public void onCreate() {

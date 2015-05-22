@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -24,20 +25,21 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.FiltersCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Edward on 22.01.15.
- * filters fragment for right side nav drawer
- */
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
+
     @InjectView(R.id.recyclerViewRegions)
     protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.progressBarFilters)
-    protected ProgressBar progressBar;
 
     protected BaseArrayListAdapter<Object> arrayListAdapter;
 
@@ -48,7 +50,7 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         this.recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), injector);
         this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FiltersCell.class);
         this.arrayListAdapter.registerCell(ActivityModel.class, ActivityCell.class);
@@ -60,9 +62,9 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroyView() {
         this.recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     @OnClick(R.id.textViewApplyFilter)
@@ -83,29 +85,12 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     }
 
     @Override
-    public void startLoading() {
-        if (arrayListAdapter.getItemCount() == 0)
-            progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void finishLoading() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
     public BaseArrayListAdapter getAdapter() {
         return arrayListAdapter;
     }
 
-    public void refresh() {
-        this.recyclerView.post(() ->
-                        getPresenter().fillData()
-        );
-    }
-
     @Override
     protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
-        return new FiltersPresenter(this);
+        return new FiltersPresenter();
     }
 }

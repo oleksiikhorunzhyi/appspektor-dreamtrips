@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.apptentive.android.sdk.Log;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -32,8 +31,6 @@ public class BucketAddPhotoCell extends AbstractCell<Object> {
 
     @Override
     public void prepareForReuse() {
-        Log.v(this.getClass().getSimpleName(), "prepareForReuse");
-
     }
 
     @OnClick(R.id.imageViewPhoto)

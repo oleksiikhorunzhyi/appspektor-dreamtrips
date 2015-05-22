@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 public class DetailTripActivityPresenter extends Presenter<Presenter.View> {
 
     public DetailTripActivityPresenter(Presenter.View view) {
-        super(view);
+        super();
     }
 
     public void onCreate(Bundle bundle, Bundle savedInstanceState) {

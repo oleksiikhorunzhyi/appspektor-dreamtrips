@@ -2,14 +2,13 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.video.model.Videos360;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
+
+import timber.log.Timber;
 
 public class AppConfig {
     public static final String TRIP_ID = "{tripid}";
@@ -23,9 +22,6 @@ public class AppConfig {
     @SerializedName("URLS")
     protected URLS urls;
 
-    @SerializedName("Videos360")
-    protected List<Videos360> videos360;
-
     @SerializedName("server_status")
     protected ServerStatus serverStatus;
 
@@ -37,10 +33,6 @@ public class AppConfig {
         return this.urls;
     }
 
-    public List<Videos360> getVideos360() {
-        return this.videos360;
-    }
-
     public ServerStatus getServerStatus() {
         return serverStatus;
     }
@@ -50,23 +42,8 @@ public class AppConfig {
         @SerializedName("Production")
         private Config production;
 
-        @SerializedName("QA")
-        private Config qA;
-
         public Config getProduction() {
             return this.production;
-        }
-
-        public void setProduction(Config production) {
-            this.production = production;
-        }
-
-        public Config getQA() {
-            return this.qA;
-        }
-
-        public void setQA(Config qA) {
-            this.qA = qA;
         }
 
         public static class Config {
@@ -128,7 +105,7 @@ public class AppConfig {
                         encodedUrl = url.replace(ENROLL_UID,
                                 Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
                     } catch (UnsupportedEncodingException e) {
-                        Log.e(AppConfig.class.getSimpleName(), "", e);
+                        Timber.e(e, "Can't base64");
                     }
                 }
 

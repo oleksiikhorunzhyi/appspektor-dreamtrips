@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.session;
 
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ public class UserSession {
     private String username;
     private long lastUpdate;
     private AppConfig globalConfig;
-    private StaticPageConfig staticPageConfig;
     private List<Header> headerList;
 
     public User getUser() {
@@ -78,14 +76,6 @@ public class UserSession {
 
     public List<Header> getHeaderList() {
         return headerList != null ? headerList : new ArrayList<>();
-    }
-
-    public void setStaticPageConfig(StaticPageConfig staticPageConfig) {
-        this.staticPageConfig = staticPageConfig;
-    }
-
-    public StaticPageConfig getStaticPageConfig() {
-        return staticPageConfig;
     }
 
     public void setHeaderList(List<Header> headerList) {

@@ -5,6 +5,7 @@ import android.support.v4.app.LoaderManager;
 
 import com.techery.spares.adapter.AdapterBuilder;
 import com.techery.spares.loader.LoaderFactory;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.techery.spares.utils.TabsController;
 import com.techery.spares.utils.params.ParamsBuilderCreator;
@@ -15,10 +16,8 @@ import dagger.Provides;
 
 @Module(
         library = true,
-        overrides = true,
-        includes = {
-                SupportModule.class
-        }
+        complete = false,
+        addsTo = InjectingApplicationModule.class
 )
 public class InjectingActivityModule {
     private final InjectingActivity activity;
@@ -29,6 +28,7 @@ public class InjectingActivityModule {
         this.injector = injector;
     }
 
+    @ForActivity
     @Provides
     Context provideActivityContext() {
         return activity;
@@ -39,6 +39,7 @@ public class InjectingActivityModule {
         return activity;
     }
 
+    @ForActivity
     @Provides
     Injector provideActivityInjector() {
         return injector;

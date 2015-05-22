@@ -29,12 +29,12 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
 
     @Override
     protected ActualTokenStaticInfoFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new ActualTokenStaticInfoFragmentPM(this);
+        return new ActualTokenStaticInfoFragmentPM(getURL());
     }
 
 
     @Override
     public void loadContent() {
-        webView.loadUrl(getURL());
+        webView.loadUrl(getPresenter().getLocalizedUrl());
     }
 }

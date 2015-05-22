@@ -18,7 +18,7 @@ package com.techery.spares.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.techery.spares.utils.ValidationUtils;
 
 import java.util.Collections;
 import java.util.Set;

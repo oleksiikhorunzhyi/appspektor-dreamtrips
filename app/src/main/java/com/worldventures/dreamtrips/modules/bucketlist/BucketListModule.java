@@ -13,13 +13,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTa
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketImageAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForEdit;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
@@ -52,7 +51,7 @@ import dagger.Provides;
                 BucketDetailsFragment.class,
                 BucketItemDetailsPresenter.class,
                 AutoCompleteAdapter.class,
-                BucketImageAdapter.class,
+                IgnoreFirstItemAdapter.class,
                 BucketAddPhotoCell.class,
                 UploadBucketPhotoCommand.class,
                 BucketPhotoUploadCell.class,

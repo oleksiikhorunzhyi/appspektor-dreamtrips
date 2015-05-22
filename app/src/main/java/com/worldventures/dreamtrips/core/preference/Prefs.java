@@ -11,7 +11,7 @@ public class Prefs extends SimpleKeyValueStorage {
 
     public static final String LAST_SYNC = "LAST_SYNC";
     public static final String LAST_SYNC_BUCKET = "LAST_SYNC_BUCKET";
-    public static final String PREFIX = "bucket_";
+    public static final String TERMS_ACCEPTED = "terms_accepted";
 
     public Prefs(SharedPreferences preferences) {
         super(preferences);
@@ -21,25 +21,9 @@ public class Prefs extends SimpleKeyValueStorage {
         return this.appSharedPrefs.getLong(key, 0L);
     }
 
-    public void clear() {
-        Map<String, String> preserve = new ArrayMap<>();
-        Map<String, ?> all = appSharedPrefs.getAll();
-        for (Map.Entry<String, ?> entry : all.entrySet()) {
-            if (entry.getKey().startsWith(PREFIX)) {
-                preserve.put(entry.getKey(), entry.getValue().toString());
-            }
-        }
-
-        SharedPreferences.Editor edit = this.appSharedPrefs.edit();
-        edit.clear().apply();
-
-        for (Map.Entry<String, String> entry : preserve.entrySet()) {
-            edit.putString(entry.getKey(), entry.getValue());
-        }
-        edit.apply();
-
+    public boolean getBoolean(final String key) {
+        return this.appSharedPrefs.getBoolean(key, false);
     }
-
 
     public void put(final String key, Long value) {
         SharedPreferences.Editor prefsEditor = this.appSharedPrefs.edit();

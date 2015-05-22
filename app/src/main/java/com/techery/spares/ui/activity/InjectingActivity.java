@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Annotations.Global;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.InjectingActivityModule;
 import com.techery.spares.module.Injector;
 
@@ -59,20 +59,28 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
 
         setupLayout();
         ButterKnife.inject(this);
+    }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         afterCreateView(savedInstanceState);
     }
-
-    protected void beforeCreateView(Bundle savedInstanceState) {
-
-    }
-
 
     public void setupLayout() {
         Layout layout = this.getClass().getAnnotation(Layout.class);
         if (layout != null) {
             setContentView(layout.value());
         }
+    }
+
+
+    protected void beforeCreateView(Bundle savedInstanceState) {
+        //nothing to here
+    }
+
+    protected void afterCreateView(Bundle savedInstanceState) {
+        //nothing to here
     }
 
     @Override
@@ -88,7 +96,9 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
     @Override
     protected void onPause() {
         super.onPause();
-        this.eventBus.unregister(this);
+        if (eventBus.isRegistered(this)) {
+            this.eventBus.unregister(this);
+        }
     }
 
     @Override
@@ -112,9 +122,5 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
         List<Object> result = new ArrayList<Object>();
         result.add(new InjectingActivityModule(this, this));
         return result;
-    }
-
-    protected void afterCreateView(Bundle savedInstanceState) {
-        //nothing to here
     }
 }

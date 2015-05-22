@@ -58,7 +58,7 @@ public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPic
 
     @Override
     protected FacebookPickPhotoPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new FacebookPickPhotoPresenter(this);
+        return new FacebookPickPhotoPresenter();
     }
 
     public void preFinishProcessing(ChosenImage image) {

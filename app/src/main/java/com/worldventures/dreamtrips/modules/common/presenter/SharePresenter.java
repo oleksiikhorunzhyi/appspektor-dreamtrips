@@ -13,9 +13,6 @@ import java.io.File;
 import java.io.InputStream;
 
 public class SharePresenter extends Presenter<SharePresenter.View> {
-    public SharePresenter(View view) {
-        super(view);
-    }
 
     public void create(String imageUrl, String shareLink, String text, String type) {
         if (type.equals(ShareActivity.FB)) {
@@ -31,6 +28,10 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
 
 
         }
+    }
+
+    public void openShareActivity(String picture, String link, String text) {
+        activityRouter.openShareFacebook(picture, link, text);
     }
 
     private void downloadFile(String url, final String shareLink, final String text) {
@@ -54,13 +55,9 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
                 });
     }
 
-    public void openShareActivity(String picture, String link, String text) {
-        activityRouter.openShareFacebook(picture, link, text);
-    }
-
     public interface View extends Presenter.View {
-        void shareFBDialog(String url, String link, String text);
-
         void shareTwitterDialog(Uri url, String link, String text);
+
+        void shareFBDialog(String url, String link, String text);
     }
 }

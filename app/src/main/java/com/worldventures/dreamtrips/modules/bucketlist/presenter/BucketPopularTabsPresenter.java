@@ -7,11 +7,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public class BucketPopularTabsPresenter extends Presenter<Presenter.View> {
 
-
-    public BucketPopularTabsPresenter(View view) {
-        super(view);
-    }
-
     public Bundle getBundleForPosition(int position) {
         Bundle args = new Bundle();
         BucketTabsPresenter.BucketType type = BucketTabsPresenter.BucketType.values()[position];

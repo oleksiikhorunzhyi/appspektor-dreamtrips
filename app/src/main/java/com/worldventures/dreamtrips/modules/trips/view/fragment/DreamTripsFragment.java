@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
@@ -31,6 +33,9 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -38,6 +43,10 @@ import butterknife.OnClick;
 @MenuResource(R.menu.menu_dream_trips)
 public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements
         DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewTrips)
     protected EmptyRecyclerView recyclerView;
@@ -65,7 +74,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
         this.adapter.registerCell(TripModel.class, TripCell.class);
 
         this.recyclerView.setAdapter(adapter);
@@ -73,7 +82,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
-
 
 
     @Override
@@ -143,6 +151,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setIconifiedByDefault(false);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;
@@ -173,7 +182,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     public void onDestroyView() {
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
-        getPresenter().onPause();
     }
 
     @Override
@@ -183,7 +191,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     protected DreamTripsFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new DreamTripsFragmentPresenter(this);
+        return new DreamTripsFragmentPresenter();
     }
 
     @Override
@@ -192,8 +200,9 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     }
 
     @Override
-    public void finishLoading(List<TripModel> items) {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+    public void finishLoading() {
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

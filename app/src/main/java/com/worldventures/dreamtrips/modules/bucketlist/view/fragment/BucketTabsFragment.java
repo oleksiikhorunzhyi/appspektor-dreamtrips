@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.astuetz.PagerSlidingTabStrip.CustomTabProvider;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
 import java.io.Serializable;
@@ -29,23 +27,22 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static butterknife.ButterKnife.findById;
+import static com.astuetz.PagerSlidingTabStrip.*;
 import static com.innahema.collections.query.queriables.Queryable.from;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 
 @Layout(R.layout.fragment_bucket_tab)
+@MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
     @InjectView(R.id.pager) CustomViewPager pager;
     BucketTabsAdapter adapter;
-    //
-    WeakHandler handler = new WeakHandler();
 
     @Override
     protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketTabsPresenter(this);
+        return new BucketTabsPresenter();
     }
 
     @Override
@@ -73,15 +70,15 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             public void onPageScrollStateChanged(int state) {
             }
         });
-    }
 
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         if (adapter.getCount() > 0) {
             BucketType currentType = adapter.getFragmentItem(pager.getCurrentItem()).data;
-            handler.postDelayed(() -> getPresenter().onTabChange(currentType), 600l);
+            getPresenter().onTabChange(currentType);
         }
     }
 
@@ -136,8 +133,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         @Override
         public View getCustomTabView(ViewGroup viewGroup, int i) {
             View viewWithBadge = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_tab_with_badge, viewGroup, false);
-            findById(viewWithBadge, R.id.psts_tab_title).setOnClickListener((v) -> viewWithBadge.performClick());
-            findById(viewWithBadge, R.id.psts_tab_badge).setAlpha(0f);
+            ButterKnife.findById(viewWithBadge, R.id.psts_tab_title).setOnClickListener((v) -> viewWithBadge.performClick());
+            ButterKnife.findById(viewWithBadge, R.id.psts_tab_badge).setAlpha(0f);
             return viewWithBadge;
         }
 

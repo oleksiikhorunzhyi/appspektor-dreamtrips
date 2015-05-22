@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITIES;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.DINING;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
@@ -22,18 +23,14 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
-    public BucketTabsPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
         loadCategories();
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
         setTabs();
         setRecentBucketItemsCounts();
     }
@@ -44,7 +41,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES));
+        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, DINING));
     }
 
     public void onTabChange(BucketType type) {
@@ -71,7 +68,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public enum BucketType {
         LOCATIONS("location", R.string.bucket_locations),
         ACTIVITIES("activity", R.string.bucket_activities),
-        RESTAURANTS("dinning", R.string.dinning);
+        DINING("dining", R.string.bucket_restaurants);
 
         protected String name;
         protected int res;

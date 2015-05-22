@@ -30,7 +30,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
 
     @Override
     protected BucketPopularTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketPopularTabsPresenter(this);
+        return new BucketPopularTabsPresenter();
     }
 
     @Override
@@ -49,6 +49,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
 
             this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_locations)));
             this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_activities)));
+            this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_restaurants)));
         }
 
         pager.setAdapter(adapter);

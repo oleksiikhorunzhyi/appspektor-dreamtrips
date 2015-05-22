@@ -80,7 +80,6 @@
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:autoText="false"
                     android:background="@android:color/background_dark"
                     android:hint="@string/user_password_hint"
@@ -94,7 +93,28 @@
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
                     bind:text="${userPassword}" />
+
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/containerTerms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.gc.materialdesign.views.CheckBox
+                    android:id="@+id/checkBoxTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/textViewTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"/>
+            </LinearLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"

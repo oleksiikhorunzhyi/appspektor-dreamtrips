@@ -1,7 +1,7 @@
 package com.techery.spares.module;
 
-import com.techery.spares.module.Annotations.Global;
-import com.techery.spares.module.Annotations.Private;
+import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.module.qualifier.Private;
 
 import javax.inject.Singleton;
 

@@ -30,7 +30,7 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
 
     @Override
     protected Presenter createPresenter(Bundle savedInstanceState) {
-        return new Presenter(this);
+        return new Presenter();
     }
 
     @Override

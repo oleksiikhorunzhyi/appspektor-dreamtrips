@@ -5,14 +5,14 @@ import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.ArrayList;
 
+import retrofit.http.Field;
 import retrofit.http.GET;
+import retrofit.http.Query;
 
 public interface SharedServicesApi {
 
-    @GET("/LandingPageServices.svc/GetVideos?poe=DTAPP&country=US")
-    ArrayList<Video> getVideos();
-
-    @GET("/LandingPageServices.svc/GetWebsiteDocumentsByCountry?dt=DTApp&cn=US&lc=EN")
-    StaticPageConfig getStaticConfig();
-
+    @GET("/LandingPageServices.svc/GetWebsiteDocumentsByCountry")
+    StaticPageConfig getStaticConfig(@Query("dt") String dt,
+                                     @Query("cn") String country,
+                                     @Query("lc") String language);
 }

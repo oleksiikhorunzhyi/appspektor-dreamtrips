@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -238,7 +237,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     public void showFlagDescription(String reason) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.flag_description_title)
-                .customView(R.layout.dialog_flag_description)
+                .customView(R.layout.dialog_flag_description, true)
                 .positiveText(R.string.flag_description_positive)
                 .negativeText(R.string.flag_description_negative)
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -251,7 +250,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
                     }
                 }).build();
         dialog.show();
-        Button positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
+        View positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
         EditText etDesc = (EditText) dialog.getCustomView().findViewById(R.id.tv_description);
         etDesc.addTextChangedListener(new TextWatcherAdapter() {
             @Override

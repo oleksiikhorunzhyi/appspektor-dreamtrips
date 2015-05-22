@@ -8,8 +8,8 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsFragmentPresenter.View> {
 
-    public SuccessStoryDetailsFragmentPresenter(View view) {
-        super(view);
+    public SuccessStoryDetailsFragmentPresenter(String url) {
+        super(url);
     }
 
     public void like(SuccessStory successStory) {
@@ -43,7 +43,7 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
         activityRouter.openSuccessStoryDetails(story);
     }
 
-    public static interface View extends WebViewFragmentPresenter.View {
+    public interface View extends WebViewFragmentPresenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();

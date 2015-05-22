@@ -9,8 +9,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
+import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
+import com.worldventures.dreamtrips.modules.membership.model.History;
+import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
@@ -19,6 +23,9 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.video.model.Video;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +45,9 @@ import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
+
+    public static final String TYPE_MEMBER = "DTAPP";
+    public static final String TYPE_MEMBER_360 = "DTAPP360";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -129,6 +139,9 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/activities")
     public ArrayList<PopularBucketItem> getPopularActivities();
 
+    @GET("/api/bucket_list/dinings")
+    public ArrayList<PopularBucketItem> getPopularDining();
+
     @PUT("/api/bucket_list_items/{id}/position")
     public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 
@@ -140,4 +153,32 @@ public interface DreamTripsApi {
 
     @GET("/api/activity_suggestions")
     public ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
+
+    @GET("/api/invitations/templates")
+    public ArrayList<InviteTemplate> getInviteTemplates();
+
+    @GET("/api/invitations")
+    public ArrayList<History> getInvitations();
+
+    @POST("/api/invitations")
+    public JSONObject sendInvitations(@Body InviteBody body);
+
+    @FormUrlEncoded
+    @POST("/api/invitations/templates/{id}")
+    public InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
+
+    @FormUrlEncoded
+    @POST("/api/invitations/filled_templates")
+    public InviteTemplate createInviteTemplate(@Field("template_id") int id,
+                                               @Field("message") String message,
+                                               @Field("cover_photo_url") String photoUrl);
+
+    @GET("/api/invitations/filled_templates/{id} ")
+    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
+
+    @GET("/api/locales")
+    public ArrayList<AvailableLocale> getLocales();
+
+    @GET("/api/member_videos/")
+    ArrayList<Video> getVideos(@Query("type") String type);
 }

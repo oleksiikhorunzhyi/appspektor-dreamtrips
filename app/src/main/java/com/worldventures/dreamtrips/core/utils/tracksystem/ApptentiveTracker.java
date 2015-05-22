@@ -44,7 +44,7 @@ public class ApptentiveTracker implements ITracker {
     public void trackMemberAction(String action, Map<String, Object> data) {
         Activity activity = this.activity.get();
         if (activity != null) {
-            Apptentive.engage(activity, action, data);
+            Apptentive.engage(activity, action.replace(":", "|"));
         }
     }
 }

@@ -11,17 +11,13 @@ public class CreatePhotoParentPresenter extends Presenter<Presenter.View> {
 
     private Uri imageUri;
 
-    public CreatePhotoParentPresenter(View view) {
-        super(view);
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 
     public void onCreate() {
         Bundle b = new Bundle();
         b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
         fragmentCompass.add(Route.CREATE_PHOTO, b);
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
     }
 }

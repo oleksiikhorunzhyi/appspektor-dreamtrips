@@ -29,6 +29,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -42,6 +43,9 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipe
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -52,18 +56,19 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 public class BucketListFragment extends BaseFragment<BucketListPresenter>
         implements BucketListPresenter.View {
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
+
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     public static final int MIN_SYMBOL_COUNT = 3;
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
-
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
-
     @InjectView(R.id.textViewEmptyAdd)
     protected TextView textViewEmptyAdd;
-
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
 
@@ -88,8 +93,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         mDragDropManager.setDraggingItemShadowDrawable(
                 (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 
-        mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(),
-                (com.techery.spares.module.Injector) getActivity());
+        mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), injector);
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 
@@ -144,16 +148,15 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
-                v.setText("");
+                v.setText(null);
                 getPresenter().addToBucketList(s);
             }
             return false;
         });
 
         quickInputEditText.setThreshold(MIN_SYMBOL_COUNT);
-        AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getActivity());
+        AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getView().getContext());
         adapter.setLoader(getPresenter().getSuggestionLoader());
-        ((Injector) getActivity()).inject(adapter);
 
         quickInputEditText.setAdapter(adapter);
 
@@ -248,7 +251,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        this.recyclerView.post(() -> getPresenter().loadBucketItems());
+        if (recyclerView != null) {
+            getPresenter().loadBucketItems();
+        }
     }
 
     @Override
@@ -260,7 +265,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     protected BucketListPresenter createPresenter(Bundle savedInstanceState) {
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        return new BucketListPresenter(this, type);
+        return new BucketListPresenter(type);
     }
 
     @Override

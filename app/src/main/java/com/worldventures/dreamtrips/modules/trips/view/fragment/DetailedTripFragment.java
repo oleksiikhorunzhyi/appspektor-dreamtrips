@@ -85,7 +85,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
-        return new DetailedTripPresenter(this);
+        return new DetailedTripPresenter();
     }
 
     @OnClick(R.id.layoutBookIt)
@@ -97,7 +97,9 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
-        setLike(getPresenter().getTrip().isLiked());
+        if (getPresenter() != null) {
+            getPresenter().menuLoaded();
+        }
     }
 
     @Override

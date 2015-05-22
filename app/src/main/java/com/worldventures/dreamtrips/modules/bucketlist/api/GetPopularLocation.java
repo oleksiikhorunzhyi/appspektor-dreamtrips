@@ -21,6 +21,8 @@ public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucke
 
         if (type.equals(BucketTabsPresenter.BucketType.LOCATIONS)) {
             list.addAll(getService().getPopularLocations());
+        } else if (type.equals(BucketTabsPresenter.BucketType.DINING)) {
+            list.addAll(getService().getPopularDining());
         } else {
             list.addAll(getService().getPopularActivities());
         }

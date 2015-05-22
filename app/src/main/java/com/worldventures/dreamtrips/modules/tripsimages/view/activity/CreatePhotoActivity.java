@@ -24,7 +24,7 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParent
 
     @Override
     protected CreatePhotoParentPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new CreatePhotoParentPresenter(this);
+        return new CreatePhotoParentPresenter();
     }
 
     @Override

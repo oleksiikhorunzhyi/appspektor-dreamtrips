@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import timber.log.Timber;
+
 /**
  * A persistent cookie store which implements the Apache HttpClient CookieStore interface.
  * Cookies are stored and will persist on the user's device between application sessions since they
@@ -146,7 +148,7 @@ public class PersistentCookieStore implements CookieStore {
             try {
                 ret.add(new URI(key));
             } catch (URISyntaxException e) {
-                Log.e(PersistentCookieStore.class.getSimpleName(), "", e);
+                Timber.e(e, "Can't get uri");
             }
 
         return ret;

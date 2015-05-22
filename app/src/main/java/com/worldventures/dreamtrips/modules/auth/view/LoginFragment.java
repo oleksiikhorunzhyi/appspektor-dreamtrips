@@ -4,11 +4,15 @@ package com.worldventures.dreamtrips.modules.auth.view;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.gc.materialdesign.views.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
@@ -34,6 +38,12 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
     protected ImageView ivBg;
     @InjectView(R.id.vg_content_container)
     protected ViewGroup vgContentContainer;
+    @InjectView(R.id.containerTerms)
+    protected ViewGroup containerTerms;
+    @InjectView(R.id.textViewTerms)
+    protected TextView textViewTerms;
+    @InjectView(R.id.checkBoxTerms)
+    protected CheckBox checkBoxTerms;
 
     public LoginFragment() {
         //nothing to do
@@ -41,7 +51,15 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vgContentContainer.getLayoutParams().width = getMinSideSize(getActivity());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        textViewTerms.setText(Html.fromHtml(getString(R.string.terms_and_conditions)));
+        textViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
@@ -69,8 +87,10 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     private void dismissProgressDialog() {
         new Handler().postDelayed(() -> {
-            loginButton.setVisibility(View.VISIBLE);
-            loginButton.setClickable(true);
+            if (loginButton != null) {
+                loginButton.setVisibility(View.VISIBLE);
+                loginButton.setClickable(true);
+            }
         }, 50);
     }
 
@@ -96,7 +116,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     @Override
     protected LoginPresenter createPresenter(Bundle savedInstanceState) {
-        return new LoginPresenter(this);
+        return new LoginPresenter();
     }
 
     @OnClick(R.id.iv_title)
@@ -110,5 +130,20 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
     @OnClick(R.id.btn_login)
     public void onLoginClick() {
         getPresenter().loginAction();
+    }
+
+    @Override
+    public boolean isTermsChecked() {
+        return checkBoxTerms.isCheck();
+    }
+
+    @Override
+    public void showTerms() {
+        containerTerms.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTerms() {
+        containerTerms.setVisibility(View.GONE);
     }
 }

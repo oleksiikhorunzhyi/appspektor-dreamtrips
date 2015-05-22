@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -11,21 +12,26 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoriesListPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -33,7 +39,11 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
 
-    @InjectView(R.id.recyclerViewTrips)
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
+    @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
 
     @InjectView(R.id.swipe_container)
@@ -51,17 +61,21 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
 
-    private FilterableArrayListAdapter adapter;
+    private FilterableArrayListAdapter<SuccessStory> adapter;
+
+    private WeakHandler handler = new WeakHandler();
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
-        return new SuccessStoriesListPresenter(this);
+        return new SuccessStoriesListPresenter();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
         adapter.notifyDataSetChanged();
+        openFirst();
     }
 
     @OnClick(R.id.iv_filter)
@@ -81,8 +95,9 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
 
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), (com.techery.spares.module.Injector) getActivity());
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
         this.adapter.setHasStableIds(true);
         this.recyclerView.setEmptyView(emptyView);
@@ -94,7 +109,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems()), false)
+                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                        R.layout.adapter_item_succes_story_header), false)
                 .build();
 
         recyclerView.addItemDecoration(decoration);
@@ -137,47 +153,38 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     }
 
     @Override
-    public boolean isTablet() {
-        return ViewUtils.isTablet(getActivity());
-    }
-
-    @Override
-    public boolean isLandscape() {
-        return ViewUtils.isLandscapeOrientation(getActivity());
-    }
-
-    @Override
-    public void setDetailsContainerVisibility(boolean b) {
-        flDetailContainer.setVisibility(b ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
     public FilterableArrayListAdapter getAdapter() {
         return adapter;
     }
 
     @Override
     public void finishLoading(List<SuccessStory> result) {
-        adapter.setFilter(ivSearch.getQuery().toString());
-        if (refreshLayout != null) {
-            refreshLayout.postDelayed(() -> {
-                if (getActivity() != null) {
-                    refreshLayout.setRefreshing(false);
-                    if (isLandscape()
-                            && isTablet()
-                            && result != null
-                            && !result.isEmpty()) {
-                        getEventBus().post(new OnSuccessStoryCellClickEvent(result.get(0), 0));
-                    }
+        handler.post(() -> {
+            refreshLayout.setRefreshing(false);
+            openFirst();
+        });
+    }
+
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        return getChildFragmentManager();
+    }
+
+    private WeakHandler weakHandler = new WeakHandler();
+
+    private void openFirst() {
+        if (refreshLayout != null)
+            weakHandler.post(() -> {
+                if (isTabletLandscape()) {
+                    getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
                 }
-            }, 500);
-        }
+            });
     }
 
     @Override
     public void startLoading() {
         if (refreshLayout != null) {
-            refreshLayout.postDelayed(() -> refreshLayout.setRefreshing(true), 100);
+            weakHandler.postDelayed(() -> refreshLayout.setRefreshing(true), 100);
         }
     }
 

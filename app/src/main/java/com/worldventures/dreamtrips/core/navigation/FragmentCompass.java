@@ -23,10 +23,12 @@ public class FragmentCompass {
 
     private int containerId;
     private boolean backStackEnabled = true;
+    private FragmentManager supportFragmentManager;
 
     public FragmentCompass(BaseActivity activity, int containerId) {
         this.activity = activity;
         this.containerId = containerId;
+        supportFragmentManager = activity.getSupportFragmentManager();
     }
 
     public void setContainerId(int containerId) {
@@ -64,7 +66,7 @@ public class FragmentCompass {
 
     public void remove(String name) {
         if (validateState()) {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentManager fragmentManager = supportFragmentManager;
             Fragment fragment = fragmentManager.findFragmentByTag(name);
 
             if (fragment != null) {
@@ -81,11 +83,13 @@ public class FragmentCompass {
         }
     }
 
+    public void setSupportFragmentManager(FragmentManager supportFragmentManager) {
+        this.supportFragmentManager = supportFragmentManager;
+    }
 
     protected void action(Action action, Route route, Bundle bundle) {
         if (validateState()) {
             try {
-                FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
                 String clazzName = route.getClazzName();
 
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
@@ -184,7 +188,10 @@ public class FragmentCompass {
     }
 
     public Route getCurrentState() {
-        return Route.restoreByClass(getCurrentFragment().getClass().getName());
+        if (getCurrentFragment() != null) {
+            return Route.restoreByClass(getCurrentFragment().getClass().getName());
+        }
+        return Route.DREAMTRIPS;
     }
 
     protected void clearBackStack() {
@@ -205,7 +212,7 @@ public class FragmentCompass {
                 activity.finish();
             }
         } catch (IllegalStateException e) {
-            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+            Timber.e(e, "Can't pop fragment"); //for avoid application crash when called at runtime
         }
         if (onTransactionListener != null) {
             onTransactionListener.onTransactionDone(null, Action.POP);

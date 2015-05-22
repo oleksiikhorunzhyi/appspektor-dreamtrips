@@ -6,21 +6,20 @@ import android.view.MenuItem;
 
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-
-import net.hockeyapp.android.CrashManager;
 
 import java.util.List;
 
@@ -32,6 +31,9 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Inject
     protected ActivityRouter router;
+
+    @Inject
+    protected FragmentCompass fragmentCompass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,6 @@ public abstract class BaseActivity extends InjectingActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initHockeyApp();
         TrackingHelper.onResume(this);
     }
 
@@ -74,23 +75,25 @@ public abstract class BaseActivity extends InjectingActivity {
                 finish();
             }
         } catch (IllegalStateException e) {
-            Timber.e(BaseActivity.class.getSimpleName(), e); //for avoid application crash when called at runtime
+            Timber.w(e, "Problem on back pressed");
         }
     }
 
+    @Override
     protected List<Object> getModules() {
-        List<Object> result = super.getModules();
-        result.add(new ActivityModule(this));
-        result.add(new AuthModule());
-        result.add(new BucketListModule());
-        result.add(new CommonModule());
-        result.add(new FacebookModule());
-        result.add(new InfoModule());
-        result.add(new ProfileModule());
-        result.add(new ReptoolsModule());
-        result.add(new TripsModule());
-        result.add(new TripsImagesModule());
-        return result;
+        List<Object> modules = super.getModules();
+        modules.add(new ActivityModule(this));
+        modules.add(new AuthModule());
+        modules.add(new BucketListModule());
+        modules.add(new CommonModule());
+        modules.add(new FacebookModule());
+        modules.add(new InfoModule());
+        modules.add(new ProfileModule());
+        modules.add(new ReptoolsModule());
+        modules.add(new TripsModule());
+        modules.add(new TripsImagesModule());
+        modules.add(new MembershipModule());
+        return modules;
     }
 
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
@@ -107,17 +110,6 @@ public abstract class BaseActivity extends InjectingActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-    protected void initHockeyApp() {
-        CrashManager.register(this, BuildConfig.HOCKEY_APP_ID);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
 
 }
 

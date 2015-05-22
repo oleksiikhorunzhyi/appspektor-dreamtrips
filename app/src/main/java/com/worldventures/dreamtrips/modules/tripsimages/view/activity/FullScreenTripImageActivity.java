@@ -35,7 +35,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
 
     @Override
     protected FullScreenParentPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new FullScreenParentPresenter(this);
+        return new FullScreenParentPresenter();
     }
 
     @Override

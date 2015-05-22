@@ -19,7 +19,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories_details)
-public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter> implements SuccessStoryDetailsFragmentPresenter.View {
+public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter>
+        implements SuccessStoryDetailsFragmentPresenter.View {
 
     public static final String EXTRA_STORY = "STORY";
 
@@ -55,7 +56,6 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     public void afterCreateView(View rootView) {
-        story = getArguments().getParcelable(EXTRA_STORY);
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);
         }
@@ -77,12 +77,13 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     @Override
     protected String getURL() {
-        return story.getUrl();
+        return story != null ? story.getUrl() : "";
     }
 
     @Override
     protected SuccessStoryDetailsFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsFragmentPresenter(this);
+        story = getArguments().getParcelable(EXTRA_STORY);
+        return new SuccessStoryDetailsFragmentPresenter(getURL());
     }
 
     @Override

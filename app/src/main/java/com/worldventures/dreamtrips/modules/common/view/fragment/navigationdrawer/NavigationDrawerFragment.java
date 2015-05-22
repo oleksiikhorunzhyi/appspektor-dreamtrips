@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -30,11 +31,13 @@ import butterknife.InjectView;
 public class NavigationDrawerFragment extends BaseFragment<Presenter> implements Presenter.View, NavigationDrawerListener {
 
     @Inject
+    @ForApplication
+    Injector injector;
+    @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
     @InjectView(R.id.drawerList)
     protected RecyclerView drawerList;
-
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
@@ -44,7 +47,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
     @Override
     protected Presenter createPresenter(Bundle savedInstanceState) {
-        return new Presenter(this);
+        return new Presenter();
     }
 
     @Override
@@ -70,7 +73,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         drawerList.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
         );
-        adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()), (Injector) getActivity());
+        adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()));
         adapter.setNavigationDrawerCallbacks(this);
         drawerList.setAdapter(adapter);
         updateHeader();
@@ -115,7 +118,9 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
         if (this.targetDrawerListener != null) {
-            boolean updateComponentSelection = !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey());
+            boolean updateComponentSelection = currentComponent != null ?
+                    !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey()) :
+                    true;
 
             if (updateComponentSelection) {
                 this.targetDrawerListener.onNavigationDrawerItemSelected(newComponent);

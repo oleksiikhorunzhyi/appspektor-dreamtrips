@@ -9,13 +9,9 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStorie
 
 public class SuccessStoryDetailsPresenter extends Presenter<Presenter.View> {
 
-    public SuccessStoryDetailsPresenter(View view) {
-        super(view);
-    }
-
     @Override
-    public void init() {
-        super.init();
+    public void takeView(View view) {
+        super.takeView(view);
     }
 
     public void onCreate(SuccessStory story) {

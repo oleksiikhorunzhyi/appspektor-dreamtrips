@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.techery.spares.module.Annotations.Global;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import de.greenrobot.event.EventBus;
 
@@ -23,7 +25,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
     private final AdapterHelper adapterHelper;
-    private final Injector injector;
+    private final Provider<Injector> injector;
     protected List<BaseItemClass> items = new ArrayList<>();
 
     @Inject
@@ -32,9 +34,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     private List<Class> viewTypes = new ArrayList<>();
 
-    public BaseArrayListAdapter(Context context, Injector injector) {
+    public BaseArrayListAdapter(Context context, Provider<Injector> injector) {
         this.injector = injector;
-        this.injector.inject(this);
+        this.injector.get().inject(this);
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
@@ -52,9 +54,17 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
-        this.injector.inject(cell);
+        this.injector.get().inject(cell);
         cell.afterInject();
         return cell;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (getItem(position) instanceof BaseEntity) {
+            return ((BaseEntity) getItem(position)).getId();
+        }
+        return super.getItemId(position);
     }
 
     @Override
@@ -141,9 +151,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void setItems(List<BaseItemClass> baseItemClasses) {
-        if (items != null) {
-            clear();
-        }
         this.items = baseItemClasses;
         this.notifyDataSetChanged();
     }

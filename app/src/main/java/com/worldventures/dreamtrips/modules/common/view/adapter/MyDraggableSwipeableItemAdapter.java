@@ -27,13 +27,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import javax.inject.Provider;
+
 public class MyDraggableSwipeableItemAdapter<V>
         extends BaseArrayListAdapter<V>
         implements DraggableItemAdapter<BucketItemCell> {
 
     private MoveListener moveListener;
 
-    public MyDraggableSwipeableItemAdapter(Context context, Injector injector) {
+    public MyDraggableSwipeableItemAdapter(Context context, Provider<Injector> injector) {
         super(context, injector);
         setHasStableIds(true);
     }

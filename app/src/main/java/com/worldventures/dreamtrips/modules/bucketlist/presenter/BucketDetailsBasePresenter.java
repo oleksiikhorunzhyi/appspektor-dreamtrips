@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
@@ -48,6 +49,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected List<BucketItem> items = new ArrayList<>();
 
     @Inject
+    @ForApplication
     protected Injector injector;
 
     protected Integer coverId;
@@ -71,8 +73,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     };
 
-    public BucketDetailsBasePresenter(V view, Bundle bundle) {
-        super(view);
+    public BucketDetailsBasePresenter(Bundle bundle) {
+        super();
         type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);
         bucketItem = (BucketItem)
@@ -115,7 +117,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketAddPhotoClickEvent event) {
         eventBus.cancelEventDelivery(event);
-        view.getBucketPhotosView().showAddPhotoDialog();
+        view.getBucketPhotosView().showAddPhotoDialog(false);
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
@@ -135,8 +137,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void destroyView() {
-        super.destroyView();
+    public void dropView() {
+        super.dropView();
         eventBus.unregister(this);
     }
 
@@ -190,8 +192,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void resume() {
-        super.resume();
+    public void onResume() {
+        super.onResume();
         items.clear();
         items.addAll(db.readBucketList(type.name()));
         syncUI();

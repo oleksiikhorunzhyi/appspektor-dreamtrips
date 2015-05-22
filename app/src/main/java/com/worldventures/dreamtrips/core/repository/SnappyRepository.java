@@ -6,9 +6,10 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.utils.ValidationUtils;
+import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -32,10 +33,11 @@ public class SnappyRepository {
     public static final String BUCKET_LIST = "bucketItems";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
 
-    public static final String TRIP_KEY = "trip_rezopia";
+    public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
+    public static final String INVITE_MEMBER = "INVITE_MEMBER ";
 
     private Context context;
     private ExecutorService executorService;
@@ -65,7 +67,8 @@ public class SnappyRepository {
                 snappyDb = DBFactory.open(context);
                 action.call(snappyDb);
             } catch (SnappydbException e) {
-                Timber.w(e, "DB fails to act with result");
+                if (isNotFound(e)) Timber.v("Nothing found");
+                else Timber.w(e, "DB fails to act", e);
             } finally {
                 if (snappyDb != null)
                     try {
@@ -86,7 +89,8 @@ public class SnappyRepository {
                 Timber.v("DB action result: %s", result);
                 return result;
             } catch (SnappydbException e) {
-                Timber.w(e, "DB fails to act with result", e);
+                if (isNotFound(e)) Timber.v("Nothing found");
+                else Timber.w(e, "DB fails to act with result", e);
                 return null;
             } finally {
                 if (snappyDb != null)
@@ -103,6 +107,10 @@ public class SnappyRepository {
             Timber.w(e, "DB fails to act with result");
             return Optional.absent();
         }
+    }
+
+    private boolean isNotFound(SnappydbException e) {
+        return e.getMessage().contains("NotFound");
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -238,5 +246,21 @@ public class SnappyRepository {
 
     public void removeBucketPhotoTask(BucketPhotoUploadTask task) {
         act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
+    }
+
+
+    public void addInviteMember(Member member) {
+        act(db -> db.put(INVITE_MEMBER + member.getId(), member));
+    }
+
+    public List<Member> getInviteMembers() {
+        return actWithResult(db -> {
+            List<Member> members = new ArrayList<>();
+            String[] keys = db.findKeys(INVITE_MEMBER);
+            for (String key : keys) {
+                members.add(db.get(key, Member.class));
+            }
+            return members;
+        }).or(Collections.emptyList());
     }
 }

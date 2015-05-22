@@ -30,7 +30,6 @@ public class TrackingHelper {
     private static final String ACTION_INSPR_DETAILS = "inspireme_details:%s";
     private static final String ACTION_INSPR_SHARE = "inspireme_share";
 
-   v
     private static final String ACTION_OTA = "nav_menu:ota_booking";
     private static final String ACTION_REP_ENROLL = "nav_menu:rep_enroll";
     private static final String ACTION_TRAINING_VIDEOS = "nav_menu:training_videos";
@@ -68,7 +67,15 @@ public class TrackingHelper {
     private static final String ACTION_MEMBERSHIP_LOAD_FINISHED = "member_videos_download_finish:%s";
     private static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel:%s";
 
+    private static final String ACTION_360 = "nav_menu:videos_360";
+    private static final String ACTION_360_PLAY = "videos_360_play:%s";
+    private static final String ACTION_360_LOAD_START = "videos_360_download_start:%s";
+    private static final String ACTION_360_LOAD_FINISHED = "videos_360_download_finish:%s";
+    private static final String ACTION_360_LOAD_CANCELED = "videos_360_download_cancel:%s";
+
     private static final String FIELD_MEMBER_ID = "member_id";
+    private static final String TYPE = "type";
+    private static final String ID = "id";
 
     private static List<ITracker> trackers = new ArrayList<>();
 
@@ -76,7 +83,6 @@ public class TrackingHelper {
         trackers.add(new AdobeTracker());
         trackers.add(new ApptentiveTracker());
     }
-
 
     private TrackingHelper() {
     }
@@ -111,6 +117,33 @@ public class TrackingHelper {
         }
     }
 
+    ///////////
+    /// TRACKER HELPERS
+    //////////
+
+    private static void trackMemberAction(String action, Map<String, Object> data) {
+        for (ITracker tracker : trackers) {
+            tracker.trackMemberAction(action, data);
+        }
+    }
+
+    private static void trackPageView(String memberId, String action) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        trackMemberAction(action, data);
+    }
+
+    private static void trackSpecificPageView(String memberId, String page, String pageType, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        data.put(pageType, id);
+        trackMemberAction(page, data);
+    }
+
+
+    ///////////
+    /// TRACKING ACTIONS
+    //////////
 
     public static void login(String userId) {
         Map<String, Object> data = new HashMap<>();
@@ -140,9 +173,23 @@ public class TrackingHelper {
         trackSpecificPageView(memberId, ACTION_DREAMTRIPS, "book_it", id);
     }
 
-
     public static void ysbh(String memberId) {
         trackPageView(memberId, ACTION_PHOTOS_YSBH);
+    }
+
+    public static void inspr(String memberId) {
+        trackPageView(memberId, ACTION_PHOTOS_INSPR);
+    }
+
+    public static void insprDetails(String memberId, String id) {
+        trackPageView(memberId, String.format(ACTION_INSPR_DETAILS, id));
+    }
+
+    public static void insprShare(String id, String type) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_INSPR_SHARE, data);
     }
 
     public static void view(TripImagesListFragment.Type type, String id, String memberId) {
@@ -163,13 +210,6 @@ public class TrackingHelper {
         } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
             trackSpecificPageView(memberId, ACTION_PHOTOS_MINE, "like_user_photo", id);
         }
-    }
-
-    private static void trackSpecificPageView(String memberId, String page, String pageType, String id) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        data.put(pageType, id);
-        trackMemberAction(page, data);
     }
 
     public static void flag(TripImagesListFragment.Type type, String id, String memberId) {
@@ -193,18 +233,6 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_PHOTOS_MINE);
     }
 
-    public static void onMemberShipVideos(String memberId) {
-        trackPageView(memberId, ACTION_MEMBERSHIP);
-    }
-
-    public static void playVideo(String name, String memberId) {
-        final String action = ACTION_MEMBERSHIP;
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        data.put("play_video", name);
-        trackMemberAction(action, data);
-    }
-
     public static void enroll(String memberId) {
         trackPageView(memberId, ACTION_ENROLL);
     }
@@ -221,18 +249,6 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_FAQ);
     }
 
-    private static void trackMemberAction(String action, Map<String, Object> data) {
-        for (ITracker tracker : trackers) {
-            tracker.trackMemberAction(action, data);
-        }
-    }
-
-    private static void trackPageView(String memberId, String action) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        trackMemberAction(action, data);
-    }
-
     public static void privacy(String memberId) {
         trackPageView(memberId, ACTION_PRIVACY);
     }
@@ -243,6 +259,33 @@ public class TrackingHelper {
 
     public static void service(String memberId) {
         trackPageView(memberId, ACTION_SERVICE);
+    }
+
+    public static void photoUploadStarted(String type, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_PHOTO_UPLOAD, data);
+    }
+
+    public static void photoUploadFinished(String type, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_PHOTO_FINISHED, data);
+    }
+
+    public static void video360(String memberId) {
+        trackPageView(memberId, ACTION_360);
+    }
+
+    public static void onMemberShipVideos(String memberId) {
+        trackPageView(memberId, ACTION_MEMBERSHIP);
+    }
+
+
+    public static void videoAction(String memberId, String action, String videoName) {
+        trackPageView(memberId, String.format(action, videoName));
     }
 
 

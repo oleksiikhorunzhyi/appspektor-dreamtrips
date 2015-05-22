@@ -6,11 +6,11 @@ import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
+import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoPresenter;
 
 import butterknife.InjectView;
 
-public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<ActualTokenStaticInfoFragmentPM> implements ActualTokenStaticInfoFragmentPM.View {
+public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<ActualTokenStaticInfoPresenter> implements ActualTokenStaticInfoPresenter.View {
 
     @InjectView(R.id.progressBarWeb)
     protected ProgressBar progressBarWeb;
@@ -28,8 +28,8 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
 
 
     @Override
-    protected ActualTokenStaticInfoFragmentPM createPresenter(Bundle savedInstanceState) {
-        return new ActualTokenStaticInfoFragmentPM(getURL());
+    protected ActualTokenStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
+        return new ActualTokenStaticInfoPresenter(getURL());
     }
 
 

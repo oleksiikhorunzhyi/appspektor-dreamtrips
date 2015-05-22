@@ -69,7 +69,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.onMemberShipVideos(getUserId());
+        TrackingHelper.memberVideos(getUserId());
         videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
     }

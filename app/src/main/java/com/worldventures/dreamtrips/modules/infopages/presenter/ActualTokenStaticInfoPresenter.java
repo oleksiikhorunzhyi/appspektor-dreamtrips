@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-public class ActualTokenStaticInfoFragmentPM extends WebViewFragmentPresenter<ActualTokenStaticInfoFragmentPM.View> {
+public class ActualTokenStaticInfoPresenter extends WebViewFragmentPresenter<ActualTokenStaticInfoPresenter.View> {
     public static final int LIFE_DURATION = 30;
 
-    public ActualTokenStaticInfoFragmentPM(String url) {
+    public ActualTokenStaticInfoPresenter(String url) {
         super(url);
     }
 

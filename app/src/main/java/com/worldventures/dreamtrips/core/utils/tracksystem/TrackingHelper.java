@@ -279,14 +279,36 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_360);
     }
 
-    public static void onMemberShipVideos(String memberId) {
+    public static void memberVideos(String memberId) {
         trackPageView(memberId, ACTION_MEMBERSHIP);
     }
-
 
     public static void videoAction(String memberId, String action, String videoName) {
         trackPageView(memberId, String.format(action, videoName));
     }
 
+    public static void ota(String memberId) {
+        trackPageView(memberId, ACTION_OTA);
+    }
+
+    public static void repEnroll(String memberId) {
+        trackPageView(memberId, ACTION_REP_ENROLL);
+    }
+
+    public static void trainingVideos(String memberId) {
+        trackPageView(memberId, ACTION_TRAINING_VIDEOS);
+    }
+
+    public static void successStories(String memberId) {
+        trackPageView(memberId, ACTION_SS);
+    }
+
+    public static void unlikeSS(String memberId, String id) {
+        trackPageView(memberId, String.format(ACTION_SS_UNLIKE, id));
+    }
+
+    public static void likeSS(String memberId, String id) {
+        trackPageView(memberId, String.format(ACTION_SS_LIKE, id));
+    }
 
 }

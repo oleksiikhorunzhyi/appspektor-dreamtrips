@@ -35,7 +35,7 @@
     <string name="you_should_be_here">您應該在這</string>
     <string name="title_activity_full_screen_photo">DreamTrips</string>
     <string name="skip_login">跳過登錄</string>
-    <string name="duration">%d Nights,\n Standard Acc</string>
+    <string name="duration">%d 晚</string>
     <string name="smth_went_wrong">出現問題=(</string>
     <string name="inspire_me">給我靈感</string>
     <string name="three_sixty">360度體驗</string>
@@ -171,8 +171,8 @@
     <string name="today">今兒</string>
     <string name="rep_enrollment">眾議員招生</string>
     <string name="no_connection">沒有互聯網連接</string>
-    <string name="popular_add">ADD</string>
-    <string name="popular_done">DONE</string>
+    <string name="popular_add">添加</string>
+    <string name="popular_done">完成</string>
     <string name="see_more">查看更多</string>
     <string name="alert">警戒</string>
     <string name="OK">行</string>

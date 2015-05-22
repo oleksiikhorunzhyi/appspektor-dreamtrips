@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
@@ -67,6 +68,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     private void handleResponse(ArrayList<InviteTemplate> inviteTemplates) {
         view.finishLoading();
+        Collections.sort(inviteTemplates, (lhs, rhs) -> lhs.getCategory().compareTo(rhs.getCategory()));
         view.addItems(inviteTemplates);
     }
 

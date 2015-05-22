@@ -123,7 +123,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     public void actionGallery(View view) {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
+        this.pid.setCallback(getPresenter().provideGalleryCallback());
         this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.show();
         this.multipleActionsDown.collapse();

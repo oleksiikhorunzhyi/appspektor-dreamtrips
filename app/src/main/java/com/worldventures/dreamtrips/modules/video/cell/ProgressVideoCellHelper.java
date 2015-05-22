@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
@@ -25,6 +26,9 @@ public class ProgressVideoCellHelper {
     private int red;
     private String url;
     private CachedEntity cacheEntity;
+
+    private String userId;
+    private String videoName;
 
     ProgressVideoCellHelper(FabButton ivDownload, CircleImageView circleView) {
 
@@ -98,5 +102,10 @@ public class ProgressVideoCellHelper {
         } else {
             eventBus.post(new CancelCachingVideoRequestEvent(cacheEntity));
         }
+    }
+
+    public interface LoadingTracker {
+        void trackStart();
+        void trackFinish();
     }
 }

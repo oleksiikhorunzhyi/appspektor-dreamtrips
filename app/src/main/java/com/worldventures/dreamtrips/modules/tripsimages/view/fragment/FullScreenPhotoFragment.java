@@ -19,6 +19,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -136,7 +137,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
                         getPresenter().onFbShare();
-                    } else {
+                        } else {
                         getPresenter().onTwitterShare();
                     }
                 }).show();

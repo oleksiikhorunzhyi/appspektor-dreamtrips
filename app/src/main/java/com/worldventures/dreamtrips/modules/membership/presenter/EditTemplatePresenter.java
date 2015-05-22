@@ -11,6 +11,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.Share;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
@@ -110,7 +111,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         return deleteButtonCallback;
     }
 
-    public Intent getShareIntent() {
+    private Intent getShareIntent() {
         InviteTemplate.Type type = template.getType();
         List<String> membersAddress = getMembersAddress();
         String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
@@ -120,7 +121,22 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         } else {
             intent = Share.newSmsIntent(context, getSmsBody(), addresses);
         }
+        trackSharing();
         return intent;
+    }
+
+    private void trackSharing() {
+        InviteTemplate.Type type = template.getType();
+        if (type == InviteTemplate.Type.EMAIL) {
+            TrackingHelper.inviteShareAction(TrackingHelper.ACTION_SEND_EMAIL,
+                    template.getId(),
+                    template.getTo().size());
+        } else {
+            TrackingHelper.inviteShareAction(TrackingHelper.ACTION_SEND_SMS,
+                    template.getId(),
+                    template.getTo().size());
+        }
+
     }
 
     public void previewAction() {
@@ -155,6 +171,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void createInviteSuccess(InviteTemplate template) {
         Timber.i("createInviteSuccess");
         getFilledInvitationsTemplateSuccess(template);
+
         activityRouter.openDefaultShareIntent(getShareIntent());
         notifyServer();
     }

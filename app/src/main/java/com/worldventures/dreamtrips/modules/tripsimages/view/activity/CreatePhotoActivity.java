@@ -17,6 +17,7 @@ import butterknife.InjectView;
 @Layout(R.layout.activity_create_photo)
 public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParentPresenter> {
     public static final String EXTRA_FILE_URI = "EXTRA_FILE_URI";
+    public static final String EXTRA_TYPE = "type_extra";
     public static final int REQUEST_CODE_CREATE_PHOTO = 342;
 
     @InjectView(R.id.toolbar_actionbar)
@@ -30,10 +31,11 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParent
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
+        Bundle bundle = getIntent().getBundleExtra(BaseRouter.EXTRA_BUNDLE);
+        Uri imageUri = bundle.getParcelable(EXTRA_FILE_URI);
+        String type = bundle.getString(EXTRA_TYPE);
 
-        Uri imageUri = getIntent().getBundleExtra(BaseRouter.EXTRA_BUNDLE).getParcelable(EXTRA_FILE_URI);
-
-        getPresentationModel().setImageUri(imageUri);
+        getPresentationModel().setImageUri(imageUri, type);
         getPresentationModel().onCreate();
     }
 

@@ -10,10 +10,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -44,8 +43,6 @@ public class VideoCell extends AbstractCell<Video> {
     @Inject
     @ForActivity
     protected Context context;
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
 
     protected ProgressVideoCellHelper progressVideoCellHelper;
 
@@ -83,17 +80,19 @@ public class VideoCell extends AbstractCell<Video> {
         CachedEntity videoEntity = getModelObject().getCacheEntity();
         Uri parse = Uri.parse(getModelObject().getMp4Url());
         if (videoEntity.isCached(context)) {
-            parse = Uri.parse(CachedEntity.getFilePath(context,videoEntity.getUrl()));
+            parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
         }
         Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
-        String email = appSessionHolder.get().get().getUser().getEmail();
-        TrackingHelper.playVideo(getModelObject().getVideoName(), email);
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_PLAY,
+                getModelObject().getVideoName()));
         context.startActivity(intent);
     }
 
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
-        progressVideoCellHelper.onDownloadCLick(context,getEventBus());
+        progressVideoCellHelper.onDownloadCLick(context, getEventBus());
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START,
+                getModelObject().getVideoName()));
     }
 
     @Override

@@ -80,6 +80,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
     @Override
     public void onPageSelected(int position) {
+        getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
     }
 

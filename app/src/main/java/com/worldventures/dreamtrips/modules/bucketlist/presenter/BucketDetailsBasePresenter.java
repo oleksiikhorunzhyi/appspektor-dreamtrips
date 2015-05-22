@@ -61,15 +61,25 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.informUser(error);
         } else {
             Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri);
+            handlePhotoPick(uri, "camera");
         }
     };
+
+    protected ImagePickCallback chooseImageCallback = (fragment, image, error) -> {
+        if (error != null) {
+            view.informUser(error);
+        } else {
+            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
+            handlePhotoPick(uri,  "album");
+        }
+    };
+
     protected ImagePickCallback fbCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
         } else {
             Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri);
+            handlePhotoPick(uri,  "facebook");
         }
     };
 
@@ -81,7 +91,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                 bundle.getSerializable(BucketActivity.EXTRA_ITEM);
     }
 
-    private void handlePhotoPick(Uri uri) {
+    private void handlePhotoPick(Uri uri, String type) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
         task.setTaskId((int) System.currentTimeMillis());
         task.setBucketId(bucketItem.getId());
@@ -225,6 +235,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         db.saveBucketList(items, type.name());
         eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
     }
+
+    public ImagePickCallback getGalleryChooseCallback() {return chooseImageCallback;}
 
     public ImagePickCallback getPhotoChooseCallback() {
         return selectImageCallback;

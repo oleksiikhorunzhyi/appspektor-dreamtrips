@@ -62,6 +62,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
+
+        if (photo instanceof Inspiration) {
+            TrackingHelper.insprDetails(getUserId(), photo.getFsId());
+        }
+
     }
 
 
@@ -94,10 +99,16 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     public void onFbShare() {
         activityRouter.openShareFacebook(photo.getFSImage().getUrl(), null, photo.getFsShareText());
+        if (photo instanceof Inspiration) {
+            TrackingHelper.insprShare(photo.getFsId(), "facebook");
+        }
     }
 
     public void onTwitterShare() {
         activityRouter.openShareTwitter(photo.getFSImage().getUrl(), null, photo.getFsShareText());
+        if (photo instanceof Inspiration) {
+            TrackingHelper.insprShare(photo.getFsId(), "twitter");
+        }
     }
 
     public List<Flag> getFlagContent() {

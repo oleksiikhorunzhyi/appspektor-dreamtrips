@@ -7,6 +7,7 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -18,7 +19,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_member_ship)
 @MenuResource(R.menu.menu_mock)
-public class MembershipFragment extends BaseFragment<MembershipPresenter> implements MembershipPresenter.View {
+public class MembershipFragment extends BaseFragment<MembershipPresenter> implements MembershipPresenter.View, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip tabStrip;
@@ -42,6 +43,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         super.afterCreateView(rootView);
         adapter = new BaseStatePagerAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);
+        pager.setOnPageChangeListener(this);
         tabStrip.setViewPager(pager);
 
         adapter.add(new FragmentItem(PresentationsFragment.class, getString(R.string.presentations)));
@@ -50,5 +52,19 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
             adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        getPresenter().trackState(position);
+        SoftInputUtil.hideSoftInputMethod(pager);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 }

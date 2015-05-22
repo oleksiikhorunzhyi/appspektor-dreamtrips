@@ -50,7 +50,7 @@ public class Video {
 
     public CachedEntity getCacheEntity() {
         if (entity == null) {
-            entity = new CachedEntity(this.getMp4Url(), this.getUid());
+            entity = new CachedEntity(this.getMp4Url(), this.getUid(), this.getVideoName());
         }
         return entity;
     }

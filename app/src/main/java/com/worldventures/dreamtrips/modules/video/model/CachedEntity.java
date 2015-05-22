@@ -13,11 +13,13 @@ public class CachedEntity implements Serializable {
     protected int progress;
     protected String uuid;
     protected int downloadId;
+    protected String name;
 
 
-    public CachedEntity(String url, String id) {
+    public CachedEntity(String url, String id, String name) {
         this.url = url;
         uuid = id;
+        this.name = name;
     }
 
     public CachedEntity() {
@@ -33,6 +35,10 @@ public class CachedEntity implements Serializable {
 
     public boolean isCached(Context context) {
         return new File(getFilePath(context, getUrl())).exists() && getProgress() == 100;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getProgress() {

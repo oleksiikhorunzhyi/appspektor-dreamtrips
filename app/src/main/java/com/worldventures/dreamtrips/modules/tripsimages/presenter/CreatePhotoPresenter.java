@@ -33,6 +33,12 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     @Inject
     protected Context context;
 
+    private String type;
+
+    public CreatePhotoPresenter(String type) {
+        this.type = type;
+    }
+
     public void onDataSet(int year, int month, int day) {
         String format = DateTimeUtils.convertDateToString(year, month, day);
         view.setDate(format);
@@ -61,6 +67,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
             Date time = DateTimeUtils.timeFromString(view.getTime());
             action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
             action.setTaskId(UUID.randomUUID().toString());
+            action.setType(type);
 
             eventBus.post(new InsertNewImageUploadTaskEvent(action));
             dreamSpiceManager.uploadPhoto(action);
@@ -71,7 +78,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     public interface View extends Presenter.View {
         void end();
 
-        public Uri getImageUri();
+        Uri getImageUri();
 
         String getLocation();
 

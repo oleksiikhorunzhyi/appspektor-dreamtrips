@@ -10,6 +10,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -81,12 +83,16 @@ public class Video360Cell extends AbstractCell<Video> {
             url = cacheEntity.getFilePath(context, getModelObject().getMp4Url());
         }
         activityRouter.open360Activity(url);
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_PLAY,
+                getModelObject().getVideoName()));
     }
 
 
     @OnClick(R.id.iv_download)
     public void onDownloadClick() {
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_LOAD_START,
+                getModelObject().getVideoName()));
     }
 
     @Override

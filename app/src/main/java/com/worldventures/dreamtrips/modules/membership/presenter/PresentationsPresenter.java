@@ -9,6 +9,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
+import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -69,7 +70,6 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.memberVideos(getUserId());
         videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
     }
@@ -98,6 +98,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
 
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
+        TrackingHelper.videoAction(getUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
     }
 
 
@@ -129,6 +130,10 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
                 }
             }
         }
+    }
+
+    public void onEvent(TrackVideoStatusEvent event) {
+        TrackingHelper.videoAction(getUserId(), event.getAction(), event.getName());
     }
 
     @Override

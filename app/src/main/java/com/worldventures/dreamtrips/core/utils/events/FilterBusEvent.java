@@ -18,6 +18,8 @@ public class FilterBusEvent {
     private DateFilterItem dateFilterItem;
     private List<Integer> acceptedRegions = new ArrayList<>();
     private List<ActivityModel> acceptedActivities = new ArrayList<>();
+    private boolean showFavorites;
+    private boolean showRecentlyAdded;
 
     public int getMinNights() {
         return minNights;
@@ -89,5 +91,21 @@ public class FilterBusEvent {
 
     public void setDateFilterItem(DateFilterItem dateFilterItem) {
         this.dateFilterItem = dateFilterItem;
+    }
+
+    public void setShowFavorites(boolean showFavorites) {
+        this.showFavorites = showFavorites;
+    }
+
+    public boolean isShowFavorites() {
+        return showFavorites;
+    }
+
+    public void setShowRecentlyAdded(boolean showRecentlyAdded) {
+        this.showRecentlyAdded = showRecentlyAdded;
+    }
+
+    public boolean isShowRecentlyAdded() {
+        return showRecentlyAdded;
     }
 }

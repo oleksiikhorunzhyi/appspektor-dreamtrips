@@ -11,18 +11,17 @@
         android:padding="5dp">
 
         <TextView
+            android:id="@+id/textViewFavorite"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/textViewSoldOut"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
-            android:text="@string/filter_show_sold_out"
-            android:textColor="@color/myNavigationColor"
-            />
+            android:text="@string/filters_show_favorite"
+            android:textColor="@color/myNavigationColor" />
 
         <CheckBox
-            android:id="@+id/checkBoxSold"
+            android:id="@+id/checkFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"

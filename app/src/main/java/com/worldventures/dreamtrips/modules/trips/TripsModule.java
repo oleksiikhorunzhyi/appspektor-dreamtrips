@@ -13,12 +13,15 @@ import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPrese
 import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.modules.trips.view.cell.ActivityCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.DateCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.FiltersCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.RegionCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.SoldOutCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.ThemeHeaderCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RecentlyAddedCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
@@ -46,13 +49,16 @@ import dagger.Provides;
                 DreamTripsFragment.class,
                 MapFragment.class,
 
-                FiltersCell.class,
-                ActivityCell.class,
-                ThemeHeaderCell.class,
+                FilterRangeBarsCell.class,
+                ThemeCell.class,
+                HeaderThemeCell.class,
                 SoldOutCell.class,
                 DateCell.class,
                 RegionCell.class,
                 TripCell.class,
+                FavoritesCell.class,
+                HeaderRegionCell.class,
+                RecentlyAddedCell.class
         },
         complete = false,
         library = true

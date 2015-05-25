@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.google.gson.JsonObject;
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -17,8 +16,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
@@ -27,20 +24,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPresenter.View> {
+public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTripsFragmentPresenter.View> {
 
     @Inject
     protected Prefs prefs;
 
-    @Inject
-    protected SnappyRepository db;
-
     private boolean loadFromApi;
     private boolean loadWithStatus;
     private boolean goneToMap = false;
+    private DreamSpiceAdapterController<TripModel> roboSpiceAdapterController = new DreamSpiceAdapterController<TripModel>() {
+        private Boolean cacheEmpty() {
+            return db.isEmpty(SnappyRepository.TRIP_KEY);
+        }
 
-    private DreamSpiceAdapterController<TripModel> roboSpiceAdapterController
-            = new DreamSpiceAdapterController<TripModel>() {
+        private boolean shouldUpdate() {
+            long current = Calendar.getInstance().getTimeInMillis();
+            return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+        }
+
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
@@ -52,14 +53,6 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
             };
         }
 
-        private Boolean cacheEmpty() {
-            return db.isEmpty(SnappyRepository.TRIP_KEY);
-        }
-
-        private boolean shouldUpdate() {
-            long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
-        }
 
         @Override
         public void onStart(LoadType loadType) {
@@ -84,18 +77,10 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         }
     };
 
-    private double maxPrice = Double.MAX_VALUE;
-    private double minPrice = 0.0d;
-    private int maxNights = Integer.MAX_VALUE;
-    private int minNights = 0;
-    private DateFilterItem dateFilterItem = new DateFilterItem();
-    private List<Integer> acceptedRegions;
-    private List<ActivityModel> acceptedThemes;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dateFilterItem.reset();
         TrackingHelper.dreamTrips(getUserId());
     }
 
@@ -109,7 +94,11 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
         }
     }
 
-    public void reload() {
+    public void onPause() {
+        eventBus.unregister(this);
+    }
+
+    public void loadFromApi() {
         loadFromApi = true;
         loadWithStatus = true;
         roboSpiceAdapterController.reload();
@@ -118,43 +107,18 @@ public class DreamTripsFragmentPresenter extends Presenter<DreamTripsFragmentPre
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
             view.startLoading();
-            if (event.isReset()) {
-                resetFilters();
-            } else {
-                maxPrice = event.getMaxPrice();
-                minNights = event.getMinNights();
-                minPrice = event.getMinPrice();
-                maxNights = event.getMaxNights();
-                dateFilterItem = event.getDateFilterItem();
-                acceptedRegions = event.getAcceptedRegions();
-                acceptedThemes = event.getAcceptedActivities();
-            }
-            roboSpiceAdapterController.reload();
+            setFilters(event);
         }
+        roboSpiceAdapterController.reload();
     }
 
     public void onEvent(TripLikedEvent event) {
         roboSpiceAdapterController.reload();
     }
 
-    private ArrayList<TripModel> performFiltering(List<TripModel> trips) {
-        ArrayList<TripModel> filteredTrips = new ArrayList<>();
-        filteredTrips.addAll(Queryable.from(trips).filter(input ->
-                input.isPriceAccepted(maxPrice, minPrice)
-                        && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
-                        && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)).toList());
-
-        return filteredTrips;
-    }
-
+    @Override
     public void resetFilters() {
-        this.maxNights = Integer.MAX_VALUE;
-        this.maxPrice = Double.MAX_VALUE;
-        this.minPrice = 0;
-        this.minNights = 0;
-        this.acceptedRegions = null;
-        this.acceptedThemes = null;
-        dateFilterItem.reset();
+        super.resetFilters();
         view.clearSearch();
     }
 

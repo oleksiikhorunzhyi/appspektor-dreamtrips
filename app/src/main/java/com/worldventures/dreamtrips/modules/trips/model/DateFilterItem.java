@@ -9,6 +9,7 @@ public class DateFilterItem {
     private Date endDate;
 
     public DateFilterItem() {
+        reset();
     }
 
     public DateFilterItem(Date startDate, Date endDate) {

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.view.cell;
+package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
 import android.view.View;
 import android.widget.TextView;

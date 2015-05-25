@@ -5,11 +5,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -25,7 +25,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_webview)
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
-        implements WebViewFragmentPresenter.View {
+        implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String PRIVACY_TITLE = "Privacy Policy";
     public static final String COOKIE_TITLE = "Cookie Policy";
@@ -38,8 +38,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @InjectView(R.id.web_view)
     protected WebView webView;
 
-    @InjectView(R.id.progressBarWeb)
-    protected ProgressBar progressBarWeb;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout refreshLayout;
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
@@ -49,7 +49,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
 
@@ -70,15 +71,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                if (progressBarWeb != null)
-                    progressBarWeb.setVisibility(View.VISIBLE);
+                if (refreshLayout != null) {
+                    refreshLayout.setRefreshing(true);
+                }
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (progressBarWeb != null) {
-                    progressBarWeb.setVisibility(View.GONE);
+                if (refreshLayout != null) {
+                    refreshLayout.setRefreshing(false);
+
                 }
             }
         });
@@ -111,6 +114,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         webView.destroy();
         webView = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onRefresh() {
+        reload();
     }
 
     @Layout(R.layout.fragment_webview)

@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -17,7 +16,6 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -33,19 +31,15 @@ import butterknife.InjectView;
 public class PresentationsFragment extends BaseVideoFragment<PresentationsPresenter>
         implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
+    @InjectView(R.id.lv_items)
+    protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.ll_empty_view)
+    protected ViewGroup emptyView;
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
-    @InjectView(R.id.lv_items)
-    protected EmptyRecyclerView recyclerView;
-
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-
-    @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
-
     private LoaderRecycleAdapter<Object> arrayListAdapter;
 
     @Override
@@ -117,13 +111,14 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     @Override
     public void startLoading() {
         if (refreshLayout != null)
-            refreshLayout.setRefreshing(true);
+            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
         if (refreshLayout != null)
-            refreshLayout.setRefreshing(false);
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+
     }
 
     @Override

@@ -9,14 +9,18 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStorie
 
 public class SuccessStoryDetailsPresenter extends Presenter<Presenter.View> {
 
+    private SuccessStory successStory;
+
+    public SuccessStoryDetailsPresenter(SuccessStory successStory) {
+        this.successStory = successStory;
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
+        fragmentCompass.switchBranch(Route.SUCCESS_STORES_DETAILS, bundle);
     }
 
-    public void onCreate(SuccessStory story) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, story);
-        fragmentCompass.add(Route.SUCCESS_STORES_DETAILS, bundle);
-    }
 }

@@ -26,9 +26,6 @@ import javax.inject.Inject;
 public class PresentationsPresenter extends Presenter<PresentationsPresenter.View> {
 
     @Inject
-    protected LoaderFactory loaderFactory;
-
-    @Inject
     protected SnappyRepository db;
 
     @Inject
@@ -58,10 +55,12 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
 
         @Override
         public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
-            view.finishLoading();
-            attachListeners(items);
-            if (spiceException != null) {
-                handleError(spiceException);
+            if (adapterController != null) {
+                view.finishLoading();
+                attachListeners(items);
+                if (spiceException != null) {
+                    handleError(spiceException);
+                }
             }
         }
     };
@@ -129,6 +128,12 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
                 }
             }
         }
+    }
+
+    @Override
+    public void dropView() {
+        adapterController = null;
+        super.dropView();
     }
 
     @Override

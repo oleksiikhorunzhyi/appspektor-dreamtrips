@@ -41,9 +41,11 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
         @Override
         public void onFinish(LoadType type, List<PopularBucketItem> items, SpiceException spiceException) {
-            view.finishLoading();
-            if (spiceException != null) {
-                handleError(spiceException);
+            if (adapterController != null) {
+                view.finishLoading();
+                if (spiceException != null) {
+                    handleError(spiceException);
+                }
             }
         }
     };
@@ -106,7 +108,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     @Override
     public void dropView() {
-        eventBus.unregister(this);
+        adapterController = null;
         super.dropView();
     }
 

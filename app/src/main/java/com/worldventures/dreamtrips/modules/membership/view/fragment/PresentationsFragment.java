@@ -61,6 +61,7 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        getPresenter().getAdapterController().reload();
     }
 
     @Override
@@ -73,14 +74,6 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (this.arrayListAdapter.getItemCount() == 0 && refreshLayout != null) {
-            this.refreshLayout.post(() -> getPresenter().getAdapterController().reload());
-        }
     }
 
     @Override

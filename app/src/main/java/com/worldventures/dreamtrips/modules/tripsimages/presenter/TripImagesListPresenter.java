@@ -111,8 +111,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         }
     }
 
+    @Override
     public void dropView() {
-        eventBus.unregister(this);
+        roboSpiceAdapterController = null;
+        super.dropView();
     }
 
     public void onItemClick(int position) {
@@ -218,40 +220,38 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         @Override
         public void onFinish(RoboSpiceAdapterController.LoadType
                                      loadType, List<T> items, SpiceException spiceException) {
+            if (getAdapterController() != null) {
+                view.finishLoading();
+                if (spiceException == null) {
+                    List<IFullScreenAvailableObject> list;
+                    if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
+                        list = new ArrayList<>();
+                        list.addAll(items);
+                        resetLazyLoadFields();
+                    } else {
+                        list = new ArrayList<>(view.getPhotosFromAdapter());
+                        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
+                            T item = iterator.next();
+                            if (list.contains(item)) {
+                                iterator.remove();
+                            }
+                        }
+                        list.addAll(items);
+                    }
 
-            if (spiceException == null) {
-                List<IFullScreenAvailableObject> list;
-                if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
-                    list = new ArrayList<>();
-                    list.addAll(items);
-                    resetLazyLoadFields();
-                } else {
-                    list = new ArrayList<>(view.getPhotosFromAdapter());
-                    for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
-                        T item = iterator.next();
-                        if (list.contains(item)) {
-                            iterator.remove();
+                    eventBus.postSticky(FSUploadEvent.create(type, list));
+
+                    for (T item : items) {
+                        if (item instanceof ImageUploadTask
+                                && ((ImageUploadTask) item).isFailed()) {
+                            dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
                         }
                     }
-                    list.addAll(items);
+                } else {
+                    handleError(spiceException);
                 }
-
-                eventBus.postSticky(FSUploadEvent.create(type, list));
-
-                for (T item : items) {
-                    if (item instanceof ImageUploadTask
-                            && ((ImageUploadTask) item).isFailed()) {
-                        dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
-                    }
-                }
-            } else {
-                handleError(spiceException);
             }
-
-            view.finishLoading();
         }
-
     }
-
 
 }

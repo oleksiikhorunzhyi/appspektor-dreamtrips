@@ -175,7 +175,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     private void openFirst() {
         if (refreshLayout != null)
             weakHandler.post(() -> {
-                if (isTabletLandscape()) {
+                if (isTabletLandscape() && adapter.getCount() > 0) {
                     getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
                 }
             });
@@ -183,9 +183,10 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @Override
     public void startLoading() {
-        if (refreshLayout != null) {
-            weakHandler.postDelayed(() -> refreshLayout.setRefreshing(true), 100);
-        }
+        weakHandler.postDelayed(() -> {
+            if (refreshLayout != null)
+                refreshLayout.setRefreshing(true);
+        }, 100);
     }
 
     @Override

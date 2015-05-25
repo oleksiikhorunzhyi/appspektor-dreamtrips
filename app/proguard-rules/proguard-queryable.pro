@@ -1,0 +1,5 @@
+-keepclasseswithmembers class com.innahema.collections.query.** { *; }
+-dontwarn com.sun.jna.**
+-dontwarn com.innahema.collections.**
+-keep class org.jetbrains.annotations.** { *; }
+-dontwarn org.jetbrains.annotations.**

@@ -168,7 +168,6 @@
                 android:hint="@string/invite_add_message"
                 android:imeOptions="actionDone"
                 android:inputType="textCapSentences"
-                android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
                 fresco:floatingLabel="normal"

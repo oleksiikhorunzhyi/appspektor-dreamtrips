@@ -57,25 +57,31 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
                     view.alert(error.getMessage());
                 }
             } else {
-                prefs.put(Prefs.TERMS_ACCEPTED, true);
-                TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
-                activityRouter.openMain();
-                activityRouter.finish();
                 view.showLoginSuccess();
+                TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
+
+                if (appSessionHolder.get().get().getGlobalConfig() != null) {
+                    prefs.put(Prefs.TERMS_ACCEPTED, true);
+                    activityRouter.openMain();
+                    activityRouter.finish();
+                } else {
+                    activityRouter.openLaunch();
+                    activityRouter.finish();
+                }
             }
         });
 
         this.view.showProgressDialog();
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         void showProgressDialog();
 
         void showLoginSuccess();
 
         void showLoginErrorMessage();
 
-        public void showLocalErrors(int userNameError, int passwordError);
+        void showLocalErrors(int userNameError, int passwordError);
 
         String getUsername();
 

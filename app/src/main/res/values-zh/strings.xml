@@ -35,7 +35,7 @@
     <string name="you_should_be_here">您應該在這</string>
     <string name="title_activity_full_screen_photo">DreamTrips</string>
     <string name="skip_login">跳過登錄</string>
-    <string name="duration">%d Nights,\n Standard Acc</string>
+    <string name="duration">%d 晚</string>
     <string name="smth_went_wrong">出現問題=(</string>
     <string name="inspire_me">給我靈感</string>
     <string name="three_sixty">360度體驗</string>
@@ -171,8 +171,8 @@
     <string name="today">今兒</string>
     <string name="rep_enrollment">眾議員招生</string>
     <string name="no_connection">沒有互聯網連接</string>
-    <string name="popular_add">ADD</string>
-    <string name="popular_done">DONE</string>
+    <string name="popular_add">添加</string>
+    <string name="popular_done">完成</string>
     <string name="see_more">查看更多</string>
     <string name="alert">警戒</string>
     <string name="OK">行</string>
@@ -244,5 +244,6 @@
     <string name="invitation_text_template" formatted="false"><![CDATA[%1$s 您好，%2$s <br/>若要深入瞭解，請按 <a href=\"%3$s\">這裡</a>。]]></string>
     <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
     <string name="invite_add_photo">新增照片</string>
+    <string name="invite_select_first">在第一選擇聯繫人</string>
 
 </resources>

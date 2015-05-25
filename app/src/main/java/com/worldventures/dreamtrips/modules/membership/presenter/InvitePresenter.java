@@ -1,6 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import android.accounts.AccountManager;
+import android.content.ContentProviderOperation;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -91,7 +97,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void addMember(Member member) {
-        db.addInviteMember(member);
+        addToContactList(member.getName(), member.getPhone(), member.getEmail());
         boolean addToLoadedMembers = false;
         switch (Type.from(view.getSelectedType())) {
             case EMAIL:
@@ -109,6 +115,51 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             setMembers();
         }
     }
+
+    public void addToContactList(String name, String phone, String email) {
+        int phoneType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
+        int emailType = ContactsContract.CommonDataKinds.Email.TYPE_MOBILE;
+
+        ArrayList<ContentProviderOperation> ops =
+                new ArrayList<>();
+        ContentProviderOperation.Builder op =
+                ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, AccountManager.KEY_ACCOUNT_TYPE)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, AccountManager.KEY_ACCOUNT_NAME);
+        ops.add(op.build());
+
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name);
+        ops.add(op.build());
+
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+                .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneType);
+        ops.add(op.build());
+
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email)
+                .withValue(ContactsContract.CommonDataKinds.Email.TYPE, emailType);
+
+        op.withYieldAllowed(true);
+        ops.add(op.build());
+
+        try {
+            context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+        } catch (Exception e) {
+            Timber.e(e, "");
+        }
+    }
+
 
     WeakHandler queryHandler = new WeakHandler();
 
@@ -149,7 +200,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
-        boolean isVisible = Queryable.from(members).any(Member::isChecked);
+        boolean isVisible = isVisible();
         selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
@@ -166,6 +217,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
             view.move(event.getMember(), to < lastSelected ? lastSelected : to);
         }
+    }
+
+    public boolean isVisible() {
+        return members != null && Queryable.from(members).any(Member::isChecked);
     }
 
     public void onEventMainThread(MemberCellResendEvent event) {

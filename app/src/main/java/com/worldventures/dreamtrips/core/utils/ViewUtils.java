@@ -47,11 +47,15 @@ public class ViewUtils {
     }
 
     public static boolean isTablet(Context context) {
-        boolean xlarge = (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        boolean large = (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE;
-        return xlarge || large;
+        if (context != null) {
+            boolean xlarge = (context.getResources().getConfiguration().screenLayout
+                    & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+            boolean large = (context.getResources().getConfiguration().screenLayout
+                    & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE;
+            return xlarge || large;
+        } else {
+            return false;
+        }
     }
 
     public static float dpFromPx(final Context context, final float px) {

@@ -123,7 +123,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public void loginUser(String userPassword, String username,
-                           OnLoginSuccess onLoginSuccess) {
+                          OnLoginSuccess onLoginSuccess) {
         execute(new LoginCommand(username, userPassword), session -> {
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setSession(session);
@@ -182,7 +182,13 @@ public class DreamSpiceManager extends SpiceManager {
         String sessionToken = session.getToken();
         User sessionUser = session.getUser();
 
-        UserSession userSession = appSessionHolder.get().get();
+        UserSession userSession;
+        if (appSessionHolder.get().isPresent()) {
+            userSession = appSessionHolder.get().get();
+        } else {
+            userSession = new UserSession();
+        }
+
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
         userSession.setLegacyApiToken(legacyToken);
@@ -195,6 +201,7 @@ public class DreamSpiceManager extends SpiceManager {
             appSessionHolder.put(userSession);
             return true;
         }
+
         eventBus.post(new UpdateUserInfoEvent());
         return false;
     }

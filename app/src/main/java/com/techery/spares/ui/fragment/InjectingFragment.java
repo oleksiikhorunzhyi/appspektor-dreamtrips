@@ -83,6 +83,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
         if (menuResource != null) {
+            menu.clear();
             inflater.inflate(menuResource.value(), menu);
         }
     }

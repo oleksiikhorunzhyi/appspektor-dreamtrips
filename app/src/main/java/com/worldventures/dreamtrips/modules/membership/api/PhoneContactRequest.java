@@ -95,25 +95,7 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
         }
         cur.close();
 
-        // Load members from db and filter out with empty phone/email
-        Predicate<Member> memberPredicate = null;
-        switch (type) {
-            case EMAIL:
-                memberPredicate = element -> {
-                    element.setEmailIsMain(true);
-                    return !element.getEmail().isEmpty();
-                };
-                break;
-            case SMS:
-                memberPredicate = element -> {
-                    element.setEmailIsMain(false);
-                    return !element.getPhone().isEmpty();
-                };
-                break;
-        }
-        List<Member> cachedMembers = db.getInviteMembers();
-        cachedMembers = Queryable.from(cachedMembers).filter(memberPredicate).toList();
-        result.addAll(0, cachedMembers);
+
 
         return Queryable.from(result).distinct().toList();
     }

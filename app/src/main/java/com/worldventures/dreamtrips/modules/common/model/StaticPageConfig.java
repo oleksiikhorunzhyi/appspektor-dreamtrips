@@ -12,9 +12,9 @@ public class StaticPageConfig {
 
     public String getUrlByTitle(String title) {
         String result = "";
-        if (documents != null) {
+        if (documents != null && documents.size() > 0) {
             Document document = Queryable.from(documents).where(temp ->
-                    title.equalsIgnoreCase(temp.nameNative)).first();
+                    title.equalsIgnoreCase(temp.name)).first();
             if (document != null) {
                 result = document.url;
             }

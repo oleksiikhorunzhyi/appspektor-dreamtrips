@@ -36,15 +36,6 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         filterHandler = new WeakHandler(filterThread.getLooper());
     }
 
-    @Override
-    public long getItemId(int position) {
-        if (getItem(position) instanceof BaseEntity) {
-            return ((BaseEntity) getItem(position)).getId();
-        }
-        return super.getItemId(position);
-    }
-
-
     ///////////////////////////////////////////////////////////////////////////
     // Filter manipulation
     ///////////////////////////////////////////////////////////////////////////

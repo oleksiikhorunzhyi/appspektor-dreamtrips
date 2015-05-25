@@ -5,6 +5,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -33,6 +34,9 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
     @Inject
     SnappyRepository snappyRepository;
+
+    @Inject
+    Prefs prefs;
 
     @Override
     public void takeView(View view) {
@@ -89,7 +93,8 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     }
 
     private void done() {
-        if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
+        if (DreamSpiceManager.isCredentialExist(appSessionHolder)
+                && prefs.getBoolean(Prefs.TERMS_ACCEPTED)) {
             activityRouter.openMain();
         } else {
             activityRouter.openLogin();

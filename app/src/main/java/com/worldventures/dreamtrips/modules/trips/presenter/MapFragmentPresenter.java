@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
+import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -112,6 +113,10 @@ public class MapFragmentPresenter extends Presenter<MapFragmentPresenter.View> {
 
     public void onEvent(InfoWindowSizeEvent event) {
         view.showInfoWindow(event.getOffset());
+    }
+
+    public void onEvent(MenuPressedEvent event) {
+        onCameraChanged();
     }
 
     public void markerReady() {

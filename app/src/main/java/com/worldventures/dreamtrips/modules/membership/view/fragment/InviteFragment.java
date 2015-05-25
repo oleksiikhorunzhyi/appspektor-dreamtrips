@@ -86,7 +86,7 @@ public class InviteFragment
             getPresenter().continueAction();
         } else {
             containerTemplates.setVisibility(View.GONE);
-            if (!tvSearch.hasFocus()) buttonContinue.setVisibility(View.VISIBLE);
+            if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -107,9 +107,12 @@ public class InviteFragment
         lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                refreshLayout.setEnabled(firstPos == 0);
-                tvSearch.clearFocus();
+                if (lvUsers != null) {
+                    int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager())
+                            .findFirstCompletelyVisibleItemPosition();
+                    refreshLayout.setEnabled(firstPos == 0);
+                    tvSearch.clearFocus();
+                }
             }
         });
 
@@ -164,7 +167,8 @@ public class InviteFragment
 
     @Override
     public void finishLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

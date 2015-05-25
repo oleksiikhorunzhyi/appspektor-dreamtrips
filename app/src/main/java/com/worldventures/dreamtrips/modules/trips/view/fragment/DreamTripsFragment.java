@@ -84,7 +84,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     }
 
 
-
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
@@ -202,7 +201,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     public void finishLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

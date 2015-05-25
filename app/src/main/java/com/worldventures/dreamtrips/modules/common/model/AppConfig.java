@@ -42,23 +42,8 @@ public class AppConfig {
         @SerializedName("Production")
         private Config production;
 
-        @SerializedName("QA")
-        private Config qA;
-
         public Config getProduction() {
             return this.production;
-        }
-
-        public void setProduction(Config production) {
-            this.production = production;
-        }
-
-        public Config getQA() {
-            return this.qA;
-        }
-
-        public void setQA(Config qA) {
-            this.qA = qA;
         }
 
         public static class Config {

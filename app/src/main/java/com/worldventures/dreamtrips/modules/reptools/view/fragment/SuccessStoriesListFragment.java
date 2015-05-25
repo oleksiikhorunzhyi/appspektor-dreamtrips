@@ -39,31 +39,25 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoriesListPresenter.View {
 
+    @InjectView(R.id.recyclerViewStories)
+    protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.detail_container)
+    protected FrameLayout flDetailContainer;
+    @InjectView(R.id.iv_search)
+    protected SearchView ivSearch;
+    @InjectView(R.id.iv_filter)
+    protected ImageView ivFilter;
+    @InjectView(R.id.ll_empty_view)
+    protected ViewGroup emptyView;
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
-    @InjectView(R.id.recyclerViewStories)
-    protected EmptyRecyclerView recyclerView;
-
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-
-    @InjectView(R.id.detail_container)
-    protected FrameLayout flDetailContainer;
-
-    @InjectView(R.id.iv_search)
-    protected SearchView ivSearch;
-
-    @InjectView(R.id.iv_filter)
-    protected ImageView ivFilter;
-
-    @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
-
     private FilterableArrayListAdapter<SuccessStory> adapter;
 
     private WeakHandler handler = new WeakHandler();
+    private WeakHandler weakHandler = new WeakHandler();
 
     @Override
     protected SuccessStoriesListPresenter createPresenter(Bundle savedInstanceState) {
@@ -160,7 +154,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     @Override
     public void finishLoading(List<SuccessStory> result) {
         handler.post(() -> {
-            refreshLayout.setRefreshing(false);
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
             openFirst();
         });
     }
@@ -169,8 +163,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     public FragmentManager getSupportFragmentManager() {
         return getChildFragmentManager();
     }
-
-    private WeakHandler weakHandler = new WeakHandler();
 
     private void openFirst() {
         if (refreshLayout != null)

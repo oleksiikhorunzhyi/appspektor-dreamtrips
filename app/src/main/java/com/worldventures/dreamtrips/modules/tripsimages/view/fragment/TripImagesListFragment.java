@@ -53,7 +53,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     protected SwipeRefreshLayout refreshLayout;
 
     private BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
-    private Type type;
     private LinearLayoutManager layoutManager;
 
     private int lastScrollPosition;
@@ -65,7 +64,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getView().getContext(), injector);
+        this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
@@ -86,21 +85,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
                 getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
+        getPresenter().reload();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupLayoutManager();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (refreshLayout != null && this.arrayListAdapter.getItemCount() == 0
-                && getPresenter() != null) {
-            this.refreshLayout.post(() -> getPresenter().reload());
-        }
     }
 
     @Override
@@ -137,7 +128,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
+        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         return TripImagesListPresenter.create(type, this);
     }
 

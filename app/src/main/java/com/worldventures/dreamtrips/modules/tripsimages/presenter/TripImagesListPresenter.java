@@ -25,6 +25,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPresenter.View> {
 
     public static final int PER_PAGE = 15;
+    public final static int VISIBLE_TRESHOLD = 5;
 
     protected Type type;
 
@@ -34,7 +35,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
 
     private int previousTotal = 0;
     private boolean loading = true;
-    private int visibleThreshold = 5;
     private TripImagesRoboSpiceController roboSpiceAdapterController;
 
     public TripImagesListPresenter(Type type) {
@@ -104,7 +104,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && itemCount % PER_PAGE == 0) {
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+                && itemCount % PER_PAGE == 0) {
             getAdapterController().loadNext();
             loading = true;
         }
@@ -174,7 +175,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
             }
         }
     }
-
 
     private TripImagesRoboSpiceController getAdapterController() {
         if (roboSpiceAdapterController == null) {

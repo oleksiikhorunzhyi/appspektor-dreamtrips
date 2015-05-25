@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
@@ -56,7 +57,8 @@ import dagger.Provides;
                 RegionCell.class,
                 TripCell.class,
                 FavoritesCell.class,
-                HeaderRegionCell.class
+                HeaderRegionCell.class,
+                RecentlyAddedCell.class
         },
         complete = false,
         library = true

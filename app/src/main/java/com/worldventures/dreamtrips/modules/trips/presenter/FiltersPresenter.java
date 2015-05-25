@@ -16,11 +16,13 @@ import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEven
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.event.FilterShowFavoritesEvent;
+import com.worldventures.dreamtrips.modules.trips.event.FilterShowRecentlyAddedEvent;
 import com.worldventures.dreamtrips.modules.trips.event.FilterShowSoldOutEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.FilterRecentlyAddedModel;
 import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
@@ -49,10 +51,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     private int minNights = 0;
     private boolean showSoldOut = false;
     private boolean showFavorites = false;
+    private boolean showRecentlyAdded = false;
     private FilterModel filterModel;
     private ThemeHeaderModel themeHeaderModel;
     private RegionHeaderModel regionHeaderModel;
     private FilterSoldOutModel soldOutModel;
+    private FilterRecentlyAddedModel recentlyAddedModel;
     private FilterFavoriteModel favoriteModel;
     private DateFilterItem dateFilterItem;
 
@@ -64,6 +68,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         themeHeaderModel = new ThemeHeaderModel();
         soldOutModel = new FilterSoldOutModel();
         favoriteModel = new FilterFavoriteModel();
+        recentlyAddedModel = new FilterRecentlyAddedModel();
         regionHeaderModel = new RegionHeaderModel();
     }
 
@@ -89,6 +94,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             data.add(filterModel);
             data.add(soldOutModel);
             data.add(favoriteModel);
+            data.add(recentlyAddedModel);
             data.add(regionHeaderModel);
             if (!regionHeaderModel.isHide()) {
                 data.addAll(regions);
@@ -135,8 +141,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         filterBusEvent.setShowSoldOut(showSoldOut);
         filterBusEvent.setShowFavorites(showFavorites);
         filterBusEvent.setDateFilterItem(dateFilterItem);
-
-        eventBus.removeAllStickyEvents();
+        filterBusEvent.setShowRecentlyAdded(showRecentlyAdded);
+        eventBus.removeStickyEvent(FilterBusEvent.class);
         eventBus.postSticky(filterBusEvent);
     }
 
@@ -144,8 +150,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         dateFilterItem.reset();
         filterModel.reset();
         themeHeaderModel.setChecked(true);
-        soldOutModel.setShowSoldOut(false);
-        favoriteModel.setShowFavorites(false);
+        soldOutModel.setActive(false);
+        favoriteModel.setActive(false);
+        recentlyAddedModel.setActive(false);
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
@@ -226,6 +233,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void onEvent(FilterShowFavoritesEvent soldOutEvent) {
         showFavorites = soldOutEvent.isShowFavorites();
+    }
+
+    public void onEvent(FilterShowRecentlyAddedEvent addedEvent) {
+        showRecentlyAdded = addedEvent.isShowRecentlyAdded();
     }
 
     public void onEvent(CheckBoxAllRegionsPressedEvent event) {

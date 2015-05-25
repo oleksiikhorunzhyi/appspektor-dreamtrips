@@ -24,6 +24,7 @@ public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter
     private int minNights = 0;
     private boolean showSoldOut;
     private boolean showFavorites;
+    private boolean showRecentlyAdded;
     private DateFilterItem dateFilterItem = new DateFilterItem();
     private List<Integer> acceptedRegions;
     private List<ActivityModel> acceptedThemes;
@@ -32,11 +33,13 @@ public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter
     protected ArrayList<TripModel> performFiltering(List<TripModel> trips) {
         ArrayList<TripModel> filteredTrips = new ArrayList<>();
         filteredTrips.addAll(Queryable.from(trips).filter(input ->
-                input.isPriceAccepted(maxPrice, minPrice)
-                        && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
-                        && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)
-                        && (!showSoldOut || input.isSoldOut())
-                        && (!showFavorites || input.isLiked())).toList());
+                        input.isPriceAccepted(maxPrice, minPrice)
+                                && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
+                                && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)
+                                && (!showSoldOut || input.isSoldOut())
+                                && (!showFavorites || input.isLiked())
+                                && (!showRecentlyAdded || input.isRecentlyAdded())
+        ).toList());
 
         return filteredTrips;
     }
@@ -66,6 +69,7 @@ public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter
             showSoldOut = event.isShowSoldOut();
             showFavorites = event.isShowFavorites();
             dateFilterItem = event.getDateFilterItem();
+            showRecentlyAdded = event.isShowRecentlyAdded();
         }
     }
 

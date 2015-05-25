@@ -1,14 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class FilterSoldOutModel {
+public class FilterSoldOutModel extends BoolFilter{
 
-    protected boolean showSoldOut = false;
-
-    public boolean isShowSoldOut() {
-        return showSoldOut;
-    }
-
-    public void setShowSoldOut(boolean showSoldOut) {
-        this.showSoldOut = showSoldOut;
-    }
 }

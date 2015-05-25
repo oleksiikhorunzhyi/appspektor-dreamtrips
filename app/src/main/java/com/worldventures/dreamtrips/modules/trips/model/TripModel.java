@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 import android.content.res.Resources;
-import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -49,6 +48,8 @@ public class TripModel implements Filterable, Serializable {
     private boolean platinum;
     @SerializedName("rewards_rules")
     private RewardsRuleModel rewardsRules;
+    @SerializedName("recent")
+    private boolean recentlyAdded;
 
 
     public String getLikeId() {
@@ -179,6 +180,11 @@ public class TripModel implements Filterable, Serializable {
         this.region = region;
     }
 
+
+    public boolean isRecentlyAdded() {
+        return recentlyAdded;
+    }
+
     public String getImageUrl(String type) {
         String url = "";
         if (images != null) {
@@ -233,7 +239,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean isActive() {
-        return !soldOut && available;
+        return available;
     }
 
     public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {

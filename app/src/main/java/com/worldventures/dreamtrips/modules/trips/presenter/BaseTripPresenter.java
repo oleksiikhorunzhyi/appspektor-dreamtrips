@@ -21,18 +21,17 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
     protected TripModel trip;
 
-    public void setTrip(TripModel trip) {
-        this.trip = trip;
-    }
-
     public TripModel getTrip() {
         return trip;
+    }
+
+    public void setTrip(TripModel trip) {
+        this.trip = trip;
     }
 
     public void actionLike() {
         trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
-
 
         DreamTripsRequest<JsonObject> request = trip.isLiked() ?
                 new LikeTripCommand(trip.getLikeId()) :
@@ -62,7 +61,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         view.setPrice(trip.getPrice().toString());
         view.setDuration(trip.getDuration());
         view.setLike(trip.isLiked());
-
         String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {

@@ -147,6 +147,7 @@ public class InviteFragment
     @Override
     public void onDestroyView() {
         lvUsers.setAdapter(null);
+        tvSearch.setOnQueryTextListener(this);
         super.onDestroyView();
     }
 
@@ -219,6 +220,8 @@ public class InviteFragment
         // adapter already has items filtered, nothing to do
         return false;
     }
+
+
 
     @Override
     public void setFilter(String newText) {

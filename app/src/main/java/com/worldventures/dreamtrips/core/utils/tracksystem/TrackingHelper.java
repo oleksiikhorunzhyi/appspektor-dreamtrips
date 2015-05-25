@@ -365,5 +365,13 @@ public class TrackingHelper {
         data.put("bl_type", type);
         trackMemberAction(ACTION_ADD_BL_FINISH, data);
     }
+
+    public static void profileUploadStart(String memberId) {
+        trackPageView(memberId, ACTION_PROFILE_PHOTO_UPLOAD_START);
+    }
+
+    public static void profileUploadFinish(String memberId) {
+        trackPageView(memberId, ACTION_PROFILE_PHOTO_UPLOAD_FINISH);
+    }
     
 }

@@ -42,7 +42,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     TextView tvSubj;
     @InjectView(R.id.wv_preview)
     WebView wvPreview;
-    @InjectView(R.id.et_email)
+    @InjectView(R.id.et_personal_message)
     MaterialEditText etMessage;
     @InjectView(R.id.ll_progress)
     View progressView;

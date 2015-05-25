@@ -23,15 +23,8 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     private ArrayList<Member> members = new ArrayList<>();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        reload();
-    }
-
     public void onEvent(TemplateSelectedEvent event) {
         getMembers();
-
         if (members != null && members.size() > 0) {
             Bundle bundle = new Bundle();
             InviteTemplate inviteTemplate = event.getInviteTemplate();
@@ -57,7 +50,8 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
     private void getMembers() {
         MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
         members.clear();
-        members.addAll(event.getMembers());
+        if (event.getMembers() != null)
+            members.addAll(event.getMembers());
     }
 
 
@@ -83,6 +77,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         }
         return "";
     }
+
 
     public interface View extends Presenter.View {
 

@@ -65,6 +65,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
                 .build();
 
         lvTemplates.addItemDecoration(decoration);
+        getPresenter().reload();
     }
 
     @Override
@@ -74,7 +75,8 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void finishLoading() {
-        swipeContainer.post(() -> swipeContainer.setRefreshing(false));
+        if (swipeContainer != null)
+            swipeContainer.post(() -> swipeContainer.setRefreshing(false));
     }
 
     @Override

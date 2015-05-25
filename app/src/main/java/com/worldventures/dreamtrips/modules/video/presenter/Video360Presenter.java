@@ -6,6 +6,8 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
@@ -38,6 +40,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
+        TrackingHelper.video360(getUserId());
     }
 
     @Override
@@ -129,7 +132,13 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
+        TrackingHelper.videoAction(getUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
     }
+
+    public void onEvent(TrackVideoStatusEvent event) {
+        TrackingHelper.videoAction(getUserId(), event.getAction(), event.getName());
+    }
+
 
     public interface View extends Presenter.View, VideoCachingDelegate.View {
         BaseArrayListAdapter getFeaturedAdapter();

@@ -36,6 +36,8 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     private boolean failed;
     private User user;
 
+    private String type;
+
     public ImageUploadTask() {
     }
 
@@ -50,6 +52,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         long tmpShotAt = in.readLong();
         this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
         this.originUrl = in.readString();
+        this.type = in.readString();
         this.tags = (ArrayList<String>) in.readSerializable();
     }
 
@@ -83,6 +86,14 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getLocationName() {
@@ -217,6 +228,7 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
         dest.writeFloat(this.longitude);
         dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
         dest.writeString(this.originUrl);
+        dest.writeString(this.type);
         dest.writeSerializable(this.tags);
     }
 

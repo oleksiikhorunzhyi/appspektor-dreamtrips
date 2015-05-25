@@ -35,6 +35,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             final File file = new File(image.getFileThumbnail());
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
+            TrackingHelper.profileUploadStart(getUserId());
             doRequest(new UploadAvatarCommand(typedFile),
                     this::onSuccess);
 
@@ -84,6 +85,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     private void onSuccess(User obj) {
+        TrackingHelper.profileUploadFinish(getUserId());
         UserSession userSession = appSessionHolder.get().get();
         User user = userSession.getUser();
         user.setAvatar(obj.getAvatar());

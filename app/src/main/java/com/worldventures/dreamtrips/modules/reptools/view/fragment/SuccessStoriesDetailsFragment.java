@@ -83,7 +83,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     @Override
     protected SuccessStoryDetailsFragmentPresenter createPresenter(Bundle savedInstanceState) {
         story = getArguments().getParcelable(EXTRA_STORY);
-        return new SuccessStoryDetailsFragmentPresenter(getURL());
+        return new SuccessStoryDetailsFragmentPresenter(story, getURL());
     }
 
     @Override

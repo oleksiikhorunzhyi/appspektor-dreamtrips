@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoFragmentPM;
+import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
@@ -28,7 +28,7 @@ import dagger.Provides;
         injects = {
                 OtaFragment.class,
                 ActualTokenStaticInfoFragment.class,
-                ActualTokenStaticInfoFragmentPM.class,
+                ActualTokenStaticInfoPresenter.class,
                 StaticInfoFragment.TrainingVideosFragment.class,
                 Video360Presenter.class,
                 PresentationsPresenter.class,

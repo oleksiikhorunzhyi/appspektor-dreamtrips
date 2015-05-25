@@ -12,21 +12,70 @@ import java.util.Map;
 
 public class TrackingHelper {
 
-    private static final String ACTION_LOGIN = "login";
-    private static final String ACTION_DREAMTRIPS = "nav_menu:dreamtrips";
-    private static final String ACTION_PHOTOS_YSBH = "nav_menu:photos-ysbh";
-    private static final String ACTION_PHOTOS_ALL_USERS = "nav_menu:photos-allusers";
-    private static final String ACTION_PHOTOS_MINE = "nav_menu:photos-mine";
-    private static final String ACTION_MEMBERSHIP = "nav_menu:membership-videos";
-    private static final String ACTION_ENROLL = "nav_menu:membership-enroll";
-    private static final String ACTION_BUCKET_LIST = "nav_menu:bucketlist";
-    private static final String ACTION_PROFILE = "nav_menu:profile";
-    private static final String ACTION_FAQ = "nav_menu:faq";
-    private static final String ACTION_PRIVACY = "nav_menu:terms-privacy";
-    private static final String ACTION_COOKIE = "nav_menu:terms-cookie";
-    private static final String ACTION_SERVICE = "nav_menu:terms-service";
+    public static final String ACTION_LOGIN = "login";
+    public static final String ACTION_DREAMTRIPS = "nav_menu:dreamtrips";
+    public static final String ACTION_PHOTOS_YSBH = "nav_menu:photos-ysbh";
+    public static final String ACTION_PHOTOS_ALL_USERS = "nav_menu:photos-allusers";
+    public static final String ACTION_PHOTOS_MINE = "nav_menu:photos-mine";
+    public static final String ACTION_ENROLL = "nav_menu:membership-enroll";
+    public static final String ACTION_FAQ = "nav_menu:faq";
+    public static final String ACTION_PRIVACY = "nav_menu:terms-privacy";
+    public static final String ACTION_COOKIE = "nav_menu:terms-cookie";
+    public static final String ACTION_SERVICE = "nav_menu:terms-service";
 
-    private static final String FIELD_MEMBER_ID = "member_id";
+    public static final String ACTION_PHOTO_UPLOAD = "photo_upload_start";
+    public static final String ACTION_PHOTO_FINISHED = "photo_upload_finish";
+
+    public static final String ACTION_PHOTOS_INSPR = "nav_menu:photos-inspireme";
+    public static final String ACTION_INSPR_DETAILS = "inspireme_details:%s";
+    public static final String ACTION_INSPR_SHARE = "inspireme_share";
+
+    public static final String ACTION_OTA = "nav_menu:ota_booking";
+    public static final String ACTION_REP_ENROLL = "nav_menu:rep_enroll";
+    public static final String ACTION_TRAINING_VIDEOS = "nav_menu:training_videos";
+
+    public static final String ACTION_SS = "nav_menu:success_stories";
+    public static final String ACTION_SS_VIEW = "success_story_view:%d";
+    public static final String ACTION_SS_LIKE = "success_story_like:%d";
+    public static final String ACTION_SS_UNLIKE = "success_story_like:%d";
+    public static final String ACTION_SS_SHARE = "success_story_share";
+
+    public static final String ACTION_INVITE = "nav_menu:invite_share";
+    public static final String ACTION_INVITE_CONTACTS = "invite_share_select_contacts";
+    public static final String ACTION_TEMPLATE = "invite_share_template:%d";
+    public static final String ACTION_SEND_EMAIL = "invite_share_send_email";
+    public static final String ACTION_SEND_SMS = "invite_share_send_sms";
+    public static final String ACTION_RESEND_EMAIL = "invite_share_resend_email";
+    public static final String ACTION_RESEND_SMS = "invite_share_resend_sms";
+
+    public static final String ACTION_BUCKET_LIST = "nav_menu:bucketlist";
+    public static final String ACTION_BUCKET_PHOTO_UPLOAD_START = "bl_photo_upload_start";
+    public static final String ACTION_BUCKET_PHOTO_UPLOAD_FINISH = "bl_photo_upload_start";
+    public static final String ACTION_BUCKET_PHOTO_UPLOAD_CANCEL = "bl_photo_upload_start";
+    public static final String ACTION_BL_ITEM_VIEW = "bl_item_view";
+    public static final String ACTION_BL_POPULAR = "bucketlist_popular";
+    public static final String ACTION_ADD_BL_START = "bl_add_item_start";
+    public static final String ACTION_ADD_BL_FINISH = "bl_add_item_finish";
+
+    public static final String ACTION_PROFILE = "nav_menu:profile";
+    public static final String ACTION_PROFILE_PHOTO_UPLOAD_START = "nav_menu:profile";
+    public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "nav_menu:profile";
+
+    public static final String ACTION_MEMBERSHIP = "nav_menu:membership-videos";
+    public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play:%s";
+    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start:%s";
+    public static final String ACTION_MEMBERSHIP_LOAD_FINISHED = "member_videos_download_finish:%s";
+    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel:%s";
+
+    public static final String ACTION_360 = "nav_menu:videos_360";
+    public static final String ACTION_360_PLAY = "videos_360_play:%s";
+    public static final String ACTION_360_LOAD_START = "videos_360_download_start:%s";
+    public static final String ACTION_360_LOAD_FINISHED = "videos_360_download_finish:%s";
+    public static final String ACTION_360_LOAD_CANCELED = "videos_360_download_cancel:%s";
+
+    public static final String FIELD_MEMBER_ID = "member_id";
+    public static final String TYPE = "type";
+    public static final String ID = "id";
 
     private static List<ITracker> trackers = new ArrayList<>();
 
@@ -34,7 +83,6 @@ public class TrackingHelper {
         trackers.add(new AdobeTracker());
         trackers.add(new ApptentiveTracker());
     }
-
 
     private TrackingHelper() {
     }
@@ -69,6 +117,33 @@ public class TrackingHelper {
         }
     }
 
+    ///////////
+    /// TRACKER HELPERS
+    //////////
+
+    private static void trackMemberAction(String action, Map<String, Object> data) {
+        for (ITracker tracker : trackers) {
+            tracker.trackMemberAction(action, data);
+        }
+    }
+
+    private static void trackPageView(String memberId, String action) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        trackMemberAction(action, data);
+    }
+
+    private static void trackSpecificPageView(String memberId, String page, String pageType, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        data.put(pageType, id);
+        trackMemberAction(page, data);
+    }
+
+
+    ///////////
+    /// TRACKING ACTIONS
+    //////////
 
     public static void login(String userId) {
         Map<String, Object> data = new HashMap<>();
@@ -98,9 +173,23 @@ public class TrackingHelper {
         trackSpecificPageView(memberId, ACTION_DREAMTRIPS, "book_it", id);
     }
 
-
     public static void ysbh(String memberId) {
         trackPageView(memberId, ACTION_PHOTOS_YSBH);
+    }
+
+    public static void inspr(String memberId) {
+        trackPageView(memberId, ACTION_PHOTOS_INSPR);
+    }
+
+    public static void insprDetails(String memberId, String id) {
+        trackPageView(memberId, String.format(ACTION_INSPR_DETAILS, id));
+    }
+
+    public static void insprShare(String id, String type) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_INSPR_SHARE, data);
     }
 
     public static void view(TripImagesListFragment.Type type, String id, String memberId) {
@@ -121,13 +210,6 @@ public class TrackingHelper {
         } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
             trackSpecificPageView(memberId, ACTION_PHOTOS_MINE, "like_user_photo", id);
         }
-    }
-
-    private static void trackSpecificPageView(String memberId, String page, String pageType, String id) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        data.put(pageType, id);
-        trackMemberAction(page, data);
     }
 
     public static void flag(TripImagesListFragment.Type type, String id, String memberId) {
@@ -151,18 +233,6 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_PHOTOS_MINE);
     }
 
-    public static void onMemberShipVideos(String memberId) {
-        trackPageView(memberId, ACTION_MEMBERSHIP);
-    }
-
-    public static void playVideo(String name, String memberId) {
-        final String action = ACTION_MEMBERSHIP;
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        data.put("play_video", name);
-        trackMemberAction(action, data);
-    }
-
     public static void enroll(String memberId) {
         trackPageView(memberId, ACTION_ENROLL);
     }
@@ -171,24 +241,8 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_PROFILE);
     }
 
-    public static void bucketList(String memberId) {
-        trackPageView(memberId, ACTION_BUCKET_LIST);
-    }
-
     public static void faq(String memberId) {
         trackPageView(memberId, ACTION_FAQ);
-    }
-
-    private static void trackMemberAction(String action, Map<String, Object> data) {
-        for (ITracker tracker : trackers) {
-            tracker.trackMemberAction(action, data);
-        }
-    }
-
-    private static void trackPageView(String memberId, String action) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(FIELD_MEMBER_ID, memberId);
-        trackMemberAction(action, data);
     }
 
     public static void privacy(String memberId) {
@@ -203,5 +257,121 @@ public class TrackingHelper {
         trackPageView(memberId, ACTION_SERVICE);
     }
 
+    public static void photoUploadStarted(String type, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_PHOTO_UPLOAD, data);
+    }
 
+    public static void photoUploadFinished(String type, String id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put(ID, id);
+        trackMemberAction(ACTION_PHOTO_FINISHED, data);
+    }
+
+    public static void video360(String memberId) {
+        trackPageView(memberId, ACTION_360);
+    }
+
+    public static void memberVideos(String memberId) {
+        trackPageView(memberId, ACTION_MEMBERSHIP);
+    }
+
+    public static void videoAction(String memberId, String action, String videoName) {
+        trackPageView(memberId, String.format(action, videoName));
+    }
+
+    public static void ota(String memberId) {
+        trackPageView(memberId, ACTION_OTA);
+    }
+
+    public static void repEnroll(String memberId) {
+        trackPageView(memberId, ACTION_REP_ENROLL);
+    }
+
+    public static void trainingVideos(String memberId) {
+        trackPageView(memberId, ACTION_TRAINING_VIDEOS);
+    }
+
+    public static void successStories(String memberId) {
+        trackPageView(memberId, ACTION_SS);
+    }
+
+    public static void viewSS(String memberId, int id) {
+        trackPageView(memberId, String.format(ACTION_SS_VIEW, id));
+    }
+
+    public static void unlikeSS(String memberId, int id) {
+        trackPageView(memberId, String.format(ACTION_SS_UNLIKE, id));
+    }
+
+    public static void likeSS(String memberId, int id) {
+        trackPageView(memberId, String.format(ACTION_SS_LIKE, id));
+    }
+
+    public static void inviteShare(String memberId) {
+        trackPageView(memberId, ACTION_INVITE);
+    }
+
+    public static void inviteShareContacts(String memberId) {
+        trackPageView(memberId, ACTION_INVITE_CONTACTS);
+    }
+
+    public static void inviteShareTemplate(String memberId, int templateId) {
+        trackPageView(memberId, String.format(ACTION_TEMPLATE, templateId));
+    }
+
+    public static void inviteShareAction(String action, int templateId, int count) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("template_id", templateId);
+        data.put("count", count);
+        trackMemberAction(action, data);
+    }
+
+    public static void bucketList(String memberId) {
+        trackPageView(memberId, ACTION_BUCKET_LIST);
+    }
+
+    public static void bucketPhotoAction(String action, String type, String blType) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(TYPE, type);
+        data.put("bl_type", blType);
+        trackMemberAction(action, data);
+    }
+
+    public static void bucketItemView(String type, int id) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(ID, id);
+        data.put("bl_type", type);
+        trackMemberAction(ACTION_BL_ITEM_VIEW, data);
+    }
+
+    public static void bucketPopular(String type) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("bl_type", type);
+        trackMemberAction(ACTION_BL_POPULAR, data);
+    }
+
+    public static void bucketAddStart(String type) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("bl_type", type);
+        trackMemberAction(ACTION_ADD_BL_START, data);
+    }
+
+    public static void bucketAddFinish(String type) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("bl_type", type);
+        trackMemberAction(ACTION_ADD_BL_FINISH, data);
+    }
+
+    public static void profileUploadStart(String memberId) {
+        trackPageView(memberId, ACTION_PROFILE_PHOTO_UPLOAD_START);
+    }
+
+    public static void profileUploadFinish(String memberId) {
+        trackPageView(memberId, ACTION_PROFILE_PHOTO_UPLOAD_FINISH);
+    }
+    
 }

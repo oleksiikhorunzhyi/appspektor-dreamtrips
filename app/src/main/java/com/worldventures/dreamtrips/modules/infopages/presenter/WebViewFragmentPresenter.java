@@ -44,6 +44,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
             case PRIVACY_POLICY:
                 TrackingHelper.privacy(getUserId());
                 break;
+            case OTA:
+                TrackingHelper.ota(getUserId());
+                break;
         }
     }
 

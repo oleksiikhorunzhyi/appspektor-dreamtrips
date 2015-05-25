@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import javax.inject.Inject;
@@ -83,6 +84,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
             pb.setVisibility(View.VISIBLE);
             ivResult.setBackgroundResource(R.drawable.circle_blue);
             btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
+            TrackingHelper.photoUploadStarted(getModelObject().getType(), "");
         }
     }
 
@@ -122,6 +124,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
             pb.setVisibility(View.INVISIBLE);
             ivResult.setBackgroundResource(R.drawable.circle_green);
             btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
+            TrackingHelper.photoUploadFinished(getModelObject().getType(), "");
         }
     }
 

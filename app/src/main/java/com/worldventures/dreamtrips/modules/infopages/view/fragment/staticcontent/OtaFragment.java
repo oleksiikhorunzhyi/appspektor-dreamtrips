@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
 
     @Override
     protected String getURL() {
+        getPresenter().track(Route.OTA);
         return provider.getoTAPageURL();
     }
 

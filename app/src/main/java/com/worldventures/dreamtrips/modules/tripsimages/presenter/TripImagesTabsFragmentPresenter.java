@@ -16,7 +16,17 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         if (error != null || image.getFileThumbnail() == null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment, Uri.fromFile(new File(image.getFileThumbnail())));
+            activityRouter.openCreatePhoto(fragment,
+                    Uri.fromFile(new File(image.getFileThumbnail())), "camera");
+        }
+    };
+
+    protected ImagePickCallback selectImageGalleryCallback = (fragment, image, error) -> {
+        if (error != null || image.getFileThumbnail() == null) {
+            view.informUser(error);
+        } else {
+            activityRouter.openCreatePhoto(fragment,
+                    Uri.fromFile(new File(image.getFileThumbnail())), "album");
         }
     };
 
@@ -24,7 +34,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         if (error != null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment, Uri.parse(image.getFilePathOriginal()));
+            activityRouter.openCreatePhoto(fragment,
+                    Uri.parse(image.getFilePathOriginal()), "facebook");
         }
     };
 
@@ -35,6 +46,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
             TrackingHelper.ysbh(getUserId());
         } else if (position == TripImagesListFragment.Type.MEMBER_IMAGES.ordinal()) {
             TrackingHelper.all(getUserId());
+        } else if (position == TripImagesListFragment.Type.VIDEO_360.ordinal()) {
+            TrackingHelper.video360(getUserId());
         }
     }
 
@@ -57,6 +70,10 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
 
     public ImagePickCallback providePhotoChooseCallback() {
         return selectImageCallback;
+    }
+
+    public ImagePickCallback provideGalleryCallback() {
+        return selectImageGalleryCallback;
     }
 
     public ImagePickCallback provideFbCallback() {

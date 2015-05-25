@@ -213,6 +213,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+        bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
     }
 
     public static class ActivityResult {

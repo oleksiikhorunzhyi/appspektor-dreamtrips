@@ -49,9 +49,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(LaunchActivity.class);
     }
 
-    public void openCreatePhoto(Fragment fm, Uri fileUri) {
+    public void openCreatePhoto(Fragment fm, Uri fileUri, String type) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
+        bundle.putString(CreatePhotoActivity.EXTRA_TYPE, type);
         startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
     }
 

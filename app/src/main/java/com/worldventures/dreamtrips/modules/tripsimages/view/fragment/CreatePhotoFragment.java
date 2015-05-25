@@ -29,6 +29,8 @@ import butterknife.OnClick;
 public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener, CreatePhotoPresenter.View {
 
     public static final String BUNDLE_IMAGE_URI = "BUNDLE_IMAGE_URI";
+    public static final String BUNDLE_TYPE = "type_bundle";
+
     @InjectView(R.id.iv_image)
     protected SimpleDraweeView ivImage;
     @InjectView(R.id.btn_save)
@@ -45,6 +47,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected DTEditText etTags;
 
     private Uri uri;
+    private String type;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -56,7 +59,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
-        uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
         ivImage.setImageURI(uri);
 
         Date date = new Date();
@@ -75,7 +77,9 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     @Override
     protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
-        return new CreatePhotoPresenter();
+        uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
+        type = getArguments().getString(BUNDLE_TYPE);
+        return new CreatePhotoPresenter(type);
     }
 
 

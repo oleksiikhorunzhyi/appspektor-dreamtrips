@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.Share;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
@@ -73,6 +74,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             resetSelected();
             setMembers();
             getInvitations();
+            TrackingHelper.inviteShareContacts(getUserId());
         });
     }
 
@@ -237,6 +239,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             Intent intent = null;
             switch (history.getType()) {
                 case EMAIL:
+                    TrackingHelper.inviteShareAction(TrackingHelper.ACTION_RESEND_EMAIL,
+                            template.getId(),
+                            template.getTo().size());
                     intent = Share.newEmailIntent(template.getTitle(),
                             String.format(context.getString(R.string.invitation_text_template),
                                     " " + username,
@@ -245,6 +250,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                             history.getContact());
                     break;
                 case SMS:
+                    TrackingHelper.inviteShareAction(TrackingHelper.ACTION_RESEND_SMS,
+                            template.getId(),
+                            template.getTo().size());
                     intent = Share.newSmsIntent(context,
                             template.getTitle() + " " + template.getLink(),
                             history.getContact());

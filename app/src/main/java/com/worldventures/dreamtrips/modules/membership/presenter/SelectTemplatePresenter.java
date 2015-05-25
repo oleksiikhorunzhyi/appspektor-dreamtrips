@@ -7,6 +7,7 @@ import android.util.Patterns;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
@@ -42,6 +43,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
                     InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
             bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
             activityRouter.openEditInviteActivity(inviteTemplate);
+            TrackingHelper.inviteShareTemplate(getUserId(), inviteTemplate.getId());
         } else {
             view.informUser(R.string.invite_select_first);
         }

@@ -23,13 +23,13 @@ public class SuccessStoryDetailsActivity extends ActivityWithPresenter<SuccessSt
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        getPresentationModel().onCreate(getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_STORY));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     protected SuccessStoryDetailsPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new SuccessStoryDetailsPresenter();
+        return new SuccessStoryDetailsPresenter(getIntent()
+                .getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getParcelable(BUNDLE_STORY));
     }
 }

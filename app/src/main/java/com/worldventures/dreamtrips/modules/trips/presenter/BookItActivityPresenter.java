@@ -33,7 +33,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
     private void openBookIt() {
         UserSession userSession = appSessionHolder.get().get();
         AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
-        AppConfig.URLS.Config config = BuildConfig.DEBUG ? urls.getProduction() : urls.getQA();
+        AppConfig.URLS.Config config = urls.getProduction();
 
         String url = config.getBookingPageURL()
                 .replace(AppConfig.TRIP_ID, view.getTripId())
@@ -45,7 +45,7 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         fragmentCompass.replace(Route.BOOK_IT, bundle);
     }
 
-    public static interface View extends Presenter.View {
+    public interface View extends Presenter.View {
         String getTripId();
     }
 }

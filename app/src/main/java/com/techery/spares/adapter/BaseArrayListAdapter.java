@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,14 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.injector.get().inject(cell);
         cell.afterInject();
         return cell;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (getItem(position) instanceof BaseEntity) {
+            return ((BaseEntity) getItem(position)).getId();
+        }
+        return super.getItemId(position);
     }
 
     @Override

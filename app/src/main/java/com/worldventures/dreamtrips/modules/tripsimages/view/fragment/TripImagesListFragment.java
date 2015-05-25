@@ -97,8 +97,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @Override
     public void onResume() {
         super.onResume();
-
-        if (this.arrayListAdapter.getItemCount() == 0) {
+        if (refreshLayout != null && this.arrayListAdapter.getItemCount() == 0
+                && getPresenter() != null) {
             this.refreshLayout.post(() -> getPresenter().reload());
         }
     }

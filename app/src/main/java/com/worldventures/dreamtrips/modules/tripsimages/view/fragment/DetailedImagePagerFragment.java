@@ -74,7 +74,8 @@ public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerF
 
     @Override
     public void onDestroyView() {
-        ivImage.getController().onDetach();
+        if (ivImage != null && ivImage.getController() != null)
+            ivImage.getController().onDetach();
         super.onDestroyView();
     }
 

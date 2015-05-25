@@ -183,11 +183,12 @@ public class DreamSpiceManager extends SpiceManager {
         User sessionUser = session.getUser();
 
         UserSession userSession;
-        if (!appSessionHolder.get().isPresent()) {
-            userSession = new UserSession();
-        } else {
+        if (appSessionHolder.get().isPresent()) {
             userSession = appSessionHolder.get().get();
+        } else {
+            userSession = new UserSession();
         }
+
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
         userSession.setLegacyApiToken(legacyToken);
@@ -200,6 +201,7 @@ public class DreamSpiceManager extends SpiceManager {
             appSessionHolder.put(userSession);
             return true;
         }
+
         eventBus.post(new UpdateUserInfoEvent());
         return false;
     }

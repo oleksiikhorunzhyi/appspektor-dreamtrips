@@ -35,7 +35,8 @@ public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
 
     @Override
     public void prepareForReuse() {
-
+        textViewTitle.setText(null);
+        imageViewPhoto.setImageURI(null);
     }
 
 

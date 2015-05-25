@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
@@ -44,6 +45,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(MainActivity.class);
     }
 
+    public void openLaunch() {
+        startActivity(LaunchActivity.class);
+    }
+
     public void openCreatePhoto(Fragment fm, Uri fileUri) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
@@ -53,10 +58,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     public void openLogin() {
         startActivity(LoginActivity.class);
         finish();
-    }
-
-    public void openEnroll() {
-        startActivity(EnrollActivity.class);
     }
 
     public void openFullScreenPhoto(int position, TripImagesListFragment.Type type) {

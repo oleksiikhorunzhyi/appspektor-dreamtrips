@@ -33,7 +33,7 @@ public class SnappyRepository {
     public static final String BUCKET_LIST = "bucketItems";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
 
-    public static final String TRIP_KEY = "trip_rezopia";
+    public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";

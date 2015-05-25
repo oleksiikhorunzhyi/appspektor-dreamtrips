@@ -13,6 +13,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
@@ -48,9 +49,10 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     @Override
     public void afterCreateView(View rootView) {
         lvTemplates.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseArrayListAdapter<>(getActivity(), injector);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), injector);
         adapter.registerCell(InviteTemplate.class, InviteTemplateCell.class);
         adapter.setHasStableIds(true);
+
         lvTemplates.setAdapter(adapter);
         swipeContainer.setOnRefreshListener(this);
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);

@@ -49,6 +49,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     // Lifecycle
     ///////////////////////////////////////////////////////////////////////////
 
+    public void onInjected() {
+        // safe hook to use injected members
+    }
+
     public void takeView(VT view) {
         this.view = view;
         try {

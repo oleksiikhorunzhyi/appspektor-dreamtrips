@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.loader.LoaderFactory;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -35,8 +34,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     @Inject
     protected VideoCachingDelegate videoCachingDelegate;
 
-    protected DreamSpiceAdapterController<Video> adapterController
-            = new DreamSpiceAdapterController<Video>() {
+    protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getRefreshRequest() {
             return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER) {
@@ -66,6 +64,11 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     };
 
     @Override
+    public void onInjected() {
+        adapterController.setSpiceManager(dreamSpiceManager);
+    }
+
+    @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.onMemberShipVideos(getUserId());
@@ -76,13 +79,20 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     @Override
     public void onResume() {
         super.onResume();
-        adapterController.setSpiceManager(dreamSpiceManager);
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
-        if (!eventBus.isRegistered(videoCachingDelegate)) {
-            eventBus.register(videoCachingDelegate);
-        }
+        eventBus.register(videoCachingDelegate);
+    }
 
+    @Override
+    public void onPause() {
+        eventBus.unregister(videoCachingDelegate);
+    }
+
+    @Override
+    public void dropView() {
+        adapterController = null;
+        super.dropView();
     }
 
     public DreamSpiceAdapterController<Video> getAdapterController() {
@@ -128,18 +138,6 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
                 }
             }
         }
-    }
-
-    @Override
-    public void dropView() {
-        adapterController = null;
-        super.dropView();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        eventBus.unregister(videoCachingDelegate);
     }
 
     public interface View extends Presenter.View, VideoCachingDelegate.View {

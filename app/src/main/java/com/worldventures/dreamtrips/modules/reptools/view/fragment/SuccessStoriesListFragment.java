@@ -68,7 +68,11 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
-        adapter.notifyDataSetChanged();
+        recyclerView.postDelayed(() -> {
+            if (recyclerView != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }, 100);
         openFirst();
     }
 

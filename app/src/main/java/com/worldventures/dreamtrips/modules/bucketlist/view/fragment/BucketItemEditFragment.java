@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
@@ -45,40 +46,30 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
-    @ForActivity
-    Provider<Injector> injector;
-
-    @Inject
     protected FragmentCompass fragmentCompass;
-
     @Optional
     @InjectView(R.id.done)
     protected ImageView imageViewDone;
-
     @InjectView(R.id.editTextTitle)
     protected EditText editTextTitle;
-
     @InjectView(R.id.editTextDescription)
     protected MaterialEditText editTextDescription;
-
     @InjectView(R.id.editTextPeople)
     protected EditText editTextPeople;
-
     @InjectView(R.id.editTextTags)
     protected EditText editTextTags;
-
     @InjectView(R.id.editTextTime)
     protected AutoCompleteTextView autoCompleteTextViwDate;
-
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
-
     @InjectView(R.id.spinnerCategory)
     protected Spinner spinnerCategory;
-
     @InjectView(R.id.lv_items)
     protected BucketPhotosView bucketPhotosView;
-
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
+    WeakHandler handler = new WeakHandler();
     private boolean categorySelected = false;
 
     @Override
@@ -141,10 +132,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
-        bucketPhotosView.init(this, injector, BucketPhotosView.Type.EDIT);
-        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
     }
+
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {
@@ -186,7 +175,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void  done() {
+    public void done() {
         getActivity().onBackPressed();
         hideSoftInput(editTextDescription);
     }
@@ -206,28 +195,8 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void setTags(String tags) {
-        editTextTags.setText(tags);
-    }
-
-    @Override
-    public void setPeople(String people) {
-        editTextPeople.setText(people);
-    }
-
-    @Override
     public void setTime(String time) {
         autoCompleteTextViwDate.setText(time);
-    }
-
-    @Override
-    public void setDescription(String description) {
-        editTextDescription.setText(description);
-    }
-
-    @Override
-    public void setTitle(String title) {
-        editTextTitle.setText(title);
     }
 
     @Override
@@ -236,8 +205,18 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
+    public void setTags(String tags) {
+        editTextTags.setText(tags);
+    }
+
+    @Override
     public String getPeople() {
         return editTextPeople.getText().toString();
+    }
+
+    @Override
+    public void setPeople(String people) {
+        editTextPeople.setText(people);
     }
 
     @Override
@@ -246,10 +225,29 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
+    public void setTitle(String title) {
+        editTextTitle.setText(title);
+    }
+
+    @Override
     public String getDescription() {
         return editTextDescription.getText().toString();
     }
 
+    @Override
+    public void setDescription(String description) {
+        editTextDescription.setText(description);
+    }
+
+    @Override
+    public void updatePhotos() {
+        bucketPhotosView.init(this, injector, BucketPhotosView.Type.EDIT);
+        bucketPhotosView.multiSelectAvailable(true);
+        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+        bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
+        bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
+    }
 
     @Override
     public IBucketPhotoView getBucketPhotosView() {
@@ -260,17 +258,25 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
+        eventBus.postSticky(new BucketDetailsFragment.ActivityResult(requestCode, resultCode, data));
+
+    }
+
+
+    public void onEvent(BucketDetailsFragment.ActivityResult event) {
+        eventBus.removeStickyEvent(event);
+        handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
+    }
+
+
+    @Override
+    public boolean getStatus() {
+        return checkBox.isChecked();
     }
 
     @Override
     public void setStatus(boolean isCompleted) {
         checkBox.setChecked(isCompleted);
-    }
-
-    @Override
-    public boolean getStatus() {
-        return checkBox.isChecked();
     }
 
     @Override

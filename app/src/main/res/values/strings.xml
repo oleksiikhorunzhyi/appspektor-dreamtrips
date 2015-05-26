@@ -250,4 +250,11 @@
     <string name="filters_show_favorite">SHOW FAVORITE TRIPS</string>
     <string name="filter_recently_added">RECENTLY ADDED</string>
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
+    <string name="choose_multiselect">Choose Photos</string>
+
+    <string-array name="dialog_add_bucket_photo_multiselect">
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_multiselect</item>
+    </string-array>
 </resources>

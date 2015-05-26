@@ -44,6 +44,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     @Override
+    protected void syncUI() {
+        super.syncUI();
+        view.updatePhotos();
+    }
+
+    @Override
     protected void onSuccess(BucketItem bucketItemUpdated) {
         super.onSuccess(bucketItemUpdated);
         if (savingItem) {

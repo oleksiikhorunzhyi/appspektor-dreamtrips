@@ -93,7 +93,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         progressView.setVisibility(View.GONE);
 
         bucketPhotosView.init(this, injector, BucketPhotosView.Type.DEFAULT);
-        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());
     }

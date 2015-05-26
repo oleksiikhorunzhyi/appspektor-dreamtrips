@@ -36,43 +36,33 @@ import butterknife.Optional;
 @Layout(R.layout.layout_detailed_bucket_item)
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
-
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
-
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
-
     @InjectView(R.id.textViewFriends)
     protected TextView textViewFriends;
-
     @InjectView(R.id.textViewTags)
     protected TextView textViewTags;
-
     @InjectView(R.id.textViewDescription)
     protected TextView textViewDescription;
-
     @InjectView(R.id.textViewCategory)
     protected TextView textViewCategory;
-
     @InjectView(R.id.textViewDate)
     protected TextView textViewDate;
-
     @InjectView(R.id.textViewPlace)
     protected TextView textViewPlace;
-
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
-
     @Optional
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-
     @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
+    WeakHandler handler = new WeakHandler();
 
     @Override
     public void afterCreateView(View rootView) {
@@ -105,7 +95,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
                 .build();
         imageViewCover.setController(draweeController);
     }
-
 
     @OnClick(R.id.imageViewEdit)
     protected void onEdit() {
@@ -195,8 +184,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         }
     }
 
-    WeakHandler handler = new WeakHandler();
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -226,9 +213,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public void updatePhotos() {
         bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
-        bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.multiSelectAvailable(true);
+        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
+        bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
     }
 
     public static class ActivityResult {

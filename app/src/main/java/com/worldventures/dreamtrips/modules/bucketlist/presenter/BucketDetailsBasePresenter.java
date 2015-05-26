@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActiv
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,6 +74,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         } else {
             Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
             handlePhotoPick(uri, "album");
+        }
+    };
+
+
+    protected MultiSelectPickCallback multiSelectPickCallback = (fm, list, error) -> {
+        for (Uri uri : list) {
+            handlePhotoPick(Uri.fromFile(new File(uri.toString())), "album");
         }
     };
 
@@ -259,6 +268,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public ImagePickCallback getFbCallback() {
         return fbCallback;
     }
+
+    public MultiSelectPickCallback getMultiSelectPickCallback() {
+        return multiSelectPickCallback;
+    }
+
 
     public interface View extends Presenter.View {
         void setTitle(String title);

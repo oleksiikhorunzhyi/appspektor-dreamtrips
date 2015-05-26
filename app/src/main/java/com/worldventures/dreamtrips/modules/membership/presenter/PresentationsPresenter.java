@@ -79,9 +79,12 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     @Override
     public void onResume() {
         super.onResume();
-        adapterController.setAdapter(view.getAdapter());
-        adapterController.reload();
-        eventBus.register(videoCachingDelegate);
+        if (view.getAdapter().getCount() == 0) {
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
+            if (!eventBus.isRegistered(videoCachingDelegate))
+                eventBus.register(videoCachingDelegate);
+        }
     }
 
     @Override

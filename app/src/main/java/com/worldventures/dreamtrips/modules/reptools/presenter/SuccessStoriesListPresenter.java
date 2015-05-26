@@ -54,9 +54,11 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
     @Override
     public void onResume() {
-        adapterController.setSpiceManager(dreamSpiceManager);
-        adapterController.setAdapter(view.getAdapter());
-        adapterController.reload();
+        if (view.getAdapter().getCount() == 0) {
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
+        }
     }
 
     @Override

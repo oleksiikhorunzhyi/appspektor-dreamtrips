@@ -32,7 +32,9 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
     private boolean loadFromApi;
     private boolean loadWithStatus;
     private boolean goneToMap = false;
-    private DreamSpiceAdapterController<TripModel> roboSpiceAdapterController = new DreamSpiceAdapterController<TripModel>() {
+
+    private DreamSpiceAdapterController<TripModel> adapterController
+            = new DreamSpiceAdapterController<TripModel>() {
         private Boolean cacheEmpty() {
             return db.isEmpty(SnappyRepository.TRIP_KEY);
         }
@@ -41,7 +43,6 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
             long current = Calendar.getInstance().getTimeInMillis();
             return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
         }
-
 
         @Override
         public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
@@ -63,15 +64,17 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
 
         @Override
         public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
-            loadFromApi = false;
-            loadWithStatus = false;
-            view.finishLoading();
-            if (spiceException != null) {
-                handleError(spiceException);
-            } else {
-                if (shouldUpdate()) {
-                    loadFromApi = true;
-                    reload();
+            if (adapterController != null) {
+                loadFromApi = false;
+                loadWithStatus = false;
+                view.finishLoading();
+                if (spiceException != null) {
+                    handleError(spiceException);
+                } else {
+                    if (shouldUpdate()) {
+                        loadFromApi = true;
+                        reload();
+                    }
                 }
             }
         }
@@ -88,9 +91,9 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
     public void onResume() {
         if (view.getAdapter().getCount() == 0) {
             goneToMap = false;
-            roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
-            roboSpiceAdapterController.setAdapter(view.getAdapter());
-            roboSpiceAdapterController.reload();
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
         }
     }
 
@@ -101,19 +104,19 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
     public void loadFromApi() {
         loadFromApi = true;
         loadWithStatus = true;
-        roboSpiceAdapterController.reload();
+        adapterController.reload();
     }
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
             view.startLoading();
             setFilters(event);
+            adapterController.reload();
         }
-        roboSpiceAdapterController.reload();
     }
 
     public void onEvent(TripLikedEvent event) {
-        roboSpiceAdapterController.reload();
+        adapterController.reload();
     }
 
     @Override
@@ -145,6 +148,12 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
             fragmentCompass.replace(Route.MAP, null);
             goneToMap = true;
         }
+    }
+
+    @Override
+    public void dropView() {
+        adapterController = null;
+        super.dropView();
     }
 
     public void onItemClick(TripModel trip) {

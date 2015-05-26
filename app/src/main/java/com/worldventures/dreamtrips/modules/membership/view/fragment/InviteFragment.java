@@ -86,7 +86,8 @@ public class InviteFragment
             getPresenter().continueAction();
         } else {
             containerTemplates.setVisibility(View.GONE);
-            if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
+            if (!tvSearch.hasFocus() && getPresenter().isVisible())
+                buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -130,7 +131,7 @@ public class InviteFragment
             if (hasFocus) {
                 buttonContinue.setVisibility(View.GONE);
             } else {
-                getPresenter().searchHiden();
+                getPresenter().searchHidden();
             }
 
             getPresenter().searchToggle(hasFocus);
@@ -147,6 +148,7 @@ public class InviteFragment
     @Override
     public void onDestroyView() {
         lvUsers.setAdapter(null);
+        tvSearch.setOnQueryTextListener(this);
         super.onDestroyView();
     }
 
@@ -157,12 +159,16 @@ public class InviteFragment
 
     @Override
     public void showContinue() {
-        buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
+        if (buttonContinue != null) {
+            buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
+        }
     }
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        if (refreshLayout != null) {
+            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        }
     }
 
     @Override
@@ -219,6 +225,7 @@ public class InviteFragment
         // adapter already has items filtered, nothing to do
         return false;
     }
+
 
     @Override
     public void setFilter(String newText) {

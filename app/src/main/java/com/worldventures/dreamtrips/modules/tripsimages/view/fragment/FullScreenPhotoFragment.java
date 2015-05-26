@@ -132,7 +132,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @OnClick(R.id.iv_share)
     public void actionShare() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title("Share")
+        builder.title(R.string.action_share)
                 .items(R.array.share_dialog_items)
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {

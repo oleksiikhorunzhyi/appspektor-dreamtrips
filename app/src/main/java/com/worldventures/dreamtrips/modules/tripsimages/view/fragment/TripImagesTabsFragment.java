@@ -82,7 +82,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
         this.tabs.setViewPager(pager);
         this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
-        getPresenter().onCreate();
     }
 
     @Override

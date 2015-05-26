@@ -54,6 +54,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
 
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
+        pager.setOffscreenPageLimit(2);
         tabStrip.setViewPager(pager);
         tabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

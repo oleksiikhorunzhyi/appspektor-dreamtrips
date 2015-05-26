@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.view.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -24,7 +25,9 @@ public class EditTemplateActivity extends ToolbarActivity<EditTemplateActivityPr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPresentationModel().onCreate();
+        if (savedInstanceState == null) {
+            getPresentationModel().onCreate();
+        }
     }
 
     @Override

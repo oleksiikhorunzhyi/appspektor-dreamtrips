@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
@@ -24,6 +23,7 @@ import java.util.List;
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
 
     private boolean onlyFavorites = false;
+    private int lastSelectedPosition = -1;
 
     private DreamSpiceAdapterController<SuccessStory> adapterController = new DreamSpiceAdapterController<SuccessStory>() {
         @Override
@@ -43,23 +43,27 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
         @Override
         public void onFinish(LoadType type, List<SuccessStory> items, SpiceException spiceException) {
-            view.finishLoading(items);
-            if (spiceException != null) {
-                handleError(spiceException);
+            if (adapterController != null) {
+                view.finishLoading(items);
+                if (spiceException != null) {
+                    handleError(spiceException);
+                }
             }
         }
     };
 
     @Override
     public void onResume() {
-        adapterController.setSpiceManager(dreamSpiceManager);
-        adapterController.setAdapter(view.getAdapter());
-        adapterController.reload();
+        if (view.getAdapter().getCount() == 0) {
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
+        }
     }
 
     @Override
     public void dropView() {
-        eventBus.unregister(this);
+        adapterController = null;
         super.dropView();
     }
 
@@ -72,8 +76,10 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         view.onStoryClicked();
     }
 
-    public void onEvent(SuccessStoryLikedEvent event) {
-        reload();
+    public void openFirst(SuccessStory successStory) {
+        if (lastSelectedPosition == -1) {
+            handleListItemClick(successStory, 0);
+        }
     }
 
     public void reloadWithFilter(int filterId) {
@@ -93,6 +99,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     }
 
     private void handleListItemClick(SuccessStory successStory, int position) {
+        lastSelectedPosition = position;
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
         if (view.isTabletLandscape()) {

@@ -7,35 +7,41 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import java.util.ArrayList;
 
-public abstract class DreamSpiceAdapterController<BaseItemClass> extends RoboSpiceAdapterController<DreamSpiceManager, BaseItemClass> {
+public abstract class DreamSpiceAdapterController<BaseItemClass>
+        extends RoboSpiceAdapterController<DreamSpiceManager, BaseItemClass> {
+
+    private DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>> nextRequestSuccessListener =
+            new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
+                @Override
+                public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+                    onSuccess(baseItemClasses);
+                }
+            };
+
+    private DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>> baseRequestSuccessListener =
+            new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
+                @Override
+                public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+                    onRefresh(baseItemClasses);
+                }
+            };
+
+    private DreamSpiceManager.FailureListener baseRequestFailureListener =
+            new DreamSpiceManager.FailureListener() {
+                @Override
+                public void handleError(SpiceException spiceException) {
+                    onFailure(spiceException);
+                }
+            };
 
     @Override
     protected void executeNextRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
-        spiceManager.execute(request, new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
-            @Override
-            public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-                DreamSpiceAdapterController.this.onSuccess(baseItemClasses);
-            }
-        }, new DreamSpiceManager.FailureListener() {
-            @Override
-            public void handleError(SpiceException spiceException) {
-                DreamSpiceAdapterController.this.onFailure(spiceException);
-            }
-        });
+        spiceManager.execute(request, nextRequestSuccessListener, baseRequestFailureListener);
     }
 
     @Override
     protected void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
-        spiceManager.execute(request, new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
-            @Override
-            public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-                DreamSpiceAdapterController.this.onRefresh(baseItemClasses);
-            }
-        }, new DreamSpiceManager.FailureListener() {
-            @Override
-            public void handleError(SpiceException spiceException) {
-                DreamSpiceAdapterController.this.onFailure(spiceException);
-            }
-        });
+        spiceManager.execute(request, baseRequestSuccessListener, baseRequestFailureListener);
     }
+
 }

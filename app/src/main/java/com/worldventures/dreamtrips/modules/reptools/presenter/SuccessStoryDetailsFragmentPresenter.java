@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
@@ -36,7 +35,6 @@ public class SuccessStoryDetailsFragmentPresenter extends WebViewFragmentPresent
 
     private void onLiked() {
         view.likeRequestSuccess();
-        eventBus.post(new SuccessStoryLikedEvent());
     }
 
     public void share() {

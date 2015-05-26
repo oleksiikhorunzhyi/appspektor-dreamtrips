@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -13,11 +14,10 @@ import java.io.File;
 public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null || image.getFileThumbnail() == null) {
+        if (error != null || image == null || image.getFileThumbnail() == null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment,
-                    Uri.fromFile(new File(image.getFileThumbnail())), "camera");
+            imageSelected(fragment, Uri.fromFile(new File(image.getFileThumbnail())), "camera");
         }
     };
 
@@ -25,17 +25,15 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         if (error != null || image.getFileThumbnail() == null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment,
-                    Uri.fromFile(new File(image.getFileThumbnail())), "album");
+            imageSelected(fragment, Uri.fromFile(new File(image.getFileThumbnail())), "album");
         }
     };
 
     protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
+        if (error != null || image == null) {
             view.informUser(error);
         } else {
-            activityRouter.openCreatePhoto(fragment,
-                    Uri.parse(image.getFilePathOriginal()), "facebook");
+g            imageSelected(fragment, Uri.fromFile(new File(image.getFilePathOriginal())), "facebook");
         }
     };
 
@@ -51,17 +49,22 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         }
     }
 
-    public void destroy() {
-        eventBus.removeAllStickyEvents();
-    }
-
     @Override
     public void dropView() {
+        eventBus.removeAllStickyEvents();
         super.dropView();
     }
 
-    public void onCreate() {
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
         view.setFabVisibility(true);
+    }
+
+    public void imageSelected(Fragment fragment, Uri uri, String type) {
+        if (activityRouter != null) {
+            activityRouter.openCreatePhoto(fragment, uri, type);
+        }
     }
 
     public void onFacebookAction(BaseFragment from) {

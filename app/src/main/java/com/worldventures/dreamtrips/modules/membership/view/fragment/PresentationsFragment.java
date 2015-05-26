@@ -70,14 +70,6 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (this.arrayListAdapter.getItemCount() == 0 && refreshLayout != null) {
-            this.refreshLayout.post(() -> getPresenter().getAdapterController().reload());
-        }
-    }
-
-    @Override
     public void onRefresh() {
         getPresenter().getAdapterController().reload();
     }

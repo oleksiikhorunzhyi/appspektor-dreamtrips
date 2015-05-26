@@ -168,7 +168,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
         if (refreshLayout != null)
             weakHandler.post(() -> {
                 if (isTabletLandscape() && adapter.getCount() > 0) {
-                    getEventBus().post(new OnSuccessStoryCellClickEvent(adapter.getItem(0), 0));
+                    getPresenter().openFirst(adapter.getItem(0));
                 }
             });
     }

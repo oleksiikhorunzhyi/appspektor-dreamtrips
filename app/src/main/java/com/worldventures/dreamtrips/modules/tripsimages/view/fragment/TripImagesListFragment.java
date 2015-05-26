@@ -139,12 +139,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null)
+            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override

@@ -82,8 +82,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
         if (view.getAdapter().getCount() == 0) {
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
-            if (!eventBus.isRegistered(videoCachingDelegate))
-                eventBus.register(videoCachingDelegate);
+            eventBus.register(videoCachingDelegate);
         }
     }
 

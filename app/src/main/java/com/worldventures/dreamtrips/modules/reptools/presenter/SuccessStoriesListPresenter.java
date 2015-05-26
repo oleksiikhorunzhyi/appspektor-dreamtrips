@@ -24,6 +24,7 @@ import java.util.List;
 public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
 
     private boolean onlyFavorites = false;
+    private int lastSelectedPosition = -1;
 
     private DreamSpiceAdapterController<SuccessStory> adapterController = new DreamSpiceAdapterController<SuccessStory>() {
         @Override
@@ -80,6 +81,12 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
         reload();
     }
 
+    public void openFirst(SuccessStory successStory) {
+        if (lastSelectedPosition == -1) {
+            handleListItemClick(successStory, 0);
+        }
+    }
+
     public void reloadWithFilter(int filterId) {
         switch (filterId) {
             case R.id.action_show_all:
@@ -97,6 +104,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     }
 
     private void handleListItemClick(SuccessStory successStory, int position) {
+        lastSelectedPosition = position;
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
         if (view.isTabletLandscape()) {

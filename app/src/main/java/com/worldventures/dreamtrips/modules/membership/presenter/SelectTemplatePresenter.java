@@ -50,7 +50,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
     private void getMembers() {
         MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
         members.clear();
-        if (event.getMembers() != null)
+        if (event != null && event.getMembers() != null)
             members.addAll(event.getMembers());
     }
 

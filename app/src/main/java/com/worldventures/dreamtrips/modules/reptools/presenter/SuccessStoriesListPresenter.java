@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
@@ -75,10 +74,6 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     public void onEvent(OnSuccessStoryCellClickEvent event) {
         handleListItemClick(event.getModelObject(), event.getPosition());
         view.onStoryClicked();
-    }
-
-    public void onEvent(SuccessStoryLikedEvent event) {
-        reload();
     }
 
     public void openFirst(SuccessStory successStory) {

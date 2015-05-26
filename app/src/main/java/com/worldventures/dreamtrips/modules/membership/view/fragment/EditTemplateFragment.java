@@ -30,6 +30,8 @@ import butterknife.InjectView;
 public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> implements EditTemplatePresenter.View {
     public static final String TEMPLATE = "TEMPLATE";
 
+    public static final String EXTRA_MESSAGE = "message";
+
     @Inject
     @ForActivity
     Provider<Injector> injector;
@@ -42,7 +44,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     TextView tvSubj;
     @InjectView(R.id.wv_preview)
     WebView wvPreview;
-    @InjectView(R.id.et_email)
+    @InjectView(R.id.et_personal_message)
     MaterialEditText etMessage;
     @InjectView(R.id.ll_progress)
     View progressView;
@@ -66,6 +68,12 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_MESSAGE, etMessage.getText().toString());
+    }
+
+    @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
         InviteTemplate template = getArguments().getParcelable(TEMPLATE);
         return new EditTemplatePresenter(template);
@@ -79,6 +87,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        wvPreview.getSettings().setJavaScriptEnabled(true);
         wvPreview.getSettings().setLoadWithOverviewMode(true);
         wvPreview.getSettings().setUseWideViewPort(true);
         progressView.setVisibility(View.GONE);
@@ -87,6 +96,14 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         bucketPhotosView.setSelectImageCallback(getPresenter().getPhotoChooseCallback());
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            etMessage.setText(savedInstanceState.getString(EXTRA_MESSAGE));
+        }
     }
 
     @Override
@@ -112,7 +129,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
 
     @Override
     public void setWebViewContent(String content) {
-        wvPreview.loadData(content, "text/html", "UTF-8");
+        wvPreview.loadData(content, "text/html; charset=UTF-8", null);
     }
 
     @Override
@@ -133,5 +150,25 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void finishLoading() {
         progressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        wvPreview.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        wvPreview.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        wvPreview.loadUrl("about:blank");
+        wvPreview.destroy();
+        wvPreview = null;
+        super.onDestroyView();
     }
 }

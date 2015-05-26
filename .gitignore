@@ -57,3 +57,6 @@ log*.txt
 
 # signing credentials
 signing/signing.properties
+
+# code generated
+dagger-proguard-keepnames.cfg

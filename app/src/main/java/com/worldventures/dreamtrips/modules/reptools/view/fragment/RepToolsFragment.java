@@ -42,7 +42,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (adapter == null) {
-            this.adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+            adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     Bundle args = new Bundle();
@@ -50,18 +50,17 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
                 }
             };
 
-            this.adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
-            this.adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
-            this.adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
+            adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
+            adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
+            adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
             
             if (getPresenter().showInvite()) {
                 adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
             }
         }
-        this.pager.setAdapter(adapter);
-        this.tabs.setViewPager(pager);
-        this.tabs.setBackgroundColor(getResources().getColor(R.color.theme_main));
-        pager.setOnPageChangeListener(this);
+        pager.setAdapter(adapter);
+        tabs.setViewPager(pager);
+        tabs.setOnPageChangeListener(this);
     }
 
     @Override
@@ -75,12 +74,12 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    public void onPageSelected(int position) {
+        SoftInputUtil.hideSoftInputMethod(pager);
     }
 
     @Override
-    public void onPageSelected(int position) {
-        SoftInputUtil.hideSoftInputMethod(pager);
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
 
     @Override

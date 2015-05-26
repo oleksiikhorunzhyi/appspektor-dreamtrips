@@ -10,6 +10,7 @@ repositories {
     maven { url 'http://dl.bintray.com/techery/android' }
     maven { url "https://jitpack.io" }
     maven { url "https://clojars.org/repo/" }
+    maven { url "http://nexus.idamob.ru/content/groups/public" }
 }
 
 android {
@@ -19,8 +20,8 @@ android {
     // App version
     def versionMajor = 1
     def versionMinor = 1
-    def versionPatch = 0
-    def versionBuild = 5 // bump for dogfood builds, public betas, etc.
+    def versionPatch = 1
+    def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -129,9 +130,14 @@ android {
             applicationIdSuffix ".debug"
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // proguard
+            def proConfigs = file('proguard-rules').listFiles().collect { relativePath(it) }
+            proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
+            proConfigs << rootProject.file('dagger-proguard-keepnames.cfg')
+            proguardFiles proConfigs
         }
     }
 
@@ -143,7 +149,8 @@ android {
         javaMaxHeapSize "4g"
     }
     lintOptions {
-        abortOnError false
+        disable 'MissingTranslation' // otherwise generated strings fucks you up
+        // checkReleaseBuilds false // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -158,6 +165,7 @@ dependencies {
     // Di
     compile 'com.squareup.dagger:dagger:1.2.2'
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+    apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0-SNAPSHOT'
     // Data storage, flow
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.snappydb:snappydb-lib:0.5.0'
@@ -169,8 +177,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     compile 'com.google.code.gson:gson:2.3.1'
     // Media
-    compile 'io.techery:ijkmediawidget:1.0.0@aar'
-    compile 'io.techery:ijkmediaplayer:1.0.0@aar'
+    compile 'io.techery:ijkmediaplayer:0.2.3@aar'
+    compile 'io.techery:ijkmediawidget:0.2.3@aar'
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.1.10'
     compile 'com.amazonaws:aws-android-sdk-s3:2.1.10'

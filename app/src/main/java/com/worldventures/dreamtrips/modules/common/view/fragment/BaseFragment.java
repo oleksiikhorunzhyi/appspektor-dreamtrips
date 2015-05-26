@@ -39,6 +39,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
             throw new IllegalArgumentException("Presenter can't be null");
         }
         inject(this.presenter);
+        this.presenter.onInjected();
 
         Layout layout = this.getClass().getAnnotation(Layout.class);
         if (layout == null) {

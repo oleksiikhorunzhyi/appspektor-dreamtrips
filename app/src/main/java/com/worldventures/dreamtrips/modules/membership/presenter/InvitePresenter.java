@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -51,9 +48,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @Inject
     @ForApplication
     Injector injector;
-
-    private List<Member> members;
-    private List<Member> selectedMembers;
+    WeakHandler queryHandler = new WeakHandler();
+    private List<Member> members = new ArrayList<>();
+    private List<Member> selectedMembers = new ArrayList<>();
 
     @Override
     public void handleError(SpiceException error) {
@@ -160,9 +157,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }
     }
 
-
-    WeakHandler queryHandler = new WeakHandler();
-
     public void searchToggle(boolean hasFocus) {
         eventBus.post(new SearchFocusChangedEvent(hasFocus));
     }
@@ -193,7 +187,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         setMembers();
     }
 
-    public void searchHiden() {
+    public void searchHidden() {
         if (selectedMembers != null && selectedMembers.size() > 0) {
             view.showContinue();
         }

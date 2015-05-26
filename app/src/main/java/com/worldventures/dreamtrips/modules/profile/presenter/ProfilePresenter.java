@@ -37,7 +37,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             view.avatarProgressVisible(true);
             doRequest(new UploadAvatarCommand(typedFile),
                     this::onSuccess);
-
         }
     };
 
@@ -101,10 +100,12 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         activityRouter.openLogin();
     }
 
-    public void onDataSet(int year, int month, int day) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-        Calendar calendar = new GregorianCalendar(year, month, day);
-        view.setDateOfBirth(sdf.format(calendar.getTime()));
+
+    @Override
+    public void dropView() {
+        avatarCallback = null;
+        coverCallback = null;
+        super.dropView();
     }
 
     //don't use of get PREFIX
@@ -117,10 +118,10 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
 
-    public static interface View extends Presenter.View {
-        public void setAvatarImage(Uri uri);
+    public interface View extends Presenter.View {
+        void setAvatarImage(Uri uri);
 
-        public void setCoverImage(Uri uri);
+        void setCoverImage(Uri uri);
 
         void avatarProgressVisible(boolean visible);
 

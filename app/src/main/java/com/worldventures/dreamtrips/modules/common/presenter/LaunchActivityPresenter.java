@@ -109,10 +109,10 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         if (localesOptional.isPresent()) {
             List<AvailableLocale> availableLocales = localesOptional.get();
             contains = Queryable.from(availableLocales)
-                    .any((availableLocale) -> {
-                        return localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
-                                localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage());
-                    });
+                    .any((availableLocale) ->
+                         localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
+                                localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
+                    );
         }
         return !contains ? Locale.US : localeCurrent;
     }

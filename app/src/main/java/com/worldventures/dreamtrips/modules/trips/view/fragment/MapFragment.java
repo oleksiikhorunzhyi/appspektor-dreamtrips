@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -33,7 +32,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_map)
 @MenuResource(R.menu.menu_map)
-public class MapFragment extends BaseFragment<MapFragmentPresenter> implements MapFragmentPresenter.View, SearchView.OnQueryTextListener {
+public class MapFragment extends BaseFragment<MapFragmentPresenter> implements MapFragmentPresenter.View {
 
     @InjectView(R.id.map)
     protected ToucheableMapView mapView;
@@ -42,6 +41,32 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
     protected GoogleMap googleMap;
     private LatLng lastClickedLocation;
+
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+            getPresenter().applySearch(s);
+            getPresenter().onCameraChanged();
+            return false;
+        }
+    };
+
+    private GoogleMap.CancelableCallback cancelableCallback = new GoogleMap.CancelableCallback() {
+        @Override
+        public void onFinish() {
+            getPresenter().markerReady();
+        }
+
+        @Override
+        public void onCancel() {
+            //nothing to do here
+        }
+    };
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -90,7 +115,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
             getPresenter().applySearch(null);
             return false;
         });
-        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener(onQueryTextListener);
     }
 
     @Override
@@ -121,6 +146,8 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
     @Override
     public void onDestroyView() {
+        cancelableCallback = null;
+        onQueryTextListener = null;
         mapView.removeAllViews();
         mapView.onDestroy();
         mapView = null;
@@ -155,23 +182,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
     }
 
-    private void zoomIn() {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.zoomIn();
-        googleMap.moveCamera(cameraUpdate);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        getPresenter().applySearch(s);
-        getPresenter().onCameraChanged();
-        return false;
-    }
-
     @Override
     public void showInfoWindow(int offset) {
         updateMap(lastClickedLocation, offset);
@@ -182,16 +192,6 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
         Point screenLocation = projection.toScreenLocation(latLng);
         screenLocation.y -= offset;
         LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                getPresenter().markerReady();
-            }
-
-            @Override
-            public void onCancel() {
-                //nothing to do here
-            }
-        });
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), cancelableCallback);
     }
 }

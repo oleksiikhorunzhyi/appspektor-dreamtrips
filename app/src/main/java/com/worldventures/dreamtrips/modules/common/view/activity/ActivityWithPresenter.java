@@ -22,6 +22,7 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     protected void beforeCreateView(Bundle savedInstanceState) {
         this.presentationModel = createPresentationModel(savedInstanceState);
         inject(this.presentationModel);
+        this.presentationModel.onInjected();
     }
 
     @Override

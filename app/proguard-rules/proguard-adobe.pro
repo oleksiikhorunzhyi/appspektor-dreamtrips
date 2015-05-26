@@ -1,0 +1,2 @@
+-keep class com.adobe.mobile.** { *; }
+-dontwarn com.google.android.gms.**

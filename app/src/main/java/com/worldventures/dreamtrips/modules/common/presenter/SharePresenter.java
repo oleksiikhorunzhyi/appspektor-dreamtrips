@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -18,15 +19,17 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
         if (type.equals(ShareActivity.FB)) {
             view.shareFBDialog(imageUrl, shareLink, text);
         } else if (type.equals(ShareActivity.TW)) {
-            File file = new File(CachedEntity.getExternalFilePath(context, imageUrl));
-            if (file.exists()) {
-                Uri parse = Uri.fromFile(file);
-                view.shareTwitterDialog(parse, shareLink, text);
+            if (TextUtils.isEmpty(imageUrl)) {
+                view.shareTwitterDialog(null, shareLink, text);
             } else {
-                downloadFile(imageUrl, shareLink, text);
+                File file = new File(CachedEntity.getExternalFilePath(context, imageUrl));
+                if (file.exists()) {
+                    Uri parse = Uri.fromFile(file);
+                    view.shareTwitterDialog(parse, shareLink, text);
+                } else {
+                    downloadFile(imageUrl, shareLink, text);
+                }
             }
-
-
         }
     }
 

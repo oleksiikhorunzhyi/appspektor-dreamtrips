@@ -137,7 +137,6 @@
             android:background="@drawable/background_ss_btn"
             android:focusableInTouchMode="false"
             android:padding="6dp"
-            android:visibility="gone"
             android:scaleType="centerInside"
             android:src="@drawable/ic_fs_share" />
 

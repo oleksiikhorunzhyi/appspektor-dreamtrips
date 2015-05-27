@@ -185,12 +185,19 @@ public class DateTimeUtils {
         }
 
         int daysBetween = Days.daysBetween(dateTimeToday, dateTimeTarget).getDays();
-        int weeksBetween = Weeks.weeksBetween(dateTimeToday, dateTimeTarget).getWeeks();
-        int monthsBetween = Months.monthsBetween(dateTimeToday, dateTimeTarget).getMonths();
-        int yearsBetween = Years.yearsBetween(dateTimeToday, dateTimeTarget).getYears();
 
-        boolean thisYear = dateTimeToday.get(DateTimeFieldType.year())
-                == dateTimeTarget.get(DateTimeFieldType.year());
+        int yearToday = dateTimeToday.get(DateTimeFieldType.year());
+        int yearTarget = dateTimeTarget.get(DateTimeFieldType.year());
+
+        boolean thisYear = yearToday == yearTarget;
+
+        int weekOfYearToday = dateTimeToday.get(DateTimeFieldType.weekOfWeekyear());
+        int weekOfYearTarget = dateTimeTarget.get(DateTimeFieldType.weekOfWeekyear());
+
+        int monthToday = dateTimeToday.get(DateTimeFieldType.monthOfYear());
+        int monthTarget = dateTimeTarget.get(DateTimeFieldType.monthOfYear());
+        int monthsBetween = monthTarget - monthToday;
+
         String result;
 
         if (daysBetween == 0) {
@@ -198,22 +205,22 @@ public class DateTimeUtils {
         } else if (daysBetween == 1) {
             result = dateArray[TOMORROW];
         } else if (thisYear
-                && dateTimeTarget.get(DateTimeFieldType.weekOfWeekyear())
-                == dateTimeToday.get(DateTimeFieldType.weekOfWeekyear())) {
+                && weekOfYearToday
+                == weekOfYearTarget) {
             result = dateArray[THIS_WEEK];
-        } else if (weeksBetween == 1) {
+        } else if (thisYear &&
+                weekOfYearTarget - weekOfYearToday == 1) {
             result = dateArray[NEXT_WEEK];
         } else if (thisYear
-                && dateTimeTarget.get(DateTimeFieldType.monthOfYear())
-                == dateTimeToday.get(DateTimeFieldType.monthOfYear())) {
+                && monthToday == monthTarget) {
             result = dateArray[THIS_MONTH];
-        } else if (monthsBetween == 1) {
+        } else if (thisYear && monthsBetween == 1) {
             result = dateArray[NEXT_MONTH];
         } else if (monthsBetween > 1 && monthsBetween <= 6) {
             result = dateArray[IN_SIX_MONTH];
         } else if (thisYear) {
             result = dateArray[THIS_YEAR];
-        } else if (yearsBetween == 1) {
+        } else if (yearTarget - yearToday == 1) {
             result = dateArray[NEXT_YEAR];
         } else {
             result = dateArray[SOMETIME];

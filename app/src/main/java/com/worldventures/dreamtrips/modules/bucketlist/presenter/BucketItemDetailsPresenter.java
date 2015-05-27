@@ -43,13 +43,13 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onFbShare() {
         activityRouter.openShareFacebook(bucketItem.getUrl(), null,
-                String.format(context.getString(R.string.bucketlist_share_fb),
+                String.format(context.getString(R.string.bucketlist_share),
                         bucketItem.getName()));
     }
 
     public void onTwitterShare() {
         activityRouter.openShareTwitter(null, bucketItem.getUrl(),
-                String.format(context.getString(R.string.bucketlist_share_fb),
+                String.format(context.getString(R.string.bucketlist_share),
                         bucketItem.getName()));
     }
 

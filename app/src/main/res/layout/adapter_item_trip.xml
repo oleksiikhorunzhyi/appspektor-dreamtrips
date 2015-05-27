@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView
     android:id="@+id/card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -15,7 +17,7 @@
         android:id="@+id/itemLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        >
 
         <FrameLayout
             android:id="@+id/imageLayout"
@@ -27,15 +29,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 fresco:actualImageScaleType="focusCrop"
-                fresco:placeholderImageScaleType="fitXY"
-                fresco:placeholderImage="@drawable/ic_trip_image_placeholder" />
+                fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+                fresco:placeholderImageScaleType="fitXY"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@drawable/trip_item_shadow" />
+                android:background="@drawable/trip_item_shadow"/>
 
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/tripImagePanelMargin">
@@ -44,16 +46,16 @@
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
-            </RelativeLayout>
+            </FrameLayout>
 
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end">
@@ -62,26 +64,25 @@
                     android:id="@+id/textViewFeatured"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:visibility="invisible"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/ic_stripe2"
-                    android:padding="@dimen/tripDetailPanelPadding"
-                    android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="12sp"
+                    android:padding="@dimen/tripDetailPanelPadding"
                     android:text="@string/trip_featured"
-                    android:textStyle="bold" />
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"/>
 
-            </RelativeLayout>
+            </FrameLayout>
 
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="@dimen/tripImagePanelMargin"
-                android:layout_marginEnd="@dimen/tripImagePanelMargin"
-                android:layout_marginTop="@dimen/tripImagePanelMargin">
+                android:layout_margin="@dimen/tripImagePanelMargin"
+                android:orientation="horizontal">
 
                 <com.andexert.library.RippleView
                     android:layout_width="wrap_content"
@@ -89,16 +90,34 @@
                     android:layout_gravity="center"
                     ripple:rv_centered="true">
 
-                    <ImageView
+                    <CheckedTextView
+                        android:id="@+id/imageViewAddToBucket"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkMark="@drawable/ic_trip_add_to_bucket"
+                        android:clickable="true"
+                        android:tag="bucket"
+                        tools:checked="true"/>
+                </com.andexert.library.RippleView>
+
+                <com.andexert.library.RippleView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    ripple:rv_centered="true">
+
+                    <CheckedTextView
                         android:id="@+id/imageViewLike"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:checkMark="@drawable/ic_trip_like"
                         android:clickable="true"
-                        android:src="@drawable/ic_heart_1"
-                        android:tag="like" />
+                        android:tag="like"
+                        tools:checked="true"/>
                 </com.andexert.library.RippleView>
 
-            </FrameLayout>
+            </LinearLayout>
 
 
             <FrameLayout
@@ -111,7 +130,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_points_badge" />
+                    android:src="@drawable/ic_points_badge"/>
 
                 <TextView
                     android:id="@+id/textViewPoints"
@@ -119,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:textSize="10dp" />
+                    android:textSize="10dp"/>
 
             </FrameLayout>
 
@@ -154,7 +173,7 @@
                         android:fontFamily="sans-serif-light"
                         android:singleLine="true"
                         android:textColor="@color/tripNameColor"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
 
                     <TextView
@@ -165,7 +184,7 @@
                         android:drawablePadding="5dp"
                         android:drawableStart="@drawable/ic_location"
                         android:singleLine="true"
-                        android:textColor="@color/tripPlaceColor" />
+                        android:textColor="@color/tripPlaceColor"/>
                 </LinearLayout>
 
                 <TextView
@@ -176,7 +195,7 @@
                     android:gravity="center_vertical"
                     android:textColor="@color/tripPlaceColor"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
             </LinearLayout>
         </com.andexert.library.RippleView>
 

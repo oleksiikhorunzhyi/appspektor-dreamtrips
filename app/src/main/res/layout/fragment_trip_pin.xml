@@ -156,17 +156,25 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_triangle"/>
 
-        <ImageView
+        <CheckedTextView
+            android:id="@+id/imageViewAddToBucket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/imageViewLike"
+            android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
+            android:clickable="true"
+            android:checkMark="@drawable/ic_trip_add_to_bucket"
+            android:tag="like"/>
+
+
+        <CheckedTextView
             android:id="@+id/imageViewLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginTop="@dimen/tripImagePanelMargin"
+            android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
             android:clickable="true"
-            android:src="@drawable/ic_heart_1_sh"
+            android:checkMark="@drawable/ic_trip_like"
             android:tag="like" />
 
     </RelativeLayout>

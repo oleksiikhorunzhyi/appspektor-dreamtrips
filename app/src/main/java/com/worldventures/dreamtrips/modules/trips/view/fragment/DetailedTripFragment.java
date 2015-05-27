@@ -96,22 +96,19 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
         addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
-        if (getPresenter() != null) {
-            getPresenter().menuLoaded();
-        }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_like:
-                getPresenter().actionLike();
+                getPresenter().likeTrip();
                 return true;
             case R.id.action_add_to_bucket:
-                getPresenter().actionAddToBucket();
+                getPresenter().addTripToBucket();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -229,7 +226,15 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     public void setInBucket(boolean inBucket) {
-        addToBucketItem.setVisible(!inBucket);
+        int icon = inBucket ? R.drawable.ic_trip_add_to_bucket_selected : R.drawable.ic_trip_add_to_bucket_normal;
+        addToBucketItem.setIcon(icon);
+        addToBucketItem.setEnabled(!inBucket);
+    }
+
+    @Override
+    public void setLike(boolean liked) {
+        int icon = liked ? R.drawable.ic_trip_like_selected : R.drawable.ic_trip_like_normal;
+        likeItem.setIcon(icon);
     }
 
     @Override
@@ -237,14 +242,4 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
         textViewScheduleDescription.setText(String.format(getString(R.string.duration), count));
     }
 
-    @Override
-    public void setLike(boolean liked) {
-        if (likeItem != null) {
-            if (liked) {
-                likeItem.setIcon(R.drawable.ic_bucket_like_selected);
-            } else {
-                likeItem.setIcon(R.drawable.ic_heart_1);
-            }
-        }
-    }
 }

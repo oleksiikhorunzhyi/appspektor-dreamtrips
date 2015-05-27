@@ -20,7 +20,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -30,8 +29,6 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -127,10 +124,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     @Override
     public void showErrorMessage() {
         ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
-    }
-
-    public void onEvent(LikeTripEvent likeTripEvent) {
-        getPresenter().onItemLike(likeTripEvent.getTrip());
     }
 
     public void onEvent(TouchTripEvent event) {

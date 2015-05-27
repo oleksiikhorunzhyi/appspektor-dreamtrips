@@ -86,6 +86,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         stopSpiceManagers();
     }
 
+    public void onMenuPrepared() {
+        // hook for onPreparedMenu
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Spice manager
     ///////////////////////////////////////////////////////////////////////////

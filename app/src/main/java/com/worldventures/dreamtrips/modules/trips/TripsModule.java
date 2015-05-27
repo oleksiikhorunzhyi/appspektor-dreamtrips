@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPr
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapTripInfoPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 
 import dagger.Module;
@@ -42,10 +42,10 @@ import dagger.Provides;
                 DetailTripActivity.class,
                 DetailTripActivityPresenter.class,
                 DetailedTripPresenter.class,
-                FragmentMapInfoPresenter.class,
+                MapTripInfoPresenter.class,
                 MapFragmentPresenter.class,
                 FiltersFragment.class,
-                FragmentMapTripInfo.class,
+                MapTripInfoFragment.class,
                 DreamTripsFragment.class,
                 MapFragment.class,
 

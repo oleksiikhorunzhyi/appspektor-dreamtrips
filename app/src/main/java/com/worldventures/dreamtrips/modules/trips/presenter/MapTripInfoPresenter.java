@@ -2,21 +2,15 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
-import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
 
-public class FragmentMapInfoPresenter extends BaseTripPresenter<FragmentMapInfoPresenter.View> {
+public class MapTripInfoPresenter extends BaseTripPresenter<MapTripInfoPresenter.View> {
 
     @Override
-    public void onResume() {
-        super.onResume();
+    protected void initData() {
+        super.initData();
         view.setImage(trip.getThumb(context.getResources()));
-    }
-
-    public void onEvent(TripLikedEvent tripEvent) {
-        if (tripEvent.getTrip().getTripId() == trip.getTripId()) {
-            trip.setLiked(tripEvent.getTrip().isLiked());
-            view.setLike(trip.isLiked());
-        }
+        view.setInBucket(trip.isInBucketList());
+        view.setLike(trip.isLiked());
     }
 
     public void sendOffset(int offset) {

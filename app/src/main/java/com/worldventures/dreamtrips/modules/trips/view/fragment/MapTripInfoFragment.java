@@ -5,8 +5,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,20 +16,22 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.FragmentMapInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapTripInfoPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_trip_pin)
-public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> implements FragmentMapInfoPresenter.View {
+public class MapTripInfoFragment extends BaseFragment<MapTripInfoPresenter> implements MapTripInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
     @InjectView(R.id.imageViewTripImage)
     protected SimpleDraweeView imageViewTripImage;
+    @InjectView(R.id.imageViewAddToBucket)
+    protected CheckedTextView addToBucketView;
     @InjectView(R.id.imageViewLike)
-    protected ImageView imageViewLike;
+    protected CheckedTextView likeView;
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
     @InjectView(R.id.textViewPlace)
@@ -127,7 +129,13 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
 
     @Override
     public void setLike(boolean liked) {
-        imageViewLike.setImageResource(!liked ? R.drawable.ic_heart_1 : R.drawable.ic_bucket_like_selected);
+        likeView.setChecked(liked);
+    }
+
+    @Override
+    public void setInBucket(boolean inBucket) {
+        addToBucketView.setChecked(inBucket);
+        addToBucketView.setEnabled(!inBucket);
     }
 
     @Override
@@ -140,14 +148,19 @@ public class FragmentMapTripInfo extends BaseFragment<FragmentMapInfoPresenter> 
         getPresenter().onClick();
     }
 
+    @OnClick(R.id.imageViewAddToBucket)
+    void onAddToBucket() {
+        getPresenter().addTripToBucket();
+    }
+
     @OnClick(R.id.imageViewLike)
     void onLike() {
-        getPresenter().actionLike();
+        getPresenter().likeTrip();
     }
 
     @Override
-    protected FragmentMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new FragmentMapInfoPresenter();
+    protected MapTripInfoPresenter createPresenter(Bundle savedInstanceState) {
+        return new MapTripInfoPresenter();
     }
 
     @Override

@@ -60,7 +60,7 @@
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_heart_1" />
+            android:src="@drawable/ic_trip_like_normal" />
     </LinearLayout>
 
 </RelativeLayout>

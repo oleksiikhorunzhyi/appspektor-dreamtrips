@@ -4,11 +4,11 @@
     <item
         android:id="@+id/action_add_to_bucket"
         android:title="@string/action_add_to_bucket"
-        android:icon="@drawable/ic_bucket_add_pic"
+        android:icon="@drawable/ic_trip_add_to_bucket"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_like"
         android:title="@string/action_like"
-        android:icon="@drawable/ic_heart_1"
+        android:icon="@drawable/ic_trip_like"
         app:showAsAction="ifRoom" />
 </menu>

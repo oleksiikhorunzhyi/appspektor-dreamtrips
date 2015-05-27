@@ -240,7 +240,7 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean isActive() {
-        return available && !soldOut;
+        return available;
     }
 
     public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {

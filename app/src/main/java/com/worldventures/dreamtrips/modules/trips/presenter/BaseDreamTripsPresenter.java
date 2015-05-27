@@ -36,10 +36,12 @@ public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter
                         input.isPriceAccepted(maxPrice, minPrice)
                                 && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
                                 && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)
-                                && (!showSoldOut || input.isSoldOut())
                                 && (!showFavorites || input.isLiked())
                                 && (!showRecentlyAdded || input.isRecentlyAdded())
         ).toList());
+
+        if (showSoldOut)
+            filteredTrips.addAll(Queryable.from(trips).filter(TripModel::isSoldOut).toList());
 
         return filteredTrips;
     }

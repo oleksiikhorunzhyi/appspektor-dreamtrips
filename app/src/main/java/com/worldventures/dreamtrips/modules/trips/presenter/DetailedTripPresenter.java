@@ -4,7 +4,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
-import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
@@ -41,14 +40,19 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         activityRouter.openBookItActivity(trip.getTripId());
     }
 
-    public void menuLoaded() {
+    @Override
+    public void onMenuPrepared() {
         if (trip != null) {
             view.setLike(trip.isLiked());
+            view.setInBucket(trip.isInBucketList());
         }
     }
 
     public void loadTripDetails() {
-        doRequest(new GetTripDetailsQuery(trip.getTripId()), this::onSuccess);
+        doRequest(new GetTripDetailsQuery(trip.getTripId()), tripDetails -> {
+            view.setContent(tripDetails.getContent());
+            TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
+        });
     }
 
     @Override
@@ -57,20 +61,14 @@ public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresent
         view.setContent(null);
     }
 
-    private void onSuccess(TripDetails tripDetails) {
-        view.setContent(tripDetails.getContent());
-        TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
-    }
-
     public void onItemClick(int position) {
         if (filteredImages.get(position) instanceof TripImage) {
             this.activityRouter.openFullScreenTrip(this.filteredImages, position);
         }
     }
 
-    public static interface View extends BaseTripPresenter.View {
+    public interface View extends BaseTripPresenter.View {
         void setContent(List<ContentItem> contentItems);
-
         void hideBookIt();
     }
 }

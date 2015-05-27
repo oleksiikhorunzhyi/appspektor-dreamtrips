@@ -4,8 +4,8 @@ import android.graphics.PointF;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -15,6 +15,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -29,7 +30,9 @@ public class TripCell extends AbstractCell<TripModel> {
     @InjectView(R.id.imageViewTripImage)
     protected SimpleDraweeView imageViewTripImage;
     @InjectView(R.id.imageViewLike)
-    protected ImageView imageViewLike;
+    protected CheckedTextView likeView;
+    @InjectView(R.id.imageViewAddToBucket)
+    protected CheckedTextView addToBucketView;
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
     @InjectView(R.id.textViewPlace)
@@ -74,7 +77,9 @@ public class TripCell extends AbstractCell<TripModel> {
             pointsCountLayout.setVisibility(View.GONE);
         }
 
-        setImageViewLike();
+        likeView.setChecked(getModelObject().isLiked());
+        addToBucketView.setChecked(getModelObject().isInBucketList());
+        addToBucketView.setEnabled(!getModelObject().isInBucketList());
 
         PointF pointF = new PointF(.5f, .5f);
         imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
@@ -82,10 +87,17 @@ public class TripCell extends AbstractCell<TripModel> {
     }
 
     @OnClick(R.id.imageViewLike)
-    void actionLike() {
+    void onLike() {
         getModelObject().setLiked(!getModelObject().isLiked());
-        setImageViewLike();
+        syncUIStateWithModel();
         getEventBus().post(new LikeTripEvent(getModelObject()));
+    }
+
+    @OnClick(R.id.imageViewAddToBucket)
+    void onAddToBucket() {
+        getModelObject().setInBucketList(true);
+        syncUIStateWithModel();
+        getEventBus().post(new AddToBucketEvent(getModelObject()));
     }
 
     @OnClick(R.id.itemLayout)
@@ -96,14 +108,6 @@ public class TripCell extends AbstractCell<TripModel> {
     @OnClick(R.id.layoutInfo)
     void onInfoClick() {
         actionItemClick();
-    }
-
-    private void setImageViewLike() {
-        if (getModelObject().isLiked()) {
-            imageViewLike.setImageResource(R.drawable.ic_bucket_like_selected);
-        } else {
-            imageViewLike.setImageResource(R.drawable.ic_heart_1);
-        }
     }
 
     @Override

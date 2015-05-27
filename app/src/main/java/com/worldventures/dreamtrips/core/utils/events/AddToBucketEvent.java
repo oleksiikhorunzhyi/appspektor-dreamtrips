@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.core.utils.events;
 
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
-public class TripLikedEvent {
+public class AddToBucketEvent {
 
     protected TripModel trip;
 
-    public TripLikedEvent(TripModel trip) {
+    public AddToBucketEvent(TripModel trip) {
         this.trip = trip;
     }
 

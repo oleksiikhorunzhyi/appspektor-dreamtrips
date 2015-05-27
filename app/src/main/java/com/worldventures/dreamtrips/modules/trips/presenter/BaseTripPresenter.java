@@ -3,14 +3,17 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.TripLikedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,7 +21,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
     @Inject
     protected SnappyRepository db;
-
     protected TripModel trip;
 
     public TripModel getTrip() {
@@ -29,38 +31,19 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         this.trip = trip;
     }
 
-    public void actionLike() {
-        trip.setLiked(!trip.isLiked());
-        view.setLike(trip.isLiked());
-
-        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
-                new LikeTripCommand(trip.getLikeId()) :
-                new UnlikeTripCommand(trip.getLikeId());
-
-        doRequest(request, object -> onSuccess());
-    }
-
-    private void onSuccess() {
-        eventBus.post(new TripLikedEvent(trip));
-        db.saveTrip(trip);
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        trip.setLiked(!trip.isLiked());
-        super.handleError(error);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
+        initData();
+    }
+
+    protected void initData() {
         view.setName(trip.getName());
         view.setDates(trip.getAvailabilityDates().toString());
         view.setDesription(trip.getDescription());
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
         view.setDuration(trip.getDuration());
-        view.setLike(trip.isLiked());
         String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
@@ -72,8 +55,41 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         if (trip.isFeatured()) {
             view.setFeatured();
         }
+        // like and inBucket takes place when menu is loaded
+    }
 
+    public void addTripToBucket() {
+        doRequest(new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId())), bucketItem -> {
+            String type = bucketItem.getType();
+            List<BucketItem> bucketItems = db.readBucketList(type);
+            bucketItems.add(0, bucketItem);
+            db.saveBucketList(bucketItems, type);
+            trip.setInBucketList(true);
+            view.setInBucket(true);
+            onSuccessTripAction();
+        });
+    }
+
+    public void likeTrip() {
+        toggleTripLike();
+
+        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
+                new LikeTripCommand(trip.getLikeId()) :
+                new UnlikeTripCommand(trip.getLikeId());
+
+        doRequest(request, object -> onSuccessTripAction(), (error) -> {
+            toggleTripLike();
+            handleError(error);
+        });
+    }
+
+    private void toggleTripLike() {
+        trip.setLiked(!trip.isLiked());
         view.setLike(trip.isLiked());
+    }
+
+    private void onSuccessTripAction() {
+        db.saveTrip(trip);
     }
 
     public interface View extends Presenter.View {
@@ -92,6 +108,8 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         void setRedemption(String count);
 
         void setLike(boolean like);
+
+        void setInBucket(boolean inBucket);
 
         void setPointsInvisible();
 

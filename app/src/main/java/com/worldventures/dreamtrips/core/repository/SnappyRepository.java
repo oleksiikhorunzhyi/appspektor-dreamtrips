@@ -134,7 +134,7 @@ public class SnappyRepository {
 
     public <T> List<T> readList(String key, Class<T> clazz) {
         return actWithResult(db -> Arrays.asList(db.getObjectArray(key, clazz)))
-                .or(Collections.emptyList());
+                .or(new ArrayList<T>());
     }
 
     ///////////////////////////////////////////////////////////////////////////

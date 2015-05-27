@@ -82,6 +82,7 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     protected Toolbar toolbarLanscape;
 
     protected MenuItem likeItem;
+    protected MenuItem addToBucketItem;
 
     @Override
     protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
@@ -95,17 +96,20 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
         likeItem = menu.findItem(R.id.action_like);
-        if (getPresenter() != null) {
-            getPresenter().menuLoaded();
-        }
+        addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_like) {
-            getPresenter().actionLike();
+        switch (item.getItemId()) {
+            case R.id.action_like:
+                getPresenter().likeTrip();
+                return true;
+            case R.id.action_add_to_bucket:
+                getPresenter().addTripToBucket();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -221,18 +225,21 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     }
 
     @Override
-    public void setDuration(int count) {
-        textViewScheduleDescription.setText(String.format(getString(R.string.duration), count));
+    public void setInBucket(boolean inBucket) {
+        int icon = inBucket ? R.drawable.ic_trip_add_to_bucket_selected : R.drawable.ic_trip_add_to_bucket_normal;
+        addToBucketItem.setIcon(icon);
+        addToBucketItem.setEnabled(!inBucket);
     }
 
     @Override
     public void setLike(boolean liked) {
-        if (likeItem != null) {
-            if (liked) {
-                likeItem.setIcon(R.drawable.ic_bucket_like_selected);
-            } else {
-                likeItem.setIcon(R.drawable.ic_heart_1);
-            }
-        }
+        int icon = liked ? R.drawable.ic_trip_like_selected : R.drawable.ic_trip_like_normal;
+        likeItem.setIcon(icon);
     }
+
+    @Override
+    public void setDuration(int count) {
+        textViewScheduleDescription.setText(String.format(getString(R.string.duration), count));
+    }
+
 }

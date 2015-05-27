@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,12 +91,12 @@ public class MapFragmentPresenter extends BaseDreamTripsPresenter<MapFragmentPre
         }
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(FragmentMapTripInfo.EXTRA_TRIP, resultTrip);
+        bundle.putSerializable(MapTripInfoFragment.EXTRA_TRIP, resultTrip);
         fragmentCompass.add(Route.MAP_INFO, bundle);
     }
 
     public void onCameraChanged() {
-        if (fragmentCompass.getCurrentFragment() instanceof FragmentMapTripInfo) {
+        if (fragmentCompass.getCurrentFragment() instanceof MapTripInfoFragment) {
             fragmentCompass.pop();
         }
     }

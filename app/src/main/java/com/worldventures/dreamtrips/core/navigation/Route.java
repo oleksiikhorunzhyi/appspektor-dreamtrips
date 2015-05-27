@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragm
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.FragmentMapTripInfo;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -35,7 +35,7 @@ public enum Route {
     DETAILED_TRIP(DetailedTripFragment.class, R.string.detailed_trip),
     PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
-    MAP_INFO(FragmentMapTripInfo.class, 0),
+    MAP_INFO(MapTripInfoFragment.class, 0),
     BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
     SUCCESS_STORES_DETAILS(SuccessStoriesDetailsFragment.class, R.string.success_stories),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),

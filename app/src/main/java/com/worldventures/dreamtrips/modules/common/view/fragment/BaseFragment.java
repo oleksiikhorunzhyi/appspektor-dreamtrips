@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -57,33 +58,39 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        this.presenter.onMenuPrepared();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        getPresenter().onStart();
+        presenter.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getPresenter().onResume();
+        presenter.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getPresenter().onPause();
+        presenter.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getPresenter().onStop();
+        presenter.onStop();
     }
 
     @Override
     public void onDestroyView() {
-        if (getPresenter() != null) {
-            getPresenter().dropView();
+        if (presenter != null) {
+            presenter.dropView();
         }
         this.presenter = null;
         ButterKnife.reset(this);

@@ -33,7 +33,7 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         if (error != null || image == null) {
             view.informUser(error);
         } else {
-g            imageSelected(fragment, Uri.fromFile(new File(image.getFilePathOriginal())), "facebook");
+            imageSelected(fragment, Uri.fromFile(new File(image.getFilePathOriginal())), "facebook");
         }
     };
 

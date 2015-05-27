@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/itemLayout"
-        android:visibility="invisible"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <FrameLayout
             android:id="@+id/imageLayout"
@@ -22,13 +22,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 fresco:actualImageScaleType="centerCrop"
-                fresco:placeholderImageScaleType="fitXY"
-                fresco:placeholderImage="@drawable/ic_trip_image_placeholder" />
+                fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+                fresco:placeholderImageScaleType="fitXY"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@drawable/trip_item_shadow" />
+                android:background="@drawable/trip_item_shadow"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:textColor="@color/white"
                     android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
             </RelativeLayout>
 
@@ -57,7 +57,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_points_badge" />
+                    android:src="@drawable/ic_points_badge"/>
 
                 <TextView
                     android:id="@+id/textViewPoints"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:textSize="10dp" />
+                    android:textSize="10dp"/>
 
             </FrameLayout>
 
@@ -79,27 +79,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:visibility="invisible"
                     android:background="@drawable/ic_stripe2"
-                    android:padding="@dimen/tripDetailPanelPadding"
-                    android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:padding="@dimen/tripDetailPanelPadding"
                     android:text="@string/trip_featured"
-                    android:textStyle="bold" />
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
-
 
 
         </FrameLayout>
 
         <LinearLayout
             android:id="@+id/layoutInfo"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageLayout"
+            android:background="@color/white"
             android:orientation="horizontal"
             android:padding="@dimen/tripDetailPanelPadding">
 
@@ -115,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/tripNameColor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
 
 
                 <TextView
@@ -125,8 +124,8 @@
                     android:drawableLeft="@drawable/ic_location"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
-                    android:textSize="10sp"
-                    android:textColor="@color/tripPlaceColor" />
+                    android:textColor="@color/tripPlaceColor"
+                    android:textSize="10sp"/>
             </LinearLayout>
 
             <TextView
@@ -137,42 +136,50 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <TextView
-            android:layout_below="@+id/layoutInfo"
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
+            android:layout_below="@+id/layoutInfo"
             android:background="@android:color/white"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/tripNameColor" />
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/tripNameColor"
+            android:textSize="10sp"/>
 
 
         <ImageView
-            android:layout_below="@+id/textViewDescription"
             android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewDescription"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/ic_triangle"/>
 
-        <ImageView
+        <CheckedTextView
+            android:id="@+id/imageViewAddToBucket"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
+            android:layout_toLeftOf="@+id/imageViewLike"
+            android:checkMark="@drawable/ic_trip_like"
+            android:clickable="true"
+            android:tag="like"/>
+
+        <CheckedTextView
             android:id="@+id/imageViewLike"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginRight="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_marginTop="@dimen/tripImagePanelMargin"
+            android:layout_margin="@dimen/tripImagePanelMargin"
+            android:checkMark="@drawable/ic_trip_like"
             android:clickable="true"
-            android:src="@drawable/ic_heart_1_sh"
-            android:tag="like" />
+            android:tag="like"/>
 
     </RelativeLayout>
 

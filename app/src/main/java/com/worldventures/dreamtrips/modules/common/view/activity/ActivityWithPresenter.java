@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -29,6 +30,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         this.presentationModel.takeView(this);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.presentationModel.onMenuPrepared();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     public void informUser(String st) {

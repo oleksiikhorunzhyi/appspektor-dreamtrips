@@ -87,7 +87,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         BucketBasePostItem bucketPostItem = new BucketBasePostItem(type.getName(),
-                popularBucketItem.getId());
+                String.valueOf(popularBucketItem.getId()));
         bucketPostItem.setStatus(done);
         doRequest(new AddBucketItemCommand(bucketPostItem),
                 (bucketItem) -> {

@@ -51,7 +51,7 @@
 
                         <!--
                                                 <ImageView
-                                                    android:id="@+id/imageViewLike"
+                                                    android:id="@+id/likeView"
                                                     android:layout_width="48dp"
                                                     android:layout_height="48dp"
                                                     android:layout_gravity="end"

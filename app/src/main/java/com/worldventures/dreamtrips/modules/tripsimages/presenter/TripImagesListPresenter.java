@@ -112,6 +112,12 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     }
 
     @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        reload();
+    }
+
+    @Override
     public void dropView() {
         roboSpiceAdapterController = null;
         super.dropView();

@@ -40,8 +40,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     }
 
-    public void onCreate() {
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
         user = appSessionHolder.get().get().getUser();
+        setupActualViewState();
     }
 
     public void onLikeAction() {

@@ -29,8 +29,11 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     }
 
     public void setAdapter(IRoboSpiceAdapter<BaseItemClass> adapter) {
-
         this.adapter = adapter;
+    }
+
+    public boolean hasAdapter() {
+        return adapter != null;
     }
 
     public void reload() {
@@ -51,8 +54,10 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     protected abstract void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
 
     protected void onSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-        adapter.addItems(baseItemClasses);
-        adapter.notifyDataSetChanged();
+        if (hasAdapter()) {
+            adapter.addItems(baseItemClasses);
+            adapter.notifyDataSetChanged();
+        }
         onFinish(LoadType.APPEND, baseItemClasses, null);
     }
 
@@ -61,9 +66,11 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     }
 
     protected void onRefresh(ArrayList<BaseItemClass> baseItemClasses) {
-        adapter.clear();
-        adapter.addItems(baseItemClasses);
-        adapter.notifyDataSetChanged();
+        if (hasAdapter()) {
+            adapter.clear();
+            adapter.addItems(baseItemClasses);
+            adapter.notifyDataSetChanged();
+        }
         onFinish(LoadType.RELOAD, baseItemClasses, null);
 
     }

@@ -85,7 +85,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
                 getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
             }
         });
-        getPresenter().reload();
     }
 
     @Override

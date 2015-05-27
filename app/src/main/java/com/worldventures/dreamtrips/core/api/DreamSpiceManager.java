@@ -15,7 +15,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -45,7 +44,6 @@ import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
-import roboguice.util.temp.Ln;
 import timber.log.Timber;
 
 public class DreamSpiceManager extends SpiceManager {
@@ -69,7 +67,7 @@ public class DreamSpiceManager extends SpiceManager {
         super(spiceServiceClass);
         this.injector = injector;
         injector.inject(this);
-        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR);
+//        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR);
     }
 
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,

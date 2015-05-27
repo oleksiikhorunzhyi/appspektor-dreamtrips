@@ -7,16 +7,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-
-import javax.inject.Inject;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_mock)
 public class OtaFragment extends ActualTokenStaticInfoFragment {
-
-    @Inject
-    StaticPageProvider provider;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -29,4 +23,9 @@ public class OtaFragment extends ActualTokenStaticInfoFragment {
         return provider.getoTAPageURL();
     }
 
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        getPresenter().track(Route.OTA);
+    }
 }

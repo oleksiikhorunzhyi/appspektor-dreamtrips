@@ -22,6 +22,19 @@ import java.util.regex.Pattern;
 
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
 
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        reload();
+    }
+
+    public void reload() {
+        view.startLoading();
+        doRequest(new GetInvitationsTemplateQuery(),
+                this::handleResponse,
+                this::handleFail);
+    }
+
     private ArrayList<Member> members = new ArrayList<>();
 
     public void onEvent(TemplateSelectedEvent event) {
@@ -40,13 +53,6 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
         } else {
             view.informUser(R.string.invite_select_first);
         }
-    }
-
-    public void reload() {
-        view.startLoading();
-        doRequest(new GetInvitationsTemplateQuery(),
-                this::handleResponse,
-                this::handleFail);
     }
 
     private void getMembers() {

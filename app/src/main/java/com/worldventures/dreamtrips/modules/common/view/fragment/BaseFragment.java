@@ -41,7 +41,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         }
         inject(this.presenter);
         this.presenter.onInjected();
-
+        //
         Layout layout = this.getClass().getAnnotation(Layout.class);
         if (layout == null) {
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
@@ -51,10 +51,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        afterCreateView(view);
         //
         this.presenter.takeView(this);
-        afterCreateView(view);
     }
 
     @Override

@@ -65,8 +65,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
 
     @Override
     public void afterCreateView(View rootView) {
-        lastConfig = getResources().getConfiguration().orientation;
         super.afterCreateView(rootView);
+        lastConfig = getResources().getConfiguration().orientation;
         setupLayoutManager();
 
         this.recyclerView.setEmptyView(emptyView);

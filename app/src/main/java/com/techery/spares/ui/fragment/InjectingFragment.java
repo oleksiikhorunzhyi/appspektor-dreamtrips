@@ -60,32 +60,33 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupMenuIfNeed();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return FragmentHelper.onCreateView(inflater, container, this);
     }
 
     @Override
-    public void afterCreateView(View rootView) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupMenuIfNeed();
     }
 
+    private MenuResource menuResource;
+
     private void setupMenuIfNeed() {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+        menuResource = this.getClass().getAnnotation(MenuResource.class);
         setHasOptionsMenu(menuResource != null);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
         if (menuResource != null) {
             menu.clear();
             inflater.inflate(menuResource.value(), menu);
         }
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
     }
 
     ///////////////////////////////////////////////////////////////////////////

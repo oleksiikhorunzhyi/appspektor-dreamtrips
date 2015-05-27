@@ -22,8 +22,6 @@ public abstract class ActualTokenStaticInfoFragment extends StaticInfoFragment<A
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         super.afterCreateView(rootView);
-
-        getPresenter().loadUrl();
     }
 
 

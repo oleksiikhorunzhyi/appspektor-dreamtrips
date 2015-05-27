@@ -37,38 +37,34 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
     private boolean loadWithStatus;
     private boolean goneToMap = false;
 
-    private DreamSpiceAdapterController<TripModel> adapterController
-            = new DreamSpiceAdapterController<TripModel>() {
-        private Boolean cacheEmpty() {
-            return db.isEmpty(SnappyRepository.TRIP_KEY);
-        }
+    private DreamSpiceAdapterController<TripModel> adapterController;
 
-        private boolean shouldUpdate() {
-            long current = Calendar.getInstance().getTimeInMillis();
-            return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
-        }
+    @Override
+    public void onInjected() {
+        adapterController = new DreamSpiceAdapterController<TripModel>() {
 
-        @Override
-        public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
-            return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
-                @Override
-                public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
-                    return performFiltering(super.loadDataFromNetwork());
-                }
-            };
-        }
+            @Override
+            public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
+                return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
+                    @Override
+                    public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
+                        return performFiltering(super.loadDataFromNetwork());
 
-
-        @Override
-        public void onStart(LoadType loadType) {
-            if (loadWithStatus || cacheEmpty()) {
-                view.startLoading();
+                    }
+                };
             }
-        }
 
-        @Override
-        public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
-            if (adapterController != null) {
+            @Override
+            public void onStart(LoadType loadType) {
+                if (loadWithStatus || cacheEmpty()) {
+                    view.startLoading();
+                }
+            }
+
+            @Override
+            public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
+                if (view == null) return;
+
                 loadFromApi = false;
                 loadWithStatus = false;
                 view.finishLoading();
@@ -81,28 +77,30 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
                     }
                 }
             }
-        }
-    };
 
+            private Boolean cacheEmpty() {
+                return db.isEmpty(SnappyRepository.TRIP_KEY);
+            }
+
+            private boolean shouldUpdate() {
+                long current = Calendar.getInstance().getTimeInMillis();
+                return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+            }
+        };
+        adapterController.setSpiceManager(dreamSpiceManager);
+    }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.dreamTrips(getUserId());
+        adapterController.setAdapter(view.getAdapter());
     }
 
     @Override
     public void onResume() {
-        if (view.getAdapter().getCount() == 0) {
-            goneToMap = false;
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
-        }
-    }
-
-    public void onPause() {
-        eventBus.unregister(this);
+        goneToMap = false;
+        adapterController.reload();
     }
 
     public void loadFromApi() {
@@ -111,12 +109,20 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
         adapterController.reload();
     }
 
+    @Override
+    public void dropView() {
+        adapterController = null;
+        super.dropView();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Filter
+    ///////////////////////////////////////////////////////////////////////////
+
     public void onEvent(FilterBusEvent event) {
-        if (event != null) {
-            view.startLoading();
-            setFilters(event);
-            adapterController.reload();
-        }
+        view.startLoading();
+        setFilters(event);
+        adapterController.reload();
     }
 
     @Override
@@ -180,12 +186,6 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
             fragmentCompass.replace(Route.MAP, null);
             goneToMap = true;
         }
-    }
-
-    @Override
-    public void dropView() {
-        adapterController = null;
-        super.dropView();
     }
 
     public void onItemClick(TripModel trip) {

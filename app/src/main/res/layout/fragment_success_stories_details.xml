@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/web_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="60dp" />
+        >
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="60dp"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <ProgressBar
@@ -18,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,7 +46,7 @@
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_fullscreen_open" />
+            android:src="@drawable/ic_fullscreen_open"/>
 
         <ImageView
             android:id="@+id/iv_share"
@@ -49,7 +57,7 @@
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_fs_share" />
+            android:src="@drawable/ic_fs_share"/>
 
         <ImageView
             android:id="@+id/iv_like"
@@ -60,7 +68,7 @@
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_trip_like_normal" />
+            android:src="@drawable/ic_trip_like_normal"/>
     </LinearLayout>
 
 </RelativeLayout>

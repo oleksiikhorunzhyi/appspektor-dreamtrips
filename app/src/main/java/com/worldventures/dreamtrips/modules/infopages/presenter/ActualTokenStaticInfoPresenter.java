@@ -9,10 +9,17 @@ import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 
 public class ActualTokenStaticInfoPresenter extends WebViewFragmentPresenter<ActualTokenStaticInfoPresenter.View> {
-    public static final int LIFE_DURATION = 30;
+
+    public static final int LIFE_DURATION = 30; // mins
 
     public ActualTokenStaticInfoPresenter(String url) {
         super(url);
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        loadUrl();
     }
 
     public void loadUrl() {

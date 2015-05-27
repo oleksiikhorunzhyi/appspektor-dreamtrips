@@ -48,6 +48,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
         lvTemplates.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new FilterableArrayListAdapter<>(getActivity(), injector);
         adapter.registerCell(InviteTemplate.class, InviteTemplateCell.class);
@@ -65,18 +66,16 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
                 .build();
 
         lvTemplates.addItemDecoration(decoration);
-        getPresenter().reload();
     }
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> swipeContainer.setRefreshing(true));
+        swipeContainer.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
-        if (swipeContainer != null)
-            swipeContainer.post(() -> swipeContainer.setRefreshing(false));
+        swipeContainer.setRefreshing(false);
     }
 
     @Override

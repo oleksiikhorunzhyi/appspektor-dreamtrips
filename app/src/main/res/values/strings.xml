@@ -249,4 +249,6 @@
     <string name="invite_select_first">Select contacts at first</string>
     <string name="filters_show_favorite">SHOW FAVORITE TRIPS</string>
     <string name="filter_recently_added">RECENTLY ADDED</string>
+    <string name="bucketlist_share_fb" formatted="false">On my Bucket-List: %s</string>
+    <string name="bucketlist_share" formatted="false">On my Bucket-List: %s %s</string>
 </resources>

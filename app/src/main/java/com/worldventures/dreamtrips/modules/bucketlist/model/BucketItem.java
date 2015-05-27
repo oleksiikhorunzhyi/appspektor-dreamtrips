@@ -56,6 +56,9 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(13)
     private BucketLocation location;
 
+    @TaggedFieldSerializer.Tag(14)
+    private String link;
+
     private transient boolean selected;
 
     public String getName() {
@@ -80,6 +83,10 @@ public class BucketItem extends BaseEntity {
 
     public boolean isDone() {
         return status.equals(COMPLETED);
+    }
+
+    public String getUrl() {
+        return link;
     }
 
     public void setDone(boolean status) {

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
@@ -38,6 +39,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             bucketBasePostItem.setStatus(status);
             saveBucketItem(bucketBasePostItem);
         }
+    }
+
+    public void onFbShare() {
+        activityRouter.openShareFacebook(bucketItem.getUrl(), null,
+                String.format(context.getString(R.string.bucketlist_share_fb),
+                        bucketItem.getName()));
+    }
+
+    public void onTwitterShare() {
+        activityRouter.openShareTwitter(null, bucketItem.getUrl(),
+                String.format(context.getString(R.string.bucketlist_share_fb),
+                        bucketItem.getName()));
     }
 
     public void onEvent(MarkBucketItemDoneEvent event) {

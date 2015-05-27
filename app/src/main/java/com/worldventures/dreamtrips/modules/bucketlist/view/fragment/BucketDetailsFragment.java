@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -109,6 +110,20 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @OnClick(R.id.imageViewEdit)
     protected void onEdit() {
         getPresenter().onEdit();
+    }
+
+    @OnClick(R.id.imageViewShare)
+    protected void onShare() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(R.string.action_share)
+                .items(R.array.share_dialog_items)
+                .itemsCallback((dialog, view, which, text) -> {
+                    if (which == 0) {
+                        getPresenter().onFbShare();
+                    } else {
+                        getPresenter().onTwitterShare();
+                    }
+                }).show();
     }
 
     @Override

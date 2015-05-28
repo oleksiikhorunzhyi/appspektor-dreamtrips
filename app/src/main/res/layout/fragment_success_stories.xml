@@ -45,19 +45,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible">
-
-                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                    android:id="@+id/recyclerViewStories"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </android.support.v4.widget.SwipeRefreshLayout>
-
             <RelativeLayout
                 android:id="@+id/ll_empty_view"
                 android:layout_width="match_parent"
@@ -91,6 +78,21 @@
                     android:textSize="18dp" />
 
             </RelativeLayout>
+
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                    android:id="@+id/recyclerViewStories"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
         </FrameLayout>
 
     </LinearLayout>

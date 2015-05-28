@@ -83,6 +83,7 @@ public class TrackingHelper {
     private static List<ITracker> trackers = new ArrayList<>();
 
     static {
+        trackers.clear();
         trackers.add(new AdobeTracker());
         trackers.add(new ApptentiveTracker());
         trackers.add(new GoogleTracker());

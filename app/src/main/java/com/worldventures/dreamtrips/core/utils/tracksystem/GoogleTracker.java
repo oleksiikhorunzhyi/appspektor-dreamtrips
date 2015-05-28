@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.lang.ref.WeakReference;
@@ -54,7 +55,7 @@ public class GoogleTracker implements ITracker {
         if (tracker == null && activity.get() != null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(activity.get()
                     .getApplicationContext());
-            tracker = analytics.newTracker("UA-XXXX-Y");
+            tracker = analytics.newTracker(BuildConfig.GoogleTrackingID);
         }
         return tracker;
     }

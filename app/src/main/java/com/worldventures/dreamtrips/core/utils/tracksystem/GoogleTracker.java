@@ -23,22 +23,22 @@ public class GoogleTracker implements ITracker {
 
     @Override
     public void onStart(Activity activity) {
-
+        //nothing to do here
     }
 
     @Override
     public void onStop(Activity activity) {
-
+        //nothing to do here
     }
 
     @Override
     public void onResume(Activity activity) {
-
+        //nothing to do here
     }
 
     @Override
     public void onPause(Activity activity) {
-
+        //nothing to do here
     }
 
     @Override

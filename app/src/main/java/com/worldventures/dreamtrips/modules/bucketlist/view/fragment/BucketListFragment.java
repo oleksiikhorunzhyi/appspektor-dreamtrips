@@ -30,6 +30,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -150,6 +151,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
                 v.setText(null);
                 getPresenter().addToBucketList(s);
+                SoftInputUtil.showSoftInputMethod(quickInputEditText);
             }
             return false;
         });

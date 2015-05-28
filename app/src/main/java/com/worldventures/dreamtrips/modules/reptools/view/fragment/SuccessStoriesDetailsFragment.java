@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
@@ -26,8 +25,6 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
 
     private SuccessStory story;
 
-    @InjectView(R.id.progressBarWeb)
-    protected ProgressBar progressBarWeb;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
     @InjectView(R.id.iv_like)

@@ -80,11 +80,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setupToolbarLayout();

@@ -40,6 +40,7 @@ android {
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
+        buildConfigField 'String', 'GoogleTrackingID', '"UA-41142403-2"'
 
         manifestPlaceholders = [surveyApiToken:"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"]
     }
@@ -184,6 +185,7 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-core:2.1.10'
     compile 'com.amazonaws:aws-android-sdk-s3:2.1.10'
     compile 'com.google.android.gms:play-services-maps:7.3.0'
+    compile 'com.google.android.gms:play-services-analytics:7.3.0'
     compile 'com.instabug.library:instabugsupport:1.2.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'

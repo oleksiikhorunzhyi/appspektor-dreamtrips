@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
@@ -38,7 +39,8 @@ public class AdobeTracker implements ITracker {
     }
 
     @Override
-    public void trackMemberAction(String action, Map<String, Object> data) {
-        Analytics.trackAction(action, data);
+    public void trackEvent(String category, String action, Map<String, Object> data) {
+        Analytics.trackAction(TextUtils.join(":", new String[]{category, action}), data);
     }
+
 }

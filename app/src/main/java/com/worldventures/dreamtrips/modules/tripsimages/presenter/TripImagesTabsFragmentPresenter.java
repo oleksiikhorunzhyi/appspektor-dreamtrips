@@ -46,6 +46,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
             TrackingHelper.all(getUserId());
         } else if (position == TripImagesListFragment.Type.VIDEO_360.ordinal()) {
             TrackingHelper.video360(getUserId());
+        } else if (position == TripImagesListFragment.Type.INSPIRE_ME.ordinal()) {
+            TrackingHelper.inspr(getUserId());
         }
     }
 

@@ -18,5 +18,5 @@ public interface ITracker {
 
     void onPause(Activity activity);
 
-    void trackMemberAction(String action, Map<String, Object> data);
+    void trackEvent(String category, String action, Map<String, Object> data);
 }

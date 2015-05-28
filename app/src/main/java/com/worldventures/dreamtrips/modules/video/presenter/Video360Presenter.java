@@ -132,11 +132,13 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
-        TrackingHelper.videoAction(getUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
+        TrackingHelper.videoAction(TrackingHelper.ACTION_360,
+                getUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
     }
 
     public void onEvent(TrackVideoStatusEvent event) {
-        TrackingHelper.videoAction(getUserId(), event.getAction(), event.getName());
+        TrackingHelper.videoAction(TrackingHelper.ACTION_360,
+                getUserId(), event.getAction(), event.getName());
     }
 
 

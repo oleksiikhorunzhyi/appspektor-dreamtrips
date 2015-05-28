@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Apptentive;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -41,10 +42,11 @@ public class ApptentiveTracker implements ITracker {
     }
 
     @Override
-    public void trackMemberAction(String action, Map<String, Object> data) {
+    public void trackEvent(String category, String action, Map<String, Object> data) {
         Activity activity = this.activity.get();
         if (activity != null) {
-            Apptentive.engage(activity, action.replace(":", "|"));
+            Apptentive.engage(activity, TextUtils.join(":", new String[]{category, action}));
         }
     }
+
 }

@@ -7,16 +7,17 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 public class GoogleTracker implements ITracker {
 
     private Tracker tracker;
+    private WeakReference<Activity> activity;
 
     @Override
     public void onCreate(BaseActivity activity) {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(activity.getApplicationContext());
-        tracker = analytics.newTracker("UA-XXXX-Y"); // Send hits to tracker id UA-XXXX-Y
+        this.activity = new WeakReference<>(activity);
     }
 
     @Override
@@ -40,9 +41,21 @@ public class GoogleTracker implements ITracker {
     }
 
     @Override
-    public void trackMemberAction(String action, Map<String, Object> data) {
-        tracker.send(new HitBuilders.EventBuilder()
-                .setAction(action)
-                .build());
+    public void trackEvent(String category, String action, Map<String, Object> data) {
+        if (getTracker() != null) {
+            getTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory(category)
+                    .setAction(action)
+                    .build());
+        }
+    }
+
+    private Tracker getTracker() {
+        if (tracker == null && activity.get() != null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(activity.get()
+                    .getApplicationContext());
+            tracker = analytics.newTracker("UA-XXXX-Y");
+        }
+        return tracker;
     }
 }

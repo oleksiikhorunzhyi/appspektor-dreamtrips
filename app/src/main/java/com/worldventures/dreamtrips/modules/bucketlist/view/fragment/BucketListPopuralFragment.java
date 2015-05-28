@@ -2,15 +2,20 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
@@ -19,6 +24,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPr
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -28,7 +34,9 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
-public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresenter> implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+@MenuResource(R.menu.menu_bucket_popular)
+public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresenter>
+        implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity
@@ -43,7 +51,20 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    private LoaderRecycleAdapter<Object> arrayListAdapter;
+    private FilterableArrayListAdapter<PopularBucketItem> adapter;
+
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.setFilter(newText);
+            return false;
+        }
+    };
 
     @Override
     public void afterCreateView(View rootView) {
@@ -52,9 +73,9 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         setManager();
 
         this.recyclerView.setEmptyView(emptyView);
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
-        this.arrayListAdapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
-        this.recyclerView.setAdapter(this.arrayListAdapter);
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
+        this.recyclerView.setAdapter(this.adapter);
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -85,8 +106,22 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     }
 
     @Override
-    public BaseArrayListAdapter getAdapter() {
-        return arrayListAdapter;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnCloseListener(() -> {
+            adapter.flushFilter();
+            return false;
+        });
+        searchView.setOnQueryTextListener(onQueryTextListener);
+    }
+
+
+    @Override
+    public BaseArrayListAdapter<PopularBucketItem> getAdapter() {
+        return adapter;
     }
 
     @Override

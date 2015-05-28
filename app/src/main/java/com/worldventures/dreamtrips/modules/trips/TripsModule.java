@@ -66,11 +66,17 @@ import dagger.Provides;
 public class TripsModule {
 
     public static final String TRIPS = Route.DREAMTRIPS.name();
+    public static final String MAP_TRIPS = Route.MAP.name();
     public static final String OTA = Route.OTA.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripsComponent() {
         return new ComponentDescription(TRIPS, R.string.trips, R.drawable.ic_dreamtrips, DreamTripsFragment.class);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideMapTripsComponent() {
+        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.drawable.ic_dreamtrips, true, MapFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

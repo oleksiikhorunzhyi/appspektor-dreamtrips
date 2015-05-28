@@ -39,7 +39,7 @@ public class RootComponentsProvider {
     }
 
     public List<ComponentDescription> getActiveComponents() {
-        return activeComponents;
+        return Queryable.from(activeComponents).filter(cd -> !cd.isIgnored()).toList();
     }
 
     public ComponentDescription getComponentByKey(String key) {

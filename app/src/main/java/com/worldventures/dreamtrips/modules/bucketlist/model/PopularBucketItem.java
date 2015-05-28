@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
-public class PopularBucketItem extends BaseEntity {
+public class PopularBucketItem extends BaseEntity implements Filterable {
 
     private String name;
     private boolean liked;
@@ -75,5 +76,11 @@ public class PopularBucketItem extends BaseEntity {
 
     public void setLoading(boolean loading) {
         this.loading = loading;
+    }
+
+    @Override
+    public boolean containsQuery(String query) {
+        return query == null || name.toLowerCase().contains(query)
+                || description.toLowerCase().contains(query);
     }
 }

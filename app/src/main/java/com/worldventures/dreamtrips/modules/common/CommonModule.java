@@ -92,6 +92,8 @@ public class CommonModule {
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS);
 
+        activeComponents.add(TripsModule.MAP_TRIPS);
+
         return new ComponentsConfig(activeComponents);
     }
 

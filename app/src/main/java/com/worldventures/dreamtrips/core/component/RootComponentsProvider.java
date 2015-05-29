@@ -4,8 +4,6 @@ import android.support.v4.app.FragmentManager;
 
 import com.innahema.collections.query.queriables.Queryable;
 
-import org.apache.commons.lang3.Validate;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,6 @@ public class RootComponentsProvider {
     private final List<ComponentDescription> activeComponents;
 
     public RootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig componentConfig) {
-        Validate.isTrue(!descriptions.isEmpty(), "App should have at least 1 root component");
         this.activeComponents = buildActiveComponents(descriptions, componentConfig);
     }
 

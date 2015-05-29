@@ -50,8 +50,10 @@ public class MapFragment extends BaseFragment<MapFragmentPresenter> implements M
 
         @Override
         public boolean onQueryTextChange(String s) {
-            getPresenter().applySearch(s);
-            getPresenter().onCameraChanged();
+            if (getPresenter() != null) {
+                getPresenter().applySearch(s);
+                getPresenter().onCameraChanged();
+            }
             return false;
         }
     };

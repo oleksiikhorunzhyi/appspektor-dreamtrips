@@ -25,7 +25,8 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         if (error != null || image == null) {
             view.informUser(error);
         } else {
-            imageSelected(fragment, Uri.fromFile(new File(image.getFilePathOriginal())));
+            Uri uri = Uri.parse(image.getFilePathOriginal());
+            imageSelected(fragment, uri);
         }
     };
 

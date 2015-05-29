@@ -46,8 +46,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name)
     protected TextView userName;
-    @InjectView(R.id.user_email)
-    protected TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
     protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
@@ -154,11 +152,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void setUserName(String username) {
         userName.setText(username);
-    }
-
-    @Override
-    public void setUserEmail(String email) {
-        userEmail.setText(email);
     }
 
     @Override

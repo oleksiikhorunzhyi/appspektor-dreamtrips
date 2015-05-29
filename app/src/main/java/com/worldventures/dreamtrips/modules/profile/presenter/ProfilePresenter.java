@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
+import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -65,7 +67,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         User user = this.appSessionHolder.get().get().getUser();
         view.setUserName(user.getUsername());
-        view.setUserEmail(user.getEmail());
+        view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
+                DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
         view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
@@ -129,8 +132,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setFrom(String location);
 
         void setUserName(String username);
-
-        void setUserEmail(String email);
 
         void setUserId(String username);
 

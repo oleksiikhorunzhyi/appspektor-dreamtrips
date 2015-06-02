@@ -59,6 +59,9 @@ public class BucketItem extends BaseEntity {
     @TaggedFieldSerializer.Tag(14)
     private String link;
 
+    @TaggedFieldSerializer.Tag(15)
+    private DiningItem dining;
+
     private transient boolean selected;
 
     public String getName() {
@@ -85,16 +88,16 @@ public class BucketItem extends BaseEntity {
         return status.equals(COMPLETED);
     }
 
-    public String getUrl() {
-        return link;
-    }
-
     public void setDone(boolean status) {
         if (status) {
             this.status = BucketItem.COMPLETED;
         } else {
             this.status = BucketItem.NEW;
         }
+    }
+
+    public String getUrl() {
+        return link;
     }
 
     public boolean isSelected() {
@@ -123,6 +126,10 @@ public class BucketItem extends BaseEntity {
 
     public CategoryItem getCategory() {
         return categoryItem;
+    }
+
+    public DiningItem getDining() {
+        return dining;
     }
 
     public String getCategoryName() {

@@ -10,7 +10,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.Share;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
@@ -117,9 +117,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         String[] addresses = membersAddress.toArray(new String[membersAddress.size()]);
         Intent intent;
         if (type == InviteTemplate.Type.EMAIL) {
-            intent = Share.newEmailIntent(getSubject(), getBody(), addresses);
+            intent = IntentUtils.newEmailIntent(getSubject(), getBody(), addresses);
         } else {
-            intent = Share.newSmsIntent(context, getSmsBody(), addresses);
+            intent = IntentUtils.newSmsIntent(context, getSmsBody(), addresses);
         }
         trackSharing();
         return intent;

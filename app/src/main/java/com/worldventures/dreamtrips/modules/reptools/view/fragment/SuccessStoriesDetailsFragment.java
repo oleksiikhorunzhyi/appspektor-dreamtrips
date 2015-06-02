@@ -86,7 +86,7 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     @Override
     public void showShareDialog() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title("Share")
+        builder.title("IntentUtils")
                 .items(R.array.share_dialog_items)
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {

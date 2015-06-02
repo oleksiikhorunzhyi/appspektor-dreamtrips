@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -8,8 +9,8 @@ import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
@@ -69,10 +70,14 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     @Override
     protected void syncUI() {
         super.syncUI();
-        view.setCategory(bucketItem.getCategoryName());
-
+        if (!TextUtils.isEmpty(bucketItem.getType())) {
+            String s = Character.toUpperCase(bucketItem.getType().charAt(0)) + bucketItem.getType().substring(1);
+            view.setCategory(s);
+        }
+        view.setPlace(getPlace());
         view.setCover();
         view.updatePhotos();
+        view.setupDiningView(bucketItem.getDining());
     }
 
     public String getMediumResUrl() {
@@ -91,8 +96,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         view.enableCheckbox();
     }
 
+    private String getPlace() {
+        String place = null;
+        if (bucketItem.getDining() != null) {
+            place = bucketItem.getDining().getCity() + ", " + bucketItem.getDining().getCountry();
+        }
+        return place;
+    }
+
     public interface View extends BucketDetailsBasePresenter.View {
         void setCategory(String category);
+
+        void setPlace(String place);
 
         void setCover();
 
@@ -103,6 +118,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void disableCheckbox();
 
         void enableCheckbox();
+
+        void setupDiningView(DiningItem diningItem);
     }
 
 }

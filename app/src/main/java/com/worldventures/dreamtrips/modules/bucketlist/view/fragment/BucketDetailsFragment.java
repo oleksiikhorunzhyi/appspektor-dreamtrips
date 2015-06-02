@@ -20,6 +20,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
@@ -38,30 +40,63 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
+
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
+
     @InjectView(R.id.textViewFriends)
     protected TextView textViewFriends;
+
     @InjectView(R.id.textViewTags)
     protected TextView textViewTags;
+
     @InjectView(R.id.textViewDescription)
     protected TextView textViewDescription;
+
     @InjectView(R.id.textViewCategory)
     protected TextView textViewCategory;
+
     @InjectView(R.id.textViewDate)
     protected TextView textViewDate;
+
     @InjectView(R.id.textViewPlace)
     protected TextView textViewPlace;
+
     @InjectView(R.id.checkBoxDone)
     protected CheckBox checkBox;
+
     @Optional
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
+
     @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
+
+    @InjectView(R.id.diningName)
+    TextView diningName;
+
+    @InjectView(R.id.diningPriceRange)
+    TextView diningPriceRange;
+
+    @InjectView(R.id.diningAddress)
+    TextView diningAddress;
+
+    @InjectView(R.id.diningSite)
+    TextView diningSite;
+
+    @InjectView(R.id.diningPhone)
+    TextView diningPhone;
+
+    @InjectView(R.id.diningContainer)
+    View diningContainer;
+
+    @InjectView(R.id.diningDivider)
+    View diningDivider;
+
     @Inject
     @ForActivity
     Provider<Injector> injector;
+
     WeakHandler handler = new WeakHandler();
 
     @Override
@@ -74,6 +109,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
+        setForeignIntentAction();
     }
 
     @Override
@@ -164,6 +200,17 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().openFullScreen(0);
     }
 
+    private void setForeignIntentAction() {
+        diningSite.setOnClickListener(v -> {
+            Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
+            startActivity(intent);
+        });
+        diningPhone.setOnClickListener(v -> {
+            Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
+            startActivity(intent);
+        });
+    }
+
     @Override
     public void disableCheckbox() {
         checkBox.setEnabled(false);
@@ -175,12 +222,40 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void setCategory(String category) {
-        if (TextUtils.isEmpty(category)) {
-            textViewCategory.setVisibility(View.GONE);
+    public void setupDiningView(DiningItem diningItem) {
+        if (diningItem != null) {
+            setText(diningName, diningItem.getName());
+            setText(diningPriceRange, diningItem.getPriceRange());
+            setText(diningAddress, diningItem.getAddress());
+            setText(diningPhone, diningItem.getPhoneNumber());
+            setText(diningSite, diningItem.getUrl());
+            if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
+                diningDivider.setVisibility(View.GONE);
+            } else {
+                diningDivider.setVisibility(View.VISIBLE);
+            }
         } else {
-            textViewCategory.setVisibility(View.VISIBLE);
-            textViewCategory.setText(category);
+            diningContainer.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void setCategory(String category) {
+        setText(textViewCategory, category);
+    }
+
+    @Override
+    public void setPlace(String place) {
+        setText(textViewPlace, place);
+    }
+
+    private void setText(TextView view, String text) {
+        if (TextUtils.isEmpty(text)) {
+            view.setVisibility(View.GONE);
+        } else {
+            view.setVisibility(View.VISIBLE);
+            view.setText(text);
         }
     }
 

@@ -8,9 +8,9 @@ import android.provider.Telephony;
 import android.text.Html;
 import android.text.TextUtils;
 
-public class Share {
+public class IntentUtils {
 
-    private Share() {
+    private IntentUtils() {
         //nothing
     }
 
@@ -43,6 +43,14 @@ public class Share {
         }
         intent.putExtra("sms_body", body);
         return intent;
+    }
+
+    public static Intent callIntnet(String phone) {
+        return new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+    }
+
+    public static Intent browserIntent(String url) {
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
 }
 

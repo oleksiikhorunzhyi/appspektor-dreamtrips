@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imageViewCover"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bucket_detail_cover_size"
+        fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
         fresco:placeholderImageScaleType="centerCrop"
-        fresco:actualImageScaleType="centerCrop"
         />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="bottom"
-        android:background="@drawable/bucket_item_shadow" />
+        android:background="@drawable/bucket_item_shadow"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="top"
-        android:background="@drawable/trip_item_shadow" />
+        android:background="@drawable/trip_item_shadow"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_actionbar"
         style="@style/ToolBarStyle"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"/>
 
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:visibility="gone"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_photo_camera" />
+        android:src="@drawable/ic_photo_camera"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +54,7 @@
             android:singleLine="true"
             android:text="Surf in Australia"
             android:textColor="@android:color/white"
-            android:textSize="26sp" />
+            android:textSize="26sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,8 +69,8 @@
                 android:drawableLeft="@drawable/ic_category"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
-                android:text="Travelfasfdfdffdf"
-                android:textColor="@color/bucket_detailed_text_color" />
+                android:textColor="@color/bucket_detailed_text_color"
+                tools:text="Dining"/>
 
             <TextView
                 android:id="@+id/textViewPlace"
@@ -79,9 +80,10 @@
                 android:drawableLeft="@drawable/ic_location"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
-                android:text="Byron Bay, Australia"
                 android:textColor="@color/bucket_detailed_text_color"
-                android:visibility="gone" />
+
+                android:visibility="visible"
+                tools:text="Byron Bay, Australia"/>
 
             <TextView
                 android:id="@+id/textViewDate"
@@ -92,7 +94,8 @@
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:text="@string/someday"
-                android:textColor="@color/bucket_detailed_text_color" />
+                android:textColor="@color/bucket_detailed_text_color"
+                tools:text="@string/someday"/>
         </LinearLayout>
     </LinearLayout>
 

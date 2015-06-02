@@ -57,6 +57,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected Integer coverId;
 
+    public BucketDetailsBasePresenter(Bundle bundle) {
+        super();
+        type = (BucketTabsPresenter.BucketType)
+                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
+        bucketItem = (BucketItem)
+                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
+    }
+
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
@@ -92,14 +100,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             handlePhotoPick(uri, "facebook");
         }
     };
-
-    public BucketDetailsBasePresenter(Bundle bundle) {
-        super();
-        type = (BucketTabsPresenter.BucketType)
-                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
-        bucketItem = (BucketItem)
-                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
-    }
 
     private void handlePhotoPick(Uri uri, String type) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();

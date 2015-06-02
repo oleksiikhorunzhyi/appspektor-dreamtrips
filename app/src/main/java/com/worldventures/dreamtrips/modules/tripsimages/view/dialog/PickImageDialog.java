@@ -3,33 +3,47 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.net.Uri;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
+import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 
+import java.util.Arrays;
+
+import nl.changer.polypicker.ImagePickerActivity;
+import nl.changer.polypicker.IntentBuilder;
 import timber.log.Timber;
 
 public class PickImageDialog implements ImageChooserListener {
 
-
+    public static final int REQUEST_MULTI_SELECT = 345;
+    public static final int REQUEST_FACEBOOK = 346;
+    public static final int REQUEST_CAPTURE_PICTURE = ChooserType.REQUEST_CAPTURE_PICTURE;
+    public static final int REQUEST_PICK_PICTURE = ChooserType.REQUEST_PICK_PICTURE;
     public static final String FOLDERNAME = "dreamtrip_folder";
     private ImagePickCallback callback;
     private MaterialDialog.Builder builder;
     private Context context;
-    private String title;
+    private String title = "";
     private int chooserType;
     private ImageChooserManager imageChooserManager;
     private String filePath;
     private Fragment fragment;
     private int[] requestTypes;
+    private MultiSelectPickCallback multiSelectPickCallback;
+    private WeakHandler handler = new WeakHandler(Looper.getMainLooper());
+
 
     public PickImageDialog(Context context, Fragment fragment) {
         this.context = context;
@@ -44,11 +58,17 @@ public class PickImageDialog implements ImageChooserListener {
     public void show() {
         if (requestTypes != null && requestTypes.length == 1) {
             switch (requestTypes[0]) {
-                case ChooserType.REQUEST_CAPTURE_PICTURE:
+                case REQUEST_CAPTURE_PICTURE:
                     takePicture();
                     return;
-                case ChooserType.REQUEST_PICK_PICTURE:
+                case REQUEST_PICK_PICTURE:
                     chooseImage();
+                    return;
+                case REQUEST_MULTI_SELECT:
+                    chooseMultiSelect();
+                    return;
+                case REQUEST_FACEBOOK:
+                    chooseFacebook();
                     return;
             }
         }
@@ -62,6 +82,20 @@ public class PickImageDialog implements ImageChooserListener {
                     }
                 }).show();
     }
+
+    private void chooseFacebook() {
+        Intent intent = new Intent(context, FacebookPickPhotoActivity.class);
+        fragment.startActivityForResult(intent, FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
+    }
+
+    private void chooseMultiSelect() {
+        Intent intent = new IntentBuilder()
+                .setSelectionLimit(5)
+                .setOptions(IntentBuilder.Option.GALLERY)
+                .createIntent(context);
+        fragment.startActivityForResult(intent, REQUEST_MULTI_SELECT);
+    }
+
 
     public void setRequestTypes(int... requestTypes) {
         this.requestTypes = requestTypes;
@@ -92,7 +126,7 @@ public class PickImageDialog implements ImageChooserListener {
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
         if (callback != null) {
-            new Handler(Looper.getMainLooper()).post(() -> callback.onResult(fragment, chosenImage, null));
+            handler.post(() -> callback.onResult(fragment, chosenImage, null));
         }
     }
 
@@ -110,6 +144,38 @@ public class PickImageDialog implements ImageChooserListener {
                 reinitializeImageChooser();
             }
             imageChooserManager.submit(requestCode, data);
+        }
+        handleMultiSelectActivityResult(requestCode, resultCode, data);
+        handleFacebookActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private void handleMultiSelectActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+
+            if (requestCode == PickImageDialog.REQUEST_MULTI_SELECT) {
+                Parcelable[] parcelableUris = data.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+
+                if (parcelableUris == null) {
+                    return;
+                }
+
+                Uri[] uris = new Uri[parcelableUris.length];
+                System.arraycopy(parcelableUris, 0, uris, 0, parcelableUris.length);
+                if (multiSelectPickCallback != null) {
+                    multiSelectPickCallback.onResult(fragment, Arrays.asList(uris), null);
+                }
+            }
+        }
+    }
+
+    private void handleFacebookActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO
+                    && callback != null) {
+                ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
+                callback.onResult(fragment, image, null);
+            }
         }
     }
 
@@ -133,6 +199,10 @@ public class PickImageDialog implements ImageChooserListener {
 
     public void setCallback(ImagePickCallback callback) {
         this.callback = callback;
+    }
+
+    public void setCallback(MultiSelectPickCallback callback) {
+        this.multiSelectPickCallback = callback;
     }
 
 

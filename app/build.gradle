@@ -219,6 +219,8 @@ dependencies {
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.2'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'mbanje.kurt:fabbutton:1.0.9'
+    compile 'com.github.man4ik:poly-picker:fce2e41f00'
+
     // Util
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:support-annotations:20.0.0'

@@ -17,7 +17,7 @@ public class YSBHPM extends TripImagesListPresenter<Photo> {
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
         return new TripImagesRoboSpiceController() {
             @Override
-            public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
+            public SpiceRequest<ArrayList<Photo>> getReloadRequest() {
                 return new GetYSBHPhotosQuery(PER_PAGE, 1);
             }
 

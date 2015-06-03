@@ -37,7 +37,7 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
 
     protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
         @Override
-        public SpiceRequest<ArrayList<Video>> getRefreshRequest() {
+        public SpiceRequest<ArrayList<Video>> getReloadRequest() {
             return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER) {
                 @Override
                 public ArrayList<Video> loadDataFromNetwork() throws Exception {

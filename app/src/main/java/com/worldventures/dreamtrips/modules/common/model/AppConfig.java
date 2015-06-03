@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.tripsimages.model.FlagList;
 
 import java.io.UnsupportedEncodingException;
 
@@ -16,18 +15,11 @@ public class AppConfig {
     public static final String TOKEN = "{tokenval}";
     public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
 
-    @SerializedName("FlagContent")
-    protected FlagList flagContent;
-
     @SerializedName("URLS")
     protected URLS urls;
 
     @SerializedName("server_status")
     protected ServerStatus serverStatus;
-
-    public FlagList getFlagContent() {
-        return this.flagContent;
-    }
 
     public URLS getUrls() {
         return this.urls;

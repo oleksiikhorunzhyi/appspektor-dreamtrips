@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical">
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_image"
@@ -13,37 +13,37 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@android:color/black"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/trip_item_shadow" />
+        android:background="@drawable/trip_item_shadow"/>
 
     <LinearLayout
         android:id="@+id/ll_global_content_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingTop="24dp"
         android:background="@drawable/black_gradient_inspire_me"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="24dp">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/ll_top_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ll_top_container"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:id="@+id/ll_more_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ll_more_info"
-                android:visibility="visible"
+                android:layout_gravity="center_vertical"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_gravity="center_vertical">
+                android:orientation="horizontal"
+                android:visibility="visible">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/user_photo"
@@ -52,14 +52,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="16dp"
                     fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-                    fresco:roundAsCircle="true" />
+                    fresco:roundAsCircle="true"/>
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_title"
@@ -70,7 +70,7 @@
                         android:text="Jason Gordon"
                         android:textColor="@android:color/white"
                         android:textSize="18dp"
-                        android:visibility="visible" />
+                        android:visibility="visible"/>
 
                     <TextView
                         android:id="@+id/tv_location"
@@ -80,7 +80,7 @@
                         android:text="Sun Francisco, CA"
                         android:textAlignment="viewEnd"
                         android:textColor="#ff9e9e9e"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/tv_date"
@@ -89,17 +89,17 @@
                         android:layout_marginLeft="16dp"
                         android:text="APR 18, 2014 9:00AM"
                         android:textColor="#ff9e9e9e"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:gravity="end">
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_description"
@@ -107,26 +107,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
                     android:singleLine="true"
                     android:text="TRIP TO THE GOLDEN GATE"
                     android:textColor="@android:color/white"
-                    android:textSize="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:layout_weight="1"
-                    android:gravity="end" />
+                    android:textSize="16dp"/>
 
                 <TextView
                     android:id="@+id/tv_see_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:padding="8dp"
                     android:singleLine="true"
                     android:text="@string/see_more"
                     android:textColor="#ff9e9e9e"
-                    android:visibility="visible"
                     android:textSize="14dp"
-                    android:padding="8dp" />
+                    android:visibility="visible"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -137,7 +137,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:adjustViewBounds="false"
-            android:background="#ff9e9e9e" />
+            android:background="#ff9e9e9e"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,7 +164,7 @@
                     android:gravity="center_vertical"
                     android:text="150 likes"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"/>
 
                 <TextView
                     android:id="@+id/tv_comments_count"
@@ -175,15 +175,15 @@
                     android:gravity="center_vertical"
                     android:text="12 comments"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textViewInspireMeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textColor="@android:color/white"
                 android:gravity="center"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
 
@@ -201,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:padding="5dp"
-                    android:src="@drawable/ic_fs_thumb_up" />
+                    android:src="@drawable/ic_fs_thumb_up"/>
 
                 <ImageView
                     android:id="@+id/iv_comment"
@@ -210,7 +210,7 @@
                     android:layout_centerInParent="true"
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_comments"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/iv_share"
@@ -218,21 +218,33 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:padding="5dp"
-                    android:src="@drawable/ic_fs_share" />
+                    android:src="@drawable/ic_fs_share"/>
 
-                <ImageView
-                    android:id="@+id/iv_flag"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_fs_image" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_fs_image"/>
+
+                    <ProgressBar
+                        android:id="@+id/progress_flag"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/iv_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:src="@drawable/ic_fs_delete" />
+                    android:src="@drawable/ic_fs_delete"/>
 
             </LinearLayout>
         </LinearLayout>

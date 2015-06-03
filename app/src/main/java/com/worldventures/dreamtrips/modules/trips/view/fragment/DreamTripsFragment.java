@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import javax.inject.Inject;
@@ -38,8 +38,8 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dream_trips)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter> implements
-        DreamTripsFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implements
+        DreamTripsPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @Inject
     @ForActivity
@@ -182,8 +182,8 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     }
 
     @Override
-    protected DreamTripsFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new DreamTripsFragmentPresenter();
+    protected DreamTripsPresenter createPresenter(Bundle savedInstanceState) {
+        return new DreamTripsPresenter();
     }
 
     @Override

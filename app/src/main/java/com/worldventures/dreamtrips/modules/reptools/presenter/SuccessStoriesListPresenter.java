@@ -27,7 +27,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
 
     private DreamSpiceAdapterController<SuccessStory> adapterController = new DreamSpiceAdapterController<SuccessStory>() {
         @Override
-        public SpiceRequest<ArrayList<SuccessStory>> getRefreshRequest() {
+        public SpiceRequest<ArrayList<SuccessStory>> getReloadRequest() {
             return new GetSuccessStoriesQuery() {
                 @Override
                 public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {

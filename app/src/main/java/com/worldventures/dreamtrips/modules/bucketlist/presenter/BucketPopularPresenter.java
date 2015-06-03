@@ -30,7 +30,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     protected DreamSpiceAdapterController<PopularBucketItem> adapterController = new DreamSpiceAdapterController<PopularBucketItem>() {
         @Override
-        public SpiceRequest<ArrayList<PopularBucketItem>> getRefreshRequest() {
+        public SpiceRequest<ArrayList<PopularBucketItem>> getReloadRequest() {
             return new GetPopularLocation(type);
         }
 

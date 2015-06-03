@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
@@ -181,4 +182,7 @@ public interface DreamTripsApi {
 
     @GET("/api/member_videos/")
     ArrayList<Video> getVideos(@Query("type") String type);
+
+    @GET("/api/flag_reasons")
+    ArrayList<Flag> getFlags();
 }

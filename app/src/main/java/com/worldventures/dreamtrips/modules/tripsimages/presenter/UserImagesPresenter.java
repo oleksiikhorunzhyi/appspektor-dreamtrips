@@ -18,7 +18,7 @@ public class UserImagesPresenter extends TripImagesListPresenter<Photo> {
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
         return new TripImagesRoboSpiceController() {
             @Override
-            public SpiceRequest<ArrayList<Photo>> getRefreshRequest() {
+            public SpiceRequest<ArrayList<Photo>> getReloadRequest() {
                 return new GetUserPhotosQuery(PER_PAGE, 1);
             }
 

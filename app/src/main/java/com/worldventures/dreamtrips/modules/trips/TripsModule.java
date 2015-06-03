@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.MapTripInfoPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapFragmentPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.MapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
@@ -35,7 +35,7 @@ import dagger.Provides;
 @Module(
         injects = {
                 BookItActivity.class,
-                DreamTripsFragmentPresenter.class,
+                DreamTripsPresenter.class,
                 FiltersPresenter.class,
                 BookItActivityPresenter.class,
                 DetailedTripFragment.class,
@@ -43,7 +43,7 @@ import dagger.Provides;
                 DetailTripActivityPresenter.class,
                 DetailedTripPresenter.class,
                 MapTripInfoPresenter.class,
-                MapFragmentPresenter.class,
+                MapPresenter.class,
                 FiltersFragment.class,
                 MapTripInfoFragment.class,
                 DreamTripsFragment.class,

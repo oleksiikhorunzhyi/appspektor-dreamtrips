@@ -16,15 +16,14 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragm
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragmentPresenter extends BaseDreamTripsPresenter<MapFragmentPresenter.View> {
+public class MapPresenter extends BaseDreamTripsPresenter<MapPresenter.View> {
 
-    private List<TripModel> trips = new ArrayList<>();
     private List<TripModel> filteredTrips = new ArrayList<>();
     private String query;
 
     private boolean popped = false;
 
-    public MapFragmentPresenter() {
+    public MapPresenter() {
         super();
     }
 
@@ -34,8 +33,8 @@ public class MapFragmentPresenter extends BaseDreamTripsPresenter<MapFragmentPre
     }
 
     public void onMapLoaded() {
-        trips.clear();
-        trips.addAll(db.getTrips());
+        cachedTrips.clear();
+        cachedTrips.addAll(db.getTrips());
         setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
     }
@@ -56,10 +55,10 @@ public class MapFragmentPresenter extends BaseDreamTripsPresenter<MapFragmentPre
     }
 
     private void performFiltering() {
-        if (trips != null) {
-            ArrayList<TripModel> filterdTrips = performFiltering(trips);
+        if (cachedTrips != null) {
             filteredTrips.clear();
-            filteredTrips.addAll(Queryable.from(filterdTrips).filter((input) -> input.containsQuery(query)).toList());
+            filteredTrips.addAll(Queryable.from(performFiltering(cachedTrips))
+                    .filter((input) -> input.containsQuery(query)).toList());
             reloadPins();
         }
     }

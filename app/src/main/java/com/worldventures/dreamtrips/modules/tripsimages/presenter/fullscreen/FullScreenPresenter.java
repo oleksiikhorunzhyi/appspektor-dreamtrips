@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -20,6 +21,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     protected Type type;
     protected User user;
     protected T photo;
+
+    private List<Flag> flags;
 
     public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
@@ -72,7 +75,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     }
 
-
     protected abstract boolean isLiked();
 
     protected abstract boolean isFlagVisible();
@@ -85,12 +87,30 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
-    public void showFlagAction(int itemId) {
-        Flag flagContent = getFlagContent().get(itemId);
-        if (flagContent.isNeedDescription()) {
-            view.showFlagDescription(flagContent.getCode());
+    public void onFlagAction() {
+        if (flags == null) loadFlags();
+        else view.setFlags(flags);
+    }
+
+    private void loadFlags() {
+        view.showProgress();
+        doRequest(new GetFlagContentQuery(), this::flagsLoaded);
+    }
+
+    private void flagsLoaded(List<Flag> flags) {
+        if (view != null) {
+            view.hideProgress();
+            this.flags = flags;
+            view.setFlags(flags);
+        }
+    }
+
+    public void showFlagAction(int order) {
+        Flag flag = flags.get(order);
+        if (flag.isRequireDescription()) {
+            view.showFlagDescription(flag.getName());
         } else {
-            view.showFlagConfirmDialog(flagContent.getCode(), null);
+            view.showFlagConfirmDialog(flag.getName(), null);
         }
     }
 
@@ -112,10 +132,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         if (photo instanceof Inspiration) {
             TrackingHelper.insprShare(photo.getFsId(), "twitter");
         }
-    }
-
-    public List<Flag> getFlagContent() {
-        return appSessionHolder.get().get().getGlobalConfig().getFlagContent().getDefault();
     }
 
     public interface View extends Presenter.View {
@@ -148,5 +164,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
         void setLikeCountVisibility(boolean likeCountVisible);
 
         void setUserPhoto(String fsPhoto);
+
+        void setFlags(List<Flag> flags);
+
+        void showProgress();
+
+        void hideProgress();
     }
 }

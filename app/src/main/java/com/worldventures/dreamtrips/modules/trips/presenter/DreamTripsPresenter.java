@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTripsFragmentPresenter.View> {
+public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPresenter.View> {
 
     @Inject
     protected Prefs prefs;
@@ -44,12 +44,12 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
         adapterController = new DreamSpiceAdapterController<TripModel>() {
 
             @Override
-            public SpiceRequest<ArrayList<TripModel>> getRefreshRequest() {
+            public SpiceRequest<ArrayList<TripModel>> getReloadRequest() {
                 return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
                     @Override
                     public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
-                        return performFiltering(super.loadDataFromNetwork());
-
+                        cachedTrips = super.loadDataFromNetwork();
+                        return performFiltering(cachedTrips);
                     }
                 };
             }
@@ -120,9 +120,12 @@ public class DreamTripsFragmentPresenter extends BaseDreamTripsPresenter<DreamTr
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
-        view.startLoading();
         setFilters(event);
-        adapterController.reload();
+        if (cachedTrips != null && cachedTrips.size() > 0) {
+            view.getAdapter().clear();
+            view.getAdapter().addItems(performFiltering(cachedTrips));
+            view.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

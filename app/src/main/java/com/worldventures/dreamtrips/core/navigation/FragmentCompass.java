@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -45,6 +46,14 @@ public class FragmentCompass {
 
     public void replace(Route route) {
         replace(route, null);
+    }
+
+    public void replace(ComponentDescription componentDescription) {
+        replace(Route.restoreByClass(componentDescription.getFragmentClass().getName()));
+    }
+
+    public void replace(ComponentDescription componentDescription, Bundle args) {
+        replace(Route.restoreByClass(componentDescription.getFragmentClass().getName()), args);
     }
 
     public void replace(Route route, Bundle bundle) {

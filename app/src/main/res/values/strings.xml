@@ -214,7 +214,7 @@
     <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
     <string name="cancel_photo_negative">No</string>
-    <string name="presentations">Presentations</string>
+    <string name="presentations">Videos</string>
     <string name="enroll_member">Enroll Member</string>
     <string name="invite_and_share">Invite &amp; Share</string>
     <string name="add_contact">Add contact</string>

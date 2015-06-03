@@ -148,7 +148,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     }
 
     public String getUserId() {
-        return appSessionHolder.get().get().getUser().getEmail();
+        return getUser().getUsername();
     }
 
     ///////////////////////////////////////////////////////////////////////////

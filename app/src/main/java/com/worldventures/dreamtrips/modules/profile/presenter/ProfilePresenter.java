@@ -1,19 +1,26 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
 
@@ -28,6 +35,10 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     @Inject
     protected SnappyRepository snappyRepository;
+
+    @Inject
+    protected RootComponentsProvider rootComponentsProvider;
+
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
@@ -59,12 +70,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getUserId());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         User user = this.appSessionHolder.get().get().getUser();
         view.setUserName(user.getUsername());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
@@ -75,12 +80,30 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
+
+        //TODO replace with real values
+        view.setTripImagesCount(0);
+        view.setTripsCount(0);
+        view.setBucketItemsCount(0);
     }
 
     @Override
     public void handleError(SpiceException error) {
         view.avatarProgressVisible(false);
         super.handleError(error);
+    }
+
+    public void openBucketList() {
+        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
+                .getComponentByKey(BucketListModule.BUCKETLIST)));
+    }
+
+    public void openTripImages() {
+        Bundle args = new Bundle();
+        args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
+        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
+                .getComponentByKey(TripsImagesModule.TRIP_IMAGES),
+                args));
     }
 
     private void onSuccess(User obj) {
@@ -101,7 +124,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         activityRouter.finish();
         activityRouter.openLogin();
     }
-
 
     @Override
     public void dropView() {
@@ -136,5 +158,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setUserId(String username);
 
         void setLivesIn(String location);
+
+        void setTripImagesCount(int count);
+        void setTripsCount(int count);
+        void setBucketItemsCount(int count);
     }
 }

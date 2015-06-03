@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
@@ -34,7 +34,9 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 @Layout(R.layout.fragment_trip_tabs_images)
 @MenuResource(R.menu.menu_mock)
-public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentPresenter> implements TripImagesTabsFragmentPresenter.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
+public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter>
+        implements TripImagesTabsPresenter.View,
+        FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     protected PagerSlidingTabStrip tabs;
@@ -45,7 +47,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     @InjectView(R.id.multiple_actions_down)
     protected FloatingActionsMenu multipleActionsDown;
     @InjectView(R.id.fab_facebook)
-    protected  FloatingActionButton fabFacebook;
+    protected FloatingActionButton fabFacebook;
     @InjectView(R.id.fab_gallery)
     protected FloatingActionButton fabGallery;
     @InjectView(R.id.fab_photo)
@@ -93,13 +95,18 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsFragmentP
     }
 
     @Override
+    public void setSelection(int selection) {
+        pager.setCurrentItem(selection, true);
+    }
+
+    @Override
     public void setFabVisibility(boolean facebookGallery) {
         fabFacebook.setVisibility(facebookGallery ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
-    protected TripImagesTabsFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripImagesTabsFragmentPresenter();
+    protected TripImagesTabsPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripImagesTabsPresenter(getArguments());
     }
 
     @Override

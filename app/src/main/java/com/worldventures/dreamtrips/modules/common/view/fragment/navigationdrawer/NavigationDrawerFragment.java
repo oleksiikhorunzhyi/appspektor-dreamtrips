@@ -118,9 +118,8 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
         if (this.targetDrawerListener != null) {
-            boolean updateComponentSelection = currentComponent != null ?
-                    !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey()) :
-                    true;
+            boolean updateComponentSelection = currentComponent == null ||
+                    !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey());
 
             if (updateComponentSelection) {
                 this.targetDrawerListener.onNavigationDrawerItemSelected(newComponent);

@@ -53,7 +53,7 @@
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_normal"
             android:layout_gravity="center"
             android:text="Jason Gordon"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -66,6 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Gold Member"
+            android:drawableStart="@drawable/gold_member"
+            android:drawablePadding="@dimen/spacing_small"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/golden_brown"/>
 
@@ -86,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/spacing_small"
             android:src="@drawable/ic_photo_camera"/>
 
     </FrameLayout>

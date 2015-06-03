@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImageP
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPM;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSInspireMePM;
@@ -38,7 +38,7 @@ import dagger.Provides;
                 FullScreenPhotoActivity.class,
                 FullScreenTripImageActivity.class,
                 CreatePhotoActivity.class,
-                TripImagesTabsFragmentPresenter.class,
+                TripImagesTabsPresenter.class,
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
                 MyImagesPresenter.class,

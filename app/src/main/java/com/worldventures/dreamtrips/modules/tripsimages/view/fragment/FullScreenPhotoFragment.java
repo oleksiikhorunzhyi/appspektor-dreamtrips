@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -74,6 +75,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     protected ImageView ivDelete;
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView civUserPhoto;
+    @InjectView(R.id.progress_flag)
+    protected ProgressBar progressBar;
 
     private TripImagesListFragment.Type type;
 
@@ -202,14 +205,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
+        getPresenter().onFlagAction();
+     }
+
+    @Override
+    public void setFlags(List<Flag> flags) {
         PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        List<Flag> values = getPresenter().getFlagContent();
-        for (int i = 0; i < values.size(); i++) {
-            Flag flagContent = values.get(i);
-            popup.getMenu().add(0, i, i, flagContent.getCode());
+        for (int i = 0; i < flags.size(); i++) {
+            Flag flagContent = flags.get(i);
+            popup.getMenu().add(0, i, i, flagContent.getName());
         }
         popup.setOnMenuItemClickListener(item -> {
-            getPresenter().showFlagAction(item.getItemId());
+            getPresenter().showFlagAction(item.getOrder());
             return true;
         });
         popup.show();
@@ -356,5 +363,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         } else {
             ivLike.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
     }
 }

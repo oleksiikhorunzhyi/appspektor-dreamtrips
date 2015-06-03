@@ -12,7 +12,7 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     protected T spiceManager;
     private IRoboSpiceAdapter<BaseItemClass> adapter;
 
-    public abstract SpiceRequest<ArrayList<BaseItemClass>> getRefreshRequest();
+    public abstract SpiceRequest<ArrayList<BaseItemClass>> getReloadRequest();
 
     public SpiceRequest<ArrayList<BaseItemClass>> getNextPageRequest(int currentCount) {
         return null;
@@ -38,7 +38,7 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
 
     public void reload() {
         onStart(LoadType.RELOAD);
-        executeBaseRequest(getRefreshRequest());
+        executeBaseRequest(getReloadRequest());
     }
 
     public void loadNext() {

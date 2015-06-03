@@ -22,7 +22,7 @@ public class InspireMePresenter extends TripImagesListPresenter<Inspiration> {
         return new TripImagesRoboSpiceController() {
 
             @Override
-            public SpiceRequest<ArrayList<Inspiration>> getRefreshRequest() {
+            public SpiceRequest<ArrayList<Inspiration>> getReloadRequest() {
                 randomSeed = Math.random();
                 return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
             }

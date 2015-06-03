@@ -29,6 +29,7 @@ public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter
     private List<Integer> acceptedRegions;
     private List<ActivityModel> acceptedThemes;
 
+    protected ArrayList<TripModel> cachedTrips = new ArrayList<>();
 
     protected ArrayList<TripModel> performFiltering(List<TripModel> trips) {
         ArrayList<TripModel> filteredTrips = new ArrayList<>();

@@ -3,25 +3,16 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Flag {
-    @SerializedName("Code")
-    private String code;
+    private String name;
 
-    @SerializedName("Description")
-    private boolean description;
+    @SerializedName("require_description")
+    private boolean requireDescription;
 
-    public String getCode() {
-        return this.code;
+    public String getName() {
+        return name;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public boolean isNeedDescription() {
-        return this.description;
-    }
-
-    public void setDescription(boolean description) {
-        this.description = description;
+    public boolean isRequireDescription() {
+        return requireDescription;
     }
 }

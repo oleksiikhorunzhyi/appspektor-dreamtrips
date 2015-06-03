@@ -275,13 +275,11 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void photoUploaded(InviteTemplate inviteTemplate) {
         view.finishLoading();
-        uploadedPhotoUrl = inviteTemplate.getCoverImage().getOriginUrl();
-        view.getBucketPhotosView().deleteAtPosition(0);
-        view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
-    }
-
-    public Parcelable getTemplate() {
-        return template;
+        if (inviteTemplate != null) {
+            uploadedPhotoUrl = inviteTemplate.getCoverImage().getOriginUrl();
+            view.getBucketPhotosView().deleteAtPosition(0);
+            view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
+        }
     }
 
     public interface View extends Presenter.View {

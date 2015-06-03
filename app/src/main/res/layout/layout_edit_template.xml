@@ -124,7 +124,6 @@
                 android:id="@+id/photoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:orientation="vertical">
 
                 <LinearLayout

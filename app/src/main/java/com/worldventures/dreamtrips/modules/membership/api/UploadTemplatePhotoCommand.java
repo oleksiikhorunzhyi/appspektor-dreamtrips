@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.api;
 
-import android.util.Log;
-
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
@@ -28,23 +26,15 @@ public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate
 
     @Override
     public InviteTemplate loadDataFromNetwork() {
-        try {
-            String fileUri = photoUploadTask.getFilePath();
-            int taskId = photoUploadTask.getTaskId();
+        String fileUri = photoUploadTask.getFilePath();
+        int taskId = photoUploadTask.getTaskId();
 
-            String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
+        String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
-            InviteTemplate template = getService()
-                    .createInviteTemplate(photoUploadTask.getBucketId(),
-                            personalMessage,
-                            urlFromUploadResult);
-
-            return template;
-        } catch (Exception e) {
-            Log.e(getClass().getName(), "", e);
-        }
-
-        return null;
+        return getService()
+                .createInviteTemplate(photoUploadTask.getBucketId(),
+                        personalMessage,
+                        urlFromUploadResult);
     }
 
 }

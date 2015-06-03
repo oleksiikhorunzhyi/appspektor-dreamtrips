@@ -19,7 +19,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -45,8 +44,8 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
     protected SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.detail_container)
     protected FrameLayout flDetailContainer;
-    @InjectView(R.id.iv_search)
-    protected SearchView ivSearch;
+    @InjectView(R.id.search)
+    protected SearchView search;
     @InjectView(R.id.iv_filter)
     protected ImageView ivFilter;
     @InjectView(R.id.ll_empty_view)
@@ -113,10 +112,9 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
         recyclerView.addItemDecoration(decoration);
 
-        ivSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
                 return false;
             }
 
@@ -126,7 +124,7 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
                 return false;
             }
         });
-        ivSearch.setIconifiedByDefault(false);
+        search.setIconifiedByDefault(true);
     }
 
     @Override
@@ -187,6 +185,6 @@ public class SuccessStoriesListFragment extends BaseFragment<SuccessStoriesListP
 
     @Override
     public void onStoryClicked() {
-        ivSearch.clearFocus();
+        search.clearFocus();
     }
 }

@@ -22,7 +22,7 @@ public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenAvaila
 
         return new TripImagesRoboSpiceController() {
             @Override
-            public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getRefreshRequest() {
+            public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getReloadRequest() {
                 GetMyPhotosQuery getMyPhotosQuery = new GetMyPhotosQuery(user.getId(), PER_PAGE, 1);
                 view.inject(getMyPhotosQuery);
                 return getMyPhotosQuery;

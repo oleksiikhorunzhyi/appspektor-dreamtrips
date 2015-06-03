@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -25,10 +23,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.infopages.InfoModule;
-import com.worldventures.dreamtrips.modules.trips.TripsModule;
 
 import javax.inject.Inject;
 
@@ -36,7 +31,8 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.activity_main)
-public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> implements MainActivityPresenter.View, NavigationDrawerListener {
+public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
+        implements MainActivityPresenter.View, NavigationDrawerListener {
 
     public static final String LAST_SELECTED_ITEM = "last_selected_item";
 
@@ -175,16 +171,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
         this.drawerLayout.post(mDrawerToggle::syncState);
     }
 
+
     @Override
-    public void onNavigationDrawerItemSelected(ComponentDescription route) {
+    public void onNavigationDrawerItemSelected(ComponentDescription component) {
         eventBus.post(new MenuPressedEvent());
         closeLeftDrawer();
         makeActionBarTransparent(false);
 
-        navigationDrawerFragment.setCurrentComponent(route);
-        navigationDrawerFragmentStatic.setCurrentComponent(route);
-
-        openComponent(route, true);
+        getPresentationModel().openComponent(component);
+        updateSelection(component);
 
         if (detailsFrameLayout != null) {
             detailsFrameLayout.setVisibility(View.GONE);
@@ -192,31 +187,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
     }
 
     @Override
-    public void onNavigationDrawerItemReselected(ComponentDescription route) {
-        if (route.getKey().equals(TripsModule.OTA) ||
-                route.getKey().equals(InfoModule.FAQ) ||
-                route.getKey().equals(InfoModule.TERMS)) {
-            openComponent(route, false);
-        }
-        eventBus.post(new WebViewReloadEvent());
-        closeLeftDrawer();
+    public void updateSelection(ComponentDescription component) {
+        navigationDrawerFragment.setCurrentComponent(component);
+        navigationDrawerFragmentStatic.setCurrentComponent(component);
     }
 
-    private void openComponent(ComponentDescription route, boolean backstack) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        boolean theSame = currentFragment != null && currentFragment.getClass().equals(route.getFragmentClass());
-        if (!theSame) {
-            String className = route.getFragmentClass().getName();
-            BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
-            //
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, fragment);
-            if (backstack) fragmentTransaction.addToBackStack(route.getKey());
-            fragmentTransaction.commit();
-            //
-            setTitle(route.getTitle());
-        }
+    @Override
+    public void onNavigationDrawerItemReselected(ComponentDescription route) {
+        eventBus.post(new WebViewReloadEvent());
+        closeLeftDrawer();
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {
@@ -228,12 +207,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             int topMargin = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
             ((ViewGroup.MarginLayoutParams) staticMenuLayout.getLayoutParams()).setMargins(0, topMargin, 0, 0);
             ((ViewGroup.MarginLayoutParams) container.getLayoutParams()).setMargins(0, topMargin, 0, 0);
-        }
-    }
-
-    public void openLeftDrawer() {
-        if (!ViewUtils.isLandscapeOrientation(this)) {
-            drawerLayout.openDrawer(Gravity.START);
         }
     }
 
@@ -298,8 +271,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
                 FragmentManager fm = getSupportFragmentManager();
                 if (fm.getBackStackEntryCount() >= 2) {
                     ComponentDescription componentByKey = this.rootComponentsProvider.getComponent(fm, 1);
-                    navigationDrawerFragment.setCurrentComponent(componentByKey);
-                    navigationDrawerFragmentStatic.setCurrentComponent(componentByKey);
+                    updateSelection(componentByKey);
                     setTitle(componentByKey.getTitle());
                 }
             }

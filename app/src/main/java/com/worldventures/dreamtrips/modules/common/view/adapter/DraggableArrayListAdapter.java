@@ -18,7 +18,6 @@ package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
 
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
@@ -29,13 +28,13 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import javax.inject.Provider;
 
-public class MyDraggableSwipeableItemAdapter<V>
+public class DraggableArrayListAdapter<V>
         extends BaseArrayListAdapter<V>
-        implements DraggableItemAdapter<BucketItemCell> {
+        implements com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter<BucketItemCell> {
 
     private MoveListener moveListener;
 
-    public MyDraggableSwipeableItemAdapter(Context context, Provider<Injector> injector) {
+    public DraggableArrayListAdapter(Context context, Provider<Injector> injector) {
         super(context, injector);
         setHasStableIds(true);
     }

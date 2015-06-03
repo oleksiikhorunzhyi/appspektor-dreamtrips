@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -11,7 +12,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import java.io.File;
 
-public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFragmentPresenter.View> {
+public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
+
+    public static final String SELECTION_EXTRA = "selection_extra";
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null || image == null || image.getFileThumbnail() == null) {
@@ -38,6 +41,14 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         }
     };
 
+    private int selection;
+
+    public TripImagesTabsPresenter(Bundle args) {
+        if (args != null) {
+            selection = args.getInt(SELECTION_EXTRA);
+        }
+    }
+
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
             TrackingHelper.mine(getUserId());
@@ -53,15 +64,10 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
     }
 
     @Override
-    public void dropView() {
-        eventBus.removeAllStickyEvents();
-        super.dropView();
-    }
-
-    @Override
     public void takeView(View view) {
         super.takeView(view);
         view.setFabVisibility(true);
+        view.setSelection(selection);
     }
 
     public void imageSelected(Fragment fragment, Uri uri, String type) {
@@ -86,7 +92,14 @@ public class TripImagesTabsFragmentPresenter extends Presenter<TripImagesTabsFra
         return fbCallback;
     }
 
+    @Override
+    public void dropView() {
+        eventBus.removeAllStickyEvents();
+        super.dropView();
+    }
+
     public interface View extends Presenter.View {
         void setFabVisibility(boolean visibility);
+        void setSelection(int selection);
     }
 }

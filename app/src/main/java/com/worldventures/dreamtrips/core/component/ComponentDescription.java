@@ -6,13 +6,23 @@ public class ComponentDescription {
     private final String key;
     private final int title;
     private final int icon;
+    private final boolean ignored;
     private final Class<? extends Fragment> fragmentClass;
 
     public ComponentDescription(String key, int titleRes, int iconRes, Class<? extends Fragment> fragmentClass) {
+        this(key, titleRes, iconRes, false, fragmentClass);
+    }
+
+    public ComponentDescription(String key, int title, int icon, boolean ignored, Class<? extends Fragment> fragmentClass) {
         this.key = key;
-        this.title = titleRes;
-        this.icon = iconRes;
+        this.title = title;
+        this.icon = icon;
+        this.ignored = ignored;
         this.fragmentClass = fragmentClass;
+    }
+
+    public boolean isIgnored() {
+        return ignored;
     }
 
     public String getKey() {

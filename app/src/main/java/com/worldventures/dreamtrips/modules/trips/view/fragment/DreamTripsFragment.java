@@ -57,7 +57,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsFragmentPresenter
     private FilterableArrayListAdapter<TripModel> adapter;
 
     private int lastConfig;
-    private boolean search;
 
     private SearchView searchView;
 

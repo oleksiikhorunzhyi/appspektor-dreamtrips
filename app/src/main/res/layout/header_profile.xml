@@ -1,85 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/user_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        fresco:placeholderImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/ic_cover_place_holder" />
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/gradient"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="16dp">
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/user_photo"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            fresco:roundAsCircle="true"
-            fresco:placeholderImage="@drawable/ic_avatar_placeholder" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_photo_camera" />
-
-    </FrameLayout>
-
-    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-        android:id="@+id/pb"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:layout_above="@+id/gradient"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="16dp"
-        android:background="@color/theme_main_darker"
-        android:visibility="gone" />
+        fresco:placeholderImage="@drawable/ic_cover_place_holder"
+        fresco:placeholderImageScaleType="centerCrop"/>
 
     <LinearLayout
-        android:id="@+id/gradient"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_alignBottom="@+id/user_cover"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/black_gradient"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/profile_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/user_photo"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+                fresco:roundAsCircle="true"/>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_photo_camera"/>
+
+            <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+                android:id="@+id/pb"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/theme_main_darker"
+                android:visibility="visible"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_gravity="center"
+            android:text="Jason Gordon"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="22sp"/>
 
         <TextView
-            android:id="@+id/user_email"
+            android:id="@+id/gold_member"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:layout_gravity="center"
+            android:text="Gold Member"
+            android:drawableStart="@drawable/gold_member"
+            android:drawablePadding="@dimen/spacing_small"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/golden_brown"/>
+
 
     </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignBottom="@+id/user_cover"
+        android:background="@drawable/black_gradient"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/spacing_small"
+            android:src="@drawable/ic_photo_camera"/>
+
+    </FrameLayout>
 
 </RelativeLayout>

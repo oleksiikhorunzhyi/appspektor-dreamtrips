@@ -46,12 +46,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name)
     protected TextView userName;
-    @InjectView(R.id.user_email)
-    protected TextView userEmail;
     @InjectView(R.id.et_date_of_birth)
     protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
     protected ProgressBarCircularIndeterminate progressBar;
+    @InjectView(R.id.trip_images)
+    protected TextView tripImages;
+    @InjectView(R.id.dream_trips)
+    protected TextView trips;
+    @InjectView(R.id.bucket_list)
+    protected TextView buckets;
     @Optional
     @InjectView(R.id.sv)
     protected ScrollView sv;
@@ -108,8 +112,18 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         return new ProfilePresenter();
     }
 
+    @OnClick(R.id.bucket_list)
+    public void onBucketListClicked() {
+        getPresenter().openBucketList();
+    }
+
+    @OnClick(R.id.trip_images)
+    public void onTripImageClicked() {
+        getPresenter().openTripImages();
+    }
+
     @OnClick(R.id.user_photo)
-    public void onPhotoClick(ImageView iv) {
+    public void onPhotoClick() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
@@ -157,11 +171,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void setUserEmail(String email) {
-        userEmail.setText(email);
-    }
-
-    @Override
     public void setUserId(String username) {
         etUserId.setText(username);
     }
@@ -197,6 +206,21 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void setTripImagesCount(int count) {
+        tripImages.setText(String.format(getString(R.string.profile_trip_images), count));
+    }
+
+    @Override
+    public void setTripsCount(int count) {
+        trips.setText(String.format(getString(R.string.profile_dream_trips), count));
+    }
+
+    @Override
+    public void setBucketItemsCount(int count) {
+        buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
     }
 
     private void showLogoutDialog() {

@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
@@ -52,7 +52,7 @@ import dagger.Provides;
                 ShareActivity.class,
                 SimpleStreamPlayerActivity.class,
                 FilterableArrayListAdapter.class,
-                MyDraggableSwipeableItemAdapter.class,
+                DraggableArrayListAdapter.class,
                 NavigationDrawerFragment.class,
                 NavigationDrawerFragment.class,
                 NavigationDrawerAdapter.class,
@@ -91,6 +91,8 @@ public class CommonModule {
 
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS);
+
+        activeComponents.add(TripsModule.MAP_TRIPS);
 
         return new ComponentsConfig(activeComponents);
     }

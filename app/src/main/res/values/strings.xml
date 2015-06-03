@@ -214,7 +214,7 @@
     <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
     <string name="cancel_photo_negative">No</string>
-    <string name="presentations">Presentations</string>
+    <string name="presentations">Videos</string>
     <string name="enroll_member">Enroll Member</string>
     <string name="invite_and_share">Invite &amp; Share</string>
     <string name="add_contact">Add contact</string>
@@ -257,4 +257,15 @@
         <item>@string/choose_camera</item>
         <item>@string/choose_multiselect</item>
     </string-array>
+    
+    <string name="profile_update_info">Update Info</string>
+    <string name="profile_trip_images">%d Trip Images</string>
+    <string name="profile_bucket_list">%d Bucket Items</string>
+    <string name="profile_dream_trips">%d Dream Trips</string>
+    <string name="profile_post">Post</string>
+    <string name="profile_friends">Friends</string>
+    <string name="profile_messages">Messages</string>
+    <string name="profile_more">More</string>
+    <string name="profile_dt_points">%d DreamTrip Points</string>
+    <string name="profile_rovia_bucks">%d Rovia Bucks</string>
 </resources>

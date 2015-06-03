@@ -40,7 +40,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoComplete
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
-import com.worldventures.dreamtrips.modules.common.view.adapter.MyDraggableSwipeableItemAdapter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -73,7 +73,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
 
-    private MyDraggableSwipeableItemAdapter<Object> mAdapter;
+    private DraggableArrayListAdapter<Object> mAdapter;
 
     private RecyclerViewDragDropManager mDragDropManager;
     private SnackBar snackBar;
@@ -94,7 +94,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         mDragDropManager.setDraggingItemShadowDrawable(
                 (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
 
-        mAdapter = new MyDraggableSwipeableItemAdapter<>(getActivity(), injector);
+        mAdapter = new DraggableArrayListAdapter<>(getActivity(), injector);
         mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
         mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
 

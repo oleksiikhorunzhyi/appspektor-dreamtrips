@@ -35,7 +35,7 @@
     </FrameLayout>
 
     <RelativeLayout
-        android:id="@+id/container"
+        android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bucket_item_selector"

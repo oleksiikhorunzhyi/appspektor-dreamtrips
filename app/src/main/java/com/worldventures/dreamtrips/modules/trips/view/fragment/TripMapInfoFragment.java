@@ -16,13 +16,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapTripInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_trip_pin)
-public class MapTripInfoFragment extends BaseFragment<MapTripInfoPresenter> implements MapTripInfoPresenter.View {
+public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> implements TripMapInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
@@ -159,8 +159,8 @@ public class MapTripInfoFragment extends BaseFragment<MapTripInfoPresenter> impl
     }
 
     @Override
-    protected MapTripInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new MapTripInfoPresenter();
+    protected TripMapInfoPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripMapInfoPresenter();
     }
 
     @Override

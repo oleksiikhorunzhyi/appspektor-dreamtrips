@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,6 +11,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
@@ -52,6 +53,26 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
     private BaseArrayListAdapter<Video> adapterRecent;
     private BaseArrayListAdapter<Video> adapterAll;
 
+    RecyclerViewStateDelegate stateDelegate;
+
+    @Override
+    protected Video360Presenter createPresenter(Bundle savedInstanceState) {
+        return new Video360Presenter();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -68,11 +89,12 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
         recyclerViewFeatured.setAdapter(adapterFeatured);
         recyclerViewRecent.setAdapter(adapterRecent);
 
-        setUp();
+        setUpRecyclerViews();
     }
 
     @Override
     public void onDestroyView() {
+        stateDelegate.onDestroyView();
         this.recyclerViewAll.setAdapter(null);
         this.recyclerViewFeatured.setAdapter(null);
         this.recyclerViewRecent.setAdapter(null);
@@ -81,13 +103,8 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
     @Override
     public void finishLoading() {
-        setUp();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setUp();
+        setUpRecyclerViews();
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
@@ -100,15 +117,10 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
         return adapterRecent;
     }
 
+
     @Override
     public BaseArrayListAdapter getAllAdapter() {
         return adapterAll;
-    }
-
-
-    @Override
-    protected Video360Presenter createPresenter(Bundle savedInstanceState) {
-        return new Video360Presenter();
     }
 
     @Override
@@ -134,7 +146,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
         showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
     }
 
-    private void setUp() {
+    private void setUpRecyclerViews() {
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
             recyclerViewAll.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
@@ -152,6 +164,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
                 adapterAll.clear();
                 adapterAll.notifyDataSetChanged();
             }
+            stateDelegate.setRecyclerView(recyclerViewFeatured);
         } else {
             recyclerViewAll.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
@@ -167,6 +180,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
                 adapterRecent.clear();
                 adapterRecent.notifyDataSetChanged();
             }
+            stateDelegate.setRecyclerView(recyclerViewAll);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,14 +34,14 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     Injector injector;
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
-    @InjectView(R.id.drawerList)
-    protected RecyclerView drawerList;
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
+    @InjectView(R.id.drawerList)
+    protected RecyclerView recyclerView;
+    protected NavigationDrawerAdapter adapter;
     private NavigationDrawerListener targetDrawerListener;
-    private NavigationDrawerAdapter adapter;
+
     private ComponentDescription currentComponent;
 
     @Override
@@ -62,21 +61,30 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         initUI();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        initUI();
-        setCurrentComponent(currentComponent);
-    }
-
     private void initUI() {
-        drawerList.setLayoutManager(
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
-        );
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         adapter = new NavigationDrawerAdapter(new ArrayList<>(this.rootComponentsProvider.getActiveComponents()));
         adapter.setNavigationDrawerCallbacks(this);
-        drawerList.setAdapter(adapter);
-        updateHeader();
+        recyclerView.setAdapter(adapter);
+        setHeaderIfNeeded();
+    }
+
+    private void setHeaderIfNeeded() {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) return;
+        //
+        if (adapter.setHeader(createNavigationHeader())) {
+            adapter.notifyItemInserted(0);
+        } else {
+            adapter.notifyItemChanged(0);
+        }
+    }
+
+    private NavigationHeader createNavigationHeader() {
+        return new NavigationHeader(appSessionHolder.get().get().getUser());
+    }
+
+    public void onEventMainThread(UpdateUserInfoEvent event) {
+        setHeaderIfNeeded();
     }
 
     @Override
@@ -85,31 +93,6 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         this.targetDrawerListener = null;
     }
 
-    private NavigationHeader createNavigationHeader() {
-        return new NavigationHeader(appSessionHolder.get().get().getUser());
-    }
-
-    private void updateHeader() {
-        if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            if (adapter.setHeader(null)) {
-                adapter.notifyItemRemoved(0);
-            }
-        } else {
-            if (adapter.setHeader(createNavigationHeader())) {
-                adapter.notifyItemInserted(0);
-            } else {
-                adapter.notifyItemChanged(0);
-            }
-        }
-    }
-
-    public void onEvent(UpdateUserInfoEvent event) {
-        updateHeader();
-    }
-
-    public void hide() {
-        getView().setVisibility(View.GONE);
-    }
 
     public void show() {
         getView().setVisibility(View.VISIBLE);
@@ -135,7 +118,7 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     }
 
     public void setCurrentComponent(ComponentDescription newComponent) {
-        drawerList.post(() -> {
+        recyclerView.post(() -> {
             currentComponent = newComponent;
             adapter.selectComponent(newComponent);
         });

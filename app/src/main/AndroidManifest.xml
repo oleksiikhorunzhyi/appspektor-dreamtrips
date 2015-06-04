@@ -58,7 +58,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.common.view.activity.MainActivity"
-            android:configChanges="orientation|screenSize"
             android:label="@string/trips" />
         <activity
             android:name=".modules.trips.view.activity.BookItActivity"

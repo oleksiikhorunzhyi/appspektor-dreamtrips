@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +18,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
@@ -52,6 +53,69 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     protected SwipeRefreshLayout refreshLayout;
 
     private FilterableArrayListAdapter<PopularBucketItem> adapter;
+    RecyclerViewStateDelegate stateDelegate;
+
+    @Override
+    protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
+        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
+        return new BucketPopularPresenter(type);
+    }
+
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        this.recyclerView.setLayoutManager(getLayoutManager());
+        this.recyclerView.setEmptyView(emptyView);
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
+        this.recyclerView.setAdapter(this.adapter);
+        stateDelegate.setRecyclerView(recyclerView);
+
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    @Override
+    public void onDestroyView() {
+        stateDelegate.onDestroyView();
+        this.recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
+
+    private RecyclerView.LayoutManager getLayoutManager() {
+        RecyclerView.LayoutManager layoutManager;
+        if (isTabletLandscape()) {
+            return new GridLayoutManager(getActivity(), 3);
+        } else {
+            return new LinearLayoutManager(getActivity());
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnCloseListener(() -> {
+            getPresenter().searchClosed();
+            return false;
+        });
+        searchView.setOnQueryTextListener(onQueryTextListener);
+    }
 
     private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
@@ -68,71 +132,19 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     };
 
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-
-        setManager();
-
-        this.recyclerView.setEmptyView(emptyView);
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
-        this.adapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
-        this.recyclerView.setAdapter(this.adapter);
-
-        this.refreshLayout.setOnRefreshListener(this);
-        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-    }
-
-    @Override
-    public void onDestroyView() {
-        this.recyclerView.setAdapter(null);
-        super.onDestroyView();
-    }
-
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setManager();
-    }
-
-    private void setManager() {
-        RecyclerView.LayoutManager layoutManager;
-        if (isTabletLandscape()) {
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        } else {
-            layoutManager = new LinearLayoutManager(getActivity());
-        }
-
-        this.recyclerView.setLayoutManager(layoutManager);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnCloseListener(() -> {
-            getPresenter().searchClosed();
-            return false;
-        });
-        searchView.setOnQueryTextListener(onQueryTextListener);
-    }
-
-
-    @Override
     public FilterableArrayListAdapter<PopularBucketItem> getAdapter() {
         return adapter;
     }
 
     @Override
-    public void finishLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+    public void startLoading() {
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
-    public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+    public void finishLoading() {
+        refreshLayout.setRefreshing(false);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
@@ -140,9 +152,4 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         getPresenter().reload();
     }
 
-    @Override
-    protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
-        return new BucketPopularPresenter(type);
-    }
 }

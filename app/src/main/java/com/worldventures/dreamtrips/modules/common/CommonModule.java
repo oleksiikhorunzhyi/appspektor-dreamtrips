@@ -18,17 +18,16 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +53,8 @@ import dagger.Provides;
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
                 NavigationDrawerFragment.class,
-                NavigationDrawerFragment.class,
-                NavigationDrawerAdapter.class,
                 DownloadVideoListener.class,
-                PresentationsPresenter.class,
+                PresentationVideosPresenter.class,
         },
         complete = false,
         library = true

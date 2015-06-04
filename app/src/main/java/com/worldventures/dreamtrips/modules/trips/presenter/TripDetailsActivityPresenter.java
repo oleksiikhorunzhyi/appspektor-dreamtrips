@@ -5,9 +5,9 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-public class DetailTripActivityPresenter extends Presenter<Presenter.View> {
+public class TripDetailsActivityPresenter extends Presenter<Presenter.View> {
 
-    public DetailTripActivityPresenter(Presenter.View view) {
+    public TripDetailsActivityPresenter(Presenter.View view) {
         super();
     }
 

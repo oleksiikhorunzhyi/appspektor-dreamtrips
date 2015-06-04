@@ -42,7 +42,7 @@ public class BucketItemCell extends AbstractCell<BucketItem> implements
     private static final int ACTION_NONE = -1;
     private static final int ACTION_SETTLING = -2;
 
-    @InjectView(R.id.container)
+    @InjectView(R.id.container_main)
     protected RelativeLayout container;
     @InjectView(R.id.textViewName)
     protected TextView tvName;

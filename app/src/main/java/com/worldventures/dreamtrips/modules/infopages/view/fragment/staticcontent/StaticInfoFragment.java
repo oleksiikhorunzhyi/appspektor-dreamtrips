@@ -4,24 +4,35 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.modules.infopages.WebViewInEvent;
+import com.worldventures.dreamtrips.modules.infopages.WebViewOutEvent;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import timber.log.Timber;
+
+import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
+import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
@@ -37,13 +48,31 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @InjectView(R.id.web_view)
     protected WebView webView;
-
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.progressBarWeb)
+    protected ProgressBar progressBarWeb;
+
+    protected Bundle savedState;
+    protected boolean isLoading;
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new WebViewFragmentPresenter(getURL());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (isWebViewSavedState(savedInstanceState)) {
+            savedState = savedInstanceState;
+        }
+    }
+
+    private boolean isWebViewSavedState(Bundle savedInstanceState) {
+        return savedInstanceState != null &&
+                (savedInstanceState.containsKey("WEBVIEW_CHROMIUM_STATE")
+                        || Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT);
     }
 
     @Override
@@ -71,7 +100,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                if (refreshLayout != null) {
+                Timber.d("Page started");
+                isLoading = true;
+                if (refreshLayout != null) { // could be when fragment is not visible
                     refreshLayout.setRefreshing(true);
                 }
             }
@@ -79,27 +110,40 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (refreshLayout != null) {
+                Timber.d("Page finished");
+                isLoading = false;
+                if (!(isDetached() || isRemoving() || refreshLayout == null)) {
                     refreshLayout.setRefreshing(false);
-
                 }
             }
         });
-        webView.loadUrl(getPresenter().getLocalizedUrl());
+        if (savedState != null) webView.restoreState(savedState);
     }
 
     @Override
-    public void reload() {
+    public void load(String url) {
+        if (!isLoading && savedState == null) webView.loadUrl(url);
+    }
+
+    @Override
+    public void reload(String url) {
         webView.loadUrl("about:blank");
-        webView.loadUrl(getPresenter().getLocalizedUrl());
+        webView.loadUrl(url);
     }
 
     abstract protected String getURL();
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (webView != null) webView.saveState(outState);
+    }
+
+    @Override
     public void onResume() {
-        super.onResume();
+        lockOrientationIfNeeded();
         webView.onResume();
+        super.onResume();
     }
 
     @Override
@@ -110,15 +154,53 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Override
     public void onDestroyView() {
-        webView.loadUrl("about:blank");
-        webView.destroy();
-        webView = null;
+        weakHandler.removeCallbacksAndMessages(null);
+        unlockOrientationIfNeeded();
         super.onDestroyView();
     }
 
     @Override
+    public void onDestroy() {
+        if (webView != null) {
+            webView.destroy();
+        }
+        super.onDestroy();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Orientation locking/unlocking
+    ///////////////////////////////////////////////////////////////////////////
+
+    WeakHandler weakHandler = new WeakHandler();
+
+    public void onEventMainThread(WebViewInEvent event) {
+        lockOrientation(getActivity());
+    }
+
+    public void onEventMainThread(WebViewOutEvent event) {
+        unlockOrientation(getActivity());
+    }
+
+    public void onEventMainThread(ScreenChangedEvent event) {
+        weakHandler.removeCallbacksAndMessages(null);
+        lockOrientationIfNeeded();
+    }
+
+    private void lockOrientationIfNeeded() {
+        weakHandler.postDelayed(() -> {
+            if (ViewUtils.isVisibleOnScreen(this)) {
+                weakHandler.postDelayed(() -> lockOrientation(getActivity()), 500L);
+            } else unlockOrientation(getActivity());
+        }, 100L);
+    }
+
+    private void unlockOrientationIfNeeded() {
+        if (ViewUtils.isVisibleOnScreen(this)) unlockOrientation(getActivity());
+    }
+
+    @Override
     public void onRefresh() {
-        reload();
+        getPresenter().onReload();
     }
 
     @Layout(R.layout.fragment_webview)

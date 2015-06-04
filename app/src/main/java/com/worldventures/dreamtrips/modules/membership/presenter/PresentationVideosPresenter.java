@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class PresentationsPresenter extends Presenter<PresentationsPresenter.View> {
+public class PresentationVideosPresenter extends Presenter<PresentationVideosPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
@@ -38,13 +39,12 @@ public class PresentationsPresenter extends Presenter<PresentationsPresenter.Vie
     protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getReloadRequest() {
-            return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER) {
-                @Override
-                public ArrayList<Video> loadDataFromNetwork() throws Exception {
-                    ArrayList<Video> videos = super.loadDataFromNetwork();
-                    return attachCacheToVideos(videos);
-                }
-            };
+            return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+        }
+
+        @Override
+        protected void onSuccess(ArrayList<Video> videos) {
+            super.onSuccess(attachCacheToVideos(videos));
         }
 
         @Override

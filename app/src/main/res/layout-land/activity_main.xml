@@ -6,32 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4">
 
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/container_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
+                <fragment
+                    android:id="@+id/fragment_drawer"
+                    android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
+                    android:layout_width="@dimen/navigation_drawer_static_width"
+                    android:layout_height="match_parent"
+                    tools:layout="@layout/fragment_navigation_drawer" />
+
                 <FrameLayout
                     android:id="@+id/container_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4" />
 
                 <FrameLayout
                     android:id="@+id/container_details"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="6" />
+                    android:layout_weight="6"
+                    android:visibility="gone" />
 
-            </FrameLayout>
+            </LinearLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_actionbar"
@@ -41,20 +52,18 @@
 
         <FrameLayout
             android:id="@+id/container_details_fullscreen"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="6"
             android:visibility="gone" />
 
-    </FrameLayout>
+    </LinearLayout>
 
-    <fragment
-        android:id="@+id/fragment_drawer"
-        android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
-        android:layout_width="@dimen/navigation_drawer_width"
+    <FrameLayout
+        android:id="@+id/container_details_floating"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/fragment_navigation_drawer" />
+        android:visibility="gone"/>
 
     <fragment
         android:id="@+id/fragment_filters"

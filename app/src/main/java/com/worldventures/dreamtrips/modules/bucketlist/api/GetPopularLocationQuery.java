@@ -21,9 +21,9 @@ public class GetPopularLocationQuery extends DreamTripsRequest<ArrayList<Popular
     public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
         ArrayList<PopularBucketItem> items = new ArrayList<>();
 
-        if (type.equals(BucketTabsPresenter.BucketType.LOCATIONS)) {
+        if (type == BucketTabsPresenter.BucketType.LOCATIONS) {
             items.addAll(getService().getLocationPopularSuggestions(query));
-        } else if (type.equals(BucketTabsPresenter.BucketType.DINING)) {
+        } else if (type == BucketTabsPresenter.BucketType.DINING) {
             items.addAll(getService().getDiningPopularSuggestions(query));
         } else {
             items.addAll(getService().getActivityPopularSuggestions(query));

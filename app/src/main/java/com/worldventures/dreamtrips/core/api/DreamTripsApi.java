@@ -155,7 +155,7 @@ public interface DreamTripsApi {
     @GET("/api/activity_suggestions")
     ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
 
-    @GET("/api/activity_suggestions")
+    @GET("/api/dining_suggestions")
     ArrayList<Suggestion> getDiningSuggestions(@Query("name") String name);
 
     @GET("/api/location_suggestions/popular")
@@ -164,7 +164,7 @@ public interface DreamTripsApi {
     @GET("/api/activity_suggestions/popular")
     ArrayList<PopularBucketItem> getActivityPopularSuggestions(@Query("name") String name);
 
-    @GET("/api/activity_suggestions/popular")
+    @GET("/api/dining_suggestions/popular")
     ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
     @GET("/api/invitations/templates")

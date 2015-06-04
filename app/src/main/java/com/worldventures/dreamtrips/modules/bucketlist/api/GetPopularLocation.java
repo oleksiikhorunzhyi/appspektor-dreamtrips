@@ -19,9 +19,9 @@ public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucke
     public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
         ArrayList<PopularBucketItem> list = new ArrayList<>();
 
-        if (type.equals(BucketTabsPresenter.BucketType.LOCATIONS)) {
+        if (type == BucketTabsPresenter.BucketType.LOCATIONS) {
             list.addAll(getService().getPopularLocations());
-        } else if (type.equals(BucketTabsPresenter.BucketType.DINING)) {
+        } else if (type == BucketTabsPresenter.BucketType.DINING) {
             list.addAll(getService().getPopularDining());
         } else {
             list.addAll(getService().getPopularActivities());

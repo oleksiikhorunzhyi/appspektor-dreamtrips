@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 
-public class MapTripInfoPresenter extends BaseTripPresenter<MapTripInfoPresenter.View> {
+public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter.View> {
 
     @Override
     protected void initData() {

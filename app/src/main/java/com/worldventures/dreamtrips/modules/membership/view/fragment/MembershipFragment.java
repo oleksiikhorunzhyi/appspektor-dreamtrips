@@ -7,6 +7,7 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -17,7 +18,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPrese
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_member_ship)
+@Layout(R.layout.fragment_membership)
 @MenuResource(R.menu.menu_mock)
 public class MembershipFragment extends BaseFragment<MembershipPresenter> implements MembershipPresenter.View, ViewPager.OnPageChangeListener {
 
@@ -43,10 +44,10 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         super.afterCreateView(rootView);
         adapter = new BaseStatePagerAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);
-        pager.setOnPageChangeListener(this);
+        tabStrip.setOnPageChangeListener(this);
         tabStrip.setViewPager(pager);
 
-        adapter.add(new FragmentItem(PresentationsFragment.class, getString(R.string.presentations)));
+        adapter.add(new FragmentItem(PresentationVideosFragment.class, getString(R.string.presentations)));
         adapter.add(new FragmentItem(StaticInfoFragment.EnrollFragment.class, getString(R.string.enroll_member)));
         if (getPresenter().showInvite()) {
             adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
@@ -62,6 +63,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
     public void onPageSelected(int position) {
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
+        eventBus.post(new ScreenChangedEvent());
     }
 
     @Override

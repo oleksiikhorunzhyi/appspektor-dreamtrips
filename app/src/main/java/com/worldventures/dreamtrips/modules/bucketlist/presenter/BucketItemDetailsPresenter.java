@@ -26,7 +26,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         if (view.isTabletLandscape()) {
             view.showEditContainer();
             fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.container_edit);
+            fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
             activityRouter.openBucketItemEditActivity(bundle);

@@ -35,7 +35,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-@Layout(R.layout.layout_detailed_bucket_item)
+@Layout(R.layout.layout_bucket_item_details)
 public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.imageViewCover)
@@ -282,7 +282,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void showEditContainer() {
-        getActivity().findViewById(R.id.container_edit).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.container_details_floating).setVisibility(View.VISIBLE);
     }
 
     @Override

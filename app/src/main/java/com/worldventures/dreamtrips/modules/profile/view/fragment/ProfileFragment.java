@@ -18,7 +18,6 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -94,11 +93,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void onResume() {
         super.onResume();
-        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            ((MainActivity) getActivity()).makeActionBarTransparent(true);
-        } else {
-            ((MainActivity) getActivity()).makeActionBarTransparent(false);
-        }
+        ((MainActivity) getActivity()).makeActionBarTransparent(true);
     }
 
     @Override

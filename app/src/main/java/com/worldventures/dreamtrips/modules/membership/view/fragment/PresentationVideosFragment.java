@@ -13,10 +13,11 @@ import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -27,9 +28,9 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_presentation)
-public class PresentationsFragment extends BaseVideoFragment<PresentationsPresenter>
-        implements PresentationsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+@Layout(R.layout.fragment_presentation_videos)
+public class PresentationVideosFragment extends BaseVideoFragment<PresentationVideosPresenter>
+        implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -42,9 +43,25 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     Provider<Injector> injectorProvider;
     private LoaderRecycleAdapter<Object> arrayListAdapter;
 
+    RecyclerViewStateDelegate stateDelegate;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        stateDelegate.setRecyclerView(recyclerView);
         setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
         this.recyclerView.setEmptyView(emptyView);
 
@@ -60,6 +77,7 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     @Override
     public void onDestroyView() {
         this.recyclerView.setAdapter(null);
+        stateDelegate.onDestroyView();
         super.onDestroyView();
     }
 
@@ -75,8 +93,8 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
     }
 
     @Override
-    protected PresentationsPresenter createPresenter(Bundle savedInstanceState) {
-        return new PresentationsPresenter();
+    protected PresentationVideosPresenter createPresenter(Bundle savedInstanceState) {
+        return new PresentationVideosPresenter();
     }
 
     private void setupLayoutManager(boolean landscape) {
@@ -102,15 +120,13 @@ public class PresentationsFragment extends BaseVideoFragment<PresentationsPresen
 
     @Override
     public void startLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
-
+        refreshLayout.setRefreshing(false);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override

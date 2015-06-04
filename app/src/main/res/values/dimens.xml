@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="navigation_drawer_width">248dp</dimen>
     <dimen name="navigation_drawer_width_filter">300dp</dimen>
+    <dimen name="navigation_drawer_static_width">56dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="statusMargin">0dp</dimen>
     <dimen name="userSpace">164dp</dimen>

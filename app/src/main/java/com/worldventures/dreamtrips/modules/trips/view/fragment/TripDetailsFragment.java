@@ -23,9 +23,9 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.DetailedTripPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.DetailedImagePagerFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,10 +35,10 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import me.relex.circleindicator.CircleIndicator;
 
-@Layout(R.layout.fragment_detailed_trip)
+@Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
-public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
-        implements DetailedTripPresenter.View {
+public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
+        implements TripDetailsPresenter.View {
 
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
@@ -85,8 +85,8 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
     protected MenuItem addToBucketItem;
 
     @Override
-    protected DetailedTripPresenter createPresenter(Bundle savedInstanceState) {
-        return new DetailedTripPresenter();
+    protected TripDetailsPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripDetailsPresenter();
     }
 
     @OnClick(R.id.layoutBookIt)
@@ -138,14 +138,14 @@ public class DetailedTripFragment extends BaseFragment<DetailedTripPresenter>
                         Bundle args = new Bundle();
                         Object photo = getPresenter().getFilteredImages().get(position);
                         if (photo instanceof Serializable) {
-                            args.putSerializable(DetailedImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
+                            args.putSerializable(ImageDetailsPagerFragment.EXTRA_PHOTO, (Serializable) photo);
                         }
                         fragment.setArguments(args);
                     }
                 };
 
         for (Object photo : getPresenter().getFilteredImages()) {
-            adapter.add(new FragmentItem(DetailedImagePagerFragment.class, ""));
+            adapter.add(new FragmentItem(ImageDetailsPagerFragment.class, ""));
         }
 
         viewPagerGallery.setAdapter(adapter);

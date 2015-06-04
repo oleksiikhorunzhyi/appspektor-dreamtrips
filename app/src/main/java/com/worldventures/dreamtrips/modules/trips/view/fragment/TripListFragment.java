@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +17,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.presenter.DreamTripsPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import javax.inject.Inject;
@@ -36,10 +36,10 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.fragment_dream_trips)
+@Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
-public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implements
-        DreamTripsPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class TripListFragment extends BaseFragment<TripListPresenter> implements
+        TripListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @Inject
     @ForActivity
@@ -56,27 +56,36 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implem
 
     private FilterableArrayListAdapter<TripModel> adapter;
 
-    private int lastConfig;
-
     private SearchView searchView;
+    RecyclerViewStateDelegate stateDelegate;
 
-    private int lastScrollPosition = 0;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        lastConfig = getResources().getConfiguration().orientation;
-        setupLayoutManager();
+        stateDelegate.setRecyclerView(recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getSpanCount()));
+        recyclerView.setEmptyView(emptyView);
 
-        this.recyclerView.setEmptyView(emptyView);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter.registerCell(TripModel.class, TripCell.class);
 
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
-        this.adapter.registerCell(TripModel.class, TripCell.class);
+        recyclerView.setAdapter(adapter);
 
-        this.recyclerView.setAdapter(adapter);
-
-        this.refreshLayout.setOnRefreshListener(this);
-        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
 
@@ -89,20 +98,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implem
     public boolean onQueryTextChange(String s) {
         adapter.setFilter(s);
         return false;
-    }
-
-    private void saveScrollPosition() {
-        lastScrollPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-    }
-
-    private void setupLayoutManager() {
-        if (recyclerView.getLayoutManager() != null) {
-            saveScrollPosition();
-        }
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), getSpanCount());
-        this.recyclerView.setLayoutManager(layoutManager);
-        layoutManager.scrollToPosition(lastScrollPosition);
     }
 
     private int getSpanCount() {
@@ -127,15 +122,6 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implem
 
     public void onEvent(TouchTripEvent event) {
         getPresenter().onItemClick(event.getTrip());
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (lastConfig != newConfig.orientation) {
-            lastConfig = newConfig.orientation;
-            setupLayoutManager();
-        }
     }
 
     @Override
@@ -172,6 +158,7 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implem
 
     @Override
     public void onDestroyView() {
+        stateDelegate.onDestroyView();
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
     }
@@ -182,19 +169,19 @@ public class DreamTripsFragment extends BaseFragment<DreamTripsPresenter> implem
     }
 
     @Override
-    protected DreamTripsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DreamTripsPresenter();
+    protected TripListPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripListPresenter();
     }
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        refreshLayout.setRefreshing(false);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override

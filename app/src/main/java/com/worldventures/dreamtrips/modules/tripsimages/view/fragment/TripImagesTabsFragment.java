@@ -32,7 +32,7 @@ import butterknife.OnClick;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-@Layout(R.layout.fragment_trip_tabs_images)
+@Layout(R.layout.fragment_trip_images_tabs)
 @MenuResource(R.menu.menu_mock)
 public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter>
         implements TripImagesTabsPresenter.View,

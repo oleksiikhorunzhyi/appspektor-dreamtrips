@@ -11,15 +11,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsFragmentPresenter;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories_details)
-public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsFragmentPresenter>
-        implements SuccessStoryDetailsFragmentPresenter.View {
+public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsPresenter>
+        implements SuccessStoryDetailsPresenter.View {
 
     public static final String EXTRA_STORY = "STORY";
 
@@ -78,9 +78,9 @@ public class SuccessStoriesDetailsFragment extends StaticInfoFragment<SuccessSto
     }
 
     @Override
-    protected SuccessStoryDetailsFragmentPresenter createPresenter(Bundle savedInstanceState) {
+    protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
         story = getArguments().getParcelable(EXTRA_STORY);
-        return new SuccessStoryDetailsFragmentPresenter(story, getURL());
+        return new SuccessStoryDetailsPresenter(story, getURL());
     }
 
     @Override

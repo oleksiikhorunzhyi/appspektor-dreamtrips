@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BaseDreamTripsPresenter<T extends Presenter.View> extends Presenter<T> {
+public class BaseTripListPresenter<T extends Presenter.View> extends Presenter<T> {
 
     @Inject
     protected SnappyRepository db;

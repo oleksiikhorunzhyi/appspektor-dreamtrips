@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailedTripPresenter extends BaseTripPresenter<DetailedTripPresenter.View> {
+public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
     private List<Object> filteredImages;
 

@@ -25,14 +25,14 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.trips.presenter.MapPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_map)
+@Layout(R.layout.fragment_trip_map)
 @MenuResource(R.menu.menu_map)
-public class MapFragment extends BaseFragment<MapPresenter> implements MapPresenter.View {
+public class TripMapFragment extends BaseFragment<TripMapPresenter> implements TripMapPresenter.View {
 
     @InjectView(R.id.map)
     protected ToucheableMapView mapView;
@@ -165,8 +165,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements MapPresen
     }
 
     @Override
-    protected MapPresenter createPresenter(Bundle savedInstanceState) {
-        return new MapPresenter();
+    protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripMapPresenter();
     }
 
     @Override

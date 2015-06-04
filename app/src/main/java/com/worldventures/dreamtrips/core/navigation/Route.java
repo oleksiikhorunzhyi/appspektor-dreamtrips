@@ -20,11 +20,11 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemp
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.DetailedTripFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.DreamTripsFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.MapFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
@@ -32,20 +32,20 @@ public enum Route {
     LOGIN(LoginFragment.class, R.string.log_in),
     WEB_STATIC(StaticInfoFragment.class, R.string.web_title),
     CREATE_PHOTO(CreatePhotoFragment.class, R.string.new_photo),
-    DETAILED_TRIP(DetailedTripFragment.class, R.string.detailed_trip),
+    DETAILED_TRIP(TripDetailsFragment.class, R.string.detailed_trip),
     PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
     PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
-    MAP_INFO(MapTripInfoFragment.class, 0),
+    MAP_INFO(TripMapInfoFragment.class, 0),
     BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
-    SUCCESS_STORES_DETAILS(SuccessStoriesDetailsFragment.class, R.string.success_stories),
+    SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class, R.string.success_stories),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_my_title),
     POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_location_popular),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class, 0),
-    MAP(MapFragment.class, R.string.trips),
+    MAP(TripMapFragment.class, R.string.trips),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
-    DREAMTRIPS(DreamTripsFragment.class, R.string.trips),
+    DREAMTRIPS(TripListFragment.class, R.string.trips),
     OTA(OtaFragment.class, R.string.other_travel),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class, R.string.membership),

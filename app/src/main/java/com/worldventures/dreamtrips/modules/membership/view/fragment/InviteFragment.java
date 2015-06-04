@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -67,6 +68,7 @@ public class InviteFragment
     TextView textViewSelectedCount;
 
     FilterableArrayListAdapter<Member> adapter;
+    RecyclerViewStateDelegate stateDelegate;
 
     @Override
     protected InvitePresenter createPresenter(Bundle savedInstanceState) {
@@ -74,26 +76,22 @@ public class InviteFragment
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setUpView();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
     }
 
-    private void setUpView() {
-        if (isTabletLandscape()) {
-            containerTemplates.setVisibility(View.VISIBLE);
-            buttonContinue.setVisibility(View.GONE);
-            getPresenter().continueAction();
-        } else {
-            containerTemplates.setVisibility(View.GONE);
-            if (!tvSearch.hasFocus() && getPresenter().isVisible())
-                buttonContinue.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        stateDelegate.setRecyclerView(lvUsers);
         setUpView();
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
@@ -140,6 +138,18 @@ public class InviteFragment
         buttonContinue.setVisibility(View.GONE);
     }
 
+    private void setUpView() {
+        if (isTabletLandscape()) {
+            containerTemplates.setVisibility(View.VISIBLE);
+            buttonContinue.setVisibility(View.GONE);
+            getPresenter().continueAction();
+        } else {
+            containerTemplates.setVisibility(View.GONE);
+            if (!tvSearch.hasFocus() && getPresenter().isVisible())
+                buttonContinue.setVisibility(View.VISIBLE);
+        }
+    }
+
     @OnClick(R.id.textViewDeselectAll)
     public void deselectOnClick() {
         getPresenter().deselectAll();
@@ -149,6 +159,7 @@ public class InviteFragment
     public void onDestroyView() {
         lvUsers.setAdapter(null);
         tvSearch.setOnQueryTextListener(this);
+        stateDelegate.onDestroyView();
         super.onDestroyView();
     }
 
@@ -166,15 +177,13 @@ public class InviteFragment
 
     @Override
     public void startLoading() {
-        if (refreshLayout != null) {
-            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
-        }
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        refreshLayout.setRefreshing(false);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override

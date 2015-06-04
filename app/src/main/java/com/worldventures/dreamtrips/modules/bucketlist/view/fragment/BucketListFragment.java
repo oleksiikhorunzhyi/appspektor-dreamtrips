@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
@@ -80,9 +82,25 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     private MenuItem menuItemAdd;
 
+    private RecyclerViewStateDelegate stateDelegate;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        stateDelegate.setRecyclerView(recyclerView);
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
@@ -124,6 +142,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void onDestroyView() {
+        stateDelegate.onDestroyView();
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
     }
@@ -238,7 +257,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        getActivity().findViewById(R.id.container_bucket_details).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.container_details_fullscreen).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -279,6 +298,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void finishLoading() {
         progressBar.setVisibility(View.GONE);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
@@ -288,6 +308,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public boolean detailsOpened() {
-        return getActivity().findViewById(R.id.container_bucket_details).getVisibility() == View.VISIBLE;
+        return getActivity().findViewById(R.id.container_details).getVisibility() == View.VISIBLE;
     }
 }

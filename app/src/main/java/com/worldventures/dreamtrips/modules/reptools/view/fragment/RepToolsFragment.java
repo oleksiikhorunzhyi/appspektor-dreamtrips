@@ -8,6 +8,7 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -50,7 +51,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
                 }
             };
 
-            adapter.add(new FragmentItem(SuccessStoriesListFragment.class, getString(R.string.success_stories)));
+            adapter.add(new FragmentItem(SuccessStoryListFragment.class, getString(R.string.success_stories)));
             adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
             adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
             
@@ -77,6 +78,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     public void onPageSelected(int position) {
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
+        eventBus.post(new ScreenChangedEvent());
     }
 
     @Override

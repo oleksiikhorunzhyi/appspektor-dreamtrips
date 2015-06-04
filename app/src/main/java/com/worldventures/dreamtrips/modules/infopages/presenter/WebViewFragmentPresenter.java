@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -30,6 +29,28 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         this.url = url;
     }
 
+    @Override
+    public void takeView(T view) {
+        super.takeView(view);
+        view.load(getLocalizedUrl());
+    }
+
+    protected String getLocalizedUrl() {
+        return LocaleUtils.substituteActualLocale(context, url, localesStorage);
+    }
+
+    public void onEvent(WebViewReloadEvent event) {
+        if (view instanceof StaticInfoFragment.TrainingVideosFragment
+                || view instanceof StaticInfoFragment.EnrollRepFragment
+                || view instanceof StaticInfoFragment.EnrollFragment) {
+            onReload();
+        }
+    }
+
+    public void onReload() {
+        view.reload(getLocalizedUrl());
+    }
+
     public void track(Route route) {
         switch (route) {
             case TERMS_OF_SERVICE:
@@ -50,24 +71,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
-    public void onEvent(WebViewReloadEvent event) {
-        if (view instanceof StaticInfoFragment.TrainingVideosFragment
-                || view instanceof StaticInfoFragment.EnrollRepFragment
-                || view instanceof StaticInfoFragment.EnrollFragment) {
-            view.reload();
-        }
-    }
-
-    public String getLocalizedUrl() {
-        return LocaleUtils.substituteActualLocale(context, url, localesStorage);
-    }
-
-    public UserSession getCurrentUser() {
-        return appSessionHolder.get().get();
-    }
-
     public interface View extends Presenter.View {
-        void reload();
+        void load(String localizedUrl);
+        void reload(String localizedUrl);
     }
 
 }

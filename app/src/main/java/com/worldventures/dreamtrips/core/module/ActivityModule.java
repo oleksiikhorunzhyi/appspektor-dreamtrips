@@ -36,7 +36,7 @@ public class ActivityModule {
 
     @Provides
     public FragmentCompass provideFragmentCompass() {
-        return new FragmentCompass(baseActivity, R.id.container);
+        return new FragmentCompass(baseActivity, R.id.container_main);
     }
 
     @Provides

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
-import android.os.Bundle;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -10,13 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_mock)
-public class OtaFragment extends ActualTokenStaticInfoFragment {
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getPresenter().track(Route.OTA);
-    }
+public class OtaFragment extends AuthorizedStaticInfoFragment {
 
     @Override
     protected String getURL() {

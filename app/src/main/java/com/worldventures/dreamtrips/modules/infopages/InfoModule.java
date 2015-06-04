@@ -6,16 +6,14 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.infopages.presenter.ActualTokenStaticInfoPresenter;
-import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollActivityPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
-import com.worldventures.dreamtrips.modules.infopages.view.activity.EnrollActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.ActualTokenStaticInfoFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationsPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
@@ -27,11 +25,11 @@ import dagger.Provides;
 @Module(
         injects = {
                 OtaFragment.class,
-                ActualTokenStaticInfoFragment.class,
-                ActualTokenStaticInfoPresenter.class,
+                AuthorizedStaticInfoFragment.class,
+                AuthorizedStaticInfoPresenter.class,
                 StaticInfoFragment.TrainingVideosFragment.class,
                 Video360Presenter.class,
-                PresentationsPresenter.class,
+                PresentationVideosPresenter.class,
                 Video360Fragment.class,
                 StaticInfoFragment.class,
                 StaticInfoFragment.BookItFragment.class,
@@ -45,8 +43,6 @@ import dagger.Provides;
                 VideoCell.class,
                 Video360Cell.class,
                 Video360SmallCell.class,
-                EnrollActivity.class,
-                EnrollActivityPresenter.class,
 
                 TermsTabFragment.class,
                 WebViewFragmentPresenter.class,

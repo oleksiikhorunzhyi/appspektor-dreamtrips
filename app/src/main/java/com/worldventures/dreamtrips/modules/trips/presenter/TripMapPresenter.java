@@ -11,19 +11,20 @@ import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.MapTripInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapPresenter extends BaseDreamTripsPresenter<MapPresenter.View> {
+public class TripMapPresenter extends BaseTripListPresenter<TripMapPresenter.View> {
 
+    private List<TripModel> trips = new ArrayList<>();
     private List<TripModel> filteredTrips = new ArrayList<>();
     private String query;
 
     private boolean popped = false;
 
-    public MapPresenter() {
+    public TripMapPresenter() {
         super();
     }
 
@@ -33,8 +34,8 @@ public class MapPresenter extends BaseDreamTripsPresenter<MapPresenter.View> {
     }
 
     public void onMapLoaded() {
-        cachedTrips.clear();
-        cachedTrips.addAll(db.getTrips());
+        trips.clear();
+        trips.addAll(db.getTrips());
         setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
     }
@@ -55,10 +56,10 @@ public class MapPresenter extends BaseDreamTripsPresenter<MapPresenter.View> {
     }
 
     private void performFiltering() {
-        if (cachedTrips != null) {
+        if (trips != null) {
+            ArrayList<TripModel> filterdTrips = performFiltering(trips);
             filteredTrips.clear();
-            filteredTrips.addAll(Queryable.from(performFiltering(cachedTrips))
-                    .filter((input) -> input.containsQuery(query)).toList());
+            filteredTrips.addAll(Queryable.from(filterdTrips).filter((input) -> input.containsQuery(query)).toList());
             reloadPins();
         }
     }
@@ -90,12 +91,12 @@ public class MapPresenter extends BaseDreamTripsPresenter<MapPresenter.View> {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(MapTripInfoFragment.EXTRA_TRIP, resultTrip);
+        bundle.putSerializable(TripMapInfoFragment.EXTRA_TRIP, resultTrip);
         fragmentCompass.add(Route.MAP_INFO, bundle);
     }
 
     public void onCameraChanged() {
-        if (fragmentCompass.getCurrentFragment() instanceof MapTripInfoFragment) {
+        if (fragmentCompass.getCurrentFragment() instanceof TripMapInfoFragment) {
             fragmentCompass.pop();
         }
     }

@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPresenter.View> {
+public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.View> {
 
     @Inject
     protected Prefs prefs;
@@ -42,16 +42,14 @@ public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPrese
     @Override
     public void onInjected() {
         adapterController = new DreamSpiceAdapterController<TripModel>() {
-
             @Override
             public SpiceRequest<ArrayList<TripModel>> getReloadRequest() {
-                return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty()) {
-                    @Override
-                    public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
-                        cachedTrips = super.loadDataFromNetwork();
-                        return performFiltering(cachedTrips);
-                    }
-                };
+                return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty());
+            }
+
+            @Override
+            protected void onSuccess(ArrayList<TripModel> tripModels) {
+                super.onSuccess(performFiltering(tripModels));
             }
 
             @Override
@@ -64,7 +62,6 @@ public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPrese
             @Override
             public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
                 if (view == null) return;
-
                 loadFromApi = false;
                 loadWithStatus = false;
                 view.finishLoading();
@@ -91,16 +88,23 @@ public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPrese
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        TrackingHelper.dreamTrips(getUserId());
-        adapterController.setAdapter(view.getAdapter());
+    public void onResume() {
+        if (view.getAdapter().getCount() == 0) {
+            goneToMap = false;
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+            adapterController.reload();
+        }
     }
 
-    @Override
-    public void onResume() {
-        goneToMap = false;
+    public void takeView(View view) {
+        super.takeView(view);
+        if (view.getAdapter().getCount() == 0) {
+            goneToMap = false;
+        }
+        adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
+        TrackingHelper.dreamTrips(getUserId());
     }
 
     public void loadFromApi() {
@@ -120,12 +124,9 @@ public class DreamTripsPresenter extends BaseDreamTripsPresenter<DreamTripsPrese
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
+        view.startLoading();
         setFilters(event);
-        if (cachedTrips != null && cachedTrips.size() > 0) {
-            view.getAdapter().clear();
-            view.getAdapter().addItems(performFiltering(cachedTrips));
-            view.getAdapter().notifyDataSetChanged();
-        }
+        adapterController.reload();
     }
 
     @Override

@@ -6,15 +6,15 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.DetailTripActivityPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsActivityPresenter;
 
 @Layout(R.layout.activity_detail_trip)
-public class DetailTripActivity extends ActivityWithPresenter<DetailTripActivityPresenter> {
+public class DetailTripActivity extends ActivityWithPresenter<TripDetailsActivityPresenter> {
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
 
     @Override
-    protected DetailTripActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new DetailTripActivityPresenter(this);
+    protected TripDetailsActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new TripDetailsActivityPresenter(this);
     }
 
     @Override

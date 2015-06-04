@@ -26,8 +26,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImageP
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.fragment_image_detailed)
-public class DetailedImagePagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
+@Layout(R.layout.fragment_image_details)
+public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_PHOTO_FULLSCREEN = "isFullscreen";

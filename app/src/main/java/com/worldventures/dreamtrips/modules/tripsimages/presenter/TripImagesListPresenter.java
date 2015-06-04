@@ -81,6 +81,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     private void handleNewPhotoEvent(FSUploadEvent event) {
         new Handler().postDelayed(() -> {
             if (type == event.getType()
+                    && view != null
                     && view.getAdapter() != null
                     && view.getAdapter().getCount() == 0) {
                 view.clear();

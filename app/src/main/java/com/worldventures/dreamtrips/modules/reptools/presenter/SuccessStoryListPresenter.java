@@ -11,16 +11,17 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoriesDetailsFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPresenter.View> {
+public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresenter.View> {
 
     private boolean onlyFavorites = false;
     private int lastSelectedPosition = -1;
@@ -28,12 +29,12 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     private DreamSpiceAdapterController<SuccessStory> adapterController = new DreamSpiceAdapterController<SuccessStory>() {
         @Override
         public SpiceRequest<ArrayList<SuccessStory>> getReloadRequest() {
-            return new GetSuccessStoriesQuery() {
-                @Override
-                public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
-                    return performFiltering(super.loadDataFromNetwork());
-                }
-            };
+            return new GetSuccessStoriesQuery();
+        }
+
+        @Override
+        protected void onSuccess(ArrayList<SuccessStory> successStories) {
+            super.onSuccess(performFiltering(successStories));
         }
 
         @Override
@@ -101,7 +102,7 @@ public class SuccessStoriesListPresenter extends Presenter<SuccessStoriesListPre
     private void handleListItemClick(SuccessStory successStory, int position) {
         lastSelectedPosition = position;
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoriesDetailsFragment.EXTRA_STORY, successStory);
+        bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
         if (view.isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.setSupportFragmentManager(view.getSupportFragmentManager());

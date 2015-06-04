@@ -8,11 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-public class ActualTokenStaticInfoPresenter extends WebViewFragmentPresenter<ActualTokenStaticInfoPresenter.View> {
+public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<AuthorizedStaticInfoPresenter.View> {
 
     public static final int LIFE_DURATION = 30; // mins
 
-    public ActualTokenStaticInfoPresenter(String url) {
+    public AuthorizedStaticInfoPresenter(String url) {
         super(url);
     }
 
@@ -25,7 +25,7 @@ public class ActualTokenStaticInfoPresenter extends WebViewFragmentPresenter<Act
     public void loadUrl() {
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
-            view.loadContent();
+            view.load(getLocalizedUrl());
         } else {
             dreamSpiceManager.login(new RequestListener() {
                 @Override
@@ -35,14 +35,13 @@ public class ActualTokenStaticInfoPresenter extends WebViewFragmentPresenter<Act
 
                 @Override
                 public void onRequestSuccess(Object o) {
-                    view.loadContent();
+                    view.reload(getLocalizedUrl());
                 }
             });
         }
     }
 
     public interface View extends WebViewFragmentPresenter.View {
-        void loadContent();
     }
 
 }

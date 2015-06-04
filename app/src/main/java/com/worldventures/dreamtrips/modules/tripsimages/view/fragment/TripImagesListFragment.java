@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +14,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -57,12 +58,28 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     private int lastScrollPosition;
 
+    RecyclerViewStateDelegate stateDelegate;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
-        setupLayoutManager();
+        this.layoutManager = getLayoutManager();
+        this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setEmptyView(emptyView);
+        stateDelegate.setRecyclerView(recyclerView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
@@ -88,13 +105,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setupLayoutManager();
-    }
-
-    @Override
     public void onDestroyView() {
+        stateDelegate.onDestroyView();
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
     }
@@ -104,20 +116,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         //nothing to do here
     }
 
-    private void saveScrollPosition() {
-        lastScrollPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-    }
-
-    private void setupLayoutManager() {
-        if (recyclerView.getLayoutManager() != null) {
-            saveScrollPosition();
-        }
+    private GridLayoutManager getLayoutManager() {
         boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
         int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-        layoutManager = new GridLayoutManager(getActivity(), spanCount);
-        this.recyclerView.setLayoutManager(layoutManager);
-        layoutManager.scrollToPosition(lastScrollPosition);
+        return new GridLayoutManager(getActivity(), spanCount);
     }
 
     @Override
@@ -138,13 +140,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void finishLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        refreshLayout.setRefreshing(false);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override

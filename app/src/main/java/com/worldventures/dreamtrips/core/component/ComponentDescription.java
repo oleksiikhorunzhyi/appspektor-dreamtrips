@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.core.component;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
-public class ComponentDescription {
+public class ComponentDescription implements Parcelable {
     private final String key;
     private final int title;
     private final int icon;
@@ -56,4 +58,37 @@ public class ComponentDescription {
     public int hashCode() {
         return key != null ? key.hashCode() : 0;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.key);
+        dest.writeInt(this.title);
+        dest.writeInt(this.icon);
+        dest.writeByte(ignored ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.fragmentClass);
+    }
+
+    private ComponentDescription(Parcel in) {
+        this.key = in.readString();
+        this.title = in.readInt();
+        this.icon = in.readInt();
+        this.ignored = in.readByte() != 0;
+        this.fragmentClass = (Class<? extends Fragment>) in.readSerializable();
+    }
+
+    public static final Creator<ComponentDescription> CREATOR = new Creator<ComponentDescription>() {
+        public ComponentDescription createFromParcel(Parcel source) {
+            return new ComponentDescription(source);
+        }
+
+        public ComponentDescription[] newArray(int size) {
+            return new ComponentDescription[size];
+        }
+    };
 }

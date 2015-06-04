@@ -2,18 +2,19 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
+import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,24 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     }
 
+    public void onSearch(String constraint) {
+        if (constraint.length() > 2) {
+            view.startLoading();
+            doRequest(new GetPopularLocationQuery(type, constraint), this::onSearchSucceed);
+        }
+    }
+
+    public void onSearchSucceed(List<PopularBucketItem> items) {
+        if (view != null) {
+            view.finishLoading();
+            view.getAdapter().setFilteredItems(items);
+        }
+    }
+
+    public void searchClosed() {
+        view.getAdapter().flushFilter();
+    }
+
     public void onEvent(AddPressedEvent event) {
         if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
             add(event.getPopularBucketItem(), false, event.getPosition());
@@ -117,7 +136,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     public interface View extends Presenter.View {
-        BaseArrayListAdapter<PopularBucketItem> getAdapter();
+        FilterableArrayListAdapter<PopularBucketItem> getAdapter();
 
         void startLoading();
 

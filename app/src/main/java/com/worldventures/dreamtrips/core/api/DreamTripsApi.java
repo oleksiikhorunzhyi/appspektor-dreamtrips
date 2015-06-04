@@ -52,125 +52,137 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/sessions")
-    public Session login(@Field("username") String username, @Field("password") String password);
+    Session login(@Field("username") String username, @Field("password") String password);
 
     @POST("/api/profile/avatar")
     @Multipart
-    public User uploadAvatar(@Part("avatar") TypedFile image);
+    User uploadAvatar(@Part("avatar") TypedFile image);
 
     @GET("/api/trips")
-    public List<TripModel> getTrips();
+    List<TripModel> getTrips();
 
     @GET("/api/regions")
-    public List<RegionModel> getRegions();
+    List<RegionModel> getRegions();
 
     @GET("/api/activities")
-    public List<ActivityModel> getActivities();
+    List<ActivityModel> getActivities();
 
     @GET("/api/photos")
-    public ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{id}/photos")
-    public ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
-    public ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
+    ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
 
     @GET("/api/ysbh_photos")
-    public ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/success_stories")
-    public ArrayList<SuccessStory> getSuccessStores();
+    ArrayList<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
-    public JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
+    JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
 
     @DELETE("/api/photos/{id}")
-    public JsonObject deletePhoto(@Path("id") String photoId);
+    JsonObject deletePhoto(@Path("id") String photoId);
 
     @POST("/api/photos/{id}/like")
-    public JsonObject likePhoto(@Path("id") String photoId);
+    JsonObject likePhoto(@Path("id") String photoId);
 
     @DELETE("/api/photos/{id}/like")
-    public JsonObject unlikePhoto(@Path("id") String photoId);
+    JsonObject unlikePhoto(@Path("id") String photoId);
 
     @POST("/api/success_stories/{id}/like")
-    public JsonObject likeSS(@Path("id") int photoId);
+    JsonObject likeSS(@Path("id") int photoId);
 
     @DELETE("/api/success_stories/{id}/like")
-    public JsonObject unlikeSS(@Path("id") int photoId);
+    JsonObject unlikeSS(@Path("id") int photoId);
 
     @POST("/api/trips/{id}/like")
-    public JsonObject likeTrip(@Path("id") String photoId);
+    JsonObject likeTrip(@Path("id") String photoId);
 
     @DELETE("/api/trips/{id}/like")
-    public JsonObject unlikeTrio(@Path("id") String photoId);
+    JsonObject unlikeTrio(@Path("id") String photoId);
 
     @POST("/api/photos")
-    public Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
+    Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
     @POST("/api/bucket_list_items/{id}/photos")
-    public BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
+    BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
 
     @GET("/api/trips/{id}")
-    public TripDetails getDetails(@Path("id") String tripId);
+    TripDetails getDetails(@Path("id") String tripId);
 
     @POST("/api/bucket_list_items")
-    public BucketItem createItem(@Body BucketBasePostItem bucketItem);
+    BucketItem createItem(@Body BucketBasePostItem bucketItem);
 
     @PATCH("/api/bucket_list_items/{id}")
-    public BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
+    BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
 
     @PATCH("/api/bucket_list_items/{id}")
-    public BucketItem updateItem(@Path("id") int id, @Body BucketBasePostItem bucketPostItem);
+    BucketItem updateItem(@Path("id") int id, @Body BucketBasePostItem bucketPostItem);
 
     @DELETE("/api/bucket_list_items/{id}")
-    public JsonObject deleteItem(@Path("id") int id);
+    JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")
-    public ArrayList<BucketItem> getBucketList(@Query("type") String type);
+    ArrayList<BucketItem> getBucketList(@Query("type") String type);
 
     @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
-    public JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
+    JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
 
     @GET("/api/bucket_list/locations")
-    public ArrayList<PopularBucketItem> getPopularLocations();
+    ArrayList<PopularBucketItem> getPopularLocations();
 
     @GET("/api/bucket_list/activities")
-    public ArrayList<PopularBucketItem> getPopularActivities();
+    ArrayList<PopularBucketItem> getPopularActivities();
 
     @GET("/api/bucket_list/dinings")
-    public ArrayList<PopularBucketItem> getPopularDining();
+    ArrayList<PopularBucketItem> getPopularDining();
 
     @PUT("/api/bucket_list_items/{id}/position")
-    public JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
+    JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
 
     @GET("/api/categories")
-    public ArrayList<CategoryItem> getCategories();
+    ArrayList<CategoryItem> getCategories();
 
     @GET("/api/location_suggestions")
-    public ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
+    ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
 
     @GET("/api/activity_suggestions")
-    public ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
+    ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
+
+    @GET("/api/activity_suggestions")
+    ArrayList<Suggestion> getDiningSuggestions(@Query("name") String name);
+
+    @GET("/api/location_suggestions/popular")
+    ArrayList<PopularBucketItem> getLocationPopularSuggestions(@Query("name") String name);
+
+    @GET("/api/activity_suggestions/popular")
+    ArrayList<PopularBucketItem> getActivityPopularSuggestions(@Query("name") String name);
+
+    @GET("/api/activity_suggestions/popular")
+    ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
     @GET("/api/invitations/templates")
-    public ArrayList<InviteTemplate> getInviteTemplates();
+    ArrayList<InviteTemplate> getInviteTemplates();
 
     @GET("/api/invitations")
-    public ArrayList<History> getInvitations();
+    ArrayList<History> getInvitations();
 
     @POST("/api/invitations")
-    public JSONObject sendInvitations(@Body InviteBody body);
+    JSONObject sendInvitations(@Body InviteBody body);
 
     @FormUrlEncoded
     @POST("/api/invitations/templates/{id}")
-    public InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
+    InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
 
     @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
-    public InviteTemplate createInviteTemplate(@Field("template_id") int id,
+    InviteTemplate createInviteTemplate(@Field("template_id") int id,
                                                @Field("message") String message,
                                                @Field("cover_photo_url") String photoUrl);
 
@@ -178,7 +190,7 @@ public interface DreamTripsApi {
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
     @GET("/api/locales")
-    public ArrayList<AvailableLocale> getLocales();
+    ArrayList<AvailableLocale> getLocales();
 
     @GET("/api/member_videos/")
     ArrayList<Video> getVideos(@Query("type") String type);

@@ -30,6 +30,8 @@ public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
             return api.getLocationSuggestions(query);
         } else if (type == BucketTabsPresenter.BucketType.ACTIVITIES) {
             return api.getActivitySuggestions(query);
+        } else if (type == BucketTabsPresenter.BucketType.DINING) {
+            return api.getDiningSuggestions(query);
         }
         return Collections.emptyList();
     }

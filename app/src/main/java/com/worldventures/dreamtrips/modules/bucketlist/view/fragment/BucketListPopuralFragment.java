@@ -61,6 +61,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
         @Override
         public boolean onQueryTextChange(String newText) {
+            getPresenter().onSearch(newText);
             adapter.setFilter(newText);
             return false;
         }
@@ -112,7 +113,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconifiedByDefault(false);
         searchView.setOnCloseListener(() -> {
-            adapter.flushFilter();
+            getPresenter().searchClosed();
             return false;
         });
         searchView.setOnQueryTextListener(onQueryTextListener);
@@ -120,7 +121,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
 
     @Override
-    public BaseArrayListAdapter<PopularBucketItem> getAdapter() {
+    public FilterableArrayListAdapter<PopularBucketItem> getAdapter() {
         return adapter;
     }
 

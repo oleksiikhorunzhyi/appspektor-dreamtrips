@@ -8,7 +8,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
@@ -58,6 +57,15 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         }
     }
 
+    public void setFilteredItems(List<BaseItemClass> filteredItems) {
+        if (cachedItems.isEmpty()) cachedItems.addAll(items);
+           mainHandler.post(() -> {
+               items.clear();
+               items.addAll(filteredItems);
+               notifyDataSetChanged();
+           });
+    }
+
     public void sort(Comparator comparator) {
         Collections.sort(items, comparator);
         notifyDataSetChanged();
@@ -69,7 +77,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
             items.clear();
             items.addAll(cachedItems);
             notifyDataSetChanged();
-            filterHandler.post(() -> cachedItems.clear());
+            filterHandler.post(cachedItems::clear);
         }
     }
 

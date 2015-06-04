@@ -6,33 +6,35 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 
 import java.util.ArrayList;
 
-public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
+public class GetPopularLocationQuery extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
 
     private BucketTabsPresenter.BucketType type;
+    private String query;
 
-    public GetPopularLocation(BucketTabsPresenter.BucketType type) {
+    public GetPopularLocationQuery(BucketTabsPresenter.BucketType type, String query) {
         super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
         this.type = type;
+        this.query = query;
     }
 
     @Override
     public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
-        ArrayList<PopularBucketItem> list = new ArrayList<>();
+        ArrayList<PopularBucketItem> items = new ArrayList<>();
 
         if (type == BucketTabsPresenter.BucketType.LOCATIONS) {
-            list.addAll(getService().getPopularLocations());
+            items.addAll(getService().getLocationPopularSuggestions(query));
         } else if (type == BucketTabsPresenter.BucketType.DINING) {
-            list.addAll(getService().getPopularDining());
+            items.addAll(getService().getDiningPopularSuggestions(query));
         } else {
-            list.addAll(getService().getPopularActivities());
+            items.addAll(getService().getActivityPopularSuggestions(query));
         }
 
-        if (!list.isEmpty()) {
-            for (PopularBucketItem popularBucketItem : list) {
+        if (!items.isEmpty()) {
+            for (PopularBucketItem popularBucketItem : items) {
                 popularBucketItem.setType(type.getName());
             }
         }
 
-        return list;
+        return items;
     }
 }

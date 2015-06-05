@@ -60,6 +60,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {
+        view.setTitle(component.getTitle());
         Fragment currentFragment = fragmentCompass.getCurrentFragment();
         // check if current
         boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
@@ -79,7 +80,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
             return;
         }
         fragmentCompass.replace(component, args);
-        view.setTitle(component.getTitle());
     }
 
     public void openComponent(ComponentDescription component) {

@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragm
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripMapPresenter extends BaseTripListPresenter<TripMapPresenter.View> {
+public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> {
 
     private List<TripModel> filteredTrips = new ArrayList<>();
     private String query;

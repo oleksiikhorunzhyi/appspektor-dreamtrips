@@ -28,13 +28,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.View> {
+public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View> {
 
     @Inject
     protected Prefs prefs;
 
     private boolean loadFromApi;
-    private boolean loadWithStatus;
     private boolean goneToMap = false;
 
     private DreamSpiceAdapterController<TripModel> adapterController;
@@ -55,17 +54,9 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
             }
 
             @Override
-            public void onStart(LoadType loadType) {
-                if (loadWithStatus || cacheEmpty()) {
-                    view.startLoading();
-                }
-            }
-
-            @Override
             public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
                 if (view == null) return;
                 loadFromApi = false;
-                loadWithStatus = false;
                 view.finishLoading();
                 if (spiceException != null) {
                     handleError(spiceException);
@@ -93,9 +84,9 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
     public void onResume() {
         if (view.getAdapter().getCount() == 0) {
             goneToMap = false;
-            adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
+            view.startLoading();
         }
     }
 
@@ -111,7 +102,6 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
 
     public void loadFromApi() {
         loadFromApi = true;
-        loadWithStatus = true;
         adapterController.reload();
     }
 
@@ -126,8 +116,10 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
-        setFilters(event);
-        view.setFilteredItems(performFiltering(cachedTrips));
+        if (event != null && cachedTrips.size() > 0) {
+            setFilters(event);
+            view.setFilteredItems(performFiltering(cachedTrips));
+        }
     }
 
     @Override

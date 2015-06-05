@@ -48,8 +48,8 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
             }
 
             @Override
-            protected void onSuccess(ArrayList<TripModel> tripModels) {
-                super.onSuccess(performFiltering(tripModels));
+            protected void onRefresh(ArrayList<TripModel> tripModels) {
+                super.onRefresh(performFiltering(tripModels));
                 cachedTrips.clear();
                 cachedTrips.addAll(tripModels);
             }

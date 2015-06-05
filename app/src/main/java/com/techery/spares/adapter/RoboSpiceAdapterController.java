@@ -53,7 +53,7 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
 
     protected abstract void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
 
-    protected void onSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+    protected void onNextItemsLoaded(ArrayList<BaseItemClass> baseItemClasses) {
         if (hasAdapter()) {
             adapter.addItems(baseItemClasses);
             adapter.notifyDataSetChanged();

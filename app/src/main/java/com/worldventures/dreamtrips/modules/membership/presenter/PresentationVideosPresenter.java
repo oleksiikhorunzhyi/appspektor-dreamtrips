@@ -43,8 +43,8 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
         }
 
         @Override
-        protected void onSuccess(ArrayList<Video> videos) {
-            super.onSuccess(attachCacheToVideos(videos));
+        protected void onRefresh(ArrayList<Video> videos) {
+            super.onRefresh(attachCacheToVideos(videos));
         }
 
         @Override

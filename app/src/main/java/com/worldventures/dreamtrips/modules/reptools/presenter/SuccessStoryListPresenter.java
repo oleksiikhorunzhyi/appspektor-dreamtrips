@@ -33,8 +33,8 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
         }
 
         @Override
-        protected void onSuccess(ArrayList<SuccessStory> successStories) {
-            super.onSuccess(performFiltering(successStories));
+        protected void onRefresh(ArrayList<SuccessStory> successStories) {
+            super.onRefresh(performFiltering(successStories));
         }
 
         @Override

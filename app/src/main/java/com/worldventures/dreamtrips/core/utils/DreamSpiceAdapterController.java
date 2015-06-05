@@ -14,7 +14,7 @@ public abstract class DreamSpiceAdapterController<BaseItemClass>
             new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
                 @Override
                 public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
-                    onSuccess(baseItemClasses);
+                    onNextItemsLoaded(baseItemClasses);
                 }
             };
 

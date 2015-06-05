@@ -60,7 +60,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected FragmentCompass fragmentCompass;
 
     @Icicle
-    protected ComponentDescription componentDescription;
+    protected ComponentDescription currentComponent;
     @Icicle
     protected boolean transparentToolbar;
 
@@ -100,10 +100,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_drawer);
 
-        if (componentDescription == null) {
-            componentDescription = rootComponentsProvider.getActiveComponents().get(0);
+        if (currentComponent == null) {
+            currentComponent = rootComponentsProvider.getActiveComponents().get(0);
         }
-        onNavigationDrawerItemSelected(componentDescription);
+        onNavigationDrawerItemSelected(currentComponent);
     }
 
     private void setupToolbar() {
@@ -188,7 +188,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void openComponent(ComponentDescription route, boolean backstack) {
-        this.componentDescription = route;
+        this.currentComponent = route;
         setTitle(route.getTitle());
         //
         FragmentManager fm = getSupportFragmentManager();
@@ -248,9 +248,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             fragmentCompass.clear();
             FragmentManager fm = getSupportFragmentManager();
             if (fm.getBackStackEntryCount() >= 2) {
-                ComponentDescription componentByKey = this.rootComponentsProvider.getComponent(fm, 1);
-                navigationDrawerFragment.setCurrentComponent(componentByKey);
-                setTitle(componentByKey.getTitle());
+                currentComponent = this.rootComponentsProvider.getComponent(fm, 1);
+                navigationDrawerFragment.setCurrentComponent(currentComponent);
+                setTitle(currentComponent.getTitle());
             }
 
             super.onBackPressed();

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.os.Bundle;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -33,61 +35,90 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icepick;
+import icepick.Icicle;
+
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
 
-    private List<RegionModel> regions;
-    private List<ActivityModel> activities;
-    private List<ActivityModel> parentActivities;
+    @Icicle
+    ArrayList<RegionModel> regions = new ArrayList<>();
+    @Icicle
+    ArrayList<ActivityModel> activities = new ArrayList<>();
+    @Icicle
+    ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
     /**
      * variables for filtering
      */
-    private double maxPrice = Double.MAX_VALUE;
-    private double minPrice = 0.0d;
-    private int maxNights = Integer.MAX_VALUE;
-    private int minNights = 0;
-    private boolean showSoldOut = false;
-    private boolean showFavorites = false;
-    private boolean showRecentlyAdded = false;
-    private FilterModel filterModel;
-    private ThemeHeaderModel themeHeaderModel;
-    private RegionHeaderModel regionHeaderModel;
-    private FilterSoldOutModel soldOutModel;
-    private FilterRecentlyAddedModel recentlyAddedModel;
-    private FilterFavoriteModel favoriteModel;
-    private DateFilterItem dateFilterItem;
+    @Icicle
+    double maxPrice = Double.MAX_VALUE;
+    @Icicle
+    double minPrice = 0.0d;
+    @Icicle
+    int maxNights = Integer.MAX_VALUE;
+    @Icicle
+    int minNights = 0;
+    @Icicle
+    boolean showSoldOut = false;
+    @Icicle
+    boolean showFavorites = false;
+    @Icicle
+    boolean showRecentlyAdded = false;
+    @Icicle
+    FilterModel filterModel;
+    @Icicle
+    ThemeHeaderModel themeHeaderModel;
+    @Icicle
+    RegionHeaderModel regionHeaderModel;
+    @Icicle
+    FilterSoldOutModel soldOutModel;
+    @Icicle
+    FilterRecentlyAddedModel recentlyAddedModel;
+    @Icicle
+    FilterFavoriteModel favoriteModel;
+    @Icicle
+    DateFilterItem dateFilterItem;
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+        if (savedState != null) {
+            Icepick.restoreInstanceState(this, savedState);
+        } else {
+            filterModel = new FilterModel();
+            dateFilterItem = new DateFilterItem();
+            themeHeaderModel = new ThemeHeaderModel();
+            soldOutModel = new FilterSoldOutModel();
+            favoriteModel = new FilterFavoriteModel();
+            recentlyAddedModel = new FilterRecentlyAddedModel();
+            regionHeaderModel = new RegionHeaderModel();
+            loadFilters();
+        }
+    }
+
+    @Override
+    public void saveInstanceState(Bundle outState) {
+        super.saveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        filterModel = new FilterModel();
-        dateFilterItem = new DateFilterItem();
-        themeHeaderModel = new ThemeHeaderModel();
-        soldOutModel = new FilterSoldOutModel();
-        favoriteModel = new FilterFavoriteModel();
-        recentlyAddedModel = new FilterRecentlyAddedModel();
-        regionHeaderModel = new RegionHeaderModel();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadFilters();
+        fillData();
     }
 
     public void loadFilters() {
-        activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
-        parentActivities = getParentActivities();
-        regions = db.readList(SnappyRepository.REGIONS, RegionModel.class);
-        fillData();
+        activities.addAll(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class));
+        parentActivities.addAll(getParentActivities());
+        regions.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
     }
 
     public void fillData() {
         if (regions != null && activities != null) {
-
             List<Object> data = new ArrayList<>();
             data.clear();
             data.add(dateFilterItem);
@@ -168,8 +199,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         return Queryable.from(activities).filter(input -> input.getParentId() == 0).toList();
     }
 
-    private List<Integer> getAcceptedRegions() {
-        List<Integer> regionsList = null;
+    private ArrayList<Integer> getAcceptedRegions() {
+        ArrayList<Integer> regionsList = null;
 
         if (regions != null) {
             regionsList = new ArrayList<>();
@@ -183,12 +214,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         return regionsList;
     }
 
-    private List<ActivityModel> getAcceptedThemes() {
+    private ArrayList<ActivityModel> getAcceptedThemes() {
         if (themeHeaderModel.isChecked()) {
             return null;
         }
 
-        List<ActivityModel> themesList = null;
+        ArrayList<ActivityModel> themesList = null;
         if (parentActivities != null) {
             themesList = new ArrayList<>();
             for (ActivityModel activity : parentActivities) {

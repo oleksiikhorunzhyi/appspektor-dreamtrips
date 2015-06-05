@@ -34,8 +34,6 @@ public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
 
     @Override
     protected void syncUIStateWithModel() {
-        this.rangeBarDay.setRangePinsByIndices(getModelObject().getIndexLeftDuration(), getModelObject().getIndexRightDuration());
-        this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
         this.rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
             minNights = Integer.valueOf(s);
             maxNights = i2 == (rangeBarDay.getTickCount() - 1) ? Integer.MAX_VALUE : Integer.valueOf(s2);
@@ -50,7 +48,8 @@ public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
             getModelObject().setIndexRightPrice(i2);
             getEventBus().post(new RangeBarPriceEvent(minPrice, maxPrice));
         });
-
+        this.rangeBarDay.setRangePinsByIndices(getModelObject().getIndexLeftDuration(), getModelObject().getIndexRightDuration());
+        this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
     }
 
     @Override

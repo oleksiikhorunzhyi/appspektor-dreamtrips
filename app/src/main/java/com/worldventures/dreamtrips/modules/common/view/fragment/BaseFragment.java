@@ -41,12 +41,19 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         }
         inject(this.presenter);
         this.presenter.onInjected();
+        this.presenter.restoreInstanceState(savedInstanceState);
         //
         Layout layout = this.getClass().getAnnotation(Layout.class);
         if (layout == null) {
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
         return inflater.inflate(layout.value(), container, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        this.presenter.saveInstanceState(outState);
     }
 
     @Override

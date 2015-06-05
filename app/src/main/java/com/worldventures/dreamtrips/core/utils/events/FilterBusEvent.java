@@ -16,8 +16,8 @@ public class FilterBusEvent {
     private boolean reset;
     private boolean showSoldOut;
     private DateFilterItem dateFilterItem;
-    private List<Integer> acceptedRegions = new ArrayList<>();
-    private List<ActivityModel> acceptedActivities = new ArrayList<>();
+    private ArrayList<Integer> acceptedRegions = new ArrayList<>();
+    private ArrayList<ActivityModel> acceptedActivities = new ArrayList<>();
     private boolean showFavorites;
     private boolean showRecentlyAdded;
 
@@ -53,19 +53,19 @@ public class FilterBusEvent {
         this.maxPrice = maxPrice;
     }
 
-    public List<Integer> getAcceptedRegions() {
+    public ArrayList<Integer> getAcceptedRegions() {
         return acceptedRegions;
     }
 
-    public void setAcceptedRegions(List<Integer> acceptedRegions) {
+    public void setAcceptedRegions(ArrayList<Integer> acceptedRegions) {
         this.acceptedRegions = acceptedRegions;
     }
 
-    public List<ActivityModel> getAcceptedActivities() {
+    public ArrayList<ActivityModel> getAcceptedActivities() {
         return acceptedActivities;
     }
 
-    public void setAcceptedActivities(List<ActivityModel> acceptedActivities) {
+    public void setAcceptedActivities(ArrayList<ActivityModel> acceptedActivities) {
         this.acceptedActivities = acceptedActivities;
     }
 

@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class BoolFilter {
+import java.io.Serializable;
+
+public class BoolFilter  implements Serializable {
 
     boolean active;
 

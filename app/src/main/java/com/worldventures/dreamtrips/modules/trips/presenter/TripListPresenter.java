@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -34,6 +35,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     protected Prefs prefs;
 
     private boolean loadFromApi;
+    private boolean loadWithStatus = true;
     private boolean goneToMap = false;
 
     private DreamSpiceAdapterController<TripModel> adapterController;
@@ -44,6 +46,14 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             @Override
             public SpiceRequest<ArrayList<TripModel>> getReloadRequest() {
                 return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty());
+            }
+
+            @Override
+            public void onStart(LoadType loadType) {
+                super.onStart(loadType);
+                if (loadWithStatus || cacheEmpty()) {
+                    view.startLoading();
+                }
             }
 
             @Override
@@ -62,6 +72,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
                     handleError(spiceException);
                 } else {
                     if (shouldUpdate()) {
+                        loadWithStatus = false;
                         loadFromApi = true;
                         reload();
                     }
@@ -78,22 +89,12 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             }
         };
         adapterController.setSpiceManager(dreamSpiceManager);
-    }
-
-    @Override
-    public void onResume() {
-        if (view.getAdapter().getCount() == 0) {
-            goneToMap = false;
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
-            view.startLoading();
-        }
-    }
+                }
 
     public void takeView(View view) {
         super.takeView(view);
         if (view.getAdapter().getCount() == 0) {
-            goneToMap = false;
+        goneToMap= false;
         }
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();

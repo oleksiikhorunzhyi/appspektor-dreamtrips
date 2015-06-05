@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -51,6 +52,14 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     public void onInjected() {
         // safe hook to use injected members
+    }
+
+    public void restoreInstanceState(Bundle savedState) {
+        //nothing to do here
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        //nothing to do here
     }
 
     public void takeView(VT view) {

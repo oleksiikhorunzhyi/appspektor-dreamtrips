@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 
-public class FilterModel {
+import java.io.Serializable;
+
+public class FilterModel implements Serializable {
 
     private int indexLeftPrice = 0;
     private int indexRightPrice = 4;

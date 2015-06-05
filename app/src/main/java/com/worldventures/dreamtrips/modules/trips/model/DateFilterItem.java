@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DateFilterItem {
+public class DateFilterItem implements Serializable {
 
     private Date startDate;
     private Date endDate;

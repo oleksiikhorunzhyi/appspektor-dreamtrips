@@ -24,6 +24,8 @@ public class RecyclerViewStateDelegate {
     public void saveStateIfNeeded(Bundle outState) {
         if (savedRecyclerLayoutState == null && recyclerView != null) {
             savedRecyclerLayoutState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+        if (savedRecyclerLayoutState != null) {
             outState.putParcelable(KEY, savedRecyclerLayoutState);
         }
     }

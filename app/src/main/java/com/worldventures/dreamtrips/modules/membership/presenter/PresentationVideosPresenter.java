@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
@@ -93,7 +92,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
 
     @Override
     public void dropView() {
-        adapterController = null;
+        adapterController.setAdapter(null);
         super.dropView();
     }
 

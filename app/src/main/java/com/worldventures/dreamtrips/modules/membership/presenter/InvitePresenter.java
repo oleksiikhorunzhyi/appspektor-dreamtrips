@@ -269,12 +269,16 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     public void continueAction() {
         fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
         if (view.isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.container_templates);
-            fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
+            openTemplateInView();
         } else {
             activityRouter.openSelectTemplateActivity();
         }
+    }
+
+    public void openTemplateInView() {
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_templates);
+        fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
     }
 
     private void setMembers() {

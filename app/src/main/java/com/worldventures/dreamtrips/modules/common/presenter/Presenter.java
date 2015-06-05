@@ -72,10 +72,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     }
 
     public void dropView() {
-        view = null;
-        context = null;
-        activityRouter = null;
-        fragmentCompass = null;
+        this.view = null;
         if (eventBus.isRegistered(this)) eventBus.unregister(this);
     }
 

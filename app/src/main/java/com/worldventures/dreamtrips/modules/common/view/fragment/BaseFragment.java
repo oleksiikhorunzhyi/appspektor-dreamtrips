@@ -34,7 +34,8 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         this.presenter = createPresenter(savedInstanceState);
         if (this.presenter == null) {
             throw new IllegalArgumentException("Presenter can't be null");
@@ -42,18 +43,21 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         inject(this.presenter);
         this.presenter.onInjected();
         this.presenter.restoreInstanceState(savedInstanceState);
-        //
-        Layout layout = this.getClass().getAnnotation(Layout.class);
-        if (layout == null) {
-            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
-        }
-        return inflater.inflate(layout.value(), container, false);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (presenter != null) this.presenter.saveInstanceState(outState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Layout layout = this.getClass().getAnnotation(Layout.class);
+        if (layout == null) {
+            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
+        }
+        return inflater.inflate(layout.value(), container, false);
     }
 
     @Override
@@ -68,9 +72,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (this.presenter != null) {
-            this.presenter.onMenuPrepared();
-        }
+        if (this.presenter != null) this.presenter.onMenuPrepared();
     }
 
     @Override
@@ -93,16 +95,13 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void onStop() {
-        super.onStop();
         presenter.onStop();
+        super.onStop();
     }
 
     @Override
     public void onDestroyView() {
-        if (presenter != null) {
-            presenter.dropView();
-        }
-        this.presenter = null;
+        presenter.dropView();
         ButterKnife.reset(this);
         super.onDestroyView();
     }

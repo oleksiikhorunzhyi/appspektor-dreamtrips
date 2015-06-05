@@ -155,8 +155,8 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
 
     @Override
     public void onResume() {
-        super.onResume();
         wvPreview.onResume();
+        super.onResume();
     }
 
     @Override
@@ -166,10 +166,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     }
 
     @Override
-    public void onDestroyView() {
-        wvPreview.loadUrl("about:blank");
-        wvPreview.destroy();
-        wvPreview = null;
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
+        if (wvPreview != null) {
+            wvPreview.destroy();
+            wvPreview = null;
+        }
     }
 }

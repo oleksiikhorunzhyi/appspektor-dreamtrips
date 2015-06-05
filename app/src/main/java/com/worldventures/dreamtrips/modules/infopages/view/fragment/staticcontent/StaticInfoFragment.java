@@ -103,7 +103,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 Timber.d("Page started");
                 isLoading = true;
                 if (refreshLayout != null) { // could be when fragment is not visible
-                    refreshLayout.setRefreshing(true);
+                    refreshLayout.post(() -> refreshLayout.setRefreshing(true));
                 }
             }
 
@@ -154,7 +154,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Override
     public void onDestroyView() {
-        weakHandler.removeCallbacksAndMessages(null);
+        lockHandler.removeCallbacksAndMessages(null);
         unlockOrientationIfNeeded();
         super.onDestroyView();
     }
@@ -171,7 +171,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     // Orientation locking/unlocking
     ///////////////////////////////////////////////////////////////////////////
 
-    WeakHandler weakHandler = new WeakHandler();
+    WeakHandler lockHandler = new WeakHandler();
 
     public void onEventMainThread(WebViewInEvent event) {
         lockOrientation(getActivity());
@@ -182,19 +182,21 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     public void onEventMainThread(ScreenChangedEvent event) {
-        weakHandler.removeCallbacksAndMessages(null);
+        lockHandler.removeCallbacksAndMessages(null);
         lockOrientationIfNeeded();
     }
 
-    private void lockOrientationIfNeeded() {
-        weakHandler.postDelayed(() -> {
+    protected void lockOrientationIfNeeded() {
+        lockHandler.postDelayed(() -> {
             if (ViewUtils.isVisibleOnScreen(this)) {
-                weakHandler.postDelayed(() -> lockOrientation(getActivity()), 500L);
-            } else unlockOrientation(getActivity());
-        }, 100L);
+                lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
+            } else {
+                unlockOrientation(getActivity());
+            }
+        }, 500L);
     }
 
-    private void unlockOrientationIfNeeded() {
+    protected void unlockOrientationIfNeeded() {
         if (ViewUtils.isVisibleOnScreen(this)) unlockOrientation(getActivity());
     }
 
@@ -306,24 +308,18 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class BundleUrlFragment extends StaticInfoFragment {
+
         public static final String URL_EXTRA = "URL_EXTRA";
-        private String url;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            url = getArguments().getString(URL_EXTRA);
+        protected String getURL() {
+            return getArguments().getString(URL_EXTRA);
         }
 
         @Override
         public void afterCreateView(View rootView) {
             webView.getSettings().setDomStorageEnabled(true);
             super.afterCreateView(rootView);
-        }
-
-        @Override
-        protected String getURL() {
-            return url;
         }
     }
 

@@ -177,10 +177,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
     @Override
     public void startLoading() {
-        weakHandler.postDelayed(() -> {
-            if (refreshLayout != null)
-                refreshLayout.setRefreshing(true);
-        }, 100);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override

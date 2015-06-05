@@ -142,7 +142,7 @@ public class InviteFragment
         if (isTabletLandscape()) {
             containerTemplates.setVisibility(View.VISIBLE);
             buttonContinue.setVisibility(View.GONE);
-            getPresenter().continueAction();
+            getPresenter().openTemplateInView();
         } else {
             containerTemplates.setVisibility(View.GONE);
             if (!tvSearch.hasFocus() && getPresenter().isVisible())
@@ -177,7 +177,7 @@ public class InviteFragment
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override

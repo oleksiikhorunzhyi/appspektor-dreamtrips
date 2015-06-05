@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -138,7 +137,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override

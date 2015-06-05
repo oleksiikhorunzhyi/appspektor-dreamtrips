@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
@@ -35,8 +34,8 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     protected Prefs prefs;
 
     private boolean loadFromApi;
-    private boolean loadWithStatus = true;
-    private boolean goneToMap = false;
+    private boolean loadWithStatus;
+    private boolean goneToMap;
 
     private DreamSpiceAdapterController<TripModel> adapterController;
 
@@ -70,12 +69,10 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
                 view.finishLoading();
                 if (spiceException != null) {
                     handleError(spiceException);
-                } else {
-                    if (shouldUpdate()) {
-                        loadWithStatus = false;
-                        loadFromApi = true;
-                        reload();
-                    }
+                } else if (shouldUpdate()) {
+                    loadWithStatus = false;
+                    loadFromApi = true;
+                    reload();
                 }
             }
 
@@ -89,13 +86,11 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             }
         };
         adapterController.setSpiceManager(dreamSpiceManager);
-                }
+    }
 
     public void takeView(View view) {
         super.takeView(view);
-        if (view.getAdapter().getCount() == 0) {
-        goneToMap= false;
-        }
+        loadWithStatus = true;
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
         TrackingHelper.dreamTrips(getUserId());
@@ -103,12 +98,13 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
     public void loadFromApi() {
         loadFromApi = true;
+        loadWithStatus = true;
         adapterController.reload();
     }
 
     @Override
     public void dropView() {
-        adapterController = null;
+        adapterController.setAdapter(null);
         super.dropView();
     }
 
@@ -117,7 +113,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
-        if (event != null && cachedTrips.size() > 0) {
+        if (!cachedTrips.isEmpty()) {
             setFilters(event);
             view.setFilteredItems(performFiltering(cachedTrips));
         }

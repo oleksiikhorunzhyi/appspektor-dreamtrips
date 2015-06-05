@@ -73,19 +73,6 @@
                 tools:text="Dining"/>
 
             <TextView
-                android:id="@+id/textViewPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:drawableLeft="@drawable/ic_location"
-                android:drawablePadding="4dp"
-                android:singleLine="true"
-                android:textColor="@color/bucket_detailed_text_color"
-
-                android:visibility="visible"
-                tools:text="Byron Bay, Australia"/>
-
-            <TextView
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,6 +83,21 @@
                 android:text="@string/someday"
                 android:textColor="@color/bucket_detailed_text_color"
                 tools:text="@string/someday"/>
+
+            <TextView
+                android:id="@+id/textViewPlace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="4dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="@color/bucket_detailed_text_color"
+                android:visibility="visible"
+                tools:text="Byron Bay, Australia"/>
+
         </LinearLayout>
     </LinearLayout>
 

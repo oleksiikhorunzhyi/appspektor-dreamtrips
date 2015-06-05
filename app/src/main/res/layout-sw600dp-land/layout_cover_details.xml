@@ -61,7 +61,6 @@
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:textColor="@color/bucket_detailed_text_color"
-                android:visibility="gone"
                 tools:text="Byron Bay, Australia"/>
 
 

@@ -98,8 +98,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     private String getPlace() {
         String place = null;
+        if (bucketItem.getLocation() != null) {
+            place = bucketItem.getLocation().getName();
+        }
         if (bucketItem.getDining() != null) {
-            place = bucketItem.getDining().getCity() + ", " + bucketItem.getDining().getCountry();
+            place = TextUtils.join(", ", new String[] {bucketItem.getDining().getCity(),
+                    bucketItem.getDining().getCountry()});
         }
         return place;
     }

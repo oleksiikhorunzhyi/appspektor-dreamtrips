@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +38,21 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
 
     public CreatePhotoPresenter(String type) {
         this.type = type;
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        Calendar cal = Calendar.getInstance();
+
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+
+        onDataSet(year, month, day);
+        onTimeSet(hour, minute);
     }
 
     public void onDataSet(int year, int month, int day) {

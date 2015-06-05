@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPre
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -60,19 +59,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setImageURI(uri);
-
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        int minute = cal.get(Calendar.MINUTE);
-
-        getPresenter().onDataSet(year, month, day);
-        getPresenter().onTimeSet(hour, minute);
     }
 
     @Override

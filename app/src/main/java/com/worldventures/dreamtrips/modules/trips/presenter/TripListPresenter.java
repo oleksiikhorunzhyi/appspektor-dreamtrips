@@ -50,6 +50,8 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
             @Override
             protected void onSuccess(ArrayList<TripModel> tripModels) {
                 super.onSuccess(performFiltering(tripModels));
+                cachedTrips.clear();
+                cachedTrips.addAll(tripModels);
             }
 
             @Override
@@ -124,9 +126,8 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
-        view.startLoading();
         setFilters(event);
-        adapterController.reload();
+        view.setFilteredItems(performFiltering(cachedTrips));
     }
 
     @Override
@@ -207,6 +208,8 @@ public class TripListPresenter extends BaseTripListPresenter<TripListPresenter.V
         void finishLoading();
 
         void clearSearch();
+
+        void setFilteredItems(List<TripModel> items);
 
         IRoboSpiceAdapter<TripModel> getAdapter();
     }

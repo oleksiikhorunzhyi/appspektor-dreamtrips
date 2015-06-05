@@ -20,7 +20,7 @@ public class DateFilterItem {
     public void reset() {
         Calendar calendar = Calendar.getInstance();
         startDate = calendar.getTime();
-        calendar.add(Calendar.MONTH, 6);
+        calendar.add(Calendar.MONTH, 12);
         endDate = calendar.getTime();
     }
 

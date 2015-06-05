@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -175,7 +177,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void startLoading() {
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
@@ -187,6 +189,11 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     @Override
     public IRoboSpiceAdapter<TripModel> getAdapter() {
         return adapter;
+    }
+
+    @Override
+    public void setFilteredItems(List<TripModel> items) {
+        adapter.setFilteredItems(items);
     }
 
     @Override

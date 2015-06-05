@@ -84,6 +84,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        makeActionBarTransparent(transparentToolbar);
+    }
+
+    @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         setupToolbar();
         super.afterCreateView(savedInstanceState);
@@ -102,7 +108,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     private void setupToolbar() {
         setSupportActionBar(this.toolbar);
-        makeActionBarTransparent(transparentToolbar);
     }
 
     @Override

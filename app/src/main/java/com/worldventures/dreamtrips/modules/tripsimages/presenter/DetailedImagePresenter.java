@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 
-public class DetailedImagePagerFragmentPresenter extends Presenter<Presenter.View> {
+public class DetailedImagePresenter extends Presenter<Presenter.View> {
 
     protected TripImage photo;
 

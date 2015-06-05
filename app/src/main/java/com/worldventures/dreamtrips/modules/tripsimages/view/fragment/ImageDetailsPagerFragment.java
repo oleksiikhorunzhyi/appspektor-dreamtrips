@@ -21,13 +21,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePagerFragmentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_image_details)
-public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePagerFragmentPresenter> implements DetailedImagePagerFragmentPresenter.View {
+public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePresenter> implements DetailedImagePresenter.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_PHOTO_FULLSCREEN = "isFullscreen";
@@ -121,7 +121,7 @@ public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePagerFr
     }
 
     @Override
-    protected DetailedImagePagerFragmentPresenter createPresenter(Bundle savedInstanceState) {
-        return new DetailedImagePagerFragmentPresenter();
+    protected DetailedImagePresenter createPresenter(Bundle savedInstanceState) {
+        return new DetailedImagePresenter();
     }
 }

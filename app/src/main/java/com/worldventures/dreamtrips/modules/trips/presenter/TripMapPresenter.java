@@ -18,7 +18,6 @@ import java.util.List;
 
 public class TripMapPresenter extends BaseTripListPresenter<TripMapPresenter.View> {
 
-    private List<TripModel> trips = new ArrayList<>();
     private List<TripModel> filteredTrips = new ArrayList<>();
     private String query;
 
@@ -34,8 +33,8 @@ public class TripMapPresenter extends BaseTripListPresenter<TripMapPresenter.Vie
     }
 
     public void onMapLoaded() {
-        trips.clear();
-        trips.addAll(db.getTrips());
+        cachedTrips.clear();
+        cachedTrips.addAll(db.getTrips());
         setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
     }
@@ -56,8 +55,8 @@ public class TripMapPresenter extends BaseTripListPresenter<TripMapPresenter.Vie
     }
 
     private void performFiltering() {
-        if (trips != null) {
-            ArrayList<TripModel> filterdTrips = performFiltering(trips);
+        if (cachedTrips != null && cachedTrips.size() > 0) {
+            ArrayList<TripModel> filterdTrips = performFiltering(cachedTrips);
             filteredTrips.clear();
             filteredTrips.addAll(Queryable.from(filterdTrips).filter((input) -> input.containsQuery(query)).toList());
             reloadPins();

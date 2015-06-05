@@ -117,7 +117,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        reload();
+        if (type != Type.BUCKET_PHOTOS)
+            reload();
     }
 
     @Override

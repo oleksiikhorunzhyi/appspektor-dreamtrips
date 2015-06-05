@@ -38,6 +38,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
 
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {

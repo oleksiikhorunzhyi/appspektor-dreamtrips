@@ -177,7 +177,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override

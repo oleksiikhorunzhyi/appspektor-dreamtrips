@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class RegionHeaderModel {
+import java.io.Serializable;
+
+public class RegionHeaderModel implements Serializable {
 
     private boolean checked = true;
     private boolean hide = true;

@@ -99,6 +99,10 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         view.setBucketItemsCount(0);
     }
 
+    public boolean isCurrentUserProfile() {
+        return isCurrentUserProfile;
+    }
+
     @Override
     public void handleError(SpiceException error) {
         view.avatarProgressVisible(false);

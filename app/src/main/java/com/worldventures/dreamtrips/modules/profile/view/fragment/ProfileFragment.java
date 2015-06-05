@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -121,9 +122,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         logout = menu.findItem(R.id.item_logout);
+        if (!getPresenter().isCurrentUserProfile()) {
+            logout.setVisible(getPresenter().isCurrentUserProfile());
+        }
     }
 
     @Override
@@ -236,8 +240,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     public void hideAccountContent() {
         cover.setVisibility(View.GONE);
         avatar.setVisibility(View.GONE);
-        logout.setVisible(false);
-        getActivity().getActionBar().setTitle("");
     }
 
     private void showLogoutDialog() {

@@ -124,7 +124,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         int position = getArguments().getInt(EXTRA_POSITION);
         IFullScreenAvailableObject photo = activity.getPhoto(position);
 
-        return FullScreenPresenter.create(this, photo);
+        return FullScreenPresenter.create(photo);
     }
 
 

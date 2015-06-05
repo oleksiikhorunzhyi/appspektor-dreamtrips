@@ -2,13 +2,11 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.events.FSUploadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
@@ -56,17 +54,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected Injector injector;
 
     protected Integer coverId;
-
-    public BucketDetailsBasePresenter(Bundle bundle) {
-        super();
-        type = (BucketTabsPresenter.BucketType)
-                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
-        bucketItem = (BucketItem)
-                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
-    }
-
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
-
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
@@ -75,7 +63,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             handlePhotoPick(uri, "camera");
         }
     };
-
     protected ImagePickCallback chooseImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
@@ -84,14 +71,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             handlePhotoPick(uri, "album");
         }
     };
-
-
     protected MultiSelectPickCallback multiSelectPickCallback = (fm, list, error) -> {
         for (Uri uri : list) {
             handlePhotoPick(Uri.fromFile(new File(uri.toString())), "album");
         }
     };
-
     protected ImagePickCallback fbCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
@@ -100,6 +84,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             handlePhotoPick(uri, "facebook");
         }
     };
+
+    public BucketDetailsBasePresenter(Bundle bundle) {
+        super();
+        type = (BucketTabsPresenter.BucketType)
+                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
+        bucketItem = (BucketItem)
+                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
+    }
 
     private void handlePhotoPick(Uri uri, String type) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
@@ -162,7 +154,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void openFullScreen(int position) {
         if (!view.getBucketPhotosView().getImages().isEmpty()) {
-            eventBus.postSticky(FSUploadEvent.create(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages()));
+            db.savePhotoEntityList(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages());
             this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
         }
     }

@@ -1,14 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-public class ImageUploadTaskPM extends FullScreenPresenter {
-    public ImageUploadTaskPM(View view) {
-        super();
-    }
-
-    @Override
-    protected boolean isLiked() {
-        return false;
-    }
+public class SimpleFullscreenPresenter extends FullScreenPresenter {
 
     @Override
     protected boolean isFlagVisible() {

@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class YSBHPM extends TripImagesListPresenter<Photo> {
-    public YSBHPM(View view) {
+public class YSBHPresenter extends TripImagesListPresenter<Photo> {
+    public YSBHPresenter(View view) {
         super(Type.YOU_SHOULD_BE_HERE);
     }
 

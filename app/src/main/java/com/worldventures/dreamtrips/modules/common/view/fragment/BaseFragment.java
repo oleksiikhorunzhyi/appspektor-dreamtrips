@@ -53,7 +53,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        this.presenter.saveInstanceState(outState);
+        if (presenter != null) this.presenter.saveInstanceState(outState);
     }
 
     @Override

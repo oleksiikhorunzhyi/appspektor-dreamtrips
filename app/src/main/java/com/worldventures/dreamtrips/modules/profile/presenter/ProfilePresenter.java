@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -73,15 +74,16 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         if (view.getArguments() != null) {
-            user = view.getArguments().getParcelable(ProfileModule.MY_PROFILE);
+            user = view.getArguments().getParcelable(ProfileModule.EXTRA_USER);
             isCurrentUserProfile = getUser().equals(user);
+            view.hideAccountContent();
             //TODO load user profile
         } else {
             user = getUser();
             isCurrentUserProfile = true;
         }
         TrackingHelper.profile(getUserId());
-        view.setUserName(user.getUsername());
+        view.setUserName(TextUtils.join(" ", new String[]{user.getFirstName(), user.getLastName()}));
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
@@ -143,11 +145,11 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     public void photoClicked() {
-
+        view.openAvatarPicker();
     }
 
     public void coverClicked() {
-
+        view.openCoverPicker();
     }
 
     //don't use of get PREFIX
@@ -167,7 +169,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void openCoverPicker();
 
-        void hideLogout();
+        void hideAccountContent();
 
         void setAvatarImage(Uri uri);
 

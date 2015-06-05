@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +17,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -43,6 +42,10 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView userPhoto;
+    @InjectView(R.id.cover)
+    protected ImageView cover;
+    @InjectView(R.id.avatar)
+    protected ImageView avatar;
     @InjectView(R.id.user_name)
     protected TextView userName;
     @InjectView(R.id.et_date_of_birth)
@@ -64,6 +67,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected DTEditText etFrom;
     @InjectView(R.id.et_live_in)
     protected DTEditText etLiveIn;
+
+    private MenuItem logout;
 
     @Inject
     protected FragmentCompass fragmentCompass;
@@ -113,6 +118,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @OnClick(R.id.user_photo)
     public void onPhotoClick() {
         getPresenter().photoClicked();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        logout = menu.findItem(R.id.item_logout);
     }
 
     @Override
@@ -222,8 +233,11 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void hideLogout() {
-
+    public void hideAccountContent() {
+        cover.setVisibility(View.GONE);
+        avatar.setVisibility(View.GONE);
+        logout.setVisible(false);
+        getActivity().getActionBar().setTitle("");
     }
 
     private void showLogoutDialog() {

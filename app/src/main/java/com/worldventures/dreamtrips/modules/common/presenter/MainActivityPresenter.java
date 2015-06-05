@@ -31,13 +31,15 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         setCurrentComponentTitle();
     }
 
-    private void showUserIfNeeded() {
+    public void showUserIfNeeded() {
         UserClickedEvent event = eventBus.getStickyEvent(UserClickedEvent.class);
         if (event != null) {
             eventBus.removeStickyEvent(UserClickedEvent.class);
             Bundle args = new Bundle();
             args.putParcelable(ProfileModule.EXTRA_USER, event.getUser());
-            openComponent(rootComponentsProvider.getComponentByKey(ProfileModule.MY_PROFILE), args);
+            ComponentDescription component = rootComponentsProvider.getComponentByKey(ProfileModule.MY_PROFILE);
+            view.updateSelection(component);
+            openComponent(component, args);
         }
     }
 

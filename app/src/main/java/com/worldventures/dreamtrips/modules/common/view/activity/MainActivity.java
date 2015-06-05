@@ -56,8 +56,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
-    @Inject
-    protected FragmentCompass fragmentCompass;
 
     @Icicle
     protected ComponentDescription currentComponent;
@@ -86,6 +84,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+
         makeActionBarTransparent(transparentToolbar);
     }
 
@@ -182,7 +181,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         makeActionBarTransparent(false);
 
         navigationDrawerFragment.setCurrentComponent(component);
-        openComponent(component, true);
+        currentComponent = component;
+        getPresentationModel().openComponent(component);
     }
 
     @Override
@@ -196,43 +196,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         closeLeftDrawer();
     }
 
-    private void openComponent(ComponentDescription route, boolean backstack) {
-        this.currentComponent = route;
-        setTitle(route.getTitle());
-        //
-        FragmentManager fm = getSupportFragmentManager();
-        // check if current
-        Fragment currentFragment = fm.findFragmentById(R.id.container_main);
-        boolean theSame = currentFragment != null && currentFragment.getClass().equals(route.getFragmentClass());
-        if (theSame) return;
-        // check if in stack
-        String backStackName = null;
-        for (int entry = 0; entry < fm.getBackStackEntryCount(); entry++) {
-            String name = fm.getBackStackEntryAt(entry).getName();
-            if (name.equals(route.getKey())) {
-                backStackName = name;
-                break;
-            }
-        }
-        if (backStackName != null) {
-            fm.popBackStack(backStackName, 0);
-            return;
-        }
-        // commit new otherwise
-        String className = route.getFragmentClass().getName();
-        BaseFragment fragment = (BaseFragment) Fragment.instantiate(this, className);
-        FragmentTransaction fragmentTransaction = fm
-                .beginTransaction()
-                .replace(R.id.container_main, fragment);
-        if (backstack) fragmentTransaction.addToBackStack(route.getKey());
-        fragmentTransaction.commit();
-    }
-
     boolean handleComponentChange() {
         if (drawerLayout.isDrawerOpen(Gravity.END)) {
             closeRightDrawer();
             return true;
-        } else if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        } else if (drawerLayout.isDrawerOpen(Gravity.START)) {
             closeLeftDrawer();
             return true;
         } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {

@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
+
 public class Inspiration implements IFullScreenAvailableObject, Parcelable {
 
     public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
@@ -86,6 +88,11 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
         dest.writeString(this.quote);
         dest.writeString(this.author);
         dest.writeString(this.id);
+    }
+
+    @Override
+    public User getUser() {
+        return null;
     }
 
     @Override

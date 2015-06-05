@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
@@ -110,6 +111,11 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Override
+    public User getUser() {
+        return null;
     }
 
     @Override

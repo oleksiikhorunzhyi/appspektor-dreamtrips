@@ -216,6 +216,11 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
+    public User getUser() {
+        return null;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.taskId);
         dest.writeString(this.fileUri);

@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
@@ -39,6 +40,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
+    private User user;
+    private boolean isCurrentUserProfile;
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
@@ -69,8 +72,15 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        if (view.getArguments() != null) {
+            user = view.getArguments().getParcelable(ProfileModule.MY_PROFILE);
+            isCurrentUserProfile = getUser().equals(user);
+            //TODO load user profile
+        } else {
+            user = getUser();
+            isCurrentUserProfile = true;
+        }
         TrackingHelper.profile(getUserId());
-        User user = this.appSessionHolder.get().get().getUser();
         view.setUserName(user.getUsername());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
@@ -132,6 +142,14 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         super.dropView();
     }
 
+    public void photoClicked() {
+
+    }
+
+    public void coverClicked() {
+
+    }
+
     //don't use of get PREFIX
     public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
@@ -143,6 +161,14 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
 
     public interface View extends Presenter.View {
+        Bundle getArguments();
+
+        void openAvatarPicker();
+
+        void openCoverPicker();
+
+        void hideLogout();
+
         void setAvatarImage(Uri uri);
 
         void setCoverImage(Uri uri);
@@ -160,7 +186,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setLivesIn(String location);
 
         void setTripImagesCount(int count);
+
         void setTripsCount(int count);
+
         void setBucketItemsCount(int count);
     }
 }

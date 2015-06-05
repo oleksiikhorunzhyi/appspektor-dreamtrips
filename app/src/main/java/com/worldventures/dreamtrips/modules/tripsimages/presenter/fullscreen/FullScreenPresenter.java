@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.core.utils.events.UserClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -19,7 +20,6 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> extends Presenter<FullScreenPresenter.View> {
 
     protected Type type;
-    protected User user;
     protected T photo;
 
     private List<Flag> flags;
@@ -43,12 +43,16 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        user = appSessionHolder.get().get().getUser();
         setupActualViewState();
     }
 
     public void onLikeAction() {
 
+    }
+
+    public void onUserClicked() {
+        User user = photo.getUser();
+        eventBus.postSticky(new UserClickedEvent(user));
     }
 
     public final void setupActualViewState() {

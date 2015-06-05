@@ -72,11 +72,11 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
 
     protected boolean isFlagVisible() {
-        return type == MEMBER_IMAGES && user.getId() != photo.getUser().getId();
+        return type == MEMBER_IMAGES && getUser().getId() != photo.getUser().getId();
     }
 
     protected boolean isDeleteVisible() {
-        return photo.getUser() != null && user.getId() == photo.getUser().getId();
+        return photo.getUser() != null && getUser().getId() == photo.getUser().getId();
     }
 
     protected boolean isLikeVisible() {

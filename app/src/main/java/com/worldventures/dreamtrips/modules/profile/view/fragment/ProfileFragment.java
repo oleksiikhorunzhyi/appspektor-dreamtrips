@@ -76,13 +76,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         layoutConfiguration();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        fragmentCompass.pop();
-        fragmentCompass.replace(Route.MY_PROFILE);
-    }
-
     private void layoutConfiguration() {
         if (sv != null) {
             int minSideSize = getMinSideSize(getActivity());
@@ -119,6 +112,11 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick() {
+        getPresenter().photoClicked();
+    }
+
+    @Override
+    public void openAvatarPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
@@ -176,7 +174,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @OnClick(R.id.user_cover)
-    public void onCoverClick(ImageView iv) {
+    public void onCoverClick() {
+        getPresenter().coverClicked();
+    }
+
+    @Override
+    public void openCoverPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_cover_header));
         this.pid.setCallback(getPresenter().provideCoverChooseCallback());
@@ -216,6 +219,11 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void setBucketItemsCount(int count) {
         buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
+    }
+
+    @Override
+    public void hideLogout() {
+
     }
 
     private void showLogoutDialog() {

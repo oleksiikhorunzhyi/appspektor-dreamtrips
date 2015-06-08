@@ -266,8 +266,8 @@
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
-    <string name="profile_dt_points">%d DreamTrip Points</string>
-    <string name="profile_rovia_bucks">%d Rovia Bucks</string>
+    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
+    <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia Bucks</string>
     <string name="profile_add_friend">Add Friend</string>
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>

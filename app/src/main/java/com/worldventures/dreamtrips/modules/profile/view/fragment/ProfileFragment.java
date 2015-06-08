@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -99,6 +100,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         layoutConfiguration();
         reject.setText(getString(R.string.profile_reject).toUpperCase(Locale.getDefault()));
         accept.setText(getString(R.string.profile_accept).toUpperCase(Locale.getDefault()));
+        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
+        accept.getTextView().setPadding(padding, 0, padding, 0);
         reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
@@ -295,12 +298,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void setRoviaBucks(int count) {
-        roviaBucks.setText(String.format(getString(R.string.profile_rovia_bucks), count));
+        roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
     }
 
     @Override
     public void setDreamTripPoints(int count) {
-        dtPoints.setText(String.format(getString(R.string.profile_dream_trips), count));
+        dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
     }
 
     @Override

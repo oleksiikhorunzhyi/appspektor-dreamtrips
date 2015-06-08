@@ -317,16 +317,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     public void setGold() {
         userStatus.setTextColor(getResources().getColor(R.color.golden_user));
         userStatus.setText(R.string.profile_golden);
-        userStatus.setCompoundDrawables(getResources().getDrawable(R.drawable.gold_member),
-                null, null, null);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
+                0, 0, 0);
     }
 
     @Override
     public void setPlatinum() {
         userStatus.setTextColor(getResources().getColor(R.color.platinum_user));
         userStatus.setText(R.string.profile_platinum);
-        userStatus.setCompoundDrawables(getResources().getDrawable(R.drawable.platinum_member),
-                null, null, null);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
+                0, 0, 0);
     }
 
     @OnClick(R.id.add_friend)

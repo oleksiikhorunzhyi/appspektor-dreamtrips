@@ -256,18 +256,19 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-        return acceptedThemes == null
+        return (isActivitiesEmpty() && acceptedThemes == null)
+                || acceptedThemes == null
                 || !Collections.disjoint(acceptedThemes, getActivities());
     }
 
     private boolean regionsAccepted(List<Integer> acceptedRegions) {
-        return getRegion() == null
+        return (getRegion() == null && acceptedRegions == null)
                 || acceptedRegions == null
-                || acceptedRegions.contains(getRegion().getId());
+                || (getRegion() != null && acceptedRegions.contains(getRegion().getId()));
     }
 
     private boolean isActivitiesEmpty() {
-        return getActivities() == null;
+        return getActivities().isEmpty();
     }
 
     public boolean isPlatinum() {
@@ -298,11 +299,8 @@ public class TripModel implements Filterable, Serializable {
 
         TripModel tripModel = (TripModel) o;
 
-        if (tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null) {
-            return false;
-        }
+        return !(tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null);
 
-        return true;
     }
 
     @Override

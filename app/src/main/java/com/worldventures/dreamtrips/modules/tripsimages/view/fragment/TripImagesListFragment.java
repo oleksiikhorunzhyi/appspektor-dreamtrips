@@ -52,8 +52,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     private BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
     private LinearLayoutManager layoutManager;
 
-    private int lastScrollPosition;
-
     RecyclerViewStateDelegate stateDelegate;
 
     @Override

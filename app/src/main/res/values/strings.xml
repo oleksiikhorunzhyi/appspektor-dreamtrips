@@ -268,4 +268,10 @@
     <string name="profile_more">More</string>
     <string name="profile_dt_points">%d DreamTrip Points</string>
     <string name="profile_rovia_bucks">%d Rovia Bucks</string>
+    <string name="profile_add_friend">Add Friend</string>
+    <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
+    <string name="profile_accept">Confirm</string>
+    <string name="profile_reject">Delete request</string>
+    <string name="profile_platinum">Platinum member</string>
+    <string name="profile_golden">Golden member</string>
 </resources>

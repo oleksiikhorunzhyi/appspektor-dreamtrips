@@ -76,7 +76,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         //
         holder.sectionIcon.setImageResource(item.getIcon());
         if (holder.itemName != null) {
-            holder.itemName.setText(item.getTitle());
+            holder.itemName.setText(item.getNavMenuTitle());
         }
 
         boolean isSelected = isComponentSelected(i);

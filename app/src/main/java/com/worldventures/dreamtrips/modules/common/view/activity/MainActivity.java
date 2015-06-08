@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -16,13 +14,11 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 
 import javax.inject.Inject;
@@ -120,7 +116,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void setTitle(int title) {
-        getSupportActionBar().setTitle(title);
+        if (title != 0)
+            getSupportActionBar().setTitle(title);
+        else
+            getSupportActionBar().setTitle("");
     }
 
     public void makeActionBarTransparent(boolean isTransparent) {
@@ -234,7 +233,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
                 while (!rootComponentsProvider.getActiveComponents().contains(currentComponent) &&
                         backOffset <= entryCount);
                 navigationDrawerFragment.setCurrentComponent(currentComponent);
-                setTitle(currentComponent.getTitle());
+                setTitle(currentComponent.getToolbarTitle());
             }
 
             super.onBackPressed();

@@ -34,15 +34,35 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/add_friend"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/add_friend"
+                        android:gravity="center"
+                        android:textSize="@dimen/font_small"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/profile_add_friend"/>
+
+                    <TextView
                         android:id="@+id/update_info"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableTop="@drawable/update_info"
+                        android:drawableTop="@drawable/ic_update_info"
+                        android:textSize="@dimen/font_small"
                         android:gravity="center"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/profile_update_info"/>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
 
                     <TextView
                         android:id="@+id/trip_images"
@@ -50,21 +70,37 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:drawableTop="@drawable/ic_trip_images"
+                        android:textSize="@dimen/font_small"
                         android:gravity="center"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/trip_images"/>
 
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
+
                     <TextView
                         android:id="@+id/bucket_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_small"
                         android:layout_weight="1"
                         android:drawableTop="@drawable/ic_bucket_lists"
                         android:gravity="center"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/profile_bucket_list"/>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
 
                     <TextView
                         android:id="@+id/dream_trips"
@@ -73,10 +109,16 @@
                         android:layout_weight="1"
                         android:drawableTop="@drawable/ic_dreamtrips_normal"
                         android:gravity="center"
+                        android:textSize="@dimen/font_small"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/profile_dream_trips"/>
                 </LinearLayout>
+
+                <include
+                    android:id="@+id/friend_request"
+                    layout="@layout/layout_friend_request"
+                    />
 
                 <View
                     android:layout_width="match_parent"
@@ -96,6 +138,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -109,6 +152,13 @@
                         android:paddingTop="10dp"
                         android:text="@string/profile_post"/>
 
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
+
                     <TextView
                         android:id="@+id/friends"
                         android:layout_width="0dp"
@@ -119,6 +169,13 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/profile_friends"/>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
 
                     <TextView
                         android:id="@+id/messages"
@@ -131,6 +188,13 @@
                         android:paddingTop="10dp"
                         android:text="@string/profile_messages"/>
 
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@color/profile_spacing_color"/>
+
                     <TextView
                         android:id="@+id/more"
                         android:layout_width="0dp"
@@ -142,6 +206,16 @@
                         android:paddingTop="10dp"
                         android:text="@string/profile_more"/>
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/ic_profile_divider"
+                    android:contentDescription="@string/empty"/>
+
+                <include
+                    android:id="@+id/user_balance"
+                    layout="@layout/layout_user_balance"/>
 
             </LinearLayout>
         </LinearLayout>

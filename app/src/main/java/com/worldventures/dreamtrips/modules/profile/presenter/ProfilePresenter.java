@@ -73,22 +73,41 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        view.hideFriendRequest();
         if (view.getArguments() != null) {
             user = view.getArguments().getParcelable(ProfileModule.EXTRA_USER);
             isCurrentUserProfile = getUser().equals(user);
             view.hideAccountContent();
+            view.showAddFriend();
+            //TODO check has user sent a friend request
+            view.showFriendRequest();
+            //TODO add friend check
+            boolean isFriend = false;
+            view.setIsFriend(isFriend);
             //TODO load user profile
+            //
+            view.hideBalance();
         } else {
             user = getUser();
             isCurrentUserProfile = true;
+            view.showUpdateProfile();
+            view.showBalance();
+            view.showAccountContent();
+            TrackingHelper.profile(getUserId());
+            //TODO replace with real valuse
+            view.setRoviaBucks(24313);
+            view.setDreamTripPoints(214123);
         }
-        TrackingHelper.profile(getUserId());
+
         view.setUserName(TextUtils.join(" ", new String[]{user.getFirstName(), user.getLastName()}));
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
         view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
+
+        //TODO replace with real status
+        view.setPlatinum();
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
@@ -175,6 +194,12 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void hideAccountContent();
 
+        void showAccountContent();
+
+        void showAddFriend();
+
+        void showUpdateProfile();
+
         void setAvatarImage(Uri uri);
 
         void setCoverImage(Uri uri);
@@ -196,5 +221,23 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setTripsCount(int count);
 
         void setBucketItemsCount(int count);
+
+        void showFriendRequest();
+
+        void hideFriendRequest();
+
+        void setIsFriend(boolean isFriend);
+
+        void setRoviaBucks(int count);
+
+        void setDreamTripPoints(int count);
+
+        void hideBalance();
+
+        void showBalance();
+
+        void setGold();
+
+        void setPlatinum();
     }
 }

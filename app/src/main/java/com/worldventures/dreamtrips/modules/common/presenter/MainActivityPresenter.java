@@ -4,17 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 
 import javax.inject.Inject;
@@ -28,7 +24,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     public void takeView(View view) {
         super.takeView(view);
         checkGoogleServices();
-        setCurrentComponentTitle();
     }
 
     public void showUserIfNeeded() {
@@ -55,12 +50,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         view.updateSelection(event.getComponentDescription());
     }
 
-    private void setCurrentComponentTitle() {
-        view.setTitle(fragmentCompass.getCurrentState().getTitle());
-    }
-
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {
-        view.setTitle(component.getTitle());
+        view.setTitle(component.getToolbarTitle());
         Fragment currentFragment = fragmentCompass.getCurrentFragment();
         // check if current
         boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());

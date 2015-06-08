@@ -2,22 +2,31 @@ package com.worldventures.dreamtrips.core.component;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 public class ComponentDescription implements Parcelable {
     private final String key;
-    private final int title;
+    private final int toolbarTitle;
+    private final int navMenuTitle;
     private final int icon;
     private final boolean ignored;
     private final Class<? extends Fragment> fragmentClass;
 
-    public ComponentDescription(String key, int titleRes, int iconRes, Class<? extends Fragment> fragmentClass) {
-        this(key, titleRes, iconRes, false, fragmentClass);
+    public ComponentDescription(String key,
+                                @StringRes int toolbarTitle,
+                                @StringRes int navMenuTitle,
+                                @DrawableRes int iconRes,
+                                Class<? extends Fragment> fragmentClass) {
+        this(key, toolbarTitle, navMenuTitle, iconRes, false, fragmentClass);
     }
 
-    public ComponentDescription(String key, int title, int icon, boolean ignored, Class<? extends Fragment> fragmentClass) {
+    public ComponentDescription(String key, int toolbarTitle, int navMenuTitle, int icon,
+                                boolean ignored, Class<? extends Fragment> fragmentClass) {
         this.key = key;
-        this.title = title;
+        this.toolbarTitle = toolbarTitle;
+        this.navMenuTitle = navMenuTitle;
         this.icon = icon;
         this.ignored = ignored;
         this.fragmentClass = fragmentClass;
@@ -31,8 +40,12 @@ public class ComponentDescription implements Parcelable {
         return key;
     }
 
-    public int getTitle() {
-        return title;
+    public int getToolbarTitle() {
+        return toolbarTitle;
+    }
+
+    public int getNavMenuTitle() {
+        return navMenuTitle;
     }
 
     public int getIcon() {
@@ -68,7 +81,8 @@ public class ComponentDescription implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.key);
-        dest.writeInt(this.title);
+        dest.writeInt(this.navMenuTitle);
+        dest.writeSerializable(this.toolbarTitle);
         dest.writeInt(this.icon);
         dest.writeByte(ignored ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.fragmentClass);
@@ -76,7 +90,8 @@ public class ComponentDescription implements Parcelable {
 
     private ComponentDescription(Parcel in) {
         this.key = in.readString();
-        this.title = in.readInt();
+        this.navMenuTitle = in.readInt();
+        this.toolbarTitle = in.readInt();
         this.icon = in.readInt();
         this.ignored = in.readByte() != 0;
         this.fragmentClass = (Class<? extends Fragment>) in.readSerializable();

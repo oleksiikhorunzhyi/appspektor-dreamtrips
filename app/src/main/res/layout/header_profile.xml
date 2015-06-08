@@ -63,15 +63,16 @@
             android:textSize="22sp"/>
 
         <TextView
-            android:id="@+id/gold_member"
+            android:id="@+id/user_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Gold Member"
             android:drawableStart="@drawable/gold_member"
+            android:drawableLeft="@drawable/gold_member"
             android:drawablePadding="@dimen/spacing_small"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/golden_brown"/>
+            android:textColor="@color/golden_user"/>
 
 
     </LinearLayout>

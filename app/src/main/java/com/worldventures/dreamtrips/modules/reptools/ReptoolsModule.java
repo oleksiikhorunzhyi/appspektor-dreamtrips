@@ -37,6 +37,6 @@ public class ReptoolsModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideRepToolsComponent() {
-        return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
+        return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
     }
 }

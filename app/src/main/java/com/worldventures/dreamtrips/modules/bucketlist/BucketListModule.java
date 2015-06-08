@@ -68,6 +68,6 @@ public class BucketListModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideBucketListComponent() {
-        return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
+        return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
     }
 }

@@ -7,12 +7,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gc.materialdesign.views.ButtonFlat;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -23,6 +26,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -57,22 +62,34 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected TextView tripImages;
     @InjectView(R.id.dream_trips)
     protected TextView trips;
+    @InjectView(R.id.update_info)
+    protected TextView updateInfo;
+    @InjectView(R.id.user_status)
+    protected TextView userStatus;
+    @InjectView(R.id.add_friend)
+    protected TextView addFriend;
     @InjectView(R.id.bucket_list)
     protected TextView buckets;
-    @Optional
     @InjectView(R.id.sv)
     protected ScrollView sv;
+    @InjectView(R.id.friend_request)
+    protected ViewGroup friendRequest;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
     protected DTEditText etFrom;
     @InjectView(R.id.et_live_in)
     protected DTEditText etLiveIn;
-
-    private MenuItem logout;
-
-    @Inject
-    protected FragmentCompass fragmentCompass;
+    @InjectView(R.id.dt_points)
+    protected TextView dtPoints;
+    @InjectView(R.id.rovia_bucks)
+    protected TextView roviaBucks;
+    @InjectView(R.id.user_balance)
+    protected ViewGroup userBalance;
+    @InjectView(R.id.accept)
+    protected ButtonRectangle accept;
+    @InjectView(R.id.reject)
+    protected ButtonRectangle reject;
 
     private PickImageDialog pid;
 
@@ -80,6 +97,9 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         layoutConfiguration();
+        reject.setText(getString(R.string.profile_reject).toUpperCase(Locale.getDefault()));
+        accept.setText(getString(R.string.profile_accept).toUpperCase(Locale.getDefault()));
+        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
     private void layoutConfiguration() {
@@ -124,10 +144,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        logout = menu.findItem(R.id.item_logout);
-        if (!getPresenter().isCurrentUserProfile()) {
-            logout.setVisible(getPresenter().isCurrentUserProfile());
-        }
+        MenuItem logout = menu.findItem(R.id.item_logout);
+        logout.setVisible(getPresenter().isCurrentUserProfile());
     }
 
     @Override
@@ -240,6 +258,85 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     public void hideAccountContent() {
         cover.setVisibility(View.GONE);
         avatar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAccountContent() {
+        cover.setVisibility(View.VISIBLE);
+        avatar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showAddFriend() {
+        addFriend.setVisibility(View.VISIBLE);
+        updateInfo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showUpdateProfile() {
+        addFriend.setVisibility(View.GONE);
+        updateInfo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setIsFriend(boolean isFriend) {
+        addFriend.setEnabled(isFriend);
+    }
+
+    @Override
+    public void showFriendRequest() {
+        friendRequest.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFriendRequest() {
+        friendRequest.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setRoviaBucks(int count) {
+        roviaBucks.setText(String.format(getString(R.string.profile_rovia_bucks), count));
+    }
+
+    @Override
+    public void setDreamTripPoints(int count) {
+        dtPoints.setText(String.format(getString(R.string.profile_dream_trips), count));
+    }
+
+    @Override
+    public void hideBalance() {
+        userBalance.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showBalance() {
+        userBalance.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setGold() {
+        userStatus.setTextColor(getResources().getColor(R.color.golden_user));
+        userStatus.setText(R.string.profile_golden);
+        userStatus.setCompoundDrawables(getResources().getDrawable(R.drawable.gold_member),
+                null, null, null);
+    }
+
+    @Override
+    public void setPlatinum() {
+        userStatus.setTextColor(getResources().getColor(R.color.platinum_user));
+        userStatus.setText(R.string.profile_platinum);
+        userStatus.setCompoundDrawables(getResources().getDrawable(R.drawable.platinum_member),
+                null, null, null);
+    }
+
+    @OnClick(R.id.add_friend)
+    void onAddFriend() {
+
+    }
+
+    @OnClick(R.id.update_info)
+    void onUpdateInfo() {
+
     }
 
     private void showLogoutDialog() {

@@ -70,7 +70,7 @@ public class BaseTripsPresenter<T extends Presenter.View> extends Presenter<T> {
                         input.isPriceAccepted(maxPrice, minPrice)
                                 && input.isDurationAccepted(maxNights, minNights, dateFilterItem)
                                 && input.isCategoriesAccepted(acceptedThemes, acceptedRegions)
-                                && (showSoldOut || input.isSoldOut())
+                                && (showSoldOut || !input.isSoldOut())
                                 && (!showFavorites || input.isLiked())
                                 && (!showRecentlyAdded || input.isRecentlyAdded())
         ).toList());

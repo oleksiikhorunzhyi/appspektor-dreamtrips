@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailab
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PinchToZoomDraweeView;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import java.util.List;
@@ -96,11 +95,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         }
 
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
-            tvSeeMore.setVisibility(View.GONE);
-        } else if (type == TripImagesListFragment.Type.INSPIRE_ME) {
-            actionSeeMore();
-        } else {
             actionSeeLess();
+            tvSeeMore.setVisibility(View.GONE);
+        } else {
+            actionSeeMore();
         }
     }
 
@@ -138,7 +136,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
                         getPresenter().onFbShare();
-                        } else {
+                    } else {
                         getPresenter().onTwitterShare();
                     }
                 }).show();
@@ -208,7 +206,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
         getPresenter().onFlagAction();
-     }
+    }
 
     @Override
     public void setFlags(List<Flag> flags) {

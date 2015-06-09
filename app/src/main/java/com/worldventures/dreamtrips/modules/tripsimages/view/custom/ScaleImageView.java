@@ -3,17 +3,13 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.custom;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.FloatMath;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.util.Arrays;
 
 public class ScaleImageView extends SimpleDraweeView {
 
@@ -46,17 +42,13 @@ public class ScaleImageView extends SimpleDraweeView {
         initialize();
     }
 
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        invalidate();
-    }
-
     private void initialize() {
         this.mMatrix = new Matrix();
         post(() -> {
             mIntrinsicWidth = getWidth();
             mIntrinsicHeight = getHeight();
+            invalidate();
+            requestLayout();
         });
         mDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -65,6 +57,11 @@ public class ScaleImageView extends SimpleDraweeView {
                 cutting();
                 return super.onDoubleTap(e);
             }
+        });
+
+        setOnTouchListener((view, motionEvent) -> {
+            view.getParent().requestDisallowInterceptTouchEvent(getScale() > 1.1);
+            return false;
         });
     }
 
@@ -154,6 +151,8 @@ public class ScaleImageView extends SimpleDraweeView {
         invalidate();
     }
 
+    boolean isBorderFaced;
+
     public void cutting() {
         int width = (int) (mIntrinsicWidth * getScale());
         int height = (int) (mIntrinsicHeight * getScale());
@@ -230,8 +229,16 @@ public class ScaleImageView extends SimpleDraweeView {
                 if (event.getPointerCount() <= 1) {
                     isScaling = false;
                 }
+
                 break;
         }
+        return true;
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        super.dispatchTouchEvent(event);
         return true;
     }
 

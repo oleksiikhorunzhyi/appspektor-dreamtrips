@@ -234,13 +234,8 @@ public class TripModel implements Filterable, Serializable {
     }
 
     public boolean isPriceAccepted(double maxPrice, double minPrice) {
-        return isActive() &&
-                price.getAmount() <= maxPrice &&
+        return price.getAmount() <= maxPrice &&
                 price.getAmount() >= minPrice;
-    }
-
-    private boolean isActive() {
-        return available;
     }
 
     public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
@@ -256,15 +251,11 @@ public class TripModel implements Filterable, Serializable {
     }
 
     private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-        return (isActivitiesEmpty() && acceptedThemes == null)
-                || acceptedThemes == null
-                || !Collections.disjoint(acceptedThemes, getActivities());
+        return acceptedThemes == null || !isActivitiesEmpty() && !Collections.disjoint(acceptedThemes, getActivities());
     }
 
     private boolean regionsAccepted(List<Integer> acceptedRegions) {
-        return (getRegion() == null && acceptedRegions == null)
-                || acceptedRegions == null
-                || (getRegion() != null && acceptedRegions.contains(getRegion().getId()));
+        return acceptedRegions == null || getRegion() != null && acceptedRegions.contains(getRegion().getId());
     }
 
     private boolean isActivitiesEmpty() {

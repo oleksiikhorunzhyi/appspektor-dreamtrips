@@ -126,6 +126,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             data.add(soldOutModel);
             data.add(favoriteModel);
             data.add(recentlyAddedModel);
+
             data.add(regionHeaderModel);
             if (!regionHeaderModel.isHide()) {
                 data.addAll(regions);
@@ -136,9 +137,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             if (!themeHeaderModel.isHide()) {
                 data.addAll(parentActivities);
             }
-
-            setRegionsChecked(regionHeaderModel.isChecked());
-            setThemesChecked(themeHeaderModel.isChecked());
 
             view.getAdapter().clear();
             view.getAdapter().addItems(data);
@@ -181,6 +179,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         dateFilterItem.reset();
         filterModel.reset();
         themeHeaderModel.setChecked(true);
+        regionHeaderModel.setChecked(true);
         soldOutModel.setActive(false);
         favoriteModel.setActive(false);
         recentlyAddedModel.setActive(false);

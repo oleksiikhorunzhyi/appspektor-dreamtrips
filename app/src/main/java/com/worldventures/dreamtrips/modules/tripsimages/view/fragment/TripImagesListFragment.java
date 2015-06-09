@@ -47,9 +47,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
 
-    @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
-
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
@@ -78,7 +75,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         super.afterCreateView(rootView);
         this.layoutManager = getLayoutManager();
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setEmptyView(emptyView);
         stateDelegate.setRecyclerView(recyclerView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);

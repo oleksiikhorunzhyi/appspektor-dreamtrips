@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesList
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SimpleFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreen
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenImageDetailsPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -56,7 +57,7 @@ import dagger.Provides;
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
                 ImageDetailsPagerFragment.class,
-
+                FullScreenImageDetailsPagerFragment.class,
                 CreatePhotoFragment.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,

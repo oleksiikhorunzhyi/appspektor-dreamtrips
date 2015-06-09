@@ -1,56 +1,67 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.custom;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class ScaleImageView extends SimpleDraweeView {
 
     String TAG = "ScaleImageView";
-    private Context mContext;
+    private Context context;
     private float MAX_SCALE = 2f;
-    private Matrix mMatrix;
+    private Matrix matrix;
     // display width height.
-    private int mWidth;
-    private int mHeight;
-    private int mIntrinsicWidth;
-    private int mIntrinsicHeight;
-    private float mScale;
-    private float mMinScale;
-    private float mPrevDistance;
+    private int width;
+    private int height;
+    private int intrinsicWidth;
+    private int intrinsicHeight;
+    private float scale;
+    private float minScale;
+    private float prevDistance;
     private boolean isScaling;
-    private int mPrevMoveX;
-    private int mPrevMoveY;
-    private GestureDetector mDetector;
+    private int prevMoveX;
+    private int prevMoveY;
+    private GestureDetector detector;
 
     public ScaleImageView(Context context, AttributeSet attr) {
         super(context, attr);
-        this.mContext = context;
+        this.context = context;
         initialize();
     }
 
     public ScaleImageView(Context context) {
         super(context);
-        this.mContext = context;
+        this.context = context;
         initialize();
     }
 
     private void initialize() {
-        this.mMatrix = new Matrix();
-        post(() -> {
-            mIntrinsicWidth = getWidth();
-            mIntrinsicHeight = getHeight();
-            invalidate();
-            requestLayout();
-        });
-        mDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+        ViewTreeObserver.OnGlobalLayoutListener listener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                intrinsicWidth = ScaleImageView.this.getWidth();
+                intrinsicHeight = ScaleImageView.this.getHeight();
+                requestLayout();
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        };
+        getViewTreeObserver().addOnGlobalLayoutListener(listener);
+        matrix = new Matrix();
+        detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 maxZoomTo((int) e.getX(), (int) e.getY());
@@ -68,39 +79,39 @@ public class ScaleImageView extends SimpleDraweeView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         int saveCount = canvas.save();
-        canvas.concat(mMatrix);
+        canvas.concat(matrix);
         super.onDraw(canvas);
         canvas.restoreToCount(saveCount);
     }
 
     @Override
     protected boolean setFrame(int l, int t, int r, int b) {
-        mWidth = r - l;
-        mHeight = b - t;
+        width = r - l;
+        height = b - t;
 
-        mMatrix.reset();
+        matrix.reset();
         int r_norm = r - l;
-        mScale = (float) r_norm / (float) mIntrinsicWidth;
+        scale = (float) r_norm / (float) intrinsicWidth;
 
         int paddingHeight = 0;
         int paddingWidth = 0;
         // scaling vertical
-        if (mScale * mIntrinsicHeight > mHeight) {
-            mScale = (float) mHeight / (float) mIntrinsicHeight;
-            mMatrix.postScale(mScale, mScale);
-            paddingWidth = (r - mWidth) / 2;
+        if (scale * intrinsicHeight > height) {
+            scale = (float) height / (float) intrinsicHeight;
+            matrix.postScale(scale, scale);
+            paddingWidth = (r - width) / 2;
             paddingHeight = 0;
             // scaling horizontal
         } else {
-            mMatrix.postScale(mScale, mScale);
-            paddingHeight = (b - mHeight) / 2;
+            matrix.postScale(scale, scale);
+            paddingHeight = (b - height) / 2;
             paddingWidth = 0;
         }
-        mMatrix.postTranslate(paddingWidth, paddingHeight);
+        matrix.postTranslate(paddingWidth, paddingHeight);
 
         invalidate();
-        mMinScale = mScale;
-        zoomTo(mScale, mWidth / 2, mHeight / 2);
+        minScale = scale;
+        zoomTo(scale, width / 2, height / 2);
         cutting();
         return super.setFrame(l, t, r, b);
     }
@@ -112,21 +123,21 @@ public class ScaleImageView extends SimpleDraweeView {
     }
 
     protected float getScale() {
-        return getValue(mMatrix, Matrix.MSCALE_X);
+        return getValue(matrix, Matrix.MSCALE_X);
     }
 
     public float getTranslateX() {
-        return getValue(mMatrix, Matrix.MTRANS_X);
+        return getValue(matrix, Matrix.MTRANS_X);
     }
 
     protected float getTranslateY() {
-        return getValue(mMatrix, Matrix.MTRANS_Y);
+        return getValue(matrix, Matrix.MTRANS_Y);
     }
 
     protected void maxZoomTo(int x, int y) {
-        if (mMinScale != getScale() && (getScale() - mMinScale) > 0.1f) {
+        if (minScale != getScale() && (getScale() - minScale) > 0.1f) {
             // threshold 0.1f
-            float scale = mMinScale / getScale();
+            float scale = minScale / getScale();
             zoomTo(scale, x, y);
         } else {
             float scale = MAX_SCALE / getScale();
@@ -135,44 +146,44 @@ public class ScaleImageView extends SimpleDraweeView {
     }
 
     public void zoomTo(float scale, int x, int y) {
-        if (getScale() * scale < mMinScale) {
+        if (getScale() * scale < minScale) {
             return;
         }
         if (scale >= 1 && getScale() * scale > MAX_SCALE) {
             return;
         }
-        mMatrix.postScale(scale, scale);
+        matrix.postScale(scale, scale);
         // move to center
-        mMatrix.postTranslate(-(mWidth * scale - mWidth) / 2, -(mHeight * scale - mHeight) / 2);
+        matrix.postTranslate(-(width * scale - width) / 2, -(height * scale - height) / 2);
 
         // move x and y distance
-        mMatrix.postTranslate(-(x - (mWidth / 2)) * scale, 0);
-        mMatrix.postTranslate(0, -(y - (mHeight / 2)) * scale);
+        matrix.postTranslate(-(x - (width / 2)) * scale, 0);
+        matrix.postTranslate(0, -(y - (height / 2)) * scale);
         invalidate();
     }
 
     boolean isBorderFaced;
 
     public void cutting() {
-        int width = (int) (mIntrinsicWidth * getScale());
-        int height = (int) (mIntrinsicHeight * getScale());
-        if (getTranslateX() < -(width - mWidth)) {
-            mMatrix.postTranslate(-(getTranslateX() + width - mWidth), 0);
+        int width = (int) (intrinsicWidth * getScale());
+        int height = (int) (intrinsicHeight * getScale());
+        if (getTranslateX() < -(width - this.width)) {
+            matrix.postTranslate(-(getTranslateX() + width - this.width), 0);
         }
         if (getTranslateX() > 0) {
-            mMatrix.postTranslate(-getTranslateX(), 0);
+            matrix.postTranslate(-getTranslateX(), 0);
         }
-        if (getTranslateY() < -(height - mHeight)) {
-            mMatrix.postTranslate(0, -(getTranslateY() + height - mHeight));
+        if (getTranslateY() < -(height - this.height)) {
+            matrix.postTranslate(0, -(getTranslateY() + height - this.height));
         }
         if (getTranslateY() > 0) {
-            mMatrix.postTranslate(0, -getTranslateY());
+            matrix.postTranslate(0, -getTranslateY());
         }
-        if (width < mWidth) {
-            mMatrix.postTranslate((mWidth - width) / 2, 0);
+        if (width < this.width) {
+            matrix.postTranslate((this.width - width) / 2, 0);
         }
-        if (height < mHeight) {
-            mMatrix.postTranslate(0, (mHeight - height) / 2);
+        if (height < this.height) {
+            matrix.postTranslate(0, (this.height - height) / 2);
         }
         invalidate();
     }
@@ -184,12 +195,12 @@ public class ScaleImageView extends SimpleDraweeView {
     }
 
     private float dispDistance() {
-        return FloatMath.sqrt(mWidth * mWidth + mHeight * mHeight);
+        return FloatMath.sqrt(width * width + height * height);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mDetector.onTouchEvent(event)) {
+        if (detector.onTouchEvent(event)) {
             return true;
         }
         int touchCount = event.getPointerCount();
@@ -199,27 +210,27 @@ public class ScaleImageView extends SimpleDraweeView {
             case MotionEvent.ACTION_POINTER_2_DOWN:
                 if (touchCount >= 2) {
                     float distance = distance(event.getX(0), event.getX(1), event.getY(0), event.getY(1));
-                    mPrevDistance = distance;
+                    prevDistance = distance;
                     isScaling = true;
                 } else {
-                    mPrevMoveX = (int) event.getX();
-                    mPrevMoveY = (int) event.getY();
+                    prevMoveX = (int) event.getX();
+                    prevMoveY = (int) event.getY();
                 }
             case MotionEvent.ACTION_MOVE:
                 if (touchCount >= 2 && isScaling) {
                     float dist = distance(event.getX(0), event.getX(1), event.getY(0), event.getY(1));
-                    float scale = (dist - mPrevDistance) / dispDistance();
-                    mPrevDistance = dist;
+                    float scale = (dist - prevDistance) / dispDistance();
+                    prevDistance = dist;
                     scale += 1;
                     scale = scale * scale;
-                    zoomTo(scale, mWidth / 2, mHeight / 2);
+                    zoomTo(scale, width / 2, height / 2);
                     cutting();
                 } else if (!isScaling) {
-                    int distanceX = mPrevMoveX - (int) event.getX();
-                    int distanceY = mPrevMoveY - (int) event.getY();
-                    mPrevMoveX = (int) event.getX();
-                    mPrevMoveY = (int) event.getY();
-                    mMatrix.postTranslate(-distanceX, -distanceY);
+                    int distanceX = prevMoveX - (int) event.getX();
+                    int distanceY = prevMoveY - (int) event.getY();
+                    prevMoveX = (int) event.getX();
+                    prevMoveY = (int) event.getY();
+                    matrix.postTranslate(-distanceX, -distanceY);
                     cutting();
                 }
                 break;
@@ -235,6 +246,12 @@ public class ScaleImageView extends SimpleDraweeView {
         return true;
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        initialize();
+        requestLayout();
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -243,7 +260,7 @@ public class ScaleImageView extends SimpleDraweeView {
     }
 
     public void reset() {
-        mMatrix.reset();
+        matrix.reset();
         invalidate();
     }
 }

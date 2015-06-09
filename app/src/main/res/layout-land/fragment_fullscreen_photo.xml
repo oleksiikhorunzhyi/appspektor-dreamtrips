@@ -6,14 +6,15 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@android:color/black"
-        android:scaleType="fitCenter"/>
+        fresco:actualImageScaleType="fitCenter"
+        />
 
     <View
         android:layout_width="match_parent"

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenImageDetailsPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
 
 import java.io.Serializable;
@@ -70,7 +71,7 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
         };
 
         for (Serializable ignored : photoList) {
-            adapter.add(new FragmentItem(ImageDetailsPagerFragment.class, ""));
+            adapter.add(new FragmentItem(FullScreenImageDetailsPagerFragment.class, ""));
         }
 
         pager.setAdapter(adapter);

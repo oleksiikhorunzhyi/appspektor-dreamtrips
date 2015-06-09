@@ -191,8 +191,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     private TripImagesRoboSpiceController getAdapterController() {
         if (roboSpiceAdapterController == null) {
             roboSpiceAdapterController = getTripImagesRoboSpiceController();
-
             roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
+        }
+
+        if (!roboSpiceAdapterController.hasAdapter()) {
             roboSpiceAdapterController.setAdapter(view.getAdapter());
         }
         return roboSpiceAdapterController;

@@ -220,6 +220,7 @@ dependencies {
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'mbanje.kurt:fabbutton:1.0.9'
     compile 'com.github.man4ik:poly-picker:fce2e41f00'
+    compile 'it.sephiroth.android.library.easing:android-easing:1.0.3'
 
     // Util
     compile 'com.android.support:multidex:1.0.0'

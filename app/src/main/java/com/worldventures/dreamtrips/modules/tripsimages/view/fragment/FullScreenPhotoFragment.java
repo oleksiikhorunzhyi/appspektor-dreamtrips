@@ -27,6 +27,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailab
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PinchToZoomDraweeView;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
-    protected SimpleDraweeView ivImage;
+    protected ScaleImageView ivImage;
     @InjectView(R.id.ll_global_content_wrapper)
     protected LinearLayout llContentWrapper;
     @InjectView(R.id.ll_top_container)

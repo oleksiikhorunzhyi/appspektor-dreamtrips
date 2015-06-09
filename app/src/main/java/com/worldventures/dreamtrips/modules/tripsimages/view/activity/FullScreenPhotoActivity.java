@@ -42,7 +42,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     protected TripImagesListPresenter createPresentationModel(Bundle savedInstanceState) {
-        return TripImagesListPresenter.create(type, this);
+        return TripImagesListPresenter.create(type, true);
     }
 
     @Override

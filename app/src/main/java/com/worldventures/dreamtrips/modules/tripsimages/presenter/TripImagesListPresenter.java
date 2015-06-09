@@ -28,6 +28,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     public final static int VISIBLE_TRESHOLD = 5;
 
     protected Type type;
+    private boolean isFullscreen;
 
     protected int firstVisibleItem;
     protected int visibleItemCount;
@@ -43,20 +44,27 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         this.type = type;
     }
 
-    public static TripImagesListPresenter create(Type type, View view) {
+    public static TripImagesListPresenter create(Type type, boolean isFullscreen) {
+        TripImagesListPresenter presenter = new MyImagesPresenter();
         switch (type) {
             case MEMBER_IMAGES:
-                return new UserImagesPresenter();
+                presenter = new UserImagesPresenter();
+                break;
             case MY_IMAGES:
-                return new MyImagesPresenter();
+                presenter = new MyImagesPresenter();
+                break;
             case YOU_SHOULD_BE_HERE:
-                return new YSBHPresenter(view);
+                presenter = new YSBHPresenter();
+                break;
             case INSPIRE_ME:
-                return new InspireMePresenter();
+                presenter = new InspireMePresenter();
+                break;
             case BUCKET_PHOTOS:
-                return new BucketPhotoFsPresenter();
+                presenter = new BucketPhotoFsPresenter();
+                break;
         }
-        return new MyImagesPresenter();
+        presenter.setFullscreen(true);
+        return presenter;
     }
 
     private void resetLazyLoadFields() {
@@ -89,7 +97,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         view.addAll(db.readPhotoEntityList(type));
         view.setSelection();
 
-        if (type != Type.BUCKET_PHOTOS)
+        if (type != Type.BUCKET_PHOTOS && !isFullscreen)
             reload();
     }
 
@@ -187,6 +195,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
         IRoboSpiceAdapter getAdapter();
 
         void inject(Object getMyPhotos);
+    }
+
+    public void setFullscreen(boolean isFullscreen) {
+        this.isFullscreen = isFullscreen;
     }
 
     public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<T> {

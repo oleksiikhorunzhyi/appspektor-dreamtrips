@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class YSBHPresenter extends TripImagesListPresenter<Photo> {
-    public YSBHPresenter(View view) {
+    public YSBHPresenter() {
         super(Type.YOU_SHOULD_BE_HERE);
     }
 

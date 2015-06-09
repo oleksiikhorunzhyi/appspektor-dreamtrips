@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
@@ -28,6 +29,12 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         loadCategories();
+        view.updateSelection();
+    }
+
+    @Override
+    public void saveInstanceState(Bundle outState) {
+        super.saveInstanceState(outState);
     }
 
     @Override
@@ -65,6 +72,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void setRecentBucketItemsCount(Map<BucketType, Integer> items);
 
         void resetRecentlyAddedBucketItem(BucketType type);
+
+        void updateSelection();
     }
 
     public enum BucketType {

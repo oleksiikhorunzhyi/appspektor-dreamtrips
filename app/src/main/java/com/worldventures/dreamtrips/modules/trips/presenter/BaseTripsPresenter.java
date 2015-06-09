@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.Icepick;
 import icepick.Icicle;
 
 public class BaseTripsPresenter<T extends Presenter.View> extends Presenter<T> {
@@ -49,19 +48,11 @@ public class BaseTripsPresenter<T extends Presenter.View> extends Presenter<T> {
     @Override
     public void restoreInstanceState(Bundle savedState) {
         super.restoreInstanceState(savedState);
-        if (savedState != null) {
-            Icepick.restoreInstanceState(this, savedState);
-        } else {
+        if (savedState == null) {
             maxPrice  = Double.MAX_VALUE;
             maxNights = Integer.MAX_VALUE;
             dateFilterItem = new DateFilterItem();
         }
-    }
-
-    @Override
-    public void saveInstanceState(Bundle outState) {
-        super.saveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     protected ArrayList<TripModel> performFiltering(List<TripModel> trips) {

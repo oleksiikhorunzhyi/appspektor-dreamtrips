@@ -123,7 +123,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
 
     @Override
     public void dropView() {
-        roboSpiceAdapterController.setAdapter(null);
+        if (roboSpiceAdapterController != null)
+            roboSpiceAdapterController.setAdapter(null);
         super.dropView();
     }
 

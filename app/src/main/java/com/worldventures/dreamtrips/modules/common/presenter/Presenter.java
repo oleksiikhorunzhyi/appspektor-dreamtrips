@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import icepick.Icepick;
 import timber.log.Timber;
 
 public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
@@ -55,11 +56,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     }
 
     public void restoreInstanceState(Bundle savedState) {
-        //nothing to do here
+        Icepick.restoreInstanceState(this, savedState);
     }
 
     public void saveInstanceState(Bundle outState) {
-        //nothing to do here
+        Icepick.saveInstanceState(this, outState);
     }
 
     public void takeView(VT view) {

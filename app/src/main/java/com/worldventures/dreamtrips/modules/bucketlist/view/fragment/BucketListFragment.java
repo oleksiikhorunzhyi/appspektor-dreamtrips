@@ -248,7 +248,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
         popupMenu.setOnMenuItemClickListener((menuItem) -> {
             getPresenter().reloadWithFilter(menuItem.getItemId());
-
             return false;
         });
 

@@ -26,8 +26,9 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icicle;
 
-import static com.astuetz.PagerSlidingTabStrip.*;
+import static com.astuetz.PagerSlidingTabStrip.CustomTabProvider;
 import static com.innahema.collections.query.queriables.Queryable.from;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
@@ -36,9 +37,14 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 @MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
 
-    @InjectView(R.id.tabs) PagerSlidingTabStrip tabStrip;
-    @InjectView(R.id.pager) CustomViewPager pager;
+    @InjectView(R.id.tabs)
+    PagerSlidingTabStrip tabStrip;
+    @InjectView(R.id.pager)
+    CustomViewPager pager;
     BucketTabsAdapter adapter;
+
+    @Icicle
+    int currentPosition;
 
     @Override
     protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -65,14 +71,18 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             public void onPageSelected(int position) {
                 BucketType bucketType = adapter.getFragmentItem(position).data;
                 getPresenter().onTabChange(bucketType);
-
+                currentPosition = position;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
 
+    @Override
+    public void updateSelection() {
+        pager.setCurrentItem(currentPosition);
     }
 
     @Override
@@ -84,7 +94,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         }
     }
 
-    @Override
+   @Override
     public void setTypes(List<BucketType> types) {
         if (adapter.getCount() > 0) return;
         //

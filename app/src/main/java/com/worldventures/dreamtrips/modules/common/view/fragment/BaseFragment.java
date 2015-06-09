@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.ButterKnife;
+import icepick.Icepick;
 
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
@@ -42,12 +43,14 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         }
         inject(this.presenter);
         this.presenter.onInjected();
+        Icepick.restoreInstanceState(this, savedInstanceState);
         this.presenter.restoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
         if (presenter != null) this.presenter.saveInstanceState(outState);
     }
 

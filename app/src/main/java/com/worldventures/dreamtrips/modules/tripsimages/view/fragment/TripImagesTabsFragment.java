@@ -87,14 +87,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        this.adapter.remove(adapter.getCount() - 1);
-        this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
-        this.adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void setSelection(int selection) {
         pager.setCurrentItem(selection, true);
     }

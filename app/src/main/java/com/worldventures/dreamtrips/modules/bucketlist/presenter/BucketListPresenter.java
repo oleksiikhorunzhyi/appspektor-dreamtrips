@@ -36,6 +36,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private static final int DELETION_DELAY = 3500;
@@ -50,8 +52,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     protected Prefs prefs;
 
     private BucketTabsPresenter.BucketType type;
-    private boolean showToDO = true;
-    private boolean showCompleted = true;
+
+    @Icicle boolean showToDO = true;
+    @Icicle boolean showCompleted = true;
+
     private List<BucketItem> bucketItems = new ArrayList<>();
 
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {

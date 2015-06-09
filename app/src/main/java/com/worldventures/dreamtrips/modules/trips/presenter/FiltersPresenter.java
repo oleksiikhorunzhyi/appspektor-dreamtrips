@@ -35,7 +35,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.Icepick;
 import icepick.Icicle;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
@@ -85,9 +84,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     @Override
     public void restoreInstanceState(Bundle savedState) {
         super.restoreInstanceState(savedState);
-        if (savedState != null) {
-            Icepick.restoreInstanceState(this, savedState);
-        } else {
+        if (savedState == null) {
             filterModel = new FilterModel();
             dateFilterItem = new DateFilterItem();
             themeHeaderModel = new ThemeHeaderModel();
@@ -97,12 +94,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             regionHeaderModel = new RegionHeaderModel();
             loadFilters();
         }
-    }
-
-    @Override
-    public void saveInstanceState(Bundle outState) {
-        super.saveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

@@ -274,4 +274,5 @@
     <string name="profile_reject">Delete request</string>
     <string name="profile_platinum">Platinum member</string>
     <string name="profile_golden">Golden member</string>
+    <string name="profile_member">Member</string>
 </resources>

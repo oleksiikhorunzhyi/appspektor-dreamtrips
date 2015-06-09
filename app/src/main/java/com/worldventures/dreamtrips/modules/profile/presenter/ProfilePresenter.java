@@ -94,9 +94,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             view.showBalance();
             view.showAccountContent();
             TrackingHelper.profile(getUserId());
-            //TODO replace with real valuse
-            view.setRoviaBucks(24313);
-            view.setDreamTripPoints(214123);
+            view.setRoviaBucks(user.getRoviaBucks());
+            view.setDreamTripPoints(user.getDreamTripsPoints());
         }
 
         view.setUserName(TextUtils.join(" ", new String[]{user.getFirstName(), user.getLastName()}));
@@ -106,16 +105,21 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
 
-        //TODO replace with real status
-        view.setPlatinum();
+        if (user.isGold())
+            view.setGold();
+        else if (user.isPlatinum())
+            view.setPlatinum();
+        else
+            view.setMember();
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
 
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
+
         //TODO replace with real values
-        view.setTripImagesCount(0);
         view.setTripsCount(0);
-        view.setBucketItemsCount(0);
     }
 
     public boolean isCurrentUserProfile() {
@@ -239,5 +243,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setGold();
 
         void setPlatinum();
+
+        void setMember();
     }
 }

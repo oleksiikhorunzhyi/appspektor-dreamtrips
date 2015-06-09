@@ -283,7 +283,10 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void setIsFriend(boolean isFriend) {
-        addFriend.setEnabled(isFriend);
+        addFriend.setCompoundDrawablesWithIntrinsicBounds(isFriend
+                        ? R.drawable.friend_added
+                        : R.drawable.add_friend,
+                0, 0, 0);
     }
 
     @Override
@@ -314,6 +317,15 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void showBalance() {
         userBalance.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setMember() {
+        userStatus.setTextColor(getResources().getColor(R.color.white));
+        userStatus.setText(R.string.profile_member);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(0,
+                0, 0, 0);
+
     }
 
     @Override

@@ -107,6 +107,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         if (currentFragment == null) {
             onNavigationDrawerItemSelected(currentComponent);
         } else {
+            setTitle(currentComponent.getToolbarTitle());
             navigationDrawerFragment.setCurrentComponent(currentComponent);
         }
     }
@@ -117,7 +118,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void setTitle(int title) {
-        if (title != 0)
+         if (title != 0)
             getSupportActionBar().setTitle(title);
         else
             getSupportActionBar().setTitle("");
@@ -178,6 +179,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         eventBus.post(new MenuPressedEvent());
 
         handleComponentChange();
+        disableRightDrawer();
         makeActionBarTransparent(false);
 
         navigationDrawerFragment.setCurrentComponent(component);

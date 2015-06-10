@@ -21,7 +21,6 @@ import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -97,9 +96,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     private void layoutConfiguration() {
-        int minSideSize = ViewUtils.getMinSideSize(getActivity());
-        if (ViewUtils.isLandscapeOrientation(getActivity())) minSideSize /= 2;
-        userCover.getLayoutParams().height = minSideSize;
         int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
         accept.getTextView().setPadding(padding, 0, padding, 0);
         reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));

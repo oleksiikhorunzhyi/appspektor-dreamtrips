@@ -172,7 +172,7 @@ public class FragmentCompass {
             String str = backEntry.getName();
             return Route.restoreByClass(str);
         }
-        return Route.DREAMTRIPS;
+        return Route.TRIPLIST;
     }
 
     public void disableBackStack() {
@@ -200,7 +200,7 @@ public class FragmentCompass {
         if (getCurrentFragment() != null) {
             return Route.restoreByClass(getCurrentFragment().getClass().getName());
         }
-        return Route.DREAMTRIPS;
+        return Route.TRIPLIST;
     }
 
     protected void clearBackStack() {

@@ -101,10 +101,18 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_drawer);
 
+        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
+        if (currentComponent == null && currentFragment != null) {
+            currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
+        }
         if (currentComponent == null) {
             currentComponent = rootComponentsProvider.getActiveComponents().get(0);
         }
-        onNavigationDrawerItemSelected(currentComponent);
+        if (currentFragment == null) {
+            onNavigationDrawerItemSelected(currentComponent);
+        } else {
+            navigationDrawerFragment.setCurrentComponent(currentComponent);
+        }
     }
 
     private void setupToolbar() {
@@ -248,8 +256,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         if (!handleComponentChange()) {
             fragmentCompass.clear();
             FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() >= 2) {
-                currentComponent = this.rootComponentsProvider.getComponent(fm, 1);
+            int entryCount = fm.getBackStackEntryCount();
+            if (entryCount >= 2) {
+                int backOffset = 1;
+                do {
+                    currentComponent = this.rootComponentsProvider.getComponent(fm, backOffset);
+                    backOffset++;
+                }
+                while (!rootComponentsProvider.getActiveComponents().contains(currentComponent) &&
+                        backOffset <= entryCount);
                 navigationDrawerFragment.setCurrentComponent(currentComponent);
                 setTitle(currentComponent.getTitle());
             }

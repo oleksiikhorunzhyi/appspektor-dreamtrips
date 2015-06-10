@@ -184,8 +184,8 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.1.10'
     compile 'com.amazonaws:aws-android-sdk-s3:2.1.10'
-    compile 'com.google.android.gms:play-services-maps:7.3.0'
-    compile 'com.google.android.gms:play-services-analytics:7.3.0'
+    compile 'com.google.android.gms:play-services-maps:7.5.0'
+    compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.instabug.library:instabugsupport:1.2.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
@@ -224,7 +224,7 @@ dependencies {
 
     // Util
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.android.support:support-annotations:20.0.0'
+    compile 'com.android.support:support-annotations:22.2.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'com.innahema:collections-query:0.2.9'

@@ -58,6 +58,9 @@ public interface DreamTripsApi {
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
 
+    @GET("/api/profile")
+    User getProfile();
+
     @GET("/api/trips")
     List<TripModel> getTrips();
 

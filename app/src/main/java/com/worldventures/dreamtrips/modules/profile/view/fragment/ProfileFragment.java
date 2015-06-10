@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,34 +16,27 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
-import java.util.Locale;
-
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class ProfileFragment extends BaseFragment<ProfilePresenter>
-        implements ProfilePresenter.View {
+        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.user_cover)
     protected SimpleDraweeView userCover;
@@ -91,6 +85,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected ButtonRectangle accept;
     @InjectView(R.id.reject)
     protected ButtonRectangle reject;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout swipeContainer;
 
     private PickImageDialog pid;
 
@@ -98,18 +94,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         layoutConfiguration();
-        reject.setText(getString(R.string.profile_reject).toUpperCase(Locale.getDefault()));
-        accept.setText(getString(R.string.profile_accept).toUpperCase(Locale.getDefault()));
-        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
-        accept.getTextView().setPadding(padding, 0, padding, 0);
-        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
     private void layoutConfiguration() {
-        if (sv != null) {
-            int minSideSize = getMinSideSize(getActivity());
-            userCover.getLayoutParams().height = minSideSize;
-        }
+        int minSideSize = ViewUtils.getMinSideSize(getActivity());
+        if (ViewUtils.isLandscapeOrientation(getActivity())) minSideSize /= 2;
+        userCover.getLayoutParams().height = minSideSize;
+        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
+        accept.getTextView().setPadding(padding, 0, padding, 0);
+        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
+        swipeContainer.setOnRefreshListener(this);
     }
 
     @Override
@@ -352,6 +346,21 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @OnClick(R.id.update_info)
     void onUpdateInfo() {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        getPresenter().onRefresh();
+    }
+
+    @Override
+    public void startLoading() {
+        swipeContainer.post(() -> swipeContainer.setRefreshing(true));
+    }
+
+    @Override
+    public void finishLoading() {
+        swipeContainer.setRefreshing(false);
     }
 
     private void showLogoutDialog() {

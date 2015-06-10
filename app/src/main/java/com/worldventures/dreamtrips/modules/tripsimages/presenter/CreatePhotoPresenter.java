@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -21,18 +19,10 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
 public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
-    @Inject
-    @Global
-    protected EventBus eventBus;
 
     @Inject
     protected SnappyRepository db;
-
-    @Inject
-    protected Context context;
 
     private String type;
 
@@ -69,7 +59,6 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
         if (view.getImageUri().toString().isEmpty()) {
             view.informUser(context.getString(R.string.wrong_image));
         } else {
-
             ImageUploadTask action = new ImageUploadTask();
             action.setFileUri(view.getImageUri().toString());
             action.setTitle(view.getTitle());

@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
@@ -76,20 +76,16 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
         }
     }
 
-    public void onFacebookAction(BaseFragment from) {
-        activityRouter.openFacebookPhoto(from);
-    }
-
-    public ImagePickCallback providePhotoChooseCallback() {
-        return selectImageCallback;
-    }
-
-    public ImagePickCallback provideGalleryCallback() {
-        return selectImageGalleryCallback;
-    }
-
-    public ImagePickCallback provideFbCallback() {
-        return fbCallback;
+    public ImagePickCallback provideCallback(int pidType) {
+        switch (pidType) {
+            case PickImageDialog.REQUEST_FACEBOOK:
+                return fbCallback;
+            case PickImageDialog.REQUEST_CAPTURE_PICTURE:
+                return selectImageCallback;
+            case PickImageDialog.REQUEST_PICK_PICTURE:
+                return selectImageGalleryCallback;
+        }
+        return null;
     }
 
     @Override
@@ -100,6 +96,7 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
 
     public interface View extends Presenter.View {
         void setFabVisibility(boolean visibility);
+
         void setSelection(int selection);
     }
 }

@@ -82,7 +82,7 @@ public class ComponentDescription implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.key);
         dest.writeInt(this.navMenuTitle);
-        dest.writeSerializable(this.toolbarTitle);
+        dest.writeInt(this.toolbarTitle);
         dest.writeInt(this.icon);
         dest.writeByte(ignored ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.fragmentClass);

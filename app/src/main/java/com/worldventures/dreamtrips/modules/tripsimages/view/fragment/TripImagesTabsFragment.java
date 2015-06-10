@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,16 +10,13 @@ import android.view.View;
 import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -28,6 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icicle;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
@@ -55,6 +52,12 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
 
     private BaseStatePagerAdapter adapter;
     private PickImageDialog pid;
+
+    @Icicle
+    int pidTypeShown;
+    @Icicle
+    String filePath;
+
 
     @Override
     public void afterCreateView(View rootView) {
@@ -112,45 +115,58 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     }
 
     @OnClick(R.id.fab_facebook)
-    public void actionFacebook(View view) {
-        getPresenter().onFacebookAction(this);
+    public void actionFacebook() {
+        pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle("");
+        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
+        this.pid.setRequestTypes(PickImageDialog.REQUEST_FACEBOOK);
+        this.pid.show();
+        filePath = pid.getFilePath();
         this.multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_gallery)
-    public void actionGallery(View view) {
+    public void actionGallery() {
+        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().provideGalleryCallback());
+        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
         this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.show();
+        filePath = pid.getFilePath();
         this.multipleActionsDown.collapse();
     }
 
     @OnClick(R.id.fab_photo)
-    public void actionPhoto(View view) {
+    public void actionPhoto() {
+        pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().providePhotoChooseCallback());
+        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
         this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
         this.pid.show();
+        filePath = pid.getFilePath();
         this.multipleActionsDown.collapse();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (pid != null) {
+        if (pidTypeShown != 0) {
+            this.pid = new PickImageDialog(getActivity(), this);
+            this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
+            this.pid.setChooserType(pidTypeShown);
+            this.pid.setFilePath(filePath);
+            pidTypeShown = 0;
+        }
+        //
+        if (this.pid != null)
             this.pid.onActivityResult(requestCode, resultCode, data);
-        }
-        if (resultCode == Activity.RESULT_OK && requestCode == FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO) {
-            ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-            getPresenter().provideFbCallback().onResult(this, image, null);
-        }
+        //
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
             pager.setCurrentItem(1, false);
         }
-
     }
 
     @Override

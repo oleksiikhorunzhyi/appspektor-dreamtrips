@@ -32,7 +32,7 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
     @Override
     public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
         ArrayList<IFullScreenObject> result = new ArrayList<>();
-        if (page > 1) result.addAll(getUploadTasks());
+        if (page == 1) result.addAll(getUploadTasks());
         result.addAll(loadFromApi());
         return result;
     }

@@ -63,7 +63,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                 presenter = new BucketPhotoFsPresenter();
                 break;
         }
-        presenter.setFullscreen(true);
+        presenter.setFullscreen(isFullscreen);
         return presenter;
     }
 

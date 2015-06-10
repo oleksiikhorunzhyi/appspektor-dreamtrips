@@ -7,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -21,10 +20,10 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 
@@ -46,9 +45,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
-
-    @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
 
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
@@ -78,7 +74,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         super.afterCreateView(rootView);
         this.layoutManager = getLayoutManager();
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setEmptyView(emptyView);
         stateDelegate.setRecyclerView(recyclerView);
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
@@ -93,7 +88,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         this.recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresenter().onItemClick(position))
         );
-        this.recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int childCount = recyclerView.getChildCount();
@@ -130,7 +125,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return TripImagesListPresenter.create(type, this);
+        return TripImagesListPresenter.create(type, false);
     }
 
     @Override

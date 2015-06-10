@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosBaseQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
 
@@ -30,7 +29,7 @@ public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenAvaila
 
             @Override
             public SpiceRequest<ArrayList<IFullScreenAvailableObject>> getNextPageRequest(int currentCount) {
-                GetMyPhotosBaseQuery getMyPhotosQuery = new GetMyPhotosBaseQuery(user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
+                GetMyPhotosQuery getMyPhotosQuery = new GetMyPhotosQuery(user.getId(), PER_PAGE, currentCount / PER_PAGE + 1);
                 view.inject(getMyPhotosQuery);
                 return getMyPhotosQuery;
             }

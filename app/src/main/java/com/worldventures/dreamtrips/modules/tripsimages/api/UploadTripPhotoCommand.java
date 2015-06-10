@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import javax.inject.Inject;
 

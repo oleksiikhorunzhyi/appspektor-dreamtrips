@@ -24,13 +24,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     private List<Flag> flags;
 
-    public static FullScreenPresenter create(View view, IFullScreenAvailableObject photo) {
+    public static FullScreenPresenter create(IFullScreenAvailableObject photo) {
         if (photo instanceof Photo) {
-            return new FSPhotoPresenter();
-        } else if (photo instanceof Inspiration) {
-            return new FSInspireMePM(view);
+            return new InteractiveFullscreenPresenter();
         }
-        return new ImageUploadTaskPM(view);
+        return new SimpleFullscreenPresenter();
     }
 
     public void setupPhoto(T photo) {
@@ -40,7 +38,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     public void setupType(Type type) {
         this.type = type;
         TrackingHelper.view(type, String.valueOf(photo.getFsId()), getUserId());
-
     }
 
     @Override
@@ -75,13 +72,13 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
 
     }
 
-    protected abstract boolean isLiked();
-
     protected abstract boolean isFlagVisible();
-
     protected abstract boolean isDeleteVisible();
-
     protected abstract boolean isLikeVisible();
+
+    protected boolean isLiked() {
+        return false;
+    }
 
     private boolean isLikeCountVisible() {
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;

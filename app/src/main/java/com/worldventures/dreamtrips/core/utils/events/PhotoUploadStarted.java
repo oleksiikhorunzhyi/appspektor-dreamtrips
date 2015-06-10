@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
 
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 public class PhotoUploadStarted {
     private ImageUploadTask uploadTask;

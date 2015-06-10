@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosBaseQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
@@ -13,20 +12,20 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPresen
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSInspireMePM;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FSPhotoPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.ImageUploadTaskPM;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SimpleFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenImageDetailsPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
@@ -43,29 +42,27 @@ import dagger.Provides;
                 InspireMePresenter.class,
                 MyImagesPresenter.class,
                 UserImagesPresenter.class,
-                YSBHPM.class,
+                YSBHPresenter.class,
                 FullScreenParentPresenter.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoParentPresenter.class,
                 CreatePhotoPresenter.class,
                 DetailedImagePresenter.class,
 
-                FSPhotoPresenter.class,
-                FSInspireMePM.class,
+                InteractiveFullscreenPresenter.class,
                 FullScreenPresenter.class,
-                ImageUploadTaskPM.class,
+                SimpleFullscreenPresenter.class,
 
                 TripImagesTabsFragment.class,
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
                 ImageDetailsPagerFragment.class,
-
+                FullScreenImageDetailsPagerFragment.class,
                 CreatePhotoFragment.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,
 
                 GetMyPhotosQuery.class,
-                GetMyPhotosBaseQuery.class
         },
         complete = false,
         library = true

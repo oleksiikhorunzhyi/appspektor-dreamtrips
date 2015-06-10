@@ -11,7 +11,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -25,20 +26,21 @@ import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+
 public class SnappyRepository {
 
     public static final String REGIONS = "regions_new";
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucketItems";
-    private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
-
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
-
+    public static final String IMAGE = "IMAGE";
+    private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
     private Context context;
     private ExecutorService executorService;
 
@@ -51,14 +53,6 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // Proxy helpers
     ///////////////////////////////////////////////////////////////////////////
-
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
-    }
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
-    }
 
     private void act(SnappyAction action) {
         executorService.execute(() -> {
@@ -113,10 +107,6 @@ public class SnappyRepository {
         return e.getMessage().contains("NotFound");
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Public
-    ///////////////////////////////////////////////////////////////////////////
-
     public void clearAll() {
         act((db) -> db.destroy());
     }
@@ -128,6 +118,10 @@ public class SnappyRepository {
         }).or(false);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Public
+    ///////////////////////////////////////////////////////////////////////////
+
     public <T> void putList(String key, List<T> list) {
         act(db -> db.put(key, list.toArray()));
     }
@@ -136,10 +130,6 @@ public class SnappyRepository {
         return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
                 .or(new ArrayList<>());
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // BucketItems
-    ///////////////////////////////////////////////////////////////////////////
 
     public void saveBucketList(List<BucketItem> items, String type) {
         putList(BUCKET_LIST + ":" + type, items);
@@ -155,6 +145,10 @@ public class SnappyRepository {
         return list;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // BucketItems
+    ///////////////////////////////////////////////////////////////////////////
+
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
     }
@@ -163,10 +157,6 @@ public class SnappyRepository {
         return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
                 .or(0);
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Trips
-    ///////////////////////////////////////////////////////////////////////////
 
     public void saveTrip(TripModel trip) {
         act(db -> db.put(TRIP_KEY + trip.getTripId(), trip));
@@ -180,6 +170,10 @@ public class SnappyRepository {
             }
         });
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Trips
+    ///////////////////////////////////////////////////////////////////////////
 
     public void saveDownloadVideoEntity(CachedEntity e) {
         act(db -> db.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e));
@@ -213,10 +207,6 @@ public class SnappyRepository {
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
     public void saveUploadImageTask(ImageUploadTask ut) {
         act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId(), ut));
     }
@@ -224,6 +214,10 @@ public class SnappyRepository {
     public void removeImageUploadTask(ImageUploadTask ut) {
         act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId()));
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Image Tasks
+    ///////////////////////////////////////////////////////////////////////////
 
     public List<ImageUploadTask> getAllImageUploadTask() {
         return actWithResult(db -> {
@@ -236,10 +230,6 @@ public class SnappyRepository {
         }).or(Collections.emptyList());
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
     public void saveBucketPhotoTask(BucketPhotoUploadTask task) {
         act(db -> db.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId(), task));
     }
@@ -248,6 +238,9 @@ public class SnappyRepository {
         act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo Tasks
+    ///////////////////////////////////////////////////////////////////////////
 
     public void addInviteMember(Member member) {
         act(db -> db.put(INVITE_MEMBER + member.getId(), member));
@@ -262,5 +255,24 @@ public class SnappyRepository {
             }
             return members;
         }).or(Collections.emptyList());
+    }
+
+    public void savePhotoEntityList(Type type, List<IFullScreenAvailableObject> items) {
+        putList(IMAGE + ":" + type, items);
+
+    }
+
+    public List<IFullScreenAvailableObject> readPhotoEntityList(Type type) {
+        return readList(IMAGE + ":" + type, IFullScreenAvailableObject.class);
+    }
+
+
+    private interface SnappyAction {
+        void call(DB db) throws SnappydbException;
+    }
+
+
+    private interface SnappyResult<T> {
+        T call(DB db) throws SnappydbException;
     }
 }

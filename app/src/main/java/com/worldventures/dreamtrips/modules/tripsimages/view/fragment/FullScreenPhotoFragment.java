@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailab
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
 
     @InjectView(R.id.iv_image)
-    protected SimpleDraweeView ivImage;
+    protected ScaleImageView ivImage;
     @InjectView(R.id.ll_global_content_wrapper)
     protected LinearLayout llContentWrapper;
     @InjectView(R.id.ll_top_container)
@@ -94,11 +95,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         }
 
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
-            tvSeeMore.setVisibility(View.GONE);
-        } else if (type == TripImagesListFragment.Type.INSPIRE_ME) {
-            actionSeeMore();
-        } else {
             actionSeeLess();
+            tvSeeMore.setVisibility(View.GONE);
+        } else {
+            actionSeeMore();
         }
     }
 
@@ -124,7 +124,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         int position = getArguments().getInt(EXTRA_POSITION);
         IFullScreenAvailableObject photo = activity.getPhoto(position);
 
-        return FullScreenPresenter.create(this, photo);
+        return FullScreenPresenter.create(photo);
     }
 
 
@@ -136,7 +136,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
                         getPresenter().onFbShare();
-                        } else {
+                    } else {
                         getPresenter().onTwitterShare();
                     }
                 }).show();
@@ -206,7 +206,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     @OnClick(R.id.iv_flag)
     public void actionFlag() {
         getPresenter().onFlagAction();
-     }
+    }
 
     @Override
     public void setFlags(List<Flag> flags) {

@@ -103,7 +103,7 @@ public class PickImageDialog implements ImageChooserListener {
 
     private void chooseImage() {
         chooserType = ChooserType.REQUEST_PICK_PICTURE;
-        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_PICK_PICTURE, FOLDERNAME, true);
+        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_PICK_PICTURE, FOLDERNAME, false);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -114,7 +114,7 @@ public class PickImageDialog implements ImageChooserListener {
 
     private void takePicture() {
         chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
-        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_CAPTURE_PICTURE, FOLDERNAME, true);
+        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_CAPTURE_PICTURE, FOLDERNAME, false);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -180,7 +180,7 @@ public class PickImageDialog implements ImageChooserListener {
     }
 
     private void reinitializeImageChooser() {
-        imageChooserManager = new ImageChooserManager(fragment, chooserType, FOLDERNAME, true);
+        imageChooserManager = new ImageChooserManager(fragment, chooserType, FOLDERNAME, false);
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.reinitialize(filePath);
     }

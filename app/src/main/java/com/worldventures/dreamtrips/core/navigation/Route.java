@@ -45,7 +45,7 @@ public enum Route {
     DETAIL_BUCKET(BucketDetailsFragment.class, 0),
     MAP(TripMapFragment.class, R.string.trips),
     ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
-    DREAMTRIPS(TripListFragment.class, R.string.trips),
+    TRIPLIST(TripListFragment.class, R.string.trips),
     OTA(OtaFragment.class, R.string.other_travel),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class, R.string.membership),
@@ -70,7 +70,7 @@ public enum Route {
     }
 
     public static Route restoreByClass(String clazzName) {
-        Route result = Route.DREAMTRIPS;
+        Route result = Route.TRIPLIST;
         for (Route route : values()) {
             if (route.getClazzName().equals(clazzName)) {
                 result = route;

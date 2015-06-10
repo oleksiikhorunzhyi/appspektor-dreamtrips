@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.component;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -45,6 +46,11 @@ public class RootComponentsProvider {
     public ComponentDescription getComponentByKey(String key) {
         return Queryable.from(activeComponents)
                 .firstOrDefault(c -> c.getKey().equalsIgnoreCase(key));
+    }
+
+    public ComponentDescription getComponentByFragment(Class<? extends Fragment> fragmentClass) {
+        return Queryable.from(activeComponents)
+                .firstOrDefault(c -> c.getFragmentClass().equals(fragmentClass));
     }
 
     public ComponentDescription getComponent(FragmentManager fm, int backstackOffset) {

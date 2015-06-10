@@ -65,7 +65,7 @@ import dagger.Provides;
 )
 public class TripsModule {
 
-    public static final String TRIPS = Route.DREAMTRIPS.name();
+    public static final String TRIPS = Route.TRIPLIST.name();
     public static final String MAP_TRIPS = Route.MAP.name();
     public static final String OTA = Route.OTA.name();
 

@@ -71,16 +71,16 @@ public class TripsModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripsComponent() {
-        return new ComponentDescription(TRIPS, R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
+        return new ComponentDescription(TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMapTripsComponent() {
-        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.drawable.ic_dreamtrips, true, TripMapFragment.class);
+        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, true, TripMapFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideOTAComponent() {
-        return new ComponentDescription(OTA, R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
+        return new ComponentDescription(OTA, R.string.other_travel, R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
     }
 }

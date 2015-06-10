@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
@@ -35,7 +35,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
+public class FullScreenPhotoFragment<T extends IFullScreenObject>
         extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
 
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
@@ -87,7 +87,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
 
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         type = activity.getType();
-        IFullScreenAvailableObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
+        IFullScreenObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
 
         if (photo != null) {
             getPresenter().setupPhoto((T) photo);
@@ -122,7 +122,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
         FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
         int position = getArguments().getInt(EXTRA_POSITION);
-        IFullScreenAvailableObject photo = activity.getPhoto(position);
+        IFullScreenObject photo = activity.getPhoto(position);
 
         return FullScreenPresenter.create(photo);
     }
@@ -166,6 +166,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenAvailableObject>
         if (tvLocation.getText().length() == 0) {
             tvLocation.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.user_photo)
+    void onUserClicked() {
     }
 
     @OnClick(R.id.ll_top_container)

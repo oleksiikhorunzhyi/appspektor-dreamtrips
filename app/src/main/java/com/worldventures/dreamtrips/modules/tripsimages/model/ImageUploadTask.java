@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class ImageUploadTask implements Serializable, IFullScreenAvailableObject, Parcelable {
+public class ImageUploadTask implements Serializable, IFullScreenObject, Parcelable {
 
     public static final Creator<ImageUploadTask> CREATOR = new Creator<ImageUploadTask>() {
         public ImageUploadTask createFromParcel(Parcel source) {
@@ -166,11 +166,6 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
-    public String getPhotoLocation() {
-        return "";
-    }
-
-    @Override
     public int getFsCommentCount() {
         return -1;
     }
@@ -196,16 +191,6 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     }
 
     @Override
-    public String getUserName() {
-        return user.getFullName();
-    }
-
-    @Override
-    public String getUserLocation() {
-        return locationName;
-    }
-
-    @Override
     public String getFsId() {
         return taskId.hashCode() + "";
     }
@@ -213,6 +198,11 @@ public class ImageUploadTask implements Serializable, IFullScreenAvailableObject
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Override
+    public User getUser() {
+        return null;
     }
 
     @Override

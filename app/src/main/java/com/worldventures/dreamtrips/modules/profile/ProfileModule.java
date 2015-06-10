@@ -20,9 +20,10 @@ import dagger.Provides;
 public class ProfileModule {
 
     public static final String MY_PROFILE = Route.MY_PROFILE.name();
+    public static final String EXTRA_USER = "user";
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideProfileComponent() {
-        return new ComponentDescription(MY_PROFILE, R.string.my_profile, R.drawable.ic_profile, ProfileFragment.class);
+        return new ComponentDescription(MY_PROFILE, 0, R.string.my_profile, R.drawable.ic_profile, ProfileFragment.class);
     }
 }

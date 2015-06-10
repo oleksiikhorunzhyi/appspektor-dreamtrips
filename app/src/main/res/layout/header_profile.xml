@@ -34,6 +34,7 @@
                 fresco:roundAsCircle="true"/>
 
             <ImageView
+                android:id="@+id/avatar"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_gravity="bottom|end"
@@ -54,37 +55,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
             android:layout_gravity="center"
+            android:singleLine="true"
             android:text="Jason Gordon"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
             android:textSize="22sp"/>
 
         <TextView
-            android:id="@+id/gold_member"
+            android:id="@+id/user_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Gold Member"
             android:drawableStart="@drawable/gold_member"
+            android:drawableLeft="@drawable/gold_member"
             android:drawablePadding="@dimen/spacing_small"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/golden_brown"/>
+            android:textColor="@color/golden_user"/>
 
 
     </LinearLayout>
 
 
     <FrameLayout
-        android:id="@+id/gradient"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignBottom="@+id/user_cover"
-        android:background="@drawable/black_gradient"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/cover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

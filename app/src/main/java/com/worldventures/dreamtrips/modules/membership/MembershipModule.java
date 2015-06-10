@@ -60,6 +60,6 @@ import dagger.Provides;
 public class MembershipModule {
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMembershipComponent() {
-        return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
+        return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
     }
 }

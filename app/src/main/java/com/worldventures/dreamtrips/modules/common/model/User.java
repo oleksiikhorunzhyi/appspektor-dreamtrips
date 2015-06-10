@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,6 +33,11 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     private String lastName;
     private String location;
     private Date birthDate;
+
+    private int dreamTripsPoints;
+    private int roviaBucks;
+    private int tripImagesCount;
+    private int bucketListItemsCount;
 
     private String coverPath;
 
@@ -68,10 +74,6 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         return coverPath;
     }
 
-    public List<String> getSubscriptions() {
-        return subscriptions;
-    }
-
     public void setCoverPath(String coverPath) {
         this.coverPath = coverPath;
     }
@@ -96,24 +98,28 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public int getDreamTripsPoints() {
+        return dreamTripsPoints;
+    }
+
+    public int getRoviaBucks() {
+        return roviaBucks;
+    }
+
+    public int getTripImagesCount() {
+        return tripImagesCount;
+    }
+
+    public int getBucketListItemsCount() {
+        return bucketListItemsCount;
     }
 
     public String getLocation() {
@@ -133,7 +139,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     }
 
     public String getFullName() {
-        return getFirstName() + " " + getLastName();
+        return TextUtils.join(" ", new String[]{getFirstName(), getLastName()});
     }
 
     public boolean isMember() {
@@ -232,6 +238,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         public void setThumb(String thumb) {
             this.thumb = thumb;
         }
+
 
         @Override
         public int describeContents() {

@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Inspiration implements IFullScreenAvailableObject, Parcelable {
+import com.worldventures.dreamtrips.modules.common.model.User;
+
+public class Inspiration implements IFullScreenObject, Parcelable {
 
     public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
         public Inspiration createFromParcel(Parcel source) {
@@ -89,17 +91,17 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
     }
 
     @Override
+    public User getUser() {
+        return null;
+    }
+
+    @Override
     public String getFsId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public String getPhotoLocation() {
-        return "";
     }
 
     @Override
@@ -127,13 +129,4 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
         return "";
     }
 
-    @Override
-    public String getUserName() {
-        return author;
-    }
-
-    @Override
-    public String getUserLocation() {
-        return "";
-    }
-}
+ }

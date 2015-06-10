@@ -73,6 +73,6 @@ public class TripsImagesModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripImagesComponent() {
-        return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
+        return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
     }
 }

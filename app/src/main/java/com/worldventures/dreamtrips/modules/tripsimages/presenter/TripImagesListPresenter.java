@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObject> extends Presenter<TripImagesListPresenter.View> {
+public abstract class TripImagesListPresenter<T extends IFullScreenObject> extends Presenter<TripImagesListPresenter.View> {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -110,8 +110,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
 
     public void onItemClick(int position) {
         if (position != -1) {
-            List<IFullScreenAvailableObject> objects = view.getPhotosFromAdapter();
-            IFullScreenAvailableObject obj = objects.get(position);
+            List<IFullScreenObject> objects = view.getPhotosFromAdapter();
+            IFullScreenObject obj = objects.get(position);
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
                     dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
@@ -147,7 +147,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
     }
 
     public void onEventMainThread(PhotoDeletedEvent event) {
-        List<IFullScreenAvailableObject> photosFromAdapter = view.getPhotosFromAdapter();
+        List<IFullScreenObject> photosFromAdapter = view.getPhotosFromAdapter();
         for (int i = 0; i < photosFromAdapter.size(); i++) {
             Object o = photosFromAdapter.get(i);
             if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getPhotoId())) {
@@ -183,8 +183,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
-    public interface View extends Presenter.View, AdapterView<IFullScreenAvailableObject> {
-        List<IFullScreenAvailableObject> getPhotosFromAdapter();
+    public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
+        List<IFullScreenObject> getPhotosFromAdapter();
 
         void startLoading();
 
@@ -216,7 +216,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenAvailableObje
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
-                    List<IFullScreenAvailableObject> list = new ArrayList<>();
+                    List<IFullScreenObject> list = new ArrayList<>();
                     if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
                         list.addAll(items);
                         resetLazyLoadFields();

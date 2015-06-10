@@ -1,48 +1,52 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class ProfileFragment extends BaseFragment<ProfilePresenter>
-        implements ProfilePresenter.View {
+        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.user_cover)
     protected SimpleDraweeView userCover;
 
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView userPhoto;
+    @InjectView(R.id.cover)
+    protected ImageView cover;
+    @InjectView(R.id.avatar)
+    protected ImageView avatar;
     @InjectView(R.id.user_name)
     protected TextView userName;
     @InjectView(R.id.et_date_of_birth)
@@ -53,20 +57,36 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected TextView tripImages;
     @InjectView(R.id.dream_trips)
     protected TextView trips;
+    @InjectView(R.id.update_info)
+    protected TextView updateInfo;
+    @InjectView(R.id.user_status)
+    protected TextView userStatus;
+    @InjectView(R.id.add_friend)
+    protected TextView addFriend;
     @InjectView(R.id.bucket_list)
     protected TextView buckets;
-    @Optional
     @InjectView(R.id.sv)
     protected ScrollView sv;
+    @InjectView(R.id.friend_request)
+    protected ViewGroup friendRequest;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
     protected DTEditText etFrom;
     @InjectView(R.id.et_live_in)
     protected DTEditText etLiveIn;
-
-    @Inject
-    protected FragmentCompass fragmentCompass;
+    @InjectView(R.id.dt_points)
+    protected TextView dtPoints;
+    @InjectView(R.id.rovia_bucks)
+    protected TextView roviaBucks;
+    @InjectView(R.id.user_balance)
+    protected ViewGroup userBalance;
+    @InjectView(R.id.accept)
+    protected ButtonRectangle accept;
+    @InjectView(R.id.reject)
+    protected ButtonRectangle reject;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout swipeContainer;
 
     private PickImageDialog pid;
 
@@ -76,18 +96,14 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         layoutConfiguration();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        fragmentCompass.pop();
-        fragmentCompass.replace(Route.MY_PROFILE);
-    }
-
     private void layoutConfiguration() {
-        if (sv != null) {
-            int minSideSize = getMinSideSize(getActivity());
-            userCover.getLayoutParams().height = minSideSize;
-        }
+        int minSideSize = ViewUtils.getMinSideSize(getActivity());
+        if (ViewUtils.isLandscapeOrientation(getActivity())) minSideSize /= 2;
+        userCover.getLayoutParams().height = minSideSize;
+        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
+        accept.getTextView().setPadding(padding, 0, padding, 0);
+        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
+        swipeContainer.setOnRefreshListener(this);
     }
 
     @Override
@@ -119,6 +135,18 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick() {
+        getPresenter().photoClicked();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem logout = menu.findItem(R.id.item_logout);
+        logout.setVisible(getPresenter().isCurrentUserProfile());
+    }
+
+    @Override
+    public void openAvatarPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
@@ -176,7 +204,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @OnClick(R.id.user_cover)
-    public void onCoverClick(ImageView iv) {
+    public void onCoverClick() {
+        getPresenter().coverClicked();
+    }
+
+    @Override
+    public void openCoverPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_cover_header));
         this.pid.setCallback(getPresenter().provideCoverChooseCallback());
@@ -216,6 +249,118 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void setBucketItemsCount(int count) {
         buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
+    }
+
+    @Override
+    public void hideAccountContent() {
+        cover.setVisibility(View.GONE);
+        avatar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAccountContent() {
+        cover.setVisibility(View.VISIBLE);
+        avatar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showAddFriend() {
+        addFriend.setVisibility(View.VISIBLE);
+        updateInfo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showUpdateProfile() {
+        addFriend.setVisibility(View.GONE);
+        updateInfo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setIsFriend(boolean isFriend) {
+        addFriend.setCompoundDrawablesWithIntrinsicBounds(isFriend
+                        ? R.drawable.friend_added
+                        : R.drawable.add_friend,
+                0, 0, 0);
+    }
+
+    @Override
+    public void showFriendRequest() {
+        friendRequest.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFriendRequest() {
+        friendRequest.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setRoviaBucks(int count) {
+        roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
+    }
+
+    @Override
+    public void setDreamTripPoints(int count) {
+        dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
+    }
+
+    @Override
+    public void hideBalance() {
+        userBalance.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showBalance() {
+        userBalance.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setMember() {
+        userStatus.setTextColor(getResources().getColor(R.color.white));
+        userStatus.setText(R.string.profile_member);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(0,
+                0, 0, 0);
+
+    }
+
+    @Override
+    public void setGold() {
+        userStatus.setTextColor(getResources().getColor(R.color.golden_user));
+        userStatus.setText(R.string.profile_golden);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
+                0, 0, 0);
+    }
+
+    @Override
+    public void setPlatinum() {
+        userStatus.setTextColor(getResources().getColor(R.color.platinum_user));
+        userStatus.setText(R.string.profile_platinum);
+        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
+                0, 0, 0);
+    }
+
+    @OnClick(R.id.add_friend)
+    void onAddFriend() {
+
+    }
+
+    @OnClick(R.id.update_info)
+    void onUpdateInfo() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        getPresenter().onRefresh();
+    }
+
+    @Override
+    public void startLoading() {
+        swipeContainer.post(() -> swipeContainer.setRefreshing(true));
+    }
+
+    @Override
+    public void finishLoading() {
+        swipeContainer.setRefreshing(false);
     }
 
     private void showLogoutDialog() {

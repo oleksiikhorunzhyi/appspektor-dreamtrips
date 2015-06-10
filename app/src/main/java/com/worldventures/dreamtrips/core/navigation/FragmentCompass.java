@@ -96,6 +96,10 @@ public class FragmentCompass {
         this.supportFragmentManager = supportFragmentManager;
     }
 
+    public FragmentManager getFragmentManager() {
+        return supportFragmentManager;
+    }
+
     protected void action(Action action, Route route, Bundle bundle) {
         if (validateState()) {
             try {

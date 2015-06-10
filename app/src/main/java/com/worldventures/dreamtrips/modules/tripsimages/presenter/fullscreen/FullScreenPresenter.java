@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.core.utils.events.UserClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -16,15 +17,14 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
-public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> extends Presenter<FullScreenPresenter.View> {
+public abstract class FullScreenPresenter<T extends IFullScreenObject> extends Presenter<FullScreenPresenter.View> {
 
     protected Type type;
-    protected User user;
     protected T photo;
 
     private List<Flag> flags;
 
-    public static FullScreenPresenter create(IFullScreenAvailableObject photo) {
+    public static FullScreenPresenter create(IFullScreenObject photo) {
         if (photo instanceof Photo) {
             return new InteractiveFullscreenPresenter();
         }
@@ -43,12 +43,16 @@ public abstract class FullScreenPresenter<T extends IFullScreenAvailableObject> 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        user = appSessionHolder.get().get().getUser();
         setupActualViewState();
     }
 
     public void onLikeAction() {
 
+    }
+
+    public void onUserClicked() {
+        User user = photo.getUser();
+        eventBus.postSticky(new UserClickedEvent(user));
     }
 
     public final void setupActualViewState() {

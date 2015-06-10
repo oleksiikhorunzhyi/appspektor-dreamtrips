@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:bind="http://robobinding.org/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#F0EFEF"
+              android:background="@color/profile_background"
               android:orientation="vertical"
               android:paddingBottom="24dp"
               tools:showIn="@layout/fragment_profile">
@@ -19,8 +18,8 @@
         <ImageView
             android:layout_width="@dimen/small_ic_size"
             android:layout_height="@dimen/small_ic_size"
-            android:layout_marginTop="3dp"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginTop="3dp"
             android:src="@drawable/ic_profile_home"/>
 
         <LinearLayout
@@ -42,8 +41,7 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="normal"
                 app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"
-                bind:text="${from}"/>
+                app:primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 
@@ -81,8 +79,7 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="normal"
                 app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"
-                bind:text="${livesIn}"/>
+                app:primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 
@@ -122,8 +119,7 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="normal"
                 app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"
-                bind:text="${dateOfBirth}"/>
+                app:primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 
@@ -160,8 +156,7 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="normal"
                 app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"
-                bind:text="${userId}"/>
+                app:primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 

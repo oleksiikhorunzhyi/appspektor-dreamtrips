@@ -63,11 +63,11 @@ public class InfoModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTermsOfServiceComponent() {
-        return new ComponentDescription(TERMS, R.string.terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
+        return new ComponentDescription(TERMS, R.string.terms, R.string.terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideFAQComponent() {
-        return new ComponentDescription(FAQ, R.string.faq, R.drawable.ic_faq, StaticInfoFragment.FAQFragment.class);
+        return new ComponentDescription(FAQ, R.string.faq, R.string.faq, R.drawable.ic_faq, StaticInfoFragment.FAQFragment.class);
     }
 }

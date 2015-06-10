@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -16,6 +17,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
@@ -39,6 +42,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
+    private User user;
+    private boolean isCurrentUserProfile;
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
@@ -69,22 +74,85 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.profile(getUserId());
-        User user = this.appSessionHolder.get().get().getUser();
-        view.setUserName(user.getUsername());
+        view.hideFriendRequest();
+        if (view.getArguments() != null) {
+            user = view.getArguments().getParcelable(ProfileModule.EXTRA_USER);
+            isCurrentUserProfile = getUser().equals(user);
+        } else {
+            user = getUser();
+            isCurrentUserProfile = true;
+        }
+
+        setUserProfileInfo();
+        if (!isCurrentUserProfile) {
+            setOtherUserProfile();
+        } else {
+            setCurrentUserProfile();
+        }
+
+        loadProfile();
+    }
+
+    public void onRefresh() {
+        loadProfile();
+    }
+
+    private void setUserProfileInfo() {
+        view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
         view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
 
+        if (user.isGold())
+            view.setGold();
+        else if (user.isPlatinum())
+            view.setPlatinum();
+        else
+            view.setMember();
+
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
+        view.setRoviaBucks(user.getRoviaBucks());
+        view.setDreamTripPoints(user.getDreamTripsPoints());
+    }
 
-        //TODO replace with real values
-        view.setTripImagesCount(0);
-        view.setTripsCount(0);
-        view.setBucketItemsCount(0);
+    private void setOtherUserProfile() {
+        view.hideAccountContent();
+        view.showAddFriend();
+        //TODO check has user sent a friend request
+        view.showFriendRequest();
+        //TODO add friend check
+        boolean isFriend = false;
+        view.setIsFriend(isFriend);
+        //TODO load user profile
+        //
+        view.hideBalance();
+    }
+
+    private void setCurrentUserProfile() {
+        TrackingHelper.profile(getUserId());
+        view.showUpdateProfile();
+        view.showBalance();
+        view.showAccountContent();
+    }
+
+    private void loadProfile() {
+        view.startLoading();
+        doRequest(new GetProfileQuery(), this::onProfileLoaded);
+    }
+
+    private void onProfileLoaded(User user) {
+        view.finishLoading();
+        this.user = user;
+        setUserProfileInfo();
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
+    }
+
+    public boolean isCurrentUserProfile() {
+        return isCurrentUserProfile;
     }
 
     @Override
@@ -132,6 +200,14 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         super.dropView();
     }
 
+    public void photoClicked() {
+        view.openAvatarPicker();
+    }
+
+    public void coverClicked() {
+        view.openCoverPicker();
+    }
+
     //don't use of get PREFIX
     public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
@@ -143,6 +219,24 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
 
     public interface View extends Presenter.View {
+        Bundle getArguments();
+
+        void startLoading();
+
+        void finishLoading();
+
+        void openAvatarPicker();
+
+        void openCoverPicker();
+
+        void hideAccountContent();
+
+        void showAccountContent();
+
+        void showAddFriend();
+
+        void showUpdateProfile();
+
         void setAvatarImage(Uri uri);
 
         void setCoverImage(Uri uri);
@@ -160,7 +254,29 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void setLivesIn(String location);
 
         void setTripImagesCount(int count);
+
         void setTripsCount(int count);
+
         void setBucketItemsCount(int count);
+
+        void showFriendRequest();
+
+        void hideFriendRequest();
+
+        void setIsFriend(boolean isFriend);
+
+        void setRoviaBucks(int count);
+
+        void setDreamTripPoints(int count);
+
+        void hideBalance();
+
+        void showBalance();
+
+        void setGold();
+
+        void setPlatinum();
+
+        void setMember();
     }
 }

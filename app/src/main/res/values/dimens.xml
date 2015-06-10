@@ -22,6 +22,11 @@
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
 
+    <!-- typical font sizes  -->
+    <dimen name="font_large">20sp</dimen>
+    <dimen name="font_normal">16sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+
     <!-- dimen for trip items -->
     <dimen name="tripImageHeight">200dp</dimen>
     <dimen name="tripImagePanelMargin">10dp</dimen>

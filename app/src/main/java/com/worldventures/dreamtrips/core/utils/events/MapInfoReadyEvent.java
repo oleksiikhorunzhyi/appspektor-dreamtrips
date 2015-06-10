@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.core.utils.events;
 /**
  *  1 on 05.02.15.
  */
-public class InfoWindowSizeEvent {
+public class MapInfoReadyEvent {
 
     private int offset;
 
-    public InfoWindowSizeEvent(int offset) {
+    public MapInfoReadyEvent(int offset) {
         this.offset = offset;
     }
 

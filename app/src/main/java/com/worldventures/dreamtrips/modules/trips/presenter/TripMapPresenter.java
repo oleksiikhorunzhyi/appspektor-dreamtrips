@@ -4,11 +4,12 @@ import android.os.Bundle;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
+import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
+import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
@@ -20,8 +21,8 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
 
     private List<TripModel> filteredTrips = new ArrayList<>();
     private String query;
-
-    private boolean popped = false;
+    private boolean mapReady;
+    private MapInfoReadyEvent pendingMapInfoEvent;
 
     public TripMapPresenter() {
         super();
@@ -30,20 +31,45 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        fragmentCompass.setContainerId(R.id.container_info);
+        fragmentCompass.disableBackStack();
     }
-
-    public void onMapLoaded() {
-        cachedTrips.clear();
-        cachedTrips.addAll(db.getTrips());
-        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
-        performFiltering();
-    }
-
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
             setFilters(event);
             performFiltering();
+        }
+    }
+
+    private void performFiltering() {
+        if (cachedTrips != null && cachedTrips.size() > 0) {
+            List<TripModel> filteredFromCache = performFiltering(cachedTrips);
+            this.filteredTrips.clear();
+            this.filteredTrips.addAll(Queryable.from(filteredFromCache).filter((input) -> input.containsQuery(query)).toList());
+            reloadPins();
+        }
+    }
+
+    public void applySearch(String query) {
+        this.query = query;
+        performFiltering();
+        removeInfoIfNeeded();
+    }
+
+    public void onMapLoaded() {
+        mapReady = true;
+        cachedTrips.clear();
+        cachedTrips.addAll(db.getTrips());
+        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
+        performFiltering();
+        checkPendingMapInfo();
+    }
+
+    private void checkPendingMapInfo() {
+        if (pendingMapInfoEvent != null) {
+            view.prepareInfoWindow(pendingMapInfoEvent.getOffset());
+            pendingMapInfoEvent = null;
         }
     }
 
@@ -54,57 +80,47 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
         }
     }
 
-    private void performFiltering() {
-        if (cachedTrips != null && cachedTrips.size() > 0) {
-            ArrayList<TripModel> filterdTrips = performFiltering(cachedTrips);
-            filteredTrips.clear();
-            filteredTrips.addAll(Queryable.from(filterdTrips).filter((input) -> input.containsQuery(query)).toList());
-            reloadPins();
-        }
-    }
-
-    public void applySearch(String query) {
-        this.query = query;
-        performFiltering();
-    }
-
-    public void onEvent(InfoWindowSizeEvent event) {
-        view.showInfoWindow(event.getOffset());
-    }
-
     public void onEvent(MenuPressedEvent event) {
-        onCameraChanged();
-    }
-
-    public void markerReady() {
-        eventBus.post(new ShowInfoWindowEvent());
+        removeInfoIfNeeded();
     }
 
     public void onMarkerClick(String id) {
-        TripModel resultTrip = null;
-        for (TripModel trip : filteredTrips) {
-            if (trip.getTripId().equals(id)) {
-                resultTrip = trip;
-                break;
-            }
-        }
+        openTrip(id);
+    }
 
+    private void openTrip(String id) {
+        TripModel resultTrip = Queryable
+                .from(filteredTrips)
+                .firstOrDefault(t -> t.getTripId().equals(id));
         Bundle bundle = new Bundle();
         bundle.putSerializable(TripMapInfoFragment.EXTRA_TRIP, resultTrip);
-        fragmentCompass.add(Route.MAP_INFO, bundle);
+        fragmentCompass.replace(Route.MAP_INFO, bundle);
+    }
+
+    public void onEvent(MapInfoReadyEvent event) {
+        if (!mapReady) pendingMapInfoEvent = event;
+        else {
+            pendingMapInfoEvent = null;
+            view.prepareInfoWindow(event.getOffset());
+        }
+    }
+
+    public void onMarkerInfoPositioned() {
+        eventBus.post(new ShowMapInfoEvent());
     }
 
     public void onCameraChanged() {
+        removeInfoIfNeeded();
+    }
+
+    private void removeInfoIfNeeded() {
         if (fragmentCompass.getCurrentFragment() instanceof TripMapInfoFragment) {
-            fragmentCompass.pop();
+            fragmentCompass.remove(Route.MAP_INFO.getClazzName());
         }
     }
 
     public void actionList() {
-        if (!popped) {
-            fragmentCompass.pop();
-            popped = true;
-        }
+        fragmentCompass.pop();
     }
 
     public interface View extends Presenter.View {
@@ -112,6 +128,6 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
 
         void clearMap();
 
-        void showInfoWindow(int offset);
+        void prepareInfoWindow(int offset);
     }
 }

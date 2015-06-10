@@ -2,11 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:fresco="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
-             android:layout_height="match_parent">
+             android:layout_height="match_parent"
+    >
 
     <RelativeLayout
         android:id="@+id/itemLayout"
-        android:layout_width="250dp"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
@@ -162,18 +163,18 @@
 
         <CheckedTextView
             android:id="@+id/imageViewAddToBucket"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
             android:layout_toLeftOf="@+id/imageViewLike"
-            android:checkMark="@drawable/ic_trip_like"
+            android:checkMark="@drawable/ic_trip_add_to_bucket"
             android:clickable="true"
             android:tag="like"/>
 
         <CheckedTextView
             android:id="@+id/imageViewLike"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/tripImagePanelMargin"

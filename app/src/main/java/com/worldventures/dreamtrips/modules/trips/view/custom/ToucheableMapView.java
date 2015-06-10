@@ -39,6 +39,6 @@ public class ToucheableMapView extends MapView {
 
     // Map Activity must implement this interface
     public interface MapTouchListener {
-        public void onUpdateMap();
+        void onUpdateMap();
     }
 }

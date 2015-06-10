@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
+import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +53,13 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     protected TextView textViewFeatured;
 
     @Override
+    protected TripMapInfoPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripMapInfoPresenter();
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void afterCreateView(final View rootView) {
         super.afterCreateView(rootView);
         getPresenter().setTrip((TripModel) getArguments().getSerializable(EXTRA_TRIP));
@@ -156,11 +164,6 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     @OnClick(R.id.imageViewLike)
     void onLike() {
         getPresenter().likeTrip();
-    }
-
-    @Override
-    protected TripMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripMapInfoPresenter();
     }
 
     @Override

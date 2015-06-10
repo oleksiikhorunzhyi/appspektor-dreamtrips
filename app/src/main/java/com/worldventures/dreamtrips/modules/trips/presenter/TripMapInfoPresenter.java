@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.worldventures.dreamtrips.core.utils.events.InfoWindowSizeEvent;
-import com.worldventures.dreamtrips.core.utils.events.ShowInfoWindowEvent;
+import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
+import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 
 public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter.View> {
 
@@ -14,15 +14,14 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
     }
 
     public void sendOffset(int offset) {
-        eventBus.post(new InfoWindowSizeEvent(offset));
+        eventBus.post(new MapInfoReadyEvent(offset));
     }
 
-    public void onEvent(ShowInfoWindowEvent ev) {
+    public void onEvent(ShowMapInfoEvent ev) {
         view.showLayout();
     }
 
     public void onClick() {
-        fragmentCompass.pop();
         activityRouter.openTripDetails(trip);
     }
 

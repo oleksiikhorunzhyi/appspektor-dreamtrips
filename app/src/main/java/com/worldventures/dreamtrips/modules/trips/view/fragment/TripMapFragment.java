@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
-import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -15,6 +14,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -29,83 +29,59 @@ import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 
 @Layout(R.layout.fragment_trip_map)
 @MenuResource(R.menu.menu_map)
 public class TripMapFragment extends BaseFragment<TripMapPresenter> implements TripMapPresenter.View {
 
-    @InjectView(R.id.map)
     protected ToucheableMapView mapView;
+    @InjectView(R.id.container_info)
+    protected FrameLayout infoContainer;
     @InjectView(R.id.container_no_google)
-    protected FrameLayout frameLayoutNoGoogle;
+    protected FrameLayout noGoogleContainer;
 
     protected GoogleMap googleMap;
-    private LatLng lastClickedLocation;
-
-    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String s) {
-            return false;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String s) {
-            if (getPresenter() != null) {
-                getPresenter().applySearch(s);
-                getPresenter().onCameraChanged();
-            }
-            return false;
-        }
-    };
-
-    private GoogleMap.CancelableCallback cancelableCallback = new GoogleMap.CancelableCallback() {
-        @Override
-        public void onFinish() {
-            getPresenter().markerReady();
-        }
-
-        @Override
-        public void onCancel() {
-            //nothing to do here
-        }
-    };
+    private Bundle mapBundle;
+    private static final String KEY_MAP = "map";
+    @Icicle LatLng selectedLocation;
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        MapsInitializer.initialize(getActivity());
-        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) != ConnectionResult.SUCCESS) {
-            mapView.setVisibility(View.GONE);
-            frameLayoutNoGoogle.setVisibility(View.VISIBLE);
-        } else {
-            mapView.onCreate(savedInstanceState);
-        }
+    protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
+        return new TripMapPresenter();
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState != null) mapBundle = savedInstanceState.getBundle(KEY_MAP);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+        if (mapView != null) {
+            Bundle mapBundle = new Bundle();
+            outState.putBundle(KEY_MAP, mapBundle);
+            mapView.onSaveInstanceState(mapBundle);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public void afterCreateView(View rootView) {
+        mapView = (ToucheableMapView) rootView.findViewById(R.id.map);
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) != ConnectionResult.SUCCESS) {
+            mapView.setVisibility(View.GONE);
+            noGoogleContainer.setVisibility(View.VISIBLE);
+        } else {
+            MapsInitializer.initialize(rootView.getContext());
+            mapView.onCreate(mapBundle);
+        }
         initMap();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        getPresenter().onCameraChanged();
-    }
-
-    private void initMap() {
-        mapView.getMapAsync((map) -> {
-            this.googleMap = map;
-            getPresenter().onMapLoaded();
-            this.googleMap.setOnMarkerClickListener((marker) -> {
-                getPresenter().onMarkerClick(marker.getSnippet());
-                lastClickedLocation = marker.getPosition();
-                return true;
-            });
-
-            this.mapView.setMapTouchListener(() -> getPresenter().onCameraChanged());
-            this.googleMap.setMyLocationEnabled(true);
-        });
     }
 
     @Override
@@ -114,7 +90,7 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnCloseListener(() -> {
-            getPresenter().applySearch(null);
+            TripMapFragment.this.getPresenter().applySearch(null);
             return false;
         });
         searchView.setOnQueryTextListener(onQueryTextListener);
@@ -148,25 +124,44 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
 
     @Override
     public void onDestroyView() {
-        cancelableCallback = null;
-        onQueryTextListener = null;
         mapView.removeAllViews();
-        mapView.onDestroy();
-        mapView = null;
-        googleMap = null;
+        if (googleMap != null) {
+            googleMap.clear();
+            googleMap.setOnMarkerClickListener(null);
+        }
         super.onDestroyView();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mapView != null)
-            mapView.onSaveInstanceState(outState);
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+        mapView = null;
+        googleMap = null;
     }
 
     @Override
-    protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripMapPresenter();
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Map stuff
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void initMap() {
+        mapView.getMapAsync(map -> {
+            googleMap = map;
+            googleMap.setMyLocationEnabled(true);
+            googleMap.setOnMarkerClickListener(marker -> {
+                selectedLocation = marker.getPosition();
+                getPresenter().onMarkerClick(marker.getSnippet());
+                return true;
+            });
+            mapView.setMapTouchListener(() -> getPresenter().onCameraChanged());
+            getPresenter().onMapLoaded();
+        });
     }
 
     @Override
@@ -185,15 +180,40 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     }
 
     @Override
-    public void showInfoWindow(int offset) {
-        updateMap(lastClickedLocation, offset);
+    public void prepareInfoWindow(int offset) {
+        animateToMarker(selectedLocation, offset);
     }
 
-    private void updateMap(final LatLng latLng, int offset) {
+    private void animateToMarker(LatLng latLng, int offset) {
         Projection projection = googleMap.getProjection();
         Point screenLocation = projection.toScreenLocation(latLng);
         screenLocation.y -= offset;
         LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), cancelableCallback);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new CancelableCallback() {
+            @Override
+            public void onFinish() {
+                getPresenter().onMarkerInfoPositioned();
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
     }
+
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+            if (getPresenter() != null) {
+                getPresenter().applySearch(s);
+            }
+            return true;
+        }
+    };
+
 }

@@ -10,10 +10,10 @@
         android:layout_height="match_parent"/>
 
     <FrameLayout
-        android:id="@+id/container_main"
+        android:id="@+id/container_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0"/>
+        />
 
     <FrameLayout
         android:id="@+id/container_no_google"

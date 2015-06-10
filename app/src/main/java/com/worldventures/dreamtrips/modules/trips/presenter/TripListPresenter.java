@@ -35,7 +35,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
     private boolean loadFromApi;
     private boolean loadWithStatus;
-    private boolean goneToMap;
 
     private DreamSpiceAdapterController<TripModel> adapterController;
 
@@ -176,10 +175,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     }
 
     public void actionMap() {
-        if (!goneToMap) {
-            fragmentCompass.replace(Route.MAP, null);
-            goneToMap = true;
-        }
+        fragmentCompass.replace(Route.MAP);
     }
 
     public void onItemClick(TripModel trip) {

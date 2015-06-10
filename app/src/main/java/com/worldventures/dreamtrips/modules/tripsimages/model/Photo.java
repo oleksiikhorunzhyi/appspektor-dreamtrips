@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Photo implements Parcelable, IFullScreenAvailableObject {
+public class Photo implements Parcelable, IFullScreenObject {
 
     private String title;
     private Date shotAt;
@@ -196,16 +196,6 @@ public class Photo implements Parcelable, IFullScreenAvailableObject {
         } else {
             return user.getAvatar().getMedium();
         }
-    }
-
-    @Override
-    public String getUserName() {
-        return user != null ? user.getUsername() : "";
-    }
-
-    @Override
-    public String getUserLocation() {
-        return user != null ? user.getLocation() : "";
     }
 
     @Override

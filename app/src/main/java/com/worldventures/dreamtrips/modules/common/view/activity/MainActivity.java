@@ -187,6 +187,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void updateSelection(ComponentDescription component) {
+        currentComponent = component;
         navigationDrawerFragment.setCurrentComponent(component);
     }
 

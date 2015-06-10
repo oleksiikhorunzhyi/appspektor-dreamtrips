@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -49,7 +49,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    private BaseArrayListAdapter<IFullScreenAvailableObject> arrayListAdapter;
+    private BaseArrayListAdapter<IFullScreenObject> arrayListAdapter;
     private LinearLayoutManager layoutManager;
 
     RecyclerViewStateDelegate stateDelegate;
@@ -127,7 +127,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public List<IFullScreenAvailableObject> getPhotosFromAdapter() {
+    public List<IFullScreenObject> getPhotosFromAdapter() {
         return arrayListAdapter.getItems();
     }
 
@@ -148,20 +148,20 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public void addAll(List<IFullScreenAvailableObject> items) {
+    public void addAll(List<IFullScreenObject> items) {
         int itemCount = arrayListAdapter.getItemCount();
         arrayListAdapter.addItems(items);
         arrayListAdapter.notifyItemRangeInserted(itemCount - 1, items.size());
     }
 
     @Override
-    public void add(IFullScreenAvailableObject item) {
+    public void add(IFullScreenObject item) {
         arrayListAdapter.addItem(item);
         arrayListAdapter.notifyItemInserted(arrayListAdapter.getItemCount() - 1);
     }
 
     @Override
-    public void add(int position, IFullScreenAvailableObject item) {
+    public void add(int position, IFullScreenObject item) {
         arrayListAdapter.addItem(position, item);
         arrayListAdapter.notifyItemInserted(position);
     }
@@ -172,7 +172,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public void replace(int position, IFullScreenAvailableObject item) {
+    public void replace(int position, IFullScreenObject item) {
         arrayListAdapter.replaceItem(position, item);
         arrayListAdapter.notifyItemChanged(position);
     }

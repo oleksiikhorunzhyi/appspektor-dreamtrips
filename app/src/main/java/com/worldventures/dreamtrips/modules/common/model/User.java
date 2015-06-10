@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -138,7 +139,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     }
 
     public String getFullName() {
-        return getFirstName() + " " + getLastName();
+        return TextUtils.join(" ", new String[]{getFirstName(), getLastName()});
     }
 
     public boolean isMember() {

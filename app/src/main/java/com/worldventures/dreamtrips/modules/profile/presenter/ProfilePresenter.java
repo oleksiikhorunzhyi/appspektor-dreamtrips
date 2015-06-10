@@ -98,7 +98,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     private void setUserProfileInfo() {
-        view.setUserName(TextUtils.join(" ", new String[]{user.getFirstName(), user.getLastName()}));
+        view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());

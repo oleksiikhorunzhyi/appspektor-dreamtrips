@@ -9,14 +9,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_item_photo)
-public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
+public class PhotoCell extends AbstractCell<IFullScreenObject> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView draweeViewPhoto;
@@ -43,10 +44,11 @@ public class PhotoCell extends AbstractCell<IFullScreenAvailableObject> {
     @Override
     protected void syncUIStateWithModel() {
         if (imageViewUser != null) {
-            this.userLocation.setText(getModelObject().getUserLocation());
+            User user = getModelObject().getUser();
+            this.userLocation.setText(user.getLocation());
             this.shotLocation.setText(getModelObject().getPhotoLocation());
             this.title.setText(getModelObject().getFSTitle());
-            this.userName.setText(getModelObject().getUserName());
+            this.userName.setText(user.getFullName());
         }
 
         Image fsImage = getModelObject().getFSImage();

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -257,13 +257,13 @@ public class SnappyRepository {
         }).or(Collections.emptyList());
     }
 
-    public void savePhotoEntityList(Type type, List<IFullScreenAvailableObject> items) {
+    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type, items);
 
     }
 
-    public List<IFullScreenAvailableObject> readPhotoEntityList(Type type) {
-        return readList(IMAGE + ":" + type, IFullScreenAvailableObject.class);
+    public List<IFullScreenObject> readPhotoEntityList(Type type) {
+        return readList(IMAGE + ":" + type, IFullScreenObject.class);
     }
 
 

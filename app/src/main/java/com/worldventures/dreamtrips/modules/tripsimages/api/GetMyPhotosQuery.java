@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenAvailableObject>> {
+public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     @Inject
     protected SnappyRepository db;
@@ -23,23 +23,23 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenAvailableObject
     protected int currentUserId;
 
     public GetMyPhotosQuery(int currentUserId, int perPage, int page) {
-        super((Class<ArrayList<IFullScreenAvailableObject>>) new ArrayList<IFullScreenAvailableObject>().getClass());
+        super((Class<ArrayList<IFullScreenObject>>) new ArrayList<IFullScreenObject>().getClass());
         this.currentUserId = currentUserId;
         this.perPage = perPage;
         this.page = page;
     }
 
     @Override
-    public ArrayList<IFullScreenAvailableObject> loadDataFromNetwork() throws Exception {
-        ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
+    public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
+        ArrayList<IFullScreenObject> result = new ArrayList<>();
         if (page > 1) result.addAll(getUploadTasks());
         result.addAll(loadFromApi());
         return result;
     }
 
-    private Collection<? extends IFullScreenAvailableObject> loadFromApi() {
+    private Collection<? extends IFullScreenObject> loadFromApi() {
         ArrayList<Photo> myPhotos = getService().getMyPhotos(currentUserId, perPage, page);
-        ArrayList<IFullScreenAvailableObject> result = new ArrayList<>();
+        ArrayList<IFullScreenObject> result = new ArrayList<>();
         result.addAll(myPhotos);
         return result;
     }

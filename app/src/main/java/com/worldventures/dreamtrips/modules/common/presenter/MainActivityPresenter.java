@@ -46,8 +46,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     }
 
     public void onEvent(OpenMenuItemEvent event) {
-        openComponent(event.getComponentDescription(), event.getArgs());
         view.updateSelection(event.getComponentDescription());
+        openComponent(event.getComponentDescription(), event.getArgs());
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {

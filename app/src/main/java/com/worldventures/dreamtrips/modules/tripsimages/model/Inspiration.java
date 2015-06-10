@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-public class Inspiration implements IFullScreenAvailableObject, Parcelable {
+public class Inspiration implements IFullScreenObject, Parcelable {
 
     public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
         public Inspiration createFromParcel(Parcel source) {
@@ -134,13 +134,4 @@ public class Inspiration implements IFullScreenAvailableObject, Parcelable {
         return "";
     }
 
-    @Override
-    public String getUserName() {
-        return author;
-    }
-
-    @Override
-    public String getUserLocation() {
-        return "";
-    }
-}
+ }

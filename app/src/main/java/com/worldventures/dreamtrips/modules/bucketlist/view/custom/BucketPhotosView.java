@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
@@ -250,7 +250,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public List getImages() {
-        return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenAvailableObject).toList();
+        return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenObject).toList();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

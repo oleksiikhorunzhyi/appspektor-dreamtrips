@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.io.Serializable;
 
-public interface IFullScreenAvailableObject extends Serializable, Parcelable {
+public interface IFullScreenObject extends Serializable, Parcelable {
 
     Image getFSImage();
 
@@ -17,10 +17,6 @@ public interface IFullScreenAvailableObject extends Serializable, Parcelable {
     String getFsShareText();
 
     String getFsId();
-
-    String getUserName();
-
-    String getUserLocation();
 
     String getPhotoLocation();
 

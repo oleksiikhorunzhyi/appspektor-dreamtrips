@@ -81,11 +81,9 @@
 
 
     <FrameLayout
-        android:id="@+id/gradient"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignBottom="@+id/user_cover"
-        android:background="@drawable/black_gradient"
         android:gravity="center_vertical"
         android:orientation="vertical">
 

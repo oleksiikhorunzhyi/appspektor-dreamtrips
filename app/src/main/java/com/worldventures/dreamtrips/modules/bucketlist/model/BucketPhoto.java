@@ -5,12 +5,12 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenAvailableObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import java.io.Serializable;
 
-public class BucketPhoto extends BaseEntity implements Serializable, IFullScreenAvailableObject, android.os.Parcelable {
+public class BucketPhoto extends BaseEntity implements Serializable, IFullScreenObject, android.os.Parcelable {
 
     public static final long serialVersionUID = 14534647;
     public static final Creator<BucketPhoto> CREATOR = new Creator<BucketPhoto>() {
@@ -65,16 +65,6 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
 
     @Override
     public String getFsShareText() {
-        return "";
-    }
-
-    @Override
-    public String getUserName() {
-        return "";
-    }
-
-    @Override
-    public String getUserLocation() {
         return "";
     }
 

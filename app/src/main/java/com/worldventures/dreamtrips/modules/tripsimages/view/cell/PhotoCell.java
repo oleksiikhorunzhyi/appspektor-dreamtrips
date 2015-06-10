@@ -46,7 +46,7 @@ public class PhotoCell extends AbstractCell<IFullScreenObject> {
         if (imageViewUser != null) {
             User user = getModelObject().getUser();
             this.userLocation.setText(user.getLocation());
-            this.shotLocation.setText(getModelObject().getPhotoLocation());
+            this.shotLocation.setText(getModelObject().getFsLocation());
             this.title.setText(getModelObject().getFSTitle());
             this.userName.setText(user.getFullName());
         }

@@ -166,11 +166,6 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
     }
 
     @Override
-    public String getPhotoLocation() {
-        return "";
-    }
-
-    @Override
     public int getFsCommentCount() {
         return -1;
     }

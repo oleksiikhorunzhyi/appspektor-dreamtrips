@@ -18,8 +18,6 @@ public interface IFullScreenObject extends Serializable, Parcelable {
 
     String getFsId();
 
-    String getPhotoLocation();
-
     int getFsCommentCount();
 
     int getFsLikeCount();

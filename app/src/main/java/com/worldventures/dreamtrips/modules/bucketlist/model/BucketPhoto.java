@@ -69,11 +69,6 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     }
 
     @Override
-    public String getPhotoLocation() {
-        return "";
-    }
-
-    @Override
     public int getFsCommentCount() {
         return -1;
     }

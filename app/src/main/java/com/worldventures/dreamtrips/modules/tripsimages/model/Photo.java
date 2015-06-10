@@ -162,11 +162,6 @@ public class Photo implements Parcelable, IFullScreenObject {
     }
 
     @Override
-    public String getPhotoLocation() {
-        return location != null ? location.getName() : "";
-    }
-
-    @Override
     public int getFsCommentCount() {
         return -1;
     }

@@ -4,13 +4,12 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.event.FilterShowFavoritesEvent;
 import com.worldventures.dreamtrips.modules.trips.event.FilterShowRecentlyAddedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.FilterRecentlyAddedModel;
 
 @Layout(R.layout.adapter_item_filter_one_checkbox)
-public class RecentlyAddedCell extends BoolCell<FilterRecentlyAddedModel> {
-    public RecentlyAddedCell(View view) {
+public class FilterRecentlyAddedCell extends BoolCell<FilterRecentlyAddedModel> {
+    public FilterRecentlyAddedCell(View view) {
         super(view);
     }
 

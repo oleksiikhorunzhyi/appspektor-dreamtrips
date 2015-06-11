@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RecentlyAddedCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
@@ -58,7 +58,7 @@ import dagger.Provides;
                 TripCell.class,
                 FavoritesCell.class,
                 HeaderRegionCell.class,
-                RecentlyAddedCell.class
+                FilterRecentlyAddedCell.class
         },
         complete = false,
         library = true

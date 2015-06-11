@@ -124,7 +124,9 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
 
     @Override
     public void onDestroyView() {
-        mapView.removeAllViews();
+        if (mapView != null) {
+            mapView.removeAllViews();
+        }
         if (googleMap != null) {
             googleMap.clear();
             googleMap.setOnMarkerClickListener(null);
@@ -135,8 +137,10 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
-        mapView = null;
+        if (mapView != null) {
+            mapView.onDestroy();
+            mapView = null;
+        }
         googleMap = null;
     }
 

@@ -49,7 +49,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
                     InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
             bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
             activityRouter.openEditInviteActivity(inviteTemplate);
-            TrackingHelper.inviteShareTemplate(getUserId(), inviteTemplate.getId());
+            TrackingHelper.inviteShareTemplate(getAccountUserId(), inviteTemplate.getId());
         } else {
             view.informUser(R.string.invite_select_first);
         }

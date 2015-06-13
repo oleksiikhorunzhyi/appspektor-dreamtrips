@@ -71,7 +71,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             resetSelected();
             setMembers();
             getInvitations();
-            TrackingHelper.inviteShareContacts(getUserId());
+            TrackingHelper.inviteShareContacts(getAccountUserId());
         });
     }
 

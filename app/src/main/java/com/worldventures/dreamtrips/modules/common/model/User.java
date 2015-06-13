@@ -4,11 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class User extends BaseEntity implements Parcelable, Serializable {
+public class User extends BaseEntity implements Parcelable {
 
     public static final String RBS_SUBSCTIPTION = "RBS";
     public static final String DTM_SUBSCTIPTION = "DTM";
@@ -190,6 +189,24 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         dest.writeParcelable(this.avatar, flags);
         dest.writeString(this.coverPath);
         dest.writeInt(this.id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        User user = (User) o;
+
+        return !(username != null ? !username.equals(user.username) : user.username != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        return result;
     }
 
     public static class Avatar implements Parcelable {

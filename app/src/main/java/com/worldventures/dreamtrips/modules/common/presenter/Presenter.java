@@ -150,12 +150,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     // User helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    public User getUser() {
+    public User getAccount() {
         return appSessionHolder.get().get().getUser();
     }
 
-    public String getUserId() {
-        return getUser().getUsername();
+    public String getAccountUserId() {
+        return getAccount().getUsername();
     }
 
     ///////////////////////////////////////////////////////////////////////////

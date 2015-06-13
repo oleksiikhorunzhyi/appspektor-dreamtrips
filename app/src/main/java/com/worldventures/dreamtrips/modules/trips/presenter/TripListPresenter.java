@@ -92,7 +92,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         loadWithStatus = true;
         adapterController.setAdapter(view.getAdapter());
         adapterController.reload();
-        TrackingHelper.dreamTrips(getUserId());
+        TrackingHelper.dreamTrips(getAccountUserId());
     }
 
     public void loadFromApi() {

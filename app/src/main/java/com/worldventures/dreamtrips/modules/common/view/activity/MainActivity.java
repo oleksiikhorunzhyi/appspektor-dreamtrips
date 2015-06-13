@@ -81,7 +81,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        getPresentationModel().showUserIfNeeded();
         makeActionBarTransparent(transparentToolbar);
     }
 
@@ -124,6 +123,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             getSupportActionBar().setTitle("");
     }
 
+    @Override
     public void makeActionBarTransparent(boolean isTransparent) {
         if (ViewUtils.isLandscapeOrientation(this)) isTransparent = false;
         //

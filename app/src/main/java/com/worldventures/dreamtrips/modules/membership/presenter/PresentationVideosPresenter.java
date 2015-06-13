@@ -109,7 +109,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
-                getUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
+                getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
     }
 
 
@@ -145,7 +145,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
 
     public void onEvent(TrackVideoStatusEvent event) {
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
-                getUserId(), event.getAction(), event.getName());
+                getAccountUserId(), event.getAction(), event.getName());
     }
 
     @Override

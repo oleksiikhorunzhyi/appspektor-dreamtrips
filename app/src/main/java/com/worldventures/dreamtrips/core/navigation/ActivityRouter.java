@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
@@ -21,6 +22,8 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -71,6 +74,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
         startActivity(SimpleStreamPlayerActivity.class, bundle);
+    }
+
+    public void openUserProfile(User user) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ProfileModule.EXTRA_USER, user);
+        startActivity(ProfileActivity.class, bundle);
     }
 
     public void openFullScreenTrip(List<Object> photoList, int position) {

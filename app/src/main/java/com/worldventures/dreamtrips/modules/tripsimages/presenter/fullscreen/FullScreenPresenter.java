@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.worldventures.dreamtrips.core.utils.events.UserClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -37,7 +36,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public void setupType(Type type) {
         this.type = type;
-        TrackingHelper.view(type, String.valueOf(photo.getFsId()), getUserId());
+        TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
     @Override
@@ -52,7 +51,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public void onUserClicked() {
         User user = photo.getUser();
-        eventBus.postSticky(new UserClickedEvent(user));
+        activityRouter.openUserProfile(user);
     }
 
     public final void setupActualViewState() {
@@ -71,7 +70,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setUserPhoto(photo.getFsUserPhoto());
 
         if (photo instanceof Inspiration) {
-            TrackingHelper.insprDetails(getUserId(), photo.getFsId());
+            TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
         }
 
     }

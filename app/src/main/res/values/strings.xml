@@ -273,5 +273,9 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
+    <string name="profile_request">Request</string>
+    <string name="profile_respond">Respond</string>
+    <string name="social_add_friend_yes">Yes</string>
+    <string name="social_add_friend_no">No</string>
 
 </resources>

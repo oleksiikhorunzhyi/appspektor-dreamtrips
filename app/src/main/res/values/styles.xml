@@ -11,7 +11,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:background">?attr/colorPrimary</item>
+    </style>
 
+    <style name="TransientToolBarStyle" parent="ToolBarStyle">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="profile_fragment_edit_text">
@@ -28,13 +31,16 @@
     <style name="menu_labels_style">
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="myRecyclerViewStyle">
         <item name="android:clipChildren">false</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:scrollbarStyle">outsideOverlay</item>
         <item name="android:scrollbars">vertical</item>
     </style>
+
     <style name="commonListItemStyle"></style>
+
     <style name="myCustomMenuTextApearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@color/selector_action_button_popular</item>
     </style>

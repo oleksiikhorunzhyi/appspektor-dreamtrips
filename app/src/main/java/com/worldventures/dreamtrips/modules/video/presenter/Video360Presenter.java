@@ -40,7 +40,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
-        TrackingHelper.video360(getUserId());
+        TrackingHelper.video360(getAccountUserId());
     }
 
     @Override
@@ -133,12 +133,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_360,
-                getUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
+                getAccountUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
     }
 
     public void onEvent(TrackVideoStatusEvent event) {
         TrackingHelper.videoAction(TrackingHelper.ACTION_360,
-                getUserId(), event.getAction(), event.getName());
+                getAccountUserId(), event.getAction(), event.getName());
     }
 
 

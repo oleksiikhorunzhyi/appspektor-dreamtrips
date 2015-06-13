@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RecentlyAddedCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
@@ -65,7 +65,7 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
         this.arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
         this.arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
-        this.arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, RecentlyAddedCell.class);
+        this.arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
 
         this.recyclerView.setHasFixedSize(false);
         this.recyclerView.setAdapter(this.arrayListAdapter);

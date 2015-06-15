@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.gc.materialdesign.views.CheckBox
+                <CheckBox
                     android:id="@+id/checkBoxTerms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

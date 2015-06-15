@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.gc.materialdesign.views.ButtonRectangle;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -23,9 +23,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @InjectView(R.id.friend_request)
     protected ViewGroup friendRequest;
     @InjectView(R.id.accept)
-    protected ButtonRectangle accept;
+    protected Button accept;
     @InjectView(R.id.reject)
-    protected ButtonRectangle reject;
+    protected Button reject;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -47,8 +47,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         int padding = getResources().getDimensionPixelSize(R.dimen.spacing_large);
         accept.setText(getString(R.string.profile_accept));
         reject.setText(getString(R.string.profile_reject));
-        accept.getTextView().setPadding(padding, 0, padding, 0);
-        reject.getTextView().setPadding(padding, 0, padding, 0);
+        accept.setPadding(padding, 0, padding, 0);
+        reject.setPadding(padding, 0, padding, 0);
         reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
     }
 

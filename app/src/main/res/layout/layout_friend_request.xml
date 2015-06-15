@@ -26,14 +26,14 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <Button
             android:id="@+id/accept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="fadsfdsa"
             />
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <Button
             android:id="@+id/reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

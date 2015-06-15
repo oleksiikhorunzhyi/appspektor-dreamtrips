@@ -70,6 +70,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         doRequest(new GetProfileQuery(user), this::onProfileLoaded);
     }
 
+    public void openFriends() {
+        activityRouter.openFriends();
+    }
+
 
     public interface View extends Presenter.View {
         Bundle getArguments();

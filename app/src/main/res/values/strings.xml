@@ -21,7 +21,6 @@
     <string name="action_filter">Filter</string>
     <string name="action_map">Map</string>
     <string name="action_like">Like</string>
-    <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="trips">DreamTrips</string>
     <string name="drawer_open">Menu Opened</string>
@@ -189,7 +188,6 @@
         <item>This year</item>
         <item>Next year</item>
         <item>@string/someday</item>
-        //do not translate
     </string-array>
     <string-array name="dialog_add_bucket_photo">
         <item>@string/choose_fb</item>
@@ -242,8 +240,7 @@
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>
     <string name="email_is_not_valid">Email is not valid</string>
     <string name="invitation_deselect_all">Deselect All</string>
-    <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, %s
-        <br/>Check it out <a href="%s">here</a>.]]></string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, %s <br/>Check it out <a href="%s">here</a>.]]></string>
     <string name="terms_and_conditions"><![CDATA[I have read and accept the <a href="http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html">Terms & Conditions</a>]]></string>
     <string name="invite_add_photo">Add Photo</string>
     <string name="invite_select_first">Select contacts at first</string>
@@ -257,22 +254,24 @@
         <item>@string/choose_camera</item>
         <item>@string/choose_multiselect</item>
     </string-array>
-    
+
     <string name="profile_update_info">Update Info</string>
     <string name="profile_trip_images">%d Trip Images</string>
     <string name="profile_bucket_list">%d Bucket Items</string>
-    <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_post">Post</string>
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
     <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia Bucks</string>
+    <string name="profile_platinum">Platinum member</string>
+    <string name="profile_golden">Golden member</string>
+
+    <string name="action_add_to_bucket">Add to Bucket list</string>
+    <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_add_friend">Add Friend</string>
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
-    <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Golden member</string>
-    <string name="profile_member">Member</string>
+
 </resources>

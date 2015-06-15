@@ -99,7 +99,7 @@
     <string-array name="photo_dialog_items">
         <item>拍攝照片</item>
         <item>選擇照片</item>
-    </string-array>-
+    </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
         <item>Twitter</item>
@@ -188,8 +188,7 @@
         <item>今年</item>
         <item>明年</item>
         <item>@string/someday</item>
-        //do not translate
-    </string-array>-
+    </string-array>
     <string-array name="dialog_add_bucket_photo">
         <item>@string/choose_fb</item>
         <item>@string/choose_camera</item>
@@ -245,5 +244,34 @@
     <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
     <string name="invite_add_photo">新增照片</string>
     <string name="invite_select_first">在第一選擇聯繫人</string>
+    <string name="filters_show_favorite">只顯示喜愛旅程</string>
+    <string name="filter_recently_added">先顯示近期旅程</string>
+    <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
+    <string name="choose_multiselect">選擇照片</string>
+
+    <string-array name="dialog_add_bucket_photo_multiselect">
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_multiselect</item>
+    </string-array>
+
+    <string name="profile_update_info">資料更新</string>
+    <string name="profile_trip_images">%d 旅行圖片</string>
+    <string name="profile_bucket_list">%d 目標清單</string>
+    <string name="profile_post">新文章</string>
+    <string name="profile_friends">朋友</string>
+    <string name="profile_messages">訊息</string>
+    <string name="profile_more">更多</string>
+    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT 點數</string>
+    <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia 幣</string>
+    <string name="profile_platinum">白金會員</string>
+    <string name="profile_golden">黃金會員</string>
+
+    <string name="action_add_to_bucket">Add to Bucket list</string>
+    <string name="profile_dream_trips">%d Dream Trips</string>
+    <string name="profile_add_friend">Add Friend</string>
+    <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
+    <string name="profile_accept">Confirm</string>
+    <string name="profile_reject">Delete request</string>
 
 </resources>

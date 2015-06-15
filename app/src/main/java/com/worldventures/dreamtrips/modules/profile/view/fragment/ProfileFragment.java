@@ -312,7 +312,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void setMember() {
         userStatus.setTextColor(getResources().getColor(R.color.white));
-        userStatus.setText(R.string.profile_member);
+        userStatus.setText("");
         userStatus.setCompoundDrawablesWithIntrinsicBounds(0,
                 0, 0, 0);
 

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/user_cover"
@@ -16,8 +15,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottomContainer"
+        android:layout_alignBottom="@+id/bottomContainer"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/spacing_large"
         android:orientation="vertical">
 
         <FrameLayout
@@ -43,8 +43,9 @@
 
             <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
                 android:id="@+id/pb"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/spacing_huge"
+                android:layout_height="@dimen/spacing_huge"
+                android:layout_gravity="center"
                 android:background="@color/theme_main_darker"
                 android:visibility="visible"/>
 
@@ -59,7 +60,6 @@
             android:layout_marginRight="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_normal"
             android:singleLine="true"
-            android:text="Jason Gordon"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
             android:textSize="22sp"/>
@@ -69,12 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/gold_member"
             android:drawablePadding="@dimen/spacing_small"
-            android:drawableStart="@drawable/gold_member"
-            android:text="Gold Member"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/golden_user"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
 
     </LinearLayout>
@@ -95,7 +91,6 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/spacing_small"
             android:src="@drawable/ic_photo_camera"/>
-
     </FrameLayout>
 
 </RelativeLayout>

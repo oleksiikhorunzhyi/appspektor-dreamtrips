@@ -57,6 +57,6 @@
     <dimen name="photo_thumb_size">150dp</dimen>
     <dimen name="trip_thumb_height">200dp</dimen>
 
-    <dimen name="profile_cover_height">350dp</dimen>
+    <dimen name="profile_cover_height">250dp</dimen>
 
 </resources>

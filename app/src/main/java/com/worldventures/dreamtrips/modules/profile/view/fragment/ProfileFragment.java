@@ -10,11 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
@@ -86,7 +88,10 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected ButtonRectangle reject;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout swipeContainer;
-
+    @InjectView(R.id.expandable_info)
+    protected ExpandableLayout info;
+    @InjectView(R.id.more)
+    protected ViewGroup more;
     private PickImageDialog pid;
 
     @Override
@@ -100,6 +105,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         accept.getTextView().setPadding(padding, 0, padding, 0);
         reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
         swipeContainer.setOnRefreshListener(this);
+
     }
 
     @Override
@@ -202,6 +208,17 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @OnClick(R.id.user_cover)
     public void onCoverClick() {
         getPresenter().coverClicked();
+    }
+
+    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_live_in, R.id.et_date_of_birth, R.id.et_user_id})
+    public void onInfoClick() {
+        if (info.isOpened()) {
+            info.hide();
+            more.setVisibility(View.VISIBLE);
+        } else {
+            info.show();
+            more.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

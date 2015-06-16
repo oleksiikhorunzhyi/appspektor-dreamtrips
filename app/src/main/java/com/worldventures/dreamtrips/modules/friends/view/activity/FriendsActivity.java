@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.fragment.AccountFriendsFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 
 import butterknife.InjectView;
 
@@ -34,10 +34,13 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        ab.setDisplayHomeAsUpEnabled(true);
+
         adapter = new BucketTabsAdapter(getSupportFragmentManager());
-        adapter.add(new FragmentItem(AccountFriendsFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(AccountFriendsFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(AccountFriendsFragment.class, getString(R.string.social_my_friends)));
+        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
+        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
+        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
         pager.setAdapter(adapter);
         tabLayout.setupWithViewPager(pager);
 

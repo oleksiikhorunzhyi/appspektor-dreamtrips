@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.model.UserWrapper;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -203,5 +203,5 @@ public interface DreamTripsApi {
     ArrayList<Flag> getFlags();
 
     @GET("/api/social/friends")
-    ArrayList<UserWrapper> getFriends(@Query("group") String group, @Query("offset") int offset, @Query("limit") int limit);
+    ArrayList<Friend> getFriends(@Query("group") String group, @Query("offset") int offset, @Query("limit") int limit);
 }

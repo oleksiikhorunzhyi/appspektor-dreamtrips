@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -85,7 +84,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         getPresenter().openTripImages();
     }
 
-    @OnClick(R.id.user_friends)
+    @OnClick(R.id.friends)
     public void onFriendsClick() {
         getPresenter().openFriends();
     }

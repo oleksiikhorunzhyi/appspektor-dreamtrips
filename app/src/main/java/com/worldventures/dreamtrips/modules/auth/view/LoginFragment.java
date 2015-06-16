@@ -9,10 +9,10 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gc.materialdesign.views.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
@@ -134,7 +134,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
 
     @Override
     public boolean isTermsChecked() {
-        return checkBoxTerms.isCheck();
+        return checkBoxTerms.isChecked();
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
@@ -164,5 +165,9 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openSelectTemplateActivity() {
         startActivity(InviteTemplateSelectorActivity.class);
+    }
+
+    public void openFriends() {
+        startActivity(FriendsActivity.class);
     }
 }

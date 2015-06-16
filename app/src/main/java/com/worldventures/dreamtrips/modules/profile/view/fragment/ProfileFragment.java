@@ -5,10 +5,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -35,7 +35,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.et_date_of_birth)
     protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
-    protected ProgressBarCircularIndeterminate progressBar;
+    protected ProgressBar progressBar;
     @InjectView(R.id.trip_images)
     protected TextView tripImages;
     @InjectView(R.id.dream_trips)
@@ -54,6 +54,10 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     protected DTEditText etFrom;
     @InjectView(R.id.et_live_in)
     protected DTEditText etLiveIn;
+    @InjectView(R.id.dt_points)
+    protected TextView dtPoints;
+    @InjectView(R.id.rovia_bucks)
+    protected TextView roviaBucks;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout swipeContainer;
     @InjectView(R.id.user_balance)
@@ -63,10 +67,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        layoutConfiguration();
+    }
+
+    private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
     }
 
-   @OnClick(R.id.bucket_list)
+    @OnClick(R.id.bucket_list)
     public void onBucketListClicked() {
         getPresenter().openBucketList();
     }
@@ -75,6 +83,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     public void onTripImageClicked() {
         getPresenter().openTripImages();
     }
+
+    @OnClick(R.id.friends)
+    public void onFriendsClick() {
+        getPresenter().openFriends();
+    }
+
     @Override
     public void setAvatarImage(Uri uri) {
         if (getActivity() != null)
@@ -134,6 +148,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     public void setBucketItemsCount(int count) {
         buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
     }
+
     @Override
     public void setMember() {
         userStatus.setTextColor(getResources().getColor(R.color.white));

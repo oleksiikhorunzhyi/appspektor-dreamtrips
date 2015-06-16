@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -21,9 +22,9 @@ import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
@@ -186,8 +187,8 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
     InviteTemplate createInviteTemplate(@Field("template_id") int id,
-                                               @Field("message") String message,
-                                               @Field("cover_photo_url") String photoUrl);
+                                        @Field("message") String message,
+                                        @Field("cover_photo_url") String photoUrl);
 
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
@@ -200,4 +201,7 @@ public interface DreamTripsApi {
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getFriends(@Query("group") String group, @Query("offset") int offset, @Query("limit") int limit);
 }

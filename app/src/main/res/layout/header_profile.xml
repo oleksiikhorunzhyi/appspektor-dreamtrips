@@ -41,13 +41,12 @@
                 android:layout_gravity="bottom|end"
                 android:src="@drawable/ic_photo_camera"/>
 
-            <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            <ProgressBar
                 android:id="@+id/pb"
-                android:layout_width="@dimen/spacing_huge"
-                android:layout_height="@dimen/spacing_huge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/theme_main_darker"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
         </FrameLayout>
 

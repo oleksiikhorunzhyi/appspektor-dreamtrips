@@ -4,6 +4,7 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,11 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gc.materialdesign.widgets.SnackBar;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -75,14 +76,13 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
 
-    private DraggableArrayListAdapter<Object> mAdapter;
-
-    private RecyclerViewDragDropManager mDragDropManager;
-    private SnackBar snackBar;
-
-    private MenuItem menuItemAdd;
-
+    private DraggableArrayListAdapter<BucketItem> adapter;
+    private RecyclerView.Adapter wrappedAdapter;
+    private RecyclerViewDragDropManager dragDropManager;
     private RecyclerViewStateDelegate stateDelegate;
+
+    private SnackBar snackBar;
+    private MenuItem menuItemAdd;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,50 +100,52 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(recyclerView);
-        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        this.textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add),
-                getString(type.getRes())));
-        this.recyclerView.setEmptyView(emptyView);
-
-        mDragDropManager = new RecyclerViewDragDropManager();
-        mDragDropManager.setDraggingItemShadowDrawable(
-                (NinePatchDrawable) getResources().getDrawable(R.drawable.material_shadow_z3));
-
-        mAdapter = new DraggableArrayListAdapter<>(getActivity(), injector);
-        mAdapter.registerCell(BucketItem.class, BucketItemCell.class);
-        mAdapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
-
-        mAdapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
-
-        RecyclerView.Adapter mWrappedAdapter = mDragDropManager.createWrappedAdapter(mAdapter);
-        GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
-
-        this.recyclerView.setItemAnimator(animator);
-        this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
-
+        // setup layout manager and item decoration
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setItemAnimator(new RefactoredDefaultItemAnimator());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            this.recyclerView.addItemDecoration(
-                    new ItemShadowDecorator((NinePatchDrawable) getResources()
-                            .getDrawable(R.drawable.material_shadow_z1)));
+            recyclerView.addItemDecoration(
+                    new ItemShadowDecorator((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z1, getActivity().getTheme())));
         }
-
-        this.recyclerView.addItemDecoration(
-                new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider),
-                        true));
-        this.recyclerView.setScrollbarFadingEnabled(false);
-        this.recyclerView.setFadingEdgeLength(0);
-
-        mDragDropManager.attachRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        recyclerView.setScrollbarFadingEnabled(false);
+        recyclerView.setFadingEdgeLength(0);
+        // setup empty view
+        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
+        recyclerView.setEmptyView(emptyView);
+        // setup drag&drop with adapter
+        dragDropManager = new RecyclerViewDragDropManager();
+        dragDropManager.setInitiateOnLongPress(true); // not working :(
+        dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
+        adapter = new DraggableArrayListAdapter<>(getActivity(), injector);
+        adapter.registerCell(BucketItem.class, BucketItemCell.class);
+        adapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
+        adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
+        wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
+        recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
+        dragDropManager.attachRecyclerView(recyclerView);
+        // set state delegate
+        stateDelegate.setRecyclerView(recyclerView);
     }
 
     @Override
     public void onDestroyView() {
         stateDelegate.onDestroyView();
-        this.recyclerView.setAdapter(null);
+        if (dragDropManager != null) {
+            dragDropManager.release();
+            dragDropManager = null;
+        }
+        if (recyclerView != null) {
+            recyclerView.setItemAnimator(null);
+            recyclerView.setAdapter(null);
+            recyclerView = null;
+        }
+        if (wrappedAdapter != null) {
+            WrapperAdapterUtils.releaseAll(wrappedAdapter);
+            wrappedAdapter = null;
+        }
         super.onDestroyView();
     }
 
@@ -279,7 +281,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void onPause() {
-        mDragDropManager.cancelDrag();
+        dragDropManager.cancelDrag();
         super.onPause();
     }
 
@@ -302,7 +304,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public BaseArrayListAdapter getAdapter() {
-        return mAdapter;
+        return adapter;
     }
 
     @Override

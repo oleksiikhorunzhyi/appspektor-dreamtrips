@@ -17,20 +17,22 @@
 package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
+import android.view.View;
 
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
+import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import javax.inject.Provider;
 
-public class DraggableArrayListAdapter<V>
-        extends BaseArrayListAdapter<V>
-        implements com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter<BucketItemCell> {
+public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
+        implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
     private MoveListener moveListener;
 
@@ -49,18 +51,18 @@ public class DraggableArrayListAdapter<V>
     }
 
     @Override
-    public boolean onCheckCanStartDrag(BucketItemCell bucketItemCell, int x, int y) {
-        return bucketItemCell.isLongPressed();
+    public boolean onCheckCanStartDrag(DraggableCell bucketItemCell, int position, int x, int y) {
+        return bucketItemCell.onCheckCanStartDrag(position, x, y);
     }
 
     @Override
-    public ItemDraggableRange onGetItemDraggableRange(BucketItemCell bucketItemCell) {
+    public ItemDraggableRange onGetItemDraggableRange(DraggableCell bucketItemCell, int i) {
         int startPosition = getStartDragPosition(bucketItemCell.getPosition());
         int endPosition = getEndDragPosition(bucketItemCell.getPosition());
 
         return new ItemDraggableRange(startPosition, endPosition);
     }
-
+    
     private int getStartDragPosition(int currentPosition) {
         int position = currentPosition;
         Object item = getItem(position);
@@ -130,6 +132,14 @@ public class DraggableArrayListAdapter<V>
 
     public interface MoveListener {
         void onItemMoved(int from, int to);
+    }
+
+    public static abstract class DraggableCell<V> extends AbstractCell<V> implements DraggableItemViewHolder {
+        public DraggableCell(View view) {
+            super(view);
+        }
+
+        public abstract boolean onCheckCanStartDrag(int position, int x, int y);
     }
 
 }

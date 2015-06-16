@@ -28,6 +28,7 @@ public class PlayerActivity extends BaseActivity {
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         pDialog = new ProgressDialog(this);
+        pDialog.setMessage(getString(R.string.buffering));
         pDialog.setCancelable(false);
         pDialog.show();
 

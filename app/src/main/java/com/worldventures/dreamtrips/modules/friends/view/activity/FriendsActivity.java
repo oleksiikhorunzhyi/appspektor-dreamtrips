@@ -39,8 +39,6 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
 
         adapter = new BucketTabsAdapter(getSupportFragmentManager());
         adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
         pager.setAdapter(adapter);
         tabLayout.setupWithViewPager(pager);
 

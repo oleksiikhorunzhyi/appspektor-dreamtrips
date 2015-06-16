@@ -49,10 +49,7 @@
 
     <Button
         android:id="@+id/action"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/bg_black_border"
+        style="@style/BlackBorderButton"
         android:text="@string/social_user_wrapper_cell_actions"/>
 
 </LinearLayout>

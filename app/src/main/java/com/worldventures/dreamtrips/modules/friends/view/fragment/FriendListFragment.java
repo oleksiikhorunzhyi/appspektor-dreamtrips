@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.cell.UserWrapperCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
@@ -74,8 +74,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
-        adapter.registerCell(Friend.class, UserWrapperCell.class);
-        adapter.setHasStableIds(true);
+        adapter.registerCell(Friend.class, FriendCell.class);
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));

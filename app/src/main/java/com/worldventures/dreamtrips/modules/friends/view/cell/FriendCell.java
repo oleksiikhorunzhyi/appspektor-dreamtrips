@@ -11,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
@@ -18,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_user_wrapper)
-public class UserWrapperCell extends AbstractCell<Friend> {
+public class FriendCell extends AbstractCell<Friend> {
 
     @InjectView(R.id.user_photo)
     SimpleDraweeView userPhoto;
@@ -31,7 +32,7 @@ public class UserWrapperCell extends AbstractCell<Friend> {
     @InjectView(R.id.action)
     Button action;
 
-    public UserWrapperCell(View view) {
+    public FriendCell(View view) {
         super(view);
     }
 
@@ -40,9 +41,8 @@ public class UserWrapperCell extends AbstractCell<Friend> {
         User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         tvName.setText(user.getFullName());
-        tvGroup.setText(convertGroups(getModelObject().getGroups()));
-        String postfix = itemView.getContext().getString(R.string.social_postfix_mutual_friends);
-        String mutual = String.format(postfix, getModelObject().getMutualFriends());
+        tvGroup.setText(TextUtils.joinWithFirstUpperCase(getModelObject().getGroups()));
+        String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
         if (getModelObject().getMutualFriends() == 0) {
             tvMutual.setVisibility(View.GONE);
         } else {
@@ -68,18 +68,5 @@ public class UserWrapperCell extends AbstractCell<Friend> {
         builder.show();
     }
 
-    private String convertGroups(String[] groups) {
-        String result = "";
-        for (String group : groups) {
-            result = result + ", " + getFirstUppercaseField(group);
-        }
-        return result.substring(result.indexOf(",") + 1);
-    }
 
-    private String getFirstUppercaseField(String text) {
-        if (text.length() > 1) {
-            text = text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
-        }
-        return text;
-    }
 }

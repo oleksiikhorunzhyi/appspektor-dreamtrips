@@ -29,8 +29,8 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         }
 
         @Override
-        protected void onRefresh(ArrayList<Friend> successStories) {
-            super.onRefresh(performFiltering(successStories));
+        protected void onRefresh(ArrayList<Friend> friends) {
+            super.onRefresh(performFiltering(friends));
         }
 
         @Override

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -43,11 +44,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private static final int DELETION_DELAY = 3500;
 
     @Inject
+    Activity activity;
+    @Inject
     protected SnappyRepository db;
-
     @Inject
     protected DreamTripsApi api;
-
     @Inject
     protected Prefs prefs;
 
@@ -58,15 +59,24 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
+    private BucketHelper bucketHelper;
+
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
+        bucketHelper = new BucketHelper();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getUserId());
+    }
+
+    @Override
+    public void dropView() {
+        activity = null;
+        super.dropView();
     }
 
     public void loadBucketItems() {
@@ -283,6 +293,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             trackAddFinish();
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
+
+            bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
         });
     }
 

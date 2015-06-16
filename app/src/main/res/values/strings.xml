@@ -137,6 +137,7 @@
     <string name="bucket_item_edit_error">Error encountered while saving item</string>
     <string name="bucket_item_photos">Add pictures</string>
     <string name="category">Category</string>
+    <string name="bucket_added">%s is added to your bucket list</string>
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>
     <string name="location">location</string>

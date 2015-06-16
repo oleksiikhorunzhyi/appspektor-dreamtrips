@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.app.Activity;
+
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -24,10 +26,14 @@ import javax.inject.Inject;
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
     @Inject
+    Activity activity;
+    @Inject
     protected SnappyRepository db;
 
     private BucketTabsPresenter.BucketType type;
     private List<BucketItem> realData = new ArrayList<>();
+
+    BucketHelper bucketHelper;
 
     protected DreamSpiceAdapterController<PopularBucketItem> adapterController = new DreamSpiceAdapterController<PopularBucketItem>() {
         @Override
@@ -54,6 +60,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     public BucketPopularPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
+        bucketHelper = new BucketHelper();
     }
 
     @Override
@@ -70,6 +77,13 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
         }
+    }
+
+    @Override
+    public void dropView() {
+        activity = null;
+        adapterController.setAdapter(null);
+        super.dropView();
     }
 
     public void onSearch(String constraint) {
@@ -117,18 +131,13 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                     db.saveBucketList(realData, type.name());
                     int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
                     db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
+                    bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
                 },
                 (spiceException) -> {
                     popularBucketItem.setLoading(false);
                     view.getAdapter().notifyDataSetChanged();
                     handleError(spiceException);
                 });
-    }
-
-    @Override
-    public void dropView() {
-        adapterController.setAdapter(null);
-        super.dropView();
     }
 
     public void reload() {

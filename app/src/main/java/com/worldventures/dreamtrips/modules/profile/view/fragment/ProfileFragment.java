@@ -20,6 +20,7 @@ import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -31,6 +32,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icicle;
 import timber.log.Timber;
 
 
@@ -74,8 +76,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
     protected DTEditText etFrom;
-    @InjectView(R.id.et_live_in)
-    protected DTEditText etLiveIn;
+    @InjectView(R.id.et_enroll)
+    protected DTEditText etEnroll;
     @InjectView(R.id.dt_points)
     protected TextView dtPoints;
     @InjectView(R.id.rovia_bucks)
@@ -93,6 +95,11 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @InjectView(R.id.more)
     protected ViewGroup more;
     private PickImageDialog pid;
+
+    @Icicle
+    int pidTypeShown;
+    @Icicle
+    String filePath;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -148,14 +155,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void openAvatarPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-        this.pid.show();
-    }
-
-    @Override
     public void setAvatarImage(Uri uri) {
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
@@ -201,8 +200,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void setLivesIn(String liveIn) {
-        etLiveIn.setText(liveIn);
+    public void setEnrollDate(String date) {
+        etEnroll.setText(date);
     }
 
     @OnClick(R.id.user_cover)
@@ -210,7 +209,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         getPresenter().coverClicked();
     }
 
-    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_live_in, R.id.et_date_of_birth, R.id.et_user_id})
+    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
     public void onInfoClick() {
         if (info.isOpened()) {
             info.hide();
@@ -230,12 +229,28 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
+    public void openAvatarPicker() {
+        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
+        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
+        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+        this.pid.show();
+        filePath = pid.getFilePath();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (this.pid != null) {
-            this.pid.onActivityResult(requestCode, resultCode, data);
-        } else {
-            Timber.w("Pick image dialog is null");
+        if (pidTypeShown != 0) {
+            this.pid = new PickImageDialog(getActivity(), this);
+            this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+            this.pid.setChooserType(pidTypeShown);
+            this.pid.setFilePath(filePath);
+            pidTypeShown = 0;
         }
+        //
+        if (this.pid != null)
+            this.pid.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -273,7 +288,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void showAccountContent() {
         cover.setVisibility(View.VISIBLE);
-        avatar.setVisibility(View.VISIBLE);
+        avatar.setVisibility(View.GONE);
     }
 
     @Override
@@ -368,7 +383,9 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> swipeContainer.setRefreshing(true));
+        swipeContainer.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(true);
+        });
     }
 
     @Override

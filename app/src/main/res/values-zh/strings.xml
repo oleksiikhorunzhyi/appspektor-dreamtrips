@@ -60,6 +60,7 @@
     <string name="trip_featured">特色旅行</string>
     <string name="profile_from_hint">自</string>
     <string name="profile_location_hint">居住地</string>
+    <string name="profile_enroll_hint">註冊日期</string>
     <string name="profile_birth_hint">生日</string>
     <string name="profile_user_id_hint">用戶 ID </string>
     <string name="bucket_show_favorites">僅顯示收藏</string>

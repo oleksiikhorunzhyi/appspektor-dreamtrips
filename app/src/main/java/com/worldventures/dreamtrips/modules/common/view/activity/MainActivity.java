@@ -81,6 +81,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        disableRightDrawer();
         getPresentationModel().showUserIfNeeded();
         makeActionBarTransparent(transparentToolbar);
     }

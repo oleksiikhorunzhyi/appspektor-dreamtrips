@@ -46,7 +46,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected DTEditText etTags;
 
     private Uri uri;
-    private String type;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -64,7 +63,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     @Override
     protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
         uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
-        type = getArguments().getString(BUNDLE_TYPE);
+        String type = getArguments().getString(BUNDLE_TYPE);
         return new CreatePhotoPresenter(type);
     }
 

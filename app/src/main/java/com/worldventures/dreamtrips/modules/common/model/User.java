@@ -33,6 +33,7 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     private String lastName;
     private String location;
     private Date birthDate;
+    private Date enrollDate;
 
     private int dreamTripsPoints;
     private int roviaBucks;
@@ -104,6 +105,10 @@ public class User extends BaseEntity implements Parcelable, Serializable {
 
     public Date getBirthDate() {
         return birthDate;
+    }
+
+    public Date getEnrollDate() {
+        return enrollDate;
     }
 
     public int getDreamTripsPoints() {

@@ -72,6 +72,8 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         stateDelegate.saveStateIfNeeded(outState);
+        if (adapter != null)
+            adapter.saveState(outState);
     }
 
     @Override
@@ -90,6 +92,11 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
+    @Override
+    protected void restoreState(Bundle savedInstanceState) {
+        super.restoreState(savedInstanceState);
+        adapter.restoreState(savedInstanceState);
+    }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
@@ -131,7 +138,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setIconifiedByDefault(false);
+        searchView.setQuery(adapter.getQuery(), false);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;
@@ -193,7 +200,9 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void setFilteredItems(List<TripModel> items) {
-        adapter.setFilteredItems(items);
+        adapter.clear();
+        adapter.addItems(items);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

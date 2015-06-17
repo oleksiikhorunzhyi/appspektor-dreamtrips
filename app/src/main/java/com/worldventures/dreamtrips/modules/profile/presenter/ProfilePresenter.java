@@ -101,8 +101,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
+        view.setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(),
+                DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
-        view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
 
         if (user.isGold())
@@ -251,7 +252,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void setUserId(String username);
 
-        void setLivesIn(String location);
+        void setEnrollDate(String date);
 
         void setTripImagesCount(int count);
 

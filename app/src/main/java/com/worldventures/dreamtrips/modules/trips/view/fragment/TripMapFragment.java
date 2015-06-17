@@ -89,6 +89,7 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQuery(getPresenter().getQuery(), false);
         searchView.setOnCloseListener(() -> {
             TripMapFragment.this.getPresenter().applySearch(null);
             return false;

@@ -41,7 +41,6 @@ public class SnappyRepository {
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
     public static final String IMAGE = "IMAGE";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
-    private static final String RECENT_REQUESTS_COUNT = "recent_requests_count";
     private Context context;
     private ExecutorService executorService;
 
@@ -145,19 +144,6 @@ public class SnappyRepository {
         });
         return list;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // BucketItems
-    ///////////////////////////////////////////////////////////////////////////
-    public void saveRecentRequests(final int count) {
-        act(db -> db.putInt(RECENT_REQUESTS_COUNT, count));
-    }
-
-    public int getRecentRequests() {
-        return actWithResult(db -> db.getInt(RECENT_REQUESTS_COUNT))
-                .or(0);
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // BucketItems

@@ -33,7 +33,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/Theme.DreamTripsTheme"
-        tools:replace="icon, label" >
+        tools:replace="icon, label">
         <meta-data
             android:name="com.instabug.DevelopmentAppToken"
             android:value="a3060506f058a57fcc3ef8d80d189e6e"/>
@@ -84,7 +84,7 @@
         <activity
             android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -135,7 +135,7 @@
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/Apptentive.Theme.Transparent"/>
 
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
@@ -160,16 +160,24 @@
             android:label="@string/title_activity_invite"/>
         <activity
             android:name=".modules.membership.view.activity.PreviewTemplateActivity"
-            android:label="@string/title_activity_invite" />
-        <activity android:name="nl.changer.polypicker.ImagePickerActivity" />
+            android:label="@string/title_activity_invite"/>
+        <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
         <activity
             android:name=".modules.friends.view.activity.FriendsActivity"
             android:label="@string/title_activity_friends"
-            android:parentActivityName=".modules.common.view.activity.MainActivity" >
+            android:parentActivityName=".modules.common.view.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
         </activity>
+        <activity
+            android:name=".modules.friends.view.activity.FriendSearchActivity"
+            android:label="@string/empty">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
+        </activity>
+
     </application>
 
 </manifest>

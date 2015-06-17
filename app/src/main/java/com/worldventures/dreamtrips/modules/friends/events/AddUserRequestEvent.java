@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.modules.friends.events;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-public class AcceptRequestEvent {
-
+public class AddUserRequestEvent {
     private User user;
     private int position;
 
-    public AcceptRequestEvent(User user, int position) {
+    public AddUserRequestEvent(User user, int position) {
         this.user = user;
         this.position = position;
     }

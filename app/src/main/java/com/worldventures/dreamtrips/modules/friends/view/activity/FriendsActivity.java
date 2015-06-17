@@ -39,7 +39,7 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
 
         adapter = new BasePagerAdapter<>(getSupportFragmentManager());
         adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(RequestsFragment.class, getString(R.string.social_my_friends)));
+        adapter.add(new FragmentItem(RequestsFragment.class, getString(R.string.social_requests)));
 
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

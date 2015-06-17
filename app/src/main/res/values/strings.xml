@@ -297,4 +297,5 @@
     <string name="friend_cancel">Cancel</string>
     <string name="request_incoming">Incoming</string>
     <string name="request_outgoing">Outgoing</string>
+    <string name="friend_global_search">Global Search</string>
 </resources>

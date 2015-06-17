@@ -4,6 +4,8 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -14,6 +16,7 @@ import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Request;
 
 import butterknife.InjectView;
@@ -34,6 +37,10 @@ public class RequestCell extends AbstractCell<Request> {
     SimpleDraweeView avatar;
     @InjectView(R.id.name)
     TextView name;
+    @InjectView(R.id.progress)
+    ProgressBar progressBar;
+    @InjectView(R.id.buttonContainer)
+    ViewGroup container;
 
     public RequestCell(View view) {
         super(view);
@@ -44,6 +51,8 @@ public class RequestCell extends AbstractCell<Request> {
         ColorStateList csl = itemView.getResources().getColorStateList(R.color.button_background);
         name.setText(getModelObject().getUser().getFullName());
         avatar.setImageURI(Uri.parse(getModelObject().getUser().getAvatar().getMedium()));
+        container.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
 
         reject.setSupportBackgroundTintList(csl);
         hide.setSupportBackgroundTintList(csl);
@@ -67,24 +76,38 @@ public class RequestCell extends AbstractCell<Request> {
         }
     }
 
+    @OnClick(R.id.avatar)
+    void onUserClicked() {
+        getEventBus().post(new UserClickedEvent(getModelObject().getUser()));
+    }
+
     @OnClick(R.id.accept)
     void onAccept() {
-        getEventBus().post(new AcceptRequestEvent(getModelObject().getUser()));
+        getEventBus().post(new AcceptRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        showProgress();
     }
 
     @OnClick(R.id.reject)
     void onReject() {
-        getEventBus().post(new RejectRequestEvent(getModelObject().getUser()));
+        getEventBus().post(new RejectRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        showProgress();
     }
 
     @OnClick(R.id.hide)
     void onHide() {
-        getEventBus().post(new HideRequestEvent(getModelObject().getUser()));
+        getEventBus().post(new HideRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        showProgress();
     }
 
     @OnClick(R.id.cancel)
     void onCancel() {
-        getEventBus().post(new CancelRequestEvent(getModelObject().getUser()));
+        getEventBus().post(new CancelRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        showProgress();
+    }
+
+    private void showProgress() {
+        container.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

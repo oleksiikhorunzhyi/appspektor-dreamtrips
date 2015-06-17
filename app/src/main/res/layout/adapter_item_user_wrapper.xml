@@ -8,7 +8,7 @@
               android:orientation="horizontal">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/user_photo"
+        android:id="@+id/avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="16dp"

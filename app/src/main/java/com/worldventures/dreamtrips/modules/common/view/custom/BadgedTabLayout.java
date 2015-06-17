@@ -47,16 +47,20 @@ public class BadgedTabLayout extends TabLayout {
         int i = 0;
 
         for (int count = adapter.getCount(); i < count; ++i) {
-            View tabView = getCustomTabView(this, adapter.getPageTitle(i));
+            View tabView = getCustomTabView(this, adapter.getPageTitle(i), i);
             this.addTab(this.newTab().setTag(tabView).setCustomView(tabView));
         }
     }
 
-    public View getCustomTabView(ViewGroup viewGroup, CharSequence title) {
+    public View getCustomTabView(ViewGroup viewGroup, CharSequence title, int index) {
         View viewWithBadge = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_tab_with_badge, viewGroup, false);
         ButterKnife.findById(viewWithBadge, R.id.psts_tab_title).setOnClickListener((v) -> viewWithBadge.performClick());
         ButterKnife.<TextView>findById(viewWithBadge, R.id.psts_tab_title).setText(title);
         ButterKnife.findById(viewWithBadge, R.id.psts_tab_badge).setAlpha(0f);
+        viewWithBadge.setOnClickListener((view -> {
+            getTabAt(index).select();
+        }));
+
         return viewWithBadge;
     }
 

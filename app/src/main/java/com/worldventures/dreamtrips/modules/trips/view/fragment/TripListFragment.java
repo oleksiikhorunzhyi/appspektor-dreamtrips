@@ -37,6 +37,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icicle;
 
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
@@ -60,6 +61,9 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     private SearchView searchView;
     RecyclerViewStateDelegate stateDelegate;
+
+    @Icicle
+    boolean searchOpened;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,6 +141,20 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        if (searchOpened) searchItem.expandActionView();
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchOpened = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchOpened = false;
+                return true;
+            }
+        });
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQuery(adapter.getQuery(), false);
         searchView.setOnCloseListener(() -> {

@@ -46,6 +46,8 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     private Bundle mapBundle;
     private static final String KEY_MAP = "map";
     @Icicle LatLng selectedLocation;
+    @Icicle boolean searchOpened;
+
 
     @Override
     protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -88,6 +90,20 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        if (searchOpened) searchItem.expandActionView();
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchOpened = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchOpened = false;
+                return true;
+            }
+        });
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQuery(getPresenter().getQuery(), false);
         searchView.setOnCloseListener(() -> {

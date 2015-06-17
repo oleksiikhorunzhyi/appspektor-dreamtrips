@@ -54,8 +54,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private BucketTabsPresenter.BucketType type;
 
-    @Icicle boolean showToDO = true;
-    @Icicle boolean showCompleted = true;
+    @Icicle
+    boolean showToDO = true;
+    @Icicle
+    boolean showCompleted = true;
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
@@ -129,10 +131,16 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(BucketItemClickedEvent event) {
-        if (bucketItems.contains(event.getBucketItem())) {
-            eventBus.cancelEventDelivery(event);
-            openDetails(event.getBucketItem());
-        }
+        if (!bucketItems.contains(event.getBucketItem())) return;
+        //
+        eventBus.cancelEventDelivery(event);
+        // set selected
+        Queryable.from(bucketItems).forEachR(item -> {
+            item.setSelected(event.getBucketItem().equals(item));
+        });
+        view.getAdapter().notifyDataSetChanged();
+        //
+        openDetails(event.getBucketItem());
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {

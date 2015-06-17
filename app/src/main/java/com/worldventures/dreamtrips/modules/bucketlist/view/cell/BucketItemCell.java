@@ -94,6 +94,8 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
             }
             container.setBackgroundResource(bgResId);
         }
+        container.setActivated(getModelObject().isSelected());
+
         afterSwipe = true;
     }
 

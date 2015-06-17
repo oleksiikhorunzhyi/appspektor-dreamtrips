@@ -68,8 +68,12 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         afterCreateView(view);
+        restoreState(savedInstanceState);
         //
         this.presenter.takeView(this);
+    }
+
+    protected void restoreState(Bundle savedInstanceState) {
     }
 
     @Override

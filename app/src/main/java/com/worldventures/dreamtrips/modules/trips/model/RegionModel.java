@@ -9,8 +9,7 @@ import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 public class RegionModel extends BaseEntity {
 
     private String name;
-    private transient boolean checked = true;
-    private transient boolean shouldBeGone = true;
+    private boolean checked = true;
 
     public boolean isChecked() {
         return checked;
@@ -28,11 +27,4 @@ public class RegionModel extends BaseEntity {
         this.name = name;
     }
 
-    public boolean isShouldBeGone() {
-        return shouldBeGone;
-    }
-
-    public void setShouldBeGone(boolean shouldBeGone) {
-        this.shouldBeGone = shouldBeGone;
-    }
 }

@@ -17,12 +17,15 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragm
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icicle;
+
 public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> {
 
     private List<TripModel> filteredTrips = new ArrayList<>();
-    private String query;
     private boolean mapReady;
     private MapInfoReadyEvent pendingMapInfoEvent;
+
+    @Icicle String query;
 
     public TripMapPresenter() {
         super();
@@ -40,6 +43,11 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
             setFilters(event);
             performFiltering();
         }
+    }
+
+
+    public String getQuery() {
+        return query;
     }
 
     private void performFiltering() {

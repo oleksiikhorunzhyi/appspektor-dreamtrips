@@ -60,6 +60,7 @@
     <string name="trip_featured">FEATURED TRIP</string>
     <string name="profile_from_hint">From</string>
     <string name="profile_location_hint">Lives In</string>
+    <string name="profile_enroll_hint">Enroll Date</string>
     <string name="profile_birth_hint">Date of Birth</string>
     <string name="profile_user_id_hint">User ID</string>
     <string name="bucket_show_favorites">Show Favorites Only</string>

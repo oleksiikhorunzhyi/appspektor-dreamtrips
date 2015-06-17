@@ -25,6 +25,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     protected SnappyRepository db;
 
     private String type;
+    private boolean saved = false;
 
     public CreatePhotoPresenter(String type) {
         this.type = type;
@@ -56,28 +57,30 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
     }
 
     public void saveAction() {
-        if (view.getImageUri().toString().isEmpty()) {
-            view.informUser(context.getString(R.string.wrong_image));
-        } else {
-            ImageUploadTask action = new ImageUploadTask();
-            action.setFileUri(view.getImageUri().toString());
-            action.setTitle(view.getTitle());
-            action.setUser(appSessionHolder.get().get().getUser());
-            List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
-            action.setTags(new ArrayList<>(tags));
-            action.setLatitude(0);
-            action.setLongitude(0);
-            action.setLocationName(view.getLocation());
-            Date date = DateTimeUtils.dateFromString(view.getDate());
-            Date time = DateTimeUtils.timeFromString(view.getTime());
-            action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
-            action.setTaskId(UUID.randomUUID().toString());
-            action.setType(type);
+        if (!saved)
+            if (view.getImageUri().toString().isEmpty()) {
+                view.informUser(context.getString(R.string.wrong_image));
+            } else {
+                saved = true;
+                ImageUploadTask action = new ImageUploadTask();
+                action.setFileUri(view.getImageUri().toString());
+                action.setTitle(view.getTitle());
+                action.setUser(appSessionHolder.get().get().getUser());
+                List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
+                action.setTags(new ArrayList<>(tags));
+                action.setLatitude(0);
+                action.setLongitude(0);
+                action.setLocationName(view.getLocation());
+                Date date = DateTimeUtils.dateFromString(view.getDate());
+                Date time = DateTimeUtils.timeFromString(view.getTime());
+                action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+                action.setTaskId(UUID.randomUUID().toString());
+                action.setType(type);
 
-            eventBus.post(new InsertNewImageUploadTaskEvent(action));
-            dreamSpiceManager.uploadPhoto(action);
-            view.end();
-        }
+                eventBus.post(new InsertNewImageUploadTaskEvent(action));
+                dreamSpiceManager.uploadPhoto(action);
+                view.end();
+            }
     }
 
     public interface View extends Presenter.View {

@@ -14,8 +14,7 @@ public class ActivityModel extends BaseEntity {
     private String icon;
     private String name;
 
-    private transient boolean checked = true;
-    private transient boolean shouldBeGone = true;
+    private boolean checked = true;
 
     public int getParentId() {
         return parentId;
@@ -57,11 +56,4 @@ public class ActivityModel extends BaseEntity {
         this.checked = checked;
     }
 
-    public boolean isShouldBeGone() {
-        return shouldBeGone;
-    }
-
-    public void setShouldBeGone(boolean shouldBeGone) {
-        this.shouldBeGone = shouldBeGone;
-    }
 }

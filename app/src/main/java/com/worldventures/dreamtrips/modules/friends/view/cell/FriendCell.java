@@ -13,6 +13,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import butterknife.InjectView;
@@ -21,7 +22,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_user_wrapper)
 public class FriendCell extends AbstractCell<Friend> {
 
-    @InjectView(R.id.user_photo)
+    @InjectView(R.id.avatar)
     SimpleDraweeView userPhoto;
     @InjectView(R.id.tvName)
     TextView tvName;
@@ -49,6 +50,11 @@ public class FriendCell extends AbstractCell<Friend> {
             tvMutual.setVisibility(View.VISIBLE);
             tvMutual.setText(mutual);
         }
+    }
+
+    @OnClick(R.id.avatar)
+    void onUserClicked() {
+        getEventBus().post(new UserClickedEvent(getModelObject()));
     }
 
     @Override

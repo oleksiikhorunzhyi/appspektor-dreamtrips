@@ -59,7 +59,6 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
-            view.startLoading();
         }
     }
 
@@ -67,6 +66,10 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     public void dropView() {
         adapterController.setAdapter(null);
         super.dropView();
+    }
+
+    public void globalSearch() {
+        activityRouter.openFriendsSearch();
     }
 
     public void reload() {

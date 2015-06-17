@@ -1,10 +1,9 @@
-package com.worldventures.dreamtrips.core.utils.events;
+package com.worldventures.dreamtrips.modules.friends.events;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class UserClickedEvent {
-
-    User user;
+    private User user;
 
     public UserClickedEvent(User user) {
         this.user = user;

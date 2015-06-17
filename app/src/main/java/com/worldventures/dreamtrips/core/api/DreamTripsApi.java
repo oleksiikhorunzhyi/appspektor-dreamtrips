@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.friends.model.Request;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -204,4 +205,16 @@ public interface DreamTripsApi {
 
     @GET("/api/social/friends")
     ArrayList<Friend> getFriends(@Query("group") String group, @Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("/api/social/friends")
+    ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
+
+    @GET("/api/social/friends/requests")
+    ArrayList<Request> getRequests();
+
+    @POST("/api/social/friends/requests")
+    JSONObject addFriend(@Query("user_id") int userId);
+
+    @PUT("/api/social/friends/request_responses")
+    JSONObject actOnRequest(@Query("user_id") int userId, @Query("action") String action);
 }

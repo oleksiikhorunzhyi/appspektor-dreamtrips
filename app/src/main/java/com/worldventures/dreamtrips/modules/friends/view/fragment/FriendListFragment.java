@@ -42,7 +42,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     ImageView ivFilter;
     @InjectView(R.id.search)
     SearchView search;
-    @InjectView(R.id.ll_empty_view)
+    @InjectView(R.id.empty)
     RelativeLayout emptyView;
     @InjectView(R.id.recyclerViewFriends)
     EmptyRecyclerView recyclerView;
@@ -67,6 +67,11 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         stateDelegate.saveStateIfNeeded(outState);
+    }
+
+    @OnClick(R.id.global)
+    void onGlobalSearchClicked() {
+        getPresenter().globalSearch();
     }
 
     @Override

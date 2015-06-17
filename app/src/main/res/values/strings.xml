@@ -278,6 +278,7 @@
     <string name="profile_request">Request</string>
     <string name="profile_respond">Respond</string>
     <string name="social_my_friends">My friends</string>
+    <string name="social_requests">Requests</string>
     <string name="social_add_friend_yes">Yes</string>
     <string name="social_add_friend_no">No</string>
     <string name="social_add_friend_title">Add Friend</string>
@@ -290,4 +291,11 @@
     <string name="action_social_friends">Friends</string>
     <string name="action_social_show_all">Show all</string>
 
+    <string name="friend_reject">Reject</string>
+    <string name="friend_accept">Accept</string>
+    <string name="friend_hide">Hide</string>
+    <string name="friend_cancel">Cancel</string>
+    <string name="request_incoming">Incoming</string>
+    <string name="request_outgoing">Outgoing</string>
+    <string name="friend_global_search">Global Search</string>
 </resources>

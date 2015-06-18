@@ -35,12 +35,10 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketHeaderCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
@@ -121,7 +119,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
         adapter = new DraggableArrayListAdapter<>(getActivity(), injector);
         adapter.registerCell(BucketItem.class, BucketItemCell.class);
-        adapter.registerCell(BucketHeader.class, BucketHeaderCell.class);
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
@@ -264,6 +261,11 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void hideContainer() {
         getActivity().findViewById(R.id.container_details_fullscreen).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void putCategoryMarker(int position) {
+        adapter.setDragMarker(position, true);
     }
 
     @Override

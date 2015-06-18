@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEven
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -118,26 +117,31 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void refresh() {
-        List<Object> result = new ArrayList<>();
-        if (!bucketItems.isEmpty()) {
-            Collection<BucketItem> toDo = Queryable.from(bucketItems).
-                    filter((bucketItem) -> !bucketItem.isDone())
-                    .toList();
-            Collection<BucketItem> done = Queryable.from(bucketItems).
-                    filter((bucketItem) -> bucketItem.isDone())
-                    .toList();
-            result.add(new BucketHeader(0, R.string.to_do));
-            if (showToDO && !toDo.isEmpty()) {
-                result.addAll(toDo);
+        List<BucketItem> filteredItems = new ArrayList<>();
+        if (bucketItems.isEmpty()) {
+            currentItem = null;
+        } else {
+            if (showToDO) {
+                Collection<BucketItem> toDo = Queryable.from(bucketItems)
+                        .filter((bucketItem) -> !bucketItem.isDone())
+                        .toList();
+                filteredItems.addAll(toDo);
             }
-            result.add(new BucketHeader(0, R.string.completed));
-            if (showCompleted && !done.isEmpty()) {
-                result.addAll(done);
+            view.putCategoryMarker(filteredItems.size());
+            if (showCompleted) {
+                Collection<BucketItem> done = Queryable.from(bucketItems)
+                        .filter((bucketItem) -> bucketItem.isDone())
+                        .toList();
+                filteredItems.addAll(done);
             }
             //
-            if (currentItem == null) currentItem = bucketItems.get(0);
+            if (filteredItems.isEmpty()) {
+                currentItem = null;
+            } else if (!filteredItems.contains(currentItem)) {
+                currentItem = filteredItems.get(0);
+            }
         }
-        view.getAdapter().setItems(result);
+        view.getAdapter().setItems(filteredItems);
         openDetailsIfNeeded(currentItem);
     }
 
@@ -230,7 +234,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void openDetailsIfNeeded(BucketItem item) {
         if (!view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
         //
-        if (item != null ) openDetails(item);
+        if (item != null) openDetails(item);
         else view.hideContainer();
     }
 
@@ -357,5 +361,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void showDetailsContainer();
 
         void hideContainer();
+
+        void putCategoryMarker(int position);
     }
 }

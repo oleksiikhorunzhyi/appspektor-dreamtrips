@@ -118,7 +118,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void setTitle(int title) {
-         if (title != 0)
+        if (title != 0)
             getSupportActionBar().setTitle(title);
         else
             getSupportActionBar().setTitle("");
@@ -207,17 +207,17 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             closeLeftDrawer();
             return true;
-        } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
+        } else if (detailsFloatingContainer != null && detailsFloatingContainer.getVisibility() == View.VISIBLE) {
             fragmentCompass.removeEdit();
+            detailsFloatingContainer.setVisibility(View.GONE);
+            return true;
+        } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
+            fragmentCompass.removeDetailed();
             detailsFullScreenContainer.setVisibility(View.GONE);
             return true;
         } else if (detailsContainer.getVisibility() == View.VISIBLE) {
             fragmentCompass.removeDetailed();
             detailsContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsFloatingContainer != null && detailsFloatingContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsFloatingContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

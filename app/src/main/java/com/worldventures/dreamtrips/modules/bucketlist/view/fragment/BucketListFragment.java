@@ -311,7 +311,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public BaseArrayListAdapter getAdapter() {
+    public BaseArrayListAdapter<BucketItem> getAdapter() {
         return adapter;
     }
 

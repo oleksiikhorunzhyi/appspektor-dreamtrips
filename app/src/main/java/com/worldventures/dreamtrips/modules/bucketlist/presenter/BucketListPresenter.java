@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemComm
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketHeader;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -58,15 +60,19 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     boolean showToDO = true;
     @Icicle
     boolean showCompleted = true;
+    @Icicle
+    BucketItem currentItem;
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
     private BucketHelper bucketHelper;
+    private WeakHandler weakHandler;
 
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
         bucketHelper = new BucketHelper();
+        weakHandler = new WeakHandler();
     }
 
     @Override
@@ -127,20 +133,25 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 result.addAll(done);
             }
         }
+        if (currentItem == null && !bucketItems.isEmpty()) currentItem = bucketItems.get(0);
         view.getAdapter().setItems(result);
+        openDetailsIfNeeded(currentItem);
+    }
+
+    public void onEvent(BucketTabChangedEvent event) {
+        if (type.equals(event.type)) {
+            // when tab change we need to wait, till pager settles down
+            weakHandler.postDelayed(() -> openDetailsIfNeeded(currentItem), 150L);
+        }
     }
 
     public void onEvent(BucketItemClickedEvent event) {
         if (!bucketItems.contains(event.getBucketItem())) return;
         //
         eventBus.cancelEventDelivery(event);
-        // set selected
-        Queryable.from(bucketItems).forEachR(item -> {
-            item.setSelected(event.getBucketItem().equals(item));
-        });
-        view.getAdapter().notifyDataSetChanged();
         //
-        openDetails(event.getBucketItem());
+        currentItem = event.getBucketItem();
+        openDetails(currentItem);
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {
@@ -214,6 +225,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         return bucketType.equalsIgnoreCase(type.getName());
     }
 
+    private void openDetailsIfNeeded(BucketItem item) {
+        if (item != null && view.isTabletLandscape() && view.isVisibleOnScreen()) {
+            openDetails(item);
+        }
+    }
+
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
@@ -227,8 +244,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         } else {
             activityRouter.openBucketItemDetails(bundle);
         }
+        // set selected
+        Queryable.from(bucketItems).forEachR(item -> {
+            item.setSelected(bucketItem.equals(item));
+        });
+        view.getAdapter().notifyDataSetChanged();
     }
-
 
     public void addPopular() {
         activityRouter.openBucketListPopularActivity(type);

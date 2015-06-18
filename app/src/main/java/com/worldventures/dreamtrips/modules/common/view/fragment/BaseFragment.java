@@ -151,6 +151,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
     }
 
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isVisibleOnScreen(this);
+    }
+
     public void hideSoftInput(View view) {
         SoftInputUtil.hideSoftInputMethod(view);
     }

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -56,6 +57,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         db.saveRecentlyAddedBucketItems(type.name, 0);
         view.resetRecentlyAddedBucketItem(type);
         TrackingHelper.bucketPopular(type.name);
+        eventBus.post(new BucketTabChangedEvent(type));
     }
 
     private void setRecentBucketItemsCounts() {

@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -94,8 +95,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                         view.finishLoading();
                         addItems(result);
                     }, exception -> {
-                        handleError(exception);
                         view.finishLoading();
+                        addItems(Collections.emptyList());
+                        handleError(exception);
                     });
         } else {
             addItems(db.readBucketList(type.name()));
@@ -235,7 +237,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (!view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
         //
         if (item != null) openDetails(item);
-        else view.hideContainer();
+        else {
+            fragmentCompass.setContainerId(R.id.container_main);
+            view.hideDetailsContainer();
+        }
     }
 
     private void openDetails(BucketItem bucketItem) {
@@ -360,7 +365,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
         void showDetailsContainer();
 
-        void hideContainer();
+        void hideDetailsContainer();
 
         void putCategoryMarker(int position);
     }

@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -73,6 +74,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     protected TextView textViewEmptyAdd;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
+    //
+    protected View detailsContainer;
 
     private DraggableArrayListAdapter<BucketItem> adapter;
     private RecyclerView.Adapter wrappedAdapter;
@@ -98,6 +101,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        detailsContainer = getActivity().findViewById(R.id.container_details_fullscreen);
 
         // setup layout manager and item decoration
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -253,14 +257,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         popupMenu.show();
     }
 
+    WeakHandler handler = new WeakHandler();
+
     @Override
     public void showDetailsContainer() {
-        getActivity().findViewById(R.id.container_details_fullscreen).setVisibility(View.VISIBLE);
+        handler.postDelayed(() -> detailsContainer.setVisibility(View.VISIBLE), 200l);
     }
 
     @Override
-    public void hideContainer() {
-        getActivity().findViewById(R.id.container_details_fullscreen).setVisibility(View.GONE);
+    public void hideDetailsContainer() {
+        handler.postDelayed(() -> detailsContainer.setVisibility(View.GONE), 200l);
     }
 
     @Override

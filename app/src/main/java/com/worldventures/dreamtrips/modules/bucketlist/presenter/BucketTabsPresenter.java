@@ -29,8 +29,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        setTabs();
         loadCategories();
-        view.updateSelection();
     }
 
     @Override
@@ -40,7 +40,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
-        setTabs();
         setRecentBucketItemsCounts();
     }
 
@@ -51,6 +50,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     public void setTabs() {
         view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, DINING));
+        view.updateSelection();
     }
 
     public void onTabChange(BucketType type) {

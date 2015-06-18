@@ -163,16 +163,15 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     public void openBucketList() {
-        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
-                .getComponentByKey(BucketListModule.BUCKETLIST)));
+        activityRouter.openComponentActivity(rootComponentsProvider
+                .getComponentByKey(BucketListModule.BUCKETLIST));
     }
 
     public void openTripImages() {
         Bundle args = new Bundle();
         args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
-                .getComponentByKey(TripsImagesModule.TRIP_IMAGES),
-                args));
+        activityRouter.openComponentActivity(rootComponentsProvider
+                .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
     }
 
     private void onSuccess(User obj) {

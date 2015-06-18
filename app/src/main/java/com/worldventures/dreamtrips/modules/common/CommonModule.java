@@ -8,11 +8,13 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
@@ -55,6 +57,8 @@ import dagger.Provides;
                 NavigationDrawerFragment.class,
                 DownloadVideoListener.class,
                 PresentationVideosPresenter.class,
+                ComponentActivity.class,
+                ComponentPresenter.class
         },
         complete = false,
         library = true

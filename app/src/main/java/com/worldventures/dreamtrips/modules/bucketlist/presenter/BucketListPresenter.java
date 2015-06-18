@@ -119,6 +119,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void refresh() {
+        fillWithItems();
+        openDetailsIfNeeded(currentItem);
+    }
+
+    private void fillWithItems() {
         List<BucketItem> filteredItems = new ArrayList<>();
         if (bucketItems.isEmpty()) {
             currentItem = null;
@@ -144,7 +149,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
         }
         view.getAdapter().setItems(filteredItems);
-        openDetailsIfNeeded(currentItem);
     }
 
     public void onEvent(BucketTabChangedEvent event) {
@@ -165,7 +169,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(BucketItemUpdatedEvent event) {
         if (isTypeCorrect(event.getBucketItem().getType())) {
-            addItems(db.readBucketList(type.name()));
+            int index = bucketItems.indexOf(event.getBucketItem());
+            bucketItems.remove(index);
+            bucketItems.add(index, event.getBucketItem());
+            fillWithItems();
         }
     }
 
@@ -354,7 +361,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        BaseArrayListAdapter getAdapter();
+        BaseArrayListAdapter<BucketItem> getAdapter();
 
         void showUndoBar(android.view.View.OnClickListener clickListener);
 

@@ -138,7 +138,8 @@ public class PickImageDialog implements ImageChooserListener {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        boolean pictureRequestCode = requestCode == ChooserType.REQUEST_PICK_PICTURE || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE;
+        boolean pictureRequestCode = requestCode == ChooserType.REQUEST_PICK_PICTURE
+                || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE;
         if (resultCode == Activity.RESULT_OK && pictureRequestCode) {
             if (imageChooserManager == null) {
                 reinitializeImageChooser();

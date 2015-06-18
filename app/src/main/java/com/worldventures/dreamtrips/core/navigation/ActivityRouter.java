@@ -8,9 +8,12 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
@@ -155,5 +158,17 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openSelectTemplateActivity() {
         startActivity(InviteTemplateSelectorActivity.class);
+    }
+
+    public void openComponentActivity(ComponentDescription component) {
+        openComponentActivity(component, null);
+    }
+
+
+    public void openComponentActivity(ComponentDescription component, Bundle args) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ComponentPresenter.COMPONENT, component);
+        bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
+        startActivity(ComponentActivity.class, bundle);
     }
 }

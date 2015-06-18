@@ -51,7 +51,6 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
 
             eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
 
-
             Photo photo = getService().uploadTripPhoto(uploadTask);
             photo.setTaskId(uploadTask.getTaskId());
 

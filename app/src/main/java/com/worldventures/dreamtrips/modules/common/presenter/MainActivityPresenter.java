@@ -32,7 +32,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
             eventBus.removeStickyEvent(UserClickedEvent.class);
             Bundle args = new Bundle();
             args.putParcelable(ProfileModule.EXTRA_USER, event.getUser());
-            ComponentDescription component = rootComponentsProvider.getComponentByKey(ProfileModule.MY_PROFILE);
+            ComponentDescription component = rootComponentsProvider
+                    .getComponentByKey(ProfileModule.MY_PROFILE);
             view.updateSelection(component);
             openComponent(component, args);
         }

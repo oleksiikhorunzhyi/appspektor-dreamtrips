@@ -183,7 +183,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected void saveBucketItem(BucketBasePostItem bucketBasePostItem) {
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketItem.getId(), bucketBasePostItem);
-        doRequest(updateBucketItemCommand, (resultItem) -> onSuccess(resultItem));
+        doRequest(updateBucketItemCommand, this::onSuccess);
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {

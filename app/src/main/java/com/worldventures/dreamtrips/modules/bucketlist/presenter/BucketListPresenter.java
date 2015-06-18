@@ -187,14 +187,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
             BucketItem bucketItem = event.getBucketItem();
 
-            moveItem(bucketItem, bucketItem.isDone()
-                    ? bucketItems.indexOf(Queryable.from(bucketItems).first(BucketItem::isDone))
-                    : 0);
+            int position = bucketItem.isDone() ?
+                    bucketItems.indexOf(Queryable.from(bucketItems).first(BucketItem::isDone)) : 0;
+            moveItem(bucketItem, position);
 
             BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
 
-            doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(),
-                            bucketStatusItem),
+            doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketStatusItem),
                     item -> {
                         db.saveBucketList(bucketItems, type.name());
                     }, exception -> {

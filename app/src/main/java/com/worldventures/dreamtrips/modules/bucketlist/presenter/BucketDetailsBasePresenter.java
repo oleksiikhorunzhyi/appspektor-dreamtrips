@@ -241,12 +241,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         resaveItem(bucketItemUpdated);
     }
 
-    private void resaveItem(BucketItem bucketItemUpdated) {
-        int i = items.indexOf(bucketItemUpdated);
-        items.remove(items.indexOf(bucketItemUpdated));
-        items.add(i, bucketItemUpdated);
+    private void resaveItem(BucketItem updatedItem) {
+        int oldPosition = items.indexOf(updatedItem);
+        BucketItem oldItem = items.get(oldPosition);
+        int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
+        items.remove(oldPosition);
+        items.add(newPosition, updatedItem);
         db.saveBucketList(items, type.name());
-        eventBus.post(new BucketItemUpdatedEvent(bucketItemUpdated));
+        eventBus.post(new BucketItemUpdatedEvent(updatedItem));
     }
 
     public ImagePickCallback getGalleryChooseCallback() {

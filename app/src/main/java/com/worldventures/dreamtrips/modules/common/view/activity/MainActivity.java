@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -81,7 +81,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        disableRightDrawer();
         getPresentationModel().showUserIfNeeded();
         makeActionBarTransparent(transparentToolbar);
     }
@@ -166,6 +165,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void setUpMenu() {
+        disableRightDrawer();
         if (!ViewUtils.isLandscapeOrientation(this)) {
             enableLeftDrawer();
             mDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -201,10 +201,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     boolean handleComponentChange() {
-        if (drawerLayout.isDrawerOpen(Gravity.END)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             closeRightDrawer();
             return true;
-        } else if (drawerLayout.isDrawerOpen(Gravity.START)) {
+        } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             closeLeftDrawer();
             return true;
         } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
@@ -251,39 +251,39 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     public void openLeftDrawer() {
         if (!ViewUtils.isLandscapeOrientation(this)) {
-            drawerLayout.openDrawer(Gravity.START);
+            drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 
     public void closeLeftDrawer() {
         if (!ViewUtils.isLandscapeOrientation(this)) {
-            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
 
     public void openRightDrawer() {
-        drawerLayout.openDrawer(Gravity.END);
+        drawerLayout.openDrawer(GravityCompat.END);
         enableRightDrawer();
     }
 
     public void closeRightDrawer() {
-        drawerLayout.closeDrawer(Gravity.END);
+        drawerLayout.closeDrawer(GravityCompat.END);
     }
 
     public void disableLeftDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
     }
 
     public void enableLeftDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.START);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
     }
 
     public void disableRightDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
     }
 
     public void enableRightDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
     }
 
 }

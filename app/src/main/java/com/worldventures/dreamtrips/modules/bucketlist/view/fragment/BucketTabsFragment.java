@@ -85,15 +85,6 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
         pager.setCurrentItem(currentPosition);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adapter.getCount() > 0) {
-            BucketType currentType = adapter.getFragmentItem(pager.getCurrentItem()).data;
-            getPresenter().onTabChange(currentType);
-        }
-    }
-
    @Override
     public void setTypes(List<BucketType> types) {
         if (adapter.getCount() > 0) return;

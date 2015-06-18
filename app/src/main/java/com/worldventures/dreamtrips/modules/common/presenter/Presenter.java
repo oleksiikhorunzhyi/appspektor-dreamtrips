@@ -170,5 +170,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         void alert(String s);
 
         boolean isTabletLandscape();
+        boolean isVisibleOnScreen();
     }
 }

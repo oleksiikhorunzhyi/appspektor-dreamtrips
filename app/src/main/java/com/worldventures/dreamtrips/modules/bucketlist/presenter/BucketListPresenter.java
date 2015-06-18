@@ -121,10 +121,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         List<Object> result = new ArrayList<>();
         if (!bucketItems.isEmpty()) {
             Collection<BucketItem> toDo = Queryable.from(bucketItems).
-                    filter((bucketItem) -> !bucketItem.isDone()).toList();
+                    filter((bucketItem) -> !bucketItem.isDone())
+                    .toList();
             Collection<BucketItem> done = Queryable.from(bucketItems).
-                    filter((bucketItem) -> bucketItem.isDone()).toList();
-            result.add(new BucketHeader(0, R.string.completed));
+                    filter((bucketItem) -> bucketItem.isDone())
+                    .toList();
+            result.add(new BucketHeader(0, R.string.to_do));
             if (showToDO && !toDo.isEmpty()) {
                 result.addAll(toDo);
             }
@@ -132,8 +134,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             if (showCompleted && !done.isEmpty()) {
                 result.addAll(done);
             }
+            //
+            if (currentItem == null) currentItem = bucketItems.get(0);
         }
-        if (currentItem == null && !bucketItems.isEmpty()) currentItem = bucketItems.get(0);
         view.getAdapter().setItems(result);
         openDetailsIfNeeded(currentItem);
     }
@@ -199,26 +202,25 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(DeleteBucketItemEvent event) {
-        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
-            eventBus.cancelEventDelivery(event);
+        if (bucketItems.isEmpty() || !isTypeCorrect(event.getBucketItem().getType())) return;
+        //
+        eventBus.cancelEventDelivery(event);
 
-            int index = bucketItems.indexOf(event.getBucketItem());
-            bucketItems.remove(event.getBucketItem());
-            refresh();
-
-            if (view.isTabletLandscape() && view.detailsOpened()) {
-                if (bucketItems.isEmpty()) {
-                    view.hideContainer();
-                } else {
-                    openDetails(index == bucketItems.size() ?
-                            bucketItems.get(index - 1) :
-                            bucketItems.get(index));
-                }
+        int index = bucketItems.indexOf(event.getBucketItem());
+        bucketItems.remove(event.getBucketItem());
+        //
+        if (currentItem.equals(event.getBucketItem())) {
+            if (bucketItems.isEmpty()) currentItem = null;
+            else {
+                currentItem = index == bucketItems.size() ?
+                        bucketItems.get(index - 1) :
+                        bucketItems.get(index);
             }
-
-            DeleteBucketItemCommand request = deleteDellayed(event.getBucketItem().getId());
-            view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
         }
+        refresh();
+        // make request
+        DeleteBucketItemCommand request = deleteDelayed(event.getBucketItem().getId());
+        view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
     }
 
     private boolean isTypeCorrect(String bucketType) {
@@ -226,9 +228,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetailsIfNeeded(BucketItem item) {
-        if (item != null && view.isTabletLandscape() && view.isVisibleOnScreen()) {
-            openDetails(item);
-        }
+        if (!view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
+        //
+        if (item != null ) openDetails(item);
+        else view.hideContainer();
     }
 
     private void openDetails(BucketItem bucketItem) {
@@ -255,15 +258,18 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         activityRouter.openBucketListPopularActivity(type);
     }
 
-    private DeleteBucketItemCommand deleteDellayed(int id) {
+    private DeleteBucketItemCommand deleteDelayed(int id) {
         DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, DELETION_DELAY);
-        doRequest(request, obj -> db.saveBucketList(bucketItems, type.name()));
+        doRequest(request, obj -> {
+            db.saveBucketList(bucketItems, type.name());
+        });
         return request;
     }
 
     private void undo(BucketItem bucketItem, int index, DeleteBucketItemCommand request) {
         request.setCanceled(true);
         bucketItems.add(index, bucketItem);
+        currentItem = bucketItem;
         refresh();
     }
 
@@ -351,7 +357,5 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void showDetailsContainer();
 
         void hideContainer();
-
-        boolean detailsOpened();
     }
 }

@@ -263,7 +263,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void hideContainer() {
-        getActivity().onBackPressed();
+        getActivity().findViewById(R.id.container_details_fullscreen).setVisibility(View.GONE);
     }
 
     @Override
@@ -307,8 +307,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return adapter;
     }
 
-    @Override
-    public boolean detailsOpened() {
-        return getActivity().findViewById(R.id.container_details).getVisibility() == View.VISIBLE;
-    }
 }

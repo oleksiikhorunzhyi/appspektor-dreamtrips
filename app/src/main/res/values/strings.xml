@@ -265,8 +265,8 @@
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
-    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
-    <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia Bucks</string>
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
     <string name="profile_platinum">Platinum member</string>
     <string name="profile_golden">Gold member</string>
 

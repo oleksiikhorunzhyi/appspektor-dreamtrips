@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
+import java.text.DecimalFormat;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icicle;
@@ -321,12 +323,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void setRoviaBucks(int count) {
+    public void setRoviaBucks(String count) {
         roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
     }
 
     @Override
-    public void setDreamTripPoints(int count) {
+    public void setDreamTripPoints(String count) {
         dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
     }
 

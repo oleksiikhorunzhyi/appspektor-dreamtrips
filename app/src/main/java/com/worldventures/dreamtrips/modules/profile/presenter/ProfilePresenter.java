@@ -206,7 +206,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     public void coverClicked() {
-        view.openCoverPicker();
     }
 
     //don't use of get PREFIX
@@ -227,8 +226,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void finishLoading();
 
         void openAvatarPicker();
-
-        void openCoverPicker();
 
         void hideAccountContent();
 

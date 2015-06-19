@@ -81,12 +81,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         TrackingHelper.bucketList(getUserId());
     }
 
-    @Override
-    public void dropView() {
-        activity = null;
-        super.dropView();
-    }
-
     public void loadBucketItems() {
         if (isConnected()) {
             view.startLoading();

@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,7 +33,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icicle;
-import timber.log.Timber;
 
 
 @Layout(R.layout.fragment_profile)
@@ -227,14 +225,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
             info.show();
             more.setVisibility(View.INVISIBLE);
         }
-    }
-
-    @Override
-    public void openCoverPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_cover_header));
-        this.pid.setCallback(getPresenter().provideCoverChooseCallback());
-        this.pid.show();
     }
 
     @Override

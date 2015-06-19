@@ -114,7 +114,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     @Override
     public void dropView() {
         adapterController.setAdapter(null);
-        activity = null;
         super.dropView();
     }
 

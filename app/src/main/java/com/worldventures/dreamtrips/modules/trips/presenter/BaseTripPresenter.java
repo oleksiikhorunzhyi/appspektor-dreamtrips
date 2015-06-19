@@ -49,11 +49,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         initData();
     }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        activity = null;
-    }
 
     protected void initData() {
         view.setName(trip.getName());

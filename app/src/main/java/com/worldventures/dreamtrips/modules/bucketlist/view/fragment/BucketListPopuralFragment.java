@@ -141,7 +141,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     @Override
     public void startLoading() {
         weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
     }
 

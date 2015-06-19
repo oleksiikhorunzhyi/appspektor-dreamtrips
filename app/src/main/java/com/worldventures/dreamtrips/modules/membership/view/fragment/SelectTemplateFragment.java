@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -40,10 +41,17 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     SwipeRefreshLayout swipeContainer;
 
     BaseArrayListAdapter adapter;
+    private WeakHandler weakHandler;
 
     @Override
     protected SelectTemplatePresenter createPresenter(Bundle savedInstanceState) {
         return new SelectTemplatePresenter();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
     }
 
     @Override
@@ -70,12 +78,16 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void startLoading() {
-        swipeContainer.setRefreshing(true);
+        weakHandler.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(true);
+        });
     }
 
     @Override
     public void finishLoading() {
-        swipeContainer.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(false);
+        });
     }
 
     @Override

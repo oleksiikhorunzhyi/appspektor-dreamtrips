@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.andexert.expandablelayout.library.ExpandableLayout;
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
@@ -100,6 +101,14 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     int pidTypeShown;
     @Icicle
     String filePath;
+
+    private WeakHandler weakHandler;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
+    }
 
     @Override
     public void afterCreateView(View rootView) {
@@ -383,14 +392,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> {
+        weakHandler.post(() -> {
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
         });
     }
 
     @Override
     public void finishLoading() {
-        swipeContainer.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(false);
+        });
     }
 
     private void showLogoutDialog() {

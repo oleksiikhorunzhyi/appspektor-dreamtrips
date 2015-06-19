@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -70,6 +71,8 @@ public class InviteFragment
     FilterableArrayListAdapter<Member> adapter;
     RecyclerViewStateDelegate stateDelegate;
 
+    private WeakHandler weakHandler;
+
     @Override
     protected InvitePresenter createPresenter(Bundle savedInstanceState) {
         return new InvitePresenter();
@@ -78,6 +81,7 @@ public class InviteFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -177,12 +181,16 @@ public class InviteFragment
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        weakHandler.post(() -> {
+            if  (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 

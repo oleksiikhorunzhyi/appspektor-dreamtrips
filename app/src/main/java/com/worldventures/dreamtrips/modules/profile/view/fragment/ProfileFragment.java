@@ -287,8 +287,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void showAccountContent() {
-        cover.setVisibility(View.VISIBLE);
-        avatar.setVisibility(View.GONE);
+        cover.setVisibility(View.GONE);
+        avatar.setVisibility(View.VISIBLE);
     }
 
     @Override

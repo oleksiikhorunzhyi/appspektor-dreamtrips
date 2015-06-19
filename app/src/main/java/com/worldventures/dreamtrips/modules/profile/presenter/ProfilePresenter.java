@@ -147,6 +147,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     private void onProfileLoaded(User user) {
         view.finishLoading();
         this.user = user;
+        user.setCoverPath(getUser().getCoverPath());
         setUserProfileInfo();
         view.setTripImagesCount(user.getTripImagesCount());
         view.setBucketItemsCount(user.getBucketListItemsCount());

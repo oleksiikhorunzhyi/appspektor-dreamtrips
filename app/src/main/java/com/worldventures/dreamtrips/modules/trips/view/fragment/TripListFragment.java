@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -62,12 +63,15 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     private SearchView searchView;
     RecyclerViewStateDelegate stateDelegate;
 
+    private WeakHandler weakHandler;
+
     @Icicle
     boolean searchOpened;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -202,12 +206,16 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 

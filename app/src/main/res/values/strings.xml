@@ -250,6 +250,7 @@
     <string name="filter_recently_added">RECENTLY ADDED</string>
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
     <string name="choose_multiselect">Choose Photos</string>
+    <string name="last_sent">Last Sent</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
         <item>@string/choose_fb</item>
@@ -267,7 +268,7 @@
     <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia Bucks</string>
     <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Golden member</string>
+    <string name="profile_golden">Gold member</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>

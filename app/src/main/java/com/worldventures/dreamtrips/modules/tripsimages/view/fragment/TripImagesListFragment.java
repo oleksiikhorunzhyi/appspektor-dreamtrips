@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
@@ -53,10 +54,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     private LinearLayoutManager layoutManager;
 
     RecyclerViewStateDelegate stateDelegate;
+    private WeakHandler weakHandler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -133,14 +136,16 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> {
+        weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 

@@ -39,7 +39,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_gravity="bottom|end"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:src="@drawable/ic_photo_camera"/>
 
             <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
@@ -90,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
+            android:visibility="gone"
             android:layout_margin="@dimen/spacing_small"
             android:src="@drawable/ic_photo_camera"/>
     </FrameLayout>

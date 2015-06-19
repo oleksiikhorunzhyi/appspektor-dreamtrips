@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -54,6 +55,8 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     private FilterableArrayListAdapter<PopularBucketItem> adapter;
     RecyclerViewStateDelegate stateDelegate;
 
+    private WeakHandler weakHandler;
+
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BucketActivity.EXTRA_TYPE);
@@ -62,6 +65,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -107,6 +111,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search));
         searchView.setIconifiedByDefault(false);
         searchView.setOnCloseListener(() -> {
             getPresenter().searchClosed();
@@ -136,12 +141,16 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 

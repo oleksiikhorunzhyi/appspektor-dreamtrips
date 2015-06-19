@@ -81,7 +81,6 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     @Override
     public void dropView() {
-        activity = null;
         adapterController.setAdapter(null);
         super.dropView();
     }

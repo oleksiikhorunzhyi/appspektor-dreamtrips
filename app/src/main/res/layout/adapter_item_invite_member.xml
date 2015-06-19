@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_invite_resend"
             android:drawablePadding="8dp"
-            android:text="RESEND"
+            android:text="@string/last_sent"
             android:textColor="@android:color/black" />
     </LinearLayout>
 </LinearLayout>

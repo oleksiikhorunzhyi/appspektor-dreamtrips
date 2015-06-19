@@ -31,6 +31,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActiv
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +42,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.Icicle;
+
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
@@ -79,12 +83,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getUserId());
-    }
-
-    @Override
-    public void dropView() {
-        activity = null;
-        super.dropView();
     }
 
     public void loadBucketItems() {
@@ -231,7 +229,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }
         refresh();
         // make request
-        DeleteBucketItemCommand request = deleteDelayed(event.getBucketItem().getId());
+        DeleteBucketItemCommand request = deleteDelayed(event.getBucketItem());
         view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
     }
 
@@ -273,10 +271,21 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         activityRouter.openBucketListPopularActivity(type);
     }
 
-    private DeleteBucketItemCommand deleteDelayed(int id) {
-        DeleteBucketItemCommand request = new DeleteBucketItemCommand(id, DELETION_DELAY);
+    private DeleteBucketItemCommand deleteDelayed(BucketItem item) {
+        DeleteBucketItemCommand request = new DeleteBucketItemCommand(item.getId(), DELETION_DELAY);
         doRequest(request, obj -> {
             db.saveBucketList(bucketItems, type.name());
+            if (type.equals(LOCATIONS)) {
+                doRequest(new GetTripsQuery(db, prefs, false), tripModels -> {
+                    TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element -> {
+                        return element.getGeoLocation().getName().equals(item.getName());
+                    });
+                    if (tripFromBucket != null) {
+                        tripFromBucket.setInBucketList(false);
+                        db.saveTrip(tripFromBucket);
+                    }
+                });
+            }
         });
         return request;
     }
@@ -337,8 +346,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void addBucketItem(BucketPostItem bucketPostItem) {
         doRequest(new AddBucketItemCommand(bucketPostItem), bucketItem -> {
-            bucketItems.add(0, bucketItem);
-            db.saveBucketList(bucketItems, type.name());
+            bucketHelper.saveBucketItem(db, bucketItem, type.name(), true);
 
             trackAddFinish();
             view.getAdapter().addItem(0, bucketItem);

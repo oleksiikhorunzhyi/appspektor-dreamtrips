@@ -262,8 +262,20 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         if (pidTypeShown != 0) {
             if (pid == null) {
                 pid = new PickImageDialog(getContext(), fragment);
-                pid.setCallback(makePhotoImageCallback);
-                pid.setCallback(multiSelectPickCallback);
+                switch (pidTypeShown) {
+                    case PickImageDialog.REQUEST_CAPTURE_PICTURE:
+                        pid.setCallback(makePhotoImageCallback);
+                        break;
+                    case PickImageDialog.REQUEST_PICK_PICTURE:
+                        pid.setCallback(chooseImageCallback);
+                        break;
+                    case PickImageDialog.REQUEST_MULTI_SELECT:
+                        pid.setCallback(multiSelectPickCallback);
+                        break;
+                    case PickImageDialog.REQUEST_FACEBOOK:
+                        pid.setCallback(fbImageCallback);
+                        break;
+                }
                 pid.setChooserType(pidTypeShown);
                 pid.setFilePath(filePath);
             }

@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCal
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
     private User user;
     private boolean isCurrentUserProfile;
+
+    private DecimalFormat df = new DecimalFormat("#.00");
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
@@ -115,8 +118,8 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
-        view.setRoviaBucks(user.getRoviaBucks());
-        view.setDreamTripPoints(user.getDreamTripsPoints());
+        view.setRoviaBucks(df.format(user.getRoviaBucks()));
+        view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
     }
 
     private void setOtherUserProfile() {
@@ -147,6 +150,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     private void onProfileLoaded(User user) {
         view.finishLoading();
         this.user = user;
+        user.setCoverPath(getUser().getCoverPath());
         setUserProfileInfo();
         view.setTripImagesCount(user.getTripImagesCount());
         view.setBucketItemsCount(user.getBucketListItemsCount());
@@ -205,7 +209,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     }
 
     public void coverClicked() {
-        view.openCoverPicker();
     }
 
     //don't use of get PREFIX
@@ -226,8 +229,6 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
         void finishLoading();
 
         void openAvatarPicker();
-
-        void openCoverPicker();
 
         void hideAccountContent();
 
@@ -265,9 +266,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void setIsFriend(boolean isFriend);
 
-        void setRoviaBucks(int count);
+        void setRoviaBucks(String count);
 
-        void setDreamTripPoints(int count);
+        void setDreamTripPoints(String count);
 
         void hideBalance();
 

@@ -95,6 +95,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
 
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
+            ivShare.setVisibility(View.GONE);
+            actionSeeLess();
+            tvSeeMore.setVisibility(View.GONE);
+        } else if (type == TripImagesListFragment.Type.INSPIRE_ME) {
             actionSeeLess();
             tvSeeMore.setVisibility(View.GONE);
         } else {

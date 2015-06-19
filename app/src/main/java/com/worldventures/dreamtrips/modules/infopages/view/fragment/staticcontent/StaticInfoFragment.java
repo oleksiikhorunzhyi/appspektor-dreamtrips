@@ -56,6 +56,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     protected Bundle savedState;
     protected boolean isLoading;
 
+    private WeakHandler weakHandler;
+
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new WebViewFragmentPresenter(getURL());
@@ -64,6 +66,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         if (isWebViewSavedState(savedInstanceState)) {
             savedState = savedInstanceState;
         }
@@ -102,9 +105,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 super.onPageStarted(view, url, favicon);
                 Timber.d("Page started");
                 isLoading = true;
-                if (refreshLayout != null) { // could be when fragment is not visible
-                    refreshLayout.post(() -> refreshLayout.setRefreshing(true));
-                }
+                weakHandler.post(() -> {
+                    if (refreshLayout != null) refreshLayout.setRefreshing(true);
+                });
             }
 
             @Override
@@ -113,7 +116,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
-                    refreshLayout.setRefreshing(false);
+                    weakHandler.post(() -> {
+                        if (refreshLayout != null) refreshLayout.setRefreshing(false);
+                    });
                 }
             }
         });

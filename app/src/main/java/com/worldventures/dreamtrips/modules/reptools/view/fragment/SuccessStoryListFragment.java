@@ -55,7 +55,6 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     Provider<Injector> injectorProvider;
     private FilterableArrayListAdapter<SuccessStory> adapter;
 
-    private WeakHandler handler = new WeakHandler();
     private WeakHandler weakHandler = new WeakHandler();
 
     @Override
@@ -155,7 +154,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
     @Override
     public void finishLoading(List<SuccessStory> result) {
-        handler.post(() -> {
+        weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
             openFirst();
         });
@@ -177,7 +176,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override

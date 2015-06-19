@@ -250,6 +250,9 @@
     <string name="filter_recently_added">先顯示近期旅程</string>
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
     <string name="choose_multiselect">選擇照片</string>
+    <string name="last_sent">此前發送的</string>
+    <string name="search_trips">搜索旅行</string>
+    <string name="search">搜索</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
         <item>@string/choose_fb</item>
@@ -264,8 +267,8 @@
     <string name="profile_friends">朋友</string>
     <string name="profile_messages">訊息</string>
     <string name="profile_more">更多</string>
-    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT 點數</string>
-    <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia 幣</string>
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
 

@@ -10,13 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.andexert.expandablelayout.library.ExpandableLayout;
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
@@ -30,10 +30,11 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
+import java.text.DecimalFormat;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icicle;
-import timber.log.Timber;
 
 
 @Layout(R.layout.fragment_profile)
@@ -97,9 +98,15 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     private PickImageDialog pid;
 
     @Icicle
-    int pidTypeShown;
-    @Icicle
     String filePath;
+
+    private WeakHandler weakHandler;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
+    }
 
     @Override
     public void afterCreateView(View rootView) {
@@ -221,19 +228,9 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void openCoverPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_cover_header));
-        this.pid.setCallback(getPresenter().provideCoverChooseCallback());
-        this.pid.show();
-    }
-
-    @Override
     public void openAvatarPicker() {
-        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
         this.pid.show();
         filePath = pid.getFilePath();
@@ -241,16 +238,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pidTypeShown != 0) {
+        if (pid == null) {
             this.pid = new PickImageDialog(getActivity(), this);
             this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-            this.pid.setChooserType(pidTypeShown);
             this.pid.setFilePath(filePath);
-            pidTypeShown = 0;
         }
-        //
-        if (this.pid != null)
-            this.pid.onActivityResult(requestCode, resultCode, data);
+        this.pid.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -287,8 +280,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void showAccountContent() {
-        cover.setVisibility(View.VISIBLE);
-        avatar.setVisibility(View.GONE);
+        cover.setVisibility(View.GONE);
+        avatar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -322,12 +315,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     }
 
     @Override
-    public void setRoviaBucks(int count) {
+    public void setRoviaBucks(String count) {
         roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
     }
 
     @Override
-    public void setDreamTripPoints(int count) {
+    public void setDreamTripPoints(String count) {
         dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
     }
 
@@ -383,14 +376,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> {
+        weakHandler.post(() -> {
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
         });
     }
 
     @Override
     public void finishLoading() {
-        swipeContainer.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(false);
+        });
     }
 
     private void showLogoutDialog() {

@@ -301,12 +301,12 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void startLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void finishLoading() {
-        progressBar.setVisibility(View.GONE);
+        if (progressBar != null) progressBar.setVisibility(View.GONE);
         stateDelegate.restoreStateIfNeeded();
     }
 

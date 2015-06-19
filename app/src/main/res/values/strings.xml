@@ -251,6 +251,8 @@
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
     <string name="choose_multiselect">Choose Photos</string>
     <string name="last_sent">Last Sent</string>
+    <string name="search_trips">Search Trips</string>
+    <string name="search">Search</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
         <item>@string/choose_fb</item>

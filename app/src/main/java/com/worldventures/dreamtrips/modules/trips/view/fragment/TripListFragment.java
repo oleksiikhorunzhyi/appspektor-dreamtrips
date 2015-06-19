@@ -160,6 +160,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
             }
         });
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search_trips));
         searchView.setQuery(adapter.getQuery(), false);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();

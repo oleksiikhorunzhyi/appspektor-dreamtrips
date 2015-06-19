@@ -251,6 +251,8 @@
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
     <string name="choose_multiselect">選擇照片</string>
     <string name="last_sent">此前發送的</string>
+    <string name="search_trips">搜索旅行</string>
+    <string name="search">搜索</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
         <item>@string/choose_fb</item>

@@ -111,6 +111,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search));
         searchView.setIconifiedByDefault(false);
         searchView.setOnCloseListener(() -> {
             getPresenter().searchClosed();

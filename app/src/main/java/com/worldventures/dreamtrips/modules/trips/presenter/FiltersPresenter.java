@@ -190,6 +190,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private ArrayList<Integer> getAcceptedRegions() {
+        if (regionHeaderModel.isChecked()) {
+            return null;
+        }
+
         ArrayList<Integer> regionsList = null;
 
         if (regions != null) {

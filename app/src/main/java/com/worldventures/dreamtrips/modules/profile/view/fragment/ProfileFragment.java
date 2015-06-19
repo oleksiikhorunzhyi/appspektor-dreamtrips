@@ -98,8 +98,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     private PickImageDialog pid;
 
     @Icicle
-    int pidTypeShown;
-    @Icicle
     String filePath;
 
     private WeakHandler weakHandler;
@@ -231,10 +229,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void openAvatarPicker() {
-        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
         this.pid.show();
         filePath = pid.getFilePath();
@@ -242,16 +238,12 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pidTypeShown != 0) {
+        if (pid == null) {
             this.pid = new PickImageDialog(getActivity(), this);
             this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-            this.pid.setChooserType(pidTypeShown);
             this.pid.setFilePath(filePath);
-            pidTypeShown = 0;
         }
-        //
-        if (this.pid != null)
-            this.pid.onActivityResult(requestCode, resultCode, data);
+        this.pid.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

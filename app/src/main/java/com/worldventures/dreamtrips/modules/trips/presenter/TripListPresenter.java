@@ -101,15 +101,15 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
     public void takeView(View view) {
         super.takeView(view);
-        loadWithStatus = true;
         adapterController.setAdapter(view.getAdapter());
-        adapterController.reload();
         TrackingHelper.dreamTrips(getUserId());
     }
 
-    public void loadFromApi() {
-        loadFromApi = true;
+    @Override
+    public void onResume() {
+        super.onResume();
         loadWithStatus = true;
+        loadFromApi = false;
         adapterController.reload();
     }
 
@@ -117,6 +117,12 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     public void dropView() {
         adapterController.setAdapter(null);
         super.dropView();
+    }
+
+    public void loadFromApi() {
+        loadFromApi = true;
+        loadWithStatus = true;
+        adapterController.reload();
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
+
 public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View> {
 
     @Inject
@@ -167,6 +169,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             request = new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId()));
             doRequest(request, item -> {
                 onSuccess(trip);
+                bucketHelper.saveBucketItem(db, item, LOCATIONS.name(), true);
                 bucketHelper.notifyItemAddedToBucket(activity, item);
 
             }, (spiceException) -> {

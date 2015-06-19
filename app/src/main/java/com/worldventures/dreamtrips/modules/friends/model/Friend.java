@@ -4,13 +4,15 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
+import java.util.Arrays;
+
 public class Friend extends User implements Filterable {
-    String[] group;
+    Group[] group;
 
     @SerializedName("mutual_friends")
     int mutualFriends;
 
-    public String[] getGroups() {
+    public Group[] getGroups() {
         return group;
     }
 
@@ -27,8 +29,13 @@ public class Friend extends User implements Filterable {
                 containsIn(query, getGroups());
     }
 
-    private boolean containsIn(String query, String where) {
-        return where != null && where.toLowerCase().contains(query.toLowerCase());
+
+    private boolean containsIn(String query, Object where) {
+        return where != null && where.toString().toLowerCase().contains(query.toLowerCase());
+    }
+
+    private boolean containsIn(String query, Object[] where) {
+        return where != null && Arrays.toString(where).toLowerCase().contains(query.toLowerCase());
     }
 
     private boolean containsIn(String query, String[] array) {

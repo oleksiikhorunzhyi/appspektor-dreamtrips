@@ -8,14 +8,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icicle;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
@@ -52,8 +55,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
     protected DTEditText etFrom;
-    @InjectView(R.id.et_live_in)
-    protected DTEditText etLiveIn;
+    @InjectView(R.id.et_enroll)
+    protected DTEditText etEnroll;
     @InjectView(R.id.dt_points)
     protected TextView dtPoints;
     @InjectView(R.id.rovia_bucks)
@@ -63,6 +66,16 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.user_balance)
     protected ViewGroup userBalance;
 
+    @InjectView(R.id.expandable_info)
+    protected ExpandableLayout info;
+    @InjectView(R.id.more)
+    protected ViewGroup more;
+    private PickImageDialog pid;
+
+    @Icicle
+    int pidTypeShown;
+    @Icicle
+    String filePath;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -72,6 +85,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
+
     }
 
     @OnClick(R.id.bucket_list)
@@ -130,8 +144,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public void setLivesIn(String liveIn) {
-        etLiveIn.setText(liveIn);
+    public void setEnrollDate(String date) {
+        etEnroll.setText(date);
     }
 
     @Override
@@ -180,7 +194,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> swipeContainer.setRefreshing(true));
+        swipeContainer.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(true);
+        });
     }
 
     @Override

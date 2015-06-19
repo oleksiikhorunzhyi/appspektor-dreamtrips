@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
@@ -41,8 +42,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
+        view.setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(),
+                DateFormat.getMediumDateFormat(context)));
         view.setUserId(user.getUsername());
-        view.setLivesIn(user.getLocation());
         view.setFrom(user.getLocation());
 
         if (user.isGold())
@@ -74,7 +76,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         activityRouter.openFriends();
     }
 
-
     public interface View extends Presenter.View {
         Bundle getArguments();
 
@@ -94,7 +95,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
         void setUserId(String username);
 
-        void setLivesIn(String location);
+        void setEnrollDate(String date);
 
         void setTripImagesCount(int count);
 

@@ -101,8 +101,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     @Override
     public void openBucketList() {
-        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
-                .getComponentByKey(BucketListModule.BUCKETLIST)));
+        activityRouter.openComponentActivity(rootComponentsProvider
+                .getComponentByKey(BucketListModule.BUCKETLIST));
     }
 
     @Override

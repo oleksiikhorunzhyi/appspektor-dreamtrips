@@ -59,6 +59,11 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
+    public boolean isVisibleOnScreen() {
+        return true;
+    }
+
+    @Override
     public void alert(String s) {
         runOnUiThread(() -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);

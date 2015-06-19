@@ -39,10 +39,6 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     private Session.StatusCallback callback = (session, state, exception) -> {
         //nothing to do here
     };
-    private String imageUrl;
-    private String shareUrl;
-    private String text;
-    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +55,10 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
         if (bundleExtra == null) {
             finish();
         } else {
-            imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL, "");
-            shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL, "");
-            text = bundleExtra.getString(BUNDLE_TEXT, "");
-            type = bundleExtra.getString(BUNDLE_SHARE_TYPE);
+            String imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL, "");
+            String shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL, "");
+            String text = bundleExtra.getString(BUNDLE_TEXT, "");
+            String type = bundleExtra.getString(BUNDLE_SHARE_TYPE);
             getPresentationModel().create(imageUrl, shareUrl, text, type);
             getIntent().removeExtra(ActivityRouter.EXTRA_BUNDLE);
         }

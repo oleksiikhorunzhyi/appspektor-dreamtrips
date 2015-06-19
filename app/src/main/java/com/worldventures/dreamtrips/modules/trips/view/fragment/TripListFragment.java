@@ -37,6 +37,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icicle;
 
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
@@ -61,6 +62,9 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     private SearchView searchView;
     RecyclerViewStateDelegate stateDelegate;
 
+    @Icicle
+    boolean searchOpened;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +76,8 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         stateDelegate.saveStateIfNeeded(outState);
+        if (adapter != null)
+            adapter.saveState(outState);
     }
 
     @Override
@@ -90,6 +96,11 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
+    @Override
+    protected void restoreState(Bundle savedInstanceState) {
+        super.restoreState(savedInstanceState);
+        adapter.restoreState(savedInstanceState);
+    }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
@@ -130,8 +141,22 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        if (searchOpened) searchItem.expandActionView();
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchOpened = true;
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchOpened = false;
+                return true;
+            }
+        });
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setIconifiedByDefault(false);
+        searchView.setQuery(adapter.getQuery(), false);
         searchView.setOnCloseListener(() -> {
             adapter.flushFilter();
             return false;
@@ -193,7 +218,9 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void setFilteredItems(List<TripModel> items) {
-        adapter.setFilteredItems(items);
+        adapter.clear();
+        adapter.addItems(items);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

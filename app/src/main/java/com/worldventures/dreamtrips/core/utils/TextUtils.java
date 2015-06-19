@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.core.utils;
 
 public class TextUtils {
 
-    public static String joinWithFirstUpperCase(String[] groups) {
+    public static String joinWithFirstUpperCase(Object[] groups) {
         String result = "";
-        for (String group : groups) {
-            result = result + ", " + convertToFirstUpperCase(group);
+        for (Object group : groups) {
+            result = result + ", " + convertToFirstUpperCase(group.toString());
         }
         return result.substring(result.indexOf(",") + 1);
     }

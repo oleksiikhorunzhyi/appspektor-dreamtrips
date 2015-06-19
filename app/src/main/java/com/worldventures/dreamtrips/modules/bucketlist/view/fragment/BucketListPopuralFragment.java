@@ -95,7 +95,6 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     }
 
     private RecyclerView.LayoutManager getLayoutManager() {
-        RecyclerView.LayoutManager layoutManager;
         if (isTabletLandscape()) {
             return new GridLayoutManager(getActivity(), 3);
         } else {

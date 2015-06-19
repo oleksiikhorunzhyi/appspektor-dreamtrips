@@ -46,6 +46,7 @@
     <dimen name="map_offset_y">64dp</dimen>
 
     <dimen name="draggable_margin">24dp</dimen>
+    <dimen name="draggable_elevation">4dp</dimen>
     <dimen name="button_width">250dp</dimen>
     <dimen name="ss_button_corner">2dp</dimen>
 

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -48,7 +49,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
-
+    WeakHandler handler = new WeakHandler();
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -145,7 +146,9 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @Override
     public void startLoading() {
-        if (refreshLayout != null)
-            refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        handler.post(() -> {
+            if (refreshLayout != null)
+                refreshLayout.setRefreshing(true);
+        });
     }
 }

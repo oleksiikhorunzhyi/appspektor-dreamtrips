@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
@@ -17,10 +18,13 @@ import java.util.List;
 
 import javax.inject.Provider;
 
+import icepick.Icepick;
+import icepick.Icicle;
+
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
     protected volatile List<BaseItemClass> cachedItems;
-    protected volatile String query;
+    @Icicle volatile String query;
 
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
@@ -33,6 +37,18 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         HandlerThread filterThread = new HandlerThread("filter");
         filterThread.start();
         filterHandler = new WeakHandler(filterThread.getLooper());
+    }
+
+    public void saveState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    public void restoreState(Bundle savedState) {
+        Icepick.restoreInstanceState(this, savedState);
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     ///////////////////////////////////////////////////////////////////////////

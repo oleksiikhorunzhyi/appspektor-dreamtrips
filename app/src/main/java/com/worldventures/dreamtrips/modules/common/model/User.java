@@ -15,6 +15,12 @@ public class User extends BaseEntity implements Parcelable {
     public static final String DTG_SUBSCTIPTION = "DTG";
     public static final String DTP_SUBSCRIPTION = "DTP";
 
+    public static final String RELATION_NONE = "none";
+    public static final String RELATION_FRIEND = "friend";
+    public static final String RELATION_INCOMING_REQUEST = "incoming_request";
+    public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
+    public static final String RELATION_REJECT = "rejected";
+
     public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
             return new User(source);
@@ -38,6 +44,8 @@ public class User extends BaseEntity implements Parcelable {
     private double roviaBucks;
     private int tripImagesCount;
     private int bucketListItemsCount;
+
+    private String relationship;
 
     private String coverPath;
 
@@ -65,6 +73,8 @@ public class User extends BaseEntity implements Parcelable {
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
         this.coverPath = in.readString();
         this.id = in.readInt();
+        this.enrollDate = (Date)in.readSerializable();
+        this.relationship = in.readString();
     }
 
     public String getCoverPath() {
@@ -178,6 +188,10 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
+    public String getRelationship() {
+        return relationship;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -194,6 +208,8 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeParcelable(this.avatar, flags);
         dest.writeString(this.coverPath);
         dest.writeInt(this.id);
+        dest.writeSerializable(enrollDate);
+        dest.writeString(this.relationship);
     }
 
     @Override

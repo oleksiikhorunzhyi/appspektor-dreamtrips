@@ -12,18 +12,18 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.friends.model.Request;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_request)
-public class RequestCell extends AbstractCell<Request> {
+public class RequestCell extends AbstractCell<User> {
 
     @InjectView(R.id.accept)
     AppCompatButton accept;
@@ -49,8 +49,8 @@ public class RequestCell extends AbstractCell<Request> {
     @Override
     protected void syncUIStateWithModel() {
         ColorStateList csl = itemView.getResources().getColorStateList(R.color.button_background);
-        name.setText(getModelObject().getUser().getFullName());
-        avatar.setImageURI(Uri.parse(getModelObject().getUser().getAvatar().getMedium()));
+        name.setText(getModelObject().getFullName());
+        avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
 
@@ -58,50 +58,52 @@ public class RequestCell extends AbstractCell<Request> {
         hide.setSupportBackgroundTintList(csl);
         cancel.setSupportBackgroundTintList(csl);
 
-        if (getModelObject().getDirection().equals(Request.INCOMING)) {
+        if (getModelObject().getRelationship().equals(User.RELATION_INCOMING_REQUEST)) {
             hide.setVisibility(View.GONE);
             cancel.setVisibility(View.GONE);
             reject.setVisibility(View.VISIBLE);
             accept.setVisibility(View.VISIBLE);
-        } else if (getModelObject().getDirection().equals(Request.OUTGOING)) {
+        } else if (getModelObject().getRelationship().equals(User.RELATION_OUTGOING_REQUEST)) {
             reject.setVisibility(View.GONE);
             accept.setVisibility(View.GONE);
-            if (getModelObject().getStatus().equals(Request.PENDING)) {
-                hide.setVisibility(View.GONE);
-                cancel.setVisibility(View.VISIBLE);
-            } else if (getModelObject().getStatus().equals(Request.REJECTED)) {
-                hide.setVisibility(View.VISIBLE);
-                cancel.setVisibility(View.GONE);
-            }
+            hide.setVisibility(View.GONE);
+            cancel.setVisibility(View.VISIBLE);
+        } else if (getModelObject().getRelationship().equals(User.RELATION_REJECT)) {
+            reject.setVisibility(View.GONE);
+            accept.setVisibility(View.GONE);
+            hide.setVisibility(View.VISIBLE);
+            cancel.setVisibility(View.GONE);
         }
     }
 
+
+
     @OnClick(R.id.avatar)
     void onUserClicked() {
-        getEventBus().post(new UserClickedEvent(getModelObject().getUser()));
+        getEventBus().post(new UserClickedEvent(getModelObject()));
     }
 
     @OnClick(R.id.accept)
     void onAccept() {
-        getEventBus().post(new AcceptRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        getEventBus().post(new AcceptRequestEvent(getModelObject(), getAdapterPosition()));
         showProgress();
     }
 
     @OnClick(R.id.reject)
     void onReject() {
-        getEventBus().post(new RejectRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        getEventBus().post(new RejectRequestEvent(getModelObject(), getAdapterPosition()));
         showProgress();
     }
 
     @OnClick(R.id.hide)
     void onHide() {
-        getEventBus().post(new HideRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        getEventBus().post(new HideRequestEvent(getModelObject(), getAdapterPosition()));
         showProgress();
     }
 
     @OnClick(R.id.cancel)
     void onCancel() {
-        getEventBus().post(new CancelRequestEvent(getModelObject().getUser(), getAdapterPosition()));
+        getEventBus().post(new CancelRequestEvent(getModelObject(), getAdapterPosition()));
         showProgress();
     }
 

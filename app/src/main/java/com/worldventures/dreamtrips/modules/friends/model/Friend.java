@@ -7,13 +7,15 @@ import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import java.util.Arrays;
 
 public class Friend extends User {
-    String[] circle_ids;
+
+    @SerializedName("circle_ids")
+    String[] circleIds;
 
     @SerializedName("mutual_friends")
     int mutualFriends;
 
     public String[] getCircleIds() {
-        return circle_ids;
+        return circleIds;
     }
 
     public int getMutualFriends() {

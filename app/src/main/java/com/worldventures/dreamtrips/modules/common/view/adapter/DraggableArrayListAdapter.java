@@ -88,6 +88,7 @@ public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
     }
 
     public void setDragMarker(int position, boolean enabled) {
+        dragMarkers.clear();
         dragMarkers.put(position, enabled);
     }
 
@@ -102,7 +103,7 @@ public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
         if (item instanceof BucketItem
                 && !((BucketItem) item).isDone()
                 && moveListener != null) {
-            moveListener.onItemMoved(fromPosition - 1, toPosition - 1);
+            moveListener.onItemMoved(fromPosition, toPosition);
         }
 
         moveItem(fromPosition, toPosition);

@@ -277,14 +277,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (recyclerView != null) {
-            getPresenter().loadBucketItems();
-        }
-    }
-
-    @Override
     public void onPause() {
         dragDropManager.cancelDrag();
         super.onPause();
@@ -312,4 +304,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return adapter;
     }
 
+    @Override
+    public void checkEmpty(int count) {
+        if (count != 0) {
+            emptyView.setVisibility(View.GONE);
+        }
+    }
 }

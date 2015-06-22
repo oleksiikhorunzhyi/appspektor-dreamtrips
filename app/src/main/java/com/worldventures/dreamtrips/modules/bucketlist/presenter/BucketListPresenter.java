@@ -83,6 +83,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getAccountUserId());
+        loadBucketItems();
     }
 
     public void loadBucketItems() {
@@ -147,6 +148,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
         }
         view.getAdapter().setItems(filteredItems);
+        view.checkEmpty(bucketItems.size());
     }
 
     public void onEvent(BucketTabChangedEvent event) {
@@ -349,6 +351,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketHelper.saveBucketItem(db, bucketItem, type.name(), true);
 
             trackAddFinish();
+            bucketItems.add(0, bucketItem);
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
 
@@ -382,5 +385,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void hideDetailsContainer();
 
         void putCategoryMarker(int position);
+
+        void checkEmpty(int count);
     }
 }

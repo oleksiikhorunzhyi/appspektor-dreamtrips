@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
@@ -9,6 +10,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -24,12 +26,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import it.sephiroth.android.library.easing.Circ;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class SnappyRepository {
 
+    public static final String CIRCLES = "circles";
     public static final String REGIONS = "regions_new";
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
@@ -272,6 +276,18 @@ public class SnappyRepository {
             }
             return members;
         }).or(Collections.emptyList());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Circles
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveCircles(List<Circle> circles) {
+        putList(CIRCLES, circles);
+    }
+
+    public List<Circle> getCircles() {
+        return readList(CIRCLES, Circle.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////

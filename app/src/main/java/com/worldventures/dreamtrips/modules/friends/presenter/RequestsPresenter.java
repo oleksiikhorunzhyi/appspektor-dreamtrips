@@ -4,26 +4,22 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetRequestsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Request;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import butterknife.InjectView;
 
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
@@ -67,13 +63,13 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(CancelRequestEvent event) {
-        doRequest(new ActOnRequestCommand(event.getUser().getId(), ActOnRequestCommand.Action.CANCEL.name()),
+        doRequest(new DeleteRequestCommand(event.getUser().getId()),
                 object -> onSuccess(event.getPosition()),
                 this::onError);
     }
 
     public void onEvent(HideRequestEvent event) {
-        doRequest(new ActOnRequestCommand(event.getUser().getId(), ActOnRequestCommand.Action.HIDE.name()),
+        doRequest(new DeleteRequestCommand(event.getUser().getId()),
                 object -> onSuccess(event.getPosition()),
                 this::onError);
     }

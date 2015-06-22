@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,12 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     public void onEvent(AddUserRequestEvent event) {
-        doRequest(new AddUserRequestCommand(event.getUser().getId()),
-                jsonObject -> onSuccess(event.getPosition()),
+        view.showCirclePopup();
+    }
+
+    public void addFriend(User user, Circle circle, int position) {
+        doRequest(new AddUserRequestCommand(user.getId(), circle),
+                jsonObject -> onSuccess(position),
                 this::onError);
     }
 
@@ -93,6 +98,8 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         void finishLoading();
 
         void startLoading();
+
+        void showCirclePopup();
     }
 
 }

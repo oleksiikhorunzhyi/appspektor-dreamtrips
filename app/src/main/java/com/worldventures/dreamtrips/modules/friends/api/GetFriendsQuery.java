@@ -1,29 +1,33 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import java.util.ArrayList;
 
 public class GetFriendsQuery extends Query<ArrayList<Friend>> {
 
-    private String group;
+    private Circle circle;
     private int offset;
     private int limit;
 
-    public GetFriendsQuery(String type) {
+    public GetFriendsQuery(Circle type) {
         this(type, 0, 10);
     }
 
-    public GetFriendsQuery(String group, int offset, int limit) {
+    public GetFriendsQuery(Circle circle, int offset, int limit) {
         super((Class<ArrayList<Friend>>) new ArrayList<Friend>().getClass());
-        this.group = group;
+        this.circle = circle;
         this.offset = offset;
         this.limit = limit;
     }
 
     @Override
     public ArrayList<Friend> loadDataFromNetwork() throws Exception {
-        return getService().getFriends(group, offset, limit);
+        if (circle != null)
+            return getService().getFriends(circle.getId(), offset, limit);
+        else
+            return getService().getAllFriends(offset, limit);
     }
 }

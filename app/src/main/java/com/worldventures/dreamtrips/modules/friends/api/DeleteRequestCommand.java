@@ -1,22 +1,19 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
 import com.worldventures.dreamtrips.core.api.request.Command;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import org.json.JSONObject;
 
-public class AddUserRequestCommand extends Command<JSONObject> {
+public class DeleteRequestCommand extends Command<JSONObject> {
     private int userId;
-    private Circle circle;
 
-    public AddUserRequestCommand(int userId, Circle circle) {
+    public DeleteRequestCommand(int userId) {
         super(JSONObject.class);
         this.userId = userId;
-        this.circle = circle;
     }
 
     @Override
     public JSONObject loadDataFromNetwork() throws Exception {
-        return getService().addFriend(userId, circle.getId());
+        return getService().deleteRequest(userId);
     }
 }

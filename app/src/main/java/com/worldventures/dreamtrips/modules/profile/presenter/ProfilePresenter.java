@@ -4,16 +4,25 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 
 import java.io.File;
+import java.util.List;
+
+import javax.inject.Inject;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
     protected User user;
+
+    @Inject
+    SnappyRepository snappyRepository;
 
     public ProfilePresenter() {
     }
@@ -73,6 +82,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
     public void openFriends() {
         activityRouter.openFriends();
+    }
+
+    ///Circles
+
+    private void loadCircles() {
+        doRequest(new GetCirclesQuery(getAccount().getId()), this::saveCircles);
+    }
+
+    private void saveCircles(List<Circle> circles) {
+        snappyRepository.saveCircles(circles);
     }
 
     public interface View extends Presenter.View {

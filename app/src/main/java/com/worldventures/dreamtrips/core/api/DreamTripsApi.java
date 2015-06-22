@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Request;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -203,18 +204,31 @@ public interface DreamTripsApi {
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
 
-    @GET("/api/social/friends")
-    ArrayList<Friend> getFriends(@Query("group") String group, @Query("offset") int offset, @Query("limit") int limit);
+    @GET("/api/social/{id}/circles")
+    ArrayList<Circle> getCircles(@Path("id") int userID);
 
     @GET("/api/social/friends")
+    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id, @Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getAllFriends(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("/api/social/users")
     ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
     @GET("/api/social/friends/requests")
     ArrayList<Request> getRequests();
 
     @POST("/api/social/friends/requests")
-    JSONObject addFriend(@Query("user_id") int userId);
+    JSONObject addFriend(@Query("user_id") int userId,
+                         @Query("circle_id") String circleId);
 
     @PUT("/api/social/friends/request_responses")
-    JSONObject actOnRequest(@Query("user_id") int userId, @Query("action") String action);
+    JSONObject actOnRequest(@Query("user_id") int userId,
+                            @Field("action") String action,
+                            @Field("circle_id") String circleId);
+
+    @DELETE("/api/social/friends/request_responses")
+    JSONObject deleteRequest(@Query("user_id") int userId);
+
 }

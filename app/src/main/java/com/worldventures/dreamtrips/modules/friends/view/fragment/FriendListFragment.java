@@ -4,24 +4,30 @@ package com.worldventures.dreamtrips.modules.friends.view.fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
+import com.worldventures.dreamtrips.modules.friends.view.adapter.FilterPopupAdapter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
@@ -32,8 +38,6 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-
-import static com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter.FilterType;
 
 @Layout(R.layout.fragment_account_friends)
 public class FriendListFragment extends BaseFragment<FriendListPresenter> implements SwipeRefreshLayout.OnRefreshListener, FriendListPresenter.View {
@@ -53,9 +57,12 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+    @Inject
+    SnappyRepository snappyRepository;
+
     private RecyclerViewStateDelegate stateDelegate;
 
-    private FilterableArrayListAdapter<Friend> adapter;
+    private LoaderRecycleAdapter<Friend> adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +86,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(Friend.class, FriendCell.class);
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
@@ -96,7 +103,6 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
             @Override
             public boolean onQueryTextChange(String s) {
-                adapter.setFilter(s);
                 return false;
             }
         });
@@ -105,16 +111,10 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @OnClick(R.id.iv_filter)
     public void onActionFilter() {
-        View menuItemView = getActivity().findViewById(R.id.iv_filter);
-        PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
-        popupMenu.inflate(R.menu.menu_friend_list_filter);
-        FilterType filterType = getPresenter().getFilterType();
-        popupMenu.getMenu().getItem(filterType.ordinal()).setChecked(true);
-        popupMenu.setOnMenuItemClickListener((menuItem) -> {
-            getPresenter().reloadWithFilter(menuItem.getItemId());
-            return false;
-        });
-        popupMenu.show();
+        ListPopupWindow popupWindow = new ListPopupWindow(getActivity());
+        popupWindow.getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        popupWindow.setAdapter(new FilterPopupAdapter<Circle>());
+        popupWindow.show();
     }
 
     @Override

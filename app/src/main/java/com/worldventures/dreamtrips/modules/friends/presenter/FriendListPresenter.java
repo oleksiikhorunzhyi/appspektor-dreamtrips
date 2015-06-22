@@ -3,29 +3,30 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     private static final int PER_PAGE = 10;
-    private FilterType filterType = FilterType.ALL;
+    private Circle selectedCirlce;
 
     private DreamSpiceAdapterController<Friend> adapterController = new DreamSpiceAdapterController<Friend>() {
         @Override
         public SpiceRequest<ArrayList<Friend>> getReloadRequest() {
-            return new GetFriendsQuery(filterType.query);
+            return new GetFriendsQuery(selectedCirlce);
         }
 
         @Override
         public SpiceRequest<ArrayList<Friend>> getNextPageRequest(int currentCount) {
-            return new GetFriendsQuery(filterType.query, PER_PAGE, currentCount / PER_PAGE + 1);
+            return new GetFriendsQuery(selectedCirlce, PER_PAGE, currentCount / PER_PAGE + 1);
         }
 
         @Override
@@ -76,36 +77,9 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         adapterController.reload();
     }
 
-    public FilterType getFilterType() {
-        return filterType;
-    }
-
-    public void reloadWithFilter(int itemId) {
-        switch (itemId) {
-            case R.id.action_social_show_all:
-                filterType = FilterType.ALL;
-                break;
-            case R.id.action_social_friends:
-                filterType = FilterType.FRIEND;
-                break;
-            case R.id.action_social_sponsored:
-                filterType = FilterType.SPONSORED;
-                break;
-            case R.id.action_social_sponsors:
-                filterType = FilterType.SPONSORS;
-                break;
-        }
+    public void reloadWithFilter(Circle circle) {
+        selectedCirlce = circle;
         reload();
-    }
-
-    public enum FilterType {
-        ALL("all"), FRIEND("friends"), SPONSORED("sponsored"), SPONSORS("sponsors");
-
-        private String query;
-
-        FilterType(String query) {
-            this.query = query;
-        }
     }
 
     public interface View extends Presenter.View {

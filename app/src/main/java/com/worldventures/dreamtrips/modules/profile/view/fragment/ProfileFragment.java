@@ -16,9 +16,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
-
-import java.text.DecimalFormat;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -74,7 +71,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     protected ExpandableLayout info;
     @InjectView(R.id.more)
     protected ViewGroup more;
-    private PickImageDialog pid;
 
     @Icicle
     String filePath;

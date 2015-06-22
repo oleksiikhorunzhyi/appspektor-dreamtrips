@@ -130,15 +130,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     }
 
     public void coverClicked() {
-        view.openCoverPicker();
     }
 
     public ImagePickCallback provideAvatarChooseCallback() {
         return avatarCallback;
-    }
-
-    public ImagePickCallback provideCoverChooseCallback() {
-        return coverCallback;
     }
 
     @Override
@@ -152,8 +147,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         void avatarProgressVisible(boolean visible);
 
         void openAvatarPicker();
-
-        void openCoverPicker();
 
         void setRoviaBucks(String count);
 

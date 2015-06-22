@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
@@ -39,7 +38,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        cover.setVisibility(View.VISIBLE);
+        cover.setVisibility(View.GONE);
         avatar.setVisibility(View.VISIBLE);
         addFriend.setVisibility(View.GONE);
         updateInfo.setVisibility(View.VISIBLE);
@@ -69,13 +68,13 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         getPresenter().coverClicked();
     }
 
-
     @Override
     public void openAvatarPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
         this.pid.show();
+        filePath = pid.getFilePath();
     }
 
     @Override
@@ -83,23 +82,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void openCoverPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_cover_header));
-        this.pid.setCallback(getPresenter().provideCoverChooseCallback());
-        this.pid.show();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (this.pid != null) {
-            this.pid.onActivityResult(requestCode, resultCode, data);
-        } else {
-            Timber.w("Pick image dialog is null");
+        if (pid == null) {
+            this.pid = new PickImageDialog(getActivity(), this);
+            this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+            this.pid.setFilePath(filePath);
         }
+        this.pid.onActivityResult(requestCode, resultCode, data);
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

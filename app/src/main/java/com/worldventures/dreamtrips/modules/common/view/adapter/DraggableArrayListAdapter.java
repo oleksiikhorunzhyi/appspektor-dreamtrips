@@ -88,6 +88,7 @@ public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
     }
 
     public void setDragMarker(int position, boolean enabled) {
+        dragMarkers.clear();
         dragMarkers.put(position, enabled);
     }
 

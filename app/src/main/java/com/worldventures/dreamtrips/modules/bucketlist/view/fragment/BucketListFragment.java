@@ -307,4 +307,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         return adapter;
     }
 
+    @Override
+    public void checkEmpty(int count) {
+        if (count != 0) {
+            emptyView.setVisibility(View.GONE);
+        }
+    }
 }

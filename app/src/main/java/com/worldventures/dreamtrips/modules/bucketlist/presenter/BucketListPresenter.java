@@ -148,6 +148,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             }
         }
         view.getAdapter().setItems(filteredItems);
+        view.checkEmpty(bucketItems.size());
     }
 
     public void onEvent(BucketTabChangedEvent event) {
@@ -384,5 +385,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void hideDetailsContainer();
 
         void putCategoryMarker(int position);
+
+        void checkEmpty(int count);
     }
 }

@@ -349,6 +349,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketHelper.saveBucketItem(db, bucketItem, type.name(), true);
 
             trackAddFinish();
+            bucketItems.add(0, bucketItem);
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
 

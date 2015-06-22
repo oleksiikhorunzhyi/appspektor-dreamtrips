@@ -83,6 +83,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getUserId());
+        loadBucketItems();
     }
 
     public void loadBucketItems() {

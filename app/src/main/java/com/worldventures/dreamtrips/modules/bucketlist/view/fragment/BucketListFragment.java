@@ -280,14 +280,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (recyclerView != null) {
-            getPresenter().loadBucketItems();
-        }
-    }
-
-    @Override
     public void onPause() {
         dragDropManager.cancelDrag();
         super.onPause();

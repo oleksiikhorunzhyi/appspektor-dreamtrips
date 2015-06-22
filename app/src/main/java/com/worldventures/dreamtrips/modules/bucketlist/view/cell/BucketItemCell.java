@@ -224,11 +224,11 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
     private void processAction(@SwipeAction int action) {
         if (action == ACTION_DEL) {
-            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getPosition()));
+            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getAdapterPosition()));
         } else if (action == ACTION_DONE) {
             getModelObject().setDone(!getModelObject().isDone());
             renderData();
-            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getPosition()));
+            getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getAdapterPosition()));
         }
         lastOffset = 0;
     }

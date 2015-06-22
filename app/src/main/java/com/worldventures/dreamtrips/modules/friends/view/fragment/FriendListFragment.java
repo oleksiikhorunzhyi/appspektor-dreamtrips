@@ -8,7 +8,7 @@ import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,8 +20,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -57,8 +55,6 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-    @Inject
-    SnappyRepository snappyRepository;
 
     private RecyclerViewStateDelegate stateDelegate;
 
@@ -111,9 +107,25 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @OnClick(R.id.iv_filter)
     public void onActionFilter() {
+        getPresenter().onFilterClicked();
+    }
+
+    @Override
+    public void showFilters(List<Circle> circles) {
         ListPopupWindow popupWindow = new ListPopupWindow(getActivity());
         popupWindow.getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        popupWindow.setAdapter(new FilterPopupAdapter<Circle>());
+        popupWindow.getListView().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                getPresenter().reloadWithFilter(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        popupWindow.setAdapter(new FilterPopupAdapter<>(getActivity(), circles));
         popupWindow.show();
     }
 

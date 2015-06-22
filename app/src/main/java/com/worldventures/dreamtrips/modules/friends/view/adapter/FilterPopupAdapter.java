@@ -20,9 +20,9 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
     private List<T> items;
     private LayoutInflater inflater;
 
-    public FilterPopupAdapter(List<T> contentItems, Context context) {
-        this.items = contentItems;
+    public FilterPopupAdapter(Context context, List<T> contentItems) {
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.items = contentItems;
     }
 
     @Override

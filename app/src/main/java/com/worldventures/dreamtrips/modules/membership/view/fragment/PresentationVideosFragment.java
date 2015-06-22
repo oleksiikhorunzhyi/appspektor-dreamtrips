@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -44,12 +45,14 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
     private LoaderRecycleAdapter<Object> arrayListAdapter;
 
     RecyclerViewStateDelegate stateDelegate;
+    private WeakHandler weakHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
     }
 
     @Override
@@ -120,12 +123,17 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
 
     @Override
     public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        weakHandler.post(() -> {
+           if  (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
+
     }
 
     @Override
     public void finishLoading() {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if  (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 

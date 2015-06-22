@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 public class DeleteBucketItemCommand extends Command<JsonObject> {
     private int id;
     private long delay;
-    private boolean canceled = false;
+    private volatile boolean canceled;
 
     public DeleteBucketItemCommand(int id, long delay) {
         super(JsonObject.class);

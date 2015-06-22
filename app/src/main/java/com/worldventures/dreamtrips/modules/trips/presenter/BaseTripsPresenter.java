@@ -76,6 +76,7 @@ public class BaseTripsPresenter<T extends Presenter.View> extends Presenter<T> {
         this.minNights = 0;
         this.showFavorites = false;
         this.showSoldOut = false;
+        this.showRecentlyAdded = false;
         this.acceptedRegions = null;
         this.acceptedThemes = null;
         dateFilterItem.reset();

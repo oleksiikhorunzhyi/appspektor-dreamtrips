@@ -95,10 +95,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
 
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
-            actionSeeLess();
+            ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
-        } else {
-            actionSeeMore();
         }
     }
 
@@ -336,6 +334,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setDescription(String desc) {
         tvDescription.setText(desc);
+        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+            actionSeeMore();
+        }
     }
 
     @Override

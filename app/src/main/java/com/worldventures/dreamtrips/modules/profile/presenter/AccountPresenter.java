@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCal
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     RootComponentsProvider rootComponentsProvider;
     @Inject
     SnappyRepository snappyRepository;
+
+    private DecimalFormat df = new DecimalFormat("#.00");
+
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {
@@ -140,8 +144,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     @Override
     protected void setUserProfileInfo() {
         super.setUserProfileInfo();
-        view.setRoviaBucks(user.getRoviaBucks());
-        view.setDreamTripPoints(user.getDreamTripsPoints());
+        view.setRoviaBucks(df.format(user.getRoviaBucks()));
+        view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
     }
 
     public interface View extends ProfilePresenter.View {
@@ -151,9 +155,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
         void openCoverPicker();
 
-        void setRoviaBucks(int count);
+        void setRoviaBucks(String count);
 
-        void setDreamTripPoints(int count);
+        void setDreamTripPoints(String count);
     }
 
 }

@@ -112,12 +112,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     @Override
-    public void setRoviaBucks(int count) {
+    public void setRoviaBucks(String count) {
         roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
     }
 
     @Override
-    public void setDreamTripPoints(int count) {
+    public void setDreamTripPoints(String count) {
         dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
     }
 

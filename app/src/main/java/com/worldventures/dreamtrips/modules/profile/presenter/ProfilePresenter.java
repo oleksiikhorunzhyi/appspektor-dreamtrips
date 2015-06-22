@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
@@ -108,6 +107,5 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         void setPlatinum();
 
         void setMember();
-
     }
 }

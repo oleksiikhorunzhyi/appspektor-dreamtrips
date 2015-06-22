@@ -250,6 +250,9 @@
     <string name="filter_recently_added">RECENTLY ADDED</string>
     <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
     <string name="choose_multiselect">Choose Photos</string>
+    <string name="last_sent">Last Sent</string>
+    <string name="search_trips">Search Trips</string>
+    <string name="search">Search</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
         <item>@string/choose_fb</item>
@@ -264,8 +267,11 @@
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
-    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
-    <string name="profile_rovia_bucks">&lt;b>%d&lt;/b> Rovia Bucks</string>
+    <string name="profile_platinum">Platinum member</string>
+    <string name="profile_golden">Golden member</string>
+
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>g
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
@@ -273,9 +279,6 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
-    <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Golden member</string>
-    <string name="profile_member">Member</string>
     <string name="title_activity_friends">Friends</string>
     <string name="profile_request">Request</string>
     <string name="profile_respond">Respond</string>

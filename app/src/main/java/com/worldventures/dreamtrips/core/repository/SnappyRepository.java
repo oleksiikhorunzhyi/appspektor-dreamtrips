@@ -131,6 +131,10 @@ public class SnappyRepository {
                 .or(new ArrayList<>());
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // BucketItems
+    ///////////////////////////////////////////////////////////////////////////
+
     public void saveBucketList(List<BucketItem> items, String type) {
         putList(BUCKET_LIST + ":" + type, items);
     }
@@ -145,18 +149,18 @@ public class SnappyRepository {
         return list;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // BucketItems
-    ///////////////////////////////////////////////////////////////////////////
+    public int getRecentlyAddedBucketItems(String type) {
+        return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
+                .or(0);
+    }
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
     }
 
-    public int getRecentlyAddedBucketItems(String type) {
-        return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
-                .or(0);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Trips
+    ///////////////////////////////////////////////////////////////////////////
 
     public void saveTrip(TripModel trip) {
         act(db -> db.put(TRIP_KEY + trip.getTripId(), trip));
@@ -169,19 +173,6 @@ public class SnappyRepository {
                 db.put(TRIP_KEY + trip.getTripId(), trip);
             }
         });
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Trips
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveDownloadVideoEntity(CachedEntity e) {
-        act(db -> db.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e));
-    }
-
-    public CachedEntity getDownloadVideoEntity(String id) {
-        return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
-                .orNull();
     }
 
     public List<TripModel> getTrips() {
@@ -207,6 +198,23 @@ public class SnappyRepository {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Video
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveDownloadVideoEntity(CachedEntity e) {
+        act(db -> db.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e));
+    }
+
+    public CachedEntity getDownloadVideoEntity(String id) {
+        return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
+                .orNull();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Image Tasks
+    ///////////////////////////////////////////////////////////////////////////
+
     public void saveUploadImageTask(ImageUploadTask ut) {
         act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId(), ut));
     }
@@ -214,10 +222,6 @@ public class SnappyRepository {
     public void removeImageUploadTask(ImageUploadTask ut) {
         act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId()));
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
-    ///////////////////////////////////////////////////////////////////////////
 
     public List<ImageUploadTask> getAllImageUploadTask() {
         return actWithResult(db -> {
@@ -230,6 +234,10 @@ public class SnappyRepository {
         }).or(Collections.emptyList());
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo Tasks
+    ///////////////////////////////////////////////////////////////////////////
+
     public void saveBucketPhotoTask(BucketPhotoUploadTask task) {
         act(db -> db.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId(), task));
     }
@@ -238,8 +246,17 @@ public class SnappyRepository {
         act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
     }
 
+    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
+        putList(IMAGE + ":" + type, items);
+
+    }
+
+    public List<IFullScreenObject> readPhotoEntityList(Type type) {
+        return readList(IMAGE + ":" + type, IFullScreenObject.class);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
-    // Photo Tasks
+    // Invites
     ///////////////////////////////////////////////////////////////////////////
 
     public void addInviteMember(Member member) {
@@ -257,15 +274,9 @@ public class SnappyRepository {
         }).or(Collections.emptyList());
     }
 
-    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type, items);
-
-    }
-
-    public List<IFullScreenObject> readPhotoEntityList(Type type) {
-        return readList(IMAGE + ":" + type, IFullScreenObject.class);
-    }
-
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////////////////
 
     private interface SnappyAction {
         void call(DB db) throws SnappydbException;

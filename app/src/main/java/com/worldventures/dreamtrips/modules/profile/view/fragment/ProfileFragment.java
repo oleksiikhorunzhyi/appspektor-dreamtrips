@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.andexert.expandablelayout.library.ExpandableLayout;
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+
+import java.text.DecimalFormat;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -73,9 +77,15 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     private PickImageDialog pid;
 
     @Icicle
-    int pidTypeShown;
-    @Icicle
     String filePath;
+
+    private WeakHandler weakHandler;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
+    }
 
     @Override
     public void afterCreateView(View rootView) {
@@ -148,6 +158,17 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         etEnroll.setText(date);
     }
 
+    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
+    public void onInfoClick() {
+        if (info.isOpened()) {
+            info.hide();
+            more.setVisibility(View.VISIBLE);
+        } else {
+            info.show();
+            more.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Override
     public void setTripImagesCount(int count) {
         tripImages.setText(String.format(getString(R.string.profile_trip_images), count));
@@ -194,14 +215,16 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void startLoading() {
-        swipeContainer.post(() -> {
+        weakHandler.post(() -> {
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
         });
     }
 
     @Override
     public void finishLoading() {
-        swipeContainer.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(false);
+        });
     }
 
 

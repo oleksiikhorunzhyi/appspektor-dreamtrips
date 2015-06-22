@@ -101,8 +101,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         if (bucketItem.getLocation() != null) {
             place = bucketItem.getLocation().getName();
         }
-        if (bucketItem.getDining() != null) {
-            place = TextUtils.join(", ", new String[] {bucketItem.getDining().getCity(),
+        if (bucketItem.getDining() != null && !TextUtils.isEmpty(bucketItem.getDining().getCity())
+                && !TextUtils.isEmpty(bucketItem.getDining().getCountry())) {
+            place = TextUtils.join(", ", new String[]{bucketItem.getDining().getCity(),
                     bucketItem.getDining().getCountry()});
         }
         return place;

@@ -195,6 +195,7 @@ dependencies {
     }
     compile 'com.apptentive:apptentive-android:1.7.0@aar'
     // Ui
+    compile 'com.github.ganfra:material-spinner:1.1.0'
     compile 'com.github.traex.expandablelayout:library:1.2.2'
     compile 'com.facebook.fresco:fresco:0.4.0'
     compile "com.facebook.fresco:imagepipeline-okhttp:0.4.0"

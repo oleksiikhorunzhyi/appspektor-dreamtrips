@@ -4,14 +4,16 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsProxyPresenter;
+import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
+import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,6 +29,8 @@ import dagger.Provides;
                 RepToolsPresenter.class,
                 SuccessStoryDetailsActivity.class,
                 SuccessStoryDetailsProxyPresenter.class,
+                TrainingVideosFragment.class,
+                TrainingVideosPresenter.class
         },
         complete = false,
         library = true

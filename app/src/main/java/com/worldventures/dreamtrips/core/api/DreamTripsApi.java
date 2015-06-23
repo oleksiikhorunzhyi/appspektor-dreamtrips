@@ -16,14 +16,15 @@ import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
@@ -49,6 +50,7 @@ public interface DreamTripsApi {
 
     public static final String TYPE_MEMBER = "DTAPP";
     public static final String TYPE_MEMBER_360 = "DTAPP360";
+    public static final String TYPE_REP = "dtapprep";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -186,8 +188,8 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
     InviteTemplate createInviteTemplate(@Field("template_id") int id,
-                                               @Field("message") String message,
-                                               @Field("cover_photo_url") String photoUrl);
+                                        @Field("message") String message,
+                                        @Field("cover_photo_url") String photoUrl);
 
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
@@ -197,6 +199,13 @@ public interface DreamTripsApi {
 
     @GET("/api/member_videos/")
     ArrayList<Video> getVideos(@Query("type") String type);
+
+    @GET("/api/member_videos/")
+    ArrayList<Video> getVideos(@Query("type") String type, @Query("country") String country);
+
+
+    @GET("/api/member_videos/locales")
+    ArrayList<VideoLocale> getTrainingVideosLocales();
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();

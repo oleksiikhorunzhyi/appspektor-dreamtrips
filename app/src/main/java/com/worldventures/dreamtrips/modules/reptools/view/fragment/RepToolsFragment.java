@@ -52,9 +52,9 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
             };
 
             adapter.add(new FragmentItem(SuccessStoryListFragment.class, getString(R.string.success_stories)));
-            adapter.add(new FragmentItem(StaticInfoFragment.TrainingVideosFragment.class, getString(R.string.training_videos)));
+            adapter.add(new FragmentItem(TrainingVideosFragment.class, getString(R.string.training_videos)));
             adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
-            
+
             if (getPresenter().showInvite()) {
                 adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
             }

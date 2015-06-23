@@ -167,7 +167,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         openDetails(currentItem);
     }
 
-    public void onEvent(BucketItemUpdatedEvent event) {
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
         if (isTypeCorrect(event.getBucketItem().getType())) {
             int index = bucketItems.indexOf(event.getBucketItem());
             bucketItems.remove(index);

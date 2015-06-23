@@ -236,6 +236,20 @@ public class SnappyRepository {
         }).or(Collections.emptyList());
     }
 
+    public List<BucketPhotoUploadTask> getBucketPhotoTasksBy(int bucketId) {
+        return actWithResult(db -> {
+            List<BucketPhotoUploadTask> tasks = new ArrayList<>();
+            String[] keys = db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY);
+            for (String key : keys) {
+                BucketPhotoUploadTask task = db.get(key, BucketPhotoUploadTask.class);
+                if (task.getBucketId() == bucketId) {
+                    tasks.add(task);
+                }
+            }
+            return tasks;
+        }).or(Collections.emptyList());
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Photo Tasks
     ///////////////////////////////////////////////////////////////////////////

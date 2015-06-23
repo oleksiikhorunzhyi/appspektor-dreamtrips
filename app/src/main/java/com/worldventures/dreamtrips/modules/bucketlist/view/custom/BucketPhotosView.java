@@ -12,7 +12,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
@@ -29,8 +34,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 
+import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -41,6 +48,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     int pidTypeShown;
     @Icicle
     String filePath;
+    @Inject
+    @Global
+    EventBus eventBus;
+
     private IgnoreFirstItemAdapter imagesAdapter;
     private PickImageDialog pid;
     private ImagePickCallback makePhotoImageCallback;
@@ -66,7 +77,8 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
 
     public void init(Fragment fragment, Provider<Injector> injector, Type type) {
-
+        injector.get().inject(this);
+        if (!eventBus.isRegistered(this)) eventBus.register(this);
         if (imagesAdapter == null) {
             this.fragment = fragment;
 
@@ -105,6 +117,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     protected void onDetachedFromWindow() {
         this.setAdapter(null);
         super.onDetachedFromWindow();
+        if (eventBus.isRegistered(this)) eventBus.unregister(this);
     }
 
     @Override
@@ -138,16 +151,16 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     @Override
     public void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
-            if (photoUploadTask == imagesAdapter.getItem(i)) {
+            if (photoUploadTask.equals(imagesAdapter.getItem(i))) {
                 imagesAdapter.replaceItem(i, bucketPhoto);
-                imagesAdapter.notifyItemChanged(i);
+                imagesAdapter.notifyDataSetChanged();
                 break;
             }
         }
     }
 
     @Override
-    public void addImages(List<BucketPhoto> images) {
+    public void setImages(List<BucketPhoto> images) {
         imagesAdapter.clear();
         imagesAdapter.addItems(images);
         imagesAdapter.notifyDataSetChanged();
@@ -157,6 +170,12 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void addImage(BucketPhotoUploadTask image) {
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
+    }
+
+    @Override
+    public void addImages(List<BucketPhotoUploadTask> tasks) {
+        imagesAdapter.addItems(1, tasks);
+        imagesAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -343,6 +362,36 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public interface DeleteButtonCallback {
         void onDelete();
+    }
+
+
+    public void onEventMainThread(BucketPhotoUploadStarted event) {
+        imagesAdapter.notifyDataSetChanged();
+    }
+
+
+    public void onEventMainThread(UploadProgressUpdateEvent event) {
+        BucketPhotoUploadTask task = getBucketPhotoUploadTask(event.getTaskId());
+        if (task != null) task.setProgress(event.getProgress());
+        imagesAdapter.notifyDataSetChanged();
+    }
+
+    public void onEventMainThread(BucketPhotoUploadFailedEvent event) {
+        BucketPhotoUploadTask task = getBucketPhotoUploadTask(String.valueOf(event.getTaskId()));
+        if (task != null) task.setFailed(true);
+        imagesAdapter.notifyDataSetChanged();
+    }
+
+    public void onEventMainThread(BucketPhotoUploadFinishEvent event) {
+        replace(event.getTask(), event.getBucketPhoto());
+        imagesAdapter.notifyDataSetChanged();
+    }
+
+    private BucketPhotoUploadTask getBucketPhotoUploadTask(String taskId) {
+        return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element -> {
+            boolean b = element instanceof BucketPhotoUploadTask;
+            return b && String.valueOf(((BucketPhotoUploadTask) element).getTaskId()).equals(taskId);
+        });
     }
 
 }

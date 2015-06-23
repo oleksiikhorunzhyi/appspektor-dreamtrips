@@ -12,7 +12,7 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
+import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -42,7 +42,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
     @Inject
-    protected VideoCachingSpiceManager videoCachingSpiceManager;
+    protected MediaSpiceManager videoCachingSpiceManager;
 
 
     protected int priorityEventBus = 0;

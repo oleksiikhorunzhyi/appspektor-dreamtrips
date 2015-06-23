@@ -278,6 +278,7 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
+    <string name="bucket_photo_upload_error">Unable to upload photo</string>
     <string name="training_video_hint">Select language</string>
 
 </resources>

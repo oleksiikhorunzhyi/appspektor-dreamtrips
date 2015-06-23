@@ -3,8 +3,11 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -95,25 +98,28 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void handlePhotoPick(Uri uri, String type) {
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId((int) System.currentTimeMillis());
+        task.setTaskId(System.currentTimeMillis());
         task.setBucketId(bucketItem.getId());
         task.setFilePath(uri.toString());
-        task.setType(type);
+        task.setSelectionType(type);
         view.getBucketPhotosView().addImage(task);
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
         startUpload(task);
     }
 
     private void startUpload(final BucketPhotoUploadTask task) {
-        uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, injector);
-        doRequest(uploadBucketPhotoCommand, (bucketPhoto) -> {
-            if (bucketPhoto != null) {
-                TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
-                        task.getType(),
-                        bucketItem.getType());
-                bucketItem.getPhotos().add(bucketPhoto);
-                resaveItem(bucketItem);
-                view.getBucketPhotosView().replace(task, bucketPhoto);
+        uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, bucketItem, type, injector);
+        videoCachingSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                view.informUser(R.string.bucket_photo_upload_error);
+            }
+
+            @Override
+            public void onRequestSuccess(BucketPhoto bucketPhoto) {
+                if (bucketPhoto != null) {
+                    TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH, task.getSelectionType(), bucketItem.getType());
+                }
             }
         });
     }
@@ -121,7 +127,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
         eventBus.cancelEventDelivery(event);
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
-                event.getTask().getType(),
+                event.getTask().getSelectionType(),
                 bucketItem.getType());
         startUpload(event.getTask());
     }
@@ -129,7 +135,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoUploadCancelEvent event) {
         view.getBucketPhotosView().deleteImage(event.getTask());
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_CANCEL,
-                event.getTask().getType(),
+                event.getTask().getSelectionType(),
                 bucketItem.getType());
     }
 
@@ -209,7 +215,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.getBucketPhotosView().deleteImage(bucketPhoto);
     }
 
-    public void onEvent(BucketItemUpdatedEvent event) {
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
         bucketItem = event.getBucketItem();
         syncUI();
     }
@@ -224,8 +230,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         List<BucketPhoto> photos = bucketItem.getPhotos();
         if (!photos.isEmpty()) {
             Collections.sort(photos, (lhs, rhs) -> rhs.getId() - lhs.getId());
-            view.getBucketPhotosView().addImages(photos);
+            view.getBucketPhotosView().setImages(photos);
         }
+        List<BucketPhotoUploadTask> tasks = db.getBucketPhotoTasksBy(bucketItem.getId());
+        Collections.reverse(tasks);
+        view.getBucketPhotosView().addImages(tasks);
+
     }
 
     protected void syncUI() {

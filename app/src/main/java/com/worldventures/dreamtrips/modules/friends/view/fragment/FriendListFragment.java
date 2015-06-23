@@ -20,6 +20,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -42,7 +43,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
 
     @InjectView(R.id.iv_filter)
-    ImageView ivFilter;
+    ImageView filter;
     @InjectView(R.id.search)
     SearchView search;
     @InjectView(R.id.empty)
@@ -59,6 +60,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     private RecyclerViewStateDelegate stateDelegate;
 
     private LoaderRecycleAdapter<Friend> adapter;
+    private ListPopupWindow popupWindow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
             @Override
             public boolean onQueryTextChange(String s) {
+                getPresenter().setQuery(s);
                 return false;
             }
         });
@@ -107,25 +110,23 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @OnClick(R.id.iv_filter)
     public void onActionFilter() {
-        getPresenter().onFilterClicked();
+        if (popupWindow != null && popupWindow.isShowing())
+            popupWindow.dismiss();
+        else
+            getPresenter().onFilterClicked();
     }
 
     @Override
     public void showFilters(List<Circle> circles) {
-        ListPopupWindow popupWindow = new ListPopupWindow(getActivity());
-        popupWindow.getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        popupWindow.getListView().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                getPresenter().reloadWithFilter(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        popupWindow = new ListPopupWindow(getActivity());
         popupWindow.setAdapter(new FilterPopupAdapter<>(getActivity(), circles));
+        popupWindow.setAnchorView(filter);
+        popupWindow.setWidth(getResources().getDimensionPixelSize(R.dimen.filter_popup_width));
+        popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
+
+        popupWindow.setOnItemClickListener((adapterView, view, position, id) -> {
+
+        });
         popupWindow.show();
     }
 

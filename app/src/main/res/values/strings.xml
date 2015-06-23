@@ -282,6 +282,7 @@
     <string name="title_activity_friends">Friends</string>
     <string name="profile_request">Request</string>
     <string name="profile_respond">Respond</string>
+    <string name="profile_waiting">Waiting</string>
     <string name="social_my_friends">My friends</string>
     <string name="social_requests">Requests</string>
     <string name="social_add_friend_yes">Yes</string>

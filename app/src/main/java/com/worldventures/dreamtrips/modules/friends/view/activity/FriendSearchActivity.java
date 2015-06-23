@@ -140,6 +140,11 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
+    public void showCirclePopup() {
+
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         stateDelegate.onDestroyView();

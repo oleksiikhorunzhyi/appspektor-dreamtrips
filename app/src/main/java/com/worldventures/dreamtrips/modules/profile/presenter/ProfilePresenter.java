@@ -36,6 +36,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         super.takeView(view);
         setUserProfileInfo();
         loadProfile();
+        loadCircles();
     }
 
     public abstract void openBucketList();
@@ -87,7 +88,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     ///Circles
 
     private void loadCircles() {
-        doRequest(new GetCirclesQuery(getAccount().getId()), this::saveCircles);
+        doRequest(new GetCirclesQuery(), this::saveCircles);
     }
 
     private void saveCircles(List<Circle> circles) {

@@ -9,25 +9,23 @@ import java.util.ArrayList;
 public class GetFriendsQuery extends Query<ArrayList<Friend>> {
 
     private Circle circle;
+    private String query;
     private int offset;
-    private int limit;
 
-    public GetFriendsQuery(Circle type) {
-        this(type, 0, 10);
-    }
-
-    public GetFriendsQuery(Circle circle, int offset, int limit) {
+    public GetFriendsQuery(Circle circle, String query, int offset) {
         super((Class<ArrayList<Friend>>) new ArrayList<Friend>().getClass());
         this.circle = circle;
+        this.query = query != null && query.length() > 2
+                ? query
+                : null;
         this.offset = offset;
-        this.limit = limit;
     }
 
     @Override
     public ArrayList<Friend> loadDataFromNetwork() throws Exception {
         if (circle != null)
-            return getService().getFriends(circle.getId(), offset, limit);
+            return getService().getFriends(circle.getId(), query, offset);
         else
-            return getService().getAllFriends(offset, limit);
+            return getService().getAllFriends(query, offset);
     }
 }

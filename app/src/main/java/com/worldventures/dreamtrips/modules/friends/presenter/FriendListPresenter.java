@@ -19,8 +19,10 @@ import javax.inject.Inject;
 public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     private static final int PER_PAGE = 10;
+
     private List<Circle> circles;
     private Circle selectedCircle;
+    private String query;
 
     @Inject
     SnappyRepository snappyRepository;
@@ -28,12 +30,12 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     private DreamSpiceAdapterController<Friend> adapterController = new DreamSpiceAdapterController<Friend>() {
         @Override
         public SpiceRequest<ArrayList<Friend>> getReloadRequest() {
-            return new GetFriendsQuery(selectedCircle);
+            return new GetFriendsQuery(selectedCircle, query, 0);
         }
 
         @Override
         public SpiceRequest<ArrayList<Friend>> getNextPageRequest(int currentCount) {
-            return new GetFriendsQuery(selectedCircle, PER_PAGE, currentCount / PER_PAGE + 1);
+            return new GetFriendsQuery(selectedCircle, query, currentCount / PER_PAGE + 1);
         }
 
         @Override
@@ -96,6 +98,11 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     public void reloadWithFilter(int position) {
         selectedCircle = circles.get(position);
+        reload();
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
         reload();
     }
 

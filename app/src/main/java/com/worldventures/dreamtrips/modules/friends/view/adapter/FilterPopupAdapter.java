@@ -48,7 +48,7 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
         if (view != null) {
             holder = (ViewHolder) view.getTag();
         } else {
-            view = inflater.inflate(R.layout.adapter_item_content, viewGroup, false);
+            view = inflater.inflate(R.layout.adapter_item_selectable, viewGroup, false);
             holder = new ViewHolder(view);
             view.setTag(holder);
         }
@@ -61,8 +61,6 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
     static class ViewHolder {
         @InjectView(R.id.name)
         protected TextView name;
-        @InjectView(R.id.checkBox)
-        protected CheckBox checkBox;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

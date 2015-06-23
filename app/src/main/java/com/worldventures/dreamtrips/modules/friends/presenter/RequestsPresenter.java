@@ -5,6 +5,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
-import com.worldventures.dreamtrips.modules.friends.model.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        reloadRequests();
+        //reloadRequests();
     }
 
     public void reloadRequests() {
@@ -45,15 +45,19 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                 });
     }
 
-    private void addItems(List<Request> items) {
-        List<Object> sortedItems = new ArrayList<>();
-        sortedItems.add(context.getString(R.string.request_incoming));
-        sortedItems.addAll(Queryable.from(items).filter(item ->
-                item.getDirection().equals(Request.INCOMING)).toList());
-        sortedItems.add(context.getString(R.string.request_outgoing));
-        sortedItems.addAll(Queryable.from(items).filter(item ->
-                item.getDirection().equals(Request.OUTGOING)).toList());
-        view.getAdapter().setItems(sortedItems);
+    private void addItems(List<User> items) {
+        if (items != null) {
+            List<Object> sortedItems = new ArrayList<>();
+            sortedItems.add(context.getString(R.string.request_incoming));
+            sortedItems.addAll(Queryable.from(items).filter(item ->
+                    item.getRelationship().equals(User.RELATION_INCOMING_REQUEST)).toList());
+            sortedItems.add(context.getString(R.string.request_outgoing));
+            sortedItems.addAll(Queryable.from(items).filter(item ->
+                    (item.getRelationship().equals(User.RELATION_OUTGOING_REQUEST)
+                            || item.getRelationship().equals(User.RELATION_REJECT)))
+                    .toList());
+            view.getAdapter().setItems(sortedItems);
+        }
     }
 
     public void onEvent(AcceptRequestEvent event) {

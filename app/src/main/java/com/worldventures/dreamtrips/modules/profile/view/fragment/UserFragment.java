@@ -61,6 +61,23 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                 0, 0);
     }
 
+    @Override
+    public void setWaiting() {
+        addFriend.setText(R.string.profile_waiting);
+        addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
+                R.drawable.respond,
+                0, 0);
+    }
+
+    @Override
+    public void setRespond() {
+        addFriend.setText(R.string.profile_respond);
+        addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
+                R.drawable.respond,
+                0, 0);
+    }
+
+
     @OnClick(R.id.add_friend)
     void onAddFriend() {
         getPresenter().addFriendClicked();
@@ -90,10 +107,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void showFriendRequest(String name) {
         friendRequestCaption.setText(String.format(getString(R.string.profile_friend_request), name));
-        addFriend.setText(R.string.profile_respond);
-        addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.respond,
-                0, 0);
         friendRequest.setVisibility(View.VISIBLE);
     }
 

@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Request;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -204,20 +203,22 @@ public interface DreamTripsApi {
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
 
-    @GET("/api/social/{id}/circles")
-    ArrayList<Circle> getCircles(@Path("id") int userID);
+    @GET("/api/social/circles")
+    ArrayList<Circle> getCircles();
 
     @GET("/api/social/friends")
-    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id, @Query("offset") int offset, @Query("limit") int limit);
+    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id,
+                                 @Query("query") String query,
+                                 @Query("offset") int offset);
 
     @GET("/api/social/friends")
-    ArrayList<Friend> getAllFriends(@Query("offset") int offset, @Query("limit") int limit);
+    ArrayList<Friend> getAllFriends(@Query("query") String query, @Query("offset") int offset);
 
     @GET("/api/social/users")
     ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
     @GET("/api/social/friends/requests")
-    ArrayList<Request> getRequests();
+    ArrayList<User> getRequests();
 
     @POST("/api/social/friends/requests")
     JSONObject addFriend(@Query("user_id") int userId,

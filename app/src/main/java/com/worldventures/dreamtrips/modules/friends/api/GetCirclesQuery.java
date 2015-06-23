@@ -7,15 +7,12 @@ import java.util.ArrayList;
 
 public class GetCirclesQuery extends Query<ArrayList<Circle>> {
 
-    private int userId;
-
-    public GetCirclesQuery(int userId) {
+    public GetCirclesQuery() {
         super((Class<ArrayList<Circle>>) new ArrayList<Circle>().getClass());
-        this.userId = userId;
     }
 
     @Override
     public ArrayList<Circle> loadDataFromNetwork() throws Exception {
-        return getService().getCircles(userId);
+        return getService().getCircles();
     }
 }

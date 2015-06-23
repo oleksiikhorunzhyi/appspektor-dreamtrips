@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
@@ -13,11 +16,24 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        //TODO check has user sent a friend request
-        view.showFriendRequest(user.getFirstName());
-        //TODO add friend check
-        boolean isFriend = false;
-        view.setIsFriend(isFriend);
+        view.setIsFriend(false);
+        switch (user.getRelationship()) {
+            case User.RELATION_FRIEND:
+                view.setIsFriend(true);
+                view.hideFriendRequest();
+                break;
+            case User.RELATION_OUTGOING_REQUEST:
+                view.setWaiting();
+                view.hideFriendRequest();
+                break;
+            case User.RELATION_INCOMING_REQUEST:
+                view.setRespond();
+                view.showFriendRequest(user.getFirstName());
+                break;
+            default:
+                view.hideFriendRequest();
+                break;
+        }
     }
 
     @Override
@@ -26,11 +42,18 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     public void addFriendClicked() {
-        view.showAddFriendDialog(user.getFullName());
+        if (user.getRelationship().equals(User.RELATION_NONE))
+            view.showAddFriendDialog(user.getFullName());
     }
 
     public void addAsFriend() {
-        view.setIsFriend(true);
+        Circle circle = snappyRepository.getCircles().get(0);
+        doRequest(new AddUserRequestCommand(user.getId(), circle),
+                jsonObject -> onSuccess());
+    }
+
+    private void onSuccess() {
+        view.setWaiting();
     }
 
     @Override
@@ -52,5 +75,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
         void showAddFriendDialog(String name);
 
         void setIsFriend(boolean isFriend);
+
+        void setRespond();
+
+        void setWaiting();
     }
 }

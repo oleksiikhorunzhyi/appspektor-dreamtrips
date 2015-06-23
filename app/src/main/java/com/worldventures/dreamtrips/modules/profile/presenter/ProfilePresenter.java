@@ -46,7 +46,7 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
     private User user;
     private boolean isCurrentUserProfile;
 
-    private DecimalFormat df = new DecimalFormat("#.00");
+    private DecimalFormat df = new DecimalFormat("#0.00");
 
     private ImagePickCallback avatarCallback = (fragment, image, error) -> {
         if (image != null) {

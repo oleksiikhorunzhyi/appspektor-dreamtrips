@@ -10,6 +10,7 @@ import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
@@ -39,6 +40,7 @@ public class SnappyRepository {
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
+    public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
     private Context context;
@@ -273,6 +275,16 @@ public class SnappyRepository {
             return members;
         }).or(Collections.emptyList());
     }
+
+    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
+        act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
+    }
+
+    public VideoLocale getLastSelectedVideoLocale() {
+        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLocale.class))
+                .orNull();
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     //

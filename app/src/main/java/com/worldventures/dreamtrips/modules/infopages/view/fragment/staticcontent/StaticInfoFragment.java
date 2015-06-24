@@ -283,15 +283,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
     }
 
-
-    @Layout(R.layout.fragment_webview)
-    public static class TrainingVideosFragment extends StaticInfoFragment {
-        @Override
-        protected String getURL() {
-            return provider.getTrainingVideosURL();
-        }
-    }
-
     @Layout(R.layout.fragment_webview)
     public static class EnrollRepFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
         @Override

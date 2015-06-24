@@ -27,7 +27,6 @@ import dagger.Provides;
                 OtaFragment.class,
                 AuthorizedStaticInfoFragment.class,
                 AuthorizedStaticInfoPresenter.class,
-                StaticInfoFragment.TrainingVideosFragment.class,
                 Video360Presenter.class,
                 PresentationVideosPresenter.class,
                 Video360Fragment.class,

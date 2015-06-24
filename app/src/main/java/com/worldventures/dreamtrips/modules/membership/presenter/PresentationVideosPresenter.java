@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class PresentationVideosPresenter extends Presenter<PresentationVideosPresenter.View> {
+public class PresentationVideosPresenter<T extends PresentationVideosPresenter.View> extends Presenter<T> {
 
     @Inject
     protected SnappyRepository db;
@@ -38,7 +38,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
     protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getReloadRequest() {
-            return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+            return getMemberVideosRequest();
         }
 
         @Override
@@ -63,13 +63,17 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
         }
     };
 
+    protected MemberVideosRequest getMemberVideosRequest() {
+        return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+    }
+
     @Override
     public void onInjected() {
         adapterController.setSpiceManager(dreamSpiceManager);
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(T view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
         videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);

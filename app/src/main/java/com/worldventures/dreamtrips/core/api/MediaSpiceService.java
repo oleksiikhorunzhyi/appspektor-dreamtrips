@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.core.api;
 
 import android.app.Application;
 
-import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.CacheManager;
 import com.octo.android.robospice.persistence.binary.InFileBigInputStreamObjectPersister;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
 
-public class VideoCachingService extends SpiceService {
+public class MediaSpiceService extends DreamSpiceService {
 
     @Override
     public CacheManager createCacheManager(Application application) throws CacheCreationException {

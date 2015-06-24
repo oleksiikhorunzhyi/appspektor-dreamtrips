@@ -7,11 +7,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 
 import butterknife.InjectView;
@@ -35,10 +32,20 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
         ivPhoto.setImageURI(Uri.parse(getModelObject().getFilePath()));
+
+        if (getModelObject().getProgress() == 100) {
+            fabProgress.setVisibility(View.GONE);
+        } else {
+            fabProgress.setVisibility(View.VISIBLE);
+            fabProgress.setProgress(getModelObject().getProgress());
+        }
+        if (getModelObject().isFailed()) {
+            fabProgress.setProgress(0);
+            fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
+            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
+            circleView.setColor(color);
+        }
     }
 
     @Override
@@ -56,35 +63,6 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
             circleView.setColor(color);
         } else {
             getEventBus().post(new BucketPhotoUploadCancelRequestEvent(getModelObject()));
-        }
-    }
-
-    public void onEventMainThread(BucketPhotoUploadStarted event) {
-        if (getModelObject().getTaskId() == event.getBucketPhoto().getTaskId()) {
-            fabProgress.setVisibility(View.VISIBLE);
-        }
-    }
-
-
-    public void onEventMainThread(UploadProgressUpdateEvent event) {
-        String bucketId = String.valueOf(getModelObject().getTaskId());
-        if (bucketId.equals(event.getTaskId())) {
-            fabProgress.setProgress(event.getProgress());
-        }
-        if (event.getProgress() == 100) {
-            fabProgress.setVisibility(View.GONE);
-        } else {
-            fabProgress.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onEventMainThread(BucketPhotoUploadFailedEvent event) {
-        if (getModelObject().getTaskId() == event.getTaskId()) {
-            fabProgress.setProgress(0);
-            fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
-            circleView.setColor(color);
-            getModelObject().setFailed(true);
         }
     }
 }

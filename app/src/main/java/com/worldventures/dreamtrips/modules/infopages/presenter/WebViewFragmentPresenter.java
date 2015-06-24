@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public void onEvent(WebViewReloadEvent event) {
-        if (view instanceof StaticInfoFragment.TrainingVideosFragment
+        if (view instanceof TrainingVideosFragment
                 || view instanceof StaticInfoFragment.EnrollRepFragment
                 || view instanceof StaticInfoFragment.EnrollFragment) {
             onReload();
@@ -73,6 +74,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
     public interface View extends Presenter.View {
         void load(String localizedUrl);
+
         void reload(String localizedUrl);
     }
 

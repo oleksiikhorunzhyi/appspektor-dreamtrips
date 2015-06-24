@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
@@ -51,6 +52,7 @@ public interface DreamTripsApi {
 
     public static final String TYPE_MEMBER = "DTAPP";
     public static final String TYPE_MEMBER_360 = "DTAPP360";
+    public static final String TYPE_REP = "dtapprep";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -199,6 +201,13 @@ public interface DreamTripsApi {
 
     @GET("/api/member_videos/")
     ArrayList<Video> getVideos(@Query("type") String type);
+
+    @GET("/api/member_videos/")
+    ArrayList<Video> getVideos(@Query("type") String type, @Query("country") String country);
+
+
+    @GET("/api/member_videos/locales")
+    ArrayList<VideoLocale> getTrainingVideosLocales();
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();

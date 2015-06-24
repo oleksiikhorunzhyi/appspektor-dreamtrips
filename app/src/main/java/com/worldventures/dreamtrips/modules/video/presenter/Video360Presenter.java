@@ -67,7 +67,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     public void fillAll() {
         if (featuredVideos != null) {
-            if (view.getAllAdapter() != null) {
+            if (view != null && view.getAllAdapter() != null) {
                 view.getAllAdapter().clear();
                 view.getAllAdapter().addItems(featuredVideos);
                 view.getAllAdapter().addItems(recentVideos);

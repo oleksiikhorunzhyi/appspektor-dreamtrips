@@ -24,9 +24,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Inject
     SnappyRepository snappyRepository;
 
-    public ProfilePresenter() {
-    }
-
     public ProfilePresenter(User user) {
         this.user = user;
     }

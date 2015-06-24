@@ -30,7 +30,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class PresentationVideosFragment extends BaseVideoFragment<PresentationVideosPresenter>
+public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseVideoFragment<T>
         implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
@@ -96,8 +96,8 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
     }
 
     @Override
-    protected PresentationVideosPresenter createPresenter(Bundle savedInstanceState) {
-        return new PresentationVideosPresenter();
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new PresentationVideosPresenter();
     }
 
     private void setupLayoutManager(boolean landscape) {

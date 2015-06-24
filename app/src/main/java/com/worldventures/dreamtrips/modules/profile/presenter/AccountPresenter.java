@@ -5,9 +5,7 @@ import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -29,8 +27,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
-    @Inject
-    SnappyRepository snappyRepository;
 
     private DecimalFormat df = new DecimalFormat("#.00");
 
@@ -113,9 +109,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     public void openTripImages() {
         Bundle args = new Bundle();
         args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        eventBus.post(new OpenMenuItemEvent(rootComponentsProvider
-                .getComponentByKey(TripsImagesModule.TRIP_IMAGES),
-                args));
+        activityRouter.openComponentActivity(rootComponentsProvider
+                .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
     }
 
     @Override

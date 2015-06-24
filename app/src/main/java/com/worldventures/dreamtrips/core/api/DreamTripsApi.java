@@ -224,6 +224,7 @@ public interface DreamTripsApi {
     JSONObject addFriend(@Query("user_id") int userId,
                          @Query("circle_id") String circleId);
 
+    @FormUrlEncoded
     @PUT("/api/social/friends/request_responses")
     JSONObject actOnRequest(@Query("user_id") int userId,
                             @Field("action") String action,

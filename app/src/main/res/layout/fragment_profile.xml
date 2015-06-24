@@ -141,6 +141,7 @@
                         android:contentDescription="@string/empty"/>
 
                     <LinearLayout
+                        android:id="@+id/control_panel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"

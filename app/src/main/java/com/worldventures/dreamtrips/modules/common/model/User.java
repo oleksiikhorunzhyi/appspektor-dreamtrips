@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
+
 import java.util.Date;
 import java.util.List;
 
@@ -188,7 +190,7 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
-    public String getRelationship() {
+   public String getRelationship() {
         return relationship;
     }
 

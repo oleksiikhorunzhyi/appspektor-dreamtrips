@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -37,8 +36,6 @@ public class RequestCell extends AbstractCell<User> {
     SimpleDraweeView avatar;
     @InjectView(R.id.name)
     TextView name;
-    @InjectView(R.id.progress)
-    ProgressBar progressBar;
     @InjectView(R.id.buttonContainer)
     ViewGroup container;
 
@@ -52,27 +49,30 @@ public class RequestCell extends AbstractCell<User> {
         name.setText(getModelObject().getFullName());
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
 
         reject.setSupportBackgroundTintList(csl);
         hide.setSupportBackgroundTintList(csl);
         cancel.setSupportBackgroundTintList(csl);
 
-        if (getModelObject().getRelationship().equals(User.RELATION_INCOMING_REQUEST)) {
-            hide.setVisibility(View.GONE);
-            cancel.setVisibility(View.GONE);
-            reject.setVisibility(View.VISIBLE);
-            accept.setVisibility(View.VISIBLE);
-        } else if (getModelObject().getRelationship().equals(User.RELATION_OUTGOING_REQUEST)) {
-            reject.setVisibility(View.GONE);
-            accept.setVisibility(View.GONE);
-            hide.setVisibility(View.GONE);
-            cancel.setVisibility(View.VISIBLE);
-        } else if (getModelObject().getRelationship().equals(User.RELATION_REJECT)) {
-            reject.setVisibility(View.GONE);
-            accept.setVisibility(View.GONE);
-            hide.setVisibility(View.VISIBLE);
-            cancel.setVisibility(View.GONE);
+        switch (getModelObject().getRelationship()) {
+            case User.RELATION_INCOMING_REQUEST:
+                hide.setVisibility(View.GONE);
+                cancel.setVisibility(View.GONE);
+                reject.setVisibility(View.VISIBLE);
+                accept.setVisibility(View.VISIBLE);
+                break;
+            case User.RELATION_OUTGOING_REQUEST:
+                reject.setVisibility(View.GONE);
+                accept.setVisibility(View.GONE);
+                hide.setVisibility(View.GONE);
+                cancel.setVisibility(View.VISIBLE);
+                break;
+            case User.RELATION_REJECT:
+                reject.setVisibility(View.GONE);
+                accept.setVisibility(View.GONE);
+                hide.setVisibility(View.VISIBLE);
+                cancel.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -86,30 +86,21 @@ public class RequestCell extends AbstractCell<User> {
     @OnClick(R.id.accept)
     void onAccept() {
         getEventBus().post(new AcceptRequestEvent(getModelObject(), getAdapterPosition()));
-        showProgress();
     }
 
     @OnClick(R.id.reject)
     void onReject() {
         getEventBus().post(new RejectRequestEvent(getModelObject(), getAdapterPosition()));
-        showProgress();
     }
 
     @OnClick(R.id.hide)
     void onHide() {
         getEventBus().post(new HideRequestEvent(getModelObject(), getAdapterPosition()));
-        showProgress();
     }
 
     @OnClick(R.id.cancel)
     void onCancel() {
         getEventBus().post(new CancelRequestEvent(getModelObject(), getAdapterPosition()));
-        showProgress();
-    }
-
-    private void showProgress() {
-        container.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

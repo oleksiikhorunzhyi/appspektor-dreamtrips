@@ -9,8 +9,11 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -22,9 +25,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -128,6 +134,21 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
+    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(getString(R.string.profile_add_friend))
+                .adapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, circles),
+                        (materialDialog, view, i, charSequence) -> {
+                            selectedAction.apply(i);
+                            materialDialog.dismiss();
+                        })
+                .negativeText(R.string.cancel)
+                .show();
+
+    }
+
+
+    @Override
     public void finishLoading() {
         refreshLayout.setRefreshing(false);
         stateDelegate.restoreStateIfNeeded();
@@ -137,11 +158,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     public void startLoading() {
         if (refreshLayout != null)
             refreshLayout.post(() -> refreshLayout.setRefreshing(true));
-    }
-
-    @Override
-    public void showCirclePopup() {
-
     }
 
     @Override

@@ -3,13 +3,18 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -26,6 +31,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     protected Button accept;
     @InjectView(R.id.reject)
     protected Button reject;
+    @InjectView(R.id.control_panel)
+    protected ViewGroup controlPanel;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -35,6 +42,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        controlPanel.setVisibility(View.GONE);
         cover.setVisibility(View.GONE);
         avatar.setVisibility(View.GONE);
         updateInfo.setVisibility(View.GONE);
@@ -77,32 +85,20 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                 0, 0);
     }
 
+    @OnClick(R.id.accept)
+    void onAcceptRequest() {
+        getPresenter().acceptClicked();
+    }
+
+    @OnClick(R.id.reject)
+    void onRejectRequest() {
+        getPresenter().rejectClicked();
+    }
 
     @OnClick(R.id.add_friend)
     void onAddFriend() {
         getPresenter().addFriendClicked();
     }
-
-    @Override
-    public void showAddFriendDialog(String name) {
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.social_add_friend_title)
-                .content(R.string.social_add_friend_content, name)
-                .positiveText(R.string.social_add_friend_yes)
-                .negativeText(R.string.social_add_friend_no)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().addAsFriend();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
-    }
-
 
     @Override
     public void showFriendRequest(String name) {
@@ -115,5 +111,16 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         friendRequest.setVisibility(View.GONE);
     }
 
+    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(getString(R.string.friend_add_to))
+                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
+                        (materialDialog, view, i, charSequence) -> {
+                            selectedAction.apply(i);
+                            materialDialog.dismiss();
+                        })
+                .negativeText(R.string.cancel)
+                .show();
 
+    }
 }

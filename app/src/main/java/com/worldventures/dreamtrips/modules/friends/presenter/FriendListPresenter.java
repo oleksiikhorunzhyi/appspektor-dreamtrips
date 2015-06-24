@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -37,6 +38,18 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         @Override
         public SpiceRequest<ArrayList<Friend>> getNextPageRequest(int currentCount) {
             return new GetFriendsQuery(selectedCircle, query, currentCount / PER_PAGE + 1);
+        }
+
+        @Override
+        protected void onNextItemsLoaded(ArrayList<Friend> friends) {
+            Queryable.from(friends).forEachR(friend -> friend.setCircles(circles));
+            super.onNextItemsLoaded(friends);
+        }
+
+        @Override
+        protected void onRefresh(ArrayList<Friend> friends) {
+            Queryable.from(friends).forEachR(friend -> friend.setCircles(circles));
+            super.onRefresh(friends);
         }
 
         @Override
@@ -90,10 +103,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void reloadWithFilter(int position) {
-        if (position == -1) {
-            selectedCircle = null;
-        }
-        selectedCircle = circles.get(position);
+        selectedCircle = position != -1 ? circles.get(position) : null;
         reload();
     }
 

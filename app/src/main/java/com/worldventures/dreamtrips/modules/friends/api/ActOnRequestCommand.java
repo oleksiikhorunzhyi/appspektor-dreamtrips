@@ -10,9 +10,7 @@ public class ActOnRequestCommand extends Command<JSONObject> {
     private String circleID;
 
     public ActOnRequestCommand(int userId, String action) {
-        super(JSONObject.class);
-        this.userId = userId;
-        this.action = action;
+        this(userId, action, null);
     }
 
     public ActOnRequestCommand(int userId, String action, String circleID) {

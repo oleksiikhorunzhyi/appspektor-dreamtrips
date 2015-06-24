@@ -114,10 +114,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @OnClick(R.id.iv_filter)
     public void onActionFilter() {
-        if (popupWindow != null && popupWindow.isShowing())
-            popupWindow.dismiss();
-        else
-            getPresenter().onFilterClicked();
+        getPresenter().onFilterClicked();
     }
 
     @Override
@@ -129,12 +126,14 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         popupWindow.setAnchorView(filter);
         popupWindow.setWidth(getResources().getDimensionPixelSize(R.dimen.filter_popup_width));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
-
+        popupWindow.setModal(true);
         popupWindow.show();
 
         popupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) ->
-                getPresenter().reloadWithFilter(i - 1));
+        popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) -> {
+            popupWindow.dismiss();
+            getPresenter().reloadWithFilter(i - 1);
+        });
     }
 
     @Override

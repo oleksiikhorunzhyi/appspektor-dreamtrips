@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -14,11 +17,17 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View> {
 
     private static final int PER_PAGE = 20;
 
     private String query;
+
+    @Inject
+    SnappyRepository snappyRepository;
+    private List<Circle> circles;
 
     private DreamSpiceAdapterController<User> adapterController = new DreamSpiceAdapterController<User>() {
         @Override
@@ -48,6 +57,12 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     };
 
     @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        circles = snappyRepository.getCircles();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (view.getAdapter().getCount() == 0) {
@@ -58,10 +73,12 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     public void onEvent(AddUserRequestEvent event) {
-        view.showCirclePopup();
+        view.showAddFriendDialog(circles, position ->
+                        addFriend(event.getUser(), circles.get(position), event.getPosition())
+        );
     }
 
-    public void addFriend(User user, Circle circle, int position) {
+    private void addFriend(User user, Circle circle, int position) {
         doRequest(new AddUserRequestCommand(user.getId(), circle),
                 jsonObject -> onSuccess(position),
                 this::onError);
@@ -99,7 +116,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
 
         void startLoading();
 
-        void showCirclePopup();
+        void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
     }
 
 }

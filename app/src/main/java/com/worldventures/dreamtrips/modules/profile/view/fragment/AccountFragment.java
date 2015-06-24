@@ -52,11 +52,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
         eventBus.post(new ActionBarTransparentEvent(false));
     }
-
 
     @OnClick(R.id.user_photo)
     public void onPhotoClick() {

@@ -33,6 +33,8 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);
+        toolbar.getBackground().setAlpha(255);
+
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         ab.setDisplayHomeAsUpEnabled(true);

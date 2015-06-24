@@ -5,7 +5,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -14,9 +17,12 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -92,4 +98,19 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         refreshLayout.setRefreshing(false);
         stateDelegate.restoreStateIfNeeded();
     }
+
+    @Override
+    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(getString(R.string.friend_add_to))
+                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
+                        (materialDialog, view, i, charSequence) -> {
+                            selectedAction.apply(i);
+                            materialDialog.dismiss();
+                        })
+                .negativeText(R.string.cancel)
+                .show();
+
+    }
+
 }

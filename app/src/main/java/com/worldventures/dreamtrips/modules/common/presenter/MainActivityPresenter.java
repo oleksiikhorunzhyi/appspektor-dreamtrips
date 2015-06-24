@@ -10,7 +10,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
-import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
 
 import javax.inject.Inject;
 
@@ -30,11 +29,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         if (code != ConnectionResult.SUCCESS) {
             GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
         }
-    }
-
-    public void onEvent(OpenMenuItemEvent event) {
-        view.updateSelection(event.getComponentDescription());
-        openComponent(event.getComponentDescription(), event.getArgs());
     }
 
     public void onEvent(ActionBarTransparentEvent event) {

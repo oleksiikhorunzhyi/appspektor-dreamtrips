@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -27,8 +26,6 @@ public class UserSearchCell extends AbstractCell<User> {
     SimpleDraweeView avatar;
     @InjectView(R.id.name)
     TextView name;
-    @InjectView(R.id.progress)
-    ProgressBar progressBar;
     @InjectView(R.id.buttonContainer)
     ViewGroup container;
 
@@ -43,12 +40,6 @@ public class UserSearchCell extends AbstractCell<User> {
         name.setText(getModelObject().getFullName());
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    private void showProgress() {
-        container.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.avatar)
@@ -59,7 +50,6 @@ public class UserSearchCell extends AbstractCell<User> {
     @OnClick(R.id.accept)
     void onAccept() {
         getEventBus().post(new AddUserRequestEvent(getModelObject(), getAdapterPosition()));
-        showProgress();
     }
 
     @Override

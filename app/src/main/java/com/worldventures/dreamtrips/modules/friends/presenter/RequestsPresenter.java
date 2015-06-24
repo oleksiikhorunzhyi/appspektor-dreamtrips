@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,13 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Inject
     SnappyRepository snappyRepository;
 
+    List<Circle> circles;
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
-  //      reloadRequests();
+        reloadRequests();
+        circles = snappyRepository.getCircles();
     }
 
     public void reloadRequests() {
@@ -61,9 +66,12 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(AcceptRequestEvent event) {
-        doRequest(new ActOnRequestCommand(event.getUser().getId(), ActOnRequestCommand.Action.CONFIRM.name()),
-                object -> onSuccess(event.getPosition()),
-                this::onError);
+        view.showAddFriendDialog(circles, position ->
+                doRequest(new ActOnRequestCommand(event.getUser().getId(),
+                                ActOnRequestCommand.Action.CONFIRM.name(),
+                                circles.get(position).getId()),
+                        object -> onSuccess(event.getPosition()),
+                        this::onError));
     }
 
     public void onEvent(CancelRequestEvent event) {
@@ -79,7 +87,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(RejectRequestEvent event) {
-        doRequest(new ActOnRequestCommand(event.getUser().getId(), ActOnRequestCommand.Action.REJECT.name()),
+        doRequest(new ActOnRequestCommand(event.getUser().getId(),
+                        ActOnRequestCommand.Action.REJECT.name()),
                 object -> onSuccess(event.getPosition()),
                 this::onError);
     }
@@ -102,6 +111,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         void startLoading();
 
         void finishLoading();
+
+        void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 
         BaseArrayListAdapter<Object> getAdapter();
     }

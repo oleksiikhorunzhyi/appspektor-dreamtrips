@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedE
 public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     public boolean showInvite() {
-        return !getUser().isRep();
+        return !getAccount().isRep();
     }
 
     public void onEvent(SearchFocusChangedEvent event) {
@@ -16,11 +16,11 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     public void trackState(int position) {
         if (position == 0) {
-            TrackingHelper.memberVideos(getUserId());
+            TrackingHelper.memberVideos(getAccountUserId());
         } else if (position == 1) {
-            TrackingHelper.enroll(getUserId());
+            TrackingHelper.enroll(getAccountUserId());
         } else if (position == 2) {
-            TrackingHelper.inviteShare(getUserId());
+            TrackingHelper.inviteShare(getAccountUserId());
         }
     }
 

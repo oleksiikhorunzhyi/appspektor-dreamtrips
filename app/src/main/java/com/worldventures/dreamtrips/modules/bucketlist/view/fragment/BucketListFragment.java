@@ -4,6 +4,7 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
@@ -82,7 +82,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     private RecyclerViewDragDropManager dragDropManager;
     private RecyclerViewStateDelegate stateDelegate;
 
-    private SnackBar snackBar;
+    private Snackbar snackBar;
+
     private MenuItem menuItemAdd;
 
     @Override
@@ -212,12 +213,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showUndoBar(View.OnClickListener undoListener) {
-        if (snackBar != null && snackBar.isShowing()) {
-            snackBar.hide();
-        }
-        snackBar = new SnackBar(getActivity(), getString(R.string.bucket_delete_undo),
-                getString(R.string.undo), undoListener);
-        snackBar.show();
+        Snackbar.make(getView(), R.string.bucket_delete_undo, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, undoListener).show();
     }
 
     @Override

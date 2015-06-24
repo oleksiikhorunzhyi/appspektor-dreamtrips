@@ -18,13 +18,14 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplat
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
-import com.worldventures.dreamtrips.modules.profile.view.fragment.ProfileFragment;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
@@ -52,7 +53,8 @@ public enum Route {
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.membership),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.membership),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
-    MY_PROFILE(ProfileFragment.class, R.string.my_profile),
+    MY_PROFILE(AccountFragment.class, 0),
+    PROFILE(UserFragment.class, 0),
     REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),
     FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq),
     TERMS(TermsTabFragment.class, R.string.terms),

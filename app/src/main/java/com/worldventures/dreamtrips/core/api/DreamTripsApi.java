@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -62,6 +64,9 @@ public interface DreamTripsApi {
 
     @GET("/api/profile")
     User getProfile();
+
+    @GET("/api/profiles/{id}")
+    User getPublicProfile(@Path("id") int id);
 
     @GET("/api/trips")
     List<TripModel> getTrips();
@@ -209,4 +214,35 @@ public interface DreamTripsApi {
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
+
+    @GET("/api/social/circles")
+    ArrayList<Circle> getCircles();
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id,
+                                 @Query("query") String query,
+                                 @Query("offset") int offset);
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getAllFriends(@Query("query") String query, @Query("offset") int offset);
+
+    @GET("/api/social/users")
+    ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
+
+    @GET("/api/social/friends/requests")
+    ArrayList<User> getRequests();
+
+    @POST("/api/social/friends/requests")
+    JSONObject addFriend(@Query("user_id") int userId,
+                         @Query("circle_id") String circleId);
+
+    @FormUrlEncoded
+    @PUT("/api/social/friends/request_responses")
+    JSONObject actOnRequest(@Query("user_id") int userId,
+                            @Field("action") String action,
+                            @Field("circle_id") String circleId);
+
+    @DELETE("/api/social/friends/request_responses")
+    JSONObject deleteRequest(@Query("user_id") int userId);
+
 }

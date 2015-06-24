@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.gc.materialdesign.widgets.ProgressDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
@@ -27,7 +27,8 @@ public class PlayerActivity extends BaseActivity {
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        pDialog = new ProgressDialog(this, getString(R.string.buffering));
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage(getString(R.string.buffering));
         pDialog.setCancelable(false);
         pDialog.show();
 

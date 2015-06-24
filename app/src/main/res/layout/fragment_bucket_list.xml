@@ -53,7 +53,7 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/arrow_small" />
 
-            <com.gc.materialdesign.views.ButtonRectangle
+            <Button
                 android:id="@+id/buttonNew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:background="#1E88E5"
                 android:text="@string/bucket_list_create_new" />
 
-            <com.gc.materialdesign.views.ButtonRectangle
+            <Button
                 android:id="@+id/buttonPopular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

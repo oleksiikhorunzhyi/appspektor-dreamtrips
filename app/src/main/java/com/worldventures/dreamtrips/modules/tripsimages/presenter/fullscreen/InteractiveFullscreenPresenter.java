@@ -38,7 +38,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         }
         doRequest(new FlagPhotoCommand(photo.getFsId(), title + ". " + desc), obj -> {
             view.informUser(context.getString(R.string.photo_flagged));
-            TrackingHelper.flag(type, String.valueOf(photo.getFsId()), getUserId());
+            TrackingHelper.flag(type, String.valueOf(photo.getFsId()), getAccountUserId());
         });
     }
 
@@ -62,7 +62,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         view.setLiked(isLiked);
         view.setLikeCount(actualLikeCount);
         eventBus.postSticky(new PhotoLikeEvent(photo.getFsId(), isLiked));
-        TrackingHelper.like(type, String.valueOf(photo.getFsId()), getUserId());
+        TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
     @Override
@@ -72,11 +72,11 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
 
     protected boolean isFlagVisible() {
-        return type == MEMBER_IMAGES && getUser().getId() != photo.getUser().getId();
+        return type == MEMBER_IMAGES && getAccount().getId() != photo.getUser().getId();
     }
 
     protected boolean isDeleteVisible() {
-        return photo.getUser() != null && getUser().getId() == photo.getUser().getId();
+        return photo.getUser() != null && getAccount().getId() == photo.getUser().getId();
     }
 
     protected boolean isLikeVisible() {

@@ -267,10 +267,11 @@
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
-    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
-    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
     <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Gold member</string>
+    <string name="profile_golden">Golden member</string>
+
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>g
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
@@ -278,7 +279,31 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
+
+    <string name="title_activity_friends">Friends</string>
+    <string name="profile_request">Request</string>
+    <string name="profile_respond">Respond</string>
+    <string name="profile_waiting">Waiting</string>
+    <string name="social_my_friends">My friends</string>
+    <string name="social_requests">Requests</string>
+    <string name="social_add_friend_yes">Yes</string>
+    <string name="social_add_friend_no">No</string>
+    <string name="social_add_friend_title">Add Friend</string>
+    <string name="social_add_friend_content" formatted="false">Add %s as your friend?</string>
+    <string name="social_postfix_mutual_friends">%d mutual friends</string>
+    <string name="social_user_wrapper_cell_actions">Actions</string>
+    <string name="social_remove_friend_title">Remove friend</string>
+    <string name="action_social_show_all">Show all</string>
+
     <string name="bucket_photo_upload_error">Unable to upload photo</string>
     <string name="training_video_hint">Select language</string>
 
+    <string name="friend_reject">Reject</string>
+    <string name="friend_accept">Accept</string>
+    <string name="friend_hide">Hide</string>
+    <string name="friend_cancel">Cancel</string>
+    <string name="request_incoming">Incoming</string>
+    <string name="request_outgoing">Outgoing</string>
+    <string name="friend_global_search">Search all members</string>
+    <string name="friend_add_to">Add to:</string>
 </resources>

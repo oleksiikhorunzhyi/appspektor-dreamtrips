@@ -51,15 +51,15 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
 
     public void trackState(int position) {
         if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
-            TrackingHelper.mine(getUserId());
+            TrackingHelper.mine(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.YOU_SHOULD_BE_HERE.ordinal()) {
-            TrackingHelper.ysbh(getUserId());
+            TrackingHelper.ysbh(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.MEMBER_IMAGES.ordinal()) {
-            TrackingHelper.all(getUserId());
+            TrackingHelper.all(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.VIDEO_360.ordinal()) {
-            TrackingHelper.video360(getUserId());
+            TrackingHelper.video360(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.INSPIRE_ME.ordinal()) {
-            TrackingHelper.inspr(getUserId());
+            TrackingHelper.inspr(getAccountUserId());
         }
     }
 

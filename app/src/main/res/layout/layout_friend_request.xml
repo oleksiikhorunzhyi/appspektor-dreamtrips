@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:visibility="gone">
 
     <View
         android:layout_width="match_parent"
@@ -11,24 +11,34 @@
         android:background="@drawable/ic_profile_divider"
         android:contentDescription="@string/empty"/>
 
+    <TextView
+        android:id="@+id/friend_request_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/spacing_small"
+        android:text="Karina has sent a request to you"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <Button
             android:id="@+id/accept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="fdsaf"/>
+            android:text="fadsfdsa"
+            />
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <Button
             android:id="@+id/reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="fdsaf"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            android:text="fadsfdsa"/>
     </LinearLayout>
 
 

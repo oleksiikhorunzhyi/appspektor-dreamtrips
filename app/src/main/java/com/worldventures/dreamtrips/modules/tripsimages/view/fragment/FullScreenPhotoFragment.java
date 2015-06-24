@@ -168,6 +168,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick(R.id.user_photo)
     void onUserClicked() {
+        getPresenter().onUserClicked();
     }
 
     @OnClick(R.id.ll_top_container)

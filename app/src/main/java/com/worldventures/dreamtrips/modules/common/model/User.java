@@ -4,17 +4,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.io.Serializable;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
+
 import java.util.Date;
 import java.util.List;
 
-public class User extends BaseEntity implements Parcelable, Serializable {
+public class User extends BaseEntity implements Parcelable {
 
     public static final String RBS_SUBSCTIPTION = "RBS";
     public static final String DTM_SUBSCTIPTION = "DTM";
     public static final String DTS_SUBSCTIPTION = "DTS";
     public static final String DTG_SUBSCTIPTION = "DTG";
     public static final String DTP_SUBSCRIPTION = "DTP";
+
+    public static final String RELATION_NONE = "none";
+    public static final String RELATION_FRIEND = "friend";
+    public static final String RELATION_INCOMING_REQUEST = "incoming_request";
+    public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
+    public static final String RELATION_REJECT = "rejected";
 
     public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
@@ -39,6 +46,8 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     private double roviaBucks;
     private int tripImagesCount;
     private int bucketListItemsCount;
+
+    private String relationship;
 
     private String coverPath;
 
@@ -66,6 +75,8 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
         this.coverPath = in.readString();
         this.id = in.readInt();
+        this.enrollDate = (Date)in.readSerializable();
+        this.relationship = in.readString();
     }
 
     public String getCoverPath() {
@@ -179,6 +190,10 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         return false;
     }
 
+   public String getRelationship() {
+        return relationship;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -195,6 +210,26 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         dest.writeParcelable(this.avatar, flags);
         dest.writeString(this.coverPath);
         dest.writeInt(this.id);
+        dest.writeSerializable(enrollDate);
+        dest.writeString(this.relationship);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        User user = (User) o;
+
+        return !(username != null ? !username.equals(user.username) : user.username != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        return result;
     }
 
     public static class Avatar implements Parcelable {

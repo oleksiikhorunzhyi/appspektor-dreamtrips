@@ -82,7 +82,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.bucketList(getUserId());
+        TrackingHelper.bucketList(getAccountUserId());
         loadBucketItems();
     }
 

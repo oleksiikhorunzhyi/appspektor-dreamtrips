@@ -102,7 +102,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     public void takeView(View view) {
         super.takeView(view);
         adapterController.setAdapter(view.getAdapter());
-        TrackingHelper.dreamTrips(getUserId());
+        TrackingHelper.dreamTrips(getAccountUserId());
     }
 
     @Override

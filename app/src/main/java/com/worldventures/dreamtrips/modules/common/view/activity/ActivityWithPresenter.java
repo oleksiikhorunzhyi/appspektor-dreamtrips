@@ -33,6 +33,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        this.presentationModel.onResume();
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         this.presentationModel.onMenuPrepared();
         return super.onPrepareOptionsMenu(menu);

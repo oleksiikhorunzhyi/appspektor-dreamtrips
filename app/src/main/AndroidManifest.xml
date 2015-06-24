@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
     package="com.worldventures.dreamtrips"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="preferExternal">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />
+        android:required="true"/>
 
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
-        android:smallScreens="true" />
+        android:smallScreens="true"/>
 
     <application
         android:name=".App"
@@ -35,135 +36,150 @@
         tools:replace="icon, label">
         <meta-data
             android:name="com.instabug.DevelopmentAppToken"
-            android:value="a3060506f058a57fcc3ef8d80d189e6e" />
+            android:value="a3060506f058a57fcc3ef8d80d189e6e"/>
         <meta-data
             android:name="com.instabug.ProductionMode"
-            android:value="false" />
+            android:value="false"/>
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f" />
+            android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f"/>
 
         <activity
-            android:name=".modules.infopages.view.activity.EnrollActivity"
-            android:configChanges="orientation|screenSize" />
+            android:name=".modules.profile.view.activity.ProfileActivity"
+            android:label="@string/empty"/>
         <activity
             android:name=".modules.auth.view.LoginActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.membership.view.activity.InviteTemplateSelectorActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.common.view.activity.MainActivity"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.trips.view.activity.BookItActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.bucketlist.view.activity.BucketActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.common.view.activity.SimpleStreamPlayerActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".modules.facebook.view.activity.FacebookPickPhotoActivity"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.common.view.activity.ShareActivity"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/trips" />
+            android:label="@string/trips"/>
         <activity
             android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".modules.tripsimages.view.activity.FullScreenPhotoActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_full_screen_photo" />
+            android:label="@string/title_activity_full_screen_photo"/>
         <activity
             android:name=".modules.tripsimages.view.activity.FullScreenTripImageActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_full_screen_photo" />
-        <activity android:name=".modules.trips.view.activity.DetailTripActivity" />
+            android:label="@string/title_activity_full_screen_photo"/>
+        <activity android:name=".modules.trips.view.activity.DetailTripActivity"/>
         <activity
             android:name=".modules.reptools.view.activity.SuccessStoryDetailsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/empty" />
+            android:label="@string/empty"/>
         <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"/>
         <activity
             android:name=".modules.common.view.activity.ComponentActivity"/>
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"/>
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBEAplf65kSFB7FZSB4xPbAdWktPPBNuXA" />
+            android:value="AIzaSyBEAplf65kSFB7FZSB4xPbAdWktPPBNuXA"/>
 
         <activity
             android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
-            android:windowSoftInputMode="adjustPan" />
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name="net.hockeyapp.android.UpdateActivity"/>
 
         <meta-data
             android:name="apptentive_api_key"
-            android:value="${surveyApiToken}" />
+            android:value="${surveyApiToken}"/>
 
         <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
-            android:theme="@style/Apptentive.Theme.Transparent" />
+            android:theme="@style/Apptentive.Theme.Transparent"/>
 
         <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.instabug.library.network.UploadCacheService" />
+        <service android:name="com.instabug.library.network.UploadCacheService"/>
 
         <!-- This will prevent VERBOSE and DEBUG level logging. -->
         <meta-data
             android:name="apptentive_log_level"
-            android:value="DEBUG" />
+            android:value="DEBUG"/>
 
         <service
             android:name=".core.api.DreamSpiceService"
-            android:exported="false" />
+            android:exported="false"/>
         <service
             android:name=".core.api.MediaSpiceService"
             android:exported="false" />
 
         <activity
             android:name=".modules.membership.view.activity.EditTemplateActivity"
-            android:label="@string/title_activity_invite" />
+            android:label="@string/title_activity_invite"/>
         <activity
             android:name=".modules.membership.view.activity.PreviewTemplateActivity"
-            android:label="@string/title_activity_invite" />
+            android:label="@string/title_activity_invite"/>
+        <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
+        <activity
+            android:name=".modules.friends.view.activity.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:parentActivityName=".modules.common.view.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".modules.friends.view.activity.FriendSearchActivity"
+            android:label="@string/empty">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
+        </activity>
 
-        <activity android:name="nl.changer.polypicker.ImagePickerActivity" />
     </application>
 
 </manifest>

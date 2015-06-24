@@ -108,6 +108,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         }
     }
 
+    public void addItems(int index, List<BaseItemClass> result) {
+        if (result != null) {
+            this.items.addAll(index, result);
+            this.notifyDataSetChanged();
+        }
+    }
+
     public void addItem(int location, BaseItemClass obj) {
         this.items.add(location, obj);
     }

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.bucketlist.event;
 
 public class BucketPhotoUploadFailedEvent {
-    private int taskId;
+    private long taskId;
 
-    public BucketPhotoUploadFailedEvent(int bucketId) {
+    public BucketPhotoUploadFailedEvent(long bucketId) {
 
         this.taskId = bucketId;
     }
 
-    public int getTaskId() {
+    public long getTaskId() {
         return taskId;
     }
 }

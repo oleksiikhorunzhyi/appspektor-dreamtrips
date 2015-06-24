@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -258,7 +257,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void handlePhotoPick(Uri uri) {
         selectedImageUri = uri;
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId((int) System.currentTimeMillis());
+        task.setTaskId(System.currentTimeMillis());
         task.setBucketId(template.getId());
         task.setFilePath(uri.toString());
         startUpload(task);

@@ -27,7 +27,7 @@ public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate
     @Override
     public InviteTemplate loadDataFromNetwork() {
         String fileUri = photoUploadTask.getFilePath();
-        int taskId = photoUploadTask.getTaskId();
+        long taskId = photoUploadTask.getTaskId();
 
         String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 

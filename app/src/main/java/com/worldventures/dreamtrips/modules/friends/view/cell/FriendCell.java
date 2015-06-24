@@ -42,7 +42,6 @@ public class FriendCell extends AbstractCell<Friend> {
         User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         tvName.setText(user.getFullName());
-
         String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
         if (getModelObject().getMutualFriends() == 0) {
             tvMutual.setVisibility(View.GONE);

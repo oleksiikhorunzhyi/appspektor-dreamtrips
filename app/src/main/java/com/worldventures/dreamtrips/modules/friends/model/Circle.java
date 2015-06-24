@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Circle implements Serializable {
 
-    public static Circle all() {
+    public static Circle all(String title) {
         Circle all = new Circle();
-        all.name = "ALL";
+        all.name = title;
         return all;
     }
 

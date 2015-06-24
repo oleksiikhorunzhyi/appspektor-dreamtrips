@@ -26,7 +26,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void onResume() {
         super.onResume();
 
-        if (!appSessionHolder.get().get().getUser().isPlatinum() && trip.isPlatinum()) {
+        if (trip.isSoldOut() || (!appSessionHolder.get().get().getUser().isPlatinum()
+                && trip.isPlatinum())) {
             view.hideBookIt();
         }
     }

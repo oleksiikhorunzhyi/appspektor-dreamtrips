@@ -53,10 +53,17 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
             view.setTag(holder);
         }
 
+        if (view.isSelected()) {
+
+        } else {
+
+        }
+
         T contentItem = getItem(position);
         holder.name.setText(contentItem.toString());
 
-        return view;}
+        return view;
+    }
 
     static class ViewHolder {
         @InjectView(R.id.name)

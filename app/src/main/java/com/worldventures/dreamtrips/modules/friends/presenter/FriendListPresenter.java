@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -39,11 +40,6 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         }
 
         @Override
-        protected void onRefresh(ArrayList<Friend> friends) {
-            super.onRefresh(performFiltering(friends));
-        }
-
-        @Override
         public void onStart(LoadType loadType) {
             view.startLoading();
         }
@@ -59,14 +55,11 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         }
     };
 
-    private ArrayList<Friend> performFiltering(ArrayList<Friend> users) {
-        return users;
-    }
-
     @Override
     public void takeView(View view) {
         super.takeView(view);
         circles = snappyRepository.getCircles();
+        circles.add(0, Circle.all(context.getString(R.string.show_all)));
     }
 
     @Override
@@ -97,6 +90,9 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void reloadWithFilter(int position) {
+        if (position == -1) {
+            selectedCircle = null;
+        }
         selectedCircle = circles.get(position);
         reload();
     }

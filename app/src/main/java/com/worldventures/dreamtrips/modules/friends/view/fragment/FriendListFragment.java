@@ -9,8 +9,11 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -86,6 +89,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         stateDelegate.setRecyclerView(recyclerView);
         adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(Friend.class, FriendCell.class);
+
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
@@ -119,15 +123,18 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     @Override
     public void showFilters(List<Circle> circles) {
         popupWindow = new ListPopupWindow(getActivity());
-        popupWindow.setAdapter(new FilterPopupAdapter<>(getActivity(), circles));
+        ArrayAdapter<Circle> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_list_item_single_choice, circles);
+        popupWindow.setAdapter(adapter);
         popupWindow.setAnchorView(filter);
         popupWindow.setWidth(getResources().getDimensionPixelSize(R.dimen.filter_popup_width));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
 
-        popupWindow.setOnItemClickListener((adapterView, view, position, id) -> {
-
-        });
         popupWindow.show();
+
+        popupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) ->
+                getPresenter().reloadWithFilter(i - 1));
     }
 
     @Override

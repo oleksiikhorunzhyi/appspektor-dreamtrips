@@ -287,9 +287,7 @@ public class SnappyRepository {
     }
 
     public List<Circle> getCircles() {
-        List<Circle> circles = readList(CIRCLES, Circle.class);
-        circles.add(0, Circle.all());
-        return circles;
+        return readList(CIRCLES, Circle.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////

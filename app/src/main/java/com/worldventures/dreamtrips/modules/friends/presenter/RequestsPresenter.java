@@ -29,7 +29,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        //reloadRequests();
+  //      reloadRequests();
     }
 
     public void reloadRequests() {

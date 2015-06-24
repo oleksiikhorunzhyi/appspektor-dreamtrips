@@ -86,6 +86,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
 
     private void onSuccess(int position) {
         if (view != null) {
+            view.finishLoading();
             view.getAdapter().remove(position);
             view.getAdapter().notifyItemRemoved(position);
         }
@@ -93,7 +94,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
 
     private void onError(SpiceException exception) {
         if (view != null) {
-            view.getAdapter().notifyDataSetChanged();
+            view.finishLoading();
             handleError(exception);
         }
     }

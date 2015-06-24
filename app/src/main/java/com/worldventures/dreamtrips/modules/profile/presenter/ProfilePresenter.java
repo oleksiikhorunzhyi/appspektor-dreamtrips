@@ -24,6 +24,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Inject
     SnappyRepository snappyRepository;
 
+    public ProfilePresenter() {
+    }
+
     public ProfilePresenter(User user) {
         this.user = user;
     }
@@ -73,10 +76,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         view.setBucketItemsCount(user.getBucketListItemsCount());
     }
 
-    protected void loadProfile() {
-        view.startLoading();
-        doRequest(new GetProfileQuery(user), this::onProfileLoaded);
-    }
+    protected abstract void loadProfile();
 
     public void openFriends() {
         activityRouter.openFriends();

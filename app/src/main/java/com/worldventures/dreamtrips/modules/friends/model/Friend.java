@@ -9,6 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +28,18 @@ public class Friend extends User {
     }
 
     public void setCircles(List<Circle> circles) {
-        this.circles = TextUtils.join(", ", Queryable.from(circleIds).map((id) ->
-                Queryable.from(circles).first(element ->
-                        id.equals(element.getId())).getName()).toList());
+        List<String> userCircles = new ArrayList<>();
+
+        for (String s : circleIds) {
+            for (Circle circle : circles) {
+                if (circle.getId() != null && circle.getId().equals(s)) {
+                    userCircles.add(circle.getName());
+                    break;
+                }
+            }
+        }
+
+        this.circles = TextUtils.join(", ", userCircles);
     }
 
     public String getCircles() {

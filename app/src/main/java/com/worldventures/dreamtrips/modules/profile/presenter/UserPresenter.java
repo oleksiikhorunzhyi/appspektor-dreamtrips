@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
+import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 
 import java.util.List;
 
@@ -46,7 +48,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
     @Override
     protected void loadProfile() {
-
+        view.startLoading();
+        doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
     }
 
     public void addFriendClicked() {

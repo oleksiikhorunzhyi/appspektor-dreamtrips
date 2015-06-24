@@ -66,6 +66,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(AcceptRequestEvent event) {
+        view.startLoading();
         view.showAddFriendDialog(circles, position ->
                 doRequest(new ActOnRequestCommand(event.getUser().getId(),
                                 ActOnRequestCommand.Action.CONFIRM.name(),
@@ -75,18 +76,21 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(CancelRequestEvent event) {
+        view.startLoading();
         doRequest(new DeleteRequestCommand(event.getUser().getId()),
                 object -> onSuccess(event.getPosition()),
                 this::onError);
     }
 
     public void onEvent(HideRequestEvent event) {
+        view.startLoading();
         doRequest(new DeleteRequestCommand(event.getUser().getId()),
                 object -> onSuccess(event.getPosition()),
                 this::onError);
     }
 
     public void onEvent(RejectRequestEvent event) {
+        view.startLoading();
         doRequest(new ActOnRequestCommand(event.getUser().getId(),
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> onSuccess(event.getPosition()),
@@ -95,6 +99,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     private void onSuccess(int position) {
         if (view != null) {
+            view.finishLoading();
             view.getAdapter().remove(position);
             view.getAdapter().notifyItemRemoved(position);
         }
@@ -102,7 +107,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     private void onError(SpiceException exception) {
         if (view != null) {
-            view.getAdapter().notifyDataSetChanged();
+            view.finishLoading();
             handleError(exception);
         }
     }

@@ -65,6 +65,9 @@ public interface DreamTripsApi {
     @GET("/api/profile")
     User getProfile();
 
+    @GET("/api/profiles/{id}")
+    User getPublicProfile(@Path("id") int id);
+
     @GET("/api/trips")
     List<TripModel> getTrips();
 

@@ -4,12 +4,14 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
@@ -60,6 +62,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     public AccountPresenter() {
         super();
+    }
+
+    @Override
+    protected void loadProfile() {
+        view.startLoading();
+        doRequest(new GetProfileQuery(), this::onProfileLoaded);
     }
 
     @Override

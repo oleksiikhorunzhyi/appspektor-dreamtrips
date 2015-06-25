@@ -203,6 +203,8 @@
         <item>設為封面</item>
         <item>刪</item>
     </string-array>
+    <string name="bucket_photo_cover">設為封面</string>
+    <string name="bucket_photo_delete">刪</string>
     <string name="add_pictures">添加圖片</string>
     <string name="select_photo">選擇照片</string>
     <string name="bucket_photo_dialog">鬥照片</string>

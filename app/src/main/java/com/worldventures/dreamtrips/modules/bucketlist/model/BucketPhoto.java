@@ -27,6 +27,8 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     private String url;
     private int taskId;
 
+    private boolean isCover;
+
     public BucketPhoto() {
     }
 
@@ -39,6 +41,14 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
 
     public void setOriginUrl(String originUrl) {
         this.originUrl = originUrl;
+    }
+
+    public void setIsCover(boolean isCover) {
+        this.isCover = isCover;
+    }
+
+    public boolean isCover() {
+        return isCover;
     }
 
     @Override

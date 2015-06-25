@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesList
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
@@ -51,6 +52,7 @@ import dagger.Provides;
 
                 InteractiveFullscreenPresenter.class,
                 FullScreenPresenter.class,
+                BucketFullscreenPresenter.class,
                 SimpleFullscreenPresenter.class,
 
                 TripImagesTabsFragment.class,

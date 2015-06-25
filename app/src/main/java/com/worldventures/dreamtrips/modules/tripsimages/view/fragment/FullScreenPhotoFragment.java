@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,6 +79,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected SimpleDraweeView civUserPhoto;
     @InjectView(R.id.progress_flag)
     protected ProgressBar progressBar;
+    @InjectView(R.id.checkBox)
+    protected CheckBox checkBox;
 
     private TripImagesListFragment.Type type;
 
@@ -380,4 +383,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void hideProgress() {
         progressBar.setVisibility(View.GONE);
     }
+
+    @Override
+    public void showCheckbox(boolean status) {
+        checkBox.setText(status ? R.string.bucket_current_cover : R.string.bucket_photo_cover);
+        checkBox.setClickable(!status);
+        checkBox.setChecked(status);
+        checkBox.setVisibility(View.VISIBLE);
+        checkBox.setOnCheckedChangeListener((cb, b) -> {
+            checkBox.setClickable(false);
+            getPresenter().onCheckboxPressed();
+        });
+
+    }
+
 }

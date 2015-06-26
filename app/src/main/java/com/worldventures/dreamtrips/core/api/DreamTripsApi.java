@@ -141,6 +141,9 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list_items")
     ArrayList<BucketItem> getBucketList(@Query("type") String type);
 
+    @GET("/api/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull();
+
     @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
     JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
 

@@ -104,6 +104,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        checkBox.setOnCheckedChangeListener((cb, b) -> {
+            checkBox.setClickable(false);
+            getPresenter().onCheckboxPressed(b);
+        });
+    }
+
+    @Override
     public void loadImage(Image image) {
         String medium = image.getThumbUrl(getResources());
         String original = image.getUrl(ViewUtils.getScreenWidth(getActivity()),
@@ -388,13 +397,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void showCheckbox(boolean status) {
         checkBox.setText(status ? R.string.bucket_current_cover : R.string.bucket_photo_cover);
         checkBox.setClickable(!status);
-        checkBox.setChecked(status);
         checkBox.setVisibility(View.VISIBLE);
-        checkBox.setOnCheckedChangeListener((cb, b) -> {
-            checkBox.setClickable(false);
-            getPresenter().onCheckboxPressed();
-        });
-
+        checkBox.setChecked(status);
     }
 
 }

@@ -171,6 +171,7 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:visibility="gone"/>
 

@@ -3,13 +3,16 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
@@ -22,6 +25,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscre
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.CoverSetEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketCoverModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -30,6 +34,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTa
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 
@@ -52,12 +57,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected List<BucketItem> items = new ArrayList<>();
 
+
     @Inject
     @ForApplication
     protected Injector injector;
 
-    protected Integer coverId;
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
+
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
             view.informUser(error);
@@ -160,7 +166,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void openFullScreen(int position) {
         if (!view.getBucketPhotosView().getImages().isEmpty()) {
-            db.savePhotoEntityList(Type.BUCKET_PHOTOS, view.getBucketPhotosView().getImages());
+            List<IFullScreenObject> photos = new ArrayList<>();
+            Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
+                    photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
+            photos.addAll(bucketItem.getPhotos());
+            db.savePhotoEntityList(Type.BUCKET_PHOTOS, photos);
             this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
         }
     }
@@ -172,17 +182,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-        coverId = event.getPhoto().getId();
-        saveCover();
+        if (bucketItem.getPhotos().contains(event.getPhoto())) {
+            eventBus.cancelEventDelivery(event);
+            saveCover(event.getPhoto().getId());
+        }
     }
 
-    private void saveCover() {
+    private void saveCover(int coverID) {
         BucketCoverModel bucketCoverModel = new BucketCoverModel();
-        bucketCoverModel.setCoverId(coverId);
+        bucketCoverModel.setCoverId(coverID);
         bucketCoverModel.setStatus(bucketItem.getStatus());
         bucketCoverModel.setType(bucketItem.getType());
         bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
+        eventBus.post(new CoverSetEvent(coverID));
         saveBucketItem(bucketCoverModel);
     }
 
@@ -194,7 +206,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        doRequest(new DeleteBucketPhotoCommand(String.valueOf(event.getPhoto().getFsId()), bucketItem.getId()),
+        doRequest(new DeleteBucketPhotoCommand(event.getPhoto().getFsId(),
+                        bucketItem.getId()),
                 (jsonObject) -> {
                     deleted(event.getPhoto());
                     bucketItem.getPhotos().remove(event.getPhoto());

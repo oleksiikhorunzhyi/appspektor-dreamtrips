@@ -190,6 +190,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         arrayListAdapter.notifyItemRemoved(index);
     }
 
+    @Override
+    public void refresh() {
+    }
+
     public enum Type {
         MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, BUCKET_PHOTOS
     }

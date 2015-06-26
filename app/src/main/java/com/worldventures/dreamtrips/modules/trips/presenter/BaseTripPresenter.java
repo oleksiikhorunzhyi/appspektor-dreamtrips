@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -21,9 +22,12 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
 
     @Inject
-    protected Activity activity;
+    Activity activity;
     @Inject
-    protected SnappyRepository db;
+    SnappyRepository db;
+    @Inject
+    BucketItemManager bucketItemManager;
+
     protected TripModel trip;
 
     BucketHelper bucketHelper;
@@ -75,7 +79,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
             trip.setInBucketList(true);
             view.setInBucket(true);
             onSuccessTripAction();
-            bucketHelper.saveBucketItem(db, bucketItem, LOCATIONS.name(), true);
+            bucketItemManager.saveBucketItem(bucketItem, LOCATIONS, true);
             bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
         });
     }

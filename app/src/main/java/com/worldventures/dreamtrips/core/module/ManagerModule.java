@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.core.api.MediaSpiceService;
 import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,6 +30,7 @@ import dagger.Provides;
                 MediaSpiceManager.class,
                 MediaSpiceService.class,
                 VideoCachingDelegate.class,
+                BucketItemManager.class,
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
@@ -54,5 +58,11 @@ public class ManagerModule {
                                                             Context context,
                                                             @ForApplication Injector injector) {
         return new VideoCachingDelegate(snappyRepository, context, injector);
+    }
+
+    @Singleton
+    @Provides
+    public BucketItemManager provideBucketItemManager(@ForApplication Injector injector) {
+        return new BucketItemManager(injector);
     }
 }

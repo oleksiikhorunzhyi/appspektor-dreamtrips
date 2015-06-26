@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -26,11 +27,15 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
+    @Inject
+    BucketItemManager bucketItemManager;
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
         setTabs();
         loadCategories();
+        bucketItemManager.loadBucketItems(this);
     }
 
     @Override

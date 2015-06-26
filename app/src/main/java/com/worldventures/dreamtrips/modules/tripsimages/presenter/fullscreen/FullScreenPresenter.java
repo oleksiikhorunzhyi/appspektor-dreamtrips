@@ -114,7 +114,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         }
     }
 
-    public void onCheckboxPressed() {
+    public void onCheckboxPressed(boolean status) {
     }
 
     public interface View extends Presenter.View {

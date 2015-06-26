@@ -5,12 +5,9 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
-import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 
 import javax.inject.Inject;
 
@@ -38,14 +35,6 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
     protected String getLocalizedUrl() {
         return LocaleUtils.substituteActualLocale(context, url, localesStorage);
-    }
-
-    public void onEvent(WebViewReloadEvent event) {
-        if (view instanceof TrainingVideosFragment
-                || view instanceof StaticInfoFragment.EnrollRepFragment
-                || view instanceof StaticInfoFragment.EnrollFragment) {
-            onReload();
-        }
     }
 
     public void onReload() {

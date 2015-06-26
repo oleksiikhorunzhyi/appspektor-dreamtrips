@@ -38,10 +38,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
     protected BaseStatePagerAdapter<FragmentItem> adapter;
-    protected ArrayList<IFullScreenObject> photoList = new ArrayList<>();
     protected TripImagesListFragment.Type type;
 
-    @Icicle int position;
+    protected List<IFullScreenObject> photos = new ArrayList<>();
+
+    @Icicle
+    int position;
 
     @Override
     protected TripImagesListPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -107,8 +109,8 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
                 @Override
                 public void addItems(ArrayList baseItemClasses) {
-                    photoList.addAll(baseItemClasses);
-                    Queryable.from(photoList).forEachR(item ->
+                    photos.addAll(baseItemClasses);
+                    Queryable.from(photos).forEachR(item ->
                             adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
                 }
             };
@@ -120,12 +122,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     }
 
     public IFullScreenObject getPhoto(int position) {
-        return photoList.get(position);
+        return photos.get(position);
     }
 
     @Override
     public List<IFullScreenObject> getPhotosFromAdapter() {
-        return photoList;
+        return photos;
     }
 
     @Override
@@ -155,8 +157,8 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void addAll(List<IFullScreenObject> items) {
-        photoList.addAll(items);
-        Queryable.from(photoList).forEachR(item ->
+        photos.addAll(items);
+        Queryable.from(photos).forEachR(item ->
                 adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
         adapter.notifyDataSetChanged();
     }
@@ -173,7 +175,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void clear() {
-        photoList.clear();
+        photos.clear();
         adapter.clear();
         adapter.notifyDataSetChanged();
         pager.setAdapter(adapter);
@@ -190,11 +192,18 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
             finish();
         } else {
             int currentItem = pager.getCurrentItem();
-            photoList.remove(index);
+            photos.remove(index);
             adapter.remove(index);
             adapter.notifyDataSetChanged();
             pager.setAdapter(adapter);
             pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
         }
+    }
+
+    @Override
+    public void refresh() {
+        adapter.notifyDataSetChanged();
+        pager.setAdapter(adapter);
+        pager.setCurrentItem(position);
     }
 }

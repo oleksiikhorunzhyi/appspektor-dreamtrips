@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -196,7 +195,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void onNavigationDrawerItemReselected(ComponentDescription route) {
-        eventBus.post(new WebViewReloadEvent());
         closeLeftDrawer();
     }
 

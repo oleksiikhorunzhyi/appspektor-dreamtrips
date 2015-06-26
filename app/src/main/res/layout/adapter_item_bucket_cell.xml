@@ -77,14 +77,6 @@
                     android:textSize="18sp"
                     tools:ignore="RtlHardcoded"/>
 
-                <View
-                    android:id="@+id/crossing"
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_gravity="center"
-                    android:background="@color/bucket_text_done"
-                    android:visibility="invisible"/>
-
             </FrameLayout>
 
             <ImageView
@@ -94,6 +86,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right"
                 android:padding="10dp"/>
 
         </RelativeLayout>

@@ -40,16 +40,12 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
     protected RelativeLayout container;
     @InjectView(R.id.textViewName)
     protected TextView tvName;
-    @InjectView(R.id.button_cancel)
-    protected ImageView buttonCancel;
     @InjectView(R.id.swipeLayout)
     protected SwipeLayout swipeLayout;
     @InjectView(R.id.imageViewStatusDone)
     protected ImageView imageViewStatusDone;
     @InjectView(R.id.imageViewStatusClose)
     protected ImageView imageViewStatusClose;
-    @InjectView(R.id.crossing)
-    protected View crossing;
 
     @Inject
     protected Context context;
@@ -94,6 +90,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
             }
             container.setBackgroundResource(bgResId);
         }
+
         container.setActivated(getModelObject().isSelected());
 
         afterSwipe = true;
@@ -102,12 +99,8 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
     private void renderData() {
         if (getModelObject().isDone()) {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
-            crossing.setVisibility(View.VISIBLE);
-            buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         } else {
             tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_to_do));
-            crossing.setVisibility(View.INVISIBLE);
-            buttonCancel.setImageResource(R.drawable.ic_keyboard_arrow_right);
         }
     }
 

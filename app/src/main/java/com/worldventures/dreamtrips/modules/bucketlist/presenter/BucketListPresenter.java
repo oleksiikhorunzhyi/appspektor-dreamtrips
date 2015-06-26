@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEven
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
@@ -52,11 +54,14 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     @Inject
     Activity activity;
     @Inject
-    protected SnappyRepository db;
+    DreamTripsApi api;
     @Inject
-    protected DreamTripsApi api;
+    SnappyRepository db;
     @Inject
-    protected Prefs prefs;
+    Prefs prefs;
+
+    @Inject
+    BucketItemManager bucketItemManager;
 
     private BucketTabsPresenter.BucketType type;
 
@@ -83,24 +88,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getAccountUserId());
-        loadBucketItems();
+        view.startLoading();
     }
 
-    public void loadBucketItems() {
-        if (isConnected()) {
-            view.startLoading();
-            doRequest(new GetBucketListQuery(prefs, db, type),
-                    result -> {
-                        view.finishLoading();
-                        addItems(result);
-                    }, exception -> {
-                        view.finishLoading();
-                        addItems(Collections.emptyList());
-                        handleError(exception);
-                    });
-        } else {
-            addItems(db.readBucketList(type.name()));
-        }
+    public void onEvent(BucketItemsLoadedEvent event) {
+        addItems(bucketItemManager.getBucketItems(type));
     }
 
     public void trackAddStart() {
@@ -112,6 +104,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void addItems(Collection<? extends BucketItem> result) {
+        view.finishLoading();
         bucketItems.clear();
         bucketItems.addAll(result);
         refresh();
@@ -201,9 +194,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
 
             doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketStatusItem),
-                    item -> {
-                        db.saveBucketList(bucketItems, type.name());
-                    }, exception -> {
+                    item -> bucketItemManager.saveBucketItems(bucketItems, type),
+                    exception -> {
                         bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(!bucketItem.isDone());
                         refresh();
                     });
@@ -276,12 +268,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private DeleteBucketItemCommand deleteDelayed(BucketItem item) {
         DeleteBucketItemCommand request = new DeleteBucketItemCommand(item.getId(), DELETION_DELAY);
         doRequest(request, obj -> {
-            db.saveBucketList(bucketItems, type.name());
+            bucketItemManager.saveBucketItems(bucketItems, type);
             if (type.equals(LOCATIONS)) {
                 doRequest(new GetTripsQuery(db, prefs, false), tripModels -> {
-                    TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element -> {
-                        return element.getGeoLocation().getName().equals(item.getName());
-                    });
+                    TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element ->
+                            element.getGeoLocation().getName().equals(item.getName()));
                     if (tripFromBucket != null) {
                         tripFromBucket.setInBucketList(false);
                         db.saveTrip(tripFromBucket);
@@ -337,7 +328,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                 orderModel), jsonObject -> {
             final BucketItem item = bucketItems.remove(fromPosition);
             bucketItems.add(toPosition, item);
-            db.saveBucketList(bucketItems, type.name());
+            bucketItemManager.saveBucketItems(bucketItems, type);
         });
     }
 
@@ -348,7 +339,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void addBucketItem(BucketPostItem bucketPostItem) {
         doRequest(new AddBucketItemCommand(bucketPostItem), bucketItem -> {
-            bucketHelper.saveBucketItem(db, bucketItem, type.name(), true);
+            bucketItemManager.saveBucketItem(bucketItem, type, true);
 
             trackAddFinish();
             bucketItems.add(0, bucketItem);

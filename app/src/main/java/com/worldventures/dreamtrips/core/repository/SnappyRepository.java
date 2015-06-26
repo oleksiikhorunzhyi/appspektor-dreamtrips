@@ -139,14 +139,6 @@ public class SnappyRepository {
     // BucketItems
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveBucketListFull(List<BucketItem> items) {
-        putList(BUCKET_LIST, items);
-    }
-
-    public List<BucketItem> readBucketList() {
-        return readList(BUCKET_LIST, BucketItem.class);
-    }
-
     public void saveBucketList(List<BucketItem> items, String type) {
         putList(BUCKET_LIST + ":" + type, items);
     }

@@ -273,7 +273,9 @@
     <string name="profile_golden">Golden member</string>
 
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
-    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>g
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
+
+    <string name="bucket_delete_dialog">Are you sure want to delete this bucket list item?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>

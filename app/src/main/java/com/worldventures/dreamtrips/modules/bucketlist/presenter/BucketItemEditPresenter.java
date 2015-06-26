@@ -7,7 +7,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 
@@ -49,15 +48,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         view.updatePhotos();
     }
 
-    @Override
-    protected void onSuccess(BucketItem bucketItemUpdated) {
-        super.onSuccess(bucketItemUpdated);
-        if (savingItem) {
-            savingItem = false;
-            view.done();
-        }
-    }
-
     public void saveItem() {
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
@@ -68,7 +58,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
-        saveBucketItem(bucketPostItem);
+        bucketItemManager.updateBucketItem(bucketPostItem, type, item -> {
+            if (savingItem) {
+                savingItem = false;
+                view.done();
+            }
+        }, this);
     }
 
     public Date getDate() {

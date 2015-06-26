@@ -178,7 +178,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             request = new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId()));
             doRequest(request, item -> {
                 onSuccess(trip);
-                bucketItemManager.saveBucketItem(item, LOCATIONS, true);
+                bucketItemManager.addBucketItem(item, LOCATIONS, true);
                 bucketHelper.notifyItemAddedToBucket(activity, item);
 
             }, (spiceException) -> {

@@ -4,7 +4,6 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -81,8 +81,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     private RecyclerView.Adapter wrappedAdapter;
     private RecyclerViewDragDropManager dragDropManager;
     private RecyclerViewStateDelegate stateDelegate;
-
-    private Snackbar snackBar;
 
     private MenuItem menuItemAdd;
 
@@ -189,7 +187,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 quickInputEditText.onActionViewExpanded();
-                getPresenter().trackAddStart();
                 return true;
             }
 
@@ -209,12 +206,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @OnClick(R.id.buttonPopular)
     void onPopular() {
         getPresenter().addPopular();
-    }
-
-    @Override
-    public void showUndoBar(View.OnClickListener undoListener) {
-        Snackbar.make(getView(), R.string.bucket_delete_undo, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, undoListener).show();
     }
 
     @Override
@@ -309,5 +300,20 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         if (count != 0) {
             emptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showDeletionDialog(BucketItem bucketItem) {
+        new MaterialDialog.Builder(getActivity())
+                .content(R.string.bucket_delete_dialog)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().deleteBucketItem(bucketItem);
+                    }
+                })
+                .show();
     }
 }

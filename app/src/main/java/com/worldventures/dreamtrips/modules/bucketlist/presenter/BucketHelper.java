@@ -12,7 +12,7 @@ import java.util.List;
 public class BucketHelper {
 
     public void notifyItemAddedToBucket(Activity activity, BucketItem item) {
-        Snackbar.make(null, activity.getString(R.string.bucket_added, item.getName()), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(activity.getCurrentFocus(), activity.getString(R.string.bucket_added, item.getName()), Snackbar.LENGTH_SHORT).show();
     }
 
 }

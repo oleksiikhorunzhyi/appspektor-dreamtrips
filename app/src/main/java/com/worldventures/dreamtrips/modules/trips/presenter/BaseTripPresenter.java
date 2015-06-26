@@ -79,7 +79,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
             trip.setInBucketList(true);
             view.setInBucket(true);
             onSuccessTripAction();
-            bucketItemManager.saveBucketItem(bucketItem, LOCATIONS, true);
+            bucketItemManager.addBucketItem(bucketItem, LOCATIONS, true);
             bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
         });
     }

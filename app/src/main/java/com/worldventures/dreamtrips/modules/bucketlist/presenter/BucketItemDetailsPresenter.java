@@ -7,8 +7,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 
@@ -36,9 +34,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onStatusUpdated(boolean status) {
         if (status != bucketItem.isDone()) {
             view.disableCheckbox();
-            BucketBasePostItem bucketBasePostItem = new BucketBasePostItem();
-            bucketBasePostItem.setStatus(status);
-            saveBucketItem(bucketBasePostItem);
+            bucketItemManager.updateItemStatus(status, type, item -> view.enableCheckbox(), this);
         }
     }
 
@@ -88,12 +84,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public String getHighResUrl() {
         int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_cover_width);
         return bucketItem.getCoverUrl(width, width);
-    }
-
-    @Override
-    protected void onSuccess(BucketItem bucketItemUpdated) {
-        super.onSuccess(bucketItemUpdated);
-        view.enableCheckbox();
     }
 
     private String getPlace() {

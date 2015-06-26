@@ -34,8 +34,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         setTabs();
-        loadCategories();
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         bucketItemManager.loadBucketItems(this);
+        loadCategories();
     }
 
     @Override

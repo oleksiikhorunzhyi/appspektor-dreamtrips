@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCa
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
@@ -27,7 +28,8 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     @Inject
     @Global
     protected transient EventBus eventBus;
-
+    @Inject
+    BucketItemManager bucketItemManager;
     @Inject
     protected SnappyRepository db;
 
@@ -90,7 +92,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     }
 
     private void updateBucketItem(BucketItem updatedItem, BucketPhoto photo) {
-        List<BucketItem> items = db.readBucketList(bucketType.name());
+        List<BucketItem> items = bucketItemManager.getBucketItems(bucketType);
         bucketItem.getPhotos().add(photo);
 
         int oldPosition = items.indexOf(updatedItem);
@@ -98,7 +100,8 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
         items.remove(oldPosition);
         items.add(newPosition, updatedItem);
-        db.saveBucketList(items, bucketType.name());
+
+        bucketItemManager.saveBucketItems(items, bucketType);
         eventBus.post(new BucketItemUpdatedEvent(updatedItem));
     }
 

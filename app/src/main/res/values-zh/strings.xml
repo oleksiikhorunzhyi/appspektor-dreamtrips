@@ -275,6 +275,8 @@
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
 
+    <string name="bucket_delete_dialog">您確定您要刪除目標清單項目嗎?</string>
+
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_add_friend">Add Friend</string>

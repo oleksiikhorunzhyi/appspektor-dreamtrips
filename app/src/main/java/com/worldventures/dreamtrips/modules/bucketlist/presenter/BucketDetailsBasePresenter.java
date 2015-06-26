@@ -9,13 +9,10 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -25,9 +22,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscre
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.CoverSetEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketCoverModel;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
@@ -50,17 +45,16 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
     @Inject
-    protected SnappyRepository db;
-
-    protected BucketTabsPresenter.BucketType type;
-    protected BucketItem bucketItem;
-
-    protected List<BucketItem> items = new ArrayList<>();
-
+    BucketItemManager bucketItemManager;
+    @Inject
+    SnappyRepository db;
 
     @Inject
     @ForApplication
     protected Injector injector;
+
+    protected BucketTabsPresenter.BucketType type;
+    protected BucketItem bucketItem;
 
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
 
@@ -156,7 +150,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-
         List objects = view.getBucketPhotosView().getImages();
         Object obj = objects.get(event.getPosition());
         if (!(obj instanceof BucketPhotoUploadTask)) {
@@ -189,19 +182,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void saveCover(int coverID) {
-        BucketCoverModel bucketCoverModel = new BucketCoverModel();
-        bucketCoverModel.setCoverId(coverID);
-        bucketCoverModel.setStatus(bucketItem.getStatus());
-        bucketCoverModel.setType(bucketItem.getType());
-        bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
-        eventBus.post(new CoverSetEvent(coverID));
-        saveBucketItem(bucketCoverModel);
-    }
-
-    protected void saveBucketItem(BucketBasePostItem bucketBasePostItem) {
-        UpdateBucketItemCommand updateBucketItemCommand =
-                new UpdateBucketItemCommand(bucketItem.getId(), bucketBasePostItem);
-        doRequest(updateBucketItemCommand, this::onSuccess);
+        bucketItemManager.updateBucketItemCoverId(bucketItem, coverID, type, this);
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
@@ -211,7 +192,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                 (jsonObject) -> {
                     deleted(event.getPhoto());
                     bucketItem.getPhotos().remove(event.getPhoto());
-                    resaveItem(bucketItem);
+                    bucketItemManager.resaveBucketItem(bucketItem, type);
                     view.getBucketPhotosView().deleteImage(event.getPhoto());
                 }, this);
     }
@@ -224,7 +205,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
         }
 
-        resaveItem(bucketItem);
+        bucketItemManager.resaveBucketItem(bucketItem, type);
         view.getBucketPhotosView().deleteImage(bucketPhoto);
     }
 
@@ -234,10 +215,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        items.clear();
-        items.addAll(db.readBucketList(type.name()));
+    public void takeView(V view) {
+        super.takeView(view);
         syncUI();
 
         List<BucketPhoto> photos = bucketItem.getPhotos();
@@ -248,7 +227,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         List<BucketPhotoUploadTask> tasks = db.getBucketPhotoTasksBy(bucketItem.getId());
         Collections.reverse(tasks);
         view.getBucketPhotosView().addImages(tasks);
-
     }
 
     protected void syncUI() {
@@ -258,20 +236,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
         view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
-    }
-
-    protected void onSuccess(BucketItem bucketItemUpdated) {
-        resaveItem(bucketItemUpdated);
-    }
-
-    private void resaveItem(BucketItem updatedItem) {
-        int oldPosition = items.indexOf(updatedItem);
-        BucketItem oldItem = items.get(oldPosition);
-        int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
-        items.remove(oldPosition);
-        items.add(newPosition, updatedItem);
-        db.saveBucketList(items, type.name());
-        eventBus.post(new BucketItemUpdatedEvent(updatedItem));
     }
 
     public ImagePickCallback getGalleryChooseCallback() {

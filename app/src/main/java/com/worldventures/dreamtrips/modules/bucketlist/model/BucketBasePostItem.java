@@ -1,28 +1,28 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 public class BucketBasePostItem {
-    private String id;
+    private int id;
     private String type;
     private String status;
 
     public BucketBasePostItem() {
     }
 
-    public BucketBasePostItem(String id, String type, String status) {
+    public BucketBasePostItem(int id, String type, String status) {
         this.id = id;
         this.type = type;
         this.status = status;
     }
 
-    public BucketBasePostItem(String type, String id) {
+    public BucketBasePostItem(String type, int id) {
        this(id, type, BucketItem.NEW);
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

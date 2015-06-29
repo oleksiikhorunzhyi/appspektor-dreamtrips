@@ -215,6 +215,17 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/delete"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="1dp"
+            android:background="@drawable/background_ss_btn"
+            android:focusableInTouchMode="false"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/delete"/>
+
+        <ImageView
             android:id="@+id/imageViewShare"
             android:layout_width="48dp"
             android:layout_height="48dp"

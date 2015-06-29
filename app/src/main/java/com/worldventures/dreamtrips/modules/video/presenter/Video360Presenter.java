@@ -39,7 +39,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
+        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
         TrackingHelper.video360(getAccountUserId());
     }
 
@@ -117,7 +117,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    videoCachingSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                    mediaSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
                             listener
                     );
                 }

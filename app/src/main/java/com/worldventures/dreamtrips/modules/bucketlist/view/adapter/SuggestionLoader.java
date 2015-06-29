@@ -26,9 +26,9 @@ public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
     @Override
     protected List<Suggestion> request(String query) {
-        if (type == BucketTabsPresenter.BucketType.LOCATIONS) {
+        if (type == BucketTabsPresenter.BucketType.LOCATION) {
             return api.getLocationSuggestions(query);
-        } else if (type == BucketTabsPresenter.BucketType.ACTIVITIES) {
+        } else if (type == BucketTabsPresenter.BucketType.ACTIVITY) {
             return api.getActivitySuggestions(query);
         } else if (type == BucketTabsPresenter.BucketType.DINING) {
             return api.getDiningSuggestions(query);

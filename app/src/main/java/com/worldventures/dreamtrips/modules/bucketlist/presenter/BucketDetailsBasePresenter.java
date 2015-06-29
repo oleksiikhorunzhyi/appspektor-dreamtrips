@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -54,6 +53,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected Injector injector;
 
     protected BucketTabsPresenter.BucketType type;
+    protected int bucketItemId;
+
     protected BucketItem bucketItem;
 
     private UploadBucketPhotoCommand uploadBucketPhotoCommand;
@@ -92,8 +93,66 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         super();
         type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketActivity.EXTRA_TYPE);
-        bucketItem = (BucketItem)
-                bundle.getSerializable(BucketActivity.EXTRA_ITEM);
+        bucketItemId = bundle.getInt(BucketActivity.EXTRA_ITEM);
+    }
+
+    @Override
+    public void takeView(V view) {
+        super.takeView(view);
+        view.updatePhotos();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+
+        syncUI();
+    }
+
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
+        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
+        syncUI();
+    }
+
+    protected void syncUI() {
+        view.setTitle(bucketItem.getName());
+        view.setDescription(bucketItem.getDescription());
+        view.setStatus(bucketItem.isDone());
+        view.setPeople(bucketItem.getFriends());
+        view.setTags(bucketItem.getBucketTags());
+        view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
+
+        List<BucketPhoto> photos = bucketItem.getPhotos();
+        if (!photos.isEmpty()) {
+            Collections.sort(photos, (lhs, rhs) -> rhs.getId() - lhs.getId());
+            view.getBucketPhotosView().setImages(photos);
+        }
+        List<BucketPhotoUploadTask> tasks = db.getBucketPhotoTasksBy(bucketItem.getId());
+        Collections.reverse(tasks);
+        view.getBucketPhotosView().addImages(tasks);
+    }
+
+
+    //////////////////////////////
+    ///////// Photo upload staff
+    //////////////////////////////
+
+    public ImagePickCallback getGalleryChooseCallback() {
+        return chooseImageCallback;
+    }
+
+    public ImagePickCallback getPhotoChooseCallback() {
+        return selectImageCallback;
+    }
+
+    public ImagePickCallback getFbCallback() {
+        return fbCallback;
+    }
+
+    public MultiSelectPickCallback getMultiSelectPickCallback() {
+        return multiSelectPickCallback;
     }
 
     private void handlePhotoPick(Uri uri, String type) {
@@ -109,7 +168,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void startUpload(final BucketPhotoUploadTask task) {
         uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, bucketItem, type, injector);
-        videoCachingSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
+        mediaSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 view.informUser(R.string.bucket_photo_upload_error);
@@ -118,7 +177,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             @Override
             public void onRequestSuccess(BucketPhoto bucketPhoto) {
                 if (bucketPhoto != null) {
-                    TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH, task.getSelectionType(), bucketItem.getType());
+                    TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
+                            task.getSelectionType(), bucketItem.getType());
                 }
             }
         });
@@ -168,12 +228,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        eventBus.unregister(this);
-    }
-
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         if (bucketItem.getPhotos().contains(event.getPhoto())) {
             eventBus.cancelEventDelivery(event);
@@ -182,78 +236,18 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void saveCover(int coverID) {
-        bucketItemManager.updateBucketItemCoverId(bucketItem, coverID, type, this);
+        bucketItemManager.updateBucketItemCoverId(bucketItem, coverID, this);
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        doRequest(new DeleteBucketPhotoCommand(event.getPhoto().getFsId(),
-                        bucketItem.getId()),
-                (jsonObject) -> {
-                    deleted(event.getPhoto());
-                    bucketItem.getPhotos().remove(event.getPhoto());
-                    bucketItemManager.resaveBucketItem(bucketItem, type);
-                    view.getBucketPhotosView().deleteImage(event.getPhoto());
-                }, this);
+        bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
+                bucketItem, jsonObject -> deleted(event.getPhoto()), this);
     }
 
     protected void deleted(BucketPhoto bucketPhoto) {
-        bucketItem.getPhotos().remove(bucketPhoto);
-
-        if (bucketItem.getCoverPhoto() != null &&
-                bucketItem.getCoverPhoto().equals(bucketPhoto)) {
-            bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
-        }
-
-        bucketItemManager.resaveBucketItem(bucketItem, type);
         view.getBucketPhotosView().deleteImage(bucketPhoto);
     }
-
-    public void onEventMainThread(BucketItemUpdatedEvent event) {
-        bucketItem = event.getBucketItem();
-        syncUI();
-    }
-
-    @Override
-    public void takeView(V view) {
-        super.takeView(view);
-        syncUI();
-
-        List<BucketPhoto> photos = bucketItem.getPhotos();
-        if (!photos.isEmpty()) {
-            Collections.sort(photos, (lhs, rhs) -> rhs.getId() - lhs.getId());
-            view.getBucketPhotosView().setImages(photos);
-        }
-        List<BucketPhotoUploadTask> tasks = db.getBucketPhotoTasksBy(bucketItem.getId());
-        Collections.reverse(tasks);
-        view.getBucketPhotosView().addImages(tasks);
-    }
-
-    protected void syncUI() {
-        view.setTitle(bucketItem.getName());
-        view.setDescription(bucketItem.getDescription());
-        view.setStatus(bucketItem.isDone());
-        view.setPeople(bucketItem.getFriends());
-        view.setTags(bucketItem.getBucketTags());
-        view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
-    }
-
-    public ImagePickCallback getGalleryChooseCallback() {
-        return chooseImageCallback;
-    }
-
-    public ImagePickCallback getPhotoChooseCallback() {
-        return selectImageCallback;
-    }
-
-    public ImagePickCallback getFbCallback() {
-        return fbCallback;
-    }
-
-    public MultiSelectPickCallback getMultiSelectPickCallback() {
-        return multiSelectPickCallback;
-    }
-
 
     public interface View extends Presenter.View {
         void setTitle(String title);
@@ -269,6 +263,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         void setStatus(boolean isCompleted);
 
         void done();
+
+        void updatePhotos();
 
         IBucketPhotoView getBucketPhotosView();
     }

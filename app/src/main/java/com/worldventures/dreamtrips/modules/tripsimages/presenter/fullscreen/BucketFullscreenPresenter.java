@@ -2,16 +2,34 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
+
+import javax.inject.Inject;
 
 public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> {
+
+    @Inject
+    BucketItemManager bucketItemManager;
+
+    BucketItem bucketItem;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.showCheckbox(photo.isCover());
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
+        view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
     }
 
     @Override
@@ -29,16 +47,21 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
         return false;
     }
 
+    public void onEvent(BucketItemUpdatedEvent event) {
+        bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
+        view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
+    }
+
     @Override
     public void onDeleteAction() {
-        eventBus.post(new BucketPhotoDeleteRequestEvent(photo));
-        view.informUser(context.getString(R.string.photo_deleted));
-        eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
+        bucketItemManager.deleteBucketItemPhoto(photo, bucketItem, jsonObject -> {
+            view.informUser(context.getString(R.string.photo_deleted));
+            eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
+        }, this);
     }
 
     @Override
     public void onCheckboxPressed(boolean status) {
-        if (status && !photo.isCover())
-            eventBus.postSticky(new BucketPhotoAsCoverRequestEvent(photo));
+        bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getId(), this);
     }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.manager;
 
+import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
@@ -10,16 +11,17 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketItemsQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.CoverSetEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketCoverModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -33,8 +35,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
 
 public class BucketItemManager {
 
@@ -84,10 +84,10 @@ public class BucketItemManager {
 
     public void saveBucketItems(List<BucketItem> bucketItems, BucketTabsPresenter.BucketType type) {
         switch (type) {
-            case LOCATIONS:
+            case LOCATION:
                 bucketItemsLocation = bucketItems;
                 break;
-            case ACTIVITIES:
+            case ACTIVITY:
                 bucketItemsActivity = bucketItems;
                 break;
             case DINING:
@@ -109,10 +109,10 @@ public class BucketItemManager {
     public List<BucketItem> getBucketItems(BucketTabsPresenter.BucketType type) {
         List<BucketItem> items = new ArrayList<>();
         switch (type) {
-            case LOCATIONS:
+            case LOCATION:
                 items = bucketItemsLocation;
                 break;
-            case ACTIVITIES:
+            case ACTIVITY:
                 items = bucketItemsActivity;
                 break;
             case DINING:
@@ -125,6 +125,10 @@ public class BucketItemManager {
         }
 
         return items;
+    }
+
+    public BucketItem getBucketItem(BucketTabsPresenter.BucketType type, int id) {
+        return Queryable.from(getBucketItems(type)).firstOrDefault(item -> item.getId() == id);
     }
 
     public List<BucketItem> markBucketItemAsDone(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
@@ -144,7 +148,6 @@ public class BucketItemManager {
                 failureListener::handleError);
 
         return tempItems;
-
     }
 
     private void moveItem(List<BucketItem> bucketItems, BucketItem bucketItem, int index) {
@@ -154,6 +157,7 @@ public class BucketItemManager {
     }
 
     public List<BucketItem> deleteBucketItem(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
+                                             DreamSpiceManager.SuccessListener<JsonObject> successListener,
                                              DreamSpiceManager.FailureListener failureListener) {
         //get bucket items by type
         List<BucketItem> tempItems = new ArrayList<>();
@@ -161,7 +165,7 @@ public class BucketItemManager {
         tempItems.remove(bucketItem);
         dreamSpiceManager.execute(new DeleteBucketItemCommand(bucketItem.getId()),
                 jsonObject -> {
-                    if (bucketType.equals(LOCATIONS)) {
+                    if (bucketType.equals(BucketTabsPresenter.BucketType.LOCATION)) {
                         dreamSpiceManager.execute(new GetTripsQuery(snapper, prefs, false), tripModels -> {
                             TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element ->
                                     element.getGeoLocation().getName().equals(bucketItem.getName()));
@@ -173,10 +177,18 @@ public class BucketItemManager {
                         });
                     }
                     saveBucketItems(tempItems, bucketType);
+                    if (successListener != null) {
+                        successListener.onRequestSuccess(jsonObject);
+                    }
                 },
                 failureListener::handleError);
 
         return tempItems;
+    }
+
+    public List<BucketItem> deleteBucketItem(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
+                                             DreamSpiceManager.FailureListener failureListener) {
+        return deleteBucketItem(bucketItem, bucketType, null, failureListener);
     }
 
     public void moveItem(int from, int to, BucketTabsPresenter.BucketType bucketType,
@@ -198,17 +210,26 @@ public class BucketItemManager {
 
     public void addBucketItem(String title, BucketTabsPresenter.BucketType bucketType,
                               DreamSpiceManager.SuccessListener<BucketItem> successListener,
-                              DreamSpiceManager.FailureListener listener) {
+                              DreamSpiceManager.FailureListener errorListener) {
         TrackingHelper.bucketAddStart(bucketType.name());
         BucketPostItem bucketPostItem = new BucketPostItem(bucketType.getName(), title, BucketItem.NEW);
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem), bucketItem -> {
             addBucketItem(bucketItem, bucketType, true);
             TrackingHelper.bucketAddFinish(bucketType.name());
             successListener.onRequestSuccess(bucketItem);
-        }, listener);
+        }, errorListener);
 
     }
 
+    public void addBucketItemFromTrip(String tripId,
+                                      DreamSpiceManager.SuccessListener<BucketItem> successListener,
+                                      DreamSpiceManager.FailureListener errorListener) {
+        dreamSpiceManager.execute(new AddBucketItemCommand(new BucketBasePostItem("trip", tripId)),
+                bucketItem -> {
+                    successListener.onRequestSuccess(bucketItem);
+                    addBucketItem(bucketItem, BucketTabsPresenter.BucketType.LOCATION, true);
+                }, errorListener);
+    }
 
     public void addBucketItemFromPopular(PopularBucketItem popularBucketItem, boolean done,
                                          BucketTabsPresenter.BucketType bucketType,
@@ -217,7 +238,7 @@ public class BucketItemManager {
         List<BucketItem> tempItems = new ArrayList<>();
         tempItems.addAll(getBucketItems(bucketType));
         BucketBasePostItem bucketPostItem = new BucketBasePostItem(bucketType.getName(),
-                popularBucketItem.getId());
+                String.valueOf(popularBucketItem.getId()));
         bucketPostItem.setStatus(done);
         dreamSpiceManager.execute(new AddBucketItemCommand(bucketPostItem),
                 bucketItem -> {
@@ -231,43 +252,43 @@ public class BucketItemManager {
     }
 
     public void updateBucketItemCoverId(BucketItem bucketItem, int coverID,
-                                        BucketTabsPresenter.BucketType bucketType,
                                         DreamSpiceManager.FailureListener failureListener) {
         BucketCoverModel bucketCoverModel = new BucketCoverModel();
         bucketCoverModel.setCoverId(coverID);
         bucketCoverModel.setStatus(bucketItem.getStatus());
         bucketCoverModel.setType(bucketItem.getType());
-        bucketCoverModel.setId(bucketItem.getId());
-        eventBus.post(new CoverSetEvent(coverID));
-        updateBucketItem(bucketCoverModel, bucketType, failureListener);
+        bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
+        updateBucketItem(bucketCoverModel, failureListener);
     }
 
-    public void updateItemStatus(boolean status, BucketTabsPresenter.BucketType bucketType,
+    public void updateItemStatus(String id, boolean status,
                                  DreamSpiceManager.SuccessListener<BucketItem> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         BucketBasePostItem bucketBasePostItem = new BucketBasePostItem();
+        bucketBasePostItem.setId(id);
         bucketBasePostItem.setStatus(status);
-        updateBucketItem(bucketBasePostItem, bucketType, successListener,
+        updateBucketItem(bucketBasePostItem, successListener,
                 failureListener);
     }
 
-    public void updateBucketItem(BucketBasePostItem bucketBasePostItem, BucketTabsPresenter.BucketType bucketType,
-                               DreamSpiceManager.FailureListener failureListener) {
-       updateBucketItem(bucketBasePostItem, bucketType, null, failureListener);
+    public void updateBucketItem(BucketBasePostItem bucketBasePostItem,
+                                 DreamSpiceManager.FailureListener failureListener) {
+        updateBucketItem(bucketBasePostItem, null, failureListener);
     }
 
-    public void updateBucketItem(BucketBasePostItem bucketBasePostItem, BucketTabsPresenter.BucketType bucketType,
+    public void updateBucketItem(BucketBasePostItem bucketBasePostItem,
                                  DreamSpiceManager.SuccessListener<BucketItem> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketBasePostItem.getId(), bucketBasePostItem);
         dreamSpiceManager.execute(updateBucketItemCommand, updatedItem -> {
-            resaveBucketItem(updatedItem, bucketType);
+            resaveBucketItem(updatedItem);
             if (successListener != null) successListener.onRequestSuccess(updatedItem);
         }, failureListener);
     }
 
-    public void resaveBucketItem(BucketItem updatedItem, BucketTabsPresenter.BucketType bucketType) {
+    public void resaveBucketItem(BucketItem updatedItem) {
+        BucketTabsPresenter.BucketType bucketType = getType(updatedItem.getType());
         List<BucketItem> tempItems = new ArrayList<>();
         tempItems.addAll(getBucketItems(bucketType));
         int oldPosition = tempItems.indexOf(updatedItem);
@@ -277,6 +298,38 @@ public class BucketItemManager {
         tempItems.add(newPosition, updatedItem);
         saveBucketItems(tempItems, bucketType);
         eventBus.post(new BucketItemUpdatedEvent(updatedItem));
+    }
+
+    public void deleteBucketItemPhoto(BucketPhoto bucketPhoto, BucketItem bucketItem,
+                                      DreamSpiceManager.SuccessListener<JsonObject> successListener,
+                                      DreamSpiceManager.FailureListener failureListener) {
+        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(bucketPhoto.getFsId(),
+                bucketItem.getId()), jsonObject -> {
+            successListener.onRequestSuccess(jsonObject);
+            bucketItem.getPhotos().remove(bucketPhoto);
+
+            if (bucketItem.getCoverPhoto() != null &&
+                    bucketItem.getCoverPhoto().equals(bucketPhoto)) {
+                bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
+            }
+
+            resaveBucketItem(bucketItem);
+        }, failureListener);
+    }
+
+    public BucketItem getBucketItemByPhoto(BucketPhoto bucketPhoto) {
+        for (BucketTabsPresenter.BucketType type : BucketTabsPresenter.BucketType.values()) {
+            BucketItem item = Queryable.from(getBucketItems(type)).firstOrDefault(bucketItem ->
+                    bucketItem.getPhotos().contains(bucketPhoto));
+            if (item != null) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private BucketTabsPresenter.BucketType getType(String name) {
+        return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
     }
 
 }

@@ -133,7 +133,7 @@ public interface DreamTripsApi {
     BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
 
     @PATCH("/api/bucket_list_items/{id}")
-    BucketItem updateItem(@Path("id") int id, @Body BucketBasePostItem bucketPostItem);
+    BucketItem updateItem(@Path("id") String id, @Body BucketBasePostItem bucketPostItem);
 
     @DELETE("/api/bucket_list_items/{id}")
     JsonObject deleteItem(@Path("id") int id);

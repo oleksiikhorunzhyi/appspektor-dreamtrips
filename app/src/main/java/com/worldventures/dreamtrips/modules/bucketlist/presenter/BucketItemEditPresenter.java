@@ -23,7 +23,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     public BucketItemEditPresenter(Bundle bundle) {
         super(bundle);
-        selectedDate = bucketItem.getTarget_date();
     }
 
     @Override
@@ -35,17 +34,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     public void onResume() {
         super.onResume();
+        selectedDate = bucketItem.getTarget_date();
         List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
         if (!list.isEmpty()) {
             view.setCategoryItems(list);
             view.setCategory(list.indexOf(bucketItem.getCategory()));
         }
-    }
-
-    @Override
-    protected void syncUI() {
-        super.syncUI();
-        view.updatePhotos();
     }
 
     public void saveItem() {
@@ -58,7 +52,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
-        bucketItemManager.updateBucketItem(bucketPostItem, type, item -> {
+        bucketItemManager.updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
                 savingItem = false;
                 view.done();

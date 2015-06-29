@@ -158,7 +158,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
+        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItem.getId());
         fragmentCompass.removeDetailed();
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();

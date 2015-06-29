@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 
@@ -19,7 +20,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEdit() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
+        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItemId);
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
@@ -31,10 +32,21 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
     }
 
+    public void onDelete() {
+        view.showDeletionDialog(bucketItem);
+    }
+
+    public void deleteBucketItem(BucketItem bucketItem) {
+        bucketItemManager.deleteBucketItem(bucketItem, type,
+                jsonObject -> view.done(),
+                this);
+    }
+
     public void onStatusUpdated(boolean status) {
         if (status != bucketItem.isDone()) {
             view.disableCheckbox();
-            bucketItemManager.updateItemStatus(status, type, item -> view.enableCheckbox(), this);
+            bucketItemManager.updateItemStatus(String.valueOf(bucketItemId),
+                    status, item -> view.enableCheckbox(), this);
         }
     }
 
@@ -60,7 +72,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.bucketItemView(bucketItem.getType(), bucketItem.getId());
+        TrackingHelper.bucketItemView(type.getName(), bucketItemId);
     }
 
     @Override
@@ -72,7 +84,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
         view.setPlace(getPlace());
         view.setCover();
-        view.updatePhotos();
         view.setupDiningView(bucketItem.getDining());
     }
 
@@ -108,13 +119,13 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void showEditContainer();
 
-        void updatePhotos();
-
         void disableCheckbox();
 
         void enableCheckbox();
 
         void setupDiningView(DiningItem diningItem);
+
+        void showDeletionDialog(BucketItem bucketItem);
     }
 
 }

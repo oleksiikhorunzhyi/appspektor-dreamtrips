@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -21,11 +21,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     protected Type type;
     protected T photo;
 
-    private List<Flag> flags;
-
     public static FullScreenPresenter create(IFullScreenObject photo) {
         if (photo instanceof Photo) {
             return new InteractiveFullscreenPresenter();
+        } else if (photo instanceof BucketPhoto) {
+            return new BucketFullscreenPresenter();
         }
         return new SimpleFullscreenPresenter();
     }
@@ -46,7 +46,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     }
 
     public void onLikeAction() {
+    }
 
+    public void onFlagAction() {
+    }
+
+    public void showFlagAction(int order) {
     }
 
     public void onUserClicked() {
@@ -76,7 +81,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     }
 
     protected abstract boolean isFlagVisible();
+
     protected abstract boolean isDeleteVisible();
+
     protected abstract boolean isLikeVisible();
 
     protected boolean isLiked() {
@@ -85,33 +92,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     private boolean isLikeCountVisible() {
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
-    }
-
-    public void onFlagAction() {
-        if (flags == null) loadFlags();
-        else view.setFlags(flags);
-    }
-
-    private void loadFlags() {
-        view.showProgress();
-        doRequest(new GetFlagContentQuery(), this::flagsLoaded);
-    }
-
-    private void flagsLoaded(List<Flag> flags) {
-        if (view != null) {
-            view.hideProgress();
-            this.flags = flags;
-            view.setFlags(flags);
-        }
-    }
-
-    public void showFlagAction(int order) {
-        Flag flag = flags.get(order);
-        if (flag.isRequireDescription()) {
-            view.showFlagDescription(flag.getName());
-        } else {
-            view.showFlagConfirmDialog(flag.getName(), null);
-        }
     }
 
     public void sendFlagAction(String title, String desc) {
@@ -134,8 +114,13 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         }
     }
 
+    public void onCheckboxPressed(boolean status) {
+    }
+
     public interface View extends Presenter.View {
         void setTitle(String title);
+
+        void showCheckbox(boolean status);
 
         void setDate(String date);
 

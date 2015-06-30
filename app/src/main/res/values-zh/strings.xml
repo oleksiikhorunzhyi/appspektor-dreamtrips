@@ -203,6 +203,8 @@
         <item>設為封面</item>
         <item>刪</item>
     </string-array>
+    <string name="bucket_photo_cover">設為封面</string>
+    <string name="bucket_photo_delete">刪</string>
     <string name="add_pictures">添加圖片</string>
     <string name="select_photo">選擇照片</string>
     <string name="bucket_photo_dialog">鬥照片</string>
@@ -272,6 +274,8 @@
 
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
+
+    <string name="bucket_delete_dialog">您確定您要刪除目標清單項目嗎?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>

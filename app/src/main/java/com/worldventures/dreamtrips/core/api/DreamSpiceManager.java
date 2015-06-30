@@ -75,7 +75,6 @@ public class DreamSpiceManager extends SpiceManager {
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,
                             FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
-
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {

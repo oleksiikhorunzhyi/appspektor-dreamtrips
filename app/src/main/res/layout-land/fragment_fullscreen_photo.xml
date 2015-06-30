@@ -179,6 +179,15 @@
                     android:textSize="14dp"/>
             </LinearLayout>
 
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@drawable/checko_box_dark"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/textViewInspireMeTitle"
                 android:layout_width="wrap_content"

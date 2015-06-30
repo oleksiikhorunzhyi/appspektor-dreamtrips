@@ -7,7 +7,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 
@@ -24,7 +23,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     public BucketItemEditPresenter(Bundle bundle) {
         super(bundle);
-        selectedDate = bucketItem.getTarget_date();
     }
 
     @Override
@@ -36,6 +34,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     public void onResume() {
         super.onResume();
+        selectedDate = bucketItem.getTarget_date();
         List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
         if (!list.isEmpty()) {
             view.setCategoryItems(list);
@@ -43,24 +42,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
-    @Override
-    protected void syncUI() {
-        super.syncUI();
-        view.updatePhotos();
-    }
-
-    @Override
-    protected void onSuccess(BucketItem bucketItemUpdated) {
-        super.onSuccess(bucketItemUpdated);
-        if (savingItem) {
-            savingItem = false;
-            view.done();
-        }
-    }
-
     public void saveItem() {
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
+        bucketPostItem.setId(String.valueOf(bucketItemId));
         bucketPostItem.setName(view.getTitle());
         bucketPostItem.setDescription(view.getDescription());
         bucketPostItem.setStatus(view.getStatus());
@@ -68,7 +53,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
-        saveBucketItem(bucketPostItem);
+        bucketItemManager.updateBucketItem(bucketPostItem, item -> {
+            if (savingItem) {
+                savingItem = false;
+                view.done();
+            }
+        }, this);
     }
 
     public Date getDate() {

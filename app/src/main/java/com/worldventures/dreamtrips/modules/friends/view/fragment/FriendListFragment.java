@@ -7,13 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.SearchView;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -23,13 +20,11 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.adapter.FilterPopupAdapter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
@@ -55,7 +50,6 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
-    WeakHandler handler = new WeakHandler();
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -65,9 +59,12 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     private LoaderRecycleAdapter<Friend> adapter;
     private ListPopupWindow popupWindow;
 
+    private WeakHandler weakHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -109,6 +106,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
                 return false;
             }
         });
+        search.setQueryHint(getString(R.string.friend_search_placeholder));
         search.setIconifiedByDefault(true);
     }
 
@@ -159,15 +157,16 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     @Override
     public void finishLoading(List<Friend> items) {
-        refreshLayout.setRefreshing(false);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
         stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
     public void startLoading() {
-        handler.post(() -> {
-            if (refreshLayout != null)
-                refreshLayout.setRefreshing(true);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
     }
 }

@@ -1,13 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist.event;
 
-public class BucketPhotoFullscreenRequestEvent {
-    private int position;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 
-    public BucketPhotoFullscreenRequestEvent(int position) {
-        this.position = position;
+public class BucketPhotoFullscreenRequestEvent {
+    private BucketPhoto photo;
+
+    public BucketPhotoFullscreenRequestEvent(BucketPhoto photo) {
+        this.photo = photo;
     }
 
-    public int getPosition() {
-        return position;
+    public BucketPhoto getPhoto() {
+        return photo;
     }
 }

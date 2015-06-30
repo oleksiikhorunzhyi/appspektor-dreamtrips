@@ -15,9 +15,7 @@ import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
@@ -31,14 +29,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
-
 public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View> {
 
     @Inject
     Activity activity;
     @Inject
-    protected Prefs prefs;
+    Prefs prefs;
+    @Inject
+    BucketItemManager bucketItemManager;
 
     private boolean loadFromApi;
     private boolean loadWithStatus;
@@ -108,6 +106,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     @Override
     public void onResume() {
         super.onResume();
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         loadWithStatus = true;
         loadFromApi = false;
         adapterController.reload();
@@ -157,7 +156,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
         doRequest(request, (object) -> onSuccess(trip), (spiceException) -> {
             trip.setLiked(!trip.isLiked());
-            onFailure(trip);
+            onFailure();
         });
     }
 
@@ -170,21 +169,17 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     }
 
     public void onAddToBucket(TripModel trip) {
-        DreamTripsRequest<BucketItem> request;
         if (trip.isInBucketList()) {
-            request = new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId()));
-            doRequest(request, item -> {
+            bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
                 onSuccess(trip);
-                bucketHelper.saveBucketItem(db, item, LOCATIONS.name(), true);
-                bucketHelper.notifyItemAddedToBucket(activity, item);
-
-            }, (spiceException) -> {
+                bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
+            }, spiceException -> {
                 trip.setInBucketList(!trip.isInBucketList());
-                onFailure(trip);
+                onFailure();
             });
         } else {
             trip.setInBucketList(!trip.isInBucketList());
-            onFailure(trip);
+            onFailure();
         }
     }
 
@@ -192,7 +187,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         db.saveTrip(trip);
     }
 
-    private void onFailure(TripModel trip) {
+    private void onFailure() {
         view.dataSetChanged();
         view.showErrorMessage();
     }

@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -50,9 +50,9 @@ import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
 
-    public static final String TYPE_MEMBER = "DTAPP";
-    public static final String TYPE_MEMBER_360 = "DTAPP360";
-    public static final String TYPE_REP = "dtapprep";
+    String TYPE_MEMBER = "DTAPP";
+    String TYPE_MEMBER_360 = "DTAPP360";
+    String TYPE_REP = "dtapprep";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -133,13 +133,13 @@ public interface DreamTripsApi {
     BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
 
     @PATCH("/api/bucket_list_items/{id}")
-    BucketItem updateItem(@Path("id") int id, @Body BucketBasePostItem bucketPostItem);
+    BucketItem updateItem(@Path("id") String id, @Body BucketBasePostItem bucketPostItem);
 
     @DELETE("/api/bucket_list_items/{id}")
     JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")
-    ArrayList<BucketItem> getBucketList(@Query("type") String type);
+    ArrayList<BucketItem> getBucketListFull();
 
     @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
     JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);

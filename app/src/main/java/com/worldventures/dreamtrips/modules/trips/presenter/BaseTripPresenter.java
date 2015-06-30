@@ -6,8 +6,7 @@ import android.text.TextUtils;
 import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
@@ -16,14 +15,15 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
-
 public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
 
     @Inject
-    protected Activity activity;
+    Activity activity;
     @Inject
-    protected SnappyRepository db;
+    SnappyRepository db;
+    @Inject
+    BucketItemManager bucketItemManager;
+
     protected TripModel trip;
 
     BucketHelper bucketHelper;
@@ -45,6 +45,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     @Override
     public void onResume() {
         super.onResume();
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         initData();
     }
 
@@ -71,13 +72,12 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     }
 
     public void addTripToBucket() {
-        doRequest(new AddBucketItemCommand(new BucketBasePostItem("trip", trip.getTripId())), bucketItem -> {
+        bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
             trip.setInBucketList(true);
             view.setInBucket(true);
             onSuccessTripAction();
-            bucketHelper.saveBucketItem(db, bucketItem, LOCATIONS.name(), true);
             bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
-        });
+        }, this);
     }
 
     public void likeTrip() {

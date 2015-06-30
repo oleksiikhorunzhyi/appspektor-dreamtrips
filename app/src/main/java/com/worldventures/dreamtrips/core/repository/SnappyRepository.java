@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
@@ -27,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import it.sephiroth.android.library.easing.Circ;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
@@ -38,7 +36,7 @@ public class SnappyRepository {
     public static final String REGIONS = "regions_new";
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
-    public static final String BUCKET_LIST = "bucketItems";
+    public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";

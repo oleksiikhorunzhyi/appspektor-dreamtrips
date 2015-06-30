@@ -4,16 +4,12 @@ import android.app.Activity;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -28,10 +24,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     @Inject
     Activity activity;
     @Inject
-    protected SnappyRepository db;
+    BucketItemManager bucketItemManager;
 
     private BucketTabsPresenter.BucketType type;
-    private List<BucketItem> realData = new ArrayList<>();
 
     BucketHelper bucketHelper;
 
@@ -64,14 +59,10 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        realData.addAll(db.readBucketList(type.name()));
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+
         if (view.getAdapter().getCount() == 0) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
@@ -118,21 +109,13 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
-        BucketBasePostItem bucketPostItem = new BucketBasePostItem(type.getName(),
-                String.valueOf(popularBucketItem.getId()));
-        bucketPostItem.setStatus(done);
-        doRequest(new AddBucketItemCommand(bucketPostItem),
-                (bucketItem) -> {
+        bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
+                item -> {
+                    bucketHelper.notifyItemAddedToBucket(activity, item);
                     view.getAdapter().remove(popularBucketItem);
                     view.getAdapter().notifyItemRemoved(position);
-                    eventBus.post(new BucketItemAddedEvent(bucketItem));
-                    realData.add(0, bucketItem);
-                    db.saveBucketList(realData, type.name());
-                    int recentlyAddedBucketItems = db.getRecentlyAddedBucketItems(type.name);
-                    db.saveRecentlyAddedBucketItems(type.name, recentlyAddedBucketItems + 1);
-                    bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
                 },
-                (spiceException) -> {
+                spiceException -> {
                     popularBucketItem.setLoading(false);
                     view.getAdapter().notifyDataSetChanged();
                     handleError(spiceException);

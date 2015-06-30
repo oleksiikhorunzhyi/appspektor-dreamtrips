@@ -36,12 +36,14 @@ public abstract class DreamSpiceAdapterController<BaseItemClass>
 
     @Override
     protected void executeNextRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
-        spiceManager.execute(request, nextRequestSuccessListener, baseRequestFailureListener);
+        if (spiceManager != null)
+            spiceManager.execute(request, nextRequestSuccessListener, baseRequestFailureListener);
     }
 
     @Override
     protected void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
-        spiceManager.execute(request, baseRequestSuccessListener, baseRequestFailureListener);
+        if (spiceManager != null)
+            spiceManager.execute(request, baseRequestSuccessListener, baseRequestFailureListener);
     }
 
 }

@@ -27,16 +27,18 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
 
+    @Inject
+    protected SnappyRepository db;
+
     protected Type type;
     private boolean isFullscreen;
 
     protected int firstVisibleItem;
     protected int visibleItemCount;
     protected int totalItemCount;
-    @Inject
-    protected SnappyRepository db;
     private int previousTotal = 0;
     private boolean loading = true;
+
     private TripImagesRoboSpiceController roboSpiceAdapterController;
 
     public TripImagesListPresenter(Type type) {
@@ -149,8 +151,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     public void onEventMainThread(PhotoDeletedEvent event) {
         List<IFullScreenObject> photosFromAdapter = view.getPhotosFromAdapter();
         for (int i = 0; i < photosFromAdapter.size(); i++) {
-            Object o = photosFromAdapter.get(i);
-            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getPhotoId())) {
+            IFullScreenObject o = photosFromAdapter.get(i);
+            if (o.getFsId().equals(event.getPhotoId())) {
                 view.remove(i);
                 db.savePhotoEntityList(type, view.getPhotosFromAdapter());
             }
@@ -182,20 +184,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
-
-    public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
-        List<IFullScreenObject> getPhotosFromAdapter();
-
-        void startLoading();
-
-        void finishLoading();
-
-        void setSelection();
-
-        IRoboSpiceAdapter getAdapter();
-
-        void inject(Object getMyPhotos);
-    }
 
     public void setFullscreen(boolean isFullscreen) {
         this.isFullscreen = isFullscreen;
@@ -245,5 +233,23 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             }
         }
     }
+
+    public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
+        List<IFullScreenObject> getPhotosFromAdapter();
+
+        void startLoading();
+
+        void finishLoading();
+
+        void setSelection();
+
+        IRoboSpiceAdapter getAdapter();
+
+        void inject(Object getMyPhotos);
+
+        void refresh();
+    }
+
+
 
 }

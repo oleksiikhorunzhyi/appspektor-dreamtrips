@@ -121,7 +121,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     public void informUser(String stringId) {
         if (isAdded()) {
             getActivity().runOnUiThread(() -> {
-                Snackbar.make(getActivity().getCurrentFocus(), stringId, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
             });
         }
     }

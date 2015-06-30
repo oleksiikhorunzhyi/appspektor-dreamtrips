@@ -66,7 +66,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:maxLines="3"
-                        android:text="Jason Gordon"
                         android:textColor="@android:color/white"
                         android:textSize="18dp"
                         android:visibility="visible"/>
@@ -76,7 +75,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="Sun Francisco, CA"
                         android:textAlignment="viewEnd"
                         android:textColor="#ff9e9e9e"
                         android:visibility="visible"/>
@@ -86,7 +84,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="APR 18, 2014 9:00AM"
                         android:textColor="#ff9e9e9e"
                         android:visibility="visible"/>
                 </LinearLayout>
@@ -108,9 +105,9 @@
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:singleLine="true"
-                    tools:text="TRIP TO THE GOLDEN GATE"
                     android:textColor="@android:color/white"
-                    android:textSize="16dp"/>
+                    android:textSize="16dp"
+                    tools:text="TRIP TO THE GOLDEN GATE"/>
 
                 <TextView
                     android:id="@+id/tv_see_more"
@@ -156,7 +153,6 @@
                     android:drawableLeft="@drawable/ic_fs_comments_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:text="150 likes"
                     android:textColor="@android:color/white"
                     android:textSize="14dp"/>
 
@@ -167,10 +163,18 @@
                     android:drawableLeft="@drawable/ic_fs_thumb_up_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:text="12 comments"
                     android:textColor="@android:color/white"
                     android:textSize="14dp"/>
             </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@drawable/checko_box_dark"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/textViewInspireMeTitle"

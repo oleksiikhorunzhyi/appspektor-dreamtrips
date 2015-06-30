@@ -4,7 +4,6 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -81,8 +80,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     private RecyclerView.Adapter wrappedAdapter;
     private RecyclerViewDragDropManager dragDropManager;
     private RecyclerViewStateDelegate stateDelegate;
-
-    private Snackbar snackBar;
 
     private MenuItem menuItemAdd;
 
@@ -189,7 +186,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 quickInputEditText.onActionViewExpanded();
-                getPresenter().trackAddStart();
                 return true;
             }
 
@@ -209,12 +205,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @OnClick(R.id.buttonPopular)
     void onPopular() {
         getPresenter().addPopular();
-    }
-
-    @Override
-    public void showUndoBar(View.OnClickListener undoListener) {
-        Snackbar.make(getView(), R.string.bucket_delete_undo, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, undoListener).show();
     }
 
     @Override
@@ -310,4 +300,5 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             emptyView.setVisibility(View.GONE);
         }
     }
+
 }

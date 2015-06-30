@@ -42,7 +42,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
     @Inject
-    protected MediaSpiceManager videoCachingSpiceManager;
+    protected MediaSpiceManager mediaSpiceManager;
 
 
     protected int priorityEventBus = 0;
@@ -105,8 +105,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!videoCachingSpiceManager.isStarted()) {
-            videoCachingSpiceManager.start(context);
+        if (!mediaSpiceManager.isStarted()) {
+            mediaSpiceManager.start(context);
         }
     }
 
@@ -114,8 +114,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
-        if (videoCachingSpiceManager.isStarted()) {
-            videoCachingSpiceManager.shouldStop();
+        if (mediaSpiceManager.isStarted()) {
+            mediaSpiceManager.shouldStop();
         }
     }
 

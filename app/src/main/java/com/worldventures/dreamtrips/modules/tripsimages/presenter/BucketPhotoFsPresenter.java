@@ -13,4 +13,5 @@ public class BucketPhotoFsPresenter extends TripImagesListPresenter<BucketPhoto>
     public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
         return null;
     }
+
 }

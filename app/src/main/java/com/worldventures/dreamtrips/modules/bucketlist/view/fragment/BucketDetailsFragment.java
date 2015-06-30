@@ -21,6 +21,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
@@ -195,9 +196,14 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().onStatusUpdated(isChecked);
     }
 
+    @OnClick(R.id.delete)
+    public void onDelete() {
+        getPresenter().onDelete();
+    }
+
     @OnClick(R.id.imageViewCover)
     protected void onCoverClicked() {
-        getPresenter().openFullScreen(0);
+        getPresenter().onCoverClicked();
     }
 
     private void setForeignIntentAction() {
@@ -293,6 +299,21 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
         bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
+    }
+
+    @Override
+    public void showDeletionDialog(BucketItem bucketItem) {
+        new MaterialDialog.Builder(getActivity())
+                .content(R.string.bucket_delete_dialog)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().deleteBucketItem(bucketItem);
+                    }
+                })
+                .show();
     }
 
     public static class ActivityResult {

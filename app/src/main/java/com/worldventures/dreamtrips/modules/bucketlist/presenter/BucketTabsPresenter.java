@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -17,14 +18,17 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITIES;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITY;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.DINING;
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATION;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Inject
     SnappyRepository db;
+
+    @Inject
+    BucketItemManager bucketItemManager;
 
     @Override
     public void takeView(View view) {
@@ -40,6 +44,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItemManager.loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 
@@ -49,7 +55,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, DINING));
+        view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
         view.updateSelection();
     }
 
@@ -79,8 +85,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public enum BucketType {
-        LOCATIONS("location", R.string.bucket_locations),
-        ACTIVITIES("activity", R.string.bucket_activities),
+        LOCATION("location", R.string.bucket_locations),
+        ACTIVITY("activity", R.string.bucket_activities),
         DINING("dining", R.string.bucket_restaurants);
 
         protected String name;

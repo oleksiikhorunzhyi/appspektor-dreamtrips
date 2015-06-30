@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 
-import com.worldventures.dreamtrips.R;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
@@ -30,63 +30,52 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhot
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
 public enum Route {
-    LOGIN(LoginFragment.class, R.string.log_in),
-    WEB_STATIC(StaticInfoFragment.class, R.string.web_title),
-    CREATE_PHOTO(CreatePhotoFragment.class, R.string.new_photo),
-    DETAILED_TRIP(TripDetailsFragment.class, R.string.detailed_trip),
-    PICK_FB_ALBUM(FacebookAlbumFragment.class, R.string.fab_select_album),
-    PICK_FB_PHOTO(FacebookPhotoFragment.class, R.string.fab_select_photo),
-    MAP_INFO(TripMapInfoFragment.class, 0),
-    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.title_book_it),
-    SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class, R.string.success_stories),
-    BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class, R.string.title_book_it),
-    BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_my_title),
-    POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_location_popular),
-    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
-    DETAIL_BUCKET(BucketDetailsFragment.class, 0),
-    MAP(TripMapFragment.class, R.string.trips),
-    ENROLL(StaticInfoFragment.EnrollFragment.class, R.string.membership),
-    TRIPLIST(TripListFragment.class, R.string.trips),
-    OTA(OtaFragment.class, R.string.other_travel),
-    TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
-    MEMBERSHIP(MembershipFragment.class, R.string.membership),
-    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.membership),
-    EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.membership),
-    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
-    MY_PROFILE(AccountFragment.class, 0),
-    PROFILE(UserFragment.class, 0),
-    REP_TOOLS(RepToolsFragment.class, R.string.rep_tools),
-    FAQ(StaticInfoFragment.FAQFragment.class, R.string.faq),
-    TERMS(TermsTabFragment.class, R.string.terms),
-    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class, R.string.terms_of_service),
-    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class, R.string.privacy),
-    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class, R.string.cookie),
-    PREVIEW_TEMPLATE(PreviewTemplateFragment.class, R.string.preview_template);
+    LOGIN(LoginFragment.class),
+    WEB_STATIC(StaticInfoFragment.class),
+    CREATE_PHOTO(CreatePhotoFragment.class),
+    DETAILED_TRIP(TripDetailsFragment.class),
+    PICK_FB_ALBUM(FacebookAlbumFragment.class),
+    PICK_FB_PHOTO(FacebookPhotoFragment.class),
+    MAP_INFO(TripMapInfoFragment.class),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class),
+    SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
+    BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
+    BUCKET_EDIT(BucketItemEditFragment.class),
+    POPULAR_BUCKET(BucketListPopuralFragment.class),
+    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class),
+    DETAIL_BUCKET(BucketDetailsFragment.class),
+    MAP(TripMapFragment.class),
+    ENROLL(StaticInfoFragment.EnrollFragment.class),
+    TRIPLIST(TripListFragment.class),
+    OTA(OtaFragment.class),
+    TRIP_IMAGES(TripImagesTabsFragment.class),
+    MEMBERSHIP(MembershipFragment.class),
+    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
+    EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),
+    BUCKET_LIST(BucketTabsFragment.class),
+    MY_PROFILE(AccountFragment.class),
+    PROFILE(UserFragment.class),
+    REP_TOOLS(RepToolsFragment.class),
+    FAQ(StaticInfoFragment.FAQFragment.class),
+    TERMS(TermsTabFragment.class),
+    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),
+    PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
+    COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
+    PREVIEW_TEMPLATE(PreviewTemplateFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
-    private int titleRes;
 
-    Route(Class<? extends BaseFragment> fragmentClass, int title) {
+    Route(Class<? extends BaseFragment> fragmentClass) {
         this.fragmentClass = fragmentClass;
-        this.titleRes = title;
     }
 
-    public static Route restoreByClass(String clazzName) {
-        Route result = Route.TRIPLIST;
-        for (Route route : values()) {
-            if (route.getClazzName().equals(clazzName)) {
-                result = route;
-                break;
-            }
-        }
-        return result;
+    public static Route restoreByKey(String key) {
+        Route result = Queryable.from(values()).firstOrDefault(route ->
+                route.name().equalsIgnoreCase(key));
+        return result != null ? result : TRIPLIST;
     }
 
     public String getClazzName() {
         return fragmentClass.getName();
-    }
-
-    public int getTitle() {
-        return titleRes;
     }
 }

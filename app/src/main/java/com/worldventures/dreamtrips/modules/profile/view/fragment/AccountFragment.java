@@ -17,11 +17,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
+
+    private static final int AVATAR_CALLBACK = 1;
+    private static final int COVER_CALLBACK = 2;
 
     @InjectView(R.id.rovia_bucks)
     protected TextView roviaBucks;
@@ -71,9 +75,20 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void openAvatarPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+        this.pid.setCallback(getPresenter()::onAvatarChosen);
         this.pid.show();
         filePath = pid.getFilePath();
+        callbackType = AVATAR_CALLBACK;
+    }
+
+    @Override
+    public void openCoverPicker() {
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle(getString(R.string.profile_select_cover_header));
+        this.pid.setCallback(getPresenter()::onCoverChosen);
+        this.pid.show();
+        filePath = pid.getFilePath();
+        callbackType = COVER_CALLBACK;
     }
 
     @Override
@@ -82,13 +97,21 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
+            return;
+        }
         if (pid == null) {
             this.pid = new PickImageDialog(getActivity(), this);
-            this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+            if (callbackType == AVATAR_CALLBACK)
+                this.pid.setCallback(getPresenter()::onAvatarChosen);
+            else if (callbackType == COVER_CALLBACK)
+                this.pid.setCallback(getPresenter()::onCoverChosen);
             this.pid.setFilePath(filePath);
         }
         this.pid.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -74,6 +74,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Icicle
     String filePath;
+    @Icicle
+    int callbackType;
 
     private WeakHandler weakHandler;
 

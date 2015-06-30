@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ScrollView;
 
+import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
+import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -14,8 +16,11 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
@@ -51,7 +56,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
     private BaseArrayListAdapter<Video> adapterFeatured;
     private BaseArrayListAdapter<Video> adapterRecent;
-    private BaseArrayListAdapter<Video> adapterAll;
+    private BaseArrayListAdapter<Object> adapterAll;
 
     RecyclerViewStateDelegate stateDelegate;
 
@@ -84,6 +89,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
         adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
         adapterAll.registerCell(Video.class, Video360Cell.class);
+        adapterAll.registerCell(String.class, VideoHeaderCell.class);
 
         recyclerViewAll.setAdapter(adapterAll);
         recyclerViewFeatured.setAdapter(adapterFeatured);

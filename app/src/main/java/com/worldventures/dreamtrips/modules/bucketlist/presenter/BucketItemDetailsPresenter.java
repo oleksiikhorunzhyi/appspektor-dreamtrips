@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
@@ -38,7 +39,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void deleteBucketItem(BucketItem bucketItem) {
         bucketItemManager.deleteBucketItem(bucketItem, type,
-                jsonObject -> view.done(),
+                jsonObject -> {
+                    if (!view.isTabletLandscape()) view.done();
+                    else eventBus.post(new BucketItemUpdatedEvent(bucketItem));
+                },
                 this);
     }
 

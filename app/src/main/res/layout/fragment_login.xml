@@ -105,6 +105,7 @@
                 <CheckBox
                     android:id="@+id/checkBoxTerms"
                     android:layout_width="wrap_content"
+                    android:button="@drawable/checko_box_dark"
                     android:layout_height="wrap_content"/>
 
                 <TextView

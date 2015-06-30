@@ -153,6 +153,7 @@
     <string name="completed">已完成</string>
     <string name="action_share">分享</string>
     <string name="recent_header">最近添加的 360 Experience </string>
+    <string name="featured_header">有特色的 360 Experience</string>
     <string name="title_activity_success_story_details">成功故事詳情活動</string>
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">已添加成功故事至收藏夾</string>

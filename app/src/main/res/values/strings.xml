@@ -153,6 +153,7 @@
     <string name="completed">Done</string>
     <string name="action_share">Share</string>
     <string name="recent_header">Recent Added 360 Experience</string>
+    <string name="featured_header">Featured 360 Experience</string>
     <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>

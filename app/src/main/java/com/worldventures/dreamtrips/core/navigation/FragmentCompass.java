@@ -44,16 +44,16 @@ public class FragmentCompass {
         action(Action.ADD, route, bundle);
     }
 
-    public void replace(Route route) {
-        replace(route, null);
-    }
-
     public void replace(ComponentDescription componentDescription) {
-        replace(Route.restoreByClass(componentDescription.getFragmentClass().getName()));
+        replace(componentDescription, null);
     }
 
     public void replace(ComponentDescription componentDescription, Bundle args) {
-        replace(Route.restoreByClass(componentDescription.getFragmentClass().getName()), args);
+        replace(Route.restoreByKey(componentDescription.getKey()), args);
+    }
+
+    public void replace(Route route) {
+        replace(route, null);
     }
 
     public void replace(Route route, Bundle bundle) {
@@ -125,6 +125,7 @@ public class FragmentCompass {
                 if (backStackEnabled) {
                     fragmentTransaction.addToBackStack(route.name());
                 }
+
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();
                 } else {
@@ -164,21 +165,6 @@ public class FragmentCompass {
         show(datePickerDialog, tag);
     }
 
-    public int getPreviousFragmentTitle() {
-        return getPreviousFragment().getTitle();
-    }
-
-    public Route getPreviousFragment() {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 2) {
-            FragmentManager.BackStackEntry backEntry =
-                    fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 2);
-            String str = backEntry.getName();
-            return Route.restoreByClass(str);
-        }
-        return Route.TRIPLIST;
-    }
-
     public void disableBackStack() {
         backStackEnabled = false;
     }
@@ -198,13 +184,6 @@ public class FragmentCompass {
 
     public BaseFragment getCurrentFragment() {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
-    }
-
-    public Route getCurrentState() {
-        if (getCurrentFragment() != null) {
-            return Route.restoreByClass(getCurrentFragment().getClass().getName());
-        }
-        return Route.TRIPLIST;
     }
 
     protected void clearBackStack() {

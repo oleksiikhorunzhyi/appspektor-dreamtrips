@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -41,6 +42,8 @@ public class TripCell extends AbstractCell<TripModel> {
     protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
     protected TextView textViewDate;
+    @InjectView(R.id.sold_out)
+    protected ImageView soldOut;
     @InjectView(R.id.textViewPoints)
     protected TextView textViewPoints;
     @InjectView(R.id.pointsCountLayout)
@@ -66,6 +69,12 @@ public class TripCell extends AbstractCell<TripModel> {
             textViewFeatured.setVisibility(View.VISIBLE);
         } else {
             textViewFeatured.setVisibility(View.GONE);
+        }
+
+        if (getModelObject().isSoldOut()) {
+            soldOut.setVisibility(View.VISIBLE);
+        } else {
+            soldOut.setVisibility(View.GONE);
         }
 
         String reward = getModelObject().getRewardsLimit(appSessionHolder.get().get().getUser());

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -45,9 +46,12 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     RecyclerViewStateDelegate stateDelegate;
     BaseArrayListAdapter<Object> adapter;
 
+    private WeakHandler weakHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -89,14 +93,18 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     }
 
     @Override
-    public void startLoading() {
-        refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+    public void finishLoading() {
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
-    public void finishLoading() {
-        refreshLayout.setRefreshing(false);
-        stateDelegate.restoreStateIfNeeded();
+    public void startLoading() {
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override

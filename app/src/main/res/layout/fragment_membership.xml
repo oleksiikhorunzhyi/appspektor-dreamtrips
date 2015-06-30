@@ -9,11 +9,6 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/theme_main"
         android:fillViewport="false"
         android:textColor="@android:color/white"
         fab:pstsIndicatorColor="@color/theme_main_darker"
@@ -26,7 +21,6 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/tabs"
         android:background="@android:color/white" />
 

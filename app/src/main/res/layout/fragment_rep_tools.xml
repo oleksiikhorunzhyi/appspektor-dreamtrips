@@ -9,7 +9,6 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/theme_main"
         android:textColor="@android:color/white"
         fab:pstsIndicatorColor="@color/theme_main_darker"
         fab:pstsTextColorSelected="@android:color/white"

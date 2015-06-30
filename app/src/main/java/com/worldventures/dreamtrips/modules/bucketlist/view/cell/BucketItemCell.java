@@ -12,7 +12,6 @@ import com.daimajia.swipe.SwipeLayout;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -31,7 +30,6 @@ import static com.worldventures.dreamtrips.core.utils.ViewUtils.dpFromPx;
 @Layout(R.layout.adapter_item_bucket_cell)
 public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<BucketItem> implements SwipeLayout.SwipeListener {
 
-    private static final int ACTION_DEL = 0;
     private static final int ACTION_DONE = 1;
     private static final int ACTION_NONE = -1;
     private static final int ACTION_SETTLING = -2;
@@ -196,11 +194,6 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
     private void renderAction(@SwipeAction int action) {
         switch (action) {
-            case ACTION_DEL:
-                imageViewStatusDone.setVisibility(View.INVISIBLE);
-                imageViewStatusClose.setVisibility(View.VISIBLE);
-                swipeLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_red));
-                break;
             case ACTION_DONE:
             case ACTION_NONE:
                 imageViewStatusDone.setVisibility(View.VISIBLE);
@@ -216,10 +209,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
     }
 
     private void processAction(@SwipeAction int action) {
-        if (action == ACTION_DEL) {
-            getEventBus().post(new DeleteBucketItemEvent(getModelObject(), getAdapterPosition()));
-        } else if (action == ACTION_DONE) {
-            getModelObject().setDone(!getModelObject().isDone());
+        if (action == ACTION_DONE) {
             renderData();
             getEventBus().post(new MarkBucketItemDoneEvent(getModelObject(), getAdapterPosition()));
         }
@@ -228,9 +218,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
     @SwipeAction
     private int getAction(int offset, float velocity) {
-        if (offset > swipeLayout.getWidth() * 2 / 3.f) {
-            return ACTION_DEL;
-        } else if (isFling(velocity)
+        if (isFling(velocity)
                 || offset > swipeLayout.getWidth() / 3.f) {
             return ACTION_DONE;
         }
@@ -241,7 +229,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
         return dpFromPx(context, velocity) > swipeVelocityTrigger;
     }
 
-    @IntDef({ACTION_DEL, ACTION_DONE, ACTION_SETTLING, ACTION_NONE})
+    @IntDef({ACTION_DONE, ACTION_SETTLING, ACTION_NONE})
     @Retention(RetentionPolicy.SOURCE)
     @interface SwipeAction {
     }

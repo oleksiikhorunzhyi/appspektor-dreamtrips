@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -302,18 +301,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         }
     }
 
-    @Override
-    public void showDeletionDialog(BucketItem bucketItem) {
-        new MaterialDialog.Builder(getActivity())
-                .content(R.string.bucket_delete_dialog)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().deleteBucketItem(bucketItem);
-                    }
-                })
-                .show();
-    }
 }

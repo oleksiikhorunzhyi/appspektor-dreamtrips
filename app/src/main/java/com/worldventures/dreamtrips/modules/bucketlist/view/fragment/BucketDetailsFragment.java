@@ -203,7 +203,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @OnClick(R.id.imageViewCover)
     protected void onCoverClicked() {
-        getPresenter().openFullScreen(0);
+        getPresenter().onCoverClicked();
     }
 
     private void setForeignIntentAction() {

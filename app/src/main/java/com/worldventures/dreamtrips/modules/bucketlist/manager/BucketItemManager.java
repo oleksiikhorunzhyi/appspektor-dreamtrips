@@ -136,10 +136,19 @@ public class BucketItemManager {
         //get bucket items by type
         List<BucketItem> tempItems = new ArrayList<>();
         tempItems.addAll(getBucketItems(bucketType));
-        //change order of bucket item
-        int position = bucketItem.isDone() ?
-                tempItems.indexOf(Queryable.from(tempItems).first(BucketItem::isDone)) : 0;
-        moveItem(tempItems, bucketItem, position);
+
+        //resolve position
+        int position = !bucketItem.isDone() ?
+                tempItems.indexOf(Queryable.from(tempItems).firstOrDefault(BucketItem::isDone)) : 0;
+
+        if (position < 0) position = 0;
+
+        //remove bucket item from list
+        tempItems.remove(bucketItem);
+
+        //change status of bucket item
+        bucketItem.setDone(!bucketItem.isDone());
+        tempItems.add(position, bucketItem);
 
         //notify server about bucketItemChange
         BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
@@ -148,12 +157,6 @@ public class BucketItemManager {
                 failureListener::handleError);
 
         return tempItems;
-    }
-
-    private void moveItem(List<BucketItem> bucketItems, BucketItem bucketItem, int index) {
-        int itemIndex = bucketItems.indexOf(bucketItem);
-        BucketItem temp = bucketItems.remove(itemIndex);
-        bucketItems.add(index, temp);
     }
 
     public List<BucketItem> deleteBucketItem(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
@@ -186,12 +189,7 @@ public class BucketItemManager {
         return tempItems;
     }
 
-    public List<BucketItem> deleteBucketItem(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
-                                             DreamSpiceManager.FailureListener failureListener) {
-        return deleteBucketItem(bucketItem, bucketType, null, failureListener);
-    }
-
-    public void moveItem(int from, int to, BucketTabsPresenter.BucketType bucketType,
+    public List<BucketItem> moveItem(int from, int to, BucketTabsPresenter.BucketType bucketType,
                          DreamSpiceManager.FailureListener failureListener) {
         //get bucket items by type
         List<BucketItem> tempItems = new ArrayList<>();
@@ -206,6 +204,7 @@ public class BucketItemManager {
             tempItems.add(to, item);
             saveBucketItems(tempItems, bucketType);
         }, failureListener);
+        return tempItems;
     }
 
     public void addBucketItem(String title, BucketTabsPresenter.BucketType bucketType,

@@ -298,6 +298,7 @@
     <string name="social_user_wrapper_cell_actions">Actions</string>
     <string name="social_remove_friend_title">Remove friend</string>
     <string name="action_social_show_all">Show all</string>
+    <string name="friend_search_placeholder">Search names, groups</string>
 
     <string name="bucket_photo_upload_error">Unable to upload photo</string>
     <string name="training_video_hint">Select language</string>

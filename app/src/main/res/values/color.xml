@@ -70,4 +70,6 @@
     <color name="bucket_red">#fe5353</color>
     <color name="bucket_blue">#ff6e9cff</color>
 
+    <color name="tab_selected_color">#F0EFEF</color>
+    <color name="tab_default_color">#F8F8F8</color>
 </resources>

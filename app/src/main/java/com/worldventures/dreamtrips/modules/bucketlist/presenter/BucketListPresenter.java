@@ -9,7 +9,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
@@ -136,8 +135,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
         if (isTypeCorrect(event.getBucketItem().getType())) {
-            bucketItems = bucketItemManager.getBucketItems(type);
-            fillWithItems();
+            showItems();
         }
     }
 
@@ -212,39 +210,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         }));
     }
 
-    public void onEvent(DeleteBucketItemEvent event) {
-        if (isTypeCorrect(event.getBucketItem().getType())) {
-            eventBus.cancelEventDelivery(event);
-            view.showDeletionDialog(event.getBucketItem());
-        }
-    }
-
-    public void deleteBucketItem(BucketItem bucketItem) {
-        int index = bucketItems.indexOf(bucketItem);
-        if (currentItem.equals(bucketItem)) {
-            if (bucketItems.isEmpty()) currentItem = null;
-            else {
-                currentItem = index == bucketItems.size() ?
-                        bucketItems.get(index - 1) :
-                        bucketItems.get(index);
-            }
-        }
-
-        refresh(bucketItemManager.deleteBucketItem(bucketItem, type, exception -> {
-            bucketItems = bucketItemManager.getBucketItems(type);
-            refresh();
-        }));
-    }
-
     public void itemMoved(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;
         }
 
-        bucketItemManager.moveItem(fromPosition, toPosition, type, spiceException -> {
+        refresh(bucketItemManager.moveItem(fromPosition, toPosition, type, spiceException -> {
             refresh();
             handleError(spiceException);
-        });
+        }));
     }
 
     public void addToBucketList(String title) {
@@ -283,7 +257,5 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void putCategoryMarker(int position);
 
         void checkEmpty(int count);
-
-        void showDeletionDialog(BucketItem bucketItem);
     }
 }

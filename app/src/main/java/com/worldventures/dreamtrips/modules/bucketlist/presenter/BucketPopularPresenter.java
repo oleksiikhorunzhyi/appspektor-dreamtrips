@@ -111,9 +111,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
                 item -> {
+                    bucketHelper.notifyItemAddedToBucket(activity, item);
                     view.getAdapter().remove(popularBucketItem);
                     view.getAdapter().notifyItemRemoved(position);
-                    bucketHelper.notifyItemAddedToBucket(activity, item);
                 },
                 spiceException -> {
                     popularBucketItem.setLoading(false);

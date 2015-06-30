@@ -28,6 +28,6 @@ public class BucketPhotoCellForDetails extends BucketPhotoCell {
     }
 
     private void openFullScreen() {
-        getEventBus().post(new BucketPhotoFullscreenRequestEvent(getPosition() - 1));
+        getEventBus().post(new BucketPhotoFullscreenRequestEvent(getModelObject()));
     }
 }

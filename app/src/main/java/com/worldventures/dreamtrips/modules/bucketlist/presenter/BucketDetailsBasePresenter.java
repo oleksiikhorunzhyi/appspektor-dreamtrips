@@ -125,7 +125,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
 
         List<BucketPhoto> photos = bucketItem.getPhotos();
-        if (!photos.isEmpty()) {
+        if (photos != null) {
             Collections.sort(photos, (lhs, rhs) -> rhs.getId() - lhs.getId());
             view.getBucketPhotosView().setImages(photos);
         }
@@ -209,22 +209,23 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.getBucketPhotosView().showAddPhotoDialog(false);
     }
 
-    public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-        List objects = view.getBucketPhotosView().getImages();
-        Object obj = objects.get(event.getPosition());
-        if (!(obj instanceof BucketPhotoUploadTask)) {
-            openFullScreen(event.getPosition());
-        }
+    public void onCoverClicked() {
+        if (!bucketItem.getPhotos().isEmpty())
+            openFullScreen(Queryable.from(bucketItem.getPhotos()).first());
     }
 
-    public void openFullScreen(int position) {
+    public void onEvent(BucketPhotoFullscreenRequestEvent event) {
+        openFullScreen(event.getPhoto());
+    }
+
+    public void openFullScreen(BucketPhoto selectedPhoto) {
         if (!view.getBucketPhotosView().getImages().isEmpty()) {
             List<IFullScreenObject> photos = new ArrayList<>();
             Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
                     photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
             photos.addAll(bucketItem.getPhotos());
             db.savePhotoEntityList(Type.BUCKET_PHOTOS, photos);
-            this.activityRouter.openFullScreenPhoto(position, Type.BUCKET_PHOTOS);
+            this.activityRouter.openFullScreenPhoto(photos.indexOf(selectedPhoto), Type.BUCKET_PHOTOS);
         }
     }
 

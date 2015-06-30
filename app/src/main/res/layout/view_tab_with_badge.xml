@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:addStatesFromChildren="true">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:addStatesFromChildren="true">
 
     <TextView
         android:id="@+id/psts_tab_title"
@@ -12,8 +12,7 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:singleLine="true"
-        android:textColor="@android:color/white"
-        tools:text="BUCKETS" />
+        android:textColor="@color/tab_text_color"/>
 
     <TextView
         android:id="@+id/psts_tab_badge"
@@ -32,6 +31,6 @@
         android:paddingTop="1dp"
         android:textColor="@android:color/white"
         android:textSize="11sp"
-        tools:text="35" />
+        tools:text="35"/>
 
 </RelativeLayout>

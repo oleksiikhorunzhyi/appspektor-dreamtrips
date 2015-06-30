@@ -57,6 +57,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         view.setLocation(trip.getGeoLocation().getName());
         view.setPrice(trip.getPrice().toString());
         view.setDuration(trip.getDuration());
+        view.setSoldOut();
         String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
@@ -124,6 +125,8 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         void setPointsInvisible();
 
         void setFeatured();
+
+        void setSoldOut();
     }
 
 }

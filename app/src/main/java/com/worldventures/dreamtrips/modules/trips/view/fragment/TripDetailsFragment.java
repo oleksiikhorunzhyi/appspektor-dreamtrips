@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -56,6 +57,8 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     protected TextView textViewScheduleDescription;
     @InjectView(R.id.viewPagerGallery)
     protected ViewPager viewPagerGallery;
+    @InjectView(R.id.sold_out)
+    protected ImageView soldOut;
     @InjectView(R.id.textViewPoints)
     protected TextView textViewPoints;
     @InjectView(R.id.listViewContent)
@@ -175,6 +178,11 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     @Override
     public void setLocation(String location) {
         textViewPlace.setText(location);
+    }
+
+    @Override
+    public void setSoldOut() {
+        soldOut.setVisibility(View.VISIBLE);
     }
 
     @Override

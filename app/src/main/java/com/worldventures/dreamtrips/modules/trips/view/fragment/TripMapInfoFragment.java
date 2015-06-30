@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     protected TextView textViewName;
     @InjectView(R.id.textViewPlace)
     protected TextView textViewPlace;
+    @InjectView(R.id.sold_out)
+    protected ImageView soldOut;
     @InjectView(R.id.textViewPrice)
     protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
@@ -133,6 +136,11 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     @Override
     public void setLocation(String place) {
         textViewPlace.setText(place);
+    }
+
+    @Override
+    public void setSoldOut() {
+        soldOut.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -25,7 +25,8 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     private boolean mapReady;
     private MapInfoReadyEvent pendingMapInfoEvent;
 
-    @Icicle String query;
+    @Icicle
+    String query;
 
     public TripMapPresenter() {
         super();
@@ -82,9 +83,11 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     }
 
     private void reloadPins() {
-        view.clearMap();
-        for (TripModel trip : filteredTrips) {
-            view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getTripId());
+        if (view != null) {
+            view.clearMap();
+            for (TripModel trip : filteredTrips) {
+                view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getTripId());
+            }
         }
     }
 

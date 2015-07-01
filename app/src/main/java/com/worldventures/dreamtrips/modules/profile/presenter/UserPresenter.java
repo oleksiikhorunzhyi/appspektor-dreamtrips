@@ -6,10 +6,8 @@ import com.innahema.collections.query.functions.Action1;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 
 import java.util.List;

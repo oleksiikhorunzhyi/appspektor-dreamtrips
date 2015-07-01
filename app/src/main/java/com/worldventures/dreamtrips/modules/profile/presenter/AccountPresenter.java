@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
+import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -31,7 +32,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     @Inject
     RootComponentsProvider rootComponentsProvider;
 
-    private DecimalFormat df = new DecimalFormat("#0.00");
+    private DecimalFormat df = new DecimalFormat("#.00");
+    private String coverTempFilePath;
+
 
     public AccountPresenter() {
         super();
@@ -49,7 +52,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         user = getAccount();
     }
 
-    private void onSuccess(User obj) {
+    private void onAvatarUploadSuccess(User obj) {
         TrackingHelper.profileUploadFinish(getAccountUserId());
         UserSession userSession = appSessionHolder.get().get();
         User user = userSession.getUser();
@@ -58,6 +61,20 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         appSessionHolder.put(userSession);
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         view.avatarProgressVisible(false);
+        eventBus.post(new UpdateUserInfoEvent());
+    }
+
+    private void onCoverUploadSuccess(User obj) {
+        UserSession userSession = appSessionHolder.get().get();
+        User user = userSession.getUser();
+        user.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
+        this.user = user;
+        appSessionHolder.put(userSession);
+        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
+        view.coverProgressVisible(false);
+        if (coverTempFilePath != null) {
+            new File(coverTempFilePath).delete();
+        }
         eventBus.post(new UpdateUserInfoEvent());
     }
 
@@ -120,7 +137,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
             TrackingHelper.profileUploadStart(getAccountUserId());
-            doRequest(new UploadAvatarCommand(typedFile), this::onSuccess);
+            doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
         }
     }
 
@@ -133,12 +150,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     //Called from onActivityResult
     public void onCoverCropped(String path, String errorMsg) {
         if (path != null) {
+            this.coverTempFilePath = path;
             view.setCoverImage(Uri.fromFile(new File(path)));
-            UserSession userSession = AccountPresenter.this.appSessionHolder.get().get();
-            User user = userSession.getUser();
-            user.setCoverPath(path);
-            AccountPresenter.this.appSessionHolder.put(userSession);
-            eventBus.post(new UpdateUserInfoEvent());
+            final File file = new File(path);
+            final TypedFile typedFile = new TypedFile("image/*", file);
+            view.coverProgressVisible(true);
+            TrackingHelper.profileUploadStart(getAccountUserId());
+            doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess);
+
         } else {
             view.informUser(errorMsg);
         }
@@ -146,6 +165,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     public interface View extends ProfilePresenter.View {
         void avatarProgressVisible(boolean visible);
+
+        void coverProgressVisible(boolean visible);
 
         void openAvatarPicker();
 

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
@@ -49,8 +49,8 @@ public class User extends BaseEntity implements Parcelable {
 
     private String relationship;
 
-    private String coverPath;
-
+    @SerializedName("background_photo_url")
+    private String backgroundPhotoUrl;
     /**
      * RBS = Rep (i.e. this subscription is needed to show "Rep Tools")
      * DTM = Standard DreamTrips Member
@@ -73,21 +73,21 @@ public class User extends BaseEntity implements Parcelable {
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
         this.location = in.readString();
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
-        this.coverPath = in.readString();
+        this.backgroundPhotoUrl = in.readString();
         this.id = in.readInt();
-        this.enrollDate = (Date)in.readSerializable();
+        this.enrollDate = (Date) in.readSerializable();
         this.relationship = in.readString();
     }
 
-    public String getCoverPath() {
-        if (coverPath == null) {
-            coverPath = "";
+    public String getBackgroundPhotoUrl() {
+        if (backgroundPhotoUrl == null) {
+            backgroundPhotoUrl = "";
         }
-        return coverPath;
+        return backgroundPhotoUrl;
     }
 
-    public void setCoverPath(String coverPath) {
-        this.coverPath = coverPath;
+    public void setBackgroundPhotoUrl(String backgroundPhotoUrl) {
+        this.backgroundPhotoUrl = backgroundPhotoUrl;
     }
 
     public String getUsername() {
@@ -190,7 +190,7 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
-   public String getRelationship() {
+    public String getRelationship() {
         return relationship;
     }
 
@@ -208,7 +208,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeString(this.location);
         dest.writeParcelable(this.avatar, flags);
-        dest.writeString(this.coverPath);
+        dest.writeString(this.backgroundPhotoUrl);
         dest.writeInt(this.id);
         dest.writeSerializable(enrollDate);
         dest.writeString(this.relationship);

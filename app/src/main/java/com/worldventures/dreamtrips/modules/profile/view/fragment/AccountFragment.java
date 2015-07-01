@@ -96,6 +96,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void coverProgressVisible(boolean visible) {
+        coverProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {

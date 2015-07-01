@@ -11,7 +11,11 @@ import android.widget.TextView;
 
 import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.badoo.mobile.util.WeakHandler;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -40,6 +44,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     protected DTEditText dateOfBirth;
     @InjectView(R.id.pb)
     protected ProgressBar progressBar;
+    @InjectView(R.id.pb_cover)
+    protected ProgressBar coverProgressBar;
     @InjectView(R.id.trip_images)
     protected TextView tripImages;
     @InjectView(R.id.dream_trips)
@@ -126,7 +132,15 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.userCover.setImageURI(uri);
+                    PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
+                    if (userCover.getTag() != null) {
+                        builder.setLowResImageRequest(ImageRequest.fromUri((Uri) userCover.getTag()));
+                    }
+                    builder.setImageRequest(ImageRequest.fromUri(uri));
+                    DraweeController dc = builder.build();
+                    this.userCover.setController(dc);
+                    this.userCover.setTag(uri);
+
                 }
             });
     }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,9 +77,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
         this.pid.setCallback(getPresenter()::onAvatarChosen);
-        this.pid.show();
-        filePath = pid.getFilePath();
         callbackType = AVATAR_CALLBACK;
+        showChooseSelectPhotoTypeDialog();
     }
 
     @Override
@@ -86,9 +86,22 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_cover_header));
         this.pid.setCallback(getPresenter()::onCoverChosen);
-        this.pid.show();
-        filePath = pid.getFilePath();
         callbackType = COVER_CALLBACK;
+        showChooseSelectPhotoTypeDialog();
+    }
+
+    private void showChooseSelectPhotoTypeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
+                .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
+                    if (which == 0) {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_CAPTURE_PICTURE);
+                    } else {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_PICK_PICTURE);
+                    }
+                    pid.show();
+                    filePath = pid.getFilePath();
+                });
+        builder.show();
     }
 
     @Override
@@ -113,6 +126,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 this.pid.setCallback(getPresenter()::onAvatarChosen);
             else if (callbackType == COVER_CALLBACK)
                 this.pid.setCallback(getPresenter()::onCoverChosen);
+            this.pid.setChooserType(requestCode);
             this.pid.setFilePath(filePath);
         }
         this.pid.onActivityResult(requestCode, resultCode, data);

@@ -10,9 +10,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,7 +62,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
             view.setMember();
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
+        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
     }
 
     protected void onProfileLoaded(User user) {

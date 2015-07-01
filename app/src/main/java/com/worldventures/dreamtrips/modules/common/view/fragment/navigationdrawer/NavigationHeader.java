@@ -4,8 +4,6 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import java.io.File;
-
 public class NavigationHeader {
     protected Uri userCover;
     protected Uri userPhoto;
@@ -15,7 +13,7 @@ public class NavigationHeader {
     public NavigationHeader(User user) {
         userEmail = user.getEmail();
         userName = user.getUsername();
-        userCover = Uri.fromFile(new File(user.getCoverPath()));
+        userCover = Uri.parse(user.getBackgroundPhotoUrl());
         userPhoto = Uri.parse(user.getAvatar().getMedium());
     }
 

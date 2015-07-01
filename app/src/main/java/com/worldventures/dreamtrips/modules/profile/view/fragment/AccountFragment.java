@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +18,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.profile_fragment)
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
+
+    private static final int AVATAR_CALLBACK = 1;
+    private static final int COVER_CALLBACK = 2;
 
     @InjectView(R.id.rovia_bucks)
     protected TextView roviaBucks;
@@ -71,9 +76,32 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void openAvatarPicker() {
         this.pid = new PickImageDialog(getActivity(), this);
         this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-        this.pid.show();
-        filePath = pid.getFilePath();
+        this.pid.setCallback(getPresenter()::onAvatarChosen);
+        callbackType = AVATAR_CALLBACK;
+        showChooseSelectPhotoTypeDialog();
+    }
+
+    @Override
+    public void openCoverPicker() {
+        this.pid = new PickImageDialog(getActivity(), this);
+        this.pid.setTitle(getString(R.string.profile_select_cover_header));
+        this.pid.setCallback(getPresenter()::onCoverChosen);
+        callbackType = COVER_CALLBACK;
+        showChooseSelectPhotoTypeDialog();
+    }
+
+    private void showChooseSelectPhotoTypeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
+                .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
+                    if (which == 0) {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_CAPTURE_PICTURE);
+                    } else {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_PICK_PICTURE);
+                    }
+                    pid.show();
+                    filePath = pid.getFilePath();
+                });
+        builder.show();
     }
 
     @Override
@@ -81,14 +109,29 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void coverProgressVisible(boolean visible) {
+        coverProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
+            return;
+        }
         if (pid == null) {
             this.pid = new PickImageDialog(getActivity(), this);
-            this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
+            if (callbackType == AVATAR_CALLBACK)
+                this.pid.setCallback(getPresenter()::onAvatarChosen);
+            else if (callbackType == COVER_CALLBACK)
+                this.pid.setCallback(getPresenter()::onCoverChosen);
+            this.pid.setChooserType(requestCode);
             this.pid.setFilePath(filePath);
         }
         this.pid.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

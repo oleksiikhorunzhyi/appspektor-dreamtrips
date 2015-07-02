@@ -17,17 +17,25 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 
 public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     private static final int PER_PAGE = 10;
 
     private List<Circle> circles;
-    private Circle selectedCircle;
-    private String query;
+
+    @Icicle
+    Circle selectedCircle;
+    @Icicle
+    String query;
+    @Icicle
+    int position = -1;
 
     @Inject
     SnappyRepository snappyRepository;
+
 
     private DreamSpiceAdapterController<Friend> adapterController = new DreamSpiceAdapterController<Friend>() {
         @Override
@@ -91,7 +99,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void onFilterClicked() {
-        view.showFilters(circles);
+        view.showFilters(circles, position + 1);
     }
 
     public void globalSearch() {
@@ -103,6 +111,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void reloadWithFilter(int position) {
+        this.position = position;
         selectedCircle = position != -1 ? circles.get(position) : null;
         reload();
     }
@@ -116,7 +125,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
         IRoboSpiceAdapter<Friend> getAdapter();
 
-        void showFilters(List<Circle> circles);
+        void showFilters(List<Circle> circles, int selectedPosition);
 
         void finishLoading(List<Friend> items);
 

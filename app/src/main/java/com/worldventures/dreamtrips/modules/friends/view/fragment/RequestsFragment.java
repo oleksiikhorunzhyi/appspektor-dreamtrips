@@ -111,7 +111,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(getString(R.string.friend_add_to))
-                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
+                .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles),
                         (materialDialog, view, i, charSequence) -> {
                             selectedAction.apply(i);
                             materialDialog.dismiss();

@@ -24,30 +24,37 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         circles = snappyRepository.getCircles();
-        view.setIsFriend(false);
-        switch (user.getRelationship()) {
-            case User.RELATION_FRIEND:
-                view.setIsFriend(true);
-                view.hideFriendRequest();
-                break;
-            case User.RELATION_OUTGOING_REQUEST:
-                view.setWaiting();
-                view.hideFriendRequest();
-                break;
-            case User.RELATION_INCOMING_REQUEST:
-                view.setRespond();
-                view.showFriendRequest(user.getFirstName());
-                break;
-            default:
-                view.hideFriendRequest();
-                break;
-        }
     }
 
     @Override
     protected void loadProfile() {
         view.startLoading();
         doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
+    }
+
+    @Override
+    protected void onProfileLoaded(User user) {
+        super.onProfileLoaded(user);
+        view.setIsFriend(false);
+        if (user.getRelationship() != null) {
+            switch (user.getRelationship()) {
+                case User.RELATION_FRIEND:
+                    view.setIsFriend(true);
+                    view.hideFriendRequest();
+                    break;
+                case User.RELATION_OUTGOING_REQUEST:
+                    view.setWaiting();
+                    view.hideFriendRequest();
+                    break;
+                case User.RELATION_INCOMING_REQUEST:
+                    view.setRespond();
+                    view.showFriendRequest(user.getFirstName());
+                    break;
+                default:
+                    view.hideFriendRequest();
+                    break;
+            }
+        }
     }
 
     public void addFriendClicked() {

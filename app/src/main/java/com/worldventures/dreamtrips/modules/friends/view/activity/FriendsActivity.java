@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFrag
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 
 import butterknife.InjectView;
+import icepick.Icicle;
 
 @Layout(R.layout.activity_friends)
 public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter> implements FriendsMainPresenter.View {
@@ -62,7 +63,9 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
 
             }
         });
+
         tabLayout.setupWithPagerBadged(pager);
+        tabLayout.getTabAt(pager.getCurrentItem()).select();
     }
 
     @Override

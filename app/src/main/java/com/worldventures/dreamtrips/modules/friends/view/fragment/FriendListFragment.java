@@ -93,7 +93,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+
         recyclerView.setLayoutManager(getLayoutManager());
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);

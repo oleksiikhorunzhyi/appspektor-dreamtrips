@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+                xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/ll_empty_view"
@@ -31,7 +31,7 @@
                 android:padding="16dp"
                 android:text="@string/bucket_list_create_message"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="16dp"/>
 
             <TextView
                 android:id="@+id/textViewEmptyAdd"
@@ -43,7 +43,7 @@
                 android:padding="16dp"
                 android:text="@string/bucket_list_add"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="16dp"/>
 
             <ImageView
                 android:id="@+id/imageViewArrow"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewEmptyAdd"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/arrow_small" />
+                android:src="@drawable/arrow_small"/>
 
             <Button
                 android:id="@+id/buttonNew"
@@ -61,19 +61,19 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#1E88E5"
-                android:text="@string/bucket_list_create_new" />
+                android:text="@string/bucket_list_create_new"
+                android:textColor="@android:color/white"/>
 
             <Button
                 android:id="@+id/buttonPopular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/buttonNew"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_centerHorizontal="true"
-                android:background="#1E88E5"
-                android:text="@string/bucket_list_choose" />
+                android:text="@string/bucket_list_choose"
+                android:textColor="@android:color/white"/>
         </RelativeLayout>
 
     </ScrollView>
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
         android:id="@+id/lv_items"
@@ -94,6 +94,6 @@
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
         android:padding="@dimen/margin_small"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
 </RelativeLayout>

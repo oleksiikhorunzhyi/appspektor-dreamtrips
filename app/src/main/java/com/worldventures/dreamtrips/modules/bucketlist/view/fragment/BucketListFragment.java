@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -73,6 +74,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     protected TextView textViewEmptyAdd;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
+    @InjectView(R.id.buttonNew)
+    AppCompatButton buttonNew;
+    @InjectView(R.id.buttonPopular)
+    AppCompatButton buttonPopular;
     //
     protected View detailsContainer;
 

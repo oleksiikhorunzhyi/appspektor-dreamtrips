@@ -60,18 +60,18 @@
                 android:id="@+id/buttonNew"
                 android:layout_width="@dimen/button_width"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
                 android:layout_below="@+id/imageViewArrow"
                 android:layout_centerHorizontal="true"
-                android:background="#1E88E5"
                 android:text="@string/bucket_list_create_new"/>
 
             <Button
                 android:id="@+id/buttonPopular"
                 android:layout_width="@dimen/button_width"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
                 android:layout_below="@+id/buttonNew"
                 android:layout_centerHorizontal="true"
-                android:background="#1E88E5"
                 android:text="@string/bucket_list_choose"/>
         </RelativeLayout>
 

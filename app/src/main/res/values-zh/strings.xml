@@ -133,7 +133,6 @@
     <string name="bucket_hint_people_text">添加您想與誰完成該目標</string>
     <string name="bucket_hint_tags">標籤</string>
     <string name="bucket_hint_tags_text">添加描述您的目標清單項目的標籤</string>
-    <string name="bucket_item_edit_completed">我已經完成了該目標清單項目！</string>
     <string name="bucket_item_edit_done">清單項目已保存！</string>
     <string name="bucket_item_edit_error">保存項目時遇到錯誤</string>
     <string name="bucket_item_photos">添加圖片</string>
@@ -284,7 +283,6 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
-
     <string name="title_activity_friends">Friends</string>
     <string name="profile_request">Request</string>
     <string name="profile_respond">Respond</string>
@@ -300,10 +298,8 @@
     <string name="social_remove_friend_title">Unfriend</string>
     <string name="action_social_show_all">Show all</string>
     <string name="friend_search_placeholder">Search names, groups</string>
-
     <string name="bucket_photo_upload_error">Unable to upload photo</string>
     <string name="training_video_hint">Select language</string>
-
     <string name="friend_reject">Reject</string>
     <string name="friend_accept">Accept</string>
     <string name="friend_hide">Hide</string>
@@ -313,4 +309,6 @@
     <string name="friend_global_search">Search all members</string>
     <string name="friend_add_to">Add to:</string>
     <string name="bucket_current_cover">Current cover</string>
+    <string name="bucket_item_edit_completed">Mark as done!</string>
+
 </resources>

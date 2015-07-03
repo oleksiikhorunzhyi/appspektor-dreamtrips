@@ -3,10 +3,13 @@ package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,6 +23,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -89,8 +93,8 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        recyclerView.setLayoutManager(getLayoutManager());
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
@@ -110,13 +114,20 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         search.setIconifiedByDefault(true);
     }
 
+    private RecyclerView.LayoutManager getLayoutManager() {
+        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+                new GridLayoutManager(getActivity(),
+                        ViewUtils.isTablet(getActivity()) ? 3 : 2) :
+                new LinearLayoutManager(getActivity());
+    }
+
     @OnClick(R.id.iv_filter)
     public void onActionFilter() {
         getPresenter().onFilterClicked();
     }
 
     @Override
-    public void showFilters(List<Circle> circles) {
+    public void showFilters(List<Circle> circles, int position) {
         popupWindow = new ListPopupWindow(getActivity());
         ArrayAdapter<Circle> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_single_choice, circles);
@@ -128,7 +139,9 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         popupWindow.show();
 
         popupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        popupWindow.setSelection(position);
         popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) -> {
+
             popupWindow.dismiss();
             getPresenter().reloadWithFilter(i - 1);
         });

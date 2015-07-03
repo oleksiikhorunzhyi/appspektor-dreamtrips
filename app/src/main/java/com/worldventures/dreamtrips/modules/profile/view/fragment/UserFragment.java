@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,9 +30,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @InjectView(R.id.friend_request)
     protected ViewGroup friendRequest;
     @InjectView(R.id.accept)
-    protected Button accept;
+    protected AppCompatButton accept;
     @InjectView(R.id.reject)
-    protected Button reject;
+    protected AppCompatButton reject;
     @InjectView(R.id.control_panel)
     protected ViewGroup controlPanel;
 
@@ -42,22 +44,15 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        ColorStateList csl = getResources().getColorStateList(R.color.button_background);
+        reject.setSupportBackgroundTintList(csl);
+
         controlPanel.setVisibility(View.GONE);
         cover.setVisibility(View.GONE);
         avatar.setVisibility(View.GONE);
         updateInfo.setVisibility(View.GONE);
         userBalance.setVisibility(View.GONE);
         addFriend.setVisibility(View.VISIBLE);
-        layoutConfiguration();
-    }
-
-    private void layoutConfiguration() {
-        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        accept.setText(getString(R.string.profile_accept));
-        reject.setText(getString(R.string.profile_reject));
-        accept.setPadding(padding, 0, padding, 0);
-        reject.setPadding(padding, 0, padding, 0);
-        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
     }
 
     @Override

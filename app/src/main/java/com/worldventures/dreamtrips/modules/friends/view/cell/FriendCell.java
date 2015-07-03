@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +34,7 @@ public class FriendCell extends AbstractCell<Friend> {
     @InjectView(R.id.tvMutual)
     TextView tvMutual;
     @InjectView(R.id.action)
-    Button action;
+    AppCompatButton action;
 
     public FriendCell(View view) {
         super(view);
@@ -39,6 +42,9 @@ public class FriendCell extends AbstractCell<Friend> {
 
     @Override
     protected void syncUIStateWithModel() {
+        ColorStateList csl = itemView.getResources().getColorStateList(R.color.button_background);
+        action.setSupportBackgroundTintList(csl);
+
         Friend user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         tvName.setText(user.getFullName());
@@ -68,6 +74,8 @@ public class FriendCell extends AbstractCell<Friend> {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle(getModelObject().getFullName());
         builder.setIcon(userPhoto.getDrawable());
+        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
+                dialogInterface.dismiss());
         builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)}, (dialogInterface, i) -> {
             //TODO
         });

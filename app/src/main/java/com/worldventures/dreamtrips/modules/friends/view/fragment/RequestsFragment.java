@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -66,15 +68,32 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(getLayoutManager());
 
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(User.class, RequestCell.class);
         adapter.registerCell(String.class, RequestHeaderCell.class);
 
         recyclerView.setAdapter(adapter);
+
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+    }
+
+    private RecyclerView.LayoutManager getLayoutManager() {
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 2;
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return adapter.getItem(position) instanceof String ? spanCount : 1;
+                }
+            });
+            return gridLayoutManager;
+        }  else {
+            return new LinearLayoutManager(getActivity());
+        }
     }
 
     @Override
@@ -111,7 +130,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(getString(R.string.friend_add_to))
-                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
+                .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles),
                         (materialDialog, view, i, charSequence) -> {
                             selectedAction.apply(i);
                             materialDialog.dismiss();

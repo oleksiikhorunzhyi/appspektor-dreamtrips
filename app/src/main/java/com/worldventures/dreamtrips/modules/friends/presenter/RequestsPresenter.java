@@ -66,13 +66,14 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(AcceptRequestEvent event) {
-        view.startLoading();
-        view.showAddFriendDialog(circles, position ->
-                doRequest(new ActOnRequestCommand(event.getUser().getId(),
-                                ActOnRequestCommand.Action.CONFIRM.name(),
-                                circles.get(position).getId()),
-                        object -> onSuccess(event.getPosition()),
-                        this::onError));
+        view.showAddFriendDialog(circles, position -> {
+            view.startLoading();
+            doRequest(new ActOnRequestCommand(event.getUser().getId(),
+                            ActOnRequestCommand.Action.CONFIRM.name(),
+                            circles.get(position).getId()),
+                    object -> onSuccess(event.getPosition()),
+                    this::onError);
+        });
     }
 
     public void onEvent(CancelRequestEvent event) {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.friends.view.cell;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.v7.widget.AppCompatButton;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -75,7 +76,6 @@ public class RequestCell extends AbstractCell<User> {
                 break;
         }
     }
-
 
 
     @OnClick(R.id.avatar)

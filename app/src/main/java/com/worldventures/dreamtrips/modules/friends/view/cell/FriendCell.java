@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
@@ -73,6 +74,8 @@ public class FriendCell extends AbstractCell<Friend> {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle(getModelObject().getFullName());
         builder.setIcon(userPhoto.getDrawable());
+        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
+                dialogInterface.dismiss());
         builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)}, (dialogInterface, i) -> {
             //TODO
         });

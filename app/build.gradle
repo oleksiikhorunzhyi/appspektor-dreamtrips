@@ -22,7 +22,7 @@ android {
     def versionMajor = 1
     def versionMinor = 1
     def versionPatch = 3
-    def versionBuild = 5 // bump for dogfood builds, public betas, etc.
+    def versionBuild = 6 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -251,14 +251,17 @@ apply plugin: "de.felixschulze.gradle.hockeyapp"
 hockeyapp {
     variantToApiToken = [
             stageDebug : 'c0cccff726ec45f28237523fa3918769',
+            stageRelease : 'c0cccff726ec45f28237523fa3918769',
             prodRelease: '7bfe2802eb7947968190f0a0d1555fe2'
     ]
     variantToApplicationId = [
             stageDebug: 'e25cd69fc32f855a3aab0f85f9ee8e58',
+            stageRelease: 'e25cd69fc32f855a3aab0f85f9ee8e58',
             prodRelease: '4fc6063859b3388635cb834dbb004324'
     ]
     variantToStatus = [
             stageDebug : '2',
+            stageRelease : '2',
             prodRelease: '1'
     ]
     notes = rootProject.hasProperty('releaseNotes') ? rootProject.releaseNotes : ''

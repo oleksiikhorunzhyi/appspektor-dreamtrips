@@ -133,12 +133,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         imageViewCover.setController(draweeController);
     }
 
-    @OnClick(R.id.imageViewEdit)
+    @OnClick(R.id.bucketItemEdit)
     protected void onEdit() {
         getPresenter().onEdit();
     }
 
-    @OnClick(R.id.imageViewShare)
+    @OnClick(R.id.bucketItemShare)
     protected void onShare() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(R.string.action_share)
@@ -196,7 +196,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().onStatusUpdated(isChecked);
     }
 
-    @OnClick(R.id.delete)
+    @OnClick(R.id.bucketItemDelete)
     public void onDelete() {
         getPresenter().onDelete();
     }

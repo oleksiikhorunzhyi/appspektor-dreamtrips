@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -47,8 +48,9 @@ public enum Route {
     MAP(TripMapFragment.class),
     ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
+    FEED(FeedFragment.class),
     OTA(OtaFragment.class),
-    TRIP_IMAGES(TripImagesTabsFragment.class),
+    TRIP_IMAGES(FeedFragment.class/*TripImagesTabsFragment TODO temp*/),
     MEMBERSHIP(MembershipFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),

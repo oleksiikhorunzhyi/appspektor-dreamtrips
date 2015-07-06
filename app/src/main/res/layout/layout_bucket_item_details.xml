@@ -98,60 +98,7 @@
                 </com.worldventures.dreamtrips.modules.bucketlist.view.custom.TagViewGroup>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#F6F6F6"
-                android:orientation="horizontal"
-                android:padding="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:text="@string/who"/>
-
-                <TextView
-                    android:id="@+id/textViewFriends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/bucket_detailed_text_color"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="#EFEFEF"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#F6F6F6"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:text="@string/tags"/>
-
-                <TextView
-                    android:id="@+id/textViewTags"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/bucket_detailed_text_color"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_edit_bucket"
-                    android:visibility="gone"/>
-            </LinearLayout>
+            <include layout="@layout/include_bucket_item_meta"/>
 
             <View
                 android:layout_width="match_parent"
@@ -215,7 +162,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/delete"
+            android:id="@+id/bucketItemDelete"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
@@ -226,7 +173,7 @@
             android:src="@drawable/delete"/>
 
         <ImageView
-            android:id="@+id/imageViewShare"
+            android:id="@+id/bucketItemShare"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
@@ -237,7 +184,7 @@
             android:src="@drawable/ic_fs_share"/>
 
         <ImageView
-            android:id="@+id/imageViewEdit"
+            android:id="@+id/bucketItemEdit"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"

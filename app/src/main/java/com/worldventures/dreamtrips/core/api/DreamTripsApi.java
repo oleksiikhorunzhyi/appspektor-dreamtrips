@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -249,4 +250,6 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/request_responses")
     JSONObject deleteRequest(@Query("user_id") int userId);
 
+    @GET("/api/social/friends")
+    ArrayList<BaseFeedModel> getFeedActivity(@Query("limit") int limit, @Query("offset") int offset);
 }

@@ -126,6 +126,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
         void setTripsCount(int count);
 
+        void setSocial(Boolean isEnabled);
+
         void setBucketItemsCount(int count);
 
         void setGold();

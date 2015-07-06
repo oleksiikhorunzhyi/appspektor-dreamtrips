@@ -198,6 +198,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
+    public void setSocial(Boolean isEnabled) {
+        addFriend.setEnabled(isEnabled);
+        post.setEnabled(isEnabled);
+        friends.setEnabled(isEnabled);
+        messages.setEnabled(isEnabled);
+    }
+
+    @Override
     public void setMember() {
         userStatus.setTextColor(getResources().getColor(R.color.white));
         userStatus.setText("");

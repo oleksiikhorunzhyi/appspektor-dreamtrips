@@ -45,7 +45,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         super.afterCreateView(rootView);
         cover.setVisibility(View.VISIBLE);
         avatar.setVisibility(View.VISIBLE);
-        addFriend.setVisibility(View.VISIBLE);
+        addFriend.setVisibility(View.GONE);
         updateInfo.setVisibility(View.VISIBLE);
         userBalance.setVisibility(View.VISIBLE);
     }

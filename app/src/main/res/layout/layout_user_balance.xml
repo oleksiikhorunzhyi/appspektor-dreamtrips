@@ -20,6 +20,7 @@
             android:layout_gravity="end"
             android:drawableLeft="@drawable/points"
             android:drawableStart="@drawable/points"
+            android:singleLine="true"
             android:padding="@dimen/spacing_normal"/>
 
     </FrameLayout>
@@ -43,6 +44,7 @@
             android:drawablePadding="@dimen/spacing_tiny"
             android:drawableLeft="@drawable/bucks"
             android:drawableStart="@drawable/bucks"
+            android:singleLine="true"
             android:padding="@dimen/spacing_normal"/>
 
     </FrameLayout>

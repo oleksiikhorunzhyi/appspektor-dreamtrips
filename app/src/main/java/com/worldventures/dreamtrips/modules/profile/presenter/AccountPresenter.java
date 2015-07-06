@@ -145,7 +145,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     public void onCoverChosen(Fragment fragment, ChosenImage image, String error) {
         if (image != null) {
-            Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+            Crop.prepare(image.getFileThumbnail()).ratio(3, 2).startFrom((Fragment) view);
         }
     }
 

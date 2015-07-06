@@ -15,8 +15,11 @@ public class Feature {
     }
 
     @Retention(SOURCE)
-    @StringDef({})
+    @StringDef({TRIPS, REP_TOOLS})
     public @interface FeatureName {
     }
+
+    public static final String TRIPS = "trips";
+    public static final String REP_TOOLS = "rep_tools";
 
 }

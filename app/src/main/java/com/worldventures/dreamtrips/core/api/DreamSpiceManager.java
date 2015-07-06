@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -19,6 +20,8 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
@@ -26,8 +29,8 @@ import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -38,6 +41,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -196,7 +200,12 @@ public class DreamSpiceManager extends SpiceManager {
         userSession.setUserPassword(userPassword);
         userSession.setLastUpdate(System.currentTimeMillis());
 
-        userSession.setFeatures(session.getPermissions());
+        List<Feature> features = session.getPermissions();
+        // TODO remote legacy features factory when server is ready
+        List<Feature> legacyFeatures = new LegacyFeatureFactory(sessionUser).create();
+        Queryable<Feature> allFeatures = Queryable.from(legacyFeatures);
+        if (features != null) allFeatures.union(features);
+        userSession.setFeatures(allFeatures.toList());
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);

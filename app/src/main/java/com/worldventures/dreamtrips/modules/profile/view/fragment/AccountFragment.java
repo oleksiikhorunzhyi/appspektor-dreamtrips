@@ -62,15 +62,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         eventBus.post(new ActionBarTransparentEvent(false));
     }
 
-    @Override
-    public void setSocial(Boolean isEnabled) {
-        addFriend.setEnabled(isEnabled);
-        post.setEnabled(isEnabled);
-        friends.setEnabled(isEnabled);
-        messages.setEnabled(isEnabled);
-
-    }
-
     @OnClick(R.id.user_photo)
     public void onPhotoClick() {
         getPresenter().photoClicked();

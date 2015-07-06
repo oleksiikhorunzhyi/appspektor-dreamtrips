@@ -178,8 +178,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
         void setDreamTripPoints(String count);
 
-        void setSocial(Boolean isEnabled);
-
     }
 
 }

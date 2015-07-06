@@ -100,12 +100,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        layoutConfiguration();
-    }
-
-    private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
-
     }
 
     @OnClick(R.id.bucket_list)
@@ -200,6 +195,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void setBucketItemsCount(int count) {
         buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
+    }
+
+    @Override
+    public void setSocial(Boolean isEnabled) {
+        addFriend.setEnabled(isEnabled);
+        post.setEnabled(isEnabled);
+        friends.setEnabled(isEnabled);
+        messages.setEnabled(isEnabled);
     }
 
     @Override

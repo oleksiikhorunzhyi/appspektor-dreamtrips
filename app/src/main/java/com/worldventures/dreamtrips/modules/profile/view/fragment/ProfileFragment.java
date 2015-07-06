@@ -100,12 +100,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        layoutConfiguration();
-    }
-
-    private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
-
     }
 
     @OnClick(R.id.bucket_list)

@@ -33,8 +33,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     @Override
-    protected void onProfileLoaded(User user) {
-        super.onProfileLoaded(user);
+    protected void setUserProfileInfo() {
+        super.setUserProfileInfo();
         view.setIsFriend(false);
         if (user.getRelationship() != null) {
             switch (user.getRelationship()) {
@@ -58,7 +58,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     public void addFriendClicked() {
-        if (user.getRelationship().equals(User.RELATION_NONE) || user.getRelationship().equals(User.RELATION_REJECT))
+        if (user.getRelationship() != null &&
+                (user.getRelationship().equals(User.RELATION_NONE)
+                        || user.getRelationship().equals(User.RELATION_REJECT)))
             view.showAddFriendDialog(circles, this::addAsFriend);
     }
 

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -72,6 +73,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         view.finishLoading();
         view.setTripImagesCount(user.getTripImagesCount());
         view.setBucketItemsCount(user.getBucketListItemsCount());
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        onProfileError();
+    }
+
+    protected void onProfileError() {
+        view.finishLoading();
     }
 
     protected abstract void loadProfile();

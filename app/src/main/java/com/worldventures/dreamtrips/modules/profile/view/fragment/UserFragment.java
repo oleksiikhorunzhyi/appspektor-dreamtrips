@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -22,6 +23,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_profile)
+@MenuResource(R.menu.menu_empty)
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 

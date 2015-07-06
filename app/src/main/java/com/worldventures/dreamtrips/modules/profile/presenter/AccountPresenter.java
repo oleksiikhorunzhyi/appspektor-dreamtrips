@@ -8,6 +8,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -95,6 +96,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
+        view.setSocial(featureManager.available(Feature.SOCIAL));
     }
 
     @Override
@@ -175,6 +177,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         void setRoviaBucks(String count);
 
         void setDreamTripPoints(String count);
+
+        void setSocial(Boolean isEnabled);
 
     }
 

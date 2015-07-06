@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -43,6 +44,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void takeView(View view) {
         super.takeView(view);
         setupActualViewState();
+        view.setSocial(featureManager.available(Feature.SOCIAL));
     }
 
     public void onLikeAction() {
@@ -155,5 +157,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void showProgress();
 
         void hideProgress();
+
+        void setSocial(Boolean isEnabled);
     }
 }

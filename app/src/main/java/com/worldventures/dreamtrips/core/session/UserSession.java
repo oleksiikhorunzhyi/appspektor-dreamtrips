@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.session;
 
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -16,7 +17,8 @@ public class UserSession {
     private String username;
     private long lastUpdate;
     private AppConfig globalConfig;
-    private List<Header> headerList;
+    private List<Header> headers;
+    private List<Feature> features;
 
     public User getUser() {
         return user;
@@ -74,11 +76,19 @@ public class UserSession {
         this.globalConfig = globalConfig;
     }
 
-    public List<Header> getHeaderList() {
-        return headerList != null ? headerList : new ArrayList<>();
+    public List<Header> getHeaders() {
+        return headers != null ? headers : new ArrayList<>();
     }
 
-    public void setHeaderList(List<Header> headerList) {
-        this.headerList = headerList;
+    public void setHeaders(List<Header> headers) {
+        this.headers = headers;
+    }
+
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(List<Feature> features) {
+        this.features = features;
     }
 }

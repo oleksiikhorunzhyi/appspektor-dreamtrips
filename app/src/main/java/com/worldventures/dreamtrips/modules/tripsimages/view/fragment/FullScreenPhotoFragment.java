@@ -401,4 +401,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         checkBox.setChecked(status);
     }
 
+    @Override
+    public void setSocial(Boolean isEnabled) {
+        civUserPhoto.setEnabled(isEnabled);
+    }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
@@ -7,7 +8,7 @@ import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedE
 public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
 
     public boolean showInvite() {
-        return getAccount().isRep();
+        return featureManager.available(Feature.REP_TOOLS);
     }
 
     public void onEvent(SearchFocusChangedEvent event) {

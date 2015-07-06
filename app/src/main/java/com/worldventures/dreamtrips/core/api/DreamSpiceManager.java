@@ -196,6 +196,8 @@ public class DreamSpiceManager extends SpiceManager {
         userSession.setUserPassword(userPassword);
         userSession.setLastUpdate(System.currentTimeMillis());
 
+        userSession.setFeatures(session.getPermissions());
+
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);
             return true;

@@ -45,7 +45,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         super.afterCreateView(rootView);
         cover.setVisibility(View.VISIBLE);
         avatar.setVisibility(View.VISIBLE);
-        addFriend.setVisibility(View.GONE);
+        addFriend.setVisibility(View.VISIBLE);
         updateInfo.setVisibility(View.VISIBLE);
         userBalance.setVisibility(View.VISIBLE);
     }
@@ -60,6 +60,15 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onDestroyView() {
         super.onDestroyView();
         eventBus.post(new ActionBarTransparentEvent(false));
+    }
+
+    @Override
+    public void setSocial(Boolean isEnabled) {
+        addFriend.setEnabled(isEnabled);
+        post.setEnabled(isEnabled);
+        friends.setEnabled(isEnabled);
+        messages.setEnabled(isEnabled);
+
     }
 
     @OnClick(R.id.user_photo)

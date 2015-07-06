@@ -64,6 +64,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     protected DTEditText etFrom;
     @InjectView(R.id.et_enroll)
     protected DTEditText etEnroll;
+    @InjectView(R.id.post)
+    protected View post;
+    @InjectView(R.id.friends)
+    protected View friends;
+    @InjectView(R.id.messages)
+    protected View messages;
     @InjectView(R.id.dt_points)
     protected TextView dtPoints;
     @InjectView(R.id.rovia_bucks)

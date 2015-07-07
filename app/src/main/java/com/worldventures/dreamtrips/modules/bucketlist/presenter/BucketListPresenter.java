@@ -51,13 +51,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    private BucketHelper bucketHelper;
+    private SweetDialogHelper sweetDialogHelper;
     private WeakHandler weakHandler;
 
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
-        bucketHelper = new BucketHelper();
+        sweetDialogHelper = new SweetDialogHelper();
         weakHandler = new WeakHandler();
     }
 
@@ -227,7 +227,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
 
-            bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
+            sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
         }, this::handleError);
     }
 

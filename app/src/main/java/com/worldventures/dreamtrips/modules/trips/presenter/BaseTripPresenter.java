@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
@@ -26,7 +26,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
     protected TripModel trip;
 
-    BucketHelper bucketHelper;
+    SweetDialogHelper sweetDialogHelper;
 
     public TripModel getTrip() {
         return trip;
@@ -39,7 +39,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     @Override
     public void onInjected() {
         super.onInjected();
-        bucketHelper = new BucketHelper();
+        sweetDialogHelper = new SweetDialogHelper();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
             trip.setInBucketList(true);
             view.setInBucket(true);
             onSuccessTripAction();
-            bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
+            sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
         }, this);
     }
 
@@ -91,7 +91,10 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
                 new LikeTripCommand(trip.getLikeId()) :
                 new UnlikeTripCommand(trip.getLikeId());
 
-        doRequest(request, object -> onSuccessTripAction(), (error) -> {
+        doRequest(request, object -> {
+            sweetDialogHelper.notifyTripLiked(activity, trip);
+            onSuccessTripAction();
+        }, (error) -> {
             toggleTripLike();
             handleError(error);
         });

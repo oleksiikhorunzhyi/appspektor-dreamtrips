@@ -34,8 +34,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     public void takeView(T view) {
         super.takeView(view);
         setUserProfileInfo();
-        loadProfile();
         loadCircles();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadProfile();
     }
 
     public abstract void openBucketList();

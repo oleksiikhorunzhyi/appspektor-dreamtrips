@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -77,8 +78,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivDelete;
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView civUserPhoto;
-    @InjectView(R.id.progress_flag)
-    protected ProgressBar progressBar;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
 
@@ -101,15 +100,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkBox.setOnCheckedChangeListener((cb, b) -> {
-            checkBox.setClickable(false);
-            getPresenter().onCheckboxPressed(b);
-        });
     }
 
     @Override
@@ -383,14 +373,17 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
     }
 
+    private ProgressDialog progressDialog;
+
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.show();
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.hide();
     }
 
     @Override
@@ -399,6 +392,15 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         checkBox.setClickable(!status);
         checkBox.setVisibility(View.VISIBLE);
         checkBox.setChecked(status);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkBox.setOnCheckedChangeListener((cb, b) -> {
+            checkBox.setClickable(!b);
+            getPresenter().onCheckboxPressed(b);
+        });
     }
 
     @Override

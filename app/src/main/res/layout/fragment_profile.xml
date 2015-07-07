@@ -77,7 +77,6 @@
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:text="@string/trip_images"
                             android:textSize="@dimen/font_small"/>
 
                         <View
@@ -96,7 +95,6 @@
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:text="@string/profile_bucket_list"
                             android:textSize="@dimen/font_small"/>
 
                         <View
@@ -115,7 +113,6 @@
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:text="@string/profile_dream_trips"
                             android:textSize="@dimen/font_small"
                             android:visibility="gone"/>
                     </LinearLayout>

@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 
 import java.util.List;
 
+import icepick.Icicle;
+
 public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
     List<Circle> circles;
@@ -35,7 +37,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     @Override
     protected void setUserProfileInfo() {
         super.setUserProfileInfo();
-        view.setSocial(user.isSocialEnabled());
+        //view.setSocial(user.isSocialEnabled());
+        view.setSocial(true);
         view.setIsFriend(false);
         if (user.getRelationship() != null) {
             switch (user.getRelationship()) {

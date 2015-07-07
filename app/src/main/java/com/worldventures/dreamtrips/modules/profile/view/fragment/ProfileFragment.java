@@ -236,9 +236,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void startLoading() {
-        weakHandler.post(() -> {
+        weakHandler.postDelayed(() -> {
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
-        });
+        }, 100);
     }
 
     @Override

@@ -35,11 +35,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         super.takeView(view);
         setUserProfileInfo();
         loadCircles();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         loadProfile();
     }
 
@@ -52,6 +47,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     protected void setUserProfileInfo() {
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
@@ -76,8 +73,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         //
         setUserProfileInfo();
         view.finishLoading();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
     }
 
     @Override

@@ -69,7 +69,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     private void setRecentBucketItemsCounts() {
         Map<BucketType, Integer> recentBucketItems = new HashMap<>();
         for (BucketType type : BucketType.values()) {
-            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name));
+            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name()));
         }
         view.setRecentBucketItemsCount(recentBucketItems);
     }

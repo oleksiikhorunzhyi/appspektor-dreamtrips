@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -10,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -100,6 +100,19 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
+
+        ivImage.setSingleTapListener(this::toggleContent);
+        ivImage.setDoubleTapListener(this::hideContent);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            hideContent();
+        } else {
+            showContent();
+        }
     }
 
     @Override
@@ -142,13 +155,20 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 }).show();
     }
 
-    @OnClick(R.id.iv_image)
-    public void actionImageClick() {
+    public void toggleContent() {
         if (llContentWrapper.getVisibility() == View.VISIBLE) {
-            llContentWrapper.setVisibility(View.GONE);
+            hideContent();
         } else {
-            llContentWrapper.setVisibility(View.VISIBLE);
+            showContent();
         }
+    }
+
+    private void hideContent() {
+        llContentWrapper.setVisibility(View.GONE);
+    }
+
+    private void showContent() {
+        llContentWrapper.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.tv_see_more)

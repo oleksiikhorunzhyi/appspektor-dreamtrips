@@ -252,4 +252,8 @@ public interface DreamTripsApi {
 
     @GET("/api/social/friends")
     ArrayList<BaseFeedModel> getFeedActivity(@Query("limit") int limit, @Query("offset") int offset);
+
+    @GET("/api/social/users/{user_id}/feed")
+    ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") String userId, @Query("per_page") int perPage, @Query("page") int page);
+
 }

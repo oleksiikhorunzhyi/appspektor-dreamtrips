@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
@@ -32,7 +33,8 @@ import dagger.Module;
                 FeedBucketEventModel.class,
 
                 FeedPresenter.class,
-                FeedFragment.class
+                FeedFragment.class,
+                ParallaxRecyclerAdapter.class
         },
         complete = false,
         library = true

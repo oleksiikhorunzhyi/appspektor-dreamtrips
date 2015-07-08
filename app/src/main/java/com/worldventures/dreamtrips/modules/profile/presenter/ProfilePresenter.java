@@ -23,6 +23,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Inject
     SnappyRepository snappyRepository;
 
+    List<Circle> circles;
+
     public ProfilePresenter() {
     }
 
@@ -33,6 +35,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        circles = snappyRepository.getCircles();
         setUserProfileInfo();
         loadCircles();
         loadProfile();
@@ -49,6 +52,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     protected void setUserProfileInfo() {
         view.setTripImagesCount(user.getTripImagesCount());
         view.setBucketItemsCount(user.getBucketListItemsCount());
+        view.setTripsCount(0);
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
@@ -88,7 +92,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     protected abstract void loadProfile();
 
     public void openFriends() {
-        activityRouter.openFriends();
+        if (circles.isEmpty()) {
+            view.startLoading();
+            doRequest(new GetCirclesQuery(), circles -> {
+                view.finishLoading();
+                saveCircles(circles);
+                openFriends();
+            });
+        } else {
+            activityRouter.openFriends();
+        }
     }
 
     ///Circles
@@ -97,7 +110,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         doRequest(new GetCirclesQuery(), this::saveCircles);
     }
 
-    private void saveCircles(List<Circle> circles) {
+    protected void saveCircles(List<Circle> circles) {
+        this.circles = circles;
         snappyRepository.saveCircles(circles);
     }
 

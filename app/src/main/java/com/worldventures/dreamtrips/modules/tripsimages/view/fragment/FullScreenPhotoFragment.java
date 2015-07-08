@@ -46,8 +46,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ScaleImageView ivImage;
     @InjectView(R.id.ll_global_content_wrapper)
     protected LinearLayout llContentWrapper;
-    @InjectView(R.id.ll_top_container)
-    protected LinearLayout llTopContainer;
     @InjectView(R.id.ll_more_info)
     protected LinearLayout llMoreInfo;
     @InjectView(R.id.tv_title)
@@ -68,8 +66,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected TextView tvCommentsCount;
     @InjectView(R.id.iv_like)
     protected ImageView ivLike;
-    @InjectView(R.id.iv_comment)
-    protected ImageView ivComment;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
     @InjectView(R.id.iv_flag)
@@ -193,7 +189,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onUserClicked();
     }
 
-    @OnClick(R.id.ll_top_container)
+    @OnClick({R.id.bottom_container, R.id.title_container})
     public void actionSeeLess() {
         if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
             llMoreInfo.setVisibility(View.GONE);

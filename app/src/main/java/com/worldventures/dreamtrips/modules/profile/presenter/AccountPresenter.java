@@ -109,7 +109,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
         view.setSocial(featureManager.available(Feature.SOCIAL));
-        view.setSocial(true);
     }
 
     @Override

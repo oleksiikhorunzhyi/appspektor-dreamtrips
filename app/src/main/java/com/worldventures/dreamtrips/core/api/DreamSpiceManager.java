@@ -5,9 +5,9 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -82,22 +82,13 @@ public class DreamSpiceManager extends SpiceManager {
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
-                if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
-                    final UserSession userSession = appSessionHolder.get().get();
-                    final String username = userSession.getUsername();
-                    final String userPassword = userSession.getUserPassword();
-
-                    loginUser(userPassword, username, (loginResponse, spiceError) -> {
-                        if (loginResponse != null) {
-                            execute(request, successListener, failureListener);
-                        } else {
-                            failureListener.handleError(new SpiceException(spiceError.getMessage()));
-                        }
-                    });
-
-                } else {
-                    failureListener.handleError(new SpiceException(getErrorMessage(error)));
-                }
+                processError(error, failureListener, (loginResponse, exception) -> {
+                    if (loginResponse != null) {
+                        execute(request, successListener, failureListener);
+                    } else {
+                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                    }
+                });
             }
 
             @Override
@@ -106,6 +97,18 @@ public class DreamSpiceManager extends SpiceManager {
             }
         });
     }
+    private void processError(SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
+        if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
+            final UserSession userSession = appSessionHolder.get().get();
+            final String username = userSession.getUsername();
+            final String userPassword = userSession.getUserPassword();
+
+            loginUser(userPassword, username, onLoginSuccess);
+        } else {
+            failureListener.handleError(new SpiceException(getErrorMessage(error)));
+        }
+    }
+
 
     public void login(RequestListener<LoginResponse> requestListener) {
         if (isCredentialExist(appSessionHolder)) {
@@ -203,9 +206,8 @@ public class DreamSpiceManager extends SpiceManager {
         List<Feature> features = session.getPermissions();
         // TODO remote legacy features factory when server is ready
         List<Feature> legacyFeatures = new LegacyFeatureFactory(sessionUser).create();
-        Queryable<Feature> allFeatures = Queryable.from(legacyFeatures);
-        if (features != null) allFeatures.union(features);
-        userSession.setFeatures(allFeatures.toList());
+        if (features != null) features.addAll(legacyFeatures);
+        userSession.setFeatures(features);
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@android:color/white">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
@@ -110,11 +110,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:drawableTop="@drawable/ic_dreamtrips_normal"
+                            android:enabled="false"
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:textSize="@dimen/font_small"
-                            android:visibility="gone"/>
+                            />
                     </LinearLayout>
 
                     <include
@@ -150,6 +151,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:drawableTop="@drawable/post"
+                            android:enabled="false"
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
@@ -186,6 +188,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:drawableTop="@drawable/messages"
+                            android:enabled="false"
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
@@ -204,6 +207,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:drawableTop="@drawable/more"
+                            android:enabled="false"
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"

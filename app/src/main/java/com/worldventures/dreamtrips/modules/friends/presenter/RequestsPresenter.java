@@ -101,8 +101,10 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     private void onSuccess(int position) {
         if (view != null) {
             view.finishLoading();
-            view.getAdapter().remove(position);
-            view.getAdapter().notifyItemRemoved(position);
+            if (position < view.getAdapter().getItemCount()) {
+                view.getAdapter().remove(position);
+                view.getAdapter().notifyItemRemoved(position);
+            }
         }
     }
 

@@ -72,4 +72,6 @@
 
     <color name="tab_selected_color">#F0EFEF</color>
     <color name="tab_default_color">#F8F8F8</color>
+
+    <color name="divider_color">#F8F8F8</color>
 </resources>

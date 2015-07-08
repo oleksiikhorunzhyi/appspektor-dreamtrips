@@ -80,7 +80,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         uiHelper.onSaveInstanceState(outState);
     }

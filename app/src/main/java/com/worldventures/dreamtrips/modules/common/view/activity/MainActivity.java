@@ -65,19 +65,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         return new MainActivityPresenter();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
+   @Override
     protected void onResume() {
         super.onResume();
         makeActionBarTransparent(transparentToolbar);

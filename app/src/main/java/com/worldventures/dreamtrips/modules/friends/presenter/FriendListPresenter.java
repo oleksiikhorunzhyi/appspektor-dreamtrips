@@ -121,6 +121,10 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         reload();
     }
 
+    public String getQuery() {
+        return query;
+    }
+
     public interface View extends Presenter.View {
 
         IRoboSpiceAdapter<Friend> getAdapter();

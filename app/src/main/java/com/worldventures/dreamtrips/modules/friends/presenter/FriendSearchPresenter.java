@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -79,6 +78,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     private void addFriend(User user, Circle circle, int position) {
+        view.startLoading();
         doRequest(new AddUserRequestCommand(user.getId(), circle),
                 jsonObject -> onSuccess(user, position),
                 this::onError);
@@ -103,7 +103,6 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     public void reload() {
-        this.query = null;
         adapterController.reload();
     }
 

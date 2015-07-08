@@ -35,6 +35,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     @Override
     protected void onProfileLoaded(User user) {
         super.onProfileLoaded(user);
+        setRelation(user);
+    }
+
+    private void setRelation(User user) {
         view.setIsFriend(false);
         if (user.getRelationship() != null) {
             switch (user.getRelationship()) {

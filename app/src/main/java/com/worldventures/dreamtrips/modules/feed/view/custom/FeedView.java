@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.custom;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -67,35 +66,7 @@ public class FeedView extends RecyclerView {
         adapter.setShouldClipView(false);
 
         setAdapter(adapter);
-        new Handler().postDelayed(() -> {
 
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedBucketEventModel());
-            adapter.addItem(new FeedCoverEventModel());
-            adapter.addItem(new FeedTripEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedBucketEventModel());
-            adapter.addItem(new FeedCoverEventModel());
-            adapter.addItem(new FeedTripEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedBucketEventModel());
-            adapter.addItem(new FeedCoverEventModel());
-            adapter.addItem(new FeedTripEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedBucketEventModel());
-            adapter.addItem(new FeedCoverEventModel());
-            adapter.addItem(new FeedTripEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.addItem(new FeedAvatarEventModel());
-            adapter.notifyDataSetChanged();
-        }, 3000);
         stateDelegate.setRecyclerView(this);
 
     }

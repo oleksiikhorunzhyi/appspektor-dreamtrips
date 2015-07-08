@@ -1,4 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-public class FeedBucketEventModel extends FeedHeaderModel {
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+
+public class FeedBucketEventModel extends BaseFeedModel<BucketItem> {
 }

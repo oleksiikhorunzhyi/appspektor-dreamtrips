@@ -41,6 +41,11 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
     }
 
 
+    @Override
+    public int getCount() {
+        return super.getCount();
+    }
+
     public interface OnClickEvent {
         /**
          * Event triggered when you click on a item of the adapter

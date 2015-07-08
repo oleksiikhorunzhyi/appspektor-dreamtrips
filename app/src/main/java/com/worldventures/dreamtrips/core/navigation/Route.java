@@ -50,7 +50,7 @@ public enum Route {
     TRIPLIST(TripListFragment.class),
     FEED(FeedFragment.class),
     OTA(OtaFragment.class),
-    TRIP_IMAGES(FeedFragment.class/*TripImagesTabsFragment TODO temp*/),
+    TRIP_IMAGES(TripImagesTabsFragment.class),
     MEMBERSHIP(MembershipFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),

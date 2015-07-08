@@ -5,18 +5,21 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 
 import java.util.ArrayList;
 
-public class GetFeedQuery extends Query<ArrayList<BaseFeedModel>> {
+public class GetUserFeedQuery extends Query<ArrayList<BaseFeedModel>> {
 
     public static final int LIMIT = 10;
+    private int userId;
     private int offset;
 
-    public GetFeedQuery(int offset) {
+    public GetUserFeedQuery(int userId, int offset) {
         super((Class<ArrayList<BaseFeedModel>>) new ArrayList<BaseFeedModel>().getClass());
+        this.userId = userId;
         this.offset = offset;
     }
 
+
     @Override
     public ArrayList<BaseFeedModel> loadDataFromNetwork() throws Exception {
-        return getService().getFeed(LIMIT, offset);
+        return getService().getUserFeed(userId, LIMIT, offset);
     }
 }

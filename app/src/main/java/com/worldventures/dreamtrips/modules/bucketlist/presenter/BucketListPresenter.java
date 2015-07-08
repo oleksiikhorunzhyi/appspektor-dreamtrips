@@ -164,7 +164,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             fragmentCompass.setContainerId(R.id.container_details_fullscreen);
             fragmentCompass.replace(Route.DETAIL_BUCKET, bundle);
         } else {
-            activityRouter.openBucketItemDetails(bundle);
+            activityRouter.openBucketItemDetails(type, bucketItem.getId());
         }
         // set selected
         Queryable.from(bucketItems).forEachR(item ->

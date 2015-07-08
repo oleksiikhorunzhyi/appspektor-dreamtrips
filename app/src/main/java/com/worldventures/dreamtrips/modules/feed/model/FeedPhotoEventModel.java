@@ -1,4 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-public class FeedPhotoEventModel extends FeedHeaderModel {
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+
+public class FeedPhotoEventModel extends BaseFeedModel<Photo> {
 }

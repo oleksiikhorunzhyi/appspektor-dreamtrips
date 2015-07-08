@@ -1,4 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-public class FeedAvatarEventModel extends BaseFeedModel {
+import com.worldventures.dreamtrips.modules.common.model.User;
+
+public class FeedAvatarEventModel extends BaseFeedModel<User.Avatar> {
 }

@@ -10,10 +10,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
@@ -38,7 +40,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     Provider<Injector> injectorProvider;
 
     @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout swipeContainer;
+    SwipeRefreshLayout swipeContainer;
+
     ProfileView profileView;
 
     @InjectView(R.id.feedview)
@@ -186,4 +189,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
 
+    @Override
+    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+        return feedView.getAdapter();
+    }
 }

@@ -3,14 +3,15 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 import android.view.View;
 
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.modules.feed.model.FeedHeaderModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 
 import butterknife.ButterKnife;
 
-public abstract class FeedHeaderCell<T extends FeedHeaderModel> extends AbstractCell<T> {
+public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCell<T> {
 
     private boolean syncUIStateWithModelWasCalled = false;
+
     FeedItemHeaderHelper feedItemHeaderHelper;
 
     public FeedHeaderCell(View view) {
@@ -21,7 +22,7 @@ public abstract class FeedHeaderCell<T extends FeedHeaderModel> extends Abstract
 
     @Override
     protected void syncUIStateWithModel() {
-        feedItemHeaderHelper.set();
+        feedItemHeaderHelper.set(getModelObject());
         syncUIStateWithModelWasCalled = true;
     }
 

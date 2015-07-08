@@ -65,7 +65,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(v -> getPresenter().backAction());
-
+        toolbar.getBackground().setAlpha(255);
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {

@@ -80,8 +80,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
                     if (which == 0) {
                         pid.setRequestTypes(PickImageDialog.REQUEST_CAPTURE_PICTURE);
-                    } else {
+                    } else if (which == 1) {
                         pid.setRequestTypes(PickImageDialog.REQUEST_PICK_PICTURE);
+                    } else {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_FACEBOOK);
                     }
                     pid.show();
                     filePath = pid.getFilePath();

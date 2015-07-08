@@ -77,7 +77,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         if (view.getAdapter().getCount() == 1/*Header*/) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
         }
     }
 
@@ -113,7 +112,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         this.user = user;
         //
         setUserProfileInfo();
-        view.finishLoading();
         view.setTripImagesCount(user.getTripImagesCount());
         view.setBucketItemsCount(user.getBucketListItemsCount());
 

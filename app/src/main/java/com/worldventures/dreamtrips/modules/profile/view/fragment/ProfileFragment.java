@@ -9,6 +9,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
@@ -80,7 +81,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    profileView.getUserPhoto().setImageURI(uri);
+                    SimpleDraweeView draweeView = profileView.getUserPhoto();
+                    setImage(uri, draweeView);
                 }
             });
     }
@@ -90,17 +92,21 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
-                    if (profileView.getUserCover().getTag() != null) {
-                        builder.setLowResImageRequest(ImageRequest.fromUri((Uri) profileView.getUserCover().getTag()));
-                    }
-                    builder.setImageRequest(ImageRequest.fromUri(uri));
-                    DraweeController dc = builder.build();
-                    profileView.getUserCover().setController(dc);
-                    profileView.getUserCover().setTag(uri);
-
+                    SimpleDraweeView draweeView = profileView.getUserCover();
+                    setImage(uri, draweeView);
                 }
             });
+    }
+
+    private void setImage(Uri uri, SimpleDraweeView draweeView) {
+        PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
+        if (draweeView.getTag() != null) {
+            builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
+        }
+        builder.setImageRequest(ImageRequest.fromUri(uri));
+        DraweeController dc = builder.build();
+        draweeView.setController(dc);
+        draweeView.setTag(uri);
     }
 
     @Override

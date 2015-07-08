@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,13 +25,13 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
-import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     @InjectView(R.id.iv_filter)
     ImageView filter;
     @InjectView(R.id.search)
-    SearchView search;
+    DelaySearchView search;
     @InjectView(R.id.empty)
     RelativeLayout emptyView;
     @InjectView(R.id.recyclerViewFriends)
@@ -103,6 +103,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                getPresenter().setQuery(s);
                 return false;
             }
 
@@ -114,8 +115,8 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
             }
         });
         search.setQueryHint(getString(R.string.friend_search_placeholder));
-        search.setIconified(false);
-        search.setIconifiedByDefault(false);
+        search.setIconifiedByDefault(TextUtils.isEmpty(getPresenter().getQuery()));
+        search.setDelayInMillis(500);
     }
 
     private RecyclerView.LayoutManager getLayoutManager() {

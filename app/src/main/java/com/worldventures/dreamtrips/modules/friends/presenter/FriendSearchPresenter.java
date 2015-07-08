@@ -18,11 +18,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View> {
 
     private static final int PER_PAGE = 20;
 
-    private String query;
+    @Icicle String query;
 
     @Inject
     SnappyRepository snappyRepository;
@@ -109,6 +111,10 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     public void setQuery(String query) {
         this.query = query;
         adapterController.reload();
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     public interface View extends Presenter.View {

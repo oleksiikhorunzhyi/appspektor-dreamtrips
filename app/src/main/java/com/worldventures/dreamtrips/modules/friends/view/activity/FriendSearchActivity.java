@@ -24,6 +24,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
@@ -51,6 +52,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
+    DelaySearchView searchView;
 
     @Inject
     @ForActivity
@@ -96,9 +98,11 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconified(false);
         searchView.setIconifiedByDefault(false);
+        searchView.setDelayInMillis(500);
+        searchView.setQuery(getPresentationModel().getQuery(), false);
         searchItem.expandActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -144,7 +148,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
                 .show();
 
     }
-
 
     @Override
     public void finishLoading() {

@@ -8,6 +8,6 @@
         android:icon="@drawable/ic_search_white_18dp"
         app:iconifiedByDefault="false"
         app:showAsAction="always|collapseActionView"
-        app:actionViewClass="android.support.v7.widget.SearchView"/>
+        app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView"/>
 
 </menu>

@@ -17,8 +17,7 @@ public class UserSession {
     private String username;
     private long lastUpdate;
     private AppConfig globalConfig;
-    private List<Header> headers;
-    private List<Feature> features;
+    private List<Feature> permissions;
 
     public User getUser() {
         return user;
@@ -76,19 +75,11 @@ public class UserSession {
         this.globalConfig = globalConfig;
     }
 
-    public List<Header> getHeaders() {
-        return headers != null ? headers : new ArrayList<>();
-    }
-
-    public void setHeaders(List<Header> headers) {
-        this.headers = headers;
-    }
-
     public List<Feature> getFeatures() {
-        return features;
+        return permissions;
     }
 
-    public void setFeatures(List<Feature> features) {
-        this.features = features;
+    public void setFeatures(List<Feature> permissions) {
+        this.permissions = permissions;
     }
 }

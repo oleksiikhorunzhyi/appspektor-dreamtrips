@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -76,6 +77,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
 
         recyclerView.setAdapter(adapter);
 
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }

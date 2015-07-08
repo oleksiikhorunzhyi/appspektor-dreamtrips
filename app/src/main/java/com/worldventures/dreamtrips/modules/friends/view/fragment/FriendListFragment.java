@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -96,6 +97,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
         recyclerView.setLayoutManager(getLayoutManager());
         refreshLayout.setOnRefreshListener(this);
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -106,12 +108,14 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
             @Override
             public boolean onQueryTextChange(String s) {
+                recyclerView.hideEmptyView();
                 getPresenter().setQuery(s);
                 return false;
             }
         });
         search.setQueryHint(getString(R.string.friend_search_placeholder));
-        search.setIconifiedByDefault(true);
+        search.setIconified(false);
+        search.setIconifiedByDefault(false);
     }
 
     private RecyclerView.LayoutManager getLayoutManager() {

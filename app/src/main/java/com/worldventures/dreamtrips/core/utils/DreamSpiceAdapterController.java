@@ -43,7 +43,9 @@ public abstract class DreamSpiceAdapterController<BaseItemClass>
     @Override
     protected void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {
         if (spiceManager != null)
-            spiceManager.execute(request, baseRequestSuccessListener, baseRequestFailureListener);
+            spiceManager.execute(request,
+                    baseRequestSuccessListener,
+                    baseRequestFailureListener);
     }
 
 }

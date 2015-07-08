@@ -76,6 +76,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         ab.setDisplayHomeAsUpEnabled(true);
@@ -97,11 +98,8 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconified(false);
+        searchView.setIconifiedByDefault(false);
         searchItem.expandActionView();
-        searchView.setOnCloseListener(() -> {
-            getPresentationModel().reload();
-            return false;
-        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

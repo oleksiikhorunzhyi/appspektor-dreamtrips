@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.app.ProgressDialog;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
@@ -76,6 +78,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected SimpleDraweeView civUserPhoto;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
+    @InjectView(R.id.progress_flag)
+    protected ProgressBar progressFlag;
 
     private TripImagesListFragment.Type type;
 
@@ -389,17 +393,30 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
     }
 
-    private ProgressDialog progressDialog;
-
     @Override
     public void showProgress() {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.show();
+        progressFlag.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.hide();
+        progressFlag.setVisibility(View.GONE);
+    }
+
+    private SweetAlertDialog progressDialog;
+
+    @Override
+    public void showCoverProgress() {
+        progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        progressDialog.setTitleText(getString(R.string.uploading_photo));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideCoverProgress() {
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismissWithAnimation();
     }
 
     @Override

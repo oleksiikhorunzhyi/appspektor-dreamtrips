@@ -206,6 +206,7 @@
         <item>設為封面</item>
         <item>刪</item>
     </string-array>
+    <string name="uploading_photo">照片上傳中</string>
     <string name="bucket_photo_cover">設為封面</string>
     <string name="bucket_photo_delete">刪</string>
     <string name="add_pictures">添加圖片</string>

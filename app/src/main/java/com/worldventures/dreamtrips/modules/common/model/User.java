@@ -231,13 +231,14 @@ public class User extends BaseEntity implements Parcelable {
 
         User user = (User) o;
 
-        return !(username != null ? !username.equals(user.username) : user.username != null);
+        return !(firstName != null ? !firstName.equals(user.firstName) : user.firstName != null);
+
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         return result;
     }
 

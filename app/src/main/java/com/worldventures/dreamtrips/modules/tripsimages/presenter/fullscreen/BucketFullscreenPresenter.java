@@ -63,9 +63,9 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
     @Override
     public void onCheckboxPressed(boolean status) {
         if (status && !bucketItem.getCoverPhoto().equals(photo)) {
-            view.showProgress();
+            view.showCoverProgress();
             bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getId(), item ->
-                            view.hideProgress(),
+                            view.hideCoverProgress(),
                     this);
         }
     }

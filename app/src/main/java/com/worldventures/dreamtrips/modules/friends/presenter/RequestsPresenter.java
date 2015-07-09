@@ -33,8 +33,13 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        reloadRequests();
         circles = snappyRepository.getCircles();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadRequests();
     }
 
     public void reloadRequests() {

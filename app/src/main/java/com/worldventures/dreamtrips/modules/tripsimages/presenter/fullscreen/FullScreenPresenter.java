@@ -159,5 +159,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void hideProgress();
 
         void setSocial(Boolean isEnabled);
+
+        void showCoverProgress();
+
+        void hideCoverProgress();
     }
 }

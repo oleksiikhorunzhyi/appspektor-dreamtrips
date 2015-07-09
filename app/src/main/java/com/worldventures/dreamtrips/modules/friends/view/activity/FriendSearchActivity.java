@@ -95,12 +95,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (searchView != null) searchView.setQuery(getPresentationModel().getQuery(), false);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -110,6 +104,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         searchView.setDelayInMillis(500);
         searchItem.expandActionView();
 
+        searchView.setQuery(getPresentationModel().getQuery(), false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -122,6 +117,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
                 return false;
             }
         });
+
         return true;
     }
 

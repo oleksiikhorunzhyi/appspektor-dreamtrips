@@ -206,6 +206,7 @@
         <item>@string/bucket_photo_cover</item>
         <item>@string/bucket_photo_delete</item>
     </string-array>
+    <string name="uploading_photo">Uploading photo</string>
     <string name="bucket_photo_cover">Set as cover</string>
     <string name="bucket_photo_delete">Delete</string>
     <string name="add_pictures">Add pictures</string>

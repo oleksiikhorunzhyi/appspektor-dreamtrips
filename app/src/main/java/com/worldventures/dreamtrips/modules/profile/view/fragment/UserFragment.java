@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -32,9 +30,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @InjectView(R.id.friend_request)
     protected ViewGroup friendRequest;
     @InjectView(R.id.accept)
-    protected AppCompatButton accept;
+    protected TextView accept;
     @InjectView(R.id.reject)
-    protected AppCompatButton reject;
+    protected TextView reject;
     @InjectView(R.id.control_panel)
     protected ViewGroup controlPanel;
 
@@ -46,8 +44,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        ColorStateList csl = getResources().getColorStateList(R.color.button_background);
-        reject.setSupportBackgroundTintList(csl);
 
         controlPanel.setVisibility(View.GONE);
         cover.setVisibility(View.GONE);

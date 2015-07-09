@@ -122,8 +122,14 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
+    public void setQuery(String query) {
+        if (searchView != null) searchView.setQuery(getPresentationModel().getQuery(), false);
+    }
+
+    @Override
     protected FriendSearchPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new FriendSearchPresenter();
+        String query = getIntent().getStringExtra(FriendSearchPresenter.EXTRA_QUERY);
+        return new FriendSearchPresenter(query);
     }
 
     @Override

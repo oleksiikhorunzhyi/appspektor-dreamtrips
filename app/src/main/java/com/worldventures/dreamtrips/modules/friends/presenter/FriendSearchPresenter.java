@@ -22,6 +22,8 @@ import icepick.Icicle;
 
 public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View> {
 
+    public static final String EXTRA_QUERY = "query_extra";
+
     private static final int PER_PAGE = 20;
 
     @Icicle String query;
@@ -57,6 +59,10 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         }
     };
 
+    public FriendSearchPresenter(String query) {
+        this.query = query;
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -71,6 +77,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
         }
+        view.setQuery(query);
     }
 
     public void onEvent(AddUserRequestEvent event) {
@@ -126,6 +133,8 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         void startLoading();
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
+
+        void setQuery(String query);
     }
 
 }

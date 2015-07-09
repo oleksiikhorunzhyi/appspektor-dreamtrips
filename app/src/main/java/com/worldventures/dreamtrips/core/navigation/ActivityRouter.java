@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -187,8 +188,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FriendsActivity.class);
     }
 
-    public void openFriendsSearch() {
-        startActivity(FriendSearchActivity.class);
+    public void openFriendsSearch(String query) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FriendSearchPresenter.EXTRA_QUERY, query);
+        startActivity(FriendSearchActivity.class, bundle);
     }
 
 }

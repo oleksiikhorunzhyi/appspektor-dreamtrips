@@ -103,7 +103,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void globalSearch() {
-        activityRouter.openFriendsSearch();
+        activityRouter.openFriendsSearch(query);
     }
 
     public void reload() {

@@ -1,18 +1,20 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Photo implements Parcelable, IFullScreenObject {
+public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     private String title;
     private Date shotAt;
@@ -246,5 +248,15 @@ public class Photo implements Parcelable, IFullScreenObject {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public String place() {
+        return null;
+    }
+
+    @Override
+    public String date(Context context) {
+        return null;
     }
 }

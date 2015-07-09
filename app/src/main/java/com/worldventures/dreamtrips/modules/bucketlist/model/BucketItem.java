@@ -1,17 +1,21 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import android.content.Context;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(TaggedFieldSerializer.class)
-public class BucketItem extends BaseEntity {
+public class BucketItem extends BaseEntity implements IFeedObject {
 
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";
@@ -192,5 +196,15 @@ public class BucketItem extends BaseEntity {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public String place() {
+        return BucketItemInfoUtil.getPlace(this);
+    }
+
+    @Override
+    public String date(Context context) {
+        return BucketItemInfoUtil.getTime(context, this);
     }
 }

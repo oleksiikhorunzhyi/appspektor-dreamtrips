@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
+import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
@@ -86,32 +87,11 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             String s = Character.toUpperCase(bucketItem.getType().charAt(0)) + bucketItem.getType().substring(1);
             view.setCategory(s);
         }
-        view.setPlace(getPlace());
-        view.setCover();
+        view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+        String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
+        String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
+        view.setCover(medium, original);
         view.setupDiningView(bucketItem.getDining());
-    }
-
-    public String getMediumResUrl() {
-        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
-        return bucketItem.getCoverUrl(width, width);
-    }
-
-    public String getHighResUrl() {
-        int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_cover_width);
-        return bucketItem.getCoverUrl(width, width);
-    }
-
-    private String getPlace() {
-        String place = null;
-        if (bucketItem.getLocation() != null) {
-            place = bucketItem.getLocation().getName();
-        }
-        if (bucketItem.getDining() != null && !TextUtils.isEmpty(bucketItem.getDining().getCity())
-                && !TextUtils.isEmpty(bucketItem.getDining().getCountry())) {
-            place = TextUtils.join(", ", new String[]{bucketItem.getDining().getCity(),
-                    bucketItem.getDining().getCountry()});
-        }
-        return place;
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -119,7 +99,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setPlace(String place);
 
-        void setCover();
+        void setCover(String medium, String original);
 
         void showEditContainer();
 

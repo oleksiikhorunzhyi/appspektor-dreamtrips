@@ -9,7 +9,7 @@
               tools:showIn="@layout/adapter_item_feed_trip_event">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/avatar"
+        android:id="@+id/feed_header_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="@dimen/spacing_normal"
@@ -23,30 +23,30 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/feed_header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/abc_text_size_subhead_material"
             tools:text="John Doe booked a DreamTrip"/>
 
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/feed_header_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@drawable/ic_location"
+            android:drawableLeft="@drawable/feed_location_small"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
             tools:text="Katerini, Greece"/>
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/feed_header_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@drawable/ic_calendar"
+            android:drawableLeft="@drawable/feed_calendar_small"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"

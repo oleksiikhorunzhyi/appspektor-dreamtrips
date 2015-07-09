@@ -74,7 +74,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
     @Override
     public void onResume() {
-        if (view.getAdapter().getCount() == 1/*Header*/) {
+        if (view.getAdapter().getCount() <= 1/*Header*/) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
         }

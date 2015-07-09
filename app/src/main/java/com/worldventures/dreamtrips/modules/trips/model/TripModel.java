@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
@@ -9,6 +10,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.io.Serializable;
@@ -17,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel implements Filterable, Serializable {
+public class TripModel implements Filterable, Serializable, IFeedObject {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
@@ -306,5 +308,15 @@ public class TripModel implements Filterable, Serializable {
     @Override
     public String toString() {
         return tripId;
+    }
+
+    @Override
+    public String place() {
+        return null;
+    }
+
+    @Override
+    public String date(Context context) {
+        return null;
     }
 }

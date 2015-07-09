@@ -207,10 +207,10 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
+        if (position == 0 && mHeader != null) {
             return VIEW_TYPES.HEADER;
         }
-        int itemViewType = super.getItemViewType(position - 1);
+        int itemViewType = super.getItemViewType(Math.max(0, position - 1));
         if (position == 1)
             return VIEW_TYPES.FIRST_VIEW = itemViewType;
         return itemViewType;

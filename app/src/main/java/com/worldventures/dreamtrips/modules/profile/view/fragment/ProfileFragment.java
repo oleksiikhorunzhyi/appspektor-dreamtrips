@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;

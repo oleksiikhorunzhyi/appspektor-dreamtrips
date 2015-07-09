@@ -11,13 +11,13 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import butterknife.InjectView;
 
 public class FeedItemHeaderHelper {
-    @InjectView(R.id.avatar)
+    @InjectView(R.id.feed_header_avatar)
     SimpleDraweeView avatar;
-    @InjectView(R.id.text)
+    @InjectView(R.id.feed_header_text)
     TextView text;
-    @InjectView(R.id.location)
+    @InjectView(R.id.feed_header_location)
     TextView location;
-    @InjectView(R.id.date)
+    @InjectView(R.id.feed_header_date)
     TextView date;
 
 
@@ -25,8 +25,8 @@ public class FeedItemHeaderHelper {
         User user = feedModel.getUsers()[0];
         avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         text.setText(feedModel.infoText());
-        //TODO location.setText();
-        //TODO date.setText();
+        location.setText(feedModel.getEntities()[0].place());
+        date.setText(feedModel.getEntities()[0].date(date.getContext()));
     }
 
 }

@@ -10,7 +10,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -25,6 +24,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -122,7 +122,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.setStatus(bucketItem.isDone());
         view.setPeople(bucketItem.getFriends());
         view.setTags(bucketItem.getBucketTags());
-        view.setTime(DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date()));
+        view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
 
         List<BucketPhoto> photos = bucketItem.getPhotos();
         if (photos != null) {

@@ -28,7 +28,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     private BucketTabsPresenter.BucketType type;
 
-    BucketHelper bucketHelper;
+    SweetDialogHelper sweetDialogHelper;
 
     protected DreamSpiceAdapterController<PopularBucketItem> adapterController = new DreamSpiceAdapterController<PopularBucketItem>() {
         @Override
@@ -55,7 +55,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     public BucketPopularPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
-        bucketHelper = new BucketHelper();
+        sweetDialogHelper = new SweetDialogHelper();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
                 item -> {
-                    bucketHelper.notifyItemAddedToBucket(activity, item);
+                    sweetDialogHelper.notifyItemAddedToBucket(activity, item);
                     view.getAdapter().remove(popularBucketItem);
                     view.getAdapter().notifyItemRemoved(position);
                 },

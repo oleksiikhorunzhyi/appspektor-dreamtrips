@@ -5,6 +5,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
@@ -51,6 +53,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
+    DelaySearchView searchView;
 
     @Inject
     @ForActivity
@@ -58,6 +61,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     private RecyclerViewStateDelegate stateDelegate;
 
     private LoaderRecycleAdapter<User> adapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         ab.setDisplayHomeAsUpEnabled(true);
@@ -86,23 +91,33 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
+            }
+        });
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconified(false);
+        searchView.setIconifiedByDefault(false);
+        searchView.setDelayInMillis(500);
         searchItem.expandActionView();
-        searchView.setOnCloseListener(() -> {
-            getPresentationModel().reload();
-            return false;
-        });
 
+        searchView.setQuery(getPresentationModel().getQuery(), false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -115,12 +130,19 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
                 return false;
             }
         });
+
         return true;
     }
 
     @Override
+    public void setQuery(String query) {
+        if (searchView != null) searchView.setQuery(getPresentationModel().getQuery(), false);
+    }
+
+    @Override
     protected FriendSearchPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new FriendSearchPresenter();
+        String query = getIntent().getStringExtra(FriendSearchPresenter.EXTRA_QUERY);
+        return new FriendSearchPresenter(query);
     }
 
     @Override
@@ -146,7 +168,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
                 .show();
 
     }
-
 
     @Override
     public void finishLoading() {

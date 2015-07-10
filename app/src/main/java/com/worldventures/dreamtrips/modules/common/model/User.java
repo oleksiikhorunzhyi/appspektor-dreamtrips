@@ -63,6 +63,9 @@ public class User extends BaseEntity implements Parcelable {
      */
     private List<String> subscriptions;
 
+    //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
+    private boolean socialEnabled;
+
     public User() {
     }
 
@@ -79,6 +82,7 @@ public class User extends BaseEntity implements Parcelable {
         this.id = in.readInt();
         this.enrollDate = (Date) in.readSerializable();
         this.relationship = in.readString();
+        this.socialEnabled = in.readInt() != 0;
     }
 
     public String getBackgroundPhotoUrl() {
@@ -90,6 +94,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public void setBackgroundPhotoUrl(String backgroundPhotoUrl) {
         this.backgroundPhotoUrl = backgroundPhotoUrl;
+    }
+
+    public boolean isSocialEnabled() {
+        return socialEnabled;
     }
 
     public String getUsername() {
@@ -214,6 +222,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeInt(this.id);
         dest.writeSerializable(enrollDate);
         dest.writeString(this.relationship);
+        dest.writeInt(socialEnabled ? 1 : 0);
     }
 
     @Override
@@ -224,13 +233,14 @@ public class User extends BaseEntity implements Parcelable {
 
         User user = (User) o;
 
-        return !(username != null ? !username.equals(user.username) : user.username != null);
+        return !(firstName != null ? !firstName.equals(user.firstName) : user.firstName != null);
+
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         return result;
     }
 

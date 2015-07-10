@@ -6,6 +6,7 @@ import com.innahema.collections.query.functions.Action1;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
@@ -14,16 +15,8 @@ import java.util.List;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
-    List<Circle> circles;
-
     public UserPresenter(Bundle args) {
         super(args.getParcelable(ProfileModule.EXTRA_USER));
-    }
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        circles = snappyRepository.getCircles();
     }
 
     @Override
@@ -33,12 +26,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     @Override
-    protected void onProfileLoaded(User user) {
-        super.onProfileLoaded(user);
-        setRelation(user);
-    }
-
-    private void setRelation(User user) {
+    protected void setUserProfileInfo() {
+        super.setUserProfileInfo();
+        view.setSocial(user.isSocialEnabled());
         view.setIsFriend(false);
         if (user.getRelationship() != null) {
             switch (user.getRelationship()) {
@@ -62,7 +52,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     public void addFriendClicked() {
-        if (user.getRelationship().equals(User.RELATION_NONE) || user.getRelationship().equals(User.RELATION_REJECT))
+        if (user.getRelationship() != null
+                && (user.getRelationship().equals(User.RELATION_NONE)
+                || user.getRelationship().equals(User.RELATION_REJECT)))
             view.showAddFriendDialog(circles, this::addAsFriend);
     }
 
@@ -75,15 +67,30 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     private void addAsFriend(int position) {
-        Circle circle = circles.get(position);
-        doRequest(new AddUserRequestCommand(user.getId(), circle),
-                jsonObject -> view.setWaiting());
+        view.startLoading();
+        if (circles.isEmpty()) {
+            view.startLoading();
+            doRequest(new GetCirclesQuery(), circles -> {
+                view.finishLoading();
+                saveCircles(circles);
+                addAsFriend(position);
+            });
+        } else {
+            Circle circle = circles.get(position);
+            doRequest(new AddUserRequestCommand(user.getId(), circle),
+                    jsonObject -> {
+                        view.finishLoading();
+                        view.setWaiting();
+                    });
+        }
     }
 
     private void reject() {
+        view.startLoading();
         doRequest(new ActOnRequestCommand(user.getId(),
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
+                    view.finishLoading();
                     view.setIsFriend(false);
                     view.hideFriendRequest();
                 });

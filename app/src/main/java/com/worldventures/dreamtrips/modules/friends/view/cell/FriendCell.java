@@ -1,28 +1,22 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_user_wrapper)
+@Layout(R.layout.adapter_item_friend)
 public class FriendCell extends AbstractCell<Friend> {
 
     @InjectView(R.id.avatar)
@@ -33,8 +27,6 @@ public class FriendCell extends AbstractCell<Friend> {
     TextView tvGroup;
     @InjectView(R.id.tvMutual)
     TextView tvMutual;
-    @InjectView(R.id.action)
-    AppCompatButton action;
 
     public FriendCell(View view) {
         super(view);
@@ -42,9 +34,6 @@ public class FriendCell extends AbstractCell<Friend> {
 
     @Override
     protected void syncUIStateWithModel() {
-        ColorStateList csl = itemView.getResources().getColorStateList(R.color.button_background);
-        action.setSupportBackgroundTintList(csl);
-
         Friend user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         tvName.setText(user.getFullName());

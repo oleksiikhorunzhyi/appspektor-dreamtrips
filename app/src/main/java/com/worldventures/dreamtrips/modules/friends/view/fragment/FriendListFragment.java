@@ -8,29 +8,32 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
-import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
@@ -41,13 +44,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_friends)
+@MenuResource(R.menu.menu_friend)
 public class FriendListFragment extends BaseFragment<FriendListPresenter> implements SwipeRefreshLayout.OnRefreshListener, FriendListPresenter.View {
 
 
     @InjectView(R.id.iv_filter)
     ImageView filter;
     @InjectView(R.id.search)
-    SearchView search;
+    DelaySearchView search;
     @InjectView(R.id.empty)
     RelativeLayout emptyView;
     @InjectView(R.id.recyclerViewFriends)
@@ -64,6 +68,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     private ListPopupWindow popupWindow;
 
     private WeakHandler weakHandler;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,16 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_friend:
+                getPresenter().globalSearch();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
@@ -94,28 +109,43 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setLayoutManager(getLayoutManager());
+        setLayoutManager();
+        recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                getPresenter().setQuery(s);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                recyclerView.hideEmptyView();
                 getPresenter().setQuery(s);
                 return false;
             }
         });
         search.setQueryHint(getString(R.string.friend_search_placeholder));
-        search.setIconifiedByDefault(true);
+        search.setIconifiedByDefault(false);
+        search.setDelayInMillis(500);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
+            }
+        });
     }
 
-    private RecyclerView.LayoutManager getLayoutManager() {
-        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+    private void setLayoutManager() {
+        layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
                 new GridLayoutManager(getActivity(),
                         ViewUtils.isTablet(getActivity()) ? 3 : 2) :
                 new LinearLayoutManager(getActivity());

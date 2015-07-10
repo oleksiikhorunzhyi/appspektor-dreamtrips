@@ -79,7 +79,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (this.presenter != null) this.presenter.onMenuPrepared();
+        if (this.presenter != null && isAdded()) this.presenter.onMenuPrepared();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -8,6 +7,7 @@ import android.widget.ArrayAdapter;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_profile)
+@MenuResource(R.menu.menu_empty)
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
@@ -28,8 +29,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        ColorStateList csl = getResources().getColorStateList(R.color.button_background);
-        profileView.getReject().setSupportBackgroundTintList(csl);
 
         profileView.getControlPanel().setVisibility(View.GONE);
         profileView.getCover().setVisibility(View.GONE);
@@ -37,6 +36,11 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileView.getUpdateInfo().setVisibility(View.GONE);
         profileView.getUserBalance().setVisibility(View.GONE);
         profileView.getAddFriend().setVisibility(View.VISIBLE);
+
+        profileView.setOnAcceptRequest(() -> getPresenter().acceptClicked());
+        profileView.setOnRejectRequest(() -> getPresenter().rejectClicked());
+        profileView.setOnAddFriend(() -> getPresenter().addFriendClicked());
+
     }
 
     @Override
@@ -62,21 +66,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
                 R.drawable.respond,
                 0, 0);
-    }
-
-    @OnClick(R.id.accept)
-    void onAcceptRequest() {
-        getPresenter().acceptClicked();
-    }
-
-    @OnClick(R.id.reject)
-    void onRejectRequest() {
-        getPresenter().rejectClicked();
-    }
-
-    @OnClick(R.id.add_friend)
-    void onAddFriend() {
-        getPresenter().addFriendClicked();
     }
 
     @Override

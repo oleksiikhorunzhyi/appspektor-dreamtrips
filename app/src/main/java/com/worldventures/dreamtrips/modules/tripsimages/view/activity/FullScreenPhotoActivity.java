@@ -51,12 +51,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -64,10 +58,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
         position = bundleExtra.getInt(EXTRA_POSITION);
 
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            Icepick.restoreInstanceState(this, savedInstanceState);
-        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

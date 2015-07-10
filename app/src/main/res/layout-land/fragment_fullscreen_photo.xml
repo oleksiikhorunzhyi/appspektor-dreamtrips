@@ -56,6 +56,7 @@
                     fresco:roundAsCircle="true"/>
 
                 <LinearLayout
+                    android:id="@+id/title_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -68,7 +69,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:maxLines="3"
-                        android:text="Jason Gordon"
                         android:textColor="@android:color/white"
                         android:textSize="18dp"
                         android:visibility="visible"/>
@@ -78,8 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="Sun Francisco, CA"
-                        android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#ff9e9e9e"
                         android:visibility="gone"/>
 
@@ -88,13 +87,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="APR 18, 2014 9:00AM"
                         android:textColor="#ff9e9e9e"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/bottom_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -113,7 +112,6 @@
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:singleLine="true"
-                    android:text="TRIP TO THE GOLDEN GATE"
                     android:textColor="@android:color/white"
                     android:textSize="16dp"/>
 
@@ -160,7 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:drawableLeft="@drawable/ic_fs_comments_small"
+                    android:drawableLeft="@drawable/ic_fs_thumb_up_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
                     android:text="150 likes"
@@ -171,7 +169,7 @@
                     android:id="@+id/tv_comments_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_fs_thumb_up_small"
+                    android:drawableLeft="@drawable/ic_fs_comments_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
                     android:text="12 comments"

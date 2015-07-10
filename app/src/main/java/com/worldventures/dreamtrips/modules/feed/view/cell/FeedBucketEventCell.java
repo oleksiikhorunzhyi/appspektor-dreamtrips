@@ -75,7 +75,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
         textViewFriends.setText(bucketItem.getFriends());
         textViewTags.setText(bucketItem.getBucketTags());
 
-        itemView.setOnClickListener(view -> router.openBucketItemDetails(getType(bucketItem.getType()), bucketItem.getId()));
+       //itemView.setOnClickListener(view -> router.openBucketItemDetails(getType(bucketItem.getType()), bucketItem.getId()));
     }
 
 

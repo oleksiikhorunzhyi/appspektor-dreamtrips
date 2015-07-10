@@ -33,8 +33,13 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        reloadRequests();
         circles = snappyRepository.getCircles();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadRequests();
     }
 
     public void reloadRequests() {
@@ -101,8 +106,10 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     private void onSuccess(int position) {
         if (view != null) {
             view.finishLoading();
-            view.getAdapter().remove(position);
-            view.getAdapter().notifyItemRemoved(position);
+            if (position < view.getAdapter().getItemCount()) {
+                view.getAdapter().remove(position);
+                view.getAdapter().notifyItemRemoved(position);
+            }
         }
     }
 

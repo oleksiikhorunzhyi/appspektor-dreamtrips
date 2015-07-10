@@ -18,7 +18,8 @@ public class ProfileActivityPresenter extends Presenter<Presenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (user.equals(getAccount())) {
+        User account = getAccount();
+        if (user.equals(account)) {
             fragmentCompass.replace(Route.MY_PROFILE);
         } else {
             Bundle args = new Bundle();

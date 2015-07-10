@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -19,11 +18,20 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View> {
 
-    private static final int PER_PAGE = 20;
+    public static final String EXTRA_QUERY = "query_extra";
 
-    private String query;
+    private static final int PER_PAGE = 20;
+    private final static int VISIBLE_TRESHOLD = 5;
+
+    private int previousTotal = 0;
+    private boolean loading = true;
+
+    @Icicle
+    String query;
 
     @Inject
     SnappyRepository snappyRepository;
@@ -51,10 +59,18 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
                 view.finishLoading();
                 if (spiceException != null) {
                     handleError(spiceException);
+                } else {
+                    if (type.equals(LoadType.RELOAD)) {
+                        resetLazyLoadFields();
+                    }
                 }
             }
         }
     };
+
+    public FriendSearchPresenter(String query) {
+        this.query = query;
+    }
 
     @Override
     public void takeView(View view) {
@@ -70,6 +86,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
         }
+        view.setQuery(query);
     }
 
     public void onEvent(AddUserRequestEvent event) {
@@ -79,16 +96,20 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     private void addFriend(User user, Circle circle, int position) {
+        view.startLoading();
         doRequest(new AddUserRequestCommand(user.getId(), circle),
-                jsonObject -> onSuccess(position),
+                jsonObject -> onSuccess(user, position),
                 this::onError);
     }
 
-    private void onSuccess(int position) {
+    private void onSuccess(User user, int position) {
         if (view != null) {
             view.finishLoading();
-            view.getAdapter().remove(position);
-            view.getAdapter().notifyItemRemoved(position);
+            if (position < view.getAdapter().getItemCount() &&
+                    view.getAdapter().getItem(position).equals(user)) {
+                view.getAdapter().remove(position);
+                view.getAdapter().notifyItemRemoved(position);
+            }
         }
     }
 
@@ -100,13 +121,34 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     public void reload() {
-        this.query = null;
         adapterController.reload();
     }
 
     public void setQuery(String query) {
+        adapterController.cancelRequest();
         this.query = query;
         adapterController.reload();
+    }
+
+    private void resetLazyLoadFields() {
+        previousTotal = 0;
+        loading = false;
+    }
+
+    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+                && totalItemCount % PER_PAGE == 0) {
+            adapterController.loadNext();
+            loading = true;
+        }
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     public interface View extends Presenter.View {
@@ -118,6 +160,8 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         void startLoading();
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
+
+        void setQuery(String query);
     }
 
 }

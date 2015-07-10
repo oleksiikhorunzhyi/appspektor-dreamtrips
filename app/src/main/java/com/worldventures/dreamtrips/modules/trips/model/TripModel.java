@@ -278,7 +278,9 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     @Override
     public boolean containsQuery(String query) {
-        return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
+        return name == null || location == null ||
+                query == null || name.toLowerCase().contains(query) ||
+                location.getName().toLowerCase().contains(query);
     }
 
     @Override

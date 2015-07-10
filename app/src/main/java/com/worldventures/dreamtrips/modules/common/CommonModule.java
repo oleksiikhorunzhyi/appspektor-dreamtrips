@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.modules.common;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
@@ -71,14 +70,10 @@ public class CommonModule {
     }
 
     @Provides
-    ComponentsConfig provideComponentsConfig(SessionHolder<UserSession> appSession) {
+    ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
         List<String> activeComponents = new ArrayList<>();
 
-        User user = appSession.get().get().getUser();
-
-        if (user.isMember()) {
-            activeComponents.add(TripsModule.TRIPS);
-        }
+        featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
@@ -86,9 +81,7 @@ public class CommonModule {
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
 
-        if (user.isRep()) {
-            activeComponents.add(ReptoolsModule.REP_TOOLS);
-        }
+        featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));
 
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS);

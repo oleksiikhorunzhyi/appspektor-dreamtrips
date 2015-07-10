@@ -43,7 +43,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
     @Override
     public void onMenuPrepared() {
-        if (trip != null) {
+        if (view != null && trip != null) {
             view.setLike(trip.isLiked());
             view.setInBucket(trip.isInBucketList());
         }

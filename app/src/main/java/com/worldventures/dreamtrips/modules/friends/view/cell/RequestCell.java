@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
-import android.content.res.ColorStateList;
 import android.net.Uri;
-import android.support.v7.widget.AppCompatButton;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -25,14 +23,14 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_request)
 public class RequestCell extends AbstractCell<User> {
 
-    @InjectView(R.id.accept)
-    AppCompatButton accept;
-    @InjectView(R.id.reject)
-    AppCompatButton reject;
-    @InjectView(R.id.hide)
-    AppCompatButton hide;
-    @InjectView(R.id.cancel)
-    AppCompatButton cancel;
+    @InjectView(R.id.accept_button)
+    FrameLayout accept;
+    @InjectView(R.id.reject_button)
+    FrameLayout reject;
+    @InjectView(R.id.hide_button)
+    FrameLayout hide;
+    @InjectView(R.id.cancel_button)
+    FrameLayout cancel;
     @InjectView(R.id.avatar)
     SimpleDraweeView avatar;
     @InjectView(R.id.name)
@@ -46,14 +44,9 @@ public class RequestCell extends AbstractCell<User> {
 
     @Override
     protected void syncUIStateWithModel() {
-        ColorStateList csl = itemView.getResources().getColorStateList(R.color.button_background);
         name.setText(getModelObject().getFullName());
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
-
-        reject.setSupportBackgroundTintList(csl);
-        hide.setSupportBackgroundTintList(csl);
-        cancel.setSupportBackgroundTintList(csl);
 
         switch (getModelObject().getRelationship()) {
             case User.RELATION_INCOMING_REQUEST:

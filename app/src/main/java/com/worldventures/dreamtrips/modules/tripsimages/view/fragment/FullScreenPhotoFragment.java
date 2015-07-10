@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -34,6 +36,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
@@ -45,8 +48,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ScaleImageView ivImage;
     @InjectView(R.id.ll_global_content_wrapper)
     protected LinearLayout llContentWrapper;
-    @InjectView(R.id.ll_top_container)
-    protected LinearLayout llTopContainer;
     @InjectView(R.id.ll_more_info)
     protected LinearLayout llMoreInfo;
     @InjectView(R.id.tv_title)
@@ -67,8 +68,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected TextView tvCommentsCount;
     @InjectView(R.id.iv_like)
     protected ImageView ivLike;
-    @InjectView(R.id.iv_comment)
-    protected ImageView ivComment;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
     @InjectView(R.id.iv_flag)
@@ -77,10 +76,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivDelete;
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView civUserPhoto;
-    @InjectView(R.id.progress_flag)
-    protected ProgressBar progressBar;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
+    @InjectView(R.id.progress_flag)
+    protected ProgressBar progressFlag;
 
     private TripImagesListFragment.Type type;
 
@@ -101,15 +100,19 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
+
+        ivImage.setSingleTapListener(this::toggleContent);
+        ivImage.setDoubleTapListener(this::hideContent);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        checkBox.setOnCheckedChangeListener((cb, b) -> {
-            checkBox.setClickable(false);
-            getPresenter().onCheckboxPressed(b);
-        });
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (ViewUtils.isLandscapeOrientation(getActivity())) {
+            hideContent();
+        } else {
+            showContent();
+        }
     }
 
     @Override
@@ -152,13 +155,20 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 }).show();
     }
 
-    @OnClick(R.id.iv_image)
-    public void actionImageClick() {
+    public void toggleContent() {
         if (llContentWrapper.getVisibility() == View.VISIBLE) {
-            llContentWrapper.setVisibility(View.GONE);
+            hideContent();
         } else {
-            llContentWrapper.setVisibility(View.VISIBLE);
+            showContent();
         }
+    }
+
+    private void hideContent() {
+        llContentWrapper.setVisibility(View.GONE);
+    }
+
+    private void showContent() {
+        llContentWrapper.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.tv_see_more)
@@ -183,7 +193,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onUserClicked();
     }
 
-    @OnClick(R.id.ll_top_container)
+    @OnClick({R.id.bottom_container, R.id.title_container})
     public void actionSeeLess() {
         if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
             llMoreInfo.setVisibility(View.GONE);
@@ -385,12 +395,28 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressFlag.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        progressFlag.setVisibility(View.GONE);
+    }
+
+    private SweetAlertDialog progressDialog;
+
+    @Override
+    public void showCoverProgress() {
+        progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        progressDialog.setTitleText(getString(R.string.uploading_photo));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideCoverProgress() {
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismissWithAnimation();
     }
 
     @Override
@@ -401,4 +427,17 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         checkBox.setChecked(status);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkBox.setOnCheckedChangeListener((cb, b) -> {
+            checkBox.setClickable(!b);
+            getPresenter().onCheckboxPressed(b);
+        });
+    }
+
+    @Override
+    public void setSocial(Boolean isEnabled) {
+        civUserPhoto.setEnabled(isEnabled);
+    }
 }

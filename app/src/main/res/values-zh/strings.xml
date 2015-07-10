@@ -138,6 +138,9 @@
     <string name="bucket_item_photos">添加圖片</string>
     <string name="category">分類</string>
     <string name="bucket_added">%s 已放入您的願望清單中</string>
+    <string name="trip_liked">%s 已添加至您的收藏夾</string>
+    <string name="trip_unliked">%s 已從您的收藏夾移出</string>
+    <string name="congrats">恭喜!</string>
     <string name="bucket_delete_undo">項目已刪除</string>
     <string name="undo">撤銷</string>
     <string name="location">地點</string>
@@ -203,6 +206,7 @@
         <item>設為封面</item>
         <item>刪</item>
     </string-array>
+    <string name="uploading_photo">照片上傳中</string>
     <string name="bucket_photo_cover">設為封面</string>
     <string name="bucket_photo_delete">刪</string>
     <string name="add_pictures">添加圖片</string>

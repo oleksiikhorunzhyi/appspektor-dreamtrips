@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.manager;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
@@ -252,16 +254,23 @@ public class BucketItemManager {
 
     public void updateBucketItemCoverId(BucketItem bucketItem, int coverID,
                                         DreamSpiceManager.FailureListener failureListener) {
+        updateBucketItemCoverId(bucketItem, coverID, null, failureListener);
+    }
+
+
+    public void updateBucketItemCoverId(BucketItem bucketItem, int coverID,
+                                        @Nullable DreamSpiceManager.SuccessListener<BucketItem> successListener,
+                                        DreamSpiceManager.FailureListener failureListener) {
         BucketCoverModel bucketCoverModel = new BucketCoverModel();
         bucketCoverModel.setCoverId(coverID);
         bucketCoverModel.setStatus(bucketItem.getStatus());
         bucketCoverModel.setType(bucketItem.getType());
         bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
-        updateBucketItem(bucketCoverModel, failureListener);
+        updateBucketItem(bucketCoverModel, successListener, failureListener);
     }
 
     public void updateItemStatus(String id, boolean status,
-                                 DreamSpiceManager.SuccessListener<BucketItem> successListener,
+                                 @Nullable DreamSpiceManager.SuccessListener<BucketItem> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         BucketBasePostItem bucketBasePostItem = new BucketBasePostItem();
         bucketBasePostItem.setId(id);
@@ -276,7 +285,7 @@ public class BucketItemManager {
     }
 
     public void updateBucketItem(BucketBasePostItem bucketBasePostItem,
-                                 DreamSpiceManager.SuccessListener<BucketItem> successListener,
+                                 @Nullable DreamSpiceManager.SuccessListener<BucketItem> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         UpdateBucketItemCommand updateBucketItemCommand =
                 new UpdateBucketItemCommand(bucketBasePostItem.getId(), bucketBasePostItem);

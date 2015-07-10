@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.custom;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,9 +72,9 @@ public class ProfileView extends LinearLayout {
     @InjectView(R.id.friend_request)
     protected ViewGroup friendRequest;
     @InjectView(R.id.accept)
-    protected AppCompatButton accept;
+    protected AppCompatTextView accept;
     @InjectView(R.id.reject)
-    protected AppCompatButton reject;
+    protected AppCompatTextView reject;
     @InjectView(R.id.control_panel)
     protected ViewGroup controlPanel;
 
@@ -84,6 +84,11 @@ public class ProfileView extends LinearLayout {
     OnClickListener onBucketListClicked;
     OnClickListener onPhotoClick;
     OnClickListener onCoverClick;
+
+
+    OnClickListener onAcceptRequest;
+    OnClickListener onRejectRequest;
+    OnClickListener onAddFriend;
 
     public ProfileView(Context context) {
         this(context, null);
@@ -208,11 +213,11 @@ public class ProfileView extends LinearLayout {
         return friendRequest;
     }
 
-    public AppCompatButton getAccept() {
+    public AppCompatTextView getAccept() {
         return accept;
     }
 
-    public AppCompatButton getReject() {
+    public AppCompatTextView getReject() {
         return reject;
     }
 
@@ -254,6 +259,21 @@ public class ProfileView extends LinearLayout {
         //TODO
     }
 
+    @OnClick(R.id.accept)
+    protected void onAcceptRequest() {
+        if (onAcceptRequest != null) onAcceptRequest.click();
+    }
+
+    @OnClick(R.id.reject)
+    protected void onRejectRequest() {
+        if (onRejectRequest != null) onRejectRequest.click();
+    }
+
+    @OnClick(R.id.add_friend)
+    protected void onAddFriend() {
+        if (onAddFriend != null) onAddFriend.click();
+    }
+
 
     public void setOnBucketListClicked(OnClickListener onBucketListClicked) {
         this.onBucketListClicked = onBucketListClicked;
@@ -273,6 +293,18 @@ public class ProfileView extends LinearLayout {
 
     public void setOnCoverClick(OnClickListener onCoverClick) {
         this.onCoverClick = onCoverClick;
+    }
+
+    public void setOnAcceptRequest(OnClickListener onAcceptRequest) {
+        this.onAcceptRequest = onAcceptRequest;
+    }
+
+    public void setOnRejectRequest(OnClickListener onRejectRequest) {
+        this.onRejectRequest = onRejectRequest;
+    }
+
+    public void setOnAddFriend(OnClickListener onAddFriend) {
+        this.onAddFriend = onAddFriend;
     }
 
     public interface OnClickListener {

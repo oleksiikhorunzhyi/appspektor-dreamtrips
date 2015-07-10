@@ -40,12 +40,12 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         Photo photoObj = obj.getEntities()[0];
         photo.setImageURI(Uri.parse(photoObj.getImages().getUrl()));
         title.setText(photoObj.getTitle());
-        itemView.setOnClickListener(view -> {
+      /*  itemView.setOnClickListener(view -> {
             String url = getModelObject().getEntities()[0].getImages().getUrl();
             TripImage tripImage = new TripImage();
             tripImage.setUrl(url);
             router.openFullScreenTrip(Collections.singletonList((Object) tripImage), 0);
-        });
+        });*/
 
     }
 

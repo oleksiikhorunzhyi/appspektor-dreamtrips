@@ -9,6 +9,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -28,6 +29,7 @@ import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 
@@ -39,6 +41,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     private DecimalFormat df = new DecimalFormat("#0.00");
     private String coverTempFilePath;
 
+    @Icicle
+    boolean shouldReload;
 
     public AccountPresenter() {
         super();
@@ -48,6 +52,15 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     protected void loadProfile() {
         view.startLoading();
         doRequest(new GetProfileQuery(), this::onProfileLoaded);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldReload) {
+            shouldReload = false;
+            loadProfile();
+        }
     }
 
     @Override
@@ -99,16 +112,19 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
+        view.setSocial(featureManager.available(Feature.SOCIAL));
     }
 
     @Override
     public void openBucketList() {
+        shouldReload = true;
         activityRouter.openComponentActivity(rootComponentsProvider
                 .getComponentByKey(BucketListModule.BUCKETLIST));
     }
 
     @Override
     public void openTripImages() {
+        shouldReload = true;
         Bundle args = new Bundle();
         args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
         activityRouter.openComponentActivity(rootComponentsProvider

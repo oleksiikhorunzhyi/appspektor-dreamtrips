@@ -75,7 +75,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
-
     }
 
     @Override
@@ -152,6 +151,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
+    public void setSocial(Boolean isEnabled) {
+        profileView.getAddFriend().setEnabled(isEnabled);
+        profileView.getFriendRequest().setEnabled(isEnabled);
+    }
+
+    @Override
     public void setMember() {
         profileView.getUserStatus().setTextColor(getResources().getColor(R.color.white));
         profileView.getUserStatus().setText("");
@@ -182,10 +187,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void startLoading() {
-        weakHandler.post(() -> {
-            if (swipeContainer != null)
-                swipeContainer.setRefreshing(true);
-        });
+        weakHandler.postDelayed(() -> {
+            if (swipeContainer != null) swipeContainer.setRefreshing(true);
+        }, 100);
     }
 
     @Override

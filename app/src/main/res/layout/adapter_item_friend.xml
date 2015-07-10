@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:fresco="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
@@ -47,9 +48,25 @@
             tools:text="10 mutual friends"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/action"
-        style="@style/BlackBorderButton"
-        android:text="@string/social_user_wrapper_cell_actions"/>
+    <com.dd.ShadowLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_tiny"
+        app:sl_cornerRadius="2dp"
+        app:sl_shadowColor="@color/black_semi_transparent">
+
+        <TextView
+            android:id="@+id/action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_white"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/social_user_wrapper_cell_actions"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            />
+
+    </com.dd.ShadowLayout>
+
 
 </LinearLayout>

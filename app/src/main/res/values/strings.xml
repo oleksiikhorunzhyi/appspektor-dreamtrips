@@ -139,6 +139,9 @@
     <string name="bucket_item_photos">Add pictures</string>
     <string name="category">Category</string>
     <string name="bucket_added">%s is added to your bucket list</string>
+    <string name="trip_liked">%s added to your Favorites</string>
+    <string name="trip_unliked">%s removed from your Favorites</string>
+    <string name="congrats">Congrats!</string>
     <string name="bucket_delete_undo">Item was deleted</string>
     <string name="undo">UNDO</string>
     <string name="location">location</string>
@@ -204,6 +207,7 @@
         <item>@string/bucket_photo_cover</item>
         <item>@string/bucket_photo_delete</item>
     </string-array>
+    <string name="uploading_photo">Uploading photo</string>
     <string name="bucket_photo_cover">Set as cover</string>
     <string name="bucket_photo_delete">Delete</string>
     <string name="add_pictures">Add pictures</string>
@@ -271,7 +275,7 @@
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
     <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Golden member</string>
+    <string name="profile_golden">Gold member</string>
 
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
@@ -281,7 +285,7 @@
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_add_friend">Add Friend</string>
-    <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
+    <string name="profile_friend_request" formatted="false">%s sent you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
     <string name="title_activity_friends">Friends</string>

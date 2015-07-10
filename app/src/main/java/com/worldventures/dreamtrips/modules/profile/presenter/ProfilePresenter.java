@@ -7,6 +7,7 @@ import android.text.format.DateFormat;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
@@ -57,6 +58,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         }
     };
 
+    List<Circle> circles;
+
     public ProfilePresenter() {
     }
 
@@ -67,9 +70,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        circles = snappyRepository.getCircles();
         setUserProfileInfo();
-        loadProfile();
         loadCircles();
+        loadProfile();
     }
 
     @Override
@@ -89,6 +93,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     protected void setUserProfileInfo() {
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
+        view.setTripsCount(0);
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
@@ -112,11 +119,18 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         this.user = user;
         //
         setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-
+        view.finishLoading();
         loadFeed();
+    }
 
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        onProfileError();
+    }
+
+    protected void onProfileError() {
+        view.finishLoading();
     }
 
     private void loadFeed() {
@@ -126,7 +140,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     protected abstract void loadProfile();
 
     public void openFriends() {
-        activityRouter.openFriends();
+        if (circles.isEmpty()) {
+            view.startLoading();
+            doRequest(new GetCirclesQuery(), circles -> {
+                view.finishLoading();
+                saveCircles(circles);
+                openFriends();
+            });
+        } else {
+            activityRouter.openFriends();
+        }
     }
 
     ///Circles
@@ -135,7 +158,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         doRequest(new GetCirclesQuery(), this::saveCircles);
     }
 
-    private void saveCircles(List<Circle> circles) {
+    protected void saveCircles(List<Circle> circles) {
+        this.circles = circles;
         snappyRepository.saveCircles(circles);
     }
 
@@ -163,6 +187,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         void setTripImagesCount(int count);
 
         void setTripsCount(int count);
+
+        void setSocial(Boolean isEnabled);
 
         void setBucketItemsCount(int count);
 

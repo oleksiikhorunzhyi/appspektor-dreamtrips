@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
@@ -42,10 +42,10 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     private boolean loadWithStatus;
 
     private DreamSpiceAdapterController<TripModel> adapterController;
-    private BucketHelper bucketHelper;
+    private SweetDialogHelper sweetDialogHelper;
 
     public TripListPresenter() {
-        bucketHelper = new BucketHelper();
+        sweetDialogHelper = new SweetDialogHelper();
     }
 
     @Override
@@ -154,7 +154,10 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
                 new LikeTripCommand(trip.getLikeId()) :
                 new UnlikeTripCommand(trip.getLikeId());
 
-        doRequest(request, (object) -> onSuccess(trip), (spiceException) -> {
+        doRequest(request, (object) -> {
+            onSuccess(trip);
+            sweetDialogHelper.notifyTripLiked(activity, trip);
+        }, (spiceException) -> {
             trip.setLiked(!trip.isLiked());
             onFailure();
         });
@@ -172,7 +175,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         if (trip.isInBucketList()) {
             bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
                 onSuccess(trip);
-                bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
+                sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
             }, spiceException -> {
                 trip.setInBucketList(!trip.isInBucketList());
                 onFailure();

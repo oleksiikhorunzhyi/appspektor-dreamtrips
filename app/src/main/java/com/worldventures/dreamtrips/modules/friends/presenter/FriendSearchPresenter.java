@@ -25,8 +25,13 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     public static final String EXTRA_QUERY = "query_extra";
 
     private static final int PER_PAGE = 20;
+    private final static int VISIBLE_TRESHOLD = 5;
 
-    @Icicle String query;
+    private int previousTotal = 0;
+    private boolean loading = true;
+
+    @Icicle
+    String query;
 
     @Inject
     SnappyRepository snappyRepository;
@@ -54,6 +59,10 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
                 view.finishLoading();
                 if (spiceException != null) {
                     handleError(spiceException);
+                } else {
+                    if (type.equals(LoadType.RELOAD)) {
+                        resetLazyLoadFields();
+                    }
                 }
             }
         }
@@ -116,8 +125,26 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     }
 
     public void setQuery(String query) {
+        adapterController.cancelRequest();
         this.query = query;
         adapterController.reload();
+    }
+
+    private void resetLazyLoadFields() {
+        previousTotal = 0;
+        loading = false;
+    }
+
+    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+                && totalItemCount % PER_PAGE == 0) {
+            adapterController.loadNext();
+            loading = true;
+        }
     }
 
     public String getQuery() {

@@ -33,9 +33,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     protected Type type;
     private boolean isFullscreen;
 
-    protected int firstVisibleItem;
-    protected int visibleItemCount;
-    protected int totalItemCount;
     private int previousTotal = 0;
     private boolean loading = true;
 
@@ -70,23 +67,17 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     private void resetLazyLoadFields() {
-        firstVisibleItem = 0;
-        visibleItemCount = 0;
-        totalItemCount = 0;
         previousTotal = 0;
         loading = false;
     }
 
-    public void scrolled(int childCount, int itemCount, int firstVisibleItemPosition) {
-        visibleItemCount = childCount;
-        totalItemCount = itemCount;
-        firstVisibleItem = firstVisibleItemPosition;
+    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
         if (totalItemCount > previousTotal) {
             loading = false;
             previousTotal = totalItemCount;
         }
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
-                && itemCount % PER_PAGE == 0) {
+                && totalItemCount % PER_PAGE == 0) {
             getAdapterController().loadNext();
             loading = true;
         }

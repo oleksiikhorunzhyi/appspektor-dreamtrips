@@ -68,6 +68,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     private ListPopupWindow popupWindow;
 
     private WeakHandler weakHandler;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,8 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setLayoutManager(getLayoutManager());
+        setLayoutManager();
+        recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -128,12 +130,22 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
             }
         });
         search.setQueryHint(getString(R.string.friend_search_placeholder));
-        search.setIconifiedByDefault(TextUtils.isEmpty(getPresenter().getQuery()));
+        search.setIconifiedByDefault(false);
         search.setDelayInMillis(500);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
+            }
+        });
     }
 
-    private RecyclerView.LayoutManager getLayoutManager() {
-        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+    private void setLayoutManager() {
+        layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
                 new GridLayoutManager(getActivity(),
                         ViewUtils.isTablet(getActivity()) ? 3 : 2) :
                 new LinearLayoutManager(getActivity());

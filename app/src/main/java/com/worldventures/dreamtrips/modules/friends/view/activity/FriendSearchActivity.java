@@ -5,6 +5,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -60,6 +61,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     private RecyclerViewStateDelegate stateDelegate;
 
     private LoaderRecycleAdapter<User> adapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,9 +91,20 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
+            }
+        });
+
     }
 
     @Override

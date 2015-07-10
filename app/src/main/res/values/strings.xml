@@ -274,7 +274,7 @@
     <string name="profile_messages">Messages</string>
     <string name="profile_more">More</string>
     <string name="profile_platinum">Platinum member</string>
-    <string name="profile_golden">Golden member</string>
+    <string name="profile_golden">Gold member</string>
 
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
@@ -284,7 +284,7 @@
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_add_friend">Add Friend</string>
-    <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
+    <string name="profile_friend_request" formatted="false">%s sent you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
     <string name="title_activity_friends">Friends</string>

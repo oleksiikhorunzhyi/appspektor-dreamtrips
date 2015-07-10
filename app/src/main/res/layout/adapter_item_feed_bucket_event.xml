@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="2dp">
+    android:layout_margin="@dimen/spacing_tiny">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,8 +17,6 @@
         <include layout="@layout/layout_cover_details"/>
 
         <include layout="@layout/include_bucket_item_meta"/>
-
-        <include layout="@layout/include_feed_footer"/>
 
     </LinearLayout>
 

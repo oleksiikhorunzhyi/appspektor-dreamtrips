@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 
 import java.util.Date;
 import java.util.List;
@@ -242,7 +244,7 @@ public class User extends BaseEntity implements Parcelable {
         return result;
     }
 
-    public static class Avatar implements Parcelable {
+    public static class Avatar implements Parcelable, IFeedObject {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
             public Avatar createFromParcel(Parcel source) {
                 return new Avatar(source);
@@ -300,6 +302,16 @@ public class User extends BaseEntity implements Parcelable {
             dest.writeString(this.original);
             dest.writeString(this.medium);
             dest.writeString(this.thumb);
+        }
+
+        @Override
+        public String place() {
+            return "";
+        }
+
+        @Override
+        public String date(Context context) {
+            return "";
         }
     }
 }

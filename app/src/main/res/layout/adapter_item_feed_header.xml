@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="horizontal"
+              tools:showIn="@layout/adapter_item_feed_trip_event">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/feed_header_avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/spacing_normal"
+        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+        fresco:roundAsCircle="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/feed_header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_subhead_material"
+            tools:text="John Doe booked a DreamTrip"/>
+
+        <TextView
+            android:id="@+id/feed_header_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/feed_location_small"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/abc_text_size_small_material"
+            tools:text="Katerini, Greece"/>
+
+        <TextView
+            android:id="@+id/feed_header_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/feed_calendar_small"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/abc_text_size_small_material"
+            tools:text="Jan 27, 2015   9:00AM"/>
+    </LinearLayout>
+
+</LinearLayout>

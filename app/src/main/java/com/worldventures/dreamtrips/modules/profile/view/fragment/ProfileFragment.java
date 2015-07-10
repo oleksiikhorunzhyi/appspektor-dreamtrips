@@ -1,98 +1,61 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
+import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import icepick.Icicle;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.user_cover)
-    protected SimpleDraweeView userCover;
-
-    @InjectView(R.id.user_photo)
-    protected SimpleDraweeView userPhoto;
-    @InjectView(R.id.cover_camera)
-    protected ImageView cover;
-    @InjectView(R.id.avatar_camera)
-    protected ImageView avatar;
-    @InjectView(R.id.user_name)
-    protected TextView userName;
-    @InjectView(R.id.et_date_of_birth)
-    protected DTEditText dateOfBirth;
-    @InjectView(R.id.pb)
-    protected ProgressBar progressBar;
-    @InjectView(R.id.pb_cover)
-    protected ProgressBar coverProgressBar;
-    @InjectView(R.id.trip_images)
-    protected TextView tripImages;
-    @InjectView(R.id.dream_trips)
-    protected TextView trips;
-    @InjectView(R.id.update_info)
-    protected TextView updateInfo;
-    @InjectView(R.id.add_friend)
-    protected TextView addFriend;
-    @InjectView(R.id.user_status)
-    protected TextView userStatus;
-    @InjectView(R.id.bucket_list)
-    protected TextView buckets;
-    @InjectView(R.id.et_user_id)
-    protected DTEditText etUserId;
-    @InjectView(R.id.et_from)
-    protected DTEditText etFrom;
-    @InjectView(R.id.et_enroll)
-    protected DTEditText etEnroll;
-    @InjectView(R.id.post)
-    protected View post;
-    @InjectView(R.id.friends)
-    protected View friends;
-    @InjectView(R.id.messages)
-    protected View messages;
-    @InjectView(R.id.dt_points)
-    protected TextView dtPoints;
-    @InjectView(R.id.rovia_bucks)
-    protected TextView roviaBucks;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout swipeContainer;
-    @InjectView(R.id.user_balance)
-    protected ViewGroup userBalance;
-
-    @InjectView(R.id.expandable_info)
-    protected ExpandableLayout info;
-    @InjectView(R.id.more)
-    protected ViewGroup more;
-
     @Icicle
     String filePath;
     @Icicle
     int callbackType;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
+    @InjectView(R.id.swipe_container)
+    SwipeRefreshLayout swipeContainer;
+
+    ProfileView profileView;
+
+    @InjectView(R.id.feedview)
+    FeedView feedView;
+
     private WeakHandler weakHandler;
+    private Bundle savedInstanceState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         weakHandler = new WeakHandler();
     }
@@ -100,22 +63,18 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
+        layoutConfiguration();
+        profileView = new ProfileView(getActivity());
+        profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
+        profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
+        profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
+        feedView.setup(injectorProvider, savedInstanceState);
+        feedView.setHeader(profileView);
+    }
+
+    private void layoutConfiguration() {
         swipeContainer.setOnRefreshListener(this);
-    }
-
-    @OnClick(R.id.bucket_list)
-    public void onBucketListClicked() {
-        getPresenter().openBucketList();
-    }
-
-    @OnClick(R.id.trip_images)
-    public void onTripImageClicked() {
-        getPresenter().openTripImages();
-    }
-
-    @OnClick(R.id.friends)
-    public void onFriendsClick() {
-        getPresenter().openFriends();
     }
 
     @Override
@@ -123,7 +82,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.userPhoto.setImageURI(uri);
+                    SimpleDraweeView draweeView = profileView.getUserPhoto();
+                    setImage(uri, draweeView);
                 }
             });
     }
@@ -133,97 +93,90 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
-                    if (userCover.getTag() != null) {
-                        builder.setLowResImageRequest(ImageRequest.fromUri((Uri) userCover.getTag()));
-                    }
-                    builder.setImageRequest(ImageRequest.fromUri(uri));
-                    DraweeController dc = builder.build();
-                    this.userCover.setController(dc);
-                    this.userCover.setTag(uri);
-
+                    SimpleDraweeView draweeView = profileView.getUserCover();
+                    setImage(uri, draweeView);
                 }
             });
     }
 
+    private void setImage(Uri uri, SimpleDraweeView draweeView) {
+        PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
+        if (draweeView.getTag() != null) {
+            builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
+        }
+        builder.setImageRequest(ImageRequest.fromUri(uri));
+        DraweeController dc = builder.build();
+        draweeView.setController(dc);
+        draweeView.setTag(uri);
+    }
+
     @Override
     public void setDateOfBirth(String format) {
-        dateOfBirth.setText(format);
+        profileView.getDateOfBirth().setText(format);
     }
 
     @Override
     public void setFrom(String location) {
-        etFrom.setText(location);
+        profileView.getEtFrom().setText(location);
     }
 
     @Override
     public void setUserName(String username) {
-        userName.setText(username);
+        profileView.getUserName().setText(username);
     }
 
     @Override
     public void setUserId(String username) {
-        etUserId.setText(username);
+        profileView.getEtUserId().setText(username);
     }
 
     @Override
     public void setEnrollDate(String date) {
-        etEnroll.setText(date);
-    }
-
-    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
-    public void onInfoClick() {
-        if (info.isOpened()) {
-            info.hide();
-            more.setVisibility(View.VISIBLE);
-        } else {
-            info.show();
-            more.setVisibility(View.INVISIBLE);
-        }
+        profileView.getEtEnroll().setText(date);
     }
 
     @Override
     public void setTripImagesCount(int count) {
-        tripImages.setText(String.format(getString(R.string.profile_trip_images), count));
+        profileView.getTripImages().setText(String.format(getString(R.string.profile_trip_images), count));
     }
 
     @Override
     public void setTripsCount(int count) {
-        trips.setText(String.format(getString(R.string.profile_dream_trips), count));
+        profileView.getTrips().setText(String.format(getString(R.string.profile_dream_trips), count));
     }
 
     @Override
     public void setBucketItemsCount(int count) {
-        buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
+        profileView.getBuckets().setText(String.format(getString(R.string.profile_bucket_list), count));
     }
 
     @Override
     public void setSocial(Boolean isEnabled) {
-        addFriend.setEnabled(isEnabled);
-        friends.setEnabled(isEnabled);
+        profileView.getAddFriend().setEnabled(isEnabled);
+        profileView.getFriendRequest().setEnabled(isEnabled);
     }
 
     @Override
     public void setMember() {
-        userStatus.setTextColor(getResources().getColor(R.color.white));
-        userStatus.setText("");
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(0,
+        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.white));
+        profileView.getUserStatus().setText("");
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(0,
                 0, 0, 0);
     }
 
     @Override
     public void setGold() {
-        userStatus.setTextColor(getResources().getColor(R.color.golden_user));
-        userStatus.setText(R.string.profile_golden);
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
+        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.golden_user));
+        profileView.getUserStatus().setText(R.string.profile_golden);
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
                 0, 0, 0);
     }
 
     @Override
     public void setPlatinum() {
-        userStatus.setTextColor(getResources().getColor(R.color.platinum_user));
-        userStatus.setText(R.string.profile_platinum);
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
+        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.platinum_user));
+        profileView.getUserStatus().setText(R.string.profile_platinum);
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
                 0, 0, 0);
     }
 
@@ -242,9 +195,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void finishLoading() {
         weakHandler.post(() -> {
-            if (swipeContainer != null) swipeContainer.setRefreshing(false);
+            if (swipeContainer != null)
+                swipeContainer.setRefreshing(false);
         });
     }
 
 
+    @Override
+    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+        return feedView.getAdapter();
+    }
 }

@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -119,9 +120,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void setCover() {
-        String medium = getPresenter().getMediumResUrl();
-        String original = getPresenter().getHighResUrl();
+    public void setCover(String medium, String original) {
         loadImage(medium, original);
     }
 
@@ -133,12 +132,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         imageViewCover.setController(draweeController);
     }
 
-    @OnClick(R.id.imageViewEdit)
+    @OnClick(R.id.bucketItemEdit)
     protected void onEdit() {
         getPresenter().onEdit();
     }
 
-    @OnClick(R.id.imageViewShare)
+    @OnClick(R.id.bucketItemShare)
     protected void onShare() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(R.string.action_share)
@@ -169,11 +168,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setTime(String time) {
-        if (TextUtils.isEmpty(time)) {
-            textViewDate.setText(R.string.someday);
-        } else {
             textViewDate.setText(time);
-        }
     }
 
     @Override
@@ -196,7 +191,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().onStatusUpdated(isChecked);
     }
 
-    @OnClick(R.id.delete)
+    @OnClick(R.id.bucketItemDelete)
     public void onDelete() {
         getPresenter().onDelete();
     }

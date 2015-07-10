@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
@@ -16,8 +15,6 @@ import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
@@ -27,11 +24,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     private static final int AVATAR_CALLBACK = 1;
     private static final int COVER_CALLBACK = 2;
-
-    @InjectView(R.id.rovia_bucks)
-    protected TextView roviaBucks;
-    @InjectView(R.id.dt_points)
-    protected TextView dtPoints;
 
     private PickImageDialog pid;
 
@@ -43,11 +35,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        cover.setVisibility(View.VISIBLE);
-        avatar.setVisibility(View.VISIBLE);
-        addFriend.setVisibility(View.GONE);
-        updateInfo.setVisibility(View.VISIBLE);
-        userBalance.setVisibility(View.VISIBLE);
+        profileView.getCover().setVisibility(View.VISIBLE);
+        profileView.getAvatar().setVisibility(View.VISIBLE);
+        profileView.getAddFriend().setVisibility(View.GONE);
+        profileView.getUpdateInfo().setVisibility(View.VISIBLE);
+        profileView.getUserBalance().setVisibility(View.VISIBLE);
+
+        profileView.setOnPhotoClick(() -> getPresenter().photoClicked());
+        profileView.setOnCoverClick(() -> getPresenter().coverClicked());
     }
 
     @Override
@@ -60,16 +55,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onDestroyView() {
         super.onDestroyView();
         eventBus.post(new ActionBarTransparentEvent(false));
-    }
-
-    @OnClick(R.id.user_photo)
-    public void onPhotoClick() {
-        getPresenter().photoClicked();
-    }
-
-    @OnClick(R.id.user_cover)
-    public void onCoverClick() {
-        getPresenter().coverClicked();
     }
 
     @Override
@@ -95,8 +80,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
                     if (which == 0) {
                         pid.setRequestTypes(PickImageDialog.REQUEST_CAPTURE_PICTURE);
-                    } else {
+                    } else if (which == 1) {
                         pid.setRequestTypes(PickImageDialog.REQUEST_PICK_PICTURE);
+                    } else {
+                        pid.setRequestTypes(PickImageDialog.REQUEST_FACEBOOK);
                     }
                     pid.show();
                     filePath = pid.getFilePath();
@@ -106,12 +93,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void avatarProgressVisible(boolean visible) {
-        progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        profileView.getProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void coverProgressVisible(boolean visible) {
-        coverProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        profileView.getCoverProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE);
 
     }
 
@@ -145,17 +132,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void setRoviaBucks(String count) {
-        roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
+        profileView.getRoviaBucks().setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
     }
 
     @Override
     public void setDreamTripPoints(String count) {
-        dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
-    }
-
-    @OnClick(R.id.update_info)
-    void onUpdateInfo() {
-
+        profileView.getDtPoints().setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
     }
 
     private void showLogoutDialog() {

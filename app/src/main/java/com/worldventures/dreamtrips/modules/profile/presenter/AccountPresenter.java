@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
@@ -19,6 +20,9 @@ import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.util.Action;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -149,17 +153,30 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
 
     public void onAvatarChosen(Fragment fragment, ChosenImage image, String error) {
         if (image != null) {
-            final File file = new File(image.getFileThumbnail());
-            final TypedFile typedFile = new TypedFile("image/*", file);
             view.avatarProgressVisible(true);
-            TrackingHelper.profileUploadStart(getAccountUserId());
-            doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
+            String fileThumbnail = image.getFileThumbnail();
+            if (ValidationUtils.isUrl(fileThumbnail)) {
+                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
+            } else {
+                uploadAvatar(fileThumbnail);
+            }
         }
+    }
+
+    private void uploadAvatar(String fileThumbnail) {
+        final File file = new File(fileThumbnail);
+        final TypedFile typedFile = new TypedFile("image/*", file);
+        TrackingHelper.profileUploadStart(getAccountUserId());
+        doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
     }
 
     public void onCoverChosen(Fragment fragment, ChosenImage image, String error) {
         if (image != null) {
-            Crop.prepare(image.getFileThumbnail()).ratio(3, 2).startFrom((Fragment) view);
+            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
+                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
+            } else {
+                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+            }
         }
     }
 
@@ -167,7 +184,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     public void onCoverCropped(String path, String errorMsg) {
         if (path != null) {
             this.coverTempFilePath = path;
-            view.setCoverImage(Uri.fromFile(new File(path)));
             final File file = new File(path);
             final TypedFile typedFile = new TypedFile("image/*", file);
             view.coverProgressVisible(true);
@@ -178,6 +194,16 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
             view.informUser(errorMsg);
         }
     }
+
+    private void cacheFacebookImage(String url, Action<String> action) {
+        String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
+        BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
+
+        dreamSpiceManager.execute(bigBinaryRequest, inputStream -> {
+            action.action(filePath);
+        }, null);
+    }
+
 
     public interface View extends ProfilePresenter.View {
         void avatarProgressVisible(boolean visible);

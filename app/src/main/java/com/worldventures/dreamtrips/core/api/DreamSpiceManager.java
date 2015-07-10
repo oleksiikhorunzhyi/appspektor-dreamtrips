@@ -294,5 +294,4 @@ public class DreamSpiceManager extends SpiceManager {
     public interface SuccessListener<T> {
         void onRequestSuccess(T t);
     }
-
 }

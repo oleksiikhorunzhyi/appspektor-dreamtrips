@@ -7,7 +7,6 @@ import android.text.format.DateFormat;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
@@ -26,7 +25,12 @@ import javax.inject.Inject;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
+    private final static int VISIBLE_TRESHOLD = 5;
+
     protected User user;
+
+    private int previousTotal = 0;
+    private boolean loading = true;
 
     @Inject
     SnappyRepository snappyRepository;
@@ -52,7 +56,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
             if (adapterController != null) {
                 view.finishLoading();
                 if (spiceException != null) {
-                    handleError(spiceException);
+                    view.onFeedError();
+                }
+                if (type.equals(LoadType.RELOAD)) {
+                    resetLazyLoadFields();
                 }
             }
         }
@@ -123,17 +130,18 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loadFeed();
     }
 
+    protected void onProfileError() {
+        view.finishLoading();
+        loadFeed();
+    }
+
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
         onProfileError();
     }
 
-    protected void onProfileError() {
-        view.finishLoading();
-    }
-
-    private void loadFeed() {
+    public void loadFeed() {
         adapterController.reload();
     }
 
@@ -161,6 +169,23 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     protected void saveCircles(List<Circle> circles) {
         this.circles = circles;
         snappyRepository.saveCircles(circles);
+    }
+
+    private void resetLazyLoadFields() {
+        previousTotal = 0;
+        loading = false;
+    }
+
+    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+                && totalItemCount % GetFeedQuery.LIMIT == 0) {
+            adapterController.loadNext();
+            loading = true;
+        }
     }
 
     public interface View extends Presenter.View {
@@ -199,5 +224,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         void setMember();
 
         IRoboSpiceAdapter<BaseFeedModel> getAdapter();
+
+        void onFeedError();
     }
 }

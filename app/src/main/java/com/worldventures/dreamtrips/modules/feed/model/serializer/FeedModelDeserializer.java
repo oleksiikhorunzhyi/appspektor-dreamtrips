@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -32,7 +33,10 @@ public class FeedModelDeserializer implements JsonDeserializer<BaseFeedModel> {
     public BaseFeedModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
         BaseFeedModel.Type type = gson.fromJson(json.getAsJsonObject().getAsJsonPrimitive("type"), BaseFeedModel.Type.class);
-
-        return gson.fromJson(json,type.getClazz());
+        if (type != null) {
+            return gson.fromJson(json, type.getClazz());
+        } else {
+            return new FeedUndefinedEventModel();
+        }
     }
 }

@@ -32,7 +32,7 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
         syncUIStateWithModelWasCalled = false;
         super.fillWithItem(item);
         if (!syncUIStateWithModelWasCalled) {
-            throw new IllegalStateException("syncUIStateWithModel was not called");
+            throw new IllegalStateException("super.syncUIStateWithModel was not called");
         }
 
     }

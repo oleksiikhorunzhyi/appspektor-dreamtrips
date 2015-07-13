@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -42,14 +42,18 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @ForActivity
     Provider<Injector> injectorProvider;
 
+    @InjectView(R.id.profile_toolbar)
+    protected Toolbar profileToolbar;
+
+
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
-    ProfileView profileView;
 
     @InjectView(R.id.feedview)
     FeedView feedView;
 
+    ProfileView profileView;
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
 
@@ -69,8 +73,19 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
         profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
         profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
+        profileView.setOnFeedReload(() -> getPresenter().loadFeed());
         feedView.setup(injectorProvider, savedInstanceState);
         feedView.setHeader(profileView);
+
+        feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int childCount = recyclerView.getChildCount();
+                int itemCount = feedView.getLayoutManager().getItemCount();
+                int firstVisibleItemPosition = feedView.getLayoutManager().findFirstVisibleItemPosition();
+                getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
+            }
+        });
     }
 
     private void layoutConfiguration() {
@@ -188,18 +203,27 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void startLoading() {
         weakHandler.postDelayed(() -> {
+            profileView.getProfileFeedReload().setVisibility(View.GONE);
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
         }, 100);
     }
 
     @Override
     public void finishLoading() {
-        weakHandler.post(() -> {
-            if (swipeContainer != null)
+        weakHandler.postDelayed(() -> {
+            if (swipeContainer != null) {
                 swipeContainer.setRefreshing(false);
-        });
+            }
+        }, 100);
     }
 
+    @Override
+    public void onFeedError() {
+        weakHandler.postDelayed(() -> {
+            profileView.getProfileFeedReload().setVisibility(View.VISIBLE);
+        }, 100);
+
+    }
 
     @Override
     public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {

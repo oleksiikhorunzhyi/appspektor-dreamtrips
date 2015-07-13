@@ -40,12 +40,16 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
     }
 
     public enum Type {
+        @SerializedName("Trip")
         TRIP(FeedTripEventModel.class),
+        @SerializedName("Photo")
         PHOTO(FeedPhotoEventModel.class),
         @SerializedName("BucketListItem")
         BUCKET_LIST_ITEM(FeedBucketEventModel.class),
         AVATAR(FeedAvatarEventModel.class),
-        BACKGROUND_PHOTO(FeedCoverEventModel.class);
+        BACKGROUND_PHOTO(FeedCoverEventModel.class),
+
+        UNDEFINED(FeedUndefinedEventModel.class);
 
         private Class clazz;
 

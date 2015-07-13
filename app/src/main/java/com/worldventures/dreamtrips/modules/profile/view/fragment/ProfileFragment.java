@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -24,8 +22,6 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
-
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

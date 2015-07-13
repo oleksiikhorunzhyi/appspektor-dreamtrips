@@ -26,6 +26,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     @Override
+    public void loadFeed() {
+
+    }
+
+    @Override
     protected void setUserProfileInfo() {
         super.setUserProfileInfo();
         view.setSocial(user.isSocialEnabled());

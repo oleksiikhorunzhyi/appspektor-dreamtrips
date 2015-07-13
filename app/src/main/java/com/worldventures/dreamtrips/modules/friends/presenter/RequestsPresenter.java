@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -76,7 +77,10 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             doRequest(new ActOnRequestCommand(event.getUser().getId(),
                             ActOnRequestCommand.Action.CONFIRM.name(),
                             circles.get(position).getId()),
-                    object -> onSuccess(event.getPosition()),
+                    object -> {
+                        eventBus.post(new ReloadFriendListEvent());
+                        onSuccess(event.getPosition());
+                    },
                     this::onError);
         });
     }

@@ -118,6 +118,19 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         searchItem.expandActionView();
 
         searchView.setQuery(getPresentationModel().getQuery(), false);
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                finish();
+                return false;
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

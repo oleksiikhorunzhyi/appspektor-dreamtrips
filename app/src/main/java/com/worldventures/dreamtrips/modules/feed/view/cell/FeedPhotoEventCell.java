@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -30,7 +31,8 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         super.syncUIStateWithModel();
         FeedPhotoEventModel obj = getModelObject();
         Photo photoObj = obj.getEntities()[0];
-        photo.setImageURI(Uri.parse(photoObj.getImages().getUrl()));
+        photo.setImageURI(Uri.parse(photoObj.getImages()
+                .getThumbUrl(itemView.getResources())));
         title.setText(photoObj.getTitle());
     }
 

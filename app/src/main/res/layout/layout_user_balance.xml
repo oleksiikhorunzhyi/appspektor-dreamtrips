@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/profile_background"
+              android:background="#F8F8F8"
               android:orientation="horizontal"
               tools:showIn="@layout/fragment_profile">
 

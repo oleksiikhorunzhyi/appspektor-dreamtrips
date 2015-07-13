@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
+import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
@@ -133,6 +134,10 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     private void resetLazyLoadFields() {
         previousTotal = 0;
         loading = false;
+    }
+
+    public void onEvent(ReloadFriendListEvent event) {
+        reload();
     }
 
     public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {

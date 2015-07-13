@@ -16,39 +16,22 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-@Layout(R.layout.adapter_item_feed_trip_event)
-public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
+@Layout(R.layout.adapter_item_feed_undefined_event)
+public class FeedUndefinedEventCell extends FeedHeaderCell<FeedTripEventModel> {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-    @Inject
-    ActivityRouter router;
-    protected SessionHolder<UserSession> appSessionHolder;
 
-    TripCell tripCell;
 
-    public FeedTripEventCell(View view) {
+    public FeedUndefinedEventCell(View view) {
         super(view);
-        tripCell = new TripCell(view);
-    }
-
-    @Override
-    public void afterInject() {
-        super.afterInject();
-        injectorProvider.get().inject(tripCell);
-    }
-
-    @Override
-    public void fillWithItem(FeedTripEventModel item) {
-        super.fillWithItem(item);
-        tripCell.fillWithItem(item.getEntities()[0]);
-
-        itemView.setOnClickListener(view -> router.openTripDetails(getModelObject().getEntities()[0]));
     }
 
     @Override
     public void prepareForReuse() {
 
+    }
+
+    @Override
+    protected void syncUIStateWithModel() {
+        super.syncUIStateWithModel();
     }
 }

@@ -77,6 +77,8 @@ public class ProfileView extends LinearLayout {
     protected AppCompatTextView reject;
     @InjectView(R.id.control_panel)
     protected ViewGroup controlPanel;
+    @InjectView(R.id.profile_feed_reload)
+    protected TextView profileFeedReload;
 
 
     OnClickListener onTripImageClicked;
@@ -89,6 +91,7 @@ public class ProfileView extends LinearLayout {
     OnClickListener onAcceptRequest;
     OnClickListener onRejectRequest;
     OnClickListener onAddFriend;
+    OnClickListener onFeedReload;
 
     public ProfileView(Context context) {
         this(context, null);
@@ -225,6 +228,9 @@ public class ProfileView extends LinearLayout {
         return controlPanel;
     }
 
+    public TextView getProfileFeedReload() {
+        return profileFeedReload;
+    }
 
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {
@@ -274,6 +280,10 @@ public class ProfileView extends LinearLayout {
         if (onAddFriend != null) onAddFriend.click();
     }
 
+    @OnClick(R.id.profile_feed_reload)
+    protected void onProfileFeedReload() {
+        if (onFeedReload != null) onFeedReload.click();
+    }
 
     public void setOnBucketListClicked(OnClickListener onBucketListClicked) {
         this.onBucketListClicked = onBucketListClicked;
@@ -305,6 +315,10 @@ public class ProfileView extends LinearLayout {
 
     public void setOnAddFriend(OnClickListener onAddFriend) {
         this.onAddFriend = onAddFriend;
+    }
+
+    public void setOnFeedReload(OnClickListener onFeedReload) {
+        this.onFeedReload = onFeedReload;
     }
 
     public interface OnClickListener {

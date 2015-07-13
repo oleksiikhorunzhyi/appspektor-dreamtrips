@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.HeaderLayoutManagerFixed;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 
 import javax.inject.Provider;
 
@@ -58,8 +60,9 @@ public class FeedView extends RecyclerView {
 
         adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
         adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-
         adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+
+        adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
 
         layoutManagerFixed = new HeaderLayoutManagerFixed(getContext());
         setLayoutManager(layoutManagerFixed);
@@ -69,6 +72,11 @@ public class FeedView extends RecyclerView {
 
         stateDelegate.setRecyclerView(this);
 
+    }
+
+    @Override
+    public HeaderLayoutManagerFixed getLayoutManager() {
+        return layoutManagerFixed;
     }
 
     public void setHeader(View header) {

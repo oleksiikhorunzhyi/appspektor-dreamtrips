@@ -206,5 +206,16 @@
             android:id="@+id/user_balance"
             layout="@layout/layout_user_balance"/>
 
+        <TextView
+            android:id="@+id/profile_feed_reload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/tripBookItPadding"
+            android:text="@string/reload_feed"
+            android:textColor="@color/tripPlaceColor"
+            android:textSize="22sp"
+            android:visibility="gone" />
+
     </LinearLayout>
 </merge>

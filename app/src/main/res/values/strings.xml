@@ -315,5 +315,6 @@
     <string name="friend_add_to">Add to:</string>
     <string name="bucket_current_cover">Current cover</string>
     <string name="bucket_item_edit_completed">Mark as done!</string>
+    <string name="reload_feed">Reload feed</string>
 
 </resources>

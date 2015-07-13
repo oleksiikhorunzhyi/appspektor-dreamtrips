@@ -6,3 +6,4 @@
 -keep interface com.techery.** { *; }
 -keep class com.worldventures.dreamtrips.** { *; }
 -keep interface com.worldventures.dreamtrips.** { *; }
+-keep class cn.pedant.SweetAlert.** { *; }

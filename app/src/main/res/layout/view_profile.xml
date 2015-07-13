@@ -100,7 +100,7 @@
                 android:paddingTop="10dp"
                 android:text="@string/profile_dream_trips"
                 android:textSize="@dimen/font_small"
-                android:visibility="gone"/>
+                android:enabled="false"/>
         </LinearLayout>
 
         <include
@@ -139,6 +139,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
+                android:enabled="false"
                 android:text="@string/profile_post"/>
 
             <View
@@ -175,6 +176,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
+                android:enabled="false"
                 android:text="@string/profile_messages"/>
 
             <View
@@ -193,6 +195,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
+                android:enabled="false"
                 android:text="@string/profile_more"/>
         </LinearLayout>
 

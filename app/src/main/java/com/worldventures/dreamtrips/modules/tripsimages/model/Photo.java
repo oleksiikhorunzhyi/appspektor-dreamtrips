@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -252,11 +251,7 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     @Override
     public String place() {
-        return null;
+        return getFsLocation();
     }
 
-    @Override
-    public String date(Context context) {
-        return null;
-    }
 }

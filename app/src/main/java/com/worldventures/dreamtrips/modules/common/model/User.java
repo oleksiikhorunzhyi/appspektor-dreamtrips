@@ -308,10 +308,5 @@ public class User extends BaseEntity implements Parcelable {
         public String place() {
             return "";
         }
-
-        @Override
-        public String date(Context context) {
-            return "";
-        }
     }
 }

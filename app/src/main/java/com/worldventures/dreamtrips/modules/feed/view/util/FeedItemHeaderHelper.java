@@ -1,10 +1,13 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.content.res.Resources;
 import android.net.Uri;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 
@@ -22,13 +25,19 @@ public class FeedItemHeaderHelper {
     TextView date;
 
 
-    public void set(BaseFeedModel feedModel) {
+    public void set(BaseFeedModel feedModel, Resources resources) {
         try {
             User user = feedModel.getUsers()[0];
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            text.setText(feedModel.infoText());
-            location.setText(feedModel.getEntities()[0].place());
-            date.setText(feedModel.getEntities()[0].date(date.getContext()));
+            text.setText(feedModel.infoText(resources));
+            if (!feedModel.getType().equals(BaseFeedModel.Type.PHOTO)) {
+                location.setVisibility(View.GONE);
+            } else {
+                location.setVisibility(View.VISIBLE);
+                location.setText(feedModel.getEntities()[0].place());
+            }
+            date.setText(DateTimeUtils.convertDateToString(feedModel.getPostedAt(),
+                    DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }

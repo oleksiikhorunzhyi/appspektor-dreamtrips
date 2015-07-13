@@ -202,9 +202,4 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     public String place() {
         return BucketItemInfoUtil.getPlace(this);
     }
-
-    @Override
-    public String date(Context context) {
-        return BucketItemInfoUtil.getTime(context, this);
-    }
 }

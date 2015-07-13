@@ -122,4 +122,12 @@ public class TripCell extends AbstractCell<TripModel> {
     @Override
     public void prepareForReuse() {
     }
+
+    public CheckedTextView getAddToBucketView() {
+        return addToBucketView;
+    }
+
+    public CheckedTextView getLikeView() {
+        return likeView;
+    }
 }

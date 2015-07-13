@@ -36,6 +36,7 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
     @Override
     public void afterInject() {
         super.afterInject();
+        tripCell.setEventBus(getEventBus());
         injectorProvider.get().inject(tripCell);
     }
 
@@ -43,8 +44,9 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
     public void fillWithItem(FeedTripEventModel item) {
         super.fillWithItem(item);
         tripCell.fillWithItem(item.getEntities()[0]);
-
-        itemView.setOnClickListener(view -> router.openTripDetails(getModelObject().getEntities()[0]));
+        tripCell.getAddToBucketView().setVisibility(View.GONE);
+        tripCell.getLikeView().setVisibility(View.GONE);
+        //itemView.setOnClickListener(view -> router.openTripDetails(getModelObject().getEntities()[0]));
     }
 
     @Override

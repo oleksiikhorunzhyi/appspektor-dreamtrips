@@ -20,6 +20,6 @@ public class GetUserFeedQuery extends Query<ArrayList<BaseFeedModel>> {
 
     @Override
     public ArrayList<BaseFeedModel> loadDataFromNetwork() throws Exception {
-        return getService().getUserFeed(userId, LIMIT, offset);
+        return getService().getUserFeed(userId, LIMIT, offset + 1);
     }
 }

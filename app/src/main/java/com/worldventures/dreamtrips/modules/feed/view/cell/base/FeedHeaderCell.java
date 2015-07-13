@@ -22,7 +22,7 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
 
     @Override
     protected void syncUIStateWithModel() {
-        feedItemHeaderHelper.set(getModelObject());
+        feedItemHeaderHelper.set(getModelObject(), itemView.getResources());
         syncUIStateWithModelWasCalled = true;
     }
 

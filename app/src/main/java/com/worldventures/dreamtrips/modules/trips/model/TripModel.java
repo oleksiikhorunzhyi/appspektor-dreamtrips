@@ -317,8 +317,4 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         return null;
     }
 
-    @Override
-    public String date(Context context) {
-        return null;
-    }
 }

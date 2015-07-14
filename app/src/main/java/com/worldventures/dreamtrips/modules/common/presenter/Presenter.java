@@ -143,7 +143,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Override
     public void handleError(SpiceException error) {
         if (error != null && !TextUtils.isEmpty(error.getMessage())) {
-            view.informUser(error.getMessage());
+            if (!error.getMessage().contains("canceled")) //hotfix, as robospice doesn't mark spice exception
+                view.informUser(error.getMessage());
         } else {
             view.informUser(R.string.smth_went_wrong);
         }
@@ -173,6 +174,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         void alert(String s);
 
         boolean isTabletLandscape();
+
         boolean isVisibleOnScreen();
     }
 }

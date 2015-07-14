@@ -11,7 +11,7 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/feed_item_height"
         fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/ic_cover_place_holder"
         fresco:placeholderImageScaleType="centerCrop"
@@ -19,7 +19,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

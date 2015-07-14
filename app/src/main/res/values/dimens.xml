@@ -61,4 +61,7 @@
     <dimen name="profile_cover_height">250dp</dimen>
 
     <dimen name="filter_popup_width">175dp</dimen>
+
+    <dimen name="feed_item_height">250dp</dimen>
+    <dimen name="feed_spacing">0dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,14 +11,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -44,13 +42,8 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @InjectView(R.id.textViewTags)
     TextView textViewTags;
 
-    @Inject
-    ActivityRouter router;
-
     public FeedBucketEventCell(View view) {
         super(view);
-        imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
-
     }
 
     private void loadImage(String lowUrl, String url) {
@@ -58,6 +51,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
                 .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
                 .setImageRequest(ImageRequest.fromUri(url))
                 .build();
+        imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
         imageViewCover.setController(draweeController);
     }
 
@@ -69,18 +63,22 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
         String big = BucketItemInfoUtil.getHighResUrl(itemView.getContext(), bucketItem);
         loadImage(small, big);
         textViewName.setText(bucketItem.getName());
-        textViewCategory.setText(getCategory(bucketItem));
+        if (TextUtils.isEmpty(bucketItem.getCategoryName())) {
+            textViewCategory.setVisibility(View.GONE);
+        } else {
+            textViewCategory.setVisibility(View.VISIBLE);
+            textViewCategory.setText(getCategory(bucketItem));
+        }
+
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
         textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
         textViewFriends.setText(bucketItem.getFriends());
         textViewTags.setText(bucketItem.getBucketTags());
-
-       //itemView.setOnClickListener(view -> router.openBucketItemDetails(getType(bucketItem.getType()), bucketItem.getId()));
     }
 
 
     private String getCategory(BucketItem bucketItem) {
-        return Character.toUpperCase(bucketItem.getType().charAt(0)) + bucketItem.getType().substring(1);
+        return bucketItem.getCategoryName();
     }
 
     @Override

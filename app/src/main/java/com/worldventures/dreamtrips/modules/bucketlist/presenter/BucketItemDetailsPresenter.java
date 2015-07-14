@@ -84,7 +84,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     protected void syncUI() {
         super.syncUI();
         if (!TextUtils.isEmpty(bucketItem.getType())) {
-            String s = Character.toUpperCase(bucketItem.getType().charAt(0)) + bucketItem.getType().substring(1);
+            String s = bucketItem.getCategoryName();
             view.setCategory(s);
         }
         view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));

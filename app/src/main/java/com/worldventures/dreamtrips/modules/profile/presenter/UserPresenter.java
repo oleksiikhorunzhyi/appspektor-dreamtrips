@@ -3,7 +3,11 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
@@ -11,6 +15,7 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
@@ -26,8 +31,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     @Override
-    public void loadFeed() {
+    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
+        return new GetUserFeedQuery(user.getId(), 0);
+    }
 
+    @Override
+    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
+        return new GetUserFeedQuery(user.getId(), page);
     }
 
     @Override

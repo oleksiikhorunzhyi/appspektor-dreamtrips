@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -14,6 +15,8 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -26,6 +29,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -204,6 +208,15 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         }, null);
     }
 
+    @Override
+    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
+        return new GetFeedQuery(page);
+    }
+
+    @Override
+    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
+        return new GetFeedQuery(0);
+    }
 
     public interface View extends ProfilePresenter.View {
         void avatarProgressVisible(boolean visible);

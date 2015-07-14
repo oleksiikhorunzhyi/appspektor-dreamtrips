@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
@@ -31,9 +32,15 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         super.syncUIStateWithModel();
         FeedPhotoEventModel obj = getModelObject();
         Photo photoObj = obj.getEntities()[0];
-        photo.setImageURI(Uri.parse(photoObj.getImages()
-                .getThumbUrl(itemView.getResources())));
+        photo.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
+        loadPhoto(photoObj);
         title.setText(photoObj.getTitle());
+    }
+
+    private void loadPhoto(Photo photoObj) {
+        int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
+        photo.setImageURI(Uri.parse(photoObj.getImages()
+                .getUrl(size, size)));
     }
 
     @Override

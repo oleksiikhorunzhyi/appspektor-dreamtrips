@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -24,8 +23,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
-
-    private final static int VISIBLE_TRESHOLD = 5;
 
     protected User user;
 
@@ -38,12 +35,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     private DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
         @Override
         public SpiceRequest<ArrayList<BaseFeedModel>> getReloadRequest() {
-            return new GetUserFeedQuery(user.getId(), 0);
+            return getRefreshRequest();
         }
 
         @Override
         public SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int currentCount) {
-            return new GetUserFeedQuery(user.getId(), currentCount / GetFeedQuery.LIMIT + 1);
+            return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
         }
 
         @Override
@@ -176,17 +173,21 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loading = false;
     }
 
-    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+    public void scrolled(int totalItemCount, int lastVisible) {
         if (totalItemCount > previousTotal) {
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
-                && totalItemCount % GetFeedQuery.LIMIT == 0) {
-            adapterController.loadNext();
+        if (!loading
+                && lastVisible == totalItemCount - 1
+                && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
             loading = true;
+            adapterController.loadNext();
         }
     }
+
+    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest();
+    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
 
     public interface View extends Presenter.View {
         Bundle getArguments();

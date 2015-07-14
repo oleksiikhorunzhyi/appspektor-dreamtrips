@@ -98,10 +98,9 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int childCount = recyclerView.getChildCount();
                 int itemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                getPresentationModel().scrolled(childCount, itemCount, firstVisibleItemPosition);
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                getPresentationModel().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
 

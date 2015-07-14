@@ -25,7 +25,6 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     public static final String EXTRA_QUERY = "query_extra";
 
     private static final int PER_PAGE = 20;
-    private final static int VISIBLE_TRESHOLD = 5;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -135,12 +134,13 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         loading = false;
     }
 
-    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+    public void scrolled(int totalItemCount, int lastVisible) {
         if (totalItemCount > previousTotal) {
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+        if (!loading
+                && lastVisible == totalItemCount - 1
                 && totalItemCount % PER_PAGE == 0) {
             adapterController.loadNext();
             loading = true;

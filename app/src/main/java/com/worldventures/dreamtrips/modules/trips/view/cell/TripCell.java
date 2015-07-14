@@ -90,7 +90,7 @@ public class TripCell extends AbstractCell<TripModel> {
         addToBucketView.setChecked(getModelObject().isInBucketList());
         addToBucketView.setEnabled(!getModelObject().isInBucketList());
 
-        PointF pointF = new PointF(.5f, .5f);
+        PointF pointF = new PointF(0.5f, 0.0f);
         imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
         imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }
@@ -123,11 +123,4 @@ public class TripCell extends AbstractCell<TripModel> {
     public void prepareForReuse() {
     }
 
-    public CheckedTextView getAddToBucketView() {
-        return addToBucketView;
-    }
-
-    public CheckedTextView getLikeView() {
-        return likeView;
-    }
 }

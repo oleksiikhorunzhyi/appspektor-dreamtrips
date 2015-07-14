@@ -115,6 +115,12 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
+        search.setDelayInMillis(500);
+        search.setIconifiedByDefault(false);
+
+        search.setQuery(getPresenter().getQuery(), false);
+        search.setQueryHint(getString(R.string.friend_search_placeholder));
+
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -129,10 +135,6 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
                 return false;
             }
         });
-        search.setQueryHint(getString(R.string.friend_search_placeholder));
-        search.setIconifiedByDefault(false);
-        search.setDelayInMillis(500);
-        search.setQuery(getPresenter().getQuery(), false);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

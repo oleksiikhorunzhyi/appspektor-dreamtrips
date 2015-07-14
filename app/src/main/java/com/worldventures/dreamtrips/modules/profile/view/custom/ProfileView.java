@@ -51,6 +51,8 @@ public class ProfileView extends LinearLayout {
     protected TextView userStatus;
     @InjectView(R.id.bucket_list)
     protected TextView buckets;
+    @InjectView(R.id.friends)
+    protected TextView friends;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
@@ -174,6 +176,10 @@ public class ProfileView extends LinearLayout {
 
     public TextView getBuckets() {
         return buckets;
+    }
+
+    public TextView getFriends() {
+        return friends;
     }
 
     public DTEditText getEtUserId() {

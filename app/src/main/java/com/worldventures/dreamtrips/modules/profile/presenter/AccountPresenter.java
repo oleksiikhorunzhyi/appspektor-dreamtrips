@@ -135,11 +135,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
                 .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
     }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-    }
-
     public void photoClicked() {
         view.openAvatarPicker();
     }

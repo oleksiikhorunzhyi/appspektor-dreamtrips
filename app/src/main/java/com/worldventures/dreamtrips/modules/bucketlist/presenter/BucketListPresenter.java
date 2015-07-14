@@ -226,8 +226,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             bucketItems.add(0, bucketItem);
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
-
-            sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
         }, this::handleError);
     }
 

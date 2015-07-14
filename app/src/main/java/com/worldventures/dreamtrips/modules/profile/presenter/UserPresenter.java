@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;

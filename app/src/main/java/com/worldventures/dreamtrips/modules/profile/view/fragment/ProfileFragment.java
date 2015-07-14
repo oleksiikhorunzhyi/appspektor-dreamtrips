@@ -201,6 +201,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     public void setSocial(Boolean isEnabled) {
         profileView.getAddFriend().setEnabled(isEnabled);
         profileView.getFriendRequest().setEnabled(isEnabled);
+        profileView.getFriendRequest().setEnabled(isEnabled);
     }
 
     @Override

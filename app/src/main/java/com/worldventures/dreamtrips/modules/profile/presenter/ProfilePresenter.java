@@ -8,6 +8,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -32,7 +33,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Inject
     SnappyRepository snappyRepository;
 
-    private DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
+    protected DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
         @Override
         public SpiceRequest<ArrayList<BaseFeedModel>> getReloadRequest() {
             return getRefreshRequest();
@@ -139,7 +140,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void loadFeed() {
-        adapterController.reload();
+        if (featureManager.available(Feature.SOCIAL))
+            adapterController.reload();
     }
 
     protected abstract void loadProfile();
@@ -160,7 +162,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     ///Circles
 
     private void loadCircles() {
-        doRequest(new GetCirclesQuery(), this::saveCircles);
+        if (featureManager.available(Feature.SOCIAL))
+            doRequest(new GetCirclesQuery(), this::saveCircles);
     }
 
     protected void saveCircles(List<Circle> circles) {
@@ -187,6 +190,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest();
+
     protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
 
     public interface View extends Presenter.View {

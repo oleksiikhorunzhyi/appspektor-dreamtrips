@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,7 +43,9 @@ public class Schedule implements Serializable {
     }
 
     public boolean check(DateFilterItem dateFilterItem) {
-        return startOn.after(dateFilterItem.getStartDate()) && endOn.before(dateFilterItem.getEndDate());
+        return (startOn.equals(dateFilterItem.getStartDate()) || startOn.after(dateFilterItem.getStartDate()))
+                &&
+                (endOn.equals(dateFilterItem.getEndDate()) || endOn.before(dateFilterItem.getEndDate()));
     }
 
     @Override

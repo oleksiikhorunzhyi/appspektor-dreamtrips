@@ -20,9 +20,9 @@ android {
 
     // App version
     def versionMajor = 1
-    def versionMinor = 1
-    def versionPatch = 3
-    def versionBuild = 13 // bump for dogfood builds, public betas, etc.
+    def versionMinor = 2
+    def versionPatch = 0
+    def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -65,6 +65,7 @@ android {
         }
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'

@@ -17,12 +17,19 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
@@ -43,6 +50,18 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         super.takeView(view);
         GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
         doRequest(getLocaleQuery, this::onLocaleSuccess);
+        clearTempDirectory();
+    }
+
+    private void clearTempDirectory() {
+        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDialog.FOLDERNAME));
+        if (!directory.exists()) {
+            try {
+                FileUtils.deleteDirectory(directory);
+            } catch (IOException e) {
+                Timber.e(e, "Problem with remove temp image directory");
+            }
+        }
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
@@ -110,8 +129,8 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
             List<AvailableLocale> availableLocales = localesOptional.get();
             contains = Queryable.from(availableLocales)
                     .any((availableLocale) ->
-                         localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
-                                localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
+                                    localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
+                                            localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
                     );
         }
         return !contains ? Locale.US : localeCurrent;

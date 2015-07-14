@@ -31,7 +31,7 @@ public class PickImageDialog implements ImageChooserListener {
     public static final int REQUEST_FACEBOOK = 346;
     public static final int REQUEST_CAPTURE_PICTURE = ChooserType.REQUEST_CAPTURE_PICTURE;
     public static final int REQUEST_PICK_PICTURE = ChooserType.REQUEST_PICK_PICTURE;
-    public static final String FOLDERNAME = "dreamtrip_folder";
+    public static final String FOLDERNAME = "dreamtrip_folder_temp_sd";
     private ImagePickCallback callback;
     private MaterialDialog.Builder builder;
     private Context context;
@@ -103,7 +103,7 @@ public class PickImageDialog implements ImageChooserListener {
 
     private void chooseImage() {
         chooserType = ChooserType.REQUEST_PICK_PICTURE;
-        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_PICK_PICTURE, FOLDERNAME, false);
+        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_PICK_PICTURE, FOLDERNAME, true);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -114,7 +114,7 @@ public class PickImageDialog implements ImageChooserListener {
 
     private void takePicture() {
         chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
-        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_CAPTURE_PICTURE, FOLDERNAME, false);
+        imageChooserManager = new ImageChooserManager(fragment, ChooserType.REQUEST_CAPTURE_PICTURE, FOLDERNAME, true);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -181,7 +181,7 @@ public class PickImageDialog implements ImageChooserListener {
     }
 
     private void reinitializeImageChooser() {
-        imageChooserManager = new ImageChooserManager(fragment, chooserType, FOLDERNAME, false);
+        imageChooserManager = new ImageChooserManager(fragment, chooserType, FOLDERNAME, true);
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.reinitialize(filePath);
     }

@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;
-import icepick.Icepick;
 import icepick.Icicle;
 
 @Layout(R.layout.activity_main)
@@ -56,7 +55,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Icicle
     protected ComponentDescription currentComponent;
     @Icicle
-    protected boolean transparentToolbar;
+    protected boolean toolbarGone;
 
     private NavigationDrawerFragment navigationDrawerFragment;
 
@@ -65,10 +64,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         return new MainActivityPresenter();
     }
 
-   @Override
+    @Override
     protected void onResume() {
         super.onResume();
-        makeActionBarTransparent(transparentToolbar);
+        makeActionBarGone(toolbarGone);
     }
 
     @Override
@@ -111,18 +110,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     @Override
-    public void makeActionBarTransparent(boolean isTransparent) {
-        if (ViewUtils.isLandscapeOrientation(this)) isTransparent = false;
-        //
-        this.transparentToolbar = isTransparent;
-        int contentPadding = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
-        if (isTransparent) {
-            toolbar.getBackground().setAlpha(0);
-            wrapperContainer.setPadding(0, 0, 0, 0);
+    public void makeActionBarGone(boolean gone) {
+        this.toolbarGone = gone;
+        if (gone) {
+            toolbar.setVisibility(View.GONE);
         } else {
+            toolbar.setVisibility(View.VISIBLE);
             toolbar.getBackground().setAlpha(255);
-            wrapperContainer.setPadding(0, contentPadding, 0, 0);
         }
+
     }
 
     private void setUpBurger() {
@@ -168,7 +164,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
         handleComponentChange();
         disableRightDrawer();
-        makeActionBarTransparent(false);
+        makeActionBarGone(false);
 
         navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;

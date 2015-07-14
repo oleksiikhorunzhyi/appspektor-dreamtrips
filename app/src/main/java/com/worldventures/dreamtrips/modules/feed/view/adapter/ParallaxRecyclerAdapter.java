@@ -80,7 +80,7 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
      * @param of offset in px
      */
     public void translateHeader(float of) {
-        float ofCalculated = of * SCROLL_MULTIPLIER;
+        float ofCalculated = (of * SCROLL_MULTIPLIER) / 2;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mHeader.setTranslationY(ofCalculated);
         } else {
@@ -91,7 +91,7 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
         }
         mHeader.setClipY(Math.round(ofCalculated));
         if (mParallaxScroll != null) {
-            float left = Math.min(1, ((ofCalculated) / (mHeader.getHeight() * SCROLL_MULTIPLIER)));
+            float left = Math.min(1, ((ofCalculated * 2) / (mHeader.getHeight() * SCROLL_MULTIPLIER)));
             mParallaxScroll.onParallaxScroll(left, of, mHeader);
         }
     }

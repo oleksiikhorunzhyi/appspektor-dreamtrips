@@ -32,7 +32,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     }
 
     public void onEvent(ActionBarTransparentEvent event) {
-        view.makeActionBarTransparent(event.isTransparent());
+        view.makeActionBarGone(event.isTransparent());
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {
@@ -67,6 +67,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
         void updateSelection(ComponentDescription componentDescription);
 
-        void makeActionBarTransparent(boolean isTransparent);
+        void makeActionBarGone(boolean isTransparent);
     }
 }

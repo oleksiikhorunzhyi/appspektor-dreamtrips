@@ -10,15 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_actionbar"
+                style="@style/ToolBarStyle"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="0dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"/>
 
             <FrameLayout
                 android:id="@+id/container_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="0dp"
+                android:layout_below="@+id/toolbar_actionbar">
 
                 <FrameLayout
                     android:id="@+id/container_main"
@@ -33,11 +44,7 @@
 
             </FrameLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_actionbar"
-                style="@style/ToolBarStyle" />
-
-        </FrameLayout>
+        </RelativeLayout>
 
         <FrameLayout
             android:id="@+id/container_details_fullscreen"

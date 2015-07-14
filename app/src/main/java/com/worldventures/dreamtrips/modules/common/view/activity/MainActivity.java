@@ -116,6 +116,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             toolbar.setVisibility(View.GONE);
         } else {
             toolbar.setVisibility(View.VISIBLE);
+            toolbar.getBackground().setAlpha(255);
         }
 
     }

@@ -58,7 +58,7 @@
                 android:id="@+id/buttonContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <com.dd.ShadowLayout
                     android:id="@+id/accept_button"

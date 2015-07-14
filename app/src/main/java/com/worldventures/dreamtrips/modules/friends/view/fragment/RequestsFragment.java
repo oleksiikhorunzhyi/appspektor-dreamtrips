@@ -84,7 +84,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
 
     private RecyclerView.LayoutManager getLayoutManager() {
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 2;
+            int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 1;
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
@@ -93,7 +93,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
                 }
             });
             return gridLayoutManager;
-        }  else {
+        } else {
             return new LinearLayoutManager(getActivity());
         }
     }

@@ -2,5 +2,6 @@
 <resources>
 
     <dimen name="tripImageHeightDetailed">250dp</dimen>
+    <dimen name="feed_spacing">100dp</dimen>
 
 </resources>

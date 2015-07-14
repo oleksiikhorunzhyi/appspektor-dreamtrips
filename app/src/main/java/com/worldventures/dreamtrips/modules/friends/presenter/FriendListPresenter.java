@@ -23,8 +23,7 @@ import icepick.Icicle;
 
 public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
-    private static final int PER_PAGE = 10;
-    private final static int VISIBLE_TRESHOLD = 5;
+    private static final int PER_PAGE = 20;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -108,7 +107,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void onFilterClicked() {
-        view.showFilters(circles, position + 1);
+        view.showFilters(circles, position);
     }
 
     public void globalSearch() {
@@ -121,7 +120,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     public void reloadWithFilter(int position) {
         this.position = position;
-        selectedCircle = position != -1 ? circles.get(position) : null;
+        selectedCircle = position != 0 ? circles.get(position) : null;
         reload();
     }
 
@@ -140,12 +139,13 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         reload();
     }
 
-    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
+    public void scrolled(int totalItemCount, int lastVisible) {
         if (totalItemCount > previousTotal) {
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+        if (!loading
+                && lastVisible == totalItemCount - 1
                 && totalItemCount % PER_PAGE == 0) {
             adapterController.loadNext();
             loading = true;

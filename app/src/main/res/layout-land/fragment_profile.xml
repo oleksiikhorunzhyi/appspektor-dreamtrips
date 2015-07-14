@@ -7,7 +7,10 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/feed_spacing"
+        android:layout_marginRight="@dimen/feed_spacing"
+        >
 
         <com.worldventures.dreamtrips.modules.feed.view.custom.FeedView
             android:id="@+id/feedview"

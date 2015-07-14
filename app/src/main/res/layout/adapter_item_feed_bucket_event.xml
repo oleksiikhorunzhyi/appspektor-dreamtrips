@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@color/profile_feed_background">
 
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/spacing_tiny">
-
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/spacing_tiny">
 
-        <include layout="@layout/adapter_item_feed_header"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
 
-        <include layout="@layout/layout_cover_details"/>
+            <include layout="@layout/adapter_item_feed_header"/>
 
-        <include layout="@layout/include_bucket_item_meta"/>
+            <include layout="@layout/adapter_item_feed_bucket_child"/>
 
-    </LinearLayout>
+            <include layout="@layout/include_bucket_item_meta"/>
 
-</android.support.v7.widget.CardView>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</FrameLayout>

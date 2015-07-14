@@ -250,10 +250,9 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/request_responses")
     JSONObject deleteRequest(@Query("user_id") int userId);
 
-    @GET("/api/social/friends")
-    ArrayList<BaseFeedModel> getFeed(@Query("limit") int limit, @Query("offset") int offset);
-
     @GET("/api/social/users/{user_id}/feed")
     ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
 
+    @GET("/api/social/feed")
+    ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.content.res.Resources;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ public class FeedItemHeaderHelper {
             User user = feedModel.getUsers()[0];
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             text.setText(feedModel.infoText(resources));
-            if (!feedModel.getType().equals(BaseFeedModel.Type.PHOTO)) {
+            if (TextUtils.isEmpty(feedModel.getEntities()[0].place())) {
                 location.setVisibility(View.GONE);
             } else {
                 location.setVisibility(View.VISIBLE);

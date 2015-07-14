@@ -132,14 +132,14 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         search.setQueryHint(getString(R.string.friend_search_placeholder));
         search.setIconifiedByDefault(false);
         search.setDelayInMillis(500);
+        search.setQuery(getPresenter().getQuery(), false);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int childCount = recyclerView.getChildCount();
                 int itemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                getPresenter().scrolled(childCount, itemCount, firstVisibleItemPosition);
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
     }
@@ -147,7 +147,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     private void setLayoutManager() {
         layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
                 new GridLayoutManager(getActivity(),
-                        ViewUtils.isTablet(getActivity()) ? 3 : 2) :
+                        ViewUtils.isTablet(getActivity()) ? 3 : 1) :
                 new LinearLayoutManager(getActivity());
     }
 
@@ -171,9 +171,8 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         popupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         popupWindow.setSelection(position);
         popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) -> {
-
             popupWindow.dismiss();
-            getPresenter().reloadWithFilter(i - 1);
+            getPresenter().reloadWithFilter(i);
         });
     }
 

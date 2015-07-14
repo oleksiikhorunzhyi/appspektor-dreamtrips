@@ -75,4 +75,6 @@
     <color name="divider_color">#F8F8F8</color>
     <color name="bucket_add_phto">#dcdcdc</color>
     <color name="white">@android:color/white</color>
+
+    <color name="profile_feed_background">#F0EFEF</color>
 </resources>

@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -17,6 +19,7 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
@@ -45,6 +48,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.profile_toolbar)
     protected Toolbar profileToolbar;
 
+    @InjectView(R.id.profile_toolbar_title)
+    protected TextView profileToolbarTitle;
+
+    @InjectView(R.id.profile_user_status)
+    protected TextView profileToolbarUserStatus;
 
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
@@ -85,6 +93,30 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
                 getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
+        feedView.setOnParallaxScroll((percentage, offset, parallax) -> {
+                setToolbarAlpha(percentage);
+                if (percentage > 0.42f) {
+                    profileToolbarTitle.setVisibility(View.VISIBLE);
+                    profileToolbarUserStatus.setVisibility(View.VISIBLE);
+                    profileView.getUserName().setVisibility(View.INVISIBLE);
+                    profileView.getUserStatus().setVisibility(View.INVISIBLE);
+                } else {
+                    profileToolbarTitle.setVisibility(View.INVISIBLE);
+                    profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+                    profileView.getUserName().setVisibility(View.VISIBLE);
+                    profileView.getUserStatus().setVisibility(View.VISIBLE);
+
+
+                }
+        });
+
+    }
+
+    private void setToolbarAlpha(float percentage) {
+        Drawable c = profileToolbar.getBackground();
+        int round = Math.round(percentage * 255);
+        c.setAlpha(round);
+        profileToolbar.setBackgroundDrawable(c);
     }
 
     private void layoutConfiguration() {
@@ -137,6 +169,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void setUserName(String username) {
         profileView.getUserName().setText(username);
+        profileToolbarTitle.setText(username);
     }
 
     @Override
@@ -172,26 +205,27 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void setMember() {
-        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.white));
-        profileView.getUserStatus().setText("");
-        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(0,
-                0, 0, 0);
+        setUserStatus(R.color.white, R.string.empty, 0);
     }
 
     @Override
     public void setGold() {
-        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.golden_user));
-        profileView.getUserStatus().setText(R.string.profile_golden);
-        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
-                0, 0, 0);
+        setUserStatus(R.color.golden_user, R.string.profile_golden, R.drawable.gold_member);
     }
 
     @Override
     public void setPlatinum() {
-        profileView.getUserStatus().setTextColor(getResources().getColor(R.color.platinum_user));
-        profileView.getUserStatus().setText(R.string.profile_platinum);
-        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
-                0, 0, 0);
+        setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.platinum_member);
+    }
+
+    private void setUserStatus(int color, int title, int drawble) {
+        profileView.getUserStatus().setTextColor(getResources().getColor(color));
+        profileView.getUserStatus().setText(title);
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(drawble, 0, 0, 0);
+
+        profileToolbarUserStatus.setTextColor(getResources().getColor(color));
+        profileToolbarUserStatus.setText(title);
+        profileToolbarUserStatus.setCompoundDrawablesWithIntrinsicBounds(drawble, 0, 0, 0);
     }
 
     @Override

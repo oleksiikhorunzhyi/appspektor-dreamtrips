@@ -84,6 +84,10 @@ public class FeedView extends RecyclerView {
         adapter.setParallaxHeader(header, this);
     }
 
+    public void setOnParallaxScroll(ParallaxRecyclerAdapter.OnParallaxScroll p1) {
+        adapter.setOnParallaxScroll(p1);
+    }
+
     public void restoreStateIfNeeded() {
         stateDelegate.restoreStateIfNeeded();
     }

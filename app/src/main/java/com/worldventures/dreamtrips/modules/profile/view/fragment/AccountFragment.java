@@ -4,21 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
-@MenuResource(R.menu.profile_fragment)
+@MenuResource(R.menu.menu_empty)
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
 
@@ -43,6 +44,26 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
         profileView.setOnPhotoClick(() -> getPresenter().photoClicked());
         profileView.setOnCoverClick(() -> getPresenter().coverClicked());
+
+        profileToolbarTitle.setVisibility(View.INVISIBLE);
+        profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+        profileToolbar.inflateMenu(R.menu.profile_fragment);
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            profileToolbar.setNavigationOnClickListener(view -> {
+                if ((getActivity() instanceof MainActivity)) {
+                    ((MainActivity) getActivity()).openLeftDrawer();
+                }
+            });
+        }
+
+        profileToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.item_logout:
+                    showLogoutDialog();
+            }
+            return true;
+        });
     }
 
     @Override
@@ -117,17 +138,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
             this.pid.setFilePath(filePath);
         }
         this.pid.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_logout:
-                showLogoutDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

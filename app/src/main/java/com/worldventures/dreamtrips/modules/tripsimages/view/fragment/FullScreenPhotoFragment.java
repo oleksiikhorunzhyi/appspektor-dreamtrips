@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -94,11 +95,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
             hideContent();
         } else {
@@ -107,19 +104,37 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
-    public void loadImage(Image image) {
-        String medium = image.getThumbUrl(getResources());
-        String original = image.getUrl(ViewUtils.getScreenWidth(getActivity()),
-                ViewUtils.getScreenHeight(getActivity()));
-        loadImage(medium, original);
+    public void onDestroyView() {
+        if (ivImage != null && ivImage.getController() != null)
+            ivImage.getController().onDetach();
+        super.onDestroyView();
     }
 
-    private void loadImage(String lowUrl, String url) {
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
-                .setImageRequest(ImageRequest.fromUri(url))
-                .build();
-        ivImage.setController(draweeController);
+    @Override
+    public void loadImage(Image image) {
+        String lowUrl = image.getThumbUrl(getResources());
+        ivImage.requestLayout();
+        ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (ivImage != null) {
+                    int size = Math.max(ivImage.getWidth(), ivImage.getHeight());
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                            .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
+                            .build();
+                    ivImage.setController(draweeController);
+
+                    ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+                    } else {
+                        viewTreeObserver.removeGlobalOnLayoutListener(this);
+                    }
+                }
+            }
+        });
     }
 
     @Override

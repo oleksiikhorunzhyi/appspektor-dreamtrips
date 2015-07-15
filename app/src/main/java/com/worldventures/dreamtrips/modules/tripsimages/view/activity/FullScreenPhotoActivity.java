@@ -143,9 +143,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void clear() {
-        adapter.clear();
-        adapter.notifyDataSetChanged();
-        pager.setAdapter(adapter);
+        //nothing to here
     }
 
     @Override

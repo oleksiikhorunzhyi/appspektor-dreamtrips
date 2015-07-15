@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             android:background="@android:color/black"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/black"
         fresco:actualImageScaleType="fitCenter"/>
 
     <View
@@ -25,7 +20,7 @@
         android:id="@+id/ll_global_content_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@drawable/black_gradient_inspire_me"
         android:orientation="vertical"
         android:paddingTop="24dp">
@@ -108,8 +103,7 @@
                     android:paddingTop="8dp"
                     android:singleLine="true"
                     android:textColor="@android:color/white"
-                    android:textSize="16dp"
-                    tools:text="TRIP TO THE GOLDEN GATE"/>
+                    android:textSize="16dp"/>
 
                 <TextView
                     android:id="@+id/tv_see_more"
@@ -252,4 +246,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

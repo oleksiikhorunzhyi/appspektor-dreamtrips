@@ -80,10 +80,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_button_white"
+                    android:enabled="false"
                     android:padding="@dimen/spacing_small"
                     android:text="@string/social_user_wrapper_cell_actions"
                     android:textAllCaps="true"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/white_semi_transparent"
                     />
 
             </com.dd.ShadowLayout>

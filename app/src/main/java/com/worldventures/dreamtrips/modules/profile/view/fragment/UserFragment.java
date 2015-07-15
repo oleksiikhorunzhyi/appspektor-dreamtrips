@@ -35,8 +35,11 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileView.getUserBalance().setVisibility(View.GONE);
         profileView.getAddFriend().setVisibility(View.VISIBLE);
 
-        profileView.getBuckets().setEnabled(false);
-        profileView.getTripImages().setEnabled(false);
+        profileView.getBuckets().setClickable(false);
+        profileView.getTripImages().setClickable(false);
+
+        profileView.getBuckets().setText(R.string.coming_soon);
+        profileView.getTripImages().setText(R.string.coming_soon);
 
         profileView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
         profileView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);

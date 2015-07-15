@@ -161,9 +161,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         task.setBucketId(bucketItem.getId());
         task.setFilePath(uri.toString());
         task.setSelectionType(type);
-        view.getBucketPhotosView().addImage(task);
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
         startUpload(task);
+
+        if (view != null)
+            view.getBucketPhotosView().addImage(task);
     }
 
     private void startUpload(final BucketPhotoUploadTask task) {

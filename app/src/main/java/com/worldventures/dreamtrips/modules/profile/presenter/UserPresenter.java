@@ -43,6 +43,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     @Override
     protected void setUserProfileInfo() {
         super.setUserProfileInfo();
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
         view.setSocial(user.isSocialEnabled());
         view.setIsFriend(false);
         if (user.getRelationship() != null) {
@@ -125,14 +127,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
     @Override
     public void openBucketList() {
-        //TODO
-        view.informUser(R.string.coming_soon);
     }
 
     @Override
     public void openTripImages() {
-        //TODO
-        view.informUser(R.string.coming_soon);
     }
 
     public interface View extends ProfilePresenter.View {

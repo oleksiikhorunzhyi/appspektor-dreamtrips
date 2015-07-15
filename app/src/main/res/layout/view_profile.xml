@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_update_info"
+                android:text="@string/coming_soon"
                 android:textSize="@dimen/font_small"/>
 
             <View
@@ -60,7 +60,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/trip_images"
+                android:text="@string/coming_soon"
                 android:textSize="@dimen/font_small"/>
 
             <View
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_bucket_list"
+                android:text="@string/coming_soon"
                 android:textSize="@dimen/font_small"/>
 
             <View
@@ -98,7 +98,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_dream_trips"
+                android:text="@string/coming_soon"
                 android:textSize="@dimen/font_small"/>
         </LinearLayout>
 
@@ -138,7 +138,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_post"/>
+                android:text="@string/coming_soon"/>
 
             <View
                 android:layout_width="0.5dp"
@@ -156,7 +156,8 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_friends"/>
+                android:text="@string/profile_friends"
+                />
 
             <View
                 android:layout_width="0.5dp"
@@ -174,7 +175,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_messages"/>
+                android:text="@string/coming_soon"/>
 
             <View
                 android:layout_width="0.5dp"
@@ -192,7 +193,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/profile_more"/>
+                android:text="@string/coming_soon"/>
         </LinearLayout>
 
         <View

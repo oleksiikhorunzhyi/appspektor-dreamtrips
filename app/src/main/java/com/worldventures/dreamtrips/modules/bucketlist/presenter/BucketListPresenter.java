@@ -51,13 +51,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    private SweetDialogHelper sweetDialogHelper;
     private WeakHandler weakHandler;
 
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
-        sweetDialogHelper = new SweetDialogHelper();
         weakHandler = new WeakHandler();
     }
 

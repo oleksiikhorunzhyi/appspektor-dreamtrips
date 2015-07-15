@@ -146,6 +146,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     @Override
     protected void setUserProfileInfo() {
         super.setUserProfileInfo();
+        view.setTripImagesCount(user.getTripImagesCount());
+        view.setBucketItemsCount(user.getBucketListItemsCount());
         view.setRoviaBucks(df.format(user.getRoviaBucks()));
         view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
     }

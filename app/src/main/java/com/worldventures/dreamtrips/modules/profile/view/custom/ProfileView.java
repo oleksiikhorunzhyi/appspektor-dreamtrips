@@ -97,12 +97,6 @@ public class ProfileView extends LinearLayout {
     OnClickListener onPhotoClick;
     OnClickListener onCoverClick;
 
-    OnClickListener onMoreClicked;
-    OnClickListener onPostClicked;
-    OnClickListener onMessageClicked;
-    OnClickListener onUpdateInfoClicked;
-
-
     OnClickListener onAcceptRequest;
     OnClickListener onRejectRequest;
     OnClickListener onAddFriend;
@@ -269,26 +263,6 @@ public class ProfileView extends LinearLayout {
         if (onFriendsClicked != null) onFriendsClicked.click();
     }
 
-    @OnClick(R.id.post)
-    protected void onPostClick() {
-        if (onPostClicked != null) onPostClicked.click();
-    }
-
-    @OnClick(R.id.messages)
-    protected void onMessageClick() {
-        if (onMessageClicked != null) onMessageClicked.click();
-    }
-
-    @OnClick(R.id.update_info)
-    protected void onUpdateInfoClick() {
-        if (onUpdateInfoClicked != null) onUpdateInfoClicked.click();
-    }
-
-    @OnClick(R.id.control_more)
-    protected void onMoreClick() {
-        if (onMoreClicked != null) onMoreClicked.click();
-    }
-
 
     @OnClick(R.id.user_photo)
     protected void onPhotoClick() {
@@ -360,23 +334,6 @@ public class ProfileView extends LinearLayout {
 
     public void setOnFeedReload(OnClickListener onFeedReload) {
         this.onFeedReload = onFeedReload;
-    }
-
-
-    public void setOnMoreClicked(OnClickListener onMoreClicked) {
-        this.onMoreClicked = onMoreClicked;
-    }
-
-    public void setOnPostClicked(OnClickListener onPostClicked) {
-        this.onPostClicked = onPostClicked;
-    }
-
-    public void setOnMessageClicked(OnClickListener onMessageClicked) {
-        this.onMessageClicked = onMessageClicked;
-    }
-
-    public void setOnUpdateInfoClicked(OnClickListener onUpdateInfoClicked) {
-        this.onUpdateInfoClicked = onUpdateInfoClicked;
     }
 
     public void setIsExpandEnabled(boolean isExpandEnabled) {

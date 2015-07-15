@@ -90,11 +90,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         }
     }
 
-    public void comingSoon() {
-        //TODO
-        view.informUser(R.string.coming_soon);
-    }
-
     public abstract void openBucketList();
 
     public abstract void openTripImages();
@@ -104,9 +99,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     protected void setUserProfileInfo() {
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-        view.setTripsCount(0);
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));

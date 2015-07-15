@@ -57,7 +57,6 @@ public class FriendCell extends AbstractCell<Friend> {
 
     }
 
-    @OnClick(R.id.action)
     public void onAction(View v) {
         Context c = v.getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(c);

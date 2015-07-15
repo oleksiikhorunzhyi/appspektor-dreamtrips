@@ -19,12 +19,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesList
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
-import icepick.Icepick;
 import icepick.Icicle;
 
 @Layout(R.layout.activity_full_screen_photo)
@@ -62,8 +60,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        toolbar.getBackground().setAlpha(0);
-
         if (position < 0) {
             position = 0;
         }
@@ -85,6 +81,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
                 getPresentationModel().scrolled(1, adapter.getCount(), position);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toolbar.getBackground().setAlpha(0);
     }
 
     private void setupAdapter() {

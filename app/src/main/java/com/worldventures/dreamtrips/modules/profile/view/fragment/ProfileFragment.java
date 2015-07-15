@@ -78,9 +78,18 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
         layoutConfiguration();
         profileView = new ProfileView(getActivity());
+
         profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
         profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
         profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
+
+        profileView.setOnPostClicked(() -> getPresenter().comingSoon());
+        profileView.setOnMoreClicked(() -> getPresenter().comingSoon());
+        profileView.setOnMessageClicked(() -> getPresenter().comingSoon());
+        profileView.setOnUpdateInfoClicked(() -> getPresenter().comingSoon());
+
+
+
         profileView.setOnFeedReload(() -> getPresenter().loadFeed());
         feedView.setup(injectorProvider, savedInstanceState);
         feedView.setHeader(profileView);
@@ -105,8 +114,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
                     profileToolbarUserStatus.setVisibility(View.INVISIBLE);
                     profileView.getUserName().setVisibility(View.VISIBLE);
                     profileView.getUserStatus().setVisibility(View.VISIBLE);
-
-
                 }
         });
 

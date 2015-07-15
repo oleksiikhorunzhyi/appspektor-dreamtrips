@@ -328,5 +328,6 @@
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
     <string name="feed_bucket">Bucket Item</string>
+    <string name="coming_soon">Coming soon</string>
 
 </resources>

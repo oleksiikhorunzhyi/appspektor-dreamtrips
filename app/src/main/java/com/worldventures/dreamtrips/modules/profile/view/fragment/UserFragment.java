@@ -14,8 +14,6 @@ import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 
 import java.util.List;
 
-import butterknife.OnClick;
-
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.menu_empty)
 public class UserFragment extends ProfileFragment<UserPresenter>
@@ -36,6 +34,17 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileView.getUpdateInfo().setVisibility(View.GONE);
         profileView.getUserBalance().setVisibility(View.GONE);
         profileView.getAddFriend().setVisibility(View.VISIBLE);
+
+        profileView.getBuckets().setEnabled(false);
+        profileView.getTripImages().setEnabled(false);
+
+        profileView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
+        profileView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
+        profileView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
+        profileView.getMore().setVisibility(View.INVISIBLE);
+
+        profileView.setIsExpandEnabled(false);
+        profileView.getInfo().show();
 
         profileView.setOnAcceptRequest(() -> getPresenter().acceptClicked());
         profileView.setOnRejectRequest(() -> getPresenter().rejectClicked());

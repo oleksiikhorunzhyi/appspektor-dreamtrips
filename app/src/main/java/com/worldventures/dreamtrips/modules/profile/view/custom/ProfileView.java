@@ -22,6 +22,8 @@ import butterknife.OnClick;
 
 public class ProfileView extends LinearLayout {
 
+    private boolean isExpandEnabled = true;
+
     @InjectView(R.id.user_cover)
     protected SimpleDraweeView userCover;
 
@@ -53,6 +55,12 @@ public class ProfileView extends LinearLayout {
     protected TextView buckets;
     @InjectView(R.id.friends)
     protected TextView friends;
+    @InjectView(R.id.post)
+    protected TextView post;
+    @InjectView(R.id.messages)
+    protected TextView messages;
+    @InjectView(R.id.control_more)
+    protected TextView controllMore;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
@@ -89,6 +97,11 @@ public class ProfileView extends LinearLayout {
     OnClickListener onPhotoClick;
     OnClickListener onCoverClick;
 
+    OnClickListener onMoreClicked;
+    OnClickListener onPostClicked;
+    OnClickListener onMessageClicked;
+    OnClickListener onUpdateInfoClicked;
+
 
     OnClickListener onAcceptRequest;
     OnClickListener onRejectRequest;
@@ -112,12 +125,14 @@ public class ProfileView extends LinearLayout {
 
     @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
     public void onInfoClick() {
-        if (getInfo().isOpened()) {
-            getInfo().hide();
-            getMore().setVisibility(View.VISIBLE);
-        } else {
-            getInfo().show();
-            getMore().setVisibility(View.INVISIBLE);
+        if (isExpandEnabled) {
+            if (getInfo().isOpened()) {
+                getInfo().hide();
+                getMore().setVisibility(View.VISIBLE);
+            } else {
+                getInfo().show();
+                getMore().setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -254,6 +269,26 @@ public class ProfileView extends LinearLayout {
         if (onFriendsClicked != null) onFriendsClicked.click();
     }
 
+    @OnClick(R.id.post)
+    protected void onPostClick() {
+        if (onPostClicked != null) onPostClicked.click();
+    }
+
+    @OnClick(R.id.messages)
+    protected void onMessageClick() {
+        if (onMessageClicked != null) onMessageClicked.click();
+    }
+
+    @OnClick(R.id.update_info)
+    protected void onUpdateInfoClick() {
+        if (onUpdateInfoClicked != null) onUpdateInfoClicked.click();
+    }
+
+    @OnClick(R.id.control_more)
+    protected void onMoreClick() {
+        if (onMoreClicked != null) onMoreClicked.click();
+    }
+
 
     @OnClick(R.id.user_photo)
     protected void onPhotoClick() {
@@ -327,8 +362,29 @@ public class ProfileView extends LinearLayout {
         this.onFeedReload = onFeedReload;
     }
 
-    public interface OnClickListener {
-        void click();
+
+    public void setOnMoreClicked(OnClickListener onMoreClicked) {
+        this.onMoreClicked = onMoreClicked;
     }
 
+    public void setOnPostClicked(OnClickListener onPostClicked) {
+        this.onPostClicked = onPostClicked;
+    }
+
+    public void setOnMessageClicked(OnClickListener onMessageClicked) {
+        this.onMessageClicked = onMessageClicked;
+    }
+
+    public void setOnUpdateInfoClicked(OnClickListener onUpdateInfoClicked) {
+        this.onUpdateInfoClicked = onUpdateInfoClicked;
+    }
+
+    public void setIsExpandEnabled(boolean isExpandEnabled) {
+        this.isExpandEnabled = isExpandEnabled;
+    }
+
+    public interface OnClickListener {
+        void click();
+
+    }
 }

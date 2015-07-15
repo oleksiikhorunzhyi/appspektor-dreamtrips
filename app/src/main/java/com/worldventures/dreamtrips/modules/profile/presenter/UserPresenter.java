@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
@@ -125,11 +126,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     @Override
     public void openBucketList() {
         //TODO
+        view.informUser(R.string.coming_soon);
     }
 
     @Override
     public void openTripImages() {
         //TODO
+        view.informUser(R.string.coming_soon);
     }
 
     public interface View extends ProfilePresenter.View {

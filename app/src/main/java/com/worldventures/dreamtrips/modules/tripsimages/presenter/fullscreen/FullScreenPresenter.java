@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -22,22 +20,22 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     protected Type type;
     protected T photo;
 
-    public static FullScreenPresenter create(IFullScreenObject photo) {
-        if (photo instanceof Photo) {
+    public static FullScreenPresenter create(Type type) {
+        if (type.equals(Type.MEMBER_IMAGES) || type.equals(Type.MY_IMAGES)
+                || type.equals(Type.INSPIRE_ME) || type.equals(Type.YOU_SHOULD_BE_HERE)) {
             return new InteractiveFullscreenPresenter();
-        } else if (photo instanceof BucketPhoto) {
+        } else if (type.equals(Type.BUCKET_PHOTOS)) {
             return new BucketFullscreenPresenter();
         }
         return new SimpleFullscreenPresenter();
     }
 
-    public void setupPhoto(T photo) {
+    public void setPhoto(T photo) {
         this.photo = photo;
     }
 
-    public void setupType(Type type) {
+    public void setType(Type type) {
         this.type = type;
-        TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
     @Override
@@ -45,6 +43,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         super.takeView(view);
         setupActualViewState();
         view.setSocial(featureManager.available(Feature.SOCIAL));
+        TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
     public void onLikeAction() {

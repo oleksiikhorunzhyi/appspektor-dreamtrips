@@ -30,10 +30,6 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
         fragmentItems.remove(index);
     }
 
-    public T getFragmentItem(int i) {
-        return fragmentItems.get(i);
-    }
-
     @Override
     public void clear() {
         fragmentItems.clear();

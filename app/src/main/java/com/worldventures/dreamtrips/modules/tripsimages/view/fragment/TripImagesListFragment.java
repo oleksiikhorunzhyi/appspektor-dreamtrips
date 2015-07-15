@@ -130,11 +130,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public List<IFullScreenObject> getPhotosFromAdapter() {
-        return arrayListAdapter.getItems();
-    }
-
-    @Override
     public void startLoading() {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
@@ -188,10 +183,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     public void remove(int index) {
         arrayListAdapter.remove(index);
         arrayListAdapter.notifyItemRemoved(index);
-    }
-
-    @Override
-    public void refresh() {
     }
 
     public enum Type {

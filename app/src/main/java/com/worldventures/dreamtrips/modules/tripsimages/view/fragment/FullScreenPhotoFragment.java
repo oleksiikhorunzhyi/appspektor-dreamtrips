@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,7 +30,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import java.util.List;
@@ -42,7 +42,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
         extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
 
-    public static final String EXTRA_POSITION = "EXTRA_POSITION";
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
+    public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -87,15 +88,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
-        type = activity.getType();
-        IFullScreenObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
-
-        if (photo != null) {
-            getPresenter().setupPhoto((T) photo);
-            getPresenter().setupType(type);
-        }
-
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
@@ -103,11 +95,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
             hideContent();
         } else {
@@ -116,28 +104,51 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
-    public void loadImage(Image image) {
-        String medium = image.getThumbUrl(getResources());
-        String original = image.getUrl(ViewUtils.getScreenWidth(getActivity()),
-                ViewUtils.getScreenHeight(getActivity()));
-        loadImage(medium, original);
+    public void onDestroyView() {
+        if (ivImage != null && ivImage.getController() != null)
+            ivImage.getController().onDetach();
+        super.onDestroyView();
     }
 
-    private void loadImage(String lowUrl, String url) {
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
-                .setImageRequest(ImageRequest.fromUri(url))
-                .build();
-        ivImage.setController(draweeController);
+    @Override
+    public void loadImage(Image image) {
+        String lowUrl = image.getThumbUrl(getResources());
+        ivImage.requestLayout();
+        ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (ivImage != null) {
+                    int size = Math.max(ivImage.getWidth(), ivImage.getHeight());
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                            .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
+                            .build();
+                    ivImage.setController(draweeController);
+
+                    ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+                    } else {
+                        viewTreeObserver.removeGlobalOnLayoutListener(this);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
-        int position = getArguments().getInt(EXTRA_POSITION);
-        IFullScreenObject photo = activity.getPhoto(position);
+        IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
+        type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
 
-        return FullScreenPresenter.create(photo);
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(type);
+        if (photo != null) {
+            fullScreenPresenter.setPhoto(photo);
+            fullScreenPresenter.setType(type);
+        }
+
+        return fullScreenPresenter;
     }
 
 
@@ -416,7 +427,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void hideCoverProgress() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismissWithAnimation();
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismissWithAnimation();
     }
 
     @Override

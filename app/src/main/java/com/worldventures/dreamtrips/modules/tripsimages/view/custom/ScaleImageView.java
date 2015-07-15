@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -13,6 +14,9 @@ import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import icepick.Icepick;
+import icepick.Icicle;
 
 public class ScaleImageView extends SimpleDraweeView {
 
@@ -23,8 +27,6 @@ public class ScaleImageView extends SimpleDraweeView {
     // display width height.
     private int width;
     private int height;
-    private int intrinsicWidth;
-    private int intrinsicHeight;
     private float scale;
     private float minScale;
     private float prevDistance;
@@ -36,6 +38,9 @@ public class ScaleImageView extends SimpleDraweeView {
     private SingleTapListener singleTapListener;
     private DoubleTapListener doubleTapListener;
 
+    @Icicle int intrinsicWidth;
+    @Icicle int intrinsicHeight;
+
     public ScaleImageView(Context context, AttributeSet attr) {
         super(context, attr);
         this.context = context;
@@ -46,6 +51,14 @@ public class ScaleImageView extends SimpleDraweeView {
         super(context);
         this.context = context;
         initialize();
+    }
+
+    @Override public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
     private void initialize() {
@@ -171,8 +184,6 @@ public class ScaleImageView extends SimpleDraweeView {
         matrix.postTranslate(0, -(y - (height / 2)) * scale);
         invalidate();
     }
-
-    boolean isBorderFaced;
 
     public void cutting() {
         int width = (int) (intrinsicWidth * getScale());

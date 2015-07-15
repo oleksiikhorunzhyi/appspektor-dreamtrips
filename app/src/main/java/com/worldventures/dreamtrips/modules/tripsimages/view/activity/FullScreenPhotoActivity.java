@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesList
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -36,25 +35,22 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
     protected BaseStatePagerAdapter<FragmentItem> adapter;
-    protected TripImagesListFragment.Type type;
-
-    protected List<IFullScreenObject> photos = new ArrayList<>();
 
     @Icicle
     int position;
 
     @Override
     protected TripImagesListPresenter createPresentationModel(Bundle savedInstanceState) {
+        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
+        TripImagesListFragment.Type type = (TripImagesListFragment.Type) bundleExtra
+                .getSerializable(EXTRA_TYPE);
+        position = bundleExtra.getInt(EXTRA_POSITION);
         return TripImagesListPresenter.create(type, true);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        type = (TripImagesListFragment.Type) bundleExtra.getSerializable(EXTRA_TYPE);
-        position = bundleExtra.getInt(EXTRA_POSITION);
-
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
@@ -90,36 +86,17 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     }
 
     private void setupAdapter() {
-        if (adapter == null) {
-            adapter = new BaseStatePagerAdapter<FragmentItem>(getSupportFragmentManager()) {
-                @Override
-                public void setArgs(int position, Fragment fragment) {
-                    Bundle args = new Bundle();
-                    args.putInt(FullScreenPhotoFragment.EXTRA_POSITION, position);
-                    fragment.setArguments(args);
-                }
-
-                @Override
-                public void addItems(ArrayList baseItemClasses) {
-                    photos.addAll(baseItemClasses);
-                    Queryable.from(photos).forEachR(item ->
-                            adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
-                }
-            };
-        }
-    }
-
-    public TripImagesListFragment.Type getType() {
-        return type;
-    }
-
-    public IFullScreenObject getPhoto(int position) {
-        return photos.get(position);
-    }
-
-    @Override
-    public List<IFullScreenObject> getPhotosFromAdapter() {
-        return photos;
+        adapter = new BaseStatePagerAdapter<FragmentItem>(getSupportFragmentManager()) {
+            @Override
+            public void setArgs(int position, Fragment fragment) {
+                Bundle args = new Bundle();
+                args.putSerializable(FullScreenPhotoFragment.EXTRA_TYPE, getIntent()
+                        .getBundleExtra(ActivityRouter.EXTRA_BUNDLE)
+                        .getSerializable(EXTRA_TYPE));
+                args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, getPresentationModel().getPhoto(position));
+                fragment.setArguments(args);
+            }
+        };
     }
 
     @Override
@@ -149,8 +126,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void addAll(List<IFullScreenObject> items) {
-        photos.addAll(items);
-        Queryable.from(photos).forEachR(item ->
+        Queryable.from(items).forEachR(item ->
                 adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
         adapter.notifyDataSetChanged();
     }
@@ -167,7 +143,6 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
     @Override
     public void clear() {
-        photos.clear();
         adapter.clear();
         adapter.notifyDataSetChanged();
         pager.setAdapter(adapter);
@@ -184,18 +159,10 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
             finish();
         } else {
             int currentItem = pager.getCurrentItem();
-            photos.remove(index);
             adapter.remove(index);
             adapter.notifyDataSetChanged();
             pager.setAdapter(adapter);
             pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
         }
-    }
-
-    @Override
-    public void refresh() {
-        adapter.notifyDataSetChanged();
-        pager.setAdapter(adapter);
-        pager.setCurrentItem(position);
     }
 }

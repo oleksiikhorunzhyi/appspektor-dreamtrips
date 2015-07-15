@@ -37,10 +37,29 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     private boolean loading = true;
 
     private TripImagesRoboSpiceController roboSpiceAdapterController;
+    private List<IFullScreenObject> photos = new ArrayList<>();
 
     public TripImagesListPresenter(Type type) {
         super();
         this.type = type;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        photos.clear();
+        photos.addAll(db.readPhotoEntityList(type));
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        view.clear();
+        view.addAll(photos);
+        view.setSelection();
+
+        if (type != Type.BUCKET_PHOTOS && !isFullscreen)
+            reload();
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen) {
@@ -84,27 +103,19 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        view.clear();
-        view.addAll(db.readPhotoEntityList(type));
-        view.setSelection();
-
-        if (type != Type.BUCKET_PHOTOS && !isFullscreen)
-            reload();
-    }
-
-    @Override
     public void dropView() {
         if (roboSpiceAdapterController != null)
             roboSpiceAdapterController.setAdapter(null);
         super.dropView();
     }
 
+    public IFullScreenObject getPhoto(int position) {
+        return photos.get(position);
+    }
+
     public void onItemClick(int position) {
         if (position != -1) {
-            List<IFullScreenObject> objects = view.getPhotosFromAdapter();
-            IFullScreenObject obj = objects.get(position);
+            IFullScreenObject obj = photos.get(position);
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
                     dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
@@ -121,18 +132,18 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         } else {
             view.add(0, event.getUploadTask());
         }
-        db.savePhotoEntityList(type, view.getPhotosFromAdapter());
+        db.savePhotoEntityList(type, photos);
     }
 
     public void onEventMainThread(PhotoUploadFinished event) {
         if (type != Type.MY_IMAGES) {
             getAdapterController().reload();
         } else {
-            for (int i = 0; i < view.getPhotosFromAdapter().size(); i++) {
-                Object item = view.getPhotosFromAdapter().get(i);
+            for (int i = 0; i < photos.size(); i++) {
+                Object item = photos.get(i);
                 if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
                     view.replace(i, event.getPhoto());
-                    db.savePhotoEntityList(type, view.getPhotosFromAdapter());
+                    db.savePhotoEntityList(type, photos);
                     break;
                 }
             }
@@ -140,18 +151,18 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     public void onEventMainThread(PhotoDeletedEvent event) {
-        List<IFullScreenObject> photosFromAdapter = view.getPhotosFromAdapter();
-        for (int i = 0; i < photosFromAdapter.size(); i++) {
-            IFullScreenObject o = photosFromAdapter.get(i);
+        for (int i = 0; i < photos.size(); i++) {
+            IFullScreenObject o = photos.get(i);
             if (o.getFsId().equals(event.getPhotoId())) {
+                photos.remove(i);
                 view.remove(i);
-                db.savePhotoEntityList(type, view.getPhotosFromAdapter());
+                db.savePhotoEntityList(type, photos);
             }
         }
     }
 
     public void onEvent(PhotoLikeEvent event) {
-        for (Object o : view.getPhotosFromAdapter()) {
+        for (Object o : photos) {
             if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getId())) {
                 ((Photo) o).setLiked(event.isLiked());
             }
@@ -172,6 +183,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
 
     public void reload() {
         getAdapterController().reload();
+    }
+
+    public void addItems(ArrayList items) {
+        photos.addAll(items);
     }
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
@@ -195,22 +210,23 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
-                    List<IFullScreenObject> list = new ArrayList<>();
                     if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
-                        list.addAll(items);
+                        photos.clear();
+                        photos.addAll(items);
                         resetLazyLoadFields();
+                        view.clear();
                     } else {
-                        list.addAll(view.getPhotosFromAdapter());
+                        photos.addAll(items);
                         for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
                             T item = iterator.next();
-                            if (list.contains(item)) {
+                            if (photos.contains(item)) {
                                 iterator.remove();
                             }
                         }
-                        list.addAll(items);
                     }
 
-                    db.savePhotoEntityList(type, view.getPhotosFromAdapter());
+                    view.addAll(photos);
+                    db.savePhotoEntityList(type, photos);
 
                     for (T item : items) {
                         if (item instanceof ImageUploadTask
@@ -226,8 +242,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
-        List<IFullScreenObject> getPhotosFromAdapter();
-
         void startLoading();
 
         void finishLoading();
@@ -237,10 +251,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         IRoboSpiceAdapter getAdapter();
 
         void inject(Object getMyPhotos);
-
-        void refresh();
     }
-
-
 
 }

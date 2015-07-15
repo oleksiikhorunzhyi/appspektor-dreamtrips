@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import java.util.List;
@@ -42,7 +41,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
         extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
 
-    public static final String EXTRA_POSITION = "EXTRA_POSITION";
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
+    public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -87,15 +87,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
-        type = activity.getType();
-        IFullScreenObject photo = activity.getPhoto(getArguments().getInt(EXTRA_POSITION));
-
-        if (photo != null) {
-            getPresenter().setupPhoto((T) photo);
-            getPresenter().setupType(type);
-        }
-
         if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
@@ -133,11 +124,16 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        FullScreenPhotoActivity activity = (FullScreenPhotoActivity) getActivity();
-        int position = getArguments().getInt(EXTRA_POSITION);
-        IFullScreenObject photo = activity.getPhoto(position);
+        IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
+        type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
 
-        return FullScreenPresenter.create(photo);
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(type);
+        if (photo != null) {
+            fullScreenPresenter.setPhoto(photo);
+            fullScreenPresenter.setType(type);
+        }
+
+        return fullScreenPresenter;
     }
 
 
@@ -416,7 +412,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void hideCoverProgress() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismissWithAnimation();
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismissWithAnimation();
     }
 
     @Override

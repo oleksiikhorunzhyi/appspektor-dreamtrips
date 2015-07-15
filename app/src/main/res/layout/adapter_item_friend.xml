@@ -48,25 +48,15 @@
             tools:text="10 mutual friends"/>
     </LinearLayout>
 
-    <com.dd.ShadowLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_tiny"
-        app:sl_cornerRadius="2dp"
-        app:sl_shadowColor="@color/black_semi_transparent">
 
-        <TextView
+        <Button
             android:id="@+id/action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_button_white"
             android:padding="@dimen/spacing_small"
             android:text="@string/social_user_wrapper_cell_actions"
             android:textAllCaps="true"
+            android:enabled="false"
             android:textColor="@android:color/black"
             />
-
-    </com.dd.ShadowLayout>
-
-
 </LinearLayout>

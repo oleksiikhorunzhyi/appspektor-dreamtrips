@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -60,7 +61,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
-                getPresenter().onTabChange(BucketType.values()[currentPosition]);
+                notifyPosition();
             }
 
             @Override
@@ -70,14 +71,18 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     }
 
     @Override
-    public void updateSelection() {
-        pager.setCurrentItem(currentPosition);
+    public void onResume() {
+        super.onResume();
+        new WeakHandler().postDelayed(this::notifyPosition, 100l);
+    }
+
+    private void notifyPosition() {
+        getPresenter().onTabChange(BucketType.values()[currentPosition]);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getPresenter().onTabChange(BucketType.values()[currentPosition]);
+    public void updateSelection() {
+        pager.setCurrentItem(currentPosition);
     }
 
     @Override
@@ -101,6 +106,5 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     public void resetRecentlyAddedBucketItem(BucketType type) {
         adapter.setBadgeCount(type, 0);
     }
-
 
 }

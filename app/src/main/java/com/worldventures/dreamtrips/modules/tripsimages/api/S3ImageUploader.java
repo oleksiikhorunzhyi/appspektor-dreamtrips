@@ -41,6 +41,7 @@ public class S3ImageUploader {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("");
+        metadata.setContentLength(file.length());
 
         Upload uploadHandler = null;
 

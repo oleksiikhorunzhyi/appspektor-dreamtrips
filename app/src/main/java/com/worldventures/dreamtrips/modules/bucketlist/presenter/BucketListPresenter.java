@@ -63,6 +63,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+    }
+
+    @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getAccountUserId());

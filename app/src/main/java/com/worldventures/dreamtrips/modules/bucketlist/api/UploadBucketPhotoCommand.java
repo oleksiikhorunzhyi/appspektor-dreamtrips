@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
@@ -38,6 +40,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     MediaSpiceManager mediaSpiceManager;
     @Inject
     SnappyRepository db;
+    @ForApplication
     @Inject
     Context context;
 
@@ -71,15 +74,16 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         try {
             eventBus.post(new BucketPhotoUploadStarted(photoUploadTask));
 
+            Log.d(UploadBucketPhotoCommand.class.getName(), "Upload has started, taskId = " + photoUploadTask.getTaskId());
             String fileUri = photoUploadTask.getFilePath();
             long taskId = photoUploadTask.getTaskId();
-            s3uploader.setProgressListener(i -> {
-                photoUploadTask.setProgress(i);
-                db.saveBucketPhotoTask(photoUploadTask);
-            });
+
             String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
             BucketPhoto uploadObject = getUploadObject(urlFromUploadResult);
+
+            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
+                    + " was uploaded to amazon");
 
             BucketPhoto photo = null;
             if (isCancelled()) {
@@ -94,10 +98,15 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
                 mediaSpiceManager.shouldStop();
             }
 
+            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
+                    + " was uploaded to dt server");
+
             updateBucketItem(bucketItem, photo);
             return photo;
         } catch (Exception e) {
             Timber.e(e, "Can't load from network");
+            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
+                    + " was failed");
             photoUploadTask.setFailed(true);
             db.saveBucketPhotoTask(photoUploadTask);
             eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
@@ -130,7 +139,8 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         if (event.getModelObject().equals(photoUploadTask)) {
             eventBus.cancelEventDelivery(event);
-            cancel();
+            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
+                    + " was canceled");
         }
     }
 

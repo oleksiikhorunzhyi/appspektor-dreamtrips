@@ -47,7 +47,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected MediaSpiceManager mediaSpiceManager;
 
-
     protected int priorityEventBus = 0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -108,17 +107,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!mediaSpiceManager.isStarted()) {
-            mediaSpiceManager.start(context);
-        }
     }
 
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
-        }
-        if (mediaSpiceManager.isStarted()) {
-            mediaSpiceManager.shouldStop();
         }
     }
 

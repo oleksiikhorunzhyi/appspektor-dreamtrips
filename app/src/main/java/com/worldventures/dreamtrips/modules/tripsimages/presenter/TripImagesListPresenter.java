@@ -118,6 +118,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             IFullScreenObject obj = photos.get(position);
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
+                    ((ImageUploadTask) obj).setFailed(false);
                     dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
                 }
             } else {

@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
+import android.content.Context;
+
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
+import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
@@ -27,11 +31,15 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
     @Inject
     @Global
-    protected transient EventBus eventBus;
+    EventBus eventBus;
     @Inject
     BucketItemManager bucketItemManager;
     @Inject
-    protected SnappyRepository db;
+    MediaSpiceManager mediaSpiceManager;
+    @Inject
+    SnappyRepository db;
+    @Inject
+    Context context;
 
     protected S3ImageUploader s3uploader = new S3ImageUploader();
 
@@ -39,7 +47,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
     private BucketItem bucketItem;
     private BucketTabsPresenter.BucketType bucketType;
-
 
     public UploadBucketPhotoCommand(BucketPhotoUploadTask photoUploadTask, BucketItem bucketItem, BucketTabsPresenter.BucketType type, Injector injector) {
         super(BucketPhoto.class);
@@ -52,10 +59,15 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         injector.inject(s3uploader);
 
         db.saveBucketPhotoTask(photoUploadTask);
+
+        if (!mediaSpiceManager.isStarted()) {
+            mediaSpiceManager.start(context);
+        }
     }
 
     @Override
     public BucketPhoto loadDataFromNetwork() {
+        eventBus.register(this);
         try {
             eventBus.post(new BucketPhotoUploadStarted(photoUploadTask));
 
@@ -78,9 +90,12 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             eventBus.post(new BucketPhotoUploadFinishEvent(photoUploadTask, photo));
             db.removeBucketPhotoTask(photoUploadTask);
 
+            if (!db.containsBucketPhotoUploadTask() && mediaSpiceManager.isStarted()) {
+                mediaSpiceManager.shouldStop();
+            }
+
             updateBucketItem(bucketItem, photo);
             return photo;
-
         } catch (Exception e) {
             Timber.e(e, "Can't load from network");
             photoUploadTask.setFailed(true);
@@ -88,6 +103,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
         }
 
+        eventBus.unregister(this);
         return null;
     }
 
@@ -109,6 +125,13 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         BucketPhoto bucketPhoto = new BucketPhoto();
         bucketPhoto.setOriginUrl(urlFromUploadResult);
         return bucketPhoto;
+    }
+
+    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        if (event.getModelObject().equals(photoUploadTask)) {
+            eventBus.cancelEventDelivery(event);
+            cancel();
+        }
     }
 
 }

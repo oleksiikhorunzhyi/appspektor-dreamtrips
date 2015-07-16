@@ -53,6 +53,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private WeakHandler weakHandler;
 
+    private boolean selected;
+
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
@@ -116,6 +118,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(BucketTabChangedEvent event) {
+        selected = type.equals(event.type);
         if (type.equals(event.type)) {
             // when tab change we need to wait, till pager settles down
             weakHandler.postDelayed(() -> openDetailsIfNeeded(currentItem), 150L);
@@ -152,6 +155,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
+        if (!selected) return;
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
         bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItem.getId());

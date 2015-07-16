@@ -48,6 +48,7 @@ public class ManagerModule {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
+    @Singleton
     @Provides
     public MediaSpiceManager provideVideoCachingSpiceManager() {
         return new MediaSpiceManager(MediaSpiceService.class);

@@ -9,6 +9,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
@@ -50,14 +51,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     @ForApplication
-    protected Injector injector;
+    Injector injector;
+
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
 
     protected BucketItem bucketItem;
-
-    private UploadBucketPhotoCommand uploadBucketPhotoCommand;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -169,21 +169,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void startUpload(final BucketPhotoUploadTask task) {
-        uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, bucketItem, type, injector);
-        mediaSpiceManager.execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                view.informUser(R.string.bucket_photo_upload_error);
-            }
-
-            @Override
-            public void onRequestSuccess(BucketPhoto bucketPhoto) {
-                if (bucketPhoto != null) {
-                    TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
-                            task.getSelectionType(), bucketItem.getType());
-                }
-            }
-        });
+        mediaSpiceManager.uploadPhoto(task, bucketItem, type, injector, this);
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
@@ -199,11 +185,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_CANCEL,
                 event.getTask().getSelectionType(),
                 bucketItem.getType());
-    }
-
-    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-        uploadBucketPhotoCommand.cancel();
     }
 
     public void onEvent(BucketAddPhotoClickEvent event) {

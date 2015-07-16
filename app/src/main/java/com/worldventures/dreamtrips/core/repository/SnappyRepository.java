@@ -264,6 +264,11 @@ public class SnappyRepository {
         act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
     }
 
+    public Boolean containsBucketPhotoUploadTask() {
+        return actWithResult(db -> db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY).length > 0)
+                .or(false);
+    }
+
     public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type, items);
 

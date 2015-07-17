@@ -55,7 +55,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     public void takeView(View view) {
         super.takeView(view);
         view.clear();
-        view.addAll(photos);
+        view.fillWithItems(photos);
         view.setSelection();
 
         if (type != Type.BUCKET_PHOTOS && !isFullscreen)
@@ -189,17 +189,13 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         getAdapterController().reload();
     }
 
-    public void addItems(ArrayList items) {
-        photos.addAll(items);
-    }
-
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
     public void setFullscreen(boolean isFullscreen) {
         this.isFullscreen = isFullscreen;
     }
 
-    public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<T> {
+    public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<IFullScreenObject> {
 
         @Override
         public void onStart(LoadType loadType) {
@@ -210,7 +206,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
 
         @Override
         public void onFinish(RoboSpiceAdapterController.LoadType
-                                     loadType, List<T> items, SpiceException spiceException) {
+                                     loadType, List<IFullScreenObject> items, SpiceException spiceException) {
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
@@ -218,21 +214,13 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                         photos.clear();
                         photos.addAll(items);
                         resetLazyLoadFields();
-                        view.clear();
                     } else {
                         photos.addAll(items);
-                        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
-                            T item = iterator.next();
-                            if (photos.contains(item)) {
-                                iterator.remove();
-                            }
-                        }
                     }
 
-                    view.addAll(photos);
                     db.savePhotoEntityList(type, photos);
 
-                    for (T item : items) {
+                    for (IFullScreenObject item : items) {
                         if (item instanceof ImageUploadTask
                                 && ((ImageUploadTask) item).isFailed()) {
                             dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
@@ -251,6 +239,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         void finishLoading();
 
         void setSelection();
+
+        void fillWithItems(List<IFullScreenObject> items);
 
         IRoboSpiceAdapter getAdapter();
 

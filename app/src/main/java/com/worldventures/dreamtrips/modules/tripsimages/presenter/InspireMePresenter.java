@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 import java.util.ArrayList;
@@ -22,13 +23,13 @@ public class InspireMePresenter extends TripImagesListPresenter<Inspiration> {
         return new TripImagesRoboSpiceController() {
 
             @Override
-            public SpiceRequest<ArrayList<Inspiration>> getReloadRequest() {
+            public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
                 randomSeed = Math.random();
                 return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
             }
 
             @Override
-            public SpiceRequest<ArrayList<Inspiration>> getNextPageRequest(int currentCount) {
+            public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
                 Log.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
                 return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
             }

@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesList
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -96,6 +97,12 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
                 args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, getPresentationModel().getPhoto(position));
                 fragment.setArguments(args);
             }
+
+            @Override
+            public void addItems(ArrayList baseItemClasses) {
+                super.addItems(baseItemClasses);
+                fill(baseItemClasses);
+            }
         };
     }
 
@@ -125,7 +132,11 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
     }
 
     @Override
-    public void addAll(List<IFullScreenObject> items) {
+    public void fillWithItems(List<IFullScreenObject> items) {
+        fill(items);
+    }
+
+    private void fill(List<IFullScreenObject> items) {
         Queryable.from(items).forEachR(item ->
                 adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
         adapter.notifyDataSetChanged();

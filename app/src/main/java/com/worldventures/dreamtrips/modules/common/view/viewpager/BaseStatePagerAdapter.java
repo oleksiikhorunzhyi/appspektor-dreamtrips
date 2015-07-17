@@ -4,7 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 
 import java.util.ArrayList;
 import java.util.List;

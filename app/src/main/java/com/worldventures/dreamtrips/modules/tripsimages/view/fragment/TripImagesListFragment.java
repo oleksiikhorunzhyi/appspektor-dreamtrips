@@ -150,7 +150,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    public void addAll(List<IFullScreenObject> items) {
+    public void fillWithItems(List<IFullScreenObject> items) {
         int itemCount = arrayListAdapter.getItemCount();
         arrayListAdapter.addItems(items);
         arrayListAdapter.notifyItemRangeInserted(itemCount - 1, items.size());

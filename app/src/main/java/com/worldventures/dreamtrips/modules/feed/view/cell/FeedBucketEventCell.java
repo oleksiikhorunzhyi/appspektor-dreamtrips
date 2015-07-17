@@ -69,9 +69,14 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
             textViewCategory.setVisibility(View.VISIBLE);
             textViewCategory.setText(getCategory(bucketItem));
         }
+        if (TextUtils.isEmpty(BucketItemInfoUtil.getPlace(bucketItem))) {
+            textViewPlace.setVisibility(View.GONE);
+        } else {
+            textViewPlace.setVisibility(View.VISIBLE);
+            textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
+        }
 
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
-        textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
         textViewFriends.setText(bucketItem.getFriends());
         textViewTags.setText(bucketItem.getBucketTags());
     }

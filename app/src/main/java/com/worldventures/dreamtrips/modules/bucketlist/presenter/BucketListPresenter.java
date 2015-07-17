@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketRequestSelectedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -65,6 +66,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.bucketList(getAccountUserId());
+        eventBus.post(new BucketRequestSelectedEvent());
         view.startLoading();
     }
 

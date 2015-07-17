@@ -142,7 +142,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
         type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
 
-        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(type);
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo);
         if (photo != null) {
             fullScreenPresenter.setPhoto(photo);
             fullScreenPresenter.setType(type);

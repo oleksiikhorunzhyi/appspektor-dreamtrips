@@ -2,12 +2,14 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -20,11 +22,10 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     protected Type type;
     protected T photo;
 
-    public static FullScreenPresenter create(Type type) {
-        if (type.equals(Type.MEMBER_IMAGES) || type.equals(Type.MY_IMAGES)
-                || type.equals(Type.YOU_SHOULD_BE_HERE)) {
+    public static FullScreenPresenter create(IFullScreenObject photo) {
+        if (photo instanceof Photo) {
             return new InteractiveFullscreenPresenter();
-        } else if (type.equals(Type.BUCKET_PHOTOS)) {
+        } else if (photo instanceof BucketPhoto) {
             return new BucketFullscreenPresenter();
         }
         return new SimpleFullscreenPresenter();

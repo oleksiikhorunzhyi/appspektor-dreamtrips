@@ -131,6 +131,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         if (type != Type.MY_IMAGES) {
             getAdapterController().reload();
         } else {
+            photos.add(0, event.getUploadTask());
             view.add(0, event.getUploadTask());
         }
         db.savePhotoEntityList(type, photos);
@@ -143,6 +144,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             for (int i = 0; i < photos.size(); i++) {
                 Object item = photos.get(i);
                 if (item instanceof ImageUploadTask && ((ImageUploadTask) item).getTaskId().equals(event.getPhoto().getTaskId())) {
+                    photos.remove(i);
+                    photos.add(i, event.getPhoto());
                     view.replace(i, event.getPhoto());
                     db.savePhotoEntityList(type, photos);
                     break;

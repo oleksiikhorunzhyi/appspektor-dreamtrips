@@ -152,7 +152,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetailsIfNeeded(BucketItem item) {
-        if (!view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
+        if (view == null || !view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
         //
         if (item != null) openDetails(item);
         else {

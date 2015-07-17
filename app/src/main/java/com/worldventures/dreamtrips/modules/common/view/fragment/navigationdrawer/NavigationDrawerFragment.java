@@ -1,15 +1,18 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -39,6 +42,8 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
 
     @InjectView(R.id.drawerList)
     protected RecyclerView recyclerView;
+    @InjectView(R.id.version)
+    protected TextView version;
     protected NavigationDrawerAdapter adapter;
     private NavigationDrawerListener targetDrawerListener;
 
@@ -67,6 +72,14 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
         adapter.setNavigationDrawerCallbacks(this);
         recyclerView.setAdapter(adapter);
         setHeaderIfNeeded();
+
+        try {
+            if (BuildConfig.FLAVOR.equals("stage"))
+                version.setText(getActivity().getPackageManager()
+                        .getPackageInfo(getActivity().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setHeaderIfNeeded() {

@@ -158,12 +158,14 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
 
     @Override
     public void add(IFullScreenObject item) {
+        recyclerView.scrollToPosition(0);
         arrayListAdapter.addItem(item);
         arrayListAdapter.notifyItemInserted(arrayListAdapter.getItemCount() - 1);
     }
 
     @Override
     public void add(int position, IFullScreenObject item) {
+        recyclerView.scrollToPosition(0);
         arrayListAdapter.addItem(position, item);
         arrayListAdapter.notifyItemInserted(position);
     }

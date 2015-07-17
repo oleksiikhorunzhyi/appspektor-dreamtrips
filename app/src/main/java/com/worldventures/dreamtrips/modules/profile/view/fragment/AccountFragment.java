@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.View;
@@ -168,5 +169,4 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                     }
                 }).show();
     }
-
 }

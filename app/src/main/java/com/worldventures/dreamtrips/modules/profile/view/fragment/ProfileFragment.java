@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +20,6 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
@@ -61,7 +61,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.feedview)
     FeedView feedView;
 
-    ProfileView profileView;
+    protected ProfileView profileView;
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
 
@@ -96,18 +96,18 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             }
         });
         feedView.setOnParallaxScroll((percentage, offset, parallax) -> {
-                setToolbarAlpha(percentage);
-                if (percentage > 0.42f) {
-                    profileToolbarTitle.setVisibility(View.VISIBLE);
-                    profileToolbarUserStatus.setVisibility(View.VISIBLE);
-                    profileView.getUserName().setVisibility(View.INVISIBLE);
-                    profileView.getUserStatus().setVisibility(View.INVISIBLE);
-                } else {
-                    profileToolbarTitle.setVisibility(View.INVISIBLE);
-                    profileToolbarUserStatus.setVisibility(View.INVISIBLE);
-                    profileView.getUserName().setVisibility(View.VISIBLE);
-                    profileView.getUserStatus().setVisibility(View.VISIBLE);
-                }
+            setToolbarAlpha(percentage);
+            if (percentage > 0.42f) {
+                profileToolbarTitle.setVisibility(View.VISIBLE);
+                profileToolbarUserStatus.setVisibility(View.VISIBLE);
+                profileView.getUserName().setVisibility(View.INVISIBLE);
+                profileView.getUserStatus().setVisibility(View.INVISIBLE);
+            } else {
+                profileToolbarTitle.setVisibility(View.INVISIBLE);
+                profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+                profileView.getUserName().setVisibility(View.VISIBLE);
+                profileView.getUserStatus().setVisibility(View.VISIBLE);
+            }
         });
 
     }
@@ -219,14 +219,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.platinum_member);
     }
 
-    private void setUserStatus(int color, int title, int drawble) {
+    private void setUserStatus(int color, int title, int drawable) {
         profileView.getUserStatus().setTextColor(getResources().getColor(color));
         profileView.getUserStatus().setText(title);
-        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(drawble, 0, 0, 0);
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
 
         profileToolbarUserStatus.setTextColor(getResources().getColor(color));
         profileToolbarUserStatus.setText(title);
-        profileToolbarUserStatus.setCompoundDrawablesWithIntrinsicBounds(drawble, 0, 0, 0);
+        profileToolbarUserStatus.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
     }
 
     @Override
@@ -257,6 +257,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             profileView.getProfileFeedReload().setVisibility(View.VISIBLE);
         }, 100);
 
+    }
+
+    @Override
+    public void setFriendButtonText(@StringRes int res) {
+        profileView.getFriends().setText(res);
     }
 
     @Override

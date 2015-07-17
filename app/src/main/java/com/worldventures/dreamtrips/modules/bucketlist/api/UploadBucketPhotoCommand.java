@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -74,16 +73,12 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         try {
             eventBus.post(new BucketPhotoUploadStarted(photoUploadTask));
 
-            Log.d(UploadBucketPhotoCommand.class.getName(), "Upload has started, taskId = " + photoUploadTask.getTaskId());
             String fileUri = photoUploadTask.getFilePath();
             long taskId = photoUploadTask.getTaskId();
 
             String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
             BucketPhoto uploadObject = getUploadObject(urlFromUploadResult);
-
-            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
-                    + " was uploaded to amazon");
 
             BucketPhoto photo = null;
             if (isCancelled()) {
@@ -98,15 +93,10 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
                 mediaSpiceManager.shouldStop();
             }
 
-            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
-                    + " was uploaded to dt server");
-
             updateBucketItem(bucketItem, photo);
             return photo;
         } catch (Exception e) {
             Timber.e(e, "Can't load from network");
-            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
-                    + " was failed");
             photoUploadTask.setFailed(true);
             db.saveBucketPhotoTask(photoUploadTask);
             eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
@@ -139,8 +129,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         if (event.getModelObject().equals(photoUploadTask)) {
             eventBus.cancelEventDelivery(event);
-            Log.d(UploadBucketPhotoCommand.class.getName(), "taskId = " + photoUploadTask.getTaskId()
-                    + " was canceled");
         }
     }
 

@@ -73,7 +73,7 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     @Override
     public void onResume() {
         super.onResume();
-        new WeakHandler().postDelayed(this::notifyPosition, 100l);
+        notifyPosition();
     }
 
     private void notifyPosition() {

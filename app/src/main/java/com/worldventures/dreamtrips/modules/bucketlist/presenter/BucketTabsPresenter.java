@@ -64,7 +64,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     public void onTabChange(BucketType type) {
         currentType = type;
-        db.saveRecentlyAddedBucketItems(type.name, 0);
+        db.saveRecentlyAddedBucketItems(type.name(), 0);
         view.resetRecentlyAddedBucketItem(type);
         TrackingHelper.bucketPopular(type.name);
         eventBus.post(new BucketTabChangedEvent(type));

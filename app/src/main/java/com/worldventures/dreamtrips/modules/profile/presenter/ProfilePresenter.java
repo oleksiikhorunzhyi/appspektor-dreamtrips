@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -80,6 +81,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         setUserProfileInfo();
         loadCircles();
         loadProfile();
+        view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
     }
 
     @Override
@@ -145,15 +147,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     protected abstract void loadProfile();
 
     public void openFriends() {
-        if (circles.isEmpty()) {
-            view.startLoading();
-            doRequest(new GetCirclesQuery(), circles -> {
-                view.finishLoading();
-                saveCircles(circles);
-                openFriends();
-            });
-        } else {
-            activityRouter.openFriends();
+        if (featureManager.available(Feature.SOCIAL)) {
+            if (circles.isEmpty()) {
+                view.startLoading();
+                doRequest(new GetCirclesQuery(), circles -> {
+                    view.finishLoading();
+                    saveCircles(circles);
+                    openFriends();
+                });
+            } else {
+                activityRouter.openFriends();
+            }
         }
     }
 
@@ -229,5 +233,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         IRoboSpiceAdapter<BaseFeedModel> getAdapter();
 
         void onFeedError();
+
+        void setFriendButtonText(@StringRes int res);
     }
 }

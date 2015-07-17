@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
@@ -45,8 +47,11 @@ import java.util.List;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
-    public ActivityRouter(Activity activity) {
+    private FeatureManager featureManager;
+
+    public ActivityRouter(Activity activity, FeatureManager featureManager) {
         super(activity);
+        this.featureManager = featureManager;
     }
 
     public void openMain() {
@@ -83,9 +88,11 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openUserProfile(User user) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ProfileModule.EXTRA_USER, user);
-        startActivity(ProfileActivity.class, bundle);
+        if (featureManager.isUserInfoAvailable(user)) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ProfileModule.EXTRA_USER, user);
+            startActivity(ProfileActivity.class, bundle);
+        }
     }
 
     public void openFullScreenTrip(List<Object> photoList, int position) {
@@ -189,7 +196,9 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openFriends() {
-        startActivity(FriendsActivity.class);
+        if (featureManager.available(Feature.SOCIAL)) {
+            startActivity(FriendsActivity.class);
+        }
     }
 
     public void openFriendsSearch(String query) {

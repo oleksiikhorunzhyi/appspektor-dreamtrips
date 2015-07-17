@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import javax.inject.Named;
@@ -30,8 +31,8 @@ public class ActivityModule {
     }
 
     @Provides
-    public ActivityRouter provideActivityCompass() {
-        return new ActivityRouter(baseActivity);
+    public ActivityRouter provideActivityCompass(FeatureManager featureManager) {
+        return new ActivityRouter(baseActivity, featureManager);
     }
 
     @Provides

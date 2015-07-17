@@ -75,6 +75,7 @@ android {
             buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
             buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             resValue "string", "facebook_app_id", "761667837261383"
@@ -106,6 +107,41 @@ android {
             buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
             buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
+            resValue "string", "facebook_app_id", "761062457321921"
+        }
+
+        stageWithoutSocial {
+            applicationId "com.worldventures.dreamtrips.stage"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:50d3bbaf-2656-4f42-9d58-83543c98caa0"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_dev_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtapp"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'false'
+
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761667837261383"
+        }
+        prodWithoutSocial {
+            applicationId "com.worldventures.dreamtrips"
+            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
+
+            buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+            buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
+            buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
+            buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
+            buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'false'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
             resValue "string", "facebook_app_id", "761062457321921"
@@ -252,19 +288,19 @@ apply plugin: "de.felixschulze.gradle.hockeyapp"
 
 hockeyapp {
     variantToApiToken = [
-            stageDebug : 'ba6b9a28a53947f287f62fdaed6086ad',
-            stageRelease : 'c0cccff726ec45f28237523fa3918769',
-            prodRelease: '7bfe2802eb7947968190f0a0d1555fe2'
+            stageDebug  : 'ba6b9a28a53947f287f62fdaed6086ad',
+            stageRelease: 'c0cccff726ec45f28237523fa3918769',
+            prodRelease : '7bfe2802eb7947968190f0a0d1555fe2'
     ]
     variantToApplicationId = [
-            stageDebug: '48de37eaf46ec363d392ae15ae521df6',
+            stageDebug  : '48de37eaf46ec363d392ae15ae521df6',
             stageRelease: 'e25cd69fc32f855a3aab0f85f9ee8e58',
-            prodRelease: '4fc6063859b3388635cb834dbb004324'
+            prodRelease : '4fc6063859b3388635cb834dbb004324'
     ]
     variantToStatus = [
-            stageDebug : '2',
-            stageRelease : '2',
-            prodRelease: '1'
+            stageDebug  : '2',
+            stageRelease: '2',
+            prodRelease : '1'
     ]
     notes = rootProject.hasProperty('releaseNotes') ? rootProject.releaseNotes : ''
     notesType = 1

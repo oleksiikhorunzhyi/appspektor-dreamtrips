@@ -34,17 +34,15 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
     protected void syncUIStateWithModel() {
         ivPhoto.setImageURI(Uri.parse(getModelObject().getFilePath()));
 
-        if (getModelObject().getProgress() == 100) {
-            fabProgress.setVisibility(View.GONE);
-        } else {
-            fabProgress.setVisibility(View.VISIBLE);
-            fabProgress.setProgress(getModelObject().getProgress());
-        }
         if (getModelObject().isFailed()) {
-            fabProgress.setProgress(0);
+            fabProgress.showProgress(false);
             fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
             circleView.setColor(color);
+        } else {
+            fabProgress.setVisibility(View.VISIBLE);
+            fabProgress.setIndeterminate(true);
+            fabProgress.showProgress(true);
         }
     }
 
@@ -58,7 +56,7 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
             getEventBus().post(new BucketPhotoReuploadRequestEvent(getModelObject()));
             getModelObject().setFailed(false);
             fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-            fabProgress.setProgress(0);
+            fabProgress.showProgress(true);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
             circleView.setColor(color);
         } else {

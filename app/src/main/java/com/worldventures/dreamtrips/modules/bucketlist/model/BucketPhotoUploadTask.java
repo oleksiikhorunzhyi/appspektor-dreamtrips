@@ -11,10 +11,6 @@ public class BucketPhotoUploadTask implements Serializable {
     private boolean failed;
     private String type;
 
-    public int getProgress() {
-        return progress;
-    }
-
     public void setProgress(int progress) {
         this.progress = progress;
     }

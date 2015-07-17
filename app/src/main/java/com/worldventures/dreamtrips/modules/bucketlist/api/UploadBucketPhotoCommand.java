@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.api;
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
@@ -38,6 +39,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     MediaSpiceManager mediaSpiceManager;
     @Inject
     SnappyRepository db;
+    @ForApplication
     @Inject
     Context context;
 
@@ -73,10 +75,7 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
             String fileUri = photoUploadTask.getFilePath();
             long taskId = photoUploadTask.getTaskId();
-            s3uploader.setProgressListener(i -> {
-                photoUploadTask.setProgress(i);
-                db.saveBucketPhotoTask(photoUploadTask);
-            });
+
             String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
             BucketPhoto uploadObject = getUploadObject(urlFromUploadResult);
@@ -130,7 +129,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         if (event.getModelObject().equals(photoUploadTask)) {
             eventBus.cancelEventDelivery(event);
-            cancel();
         }
     }
 

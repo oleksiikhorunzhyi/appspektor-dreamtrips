@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Predicate;
@@ -14,7 +15,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
@@ -51,6 +54,9 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     @Inject
     @Global
     EventBus eventBus;
+
+    @Inject
+    SnappyRepository db;
 
     private IgnoreFirstItemAdapter imagesAdapter;
     private PickImageDialog pid;
@@ -364,20 +370,12 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         void onDelete();
     }
 
-
     public void onEventMainThread(BucketPhotoUploadStarted event) {
         imagesAdapter.notifyDataSetChanged();
     }
 
-
-    public void onEventMainThread(UploadProgressUpdateEvent event) {
-        BucketPhotoUploadTask task = getBucketPhotoUploadTask(event.getTaskId());
-        if (task != null) task.setProgress(event.getProgress());
-        imagesAdapter.notifyDataSetChanged();
-    }
-
     public void onEventMainThread(BucketPhotoUploadFailedEvent event) {
-        BucketPhotoUploadTask task = getBucketPhotoUploadTask(String.valueOf(event.getTaskId()));
+        BucketPhotoUploadTask task = getBucketPhotoUploadTask(event.getTaskId());
         if (task != null) task.setFailed(true);
         imagesAdapter.notifyDataSetChanged();
     }
@@ -387,11 +385,22 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         imagesAdapter.notifyDataSetChanged();
     }
 
-    private BucketPhotoUploadTask getBucketPhotoUploadTask(String taskId) {
+    private BucketPhotoUploadTask getBucketPhotoUploadTask(long taskId) {
         return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element -> {
             boolean b = element instanceof BucketPhotoUploadTask;
-            return b && String.valueOf(((BucketPhotoUploadTask) element).getTaskId()).equals(taskId);
+            return b && ((BucketPhotoUploadTask) element).getTaskId() == taskId;
         });
     }
+
+    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        BucketPhotoUploadTask photoUploadTask = getBucketPhotoUploadTask(event.
+                getModelObject().getTaskId());
+        if (photoUploadTask != null) {
+            db.removeBucketPhotoTask(photoUploadTask);
+            deleteImage(photoUploadTask);
+        }
+
+    }
+
 
 }

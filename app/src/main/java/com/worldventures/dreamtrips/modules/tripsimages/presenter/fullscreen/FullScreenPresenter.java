@@ -22,7 +22,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public static FullScreenPresenter create(Type type) {
         if (type.equals(Type.MEMBER_IMAGES) || type.equals(Type.MY_IMAGES)
-                || type.equals(Type.INSPIRE_ME) || type.equals(Type.YOU_SHOULD_BE_HERE)) {
+                || type.equals(Type.YOU_SHOULD_BE_HERE)) {
             return new InteractiveFullscreenPresenter();
         } else if (type.equals(Type.BUCKET_PHOTOS)) {
             return new BucketFullscreenPresenter();

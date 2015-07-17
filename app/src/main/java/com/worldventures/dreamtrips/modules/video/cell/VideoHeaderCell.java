@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.adapter_friend_header)
+@Layout(R.layout.adapter_video_header)
 public class VideoHeaderCell extends AbstractCell<String> {
 
     @InjectView(R.id.header)

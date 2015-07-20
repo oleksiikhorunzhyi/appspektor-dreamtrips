@@ -88,6 +88,11 @@ public class FeedView extends RecyclerView {
         adapter.setOnParallaxScroll(p1);
     }
 
+    public float getParallaxPrecentage() {
+        return adapter.getCurrentPercentage();
+    }
+
+
     public void restoreStateIfNeeded() {
         stateDelegate.restoreStateIfNeeded();
     }

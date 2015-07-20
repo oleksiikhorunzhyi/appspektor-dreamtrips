@@ -74,6 +74,8 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
     private int mTotalYScrolled;
     private boolean mShouldClipView = true;
 
+    private float currentPercentage = 0.0f;
+
     /**
      * Translates the adapter in Y
      *
@@ -91,8 +93,8 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
         }
         mHeader.setClipY(Math.round(ofCalculated));
         if (mParallaxScroll != null) {
-            float left = Math.min(1, ((ofCalculated * 2) / (mHeader.getHeight() * SCROLL_MULTIPLIER)));
-            mParallaxScroll.onParallaxScroll(left, of, mHeader);
+            currentPercentage = Math.min(1, ((ofCalculated * 2) / (mHeader.getHeight() * SCROLL_MULTIPLIER)));
+            mParallaxScroll.onParallaxScroll(currentPercentage, of, mHeader);
         }
     }
 
@@ -117,6 +119,10 @@ public class ParallaxRecyclerAdapter<T> extends LoaderRecycleAdapter<T> {
                 }
             }
         });
+    }
+
+    public float getCurrentPercentage() {
+        return currentPercentage;
     }
 
     @Override

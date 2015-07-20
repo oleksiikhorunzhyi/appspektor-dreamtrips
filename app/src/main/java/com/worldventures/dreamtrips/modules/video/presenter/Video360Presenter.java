@@ -97,12 +97,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private void loadVideos() {
         MemberVideosRequest memberVideosRequest = new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
-        doRequest(memberVideosRequest, videos -> onSuccess(videos));
+        doRequest(memberVideosRequest, this::onSuccess);
     }
 
     private void onSuccess(List<Video> videos) {
-        recentVideos = Queryable.from(videos).filter(video -> video.isRecent()).toList();
-        featuredVideos = Queryable.from(videos).filter(video -> video.isFeatured()).toList();
+        recentVideos = Queryable.from(videos).filter(Video::isRecent).toList();
+        featuredVideos = Queryable.from(videos).filter(Video::isFeatured).toList();
         attachCacheToVideos(recentVideos);
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);

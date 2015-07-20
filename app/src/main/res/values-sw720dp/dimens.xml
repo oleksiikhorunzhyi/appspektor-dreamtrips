@@ -7,4 +7,6 @@
     <dimen name="feed_item_height">300dp</dimen>
     <dimen name="feed_spacing">100dp</dimen>
 
+    <dimen name="video_item_height">375dp</dimen>
+
 </resources>

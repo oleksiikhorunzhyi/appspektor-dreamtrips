@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ScrollView;
 
-import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
-import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -16,8 +14,6 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
@@ -53,6 +49,8 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
     @InjectView(R.id.containerLandscape)
     protected ScrollView scrollView;
+
+    @InjectView(R.id.progress) View progress;
 
     private BaseArrayListAdapter<Video> adapterFeatured;
     private BaseArrayListAdapter<Video> adapterRecent;
@@ -95,6 +93,8 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
         recyclerViewFeatured.setAdapter(adapterFeatured);
         recyclerViewRecent.setAdapter(adapterRecent);
 
+        progress.setVisibility(View.VISIBLE);
+
         setUpRecyclerViews();
     }
 
@@ -109,6 +109,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
     @Override
     public void finishLoading() {
+        progress.setVisibility(View.GONE);
         setUpRecyclerViews();
         stateDelegate.restoreStateIfNeeded();
     }
@@ -122,7 +123,6 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
     public BaseArrayListAdapter getRecentAdapter() {
         return adapterRecent;
     }
-
 
     @Override
     public BaseArrayListAdapter getAllAdapter() {

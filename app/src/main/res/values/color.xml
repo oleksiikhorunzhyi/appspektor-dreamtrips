@@ -4,6 +4,8 @@
     <color name="theme_main_darker">#76b2fe</color>
     <color name="accent">#76b2fe</color>
 
+    <color name="bg_tablet_menu">#0F2639</color>
+
     <color name="myPrimaryColor">#3F51B5</color>
     <color name="myPrimaryDarkColor">#3F51B5</color>
     <color name="myAccentColor">#3F51B5</color>
@@ -20,7 +22,7 @@
     <color name="tripNameColor">#000000</color>
     <color name="tripDateBackgroundColor">#5CBAFC</color>
     <color name="tripDescription">#F8F8F8</color>
-    <color name="tripButtonColor">#FF5D5C</color>
+    <color name="tripButtonColor">#70af29</color>
     <color name="tripButtonDisabled">#A5A5A5</color>
 
     <color name="textViewFilterDisabled">#A5A5A5</color>

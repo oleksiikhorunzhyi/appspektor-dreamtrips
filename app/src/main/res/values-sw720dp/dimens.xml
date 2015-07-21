@@ -9,4 +9,7 @@
 
     <dimen name="video_item_height">375dp</dimen>
 
+    <dimen name="map_trip_info_size">550dp</dimen>
+    <dimen name="map_trip_image_size">300dp</dimen>
+
 </resources>

@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -13,8 +14,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenImageDetailsPagerFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,9 +47,11 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
+        }
 
         Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
 
@@ -60,19 +63,18 @@ public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScree
             position = 0;
         }
 
-        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getSupportFragmentManager()) {
+        BaseStatePagerAdapter<FragmentItem> adapter = new BaseStatePagerAdapter<FragmentItem>(getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
                 Bundle args = new Bundle();
-                args.putBoolean(ImageDetailsPagerFragment.EXTRA_PHOTO_FULLSCREEN, true);
-                args.putSerializable(ImageDetailsPagerFragment.EXTRA_PHOTO, photoList.get(position));
+                args.putBoolean(TripImagePagerFragment.EXTRA_PHOTO_FULLSCREEN, true);
+                args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, photoList.get(position));
                 fragment.setArguments(args);
             }
         };
 
-        for (Serializable ignored : photoList) {
-            adapter.add(new FragmentItem(FullScreenImageDetailsPagerFragment.class, ""));
-        }
+        Queryable.from(photoList).forEachR(item ->
+                adapter.add(new FragmentItem(FullScreenTripImageFragment.class, "")));
 
         pager.setAdapter(adapter);
         pager.setCurrentItem(position);

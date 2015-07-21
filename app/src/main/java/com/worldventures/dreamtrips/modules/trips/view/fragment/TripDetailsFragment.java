@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -141,14 +141,14 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
                         Bundle args = new Bundle();
                         Object photo = getPresenter().getFilteredImages().get(position);
                         if (photo instanceof Serializable) {
-                            args.putSerializable(ImageDetailsPagerFragment.EXTRA_PHOTO, (Serializable) photo);
+                            args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
                         }
                         fragment.setArguments(args);
                     }
                 };
 
         for (Object photo : getPresenter().getFilteredImages()) {
-            adapter.add(new FragmentItem(ImageDetailsPagerFragment.class, ""));
+            adapter.add(new FragmentItem(TripImagePagerFragment.class, ""));
         }
 
         viewPagerGallery.setAdapter(adapter);

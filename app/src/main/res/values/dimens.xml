@@ -66,4 +66,11 @@
     <dimen name="feed_spacing">0dp</dimen>
 
     <dimen name="video_item_height">250dp</dimen>
+
+    /////Map info sizes
+    <dimen name="map_trip_info_size">275dp</dimen>
+    <dimen name="map_trip_image_size">150dp</dimen>
+    <dimen name="map_trip_info_text_small">10sp</dimen>
+    <dimen name="map_trip_info_text_medium">12sp</dimen>
+    <dimen name="map_trip_info_text_large">18sp</dimen>
 </resources>

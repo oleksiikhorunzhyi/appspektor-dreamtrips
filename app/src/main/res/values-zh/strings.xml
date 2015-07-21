@@ -100,12 +100,13 @@
     <string-array name="photo_dialog_items">
         <item>拍攝照片</item>
         <item>選擇照片</item>
+        <item>@string/choose_fb</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
-    <string name="buffering">正在緩衝。...</string>
+    <string name="buffering">正在緩衝。…</string>
     <string name="profile_select_avatar_header">選擇頭像</string>
     <string name="profile_select_cover_header">選擇封面</string>
     <string name="error_internal_server">內部伺服器錯誤</string>
@@ -155,13 +156,14 @@
     <string name="completed">已完成</string>
     <string name="action_share">分享</string>
     <string name="recent_header">最近添加的 360 Experience </string>
+    <string name="recent_videos">最近添加</string>
     <string name="featured_header">有特色的 360 Experience</string>
     <string name="title_activity_success_story_details">成功故事詳情活動</string>
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">已添加成功故事至收藏夾</string>
     <string name="ss_has_been_removed_from_favorites">已從收藏夾移出成功故事</string>
     <string name="show_favorites">顯示收藏</string>
-    <string name="other_travel">預訂其他旅行</string>
+    <string name="other_travel">預訂旅行</string>
     <string name="training_videos">培訓視頻</string>
     <string name="error_while_sync">出現問題</string>
     <string name="can_not_like_photo">不能點贊照片</string>
@@ -275,10 +277,8 @@
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
-
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
-
     <string name="bucket_delete_dialog">您確定您要刪除目標清單項目嗎?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
@@ -314,5 +314,16 @@
     <string name="friend_add_to">Add to:</string>
     <string name="bucket_current_cover">Current cover</string>
     <string name="bucket_item_edit_completed">Mark as done!</string>
-
+    <string name="reload_feed">Reload feed</string>
+    <string name="feed_header" formatted="false">%s %s %s</string>
+    <string name="added">added</string>
+    <string name="booked">booked</string>
+    <string name="shared">shared</string>
+    <string name="updated">updated</string>
+    <string name="liked">liked</string>
+    <string name="feed_trip">Trip</string>
+    <string name="feed_photo">Photo</string>
+    <string name="feed_bucket">Bucket Item</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="loading">Loading…</string>
 </resources>

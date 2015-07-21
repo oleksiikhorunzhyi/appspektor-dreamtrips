@@ -109,7 +109,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
                 profileView.getUserStatus().setVisibility(View.VISIBLE);
             }
         });
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (profileToolbar != null) setToolbarAlpha(feedView.getParallaxPrecentage());
     }
 
     private void setToolbarAlpha(float percentage) {

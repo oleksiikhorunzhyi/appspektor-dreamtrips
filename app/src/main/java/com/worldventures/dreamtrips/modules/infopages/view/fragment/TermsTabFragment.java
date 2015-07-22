@@ -1,14 +1,15 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.view.View;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -22,7 +23,7 @@ import butterknife.InjectView;
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
 
     @InjectView(R.id.tabs)
-    protected PagerSlidingTabStrip tabs;
+    protected BadgedTabLayout tabs;
     @InjectView(R.id.pager)
     protected CustomViewPager pager;
 
@@ -45,6 +46,7 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
         }
 
         pager.setAdapter(adapter);
-        tabs.setViewPager(pager);
+
+        tabs.setupWithPagerBadged(pager);
     }
 }

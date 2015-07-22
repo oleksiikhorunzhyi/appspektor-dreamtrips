@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:fresco="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-    >
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/itemLayout"
-        android:layout_width="275dp"
+        android:layout_width="@dimen/map_trip_info_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
@@ -16,7 +16,7 @@
         <FrameLayout
             android:id="@+id/imageLayout"
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_height="@dimen/map_trip_image_size">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imageViewTripImage"
@@ -39,11 +39,11 @@
                 <TextView
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/ic_stripe"
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/map_trip_info_text_small"
                     android:textStyle="bold"/>
 
             </RelativeLayout>
@@ -85,7 +85,7 @@
                     android:padding="@dimen/tripDetailPanelPadding"
                     android:text="@string/trip_featured"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/map_trip_info_text_small"
                     android:textStyle="bold"
                     android:visibility="invisible"/>
 
@@ -96,8 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:visibility="gone"
-                android:src="@drawable/soldout"/>
+                android:src="@drawable/soldout"
+                android:visibility="gone"/>
 
         </FrameLayout>
 
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/tripNameColor"
-                    android:textSize="12sp"/>
+                    android:textSize="@dimen/map_trip_info_text_medium"/>
 
 
                 <TextView
@@ -133,7 +133,7 @@
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_location"
                     android:textColor="@color/tripPlaceColor"
-                    android:textSize="10sp"/>
+                    android:textSize="@dimen/map_trip_info_text_small"/>
             </LinearLayout>
 
             <TextView
@@ -143,7 +143,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:textColor="@color/tripPlaceColor"
-                android:textSize="18sp"
+                android:textSize="@dimen/map_trip_info_text_large"
                 android:textStyle="bold"/>
         </LinearLayout>
 
@@ -158,7 +158,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="@color/tripNameColor"
-            android:textSize="10sp"/>
+            android:textSize="@dimen/map_trip_info_text_small"/>
 
 
         <ImageView
@@ -168,26 +168,35 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_triangle"/>
 
-        <CheckedTextView
-            android:id="@+id/imageViewAddToBucket"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
-            android:layout_toLeftOf="@+id/imageViewLike"
-            android:checkMark="@drawable/ic_trip_add_to_bucket"
-            android:clickable="true"
-            android:tag="like"/>
-
-        <CheckedTextView
-            android:id="@+id/imageViewLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/tripImagePanelMargin"
-            android:checkMark="@drawable/ic_trip_like"
-            android:clickable="true"
-            android:tag="like"/>
+            android:orientation="horizontal"
+            >
+
+            <CheckedTextView
+                android:id="@+id/imageViewAddToBucket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
+                android:checkMark="@drawable/ic_trip_add_to_bucket"
+                android:clickable="true"
+                android:gravity="center"
+                android:tag="like"/>
+
+
+            <CheckedTextView
+                android:id="@+id/imageViewLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/tripImagePanelPaddingHorizontal"
+                android:checkMark="@drawable/ic_trip_like"
+                android:clickable="true"
+                android:gravity="center"
+                android:tag="like"/>
+        </LinearLayout>
+
 
     </RelativeLayout>
 

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 import com.esotericsoftware.kryo.DefaultSerializer;

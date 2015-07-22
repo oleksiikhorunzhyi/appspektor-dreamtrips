@@ -67,6 +67,7 @@ public class VideoCachingDelegate {
     }
 
     private void startCaching(CachedEntity entity) {
+        if (!spiceManager.isStarted()) spiceManager.start(context);
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(entity.getUrl(),
                 new File(CachedEntity.getFilePath(context, entity.getUrl())));
 

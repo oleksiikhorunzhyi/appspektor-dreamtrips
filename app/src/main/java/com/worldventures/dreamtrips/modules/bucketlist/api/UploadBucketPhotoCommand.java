@@ -89,10 +89,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             eventBus.post(new BucketPhotoUploadFinishEvent(photoUploadTask, photo));
             db.removeBucketPhotoTask(photoUploadTask);
 
-            if (!db.containsBucketPhotoUploadTask() && mediaSpiceManager.isStarted()) {
-                mediaSpiceManager.shouldStop();
-            }
-
             updateBucketItem(bucketItem, photo);
             return photo;
         } catch (Exception e) {

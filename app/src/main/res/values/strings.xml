@@ -237,14 +237,13 @@
     <string name="title_activity_invite">Invite</string>
     <string name="invitation_continue">Continue</string>
     <string name="invitation_select_contacts">Select contacts</string>
-    <string name="invitation_select_template">Select invitation Template</string>
+    <string name="invitation_select_template">Select invitation template</string>
     <string name="invitation_select">Select</string>
     <string name="invitation_from">From:</string>
     <string name="invitation_to">To:</string>
     <string name="invitation_subject">Subject:</string>
 
     <string name="invite_add_last_name">Last Name</string>
-    <string name="select_template">Select template</string>
     <string name="preview_template">Preview template</string>
     <string name="selected">%d selected</string>
     <string name="error_personal_message_is_empty">Personal message should not be empty</string>

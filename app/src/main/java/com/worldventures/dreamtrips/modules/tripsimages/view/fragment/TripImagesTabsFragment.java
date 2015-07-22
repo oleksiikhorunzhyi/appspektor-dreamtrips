@@ -3,17 +3,18 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -36,7 +37,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
         FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
-    protected PagerSlidingTabStrip tabs;
+    protected BadgedTabLayout tabs;
     @InjectView(R.id.pager)
     protected ViewPager pager;
     @InjectView(R.id.v_bg_holder)
@@ -82,9 +83,10 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
             this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
 
         }
+
         this.pager.setAdapter(adapter);
-        this.tabs.setOnPageChangeListener(this);
-        this.tabs.setViewPager(pager);
+
+        tabs.setupWithPagerBadged(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
     }
 

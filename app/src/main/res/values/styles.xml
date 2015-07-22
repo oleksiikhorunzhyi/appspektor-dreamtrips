@@ -48,4 +48,23 @@
     <style name="LightCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textColorSecondary">@color/white</item>
     </style>
+
+    <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/theme_main_darker</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabIndicatorHeight">3dp</item>
+    </style>
+
+    <style name="DreamFixedTabLayout" parent="DreamTabLayout">
+        <item name="tabMode">fixed</item>
+    </style>
+
+    <style name="DreamTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black_semi_transparent</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 </resources>

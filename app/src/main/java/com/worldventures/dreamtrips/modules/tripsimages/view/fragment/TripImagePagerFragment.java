@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -27,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_image_details)
-public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePresenter> implements DetailedImagePresenter.View {
+public class TripImagePagerFragment extends BaseFragment<DetailedImagePresenter> implements DetailedImagePresenter.View {
 
     public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
     public static final String EXTRA_PHOTO_FULLSCREEN = "isFullscreen";
@@ -37,8 +36,6 @@ public class ImageDetailsPagerFragment extends BaseFragment<DetailedImagePresent
 
     @InjectView(R.id.progressBarImage)
     protected ProgressBar progressBar;
-
-    private WeakHandler weakHandler = new WeakHandler();
 
     @Override
     public void afterCreateView(View rootView) {

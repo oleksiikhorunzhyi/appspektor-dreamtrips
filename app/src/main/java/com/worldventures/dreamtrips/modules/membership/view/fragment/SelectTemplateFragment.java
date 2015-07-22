@@ -70,7 +70,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
                 .setAdapter(adapter)
                 .setRecyclerView(lvTemplates)
                 .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
-                        R.layout.adapter_item_succes_story_header), false)
+                        R.layout.adapter_template_header), false)
                 .build();
 
         lvTemplates.addItemDecoration(decoration);

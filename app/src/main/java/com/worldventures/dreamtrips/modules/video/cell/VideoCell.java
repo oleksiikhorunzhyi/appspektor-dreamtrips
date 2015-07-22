@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -23,8 +24,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_video)
 public class VideoCell extends AbstractCell<Video> {
@@ -35,10 +34,9 @@ public class VideoCell extends AbstractCell<Video> {
     protected ImageView ivPlay;
     @InjectView(R.id.tv_title)
     protected TextView tvTitle;
-    @InjectView(R.id.iv_download)
-    protected FabButton ivDownload;
-    @InjectView(R.id.fabbutton_circle)
-    protected CircleImageView circleView;
+
+    @InjectView(R.id.download_progress)
+    protected PinProgressButton downloadProgress;
 
     @Inject
     @ForActivity
@@ -48,7 +46,7 @@ public class VideoCell extends AbstractCell<Video> {
 
     public VideoCell(View view) {
         super(view);
-        progressVideoCellHelper = new ProgressVideoCellHelper(ivDownload, circleView);
+        progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress);
     }
 
     @Override
@@ -88,7 +86,7 @@ public class VideoCell extends AbstractCell<Video> {
         context.startActivity(intent);
     }
 
-    @OnClick(R.id.iv_download)
+    @OnClick(R.id.download_progress)
     public void onDownloadClick() {
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START,

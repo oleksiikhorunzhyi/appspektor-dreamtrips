@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -19,8 +20,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_video_360)
 public class Video360Cell extends AbstractCell<Video> {
@@ -34,11 +33,8 @@ public class Video360Cell extends AbstractCell<Video> {
     @InjectView(R.id.iv_bg)
     protected SimpleDraweeView imageViewPreview;
 
-    @InjectView(R.id.iv_download)
-    protected FabButton ivDownload;
-
-    @InjectView(R.id.fabbutton_circle)
-    protected CircleImageView circleView;
+    @InjectView(R.id.download_progress)
+    protected PinProgressButton downloadProgress;
 
     @Inject
     protected ActivityRouter activityRouter;
@@ -50,7 +46,7 @@ public class Video360Cell extends AbstractCell<Video> {
 
     public Video360Cell(View view) {
         super(view);
-        progressVideoCellHelper = new ProgressVideoCellHelper(ivDownload, circleView);
+        progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress);
     }
 
     @Override
@@ -62,7 +58,6 @@ public class Video360Cell extends AbstractCell<Video> {
         imageViewPreview.setImageURI(Uri.parse(getModelObject().getImageUrl()));
         this.textViewTitle.setText(getModelObject().getVideoName());
         this.textViewDuration.setText(getModelObject().getDuration());
-        this.ivDownload.setProgress(getModelObject().getCacheEntity().getProgress());
 
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
         progressVideoCellHelper.setUrl(getModelObject().getMp4Url());

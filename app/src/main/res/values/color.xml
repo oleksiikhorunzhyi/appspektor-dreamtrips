@@ -81,4 +81,6 @@
     <color name="profile_feed_background">#F0EFEF</color>
     <color name="tab_enabled_color">#dddddd</color>
 
+    <color name="pin_progress_default_circle_color">#80ffffff</color>
+    <color name="pin_progress_default_progress_color">#33b5e5</color>
 </resources>

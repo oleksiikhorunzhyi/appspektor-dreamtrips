@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/video_item_height"
@@ -38,32 +37,21 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="12dp"
             android:paddingLeft="@dimen/margin_small"
             android:paddingRight="@dimen/margin_small"
             android:singleLine="true"
-            android:gravity="center_vertical"
-            android:padding="12dp"
             android:textColor="@android:color/white"
             android:textSize="16sp"/>
 
-        <view
-            android:id="@+id/iv_download"
-            class="mbanje.kurt.fabbutton.FabButton"
+        <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+            android:id="@+id/download_progress"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="8dp"
-            android:layout_gravity="center"
-            android:color="@color/bucket_blue"
-            android:enabled="false"
-            android:indeterminate="false"
-            android:max="100"
-            android:src="@drawable/ic_video_download"
-            android:visibility="visible"
-            app:fbb_autoStart="true"
-            app:fbb_endBitmap="@drawable/ic_video_done"
-            app:fbb_progressColor="#ffffff"
-            app:fbb_progressWidthRatio="0.1"
-            app:fbb_showEndBitmap="true"/>
+            />
+
     </LinearLayout>
 
 </FrameLayout>

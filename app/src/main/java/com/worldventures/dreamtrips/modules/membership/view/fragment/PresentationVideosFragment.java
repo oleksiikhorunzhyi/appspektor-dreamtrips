@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -66,7 +64,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+        setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
@@ -87,12 +85,6 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-    }
-
-    @Override
     public void onRefresh() {
         getPresenter().getAdapterController().reload();
     }
@@ -102,8 +94,10 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         return (T) new PresentationVideosPresenter();
     }
 
-    private void setupLayoutManager(boolean landscape) {
-        int spanCount = landscape ? 2 : 1;
+    private void setupLayoutManager() {
+        boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
+        boolean tablet = ViewUtils.isTablet(getActivity());
+        int spanCount = landscape && tablet ? 3 : landscape ? 2 : 1;
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override

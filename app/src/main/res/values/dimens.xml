@@ -73,4 +73,6 @@
     <dimen name="map_trip_info_text_small">10sp</dimen>
     <dimen name="map_trip_info_text_medium">12sp</dimen>
     <dimen name="map_trip_info_text_large">18sp</dimen>
+
+    <dimen name="pin_progress_inner_size">28dp</dimen>
 </resources>

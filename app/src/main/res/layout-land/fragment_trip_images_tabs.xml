@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:fillViewport="false"
-        fab:pstsIndicatorColor="@color/theme_main_darker"
-        fab:pstsTextColorSelected="@color/myNavigationColor"
-        fab:pstsTextSelectedStyle="normal"
-        fab:pstsTextStyle="normal"
-        fab:pstsUnderlineColor="@color/theme_main_darker" />
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout
+            android:id="@+id/tabs"
+            style="@style/DreamTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tab_background_color"
+            />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tabs"
-        android:background="@android:color/white" />
+        android:layout_below="@+id/appbar"
+        android:background="@android:color/white"/>
 
     <View
         android:id="@+id/v_bg_holder"
-        android:background="@color/black_semi_transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:clickable="true" />
+        android:background="@color/black_semi_transparent"
+        android:clickable="true"
+        android:visibility="gone"/>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_down"
@@ -52,7 +57,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_facebook" />
+            fab:fab_icon="@drawable/ic_fab_facebook"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_gallery"
@@ -61,7 +66,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_gallery" />
+            fab:fab_icon="@drawable/ic_fab_gallery"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -70,7 +75,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_photo" />
+            fab:fab_icon="@drawable/ic_fab_photo"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

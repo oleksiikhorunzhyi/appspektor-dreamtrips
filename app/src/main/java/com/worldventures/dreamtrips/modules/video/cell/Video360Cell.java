@@ -83,7 +83,7 @@ public class Video360Cell extends AbstractCell<Video> {
     }
 
 
-    @OnClick(R.id.iv_download)
+    @OnClick(R.id.download_progress)
     public void onDownloadClick() {
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_LOAD_START,

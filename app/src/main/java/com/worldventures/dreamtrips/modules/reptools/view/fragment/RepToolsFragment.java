@@ -1,17 +1,18 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -23,14 +24,13 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-
 @Layout(R.layout.fragment_rep_tools)
 @MenuResource(R.menu.menu_mock)
 public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         ViewPager.OnPageChangeListener, RepToolsPresenter.View {
 
     @InjectView(R.id.tabs)
-    protected PagerSlidingTabStrip tabs;
+    protected BadgedTabLayout tabs;
     @InjectView(R.id.pager)
     protected ViewPager pager;
 
@@ -60,8 +60,8 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
             }
         }
         pager.setAdapter(adapter);
-        tabs.setViewPager(pager);
-        tabs.setOnPageChangeListener(this);
+
+        tabs.setupWithPagerBadged(pager);
     }
 
     @Override

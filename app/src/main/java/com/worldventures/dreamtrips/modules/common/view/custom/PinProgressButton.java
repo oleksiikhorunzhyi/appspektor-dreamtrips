@@ -103,7 +103,7 @@ public class PinProgressButton extends CompoundButton {
         // Other initialization
         progressDrawable = res.getDrawable(R.drawable.ic_video_download);
         progressDrawable.setCallback(this);
-        errorDrawable = res.getDrawable(R.drawable.ic_upload_retry);
+        errorDrawable = res.getDrawable(R.drawable.ic_video_retry);
         errorDrawable.setCallback(this);
         successDrawable = res.getDrawable(R.drawable.ic_video_done);
         successDrawable.setCallback(this);

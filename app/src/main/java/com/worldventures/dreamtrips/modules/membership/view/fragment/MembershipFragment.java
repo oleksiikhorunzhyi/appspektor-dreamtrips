@@ -45,6 +45,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         super.afterCreateView(rootView);
         adapter = new BaseStatePagerAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);
+        pager.addOnPageChangeListener(this);
 
         adapter.add(new FragmentItem(PresentationVideosFragment.class, getString(R.string.presentations)));
         adapter.add(new FragmentItem(StaticInfoFragment.EnrollFragment.class, getString(R.string.enroll_member)));

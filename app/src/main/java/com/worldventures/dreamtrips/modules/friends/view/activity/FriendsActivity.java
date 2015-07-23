@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFrag
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 
 import butterknife.InjectView;
-import icepick.Icicle;
 
 @Layout(R.layout.activity_friends)
 public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter> implements FriendsMainPresenter.View {
@@ -42,7 +41,7 @@ public class FriendsActivity extends ActivityWithPresenter<FriendsMainPresenter>
         adapter = new BasePagerAdapter<>(getSupportFragmentManager());
         adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
         adapter.add(new FragmentItem(RequestsFragment.class, getString(R.string.social_requests)));
-        tabLayout.setTabTextColors(R.color.myNavigationColor, R.color.black_semi_transparent);
+
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

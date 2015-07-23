@@ -200,7 +200,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     }
 
     @Override
-    public void finishLoading(List<Friend> items) {
+    public void finishLoading() {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });

@@ -178,14 +178,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     WeakHandler lockHandler = new WeakHandler();
 
-    public void onEventMainThread(WebViewInEvent event) {
-        lockOrientation(getActivity());
-    }
-
-    public void onEventMainThread(WebViewOutEvent event) {
-        unlockOrientation(getActivity());
-    }
-
     public void onEventMainThread(ScreenChangedEvent event) {
         lockHandler.removeCallbacksAndMessages(null);
         lockOrientationIfNeeded();

@@ -250,6 +250,9 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/request_responses")
     JSONObject deleteRequest(@Query("user_id") int userId);
 
+    @DELETE("/api/social/friends")
+    JSONObject unfriend(@Query("user_id") int userId);
+
     @GET("/api/social/users/{user_id}/feed")
     ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
 

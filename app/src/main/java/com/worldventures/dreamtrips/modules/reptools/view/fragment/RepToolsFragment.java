@@ -60,6 +60,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
             }
         }
         pager.setAdapter(adapter);
+        pager.addOnPageChangeListener(this);
 
         tabs.setupWithPagerBadged(pager);
     }

@@ -148,7 +148,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
             if (item instanceof BucketPhotoUploadTask &&
                     photo.getTaskId() == ((BucketPhotoUploadTask) item).getTaskId()) {
                 imagesAdapter.remove(item);
-                imagesAdapter.notifyItemRemoved(i);
                 break;
             }
         }

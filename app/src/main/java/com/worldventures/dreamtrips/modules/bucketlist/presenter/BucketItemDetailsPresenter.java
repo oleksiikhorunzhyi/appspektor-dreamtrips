@@ -48,7 +48,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     public void onStatusUpdated(boolean status) {
-        if (status != bucketItem.isDone()) {
+        if (bucketItem != null && status != bucketItem.isDone()) {
             view.disableCheckbox();
             bucketItemManager.updateItemStatus(String.valueOf(bucketItemId),
                     status, item -> view.enableCheckbox(), this);

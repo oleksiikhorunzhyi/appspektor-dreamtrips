@@ -54,7 +54,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     public void fillFeatured() {
         if (featuredVideos != null) {
-            if (view.getFeaturedAdapter() != null) {
+            if (view != null && view.getFeaturedAdapter() != null) {
                 view.getFeaturedAdapter().clear();
                 view.getFeaturedAdapter().addItems(featuredVideos);
 

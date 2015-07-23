@@ -168,7 +168,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setTime(String time) {
-            textViewDate.setText(time);
+        textViewDate.setText(time);
     }
 
     @Override
@@ -268,7 +268,10 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     public void onEvent(ActivityResult event) {
         eventBus.removeStickyEvent(event);
-        handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
+        handler.post(() -> {
+            if (bucketPhotosView != null)
+                bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data);
+        });
     }
 
     @Override

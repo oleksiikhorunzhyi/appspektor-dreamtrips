@@ -65,11 +65,12 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         if (!mediaSpiceManager.isStarted()) {
             mediaSpiceManager.start(context);
         }
+
+        eventBus.register(this);
     }
 
     @Override
     public BucketPhoto loadDataFromNetwork() {
-        eventBus.register(this);
         try {
             eventBus.post(new BucketPhotoUploadStarted(photoUploadTask));
 
@@ -88,6 +89,10 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             }
             eventBus.post(new BucketPhotoUploadFinishEvent(photoUploadTask, photo));
             db.removeBucketPhotoTask(photoUploadTask);
+
+            if (!db.containsBucketPhotoUploadTask() && mediaSpiceManager.isStarted()) {
+                mediaSpiceManager.shouldStop();
+            }
 
             updateBucketItem(bucketItem, photo);
             return photo;

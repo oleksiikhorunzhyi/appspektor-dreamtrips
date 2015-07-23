@@ -56,7 +56,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
                     Bundle args = new Bundle();
                     Serializable type = this.getFragmentItem(position).data;
                     args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
-                    fragment.setArguments(args);                }
+                    fragment.setArguments(args);
+                }
             };
         }
 
@@ -98,12 +99,13 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
 
     @Override
     public void setTypes(List<BucketType> types) {
-        if (adapter.getCount() > 0) return;
-        //
-        for (BucketType type : types) {
-            adapter.add(new DataFragmentItem<>(BucketListFragment.class, getString(type.getRes()), type));
+        if (adapter.getCount() == 0) {
+            for (BucketType type : types) {
+                adapter.add(new DataFragmentItem<>(BucketListFragment.class, getString(type.getRes()), type));
+            }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
+        //
         tabStrip.setupWithPagerBadged(pager);
     }
 

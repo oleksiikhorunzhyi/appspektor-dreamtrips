@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
+import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
+import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
@@ -69,10 +71,26 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     public void addFriendClicked() {
-        if (user.getRelationship() != null
-                && (user.getRelationship().equals(User.RELATION_NONE)
-                || user.getRelationship().equals(User.RELATION_REJECT)))
-            view.showAddFriendDialog(circles, this::addAsFriend);
+        if (user.getRelationship() != null) {
+            if (user.getRelationship().equals(User.RELATION_NONE)
+                    || user.getRelationship().equals(User.RELATION_REJECT))
+                view.showAddFriendDialog(circles, this::addAsFriend);
+            else if (user.getRelationship().equals(User.RELATION_FRIEND))
+                view.showFriendDialog(user);
+        }
+
+    }
+
+    public void unfriend() {
+        view.startLoading();
+        doRequest(new UnfriendCommand(user.getId()), object -> {
+            if (view != null) {
+                view.finishLoading();
+                user.unfriend();
+                setUserProfileInfo();
+                eventBus.postSticky(new RemoveUserEvent(user));
+            }
+        });
     }
 
     public void acceptClicked() {
@@ -146,5 +164,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
         void setWaiting();
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
+
+        void showFriendDialog(User user);
     }
 }

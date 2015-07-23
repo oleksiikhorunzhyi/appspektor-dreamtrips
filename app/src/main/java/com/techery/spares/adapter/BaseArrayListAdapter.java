@@ -132,10 +132,12 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void remove(BaseItemClass item) {
-        int position = items.indexOf(item);
-        if (position != -1) {
-            this.items.remove(position);
-            this.notifyItemRemoved(position);
+        if (item != null) {
+            int position = items.indexOf(item);
+            if (position != -1) {
+                this.items.remove(position);
+                this.notifyItemRemoved(position);
+            }
         }
     }
 

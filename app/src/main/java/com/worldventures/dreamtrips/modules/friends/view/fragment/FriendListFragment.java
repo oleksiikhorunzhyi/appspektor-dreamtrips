@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
@@ -195,7 +196,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     }
 
     @Override
-    public IRoboSpiceAdapter<Friend> getAdapter() {
+    public BaseArrayListAdapter<Friend> getAdapter() {
         return adapter;
     }
 

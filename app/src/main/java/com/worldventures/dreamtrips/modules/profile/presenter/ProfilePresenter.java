@@ -128,15 +128,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loadFeed();
     }
 
-    protected void onProfileError() {
-        view.finishLoading();
-        loadFeed();
-    }
-
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        onProfileError();
+        view.finishLoading();
     }
 
     public void loadFeed() {

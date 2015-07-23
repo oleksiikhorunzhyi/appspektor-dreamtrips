@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -85,6 +84,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
         }
 
         this.pager.setAdapter(adapter);
+        this.pager.addOnPageChangeListener(this);
 
         tabs.setupWithPagerBadged(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
@@ -179,7 +179,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     public void onPageSelected(int position) {
         getPresenter().trackState(position);
 
-        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal() || position == Type.VIDEO_360.ordinal()) {
+        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()
+                || position == Type.VIDEO_360.ordinal()) {
             multipleActionsDown.setVisibility(View.GONE);
         } else {
             multipleActionsDown.setVisibility(View.VISIBLE);

@@ -10,6 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
@@ -57,6 +58,7 @@ public class FriendCell extends AbstractCell<Friend> {
 
     }
 
+    @OnClick(R.id.actions)
     public void onAction(View v) {
         Context c = v.getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
@@ -64,9 +66,10 @@ public class FriendCell extends AbstractCell<Friend> {
         builder.setIcon(userPhoto.getDrawable());
         builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
                 dialogInterface.dismiss());
-        builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)}, (dialogInterface, i) -> {
-            //TODO
-        });
+        builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)},
+                (dialogInterface, i) -> {
+                    getEventBus().post(new UnfriendEvent(getModelObject()));
+                });
         builder.show();
     }
 

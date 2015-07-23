@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -9,6 +10,8 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 
@@ -101,6 +104,21 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                         })
                 .negativeText(R.string.cancel)
                 .show();
+
+    }
+
+    @Override
+    public void showFriendDialog(User user) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(user.getFullName());
+        builder.setIcon(profileView.getUserPhoto().getDrawable());
+        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
+                dialogInterface.dismiss());
+        builder.setItems(new String[]{getString(R.string.social_remove_friend_title)},
+                (dialogInterface, i) ->
+                        getPresenter().unfriend()
+        );
+        builder.show();
 
     }
 }

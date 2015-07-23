@@ -65,21 +65,23 @@ public class BadgedTabLayout extends TabLayout {
     }
 
     public void setBadgeCount(int pos, int count) {
-        View tab = (ViewGroup) getTabAt(pos).getTag();
-        TextView badge = ButterKnife.<TextView>findById(tab, R.id.psts_tab_badge);
-        float alpha;
-        long duration, delay;
-        if (count == 0) {
-            alpha = 0f;
-            duration = 500l;
-            delay = duration;
-        } else {
-            alpha = 1f;
-            duration = 300l;
-            delay = 0;
+        if (getTabCount() > 0) {
+            View tab = (ViewGroup) getTabAt(pos).getTag();
+            TextView badge = ButterKnife.<TextView>findById(tab, R.id.psts_tab_badge);
+            float alpha;
+            long duration, delay;
+            if (count == 0) {
+                alpha = 0f;
+                duration = 500l;
+                delay = duration;
+            } else {
+                alpha = 1f;
+                duration = 300l;
+                delay = 0;
+            }
+            handler.postDelayed(() -> badge.setText(String.valueOf(count)), delay);
+            badge.animate().alpha(alpha).setDuration(duration);
         }
-        handler.postDelayed(() -> badge.setText(String.valueOf(count)), delay);
-        badge.animate().alpha(alpha).setDuration(duration);
     }
 
 

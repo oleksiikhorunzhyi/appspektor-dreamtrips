@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -202,6 +201,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public String getRelationship() {
         return relationship;
+    }
+
+    public void unfriend() {
+        relationship = RELATION_NONE;
     }
 
     @Override

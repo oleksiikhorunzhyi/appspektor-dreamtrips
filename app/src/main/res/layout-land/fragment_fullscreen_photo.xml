@@ -79,6 +79,7 @@
                         android:drawableLeft="@drawable/feed_location_small"
                         android:drawableStart="@drawable/feed_location_small"
                         android:gravity="end"
+                        android:textColor="@color/feed_text_color"
                         android:visibility="gone"/>
 
                     <TextView
@@ -88,6 +89,7 @@
                         android:layout_marginLeft="16dp"
                         android:drawableLeft="@drawable/feed_calendar_small"
                         android:drawableStart="@drawable/feed_calendar_small"
+                        android:textColor="@color/feed_text_color"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>

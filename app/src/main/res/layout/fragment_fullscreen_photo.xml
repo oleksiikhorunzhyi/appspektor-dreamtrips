@@ -62,7 +62,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:maxLines="3"
-                        android:textColor="@android:color/white"
+                        android:text="fasdfsadf"
+                        android:textColor="@color/white"
                         android:textSize="18dp"
                         android:visibility="visible"/>
 
@@ -71,7 +72,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:textAlignment="viewEnd"
+                        android:text="fasdfsdaf"
+                        android:textColor="@color/feed_text_color"
                         android:drawableLeft="@drawable/feed_location_small"
                         android:drawableStart="@drawable/feed_location_small"
                         android:visibility="visible"/>
@@ -81,6 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:textColor="@color/feed_text_color"
                         android:drawableLeft="@drawable/feed_calendar_small"
                         android:drawableStart="@drawable/feed_calendar_small"
                         android:visibility="visible"/>

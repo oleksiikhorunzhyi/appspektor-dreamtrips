@@ -334,7 +334,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
             tvDate.setVisibility(View.GONE);
         } else {
             tvDate.setVisibility(View.VISIBLE);
-            tvDate.setText(date.toUpperCase());
+            tvDate.setText(date);
         }
     }
 
@@ -344,7 +344,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
             tvLocation.setVisibility(View.GONE);
         } else {
             tvLocation.setVisibility(View.VISIBLE);
-            tvLocation.setText(location.toUpperCase());
+            tvLocation.setText(location);
         }
     }
 

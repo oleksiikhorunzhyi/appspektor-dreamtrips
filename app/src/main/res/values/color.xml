@@ -83,4 +83,5 @@
 
     <color name="pin_progress_default_circle_color">#80ffffff</color>
 
+    <color name="feed_text_color">#929292</color>
 </resources>

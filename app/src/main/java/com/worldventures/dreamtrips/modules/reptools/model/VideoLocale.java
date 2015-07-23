@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.modules.reptools.model;
 
+import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+
 import java.io.Serializable;
 
-public class VideoLocale implements Serializable {
+public class VideoLocale implements Serializable, Filterable {
     String title;
     String country;
+    String image;
+    VideoLanguage[] language;
 
     public String getTitle() {
         return title;
@@ -17,6 +21,26 @@ public class VideoLocale implements Serializable {
     @Override
     public String toString() {
         return title;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setLanguage(VideoLanguage[] language) {
+        this.language = language;
     }
 
     @Override
@@ -36,5 +60,14 @@ public class VideoLocale implements Serializable {
         int result = title != null ? title.hashCode() : 0;
         result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
+    }
+
+    public VideoLanguage[] getLanguage() {
+        return language;
+    }
+
+    @Override
+    public boolean containsQuery(String query) {
+        return title.toLowerCase().contains(query.toLowerCase()) || country.toLowerCase().contains(query.toLowerCase());
     }
 }

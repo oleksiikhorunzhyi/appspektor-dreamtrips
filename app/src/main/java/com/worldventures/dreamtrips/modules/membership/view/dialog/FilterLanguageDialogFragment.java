@@ -1,0 +1,127 @@
+package com.worldventures.dreamtrips.modules.membership.view.dialog;
+
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
+
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.fragment.InjectingDialogFragment;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.membership.event.VideoLanguageSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.event.VideoLocaleSelectedEvent;
+import com.worldventures.dreamtrips.modules.membership.view.util.WrapContentLinearLayoutManager;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
+import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
+
+public class FilterLanguageDialogFragment extends InjectingDialogFragment {
+
+    @InjectView(R.id.list_country)
+    RecyclerView listCountry;
+    @InjectView(R.id.locale_search)
+    SearchView search;
+    @InjectView(R.id.filter_title)
+    TextView title;
+
+    @Inject
+    @ForActivity
+    Provider<Injector> provider;
+
+    @Icicle
+    ArrayList<VideoLocale> locales;
+
+    private FilterableArrayListAdapter adapter;
+    private SelectionListener selectionListener;
+    private VideoLocale selectedLocale;
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.BottomSheetDialog;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        return dialog;
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        View v = inflater.inflate(R.layout.dialog_choose_locale, null);
+        ButterKnife.inject(this, v);
+        listCountry.setLayoutManager(new WrapContentLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        adapter = new FilterableArrayListAdapter<>(getActivity(), provider);
+        adapter.registerCell(VideoLocale.class, VideoLocaleCell.class);
+        adapter.registerCell(VideoLanguage.class, VideoLanguageCell.class);
+        adapter.setItems(locales);
+        listCountry.setAdapter(adapter);
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.setFilter(s);
+                return false;
+            }
+        });
+        search.setIconifiedByDefault(false);
+
+        return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    public void setData(ArrayList<VideoLocale> locales) {
+        this.locales = locales;
+    }
+
+    public void setSelectionListener(SelectionListener selectionListener) {
+        this.selectionListener = selectionListener;
+    }
+
+    public void onEvent(VideoLocaleSelectedEvent event) {
+        selectedLocale = event.getVideoLocale();
+        title.setText(R.string.filter_video_title_language);
+        search.setVisibility(View.GONE);
+        adapter.clear();
+        adapter.setItems(Arrays.asList(selectedLocale.getLanguage()));
+    }
+
+    public void onEvent(VideoLanguageSelectedEvent event) {
+        if (selectionListener != null)
+            selectionListener.onSelected(selectedLocale, event.getVideoLanguage());
+        dismiss();
+    }
+
+    public interface SelectionListener {
+        void onSelected(VideoLocale locale, VideoLanguage language);
+    }
+}

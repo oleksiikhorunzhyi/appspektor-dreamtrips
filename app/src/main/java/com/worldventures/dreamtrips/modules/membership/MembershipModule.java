@@ -13,20 +13,21 @@ import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPrese
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PreviewTemplateActivityPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
-import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
+import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
+import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
 
 import dagger.Module;
 import dagger.Provides;
@@ -54,7 +55,10 @@ import dagger.Provides;
                 PreviewTemplateActivityPresenter.class,
                 PreviewTemplateActivity.class,
                 PreviewTemplateFragment.class,
-                TemplatePhotoCell.class
+                TemplatePhotoCell.class,
+                VideoLocaleCell.class,
+                VideoLanguageCell.class,
+                FilterLanguageDialogFragment.class
 
         },
         complete = false,

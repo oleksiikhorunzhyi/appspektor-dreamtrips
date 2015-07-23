@@ -40,7 +40,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
-    public void registerCell(Class<? extends BaseItemClass> itemClass, Class<? extends AbstractCell> cellClass) {
+    public void registerCell(Class<?> itemClass, Class<? extends AbstractCell> cellClass) {
         this.itemCellMapping.put(itemClass, cellClass);
         int type = this.viewTypes.indexOf(itemClass);
         if (type == -1) {

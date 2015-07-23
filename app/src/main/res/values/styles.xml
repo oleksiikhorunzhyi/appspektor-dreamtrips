@@ -49,6 +49,14 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
+    <style name="BottomSheetDialog">
+        <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/theme_main_darker</item>
         <item name="tabMode">scrollable</item>

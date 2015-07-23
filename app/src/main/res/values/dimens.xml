@@ -67,6 +67,9 @@
 
     <dimen name="video_item_height">250dp</dimen>
 
+    <dimen name="locale_flag_size_width">56dp</dimen>
+    <dimen name="locale_flag_size_height">36dp</dimen>
+
     /////Map info sizes
     <dimen name="map_trip_info_size">275dp</dimen>
     <dimen name="map_trip_image_size">150dp</dimen>

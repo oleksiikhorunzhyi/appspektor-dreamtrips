@@ -5,12 +5,15 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <fr.ganfra.materialspinner.MaterialSpinner
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/spinner_language"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="@dimen/locale_flag_size_width"
+        android:layout_height="@dimen/locale_flag_size_height"
+        android:layout_gravity="right"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:placeholderImage="@drawable/ic_flag_placeholder"
         app:ms_floatingLabelText="@string/training_video_hint"
         />
 

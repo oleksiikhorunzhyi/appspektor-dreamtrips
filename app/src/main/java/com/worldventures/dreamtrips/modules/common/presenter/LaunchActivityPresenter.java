@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -114,6 +116,13 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     private void done() {
         if (DreamSpiceManager.isCredentialExist(appSessionHolder)
                 && prefs.getBoolean(Prefs.TERMS_ACCEPTED)) {
+            UserSession userSession = appSessionHolder.get().get();
+            if (userSession.getFeatures() == null ||
+                    userSession.getFeatures().isEmpty()) {
+                List<Feature> legacyFeatures = new LegacyFeatureFactory(userSession.getUser()).create();
+                userSession.setFeatures(legacyFeatures);
+                appSessionHolder.put(userSession);
+            }
             activityRouter.openMain();
         } else {
             activityRouter.openLogin();

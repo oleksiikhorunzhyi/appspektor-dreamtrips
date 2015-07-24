@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRe
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscreenRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;

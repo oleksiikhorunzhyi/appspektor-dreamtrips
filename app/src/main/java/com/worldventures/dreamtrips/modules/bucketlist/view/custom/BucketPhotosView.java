@@ -58,6 +58,8 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     @Inject
     SnappyRepository db;
 
+
+
     private IgnoreFirstItemAdapter imagesAdapter;
     private PickImageDialog pid;
     private ImagePickCallback makePhotoImageCallback;

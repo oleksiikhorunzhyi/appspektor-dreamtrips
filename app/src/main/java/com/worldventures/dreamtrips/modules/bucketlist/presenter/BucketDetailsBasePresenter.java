@@ -4,15 +4,10 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
@@ -20,7 +15,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRe
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscreenRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -209,8 +203,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void openFullScreen(BucketPhoto selectedPhoto) {
         if (!view.getBucketPhotosView().getImages().isEmpty()) {
             List<IFullScreenObject> photos = new ArrayList<>();
-            Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
-                    photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
+            if (bucketItem.getCoverPhoto() != null) {
+                Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
+                        photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
+            }
             photos.addAll(bucketItem.getPhotos());
             db.savePhotoEntityList(Type.BUCKET_PHOTOS, photos);
             this.activityRouter.openFullScreenPhoto(photos.indexOf(selectedPhoto), Type.BUCKET_PHOTOS);

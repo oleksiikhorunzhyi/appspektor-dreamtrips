@@ -57,8 +57,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 view.finishLoading();
                 if (spiceException != null) {
                     handleError(spiceException);
-                } else {
-                    view.setHeader();
                 }
                 attachListeners(items);
             }
@@ -166,8 +164,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         void startLoading();
 
         void finishLoading();
-
-        void setHeader();
 
         BaseArrayListAdapter<Video> getAdapter();
     }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class VideoLocale implements Serializable, Filterable {
     String title;
     String country;
-    String image;
+    String icon;
     VideoLanguage[] language;
 
     public String getTitle() {
@@ -24,7 +24,7 @@ public class VideoLocale implements Serializable, Filterable {
     }
 
     public String getImage() {
-        return image;
+        return icon;
     }
 
     public void setTitle(String title) {
@@ -36,7 +36,7 @@ public class VideoLocale implements Serializable, Filterable {
     }
 
     public void setImage(String image) {
-        this.image = image;
+        this.icon = image;
     }
 
     public void setLanguage(VideoLanguage[] language) {

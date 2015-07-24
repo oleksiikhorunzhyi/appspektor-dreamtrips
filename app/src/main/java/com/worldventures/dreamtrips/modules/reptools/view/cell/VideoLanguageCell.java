@@ -22,7 +22,7 @@ public class VideoLanguageCell extends AbstractCell<VideoLanguage> {
 
     @Override
     protected void syncUIStateWithModel() {
-        text.setText(getModelObject().getNativeTitle());
+        text.setText(getModelObject().getTitle());
         itemView.setOnClickListener(view -> getEventBus().post(new VideoLanguageSelectedEvent(getModelObject())));
     }
 

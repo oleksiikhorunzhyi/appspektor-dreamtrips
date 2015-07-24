@@ -27,7 +27,9 @@ public class VideoLocaleCell extends AbstractCell<VideoLocale> {
 
     @Override
     protected void syncUIStateWithModel() {
-        flagImage.setImageURI(Uri.parse(getModelObject().getImage()));
+        if (getModelObject().getImage() != null) {
+            flagImage.setImageURI(Uri.parse(getModelObject().getImage()));
+        }
         countryName.setText(getModelObject().getCountry());
         itemView.setOnClickListener(view -> getEventBus().post(new VideoLocaleSelectedEvent(getModelObject())));
     }

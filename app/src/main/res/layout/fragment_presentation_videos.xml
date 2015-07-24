@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light"
+    android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -39,13 +39,24 @@
             android:textSize="22dp" />
     </RelativeLayout>
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/tv_header"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textColor="@color/theme_main_darker"
+              android:text="@string/recent_videos"
+              android:layout_weight="1"
+              android:padding="@dimen/margin_video"
+              android:background="@android:color/transparent"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:layout_below="@+id/tv_header"
+        android:background="@android:color/background_light">
 
         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"

@@ -211,7 +211,7 @@ public interface DreamTripsApi {
     ArrayList<Video> getVideos(@Query("type") String type);
 
     @GET("/api/member_videos/")
-    ArrayList<Video> getVideos(@Query("type") String type, @Query("country") String country, @Query("language") String language);
+    ArrayList<Video> getVideos(@Query("type") String type, @Query("locale") String locale);
 
 
     @GET("/api/member_videos/locales")

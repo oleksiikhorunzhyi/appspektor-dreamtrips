@@ -8,13 +8,11 @@ import java.util.ArrayList;
 public class MemberVideosRequest extends Query<ArrayList<Video>> {
 
     private String type;
-    private String country;
     private String locale;
 
-    public MemberVideosRequest(String type, String country, String locale) {
+    public MemberVideosRequest(String type, String locale) {
         super((Class<ArrayList<Video>>) new ArrayList<Video>().getClass());
         this.type = type;
-        this.country = country;
         this.locale = locale;
     }
 
@@ -23,14 +21,10 @@ public class MemberVideosRequest extends Query<ArrayList<Video>> {
         this(type, null);
     }
 
-    public MemberVideosRequest(String type, String country) {
-        this(type, country, null);
-    }
-
 
     @Override
     public ArrayList<Video> loadDataFromNetwork() throws Exception {
-        if (country != null) return getService().getVideos(type, country, locale);
+        if (locale != null) return getService().getVideos(type, locale);
         return getService().getVideos(type);
     }
 }

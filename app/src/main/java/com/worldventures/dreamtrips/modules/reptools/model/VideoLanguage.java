@@ -8,36 +8,26 @@ import java.io.Serializable;
 public class VideoLanguage implements Serializable, Filterable {
 
     String title;
-    String nativeTitle;
-    String code;
+    String localeName;
 
     public String getTitle() {
         return title;
     }
 
-    public String getNativeTitle() {
-        return nativeTitle;
-    }
-
-    public String getCode() {
-        return code;
+    public String getLocaleName() {
+        return localeName;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setNativeTitle(String nativeTitle) {
-        this.nativeTitle = nativeTitle;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setLocaleName(String localeName) {
+        this.localeName = localeName;
     }
 
     @Override
     public boolean containsQuery(String query) {
-        return title.toLowerCase().contains(query.toLowerCase())
-                || nativeTitle.toLowerCase().contains(query.toLowerCase());
+        return title.toLowerCase().contains(query.toLowerCase());
     }
 }

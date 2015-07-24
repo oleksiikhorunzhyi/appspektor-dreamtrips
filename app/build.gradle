@@ -22,7 +22,7 @@ android {
     def versionMajor = 1
     def versionMinor = 2
     def versionPatch = 0
-    def versionBuild = 12 // bump for dogfood builds, public betas, etc.
+    def versionBuild = 13 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -61,7 +61,7 @@ android {
             buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761667837261383"
+            resValue "string", "facebook_app_id", "761062457321921"
         }
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
@@ -78,7 +78,7 @@ android {
             buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761667837261383"
+            resValue "string", "facebook_app_id", "761062457321921"
         }
         preprod {
             applicationId "com.worldventures.dreamtrips.preprod"
@@ -128,7 +128,7 @@ android {
             buildConfigField 'boolean', 'SOCIAL_ENABLED', 'false'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761667837261383"
+            resValue "string", "facebook_app_id", "761062457321921"
         }
         prodWithoutSocial {
             applicationId "com.worldventures.dreamtrips"

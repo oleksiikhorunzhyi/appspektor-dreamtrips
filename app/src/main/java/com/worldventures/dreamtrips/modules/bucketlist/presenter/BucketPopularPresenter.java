@@ -114,7 +114,6 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                     if (view != null) {
                         sweetDialogHelper.notifyItemAddedToBucket(activity, item);
                         view.getAdapter().remove(popularBucketItem);
-                        view.getAdapter().notifyItemRemoved(position);
                     }
                 },
                 spiceException -> {

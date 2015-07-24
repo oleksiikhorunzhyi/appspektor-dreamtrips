@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -31,20 +33,21 @@ public class MediaSpiceManager extends SpiceManager {
                             Injector injector,
                             DreamSpiceManager.FailureListener failureListener) {
         UploadBucketPhotoCommand uploadBucketPhotoCommand = new UploadBucketPhotoCommand(task, bucketItem, type, injector);
-        execute(uploadBucketPhotoCommand, new RequestListener<BucketPhoto>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                if (failureListener != null)
-                    failureListener.handleError(spiceException);
-            }
+        execute(uploadBucketPhotoCommand, task.getTaskId(), DurationInMillis.ALWAYS_EXPIRED,
+                new RequestListener<BucketPhoto>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        if (failureListener != null)
+                            failureListener.handleError(spiceException);
+                    }
 
-            @Override
-            public void onRequestSuccess(BucketPhoto bucketPhoto) {
-                if (bucketPhoto != null) {
-                    TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
-                            task.getSelectionType(), bucketItem.getType());
-                }
-            }
-        });
+                    @Override
+                    public void onRequestSuccess(BucketPhoto bucketPhoto) {
+                        if (bucketPhoto != null) {
+                            TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_FINISH,
+                                    task.getSelectionType(), bucketItem.getType());
+                        }
+                    }
+                });
     }
 }

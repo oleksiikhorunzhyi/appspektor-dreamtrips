@@ -116,6 +116,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         syncUI();
     }
 
+    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
+        mediaSpiceManager.cancel(BucketPhoto.class, event.getModelObject().getTaskId());
+    }
+
     protected void syncUI() {
         view.setTitle(bucketItem.getName());
         view.setDescription(bucketItem.getDescription());
@@ -169,6 +173,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void startUpload(final BucketPhotoUploadTask task) {
+        if (!mediaSpiceManager.isStarted()) mediaSpiceManager.start(context);
         mediaSpiceManager.uploadPhoto(task, bucketItem, type, injector, this);
     }
 

@@ -5,12 +5,10 @@ import android.content.Context;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
-import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
@@ -36,8 +34,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
     @Inject
     BucketItemManager bucketItemManager;
     @Inject
-    MediaSpiceManager mediaSpiceManager;
-    @Inject
     SnappyRepository db;
     @ForApplication
     @Inject
@@ -61,12 +57,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         injector.inject(s3uploader);
 
         db.saveBucketPhotoTask(photoUploadTask);
-
-        if (!mediaSpiceManager.isStarted()) {
-            mediaSpiceManager.start(context);
-        }
-
-        eventBus.register(this);
     }
 
     @Override
@@ -90,10 +80,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             eventBus.post(new BucketPhotoUploadFinishEvent(photoUploadTask, photo));
             db.removeBucketPhotoTask(photoUploadTask);
 
-            if (!db.containsBucketPhotoUploadTask() && mediaSpiceManager.isStarted()) {
-                mediaSpiceManager.shouldStop();
-            }
-
             updateBucketItem(bucketItem, photo);
             return photo;
         } catch (Exception e) {
@@ -102,8 +88,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             db.saveBucketPhotoTask(photoUploadTask);
             eventBus.post(new BucketPhotoUploadFailedEvent(photoUploadTask.getTaskId()));
         }
-
-        eventBus.unregister(this);
         return null;
     }
 
@@ -125,12 +109,6 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
         BucketPhoto bucketPhoto = new BucketPhoto();
         bucketPhoto.setOriginUrl(urlFromUploadResult);
         return bucketPhoto;
-    }
-
-    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        if (event.getModelObject().equals(photoUploadTask)) {
-            eventBus.cancelEventDelivery(event);
-        }
     }
 
 }

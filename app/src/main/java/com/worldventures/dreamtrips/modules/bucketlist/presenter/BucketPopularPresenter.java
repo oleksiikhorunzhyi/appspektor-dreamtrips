@@ -111,14 +111,18 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
         bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
                 item -> {
-                    sweetDialogHelper.notifyItemAddedToBucket(activity, item);
-                    view.getAdapter().remove(popularBucketItem);
-                    view.getAdapter().notifyItemRemoved(position);
+                    if (view != null) {
+                        sweetDialogHelper.notifyItemAddedToBucket(activity, item);
+                        view.getAdapter().remove(popularBucketItem);
+                        view.getAdapter().notifyItemRemoved(position);
+                    }
                 },
                 spiceException -> {
-                    popularBucketItem.setLoading(false);
-                    view.getAdapter().notifyDataSetChanged();
-                    handleError(spiceException);
+                    if (view != null) {
+                        popularBucketItem.setLoading(false);
+                        view.getAdapter().notifyDataSetChanged();
+                        handleError(spiceException);
+                    }
                 });
     }
 

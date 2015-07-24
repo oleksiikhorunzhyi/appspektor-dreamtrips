@@ -93,6 +93,11 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
     private void updateBucketItem(BucketItem updatedItem, BucketPhoto photo) {
         List<BucketItem> items = bucketItemManager.getBucketItems(bucketType);
+
+        if (bucketItem.getCoverPhoto() == null) {
+            bucketItem.setCoverPhoto(photo);
+        }
+
         bucketItem.getPhotos().add(photo);
 
         int oldPosition = items.indexOf(updatedItem);

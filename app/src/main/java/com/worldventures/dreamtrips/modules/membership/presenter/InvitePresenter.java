@@ -167,19 +167,21 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         queryHandler.removeCallbacksAndMessages(null);
         queryHandler.postDelayed(() -> {
             String query = null;
-            switch (Type.from(view.getSelectedType())) {
-                case SMS:
-                    if (Patterns.PHONE.matcher(newText).matches()) {
-                        query = PhoneNumberUtils.normalizeNumber(newText);
-                    } else {
+            if (view != null) {
+                switch (Type.from(view.getSelectedType())) {
+                    case SMS:
+                        if (Patterns.PHONE.matcher(newText).matches()) {
+                            query = PhoneNumberUtils.normalizeNumber(newText);
+                        } else {
+                            query = newText.toLowerCase();
+                        }
+                        break;
+                    default:
                         query = newText.toLowerCase();
-                    }
-                    break;
-                default:
-                    query = newText.toLowerCase();
+                }
+                view.setFilter(query);
+                sortSelected();
             }
-            view.setFilter(query);
-            sortSelected();
         }, 150L);
     }
 
@@ -276,9 +278,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void openTemplateInView() {
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_templates);
-        fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
+        if (view.isVisibleOnScreen()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.container_templates);
+            fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
+        }
     }
 
     private void setMembers() {

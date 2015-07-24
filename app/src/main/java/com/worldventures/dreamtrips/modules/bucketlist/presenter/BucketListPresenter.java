@@ -9,6 +9,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
@@ -162,7 +163,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
-        if (!selected) return;
+        if (view.isVisibleOnScreen() || !selected) return;
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);

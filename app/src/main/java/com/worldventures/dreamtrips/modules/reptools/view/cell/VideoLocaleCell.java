@@ -30,7 +30,7 @@ public class VideoLocaleCell extends AbstractCell<VideoLocale> {
         if (getModelObject().getImage() != null) {
             flagImage.setImageURI(Uri.parse(getModelObject().getImage()));
         }
-        countryName.setText(getModelObject().getCountry());
+        countryName.setText(getModelObject().getTitle());
         itemView.setOnClickListener(view -> getEventBus().post(new VideoLocaleSelectedEvent(getModelObject())));
     }
 

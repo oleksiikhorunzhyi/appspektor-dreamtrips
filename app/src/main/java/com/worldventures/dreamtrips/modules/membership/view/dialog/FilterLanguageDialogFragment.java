@@ -74,7 +74,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         adapter = new FilterableArrayListAdapter<>(getActivity(), provider);
         adapter.registerCell(VideoLocale.class, VideoLocaleCell.class);
         adapter.registerCell(VideoLanguage.class, VideoLanguageCell.class);
-        adapter.setItems(locales);
+        adapter.setItems(new ArrayList<>(locales));
         listCountry.setAdapter(adapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -111,6 +111,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         selectedLocale = event.getVideoLocale();
         title.setText(R.string.filter_video_title_language);
         search.setVisibility(View.GONE);
+        adapter.setFilter("");
         adapter.clear();
         adapter.setItems(Arrays.asList(selectedLocale.getLanguage()));
     }

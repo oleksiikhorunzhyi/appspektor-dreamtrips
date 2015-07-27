@@ -22,6 +22,9 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
     @InjectView(R.id.spinner_language)
     SimpleDraweeView selectedLocaleView;
 
+    @InjectView(R.id.wrapper_spinner_language)
+    View wrapperSpinnerLanguage;
+
     FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
     @Override
@@ -31,9 +34,11 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
 
     @Override
     public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
-        selectedLocaleView.setOnClickListener(view -> {
-            dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
-            dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
+        wrapperSpinnerLanguage.setOnClickListener(view -> {
+            if (!dialog.isAdded()) {
+                dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
+                dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
+            }
         });
         if (defaultValue != null)
             selectedLocaleView.setImageURI(Uri.parse(defaultValue.getImage()));

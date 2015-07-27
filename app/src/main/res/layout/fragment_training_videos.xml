@@ -12,6 +12,7 @@
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/wrapper_spinner_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -19,16 +20,17 @@
                 android:id="@+id/spinner_language"
                 android:layout_width="@dimen/locale_flag_size_width"
                 android:layout_height="@dimen/locale_flag_size_height"
+                android:layout_margin="@dimen/spacing_normal"
                 app:ms_floatingLabelText="@string/training_video_hint"
                 app:placeholderImage="@drawable/ic_flag_placeholder"
-                android:layout_margin="@dimen/spacing_normal"
                 />
 
             <ImageView
                 android:layout_width="@dimen/locale_flag_size_width"
                 android:layout_height="wrap_content"
-                android:background="@drawable/abc_spinner_mtrl_am_alpha"
-                android:layout_margin="@dimen/spacing_normal"/>
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/abc_spinner_mtrl_am_alpha"/>
         </FrameLayout>
 
     </LinearLayout>

@@ -4,7 +4,7 @@
     xmlns:fresco="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/video_item_height"
-    android:layout_margin="@dimen/margin_video">
+    android:layout_margin="@dimen/spacing_medium">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_bg"
@@ -39,8 +39,8 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:padding="12dp"
-            android:paddingLeft="@dimen/margin_small"
-            android:paddingRight="@dimen/margin_small"
+            android:paddingLeft="@dimen/spacing_tiniest"
+            android:paddingRight="@dimen/spacing_tiniest"
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="16sp"/>

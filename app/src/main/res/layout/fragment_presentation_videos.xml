@@ -46,7 +46,7 @@
               android:textColor="@color/theme_main_darker"
               android:text="@string/recent_videos"
               android:layout_weight="1"
-              android:padding="@dimen/margin_video"
+              android:padding="@dimen/spacing_medium"
               android:background="@android:color/transparent"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -62,7 +62,7 @@
             android:id="@+id/lv_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/margin_small" />
+            android:padding="@dimen/spacing_tiniest" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

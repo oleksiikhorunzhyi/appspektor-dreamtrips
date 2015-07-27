@@ -217,7 +217,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="@dimen/tripBookItPadding"
+            android:padding="@dimen/spacing_normal"
             android:text="@string/reload_feed"
             android:textColor="@color/tripPlaceColor"
             android:textSize="22sp"

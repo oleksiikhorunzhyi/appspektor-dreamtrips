@@ -3,15 +3,15 @@
     <item android:state_pressed="true">
         <shape>
             <solid android:color="@color/black_semi_transparent" />
-            <corners android:bottomRightRadius="@dimen/ss_button_corner"
-                android:topRightRadius="@dimen/ss_button_corner" />
+            <corners android:bottomRightRadius="@dimen/spacing_tiniest"
+                android:topRightRadius="@dimen/spacing_tiniest" />
         </shape>
     </item>
     <item>
         <shape>
             <solid android:color="@color/black_semi_transparent_darker" />
-            <corners android:bottomRightRadius="@dimen/ss_button_corner"
-                android:topRightRadius="@dimen/ss_button_corner" />
+            <corners android:bottomRightRadius="@dimen/spacing_tiniest"
+                android:topRightRadius="@dimen/spacing_tiniest" />
         </shape>
     </item>
 </selector>

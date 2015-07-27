@@ -47,7 +47,7 @@
                 android:orientation="horizontal">
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_width="@dimen/create_photo_left_hint_width"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:clickable="false"
@@ -57,7 +57,7 @@
                     android:gravity="center"
                     android:text="@string/photo_what"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:hideUnderline="true" />
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
@@ -67,7 +67,7 @@
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="@string/photo_what_hint"
                     android:inputType="textCapSentences"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"/>
@@ -80,7 +80,7 @@
                 android:orientation="horizontal">
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_width="@dimen/create_photo_left_hint_width"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:clickable="false"
@@ -90,7 +90,7 @@
                     android:gravity="center"
                     android:text="@string/photo_where"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:hideUnderline="true" />
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
@@ -100,7 +100,7 @@
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="@string/photo_where_hint"
                     android:inputType="textCapSentences"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"/>
@@ -120,7 +120,7 @@
                 android:orientation="horizontal">
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_width="@dimen/create_photo_left_hint_width"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:clickable="false"
@@ -130,7 +130,7 @@
                     android:gravity="center"
                     android:text="@string/photo_when"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:hideUnderline="true" />
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
@@ -144,7 +144,7 @@
                     android:focusableInTouchMode="false"
                     android:hint="@string/photo_when_date_hint"
                     android:inputType="textCapSentences"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"/>
@@ -160,7 +160,7 @@
                     android:focusableInTouchMode="false"
                     android:hint="@string/photo_when_time_hint"
                     android:inputType="textCapSentences"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="normal"
                     app:primaryColor="#2196F3"/>
@@ -175,7 +175,7 @@
                 android:orientation="horizontal">
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                    android:layout_width="@dimen/create_phot_left_hint_width"
+                    android:layout_width="@dimen/create_photo_left_hint_width"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:clickable="false"
@@ -185,7 +185,7 @@
                     android:gravity="center"
                     android:text="@string/photo_tags"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:hideUnderline="true" />
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
@@ -195,7 +195,7 @@
                     android:layout_marginRight="@dimen/fab_actions_spacing"
                     android:hint="@string/photo_tags_hint"
                     android:inputType="textCapWords"
-                    android:textSize="@dimen/create_photo_text_size"
+                    android:textSize="@dimen/font_normal"
                     app:baseColor="@android:color/black"
                     app:floatingLabel="highlight"
                     app:primaryColor="#2196F3" />

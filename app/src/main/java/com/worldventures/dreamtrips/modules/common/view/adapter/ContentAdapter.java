@@ -98,7 +98,7 @@ public class ContentAdapter extends BaseAdapter {
         }
 
         private void checkArrowState() {
-            imageViewArrow.setImageResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
+            imageViewArrow.setImageResource(isExpanded ? R.drawable.ic_trip_arrow_up : R.drawable.ic_trip_arrow_down);
         }
     }
 }

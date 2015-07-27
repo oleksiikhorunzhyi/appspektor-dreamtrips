@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewEmptyAdd"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/arrow_small"/>
+                android:src="@drawable/ic_bucket_arrow_small"/>
 
             <Button
                 android:id="@+id/buttonNew"

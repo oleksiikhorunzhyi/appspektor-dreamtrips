@@ -56,7 +56,7 @@ public class FullScreenPhotoActivity extends ActivityWithPresenter<TripImagesLis
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_photo_back_rounded);
         getSupportActionBar().setTitle("");
         if (position < 0) {
             position = 0;

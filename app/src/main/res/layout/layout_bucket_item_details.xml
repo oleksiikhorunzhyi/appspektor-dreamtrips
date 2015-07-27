@@ -166,18 +166,18 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn"
+            android:background="@drawable/background_button"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/delete"/>
+            android:src="@drawable/ic_bucket_item_delete"/>
 
         <ImageView
             android:id="@+id/bucketItemShare"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn"
+            android:background="@drawable/background_button"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
@@ -188,11 +188,11 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn_right_corner"
+            android:background="@drawable/background_button_right_corner"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_edit"/>
+            android:src="@drawable/ic_bucket_edit"/>
     </LinearLayout>
 
 

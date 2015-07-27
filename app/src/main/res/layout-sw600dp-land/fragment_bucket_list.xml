@@ -54,7 +54,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
                 android:padding="10dp"
-                android:src="@drawable/arrow_big"/>
+                android:src="@drawable/ic_bucket_arrow_big"/>
 
             <Button
                 android:id="@+id/buttonNew"

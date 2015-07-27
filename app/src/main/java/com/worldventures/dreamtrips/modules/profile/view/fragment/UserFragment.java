@@ -11,7 +11,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 
@@ -62,8 +61,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     public void setIsFriend(boolean isFriend) {
         profileView.getAddFriend().setText(isFriend ? R.string.profile_friends : R.string.profile_add_friend);
         profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                isFriend ? R.drawable.friend_added
-                        : R.drawable.add_friend,
+                isFriend ? R.drawable.ic_profile_friend
+                        : R.drawable.ic_profile_add_friend_selector,
                 0, 0);
     }
 
@@ -71,7 +70,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     public void setWaiting() {
         profileView.getAddFriend().setText(R.string.profile_waiting);
         profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.respond,
+                R.drawable.ic_profile_friend_respond,
                 0, 0);
     }
 
@@ -79,7 +78,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     public void setRespond() {
         profileView.getAddFriend().setText(R.string.profile_respond);
         profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.respond,
+                R.drawable.icprofilefrie,
                 0, 0);
     }
 

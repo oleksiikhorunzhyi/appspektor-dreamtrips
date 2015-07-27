@@ -24,7 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/add_friend"
+                android:drawableTop="@drawable/ic_profile_add_friend_selector"
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"

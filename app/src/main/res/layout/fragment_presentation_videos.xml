@@ -23,7 +23,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:scaleType="fitEnd"
-            android:src="@drawable/bg_empty_view" />
+            android:src="@drawable/ic_background_empty_view" />
 
         <TextView
             android:layout_width="wrap_content"

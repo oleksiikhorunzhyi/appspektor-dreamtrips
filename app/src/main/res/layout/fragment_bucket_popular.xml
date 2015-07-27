@@ -39,7 +39,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_empty_view"/>
+                android:src="@drawable/ic_background_empty_view"/>
 
         </RelativeLayout>
     </FrameLayout>

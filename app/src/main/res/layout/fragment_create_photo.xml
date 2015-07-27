@@ -32,7 +32,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="-32dp"
             android:visibility="visible"
-            app:fab_icon="@drawable/ic_save" />
+            app:fab_icon="@drawable/ic_photo_save" />
 
         <LinearLayout
             android:layout_width="match_parent"

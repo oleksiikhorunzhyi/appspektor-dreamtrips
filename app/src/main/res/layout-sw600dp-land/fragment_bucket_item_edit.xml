@@ -46,7 +46,7 @@
                 android:layout_gravity="center"
                 android:background="?actionBarItemBackground"
                 android:padding="12dp"
-                android:src="@drawable/ic_done_white" />
+                android:src="@drawable/ic_bucket_done_white" />
 
 
         </LinearLayout>

@@ -54,6 +54,7 @@
         <item name="tabMode">scrollable</item>
         <item name="tabPaddingStart">0dp</item>
         <item name="tabPaddingEnd">0dp</item>
+        <item name="tabGravity">fill</item>
         <item name="tabIndicatorHeight">3dp</item>
     </style>
 

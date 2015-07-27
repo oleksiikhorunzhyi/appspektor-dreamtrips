@@ -67,7 +67,7 @@
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginStart="@dimen/activity_vertical_margin"
                 android:layout_marginTop="3dp"
-                android:src="@drawable/ic_profile_birthday"/>
+                android:src="@drawable/ic_profile_enroll_date"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:src="@drawable/more"/>
+            android:src="@drawable/ic_profile_more_selector"/>
     </FrameLayout>
 
 

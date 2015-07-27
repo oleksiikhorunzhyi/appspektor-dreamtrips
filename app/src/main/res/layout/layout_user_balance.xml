@@ -21,9 +21,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:drawableLeft="@drawable/points"
+                android:drawableLeft="@drawable/ic_profile_dt_points"
                 android:drawablePadding="@dimen/spacing_tiny"
-                android:drawableStart="@drawable/points"
+                android:drawableStart="@drawable/ic_profile_dt_points"
                 android:padding="@dimen/spacing_normal"
                 android:singleLine="true"/>
 
@@ -45,7 +45,7 @@
                 android:id="@+id/rovia_bucks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/bucks"
+                android:drawableLeft="@drawable/ic_profile_r_bucks"
                 android:drawablePadding="@dimen/spacing_tiny"
                 android:drawableStart="@drawable/bucks"
                 android:padding="@dimen/spacing_normal"

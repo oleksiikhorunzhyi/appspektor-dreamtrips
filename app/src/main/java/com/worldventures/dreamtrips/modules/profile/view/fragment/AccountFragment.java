@@ -37,6 +37,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        profileView.getControlPanel().setVisibility(View.VISIBLE);
+
         profileView.getCover().setVisibility(View.VISIBLE);
         profileView.getAvatar().setVisibility(View.VISIBLE);
         profileView.getAddFriend().setVisibility(View.GONE);

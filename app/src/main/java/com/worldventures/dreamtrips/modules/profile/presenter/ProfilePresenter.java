@@ -135,6 +135,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void loadFeed() {
+        if (featureManager.available(Feature.SOCIAL))
+            adapterController.reload();
     }
 
     protected abstract void loadProfile();
@@ -172,14 +174,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
-        if (totalItemCount > previousTotal) {
-            loading = false;
-            previousTotal = totalItemCount;
-        }
-        if (!loading
-                && lastVisible == totalItemCount - 1
-                && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
-            loading = true;
+        if (featureManager.available(Feature.SOCIAL)) {
+            if (totalItemCount > previousTotal) {
+                loading = false;
+                previousTotal = totalItemCount;
+            }
+            if (!loading
+                    && lastVisible == totalItemCount - 1
+                    && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
+                loading = true;
+                adapterController.loadNext();
+            }
         }
     }
 

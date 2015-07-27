@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -119,7 +118,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
                     ((ImageUploadTask) obj).setFailed(false);
-                    dreamSpiceManager.uploadPhoto((ImageUploadTask) obj);
+                    photoUploadSpiceManager.uploadPhoto((ImageUploadTask) obj);
                 }
             } else {
                 this.activityRouter.openFullScreenPhoto(position, type);
@@ -223,7 +222,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                     for (IFullScreenObject item : items) {
                         if (item instanceof ImageUploadTask
                                 && ((ImageUploadTask) item).isFailed()) {
-                            dreamSpiceManager.uploadPhoto((ImageUploadTask) item);
+                            photoUploadSpiceManager.uploadPhoto((ImageUploadTask) item);
                         }
                     }
                 } else {

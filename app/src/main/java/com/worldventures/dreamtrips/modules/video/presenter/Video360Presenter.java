@@ -40,7 +40,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
         TrackingHelper.video360(getAccountUserId());
     }
 
@@ -49,6 +48,14 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         super.onResume();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
+        }
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.unregister(videoCachingDelegate);
         }
     }
 
@@ -89,12 +96,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        eventBus.unregister(videoCachingDelegate);
-    }
-
     private void loadVideos() {
         MemberVideosRequest memberVideosRequest = new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
         doRequest(memberVideosRequest, this::onSuccess);
@@ -120,7 +121,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    mediaSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                    videoDownloadSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
                             listener
                     );
                 }

@@ -6,7 +6,7 @@ import com.octo.android.robospice.persistence.CacheManager;
 import com.octo.android.robospice.persistence.binary.InFileBigInputStreamObjectPersister;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
 
-public class MediaSpiceService extends DreamSpiceService {
+public class VideoDownloadSpiceService extends DreamSpiceService {
 
     @Override
     public CacheManager createCacheManager(Application application) throws CacheCreationException {

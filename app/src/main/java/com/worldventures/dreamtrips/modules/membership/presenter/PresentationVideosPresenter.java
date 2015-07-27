@@ -76,7 +76,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     public void takeView(T view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
     }
 
     @Override
@@ -93,7 +92,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
     @Override
     public void onPause() {
-        eventBus.unregister(videoCachingDelegate);
+        super.onPause();
+        if (eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.unregister(videoCachingDelegate);
+        }
     }
 
     @Override
@@ -139,7 +141,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    mediaSpiceManager.addListenerIfPending(
+                    videoDownloadSpiceManager.addListenerIfPending(
                             InputStream.class,
                             cachedVideo.getUuid(),
                             listener

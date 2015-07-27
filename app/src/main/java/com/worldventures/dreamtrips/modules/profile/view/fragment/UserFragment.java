@@ -78,7 +78,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     public void setRespond() {
         profileView.getAddFriend().setText(R.string.profile_respond);
         profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.icprofilefrie,
+                R.drawable.ic_profile_respond,
                 0, 0);
     }
 

@@ -161,7 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textViewDescription"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_map+triangle"/>
+            android:src="@drawable/ic_map_triangle"/>
 
 
         <LinearLayout

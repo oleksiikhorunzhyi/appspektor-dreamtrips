@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="@string/filter_theme_header"
-            android:textColor="@color/myNavigationColor"
+            android:textColor="@color/black"
             />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical|end"
-            android:textColor="@color/textViewFilterDisabled"
+            android:textColor="@color/gray"
             android:paddingLeft="20dp"
             android:text="@string/filter_select_all"
             />

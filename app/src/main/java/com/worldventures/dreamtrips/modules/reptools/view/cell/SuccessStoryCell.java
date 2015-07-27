@@ -48,7 +48,7 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
 
     private void updateSelection() {
         if (getModelObject().isSelected()) {
-            vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.selected_success_story));
+            vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.gray_lighter));
         } else {
             vgParent.setBackgroundColor(Color.WHITE);
         }

@@ -4,6 +4,6 @@
         <color android:color="@color/black_semi_transparent" />
     </item>
     <item>
-        <color android:color="@color/ss_details_black_transparent" />
+        <color android:color="@color/black_semi_transparent_darker" />
     </item>
 </selector>

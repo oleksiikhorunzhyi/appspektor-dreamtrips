@@ -26,7 +26,7 @@ public class BucketAddPhotoCell extends AbstractCell<Object> {
     protected void syncUIStateWithModel() {
         ivPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         ivPhoto.setImageResource(R.drawable.ic_bucket_add_pic);
-        ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.bucket_add_phto));
+        ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.gray_lighter));
     }
 
     @Override

@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@color/tripNameColor"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
@@ -100,7 +100,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="end"
                 android:padding="@dimen/tripDetailPanelPadding"
-                android:textColor="@color/tripNameColor" />
+                android:textColor="@color/black" />
 
 
         </LinearLayout>
@@ -109,10 +109,10 @@
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tripDescription"
+            android:background="@color/gray_lighter"
             android:fontFamily="sans-serif-light"
             android:padding="@dimen/tripDetailPanelPadding"
-            android:textColor="@color/tripNameColor" />
+            android:textColor="@color/black" />
 
     </LinearLayout>
 

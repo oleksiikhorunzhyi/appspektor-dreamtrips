@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:text="fasdfsdaf"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:drawableLeft="@drawable/ic_feed_location_small"
                         android:drawableStart="@drawable/ic_feed_location_small"
                         android:visibility="visible"/>
@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:drawableLeft="@drawable/ic_feed_calendar_small"
                         android:drawableStart="@drawable/ic_feed_calendar_small"
                         android:visibility="visible"/>

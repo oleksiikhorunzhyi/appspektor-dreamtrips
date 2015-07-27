@@ -79,7 +79,7 @@
                         android:drawableLeft="@drawable/ic_feed_location_small"
                         android:drawableStart="@drawable/ic_feed_location_small"
                         android:gravity="end"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
 
                     <TextView
@@ -89,7 +89,7 @@
                         android:layout_marginLeft="16dp"
                         android:drawableLeft="@drawable/ic_feed_calendar_small"
                         android:drawableStart="@drawable/ic_feed_calendar_small"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>

@@ -180,7 +180,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:singleLine="true"
-                        android:textColor="@color/tripNameColor"
+                        android:textColor="@color/black"
                         android:textSize="16sp"/>
 
 

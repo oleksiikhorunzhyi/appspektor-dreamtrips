@@ -9,7 +9,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/ss_details_black_transparent" />
+            <solid android:color="@color/black_semi_transparent_darker" />
             <corners android:bottomRightRadius="@dimen/ss_button_corner"
                 android:topRightRadius="@dimen/ss_button_corner" />
         </shape>

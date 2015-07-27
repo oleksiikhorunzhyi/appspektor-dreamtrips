@@ -325,4 +325,6 @@
     <string name="feed_bucket">Bucket Item</string>
     <string name="coming_soon">Coming soon</string>
     <string name="loading">Loading…</string>
+    <string name="filter_video_title_language">Choose language</string>
+    <string name="filter_video_title_country">Choose country</string>
 </resources>

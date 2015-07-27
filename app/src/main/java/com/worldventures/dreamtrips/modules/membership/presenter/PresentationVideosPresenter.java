@@ -3,10 +3,8 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
@@ -57,11 +55,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
             if (adapterController != null) {
                 view.finishLoading();
-                view.setHeader();
-                attachListeners(items);
                 if (spiceException != null) {
                     handleError(spiceException);
                 }
+                attachListeners(items);
             }
         }
     };
@@ -167,8 +164,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         void startLoading();
 
         void finishLoading();
-
-        void setHeader();
 
         BaseArrayListAdapter<Video> getAdapter();
     }

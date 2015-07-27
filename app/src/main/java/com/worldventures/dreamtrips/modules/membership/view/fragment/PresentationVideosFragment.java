@@ -140,12 +140,6 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     }
 
     @Override
-    public void setHeader() {
-        arrayListAdapter.addItem(0, getString(R.string.recent_videos));
-        arrayListAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public BaseArrayListAdapter getAdapter() {
         return arrayListAdapter;
     }

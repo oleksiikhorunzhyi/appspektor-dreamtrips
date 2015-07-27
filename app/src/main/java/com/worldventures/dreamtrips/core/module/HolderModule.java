@@ -6,6 +6,7 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 
 import javax.inject.Singleton;
 
@@ -20,6 +21,12 @@ public class HolderModule {
     @Singleton
     public SessionHolder<UserSession> session(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
         return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    public FeatureManager featureManager(SessionHolder<UserSession> session) {
+        return new FeatureManager(session);
     }
 
     @Provides

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -19,6 +20,8 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
@@ -26,8 +29,8 @@ import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -38,6 +41,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -75,26 +79,16 @@ public class DreamSpiceManager extends SpiceManager {
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,
                             FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
-
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
-                if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
-                    final UserSession userSession = appSessionHolder.get().get();
-                    final String username = userSession.getUsername();
-                    final String userPassword = userSession.getUserPassword();
-
-                    loginUser(userPassword, username, (loginResponse, spiceError) -> {
-                        if (loginResponse != null) {
-                            execute(request, successListener, failureListener);
-                        } else {
-                            failureListener.handleError(new SpiceException(spiceError.getMessage()));
-                        }
-                    });
-
-                } else {
-                    failureListener.handleError(new SpiceException(getErrorMessage(error)));
-                }
+                processError(error, failureListener, (loginResponse, exception) -> {
+                    if (loginResponse != null) {
+                        execute(request, successListener, failureListener);
+                    } else {
+                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                    }
+                });
             }
 
             @Override
@@ -103,6 +97,18 @@ public class DreamSpiceManager extends SpiceManager {
             }
         });
     }
+    private void processError(SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
+        if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
+            final UserSession userSession = appSessionHolder.get().get();
+            final String username = userSession.getUsername();
+            final String userPassword = userSession.getUserPassword();
+
+            loginUser(userPassword, username, onLoginSuccess);
+        } else {
+            failureListener.handleError(new SpiceException(getErrorMessage(error)));
+        }
+    }
+
 
     public void login(RequestListener<LoginResponse> requestListener) {
         if (isCredentialExist(appSessionHolder)) {
@@ -197,6 +203,12 @@ public class DreamSpiceManager extends SpiceManager {
         userSession.setUserPassword(userPassword);
         userSession.setLastUpdate(System.currentTimeMillis());
 
+        List<Feature> features = session.getPermissions();
+        // TODO remote legacy features factory when server is ready
+        List<Feature> legacyFeatures = new LegacyFeatureFactory(sessionUser).create();
+        if (features != null) features.addAll(legacyFeatures);
+        userSession.setFeatures(features);
+
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);
             return true;
@@ -282,5 +294,4 @@ public class DreamSpiceManager extends SpiceManager {
     public interface SuccessListener<T> {
         void onRequestSuccess(T t);
     }
-
 }

@@ -100,12 +100,13 @@
     <string-array name="photo_dialog_items">
         <item>拍攝照片</item>
         <item>選擇照片</item>
+        <item>@string/choose_fb</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
-    <string name="buffering">正在緩衝。...</string>
+    <string name="buffering">正在緩衝。…</string>
     <string name="profile_select_avatar_header">選擇頭像</string>
     <string name="profile_select_cover_header">選擇封面</string>
     <string name="error_internal_server">內部伺服器錯誤</string>
@@ -133,12 +134,14 @@
     <string name="bucket_hint_people_text">添加您想與誰完成該目標</string>
     <string name="bucket_hint_tags">標籤</string>
     <string name="bucket_hint_tags_text">添加描述您的目標清單項目的標籤</string>
-    <string name="bucket_item_edit_completed">我已經完成了該目標清單項目！</string>
     <string name="bucket_item_edit_done">清單項目已保存！</string>
     <string name="bucket_item_edit_error">保存項目時遇到錯誤</string>
     <string name="bucket_item_photos">添加圖片</string>
     <string name="category">分類</string>
     <string name="bucket_added">%s 已放入您的願望清單中</string>
+    <string name="trip_liked">%s 已添加至您的收藏夾</string>
+    <string name="trip_unliked">%s 已從您的收藏夾移出</string>
+    <string name="congrats">恭喜!</string>
     <string name="bucket_delete_undo">項目已刪除</string>
     <string name="undo">撤銷</string>
     <string name="location">地點</string>
@@ -153,12 +156,14 @@
     <string name="completed">已完成</string>
     <string name="action_share">分享</string>
     <string name="recent_header">最近添加的 360 Experience </string>
+    <string name="recent_videos">最近添加</string>
+    <string name="featured_header">有特色的 360 Experience</string>
     <string name="title_activity_success_story_details">成功故事詳情活動</string>
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">已添加成功故事至收藏夾</string>
     <string name="ss_has_been_removed_from_favorites">已從收藏夾移出成功故事</string>
     <string name="show_favorites">顯示收藏</string>
-    <string name="other_travel">預訂其他旅行</string>
+    <string name="other_travel">預訂旅行</string>
     <string name="training_videos">培訓視頻</string>
     <string name="error_while_sync">出現問題</string>
     <string name="can_not_like_photo">不能點贊照片</string>
@@ -203,6 +208,9 @@
         <item>設為封面</item>
         <item>刪</item>
     </string-array>
+    <string name="uploading_photo">照片上傳中</string>
+    <string name="bucket_photo_cover">設為封面</string>
+    <string name="bucket_photo_delete">刪</string>
     <string name="add_pictures">添加圖片</string>
     <string name="select_photo">選擇照片</string>
     <string name="bucket_photo_dialog">鬥照片</string>
@@ -236,7 +244,6 @@
     <string name="invitation_subject">主題:</string>
 
     <string name="invite_add_last_name">姓名</string>
-    <string name="select_template">選取範本</string>
     <string name="preview_template">預覽範本</string>
     <string name="selected">已選取 %1$d</string>
     <string name="error_personal_message_is_empty">個人訊息不應該是空的</string>
@@ -267,10 +274,11 @@
     <string name="profile_friends">朋友</string>
     <string name="profile_messages">訊息</string>
     <string name="profile_more">更多</string>
-    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
-    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
+    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
+    <string name="bucket_delete_dialog">您確定您要刪除目標清單項目嗎?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
@@ -278,5 +286,43 @@
     <string name="profile_friend_request" formatted="false">%s send you a friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
-
+    <string name="title_activity_friends">Friends</string>
+    <string name="profile_request">Request</string>
+    <string name="profile_respond">Respond</string>
+    <string name="profile_waiting">Waiting</string>
+    <string name="social_my_friends">My friends</string>
+    <string name="social_requests">Requests</string>
+    <string name="social_add_friend_yes">Yes</string>
+    <string name="social_add_friend_no">No</string>
+    <string name="social_add_friend_title">Add Friend</string>
+    <string name="social_add_friend_content" formatted="false">Add %s as your friend?</string>
+    <string name="social_postfix_mutual_friends">%d mutual friends</string>
+    <string name="social_user_wrapper_cell_actions">Actions</string>
+    <string name="social_remove_friend_title">Unfriend</string>
+    <string name="action_social_show_all">Show all</string>
+    <string name="friend_search_placeholder">Search names, groups</string>
+    <string name="bucket_photo_upload_error">Unable to upload photo</string>
+    <string name="training_video_hint">Select language</string>
+    <string name="friend_reject">Reject</string>
+    <string name="friend_accept">Accept</string>
+    <string name="friend_hide">Hide</string>
+    <string name="friend_cancel">Cancel</string>
+    <string name="request_incoming">Incoming</string>
+    <string name="request_outgoing">Outgoing</string>
+    <string name="friend_global_search">Search all members</string>
+    <string name="friend_add_to">Add to:</string>
+    <string name="bucket_current_cover">Current cover</string>
+    <string name="bucket_item_edit_completed">Mark as done!</string>
+    <string name="reload_feed">Reload feed</string>
+    <string name="feed_header" formatted="false">%s %s %s</string>
+    <string name="added">added</string>
+    <string name="booked">booked</string>
+    <string name="shared">shared</string>
+    <string name="updated">updated</string>
+    <string name="liked">liked</string>
+    <string name="feed_trip">Trip</string>
+    <string name="feed_photo">Photo</string>
+    <string name="feed_bucket">Bucket Item</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="loading">Loading…</string>
 </resources>

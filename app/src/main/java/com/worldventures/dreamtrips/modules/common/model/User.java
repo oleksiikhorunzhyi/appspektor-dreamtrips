@@ -4,17 +4,25 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+
 import java.util.Date;
 import java.util.List;
 
-public class User extends BaseEntity implements Parcelable, Serializable {
+public class User extends BaseEntity implements Parcelable {
 
     public static final String RBS_SUBSCTIPTION = "RBS";
     public static final String DTM_SUBSCTIPTION = "DTM";
     public static final String DTS_SUBSCTIPTION = "DTS";
     public static final String DTG_SUBSCTIPTION = "DTG";
     public static final String DTP_SUBSCRIPTION = "DTP";
+
+    public static final String RELATION_NONE = "none";
+    public static final String RELATION_FRIEND = "friend";
+    public static final String RELATION_INCOMING_REQUEST = "incoming_request";
+    public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
+    public static final String RELATION_REJECT = "rejected";
 
     public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
@@ -40,8 +48,10 @@ public class User extends BaseEntity implements Parcelable, Serializable {
     private int tripImagesCount;
     private int bucketListItemsCount;
 
-    private String coverPath;
+    private String relationship;
 
+    @SerializedName("background_photo_url")
+    private String backgroundPhotoUrl;
     /**
      * RBS = Rep (i.e. this subscription is needed to show "Rep Tools")
      * DTM = Standard DreamTrips Member
@@ -51,6 +61,9 @@ public class User extends BaseEntity implements Parcelable, Serializable {
      * LDTM - ignore
      */
     private List<String> subscriptions;
+
+    //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
+    private boolean socialEnabled;
 
     public User() {
     }
@@ -64,19 +77,26 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
         this.location = in.readString();
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
-        this.coverPath = in.readString();
+        this.backgroundPhotoUrl = in.readString();
         this.id = in.readInt();
+        this.enrollDate = (Date) in.readSerializable();
+        this.relationship = in.readString();
+        this.socialEnabled = in.readInt() != 0;
     }
 
-    public String getCoverPath() {
-        if (coverPath == null) {
-            coverPath = "";
+    public String getBackgroundPhotoUrl() {
+        if (backgroundPhotoUrl == null) {
+            backgroundPhotoUrl = "";
         }
-        return coverPath;
+        return backgroundPhotoUrl;
     }
 
-    public void setCoverPath(String coverPath) {
-        this.coverPath = coverPath;
+    public void setBackgroundPhotoUrl(String backgroundPhotoUrl) {
+        this.backgroundPhotoUrl = backgroundPhotoUrl;
+    }
+
+    public boolean isSocialEnabled() {
+        return socialEnabled;
     }
 
     public String getUsername() {
@@ -179,6 +199,14 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         return false;
     }
 
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void unfriend() {
+        relationship = RELATION_NONE;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -193,11 +221,33 @@ public class User extends BaseEntity implements Parcelable, Serializable {
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeString(this.location);
         dest.writeParcelable(this.avatar, flags);
-        dest.writeString(this.coverPath);
+        dest.writeString(this.backgroundPhotoUrl);
         dest.writeInt(this.id);
+        dest.writeSerializable(enrollDate);
+        dest.writeString(this.relationship);
+        dest.writeInt(socialEnabled ? 1 : 0);
     }
 
-    public static class Avatar implements Parcelable {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        User user = (User) o;
+
+        return !(firstName != null ? !firstName.equals(user.firstName) : user.firstName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        return result;
+    }
+
+    public static class Avatar implements Parcelable, IFeedObject {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
             public Avatar createFromParcel(Parcel source) {
                 return new Avatar(source);
@@ -255,6 +305,11 @@ public class User extends BaseEntity implements Parcelable, Serializable {
             dest.writeString(this.original);
             dest.writeString(this.medium);
             dest.writeString(this.thumb);
+        }
+
+        @Override
+        public String place() {
+            return "";
         }
     }
 }

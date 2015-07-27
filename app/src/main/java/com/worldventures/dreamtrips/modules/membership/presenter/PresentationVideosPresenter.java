@@ -2,9 +2,11 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
@@ -23,7 +25,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class PresentationVideosPresenter extends Presenter<PresentationVideosPresenter.View> {
+public class PresentationVideosPresenter<T extends PresentationVideosPresenter.View> extends Presenter<T> {
 
     @Inject
     protected SnappyRepository db;
@@ -38,7 +40,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
     protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
         @Override
         public SpiceRequest<ArrayList<Video>> getReloadRequest() {
-            return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+            return getMemberVideosRequest();
         }
 
         @Override
@@ -55,6 +57,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
         public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
             if (adapterController != null) {
                 view.finishLoading();
+                view.setHeader();
                 attachListeners(items);
                 if (spiceException != null) {
                     handleError(spiceException);
@@ -63,16 +66,20 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
         }
     };
 
+    protected MemberVideosRequest getMemberVideosRequest() {
+        return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+    }
+
     @Override
     public void onInjected() {
         adapterController.setSpiceManager(dreamSpiceManager);
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(T view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
+        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
     }
 
     @Override
@@ -81,6 +88,8 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
         if (view.getAdapter().getCount() == 0) {
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
+        }
+        if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
         }
     }
@@ -109,7 +118,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
-                getUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
+                getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
     }
 
 
@@ -133,7 +142,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    videoCachingSpiceManager.addListenerIfPending(
+                    mediaSpiceManager.addListenerIfPending(
                             InputStream.class,
                             cachedVideo.getUuid(),
                             listener
@@ -145,7 +154,7 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
 
     public void onEvent(TrackVideoStatusEvent event) {
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
-                getUserId(), event.getAction(), event.getName());
+                getAccountUserId(), event.getAction(), event.getName());
     }
 
     @Override
@@ -159,6 +168,8 @@ public class PresentationVideosPresenter extends Presenter<PresentationVideosPre
 
         void finishLoading();
 
-        IRoboSpiceAdapter<Video> getAdapter();
+        void setHeader();
+
+        BaseArrayListAdapter<Video> getAdapter();
     }
 }

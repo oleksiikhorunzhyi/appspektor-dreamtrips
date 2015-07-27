@@ -1,109 +1,73 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Html;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.badoo.mobile.util.WeakHandler;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.gc.materialdesign.views.ButtonRectangle;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.kbeanie.imagechooser.api.ChooserType;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
 
-import java.text.DecimalFormat;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import icepick.Icicle;
 
 
-@Layout(R.layout.fragment_profile)
-@MenuResource(R.menu.profile_fragment)
-public class ProfileFragment extends BaseFragment<ProfilePresenter>
+public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @InjectView(R.id.user_cover)
-    protected SimpleDraweeView userCover;
-
-    @InjectView(R.id.user_photo)
-    protected SimpleDraweeView userPhoto;
-    @InjectView(R.id.cover)
-    protected ImageView cover;
-    @InjectView(R.id.avatar)
-    protected ImageView avatar;
-    @InjectView(R.id.user_name)
-    protected TextView userName;
-    @InjectView(R.id.et_date_of_birth)
-    protected DTEditText dateOfBirth;
-    @InjectView(R.id.pb)
-    protected ProgressBarCircularIndeterminate progressBar;
-    @InjectView(R.id.trip_images)
-    protected TextView tripImages;
-    @InjectView(R.id.dream_trips)
-    protected TextView trips;
-    @InjectView(R.id.update_info)
-    protected TextView updateInfo;
-    @InjectView(R.id.user_status)
-    protected TextView userStatus;
-    @InjectView(R.id.add_friend)
-    protected TextView addFriend;
-    @InjectView(R.id.bucket_list)
-    protected TextView buckets;
-    @InjectView(R.id.sv)
-    protected ScrollView sv;
-    @InjectView(R.id.friend_request)
-    protected ViewGroup friendRequest;
-    @InjectView(R.id.et_user_id)
-    protected DTEditText etUserId;
-    @InjectView(R.id.et_from)
-    protected DTEditText etFrom;
-    @InjectView(R.id.et_enroll)
-    protected DTEditText etEnroll;
-    @InjectView(R.id.dt_points)
-    protected TextView dtPoints;
-    @InjectView(R.id.rovia_bucks)
-    protected TextView roviaBucks;
-    @InjectView(R.id.user_balance)
-    protected ViewGroup userBalance;
-    @InjectView(R.id.accept)
-    protected ButtonRectangle accept;
-    @InjectView(R.id.reject)
-    protected ButtonRectangle reject;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout swipeContainer;
-    @InjectView(R.id.expandable_info)
-    protected ExpandableLayout info;
-    @InjectView(R.id.more)
-    protected ViewGroup more;
-    private PickImageDialog pid;
 
     @Icicle
     String filePath;
+    @Icicle
+    int callbackType;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
+    @InjectView(R.id.profile_toolbar)
+    protected Toolbar profileToolbar;
+
+    @InjectView(R.id.profile_toolbar_title)
+    protected TextView profileToolbarTitle;
+
+    @InjectView(R.id.profile_user_status)
+    protected TextView profileToolbarUserStatus;
+
+    @InjectView(R.id.swipe_container)
+    SwipeRefreshLayout swipeContainer;
+
+
+    @InjectView(R.id.feedview)
+    FeedView feedView;
+
+    protected ProfileView profileView;
     private WeakHandler weakHandler;
+    private Bundle savedInstanceState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         weakHandler = new WeakHandler();
     }
@@ -111,54 +75,57 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
         layoutConfiguration();
-    }
+        profileView = new ProfileView(getActivity());
 
-    private void layoutConfiguration() {
-        int padding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
-        accept.getTextView().setPadding(padding, 0, padding, 0);
-        reject.setTextColor(getResources().getColor(R.color.black_semi_transparent));
-        swipeContainer.setOnRefreshListener(this);
+        profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
+        profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
+        profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
 
+        profileView.setOnFeedReload(() -> getPresenter().loadFeed());
+        feedView.setup(injectorProvider, savedInstanceState);
+        feedView.setHeader(profileView);
+
+        feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int itemCount = feedView.getLayoutManager().getItemCount();
+                int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
+                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+            }
+        });
+        feedView.setOnParallaxScroll((percentage, offset, parallax) -> {
+            setToolbarAlpha(percentage);
+            if (percentage > 0.42f) {
+                profileToolbarTitle.setVisibility(View.VISIBLE);
+                profileToolbarUserStatus.setVisibility(View.VISIBLE);
+                profileView.getUserName().setVisibility(View.INVISIBLE);
+                profileView.getUserStatus().setVisibility(View.INVISIBLE);
+            } else {
+                profileToolbarTitle.setVisibility(View.INVISIBLE);
+                profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+                profileView.getUserName().setVisibility(View.VISIBLE);
+                profileView.getUserStatus().setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).makeActionBarTransparent(true);
+        if (profileToolbar != null) setToolbarAlpha(feedView.getParallaxPrecentage());
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) getActivity()).makeActionBarTransparent(false);
+    private void setToolbarAlpha(float percentage) {
+        Drawable c = profileToolbar.getBackground();
+        int round = Math.round(percentage * 255);
+        c.setAlpha(round);
+        profileToolbar.setBackgroundDrawable(c);
     }
 
-    @Override
-    protected ProfilePresenter createPresenter(Bundle savedInstanceState) {
-        return new ProfilePresenter();
-    }
-
-    @OnClick(R.id.bucket_list)
-    public void onBucketListClicked() {
-        getPresenter().openBucketList();
-    }
-
-    @OnClick(R.id.trip_images)
-    public void onTripImageClicked() {
-        getPresenter().openTripImages();
-    }
-
-    @OnClick(R.id.user_photo)
-    public void onPhotoClick() {
-        getPresenter().photoClicked();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem logout = menu.findItem(R.id.item_logout);
-        logout.setVisible(getPresenter().isCurrentUserProfile());
+    private void layoutConfiguration() {
+        swipeContainer.setOnRefreshListener(this);
     }
 
     @Override
@@ -166,7 +133,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.userPhoto.setImageURI(uri);
+                    SimpleDraweeView draweeView = profileView.getUserPhoto();
+                    setImage(uri, draweeView);
                 }
             });
     }
@@ -176,197 +144,94 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
         if (getActivity() != null)
             getActivity().runOnUiThread(() -> {
                 if (uri != null) {
-                    this.userCover.setImageURI(uri);
+                    SimpleDraweeView draweeView = profileView.getUserCover();
+                    setImage(uri, draweeView);
                 }
             });
     }
 
-    @Override
-    public void avatarProgressVisible(boolean visible) {
-        progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    private void setImage(Uri uri, SimpleDraweeView draweeView) {
+        PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
+        if (draweeView.getTag() != null) {
+            builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
+        }
+        builder.setImageRequest(ImageRequest.fromUri(uri));
+        DraweeController dc = builder.build();
+        draweeView.setController(dc);
+        draweeView.setTag(uri);
     }
 
     @Override
     public void setDateOfBirth(String format) {
-        dateOfBirth.setText(format);
+        profileView.getDateOfBirth().setText(format);
     }
 
     @Override
     public void setFrom(String location) {
-        etFrom.setText(location);
+        profileView.getEtFrom().setText(location);
     }
 
     @Override
     public void setUserName(String username) {
-        userName.setText(username);
+        profileView.getUserName().setText(username);
+        profileToolbarTitle.setText(username);
     }
 
     @Override
     public void setUserId(String username) {
-        etUserId.setText(username);
+        profileView.getEtUserId().setText(username);
     }
 
     @Override
     public void setEnrollDate(String date) {
-        etEnroll.setText(date);
-    }
-
-    @OnClick(R.id.user_cover)
-    public void onCoverClick() {
-        getPresenter().coverClicked();
-    }
-
-    @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
-    public void onInfoClick() {
-        if (info.isOpened()) {
-            info.hide();
-            more.setVisibility(View.VISIBLE);
-        } else {
-            info.show();
-            more.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void openAvatarPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-        this.pid.show();
-        filePath = pid.getFilePath();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pid == null) {
-            this.pid = new PickImageDialog(getActivity(), this);
-            this.pid.setCallback(getPresenter().provideAvatarChooseCallback());
-            this.pid.setFilePath(filePath);
-        }
-        this.pid.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_logout:
-                showLogoutDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        profileView.getEtEnroll().setText(date);
     }
 
     @Override
     public void setTripImagesCount(int count) {
-        tripImages.setText(String.format(getString(R.string.profile_trip_images), count));
+        profileView.getTripImages().setText(String.format(getString(R.string.profile_trip_images), count));
     }
 
     @Override
     public void setTripsCount(int count) {
-        trips.setText(String.format(getString(R.string.profile_dream_trips), count));
+        profileView.getTrips().setText(String.format(getString(R.string.profile_dream_trips), count));
     }
 
     @Override
     public void setBucketItemsCount(int count) {
-        buckets.setText(String.format(getString(R.string.profile_bucket_list), count));
+        profileView.getBuckets().setText(String.format(getString(R.string.profile_bucket_list), count));
     }
 
     @Override
-    public void hideAccountContent() {
-        cover.setVisibility(View.GONE);
-        avatar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showAccountContent() {
-        cover.setVisibility(View.GONE);
-        avatar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showAddFriend() {
-        addFriend.setVisibility(View.VISIBLE);
-        updateInfo.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showUpdateProfile() {
-        addFriend.setVisibility(View.GONE);
-        updateInfo.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setIsFriend(boolean isFriend) {
-        addFriend.setCompoundDrawablesWithIntrinsicBounds(isFriend
-                        ? R.drawable.friend_added
-                        : R.drawable.add_friend,
-                0, 0, 0);
-    }
-
-    @Override
-    public void showFriendRequest() {
-        friendRequest.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideFriendRequest() {
-        friendRequest.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setRoviaBucks(String count) {
-        roviaBucks.setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
-    }
-
-    @Override
-    public void setDreamTripPoints(String count) {
-        dtPoints.setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
-    }
-
-    @Override
-    public void hideBalance() {
-        userBalance.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showBalance() {
-        userBalance.setVisibility(View.VISIBLE);
+    public void setSocial(Boolean isEnabled) {
+        profileView.getAddFriend().setEnabled(isEnabled);
+        profileView.getFriendRequest().setEnabled(isEnabled);
+        profileView.getFriendRequest().setEnabled(isEnabled);
     }
 
     @Override
     public void setMember() {
-        userStatus.setTextColor(getResources().getColor(R.color.white));
-        userStatus.setText("");
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(0,
-                0, 0, 0);
-
+        setUserStatus(R.color.white, R.string.empty, 0);
     }
 
     @Override
     public void setGold() {
-        userStatus.setTextColor(getResources().getColor(R.color.golden_user));
-        userStatus.setText(R.string.profile_golden);
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.gold_member,
-                0, 0, 0);
+        setUserStatus(R.color.golden_user, R.string.profile_golden, R.drawable.gold_member);
     }
 
     @Override
     public void setPlatinum() {
-        userStatus.setTextColor(getResources().getColor(R.color.platinum_user));
-        userStatus.setText(R.string.profile_platinum);
-        userStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.platinum_member,
-                0, 0, 0);
+        setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.platinum_member);
     }
 
-    @OnClick(R.id.add_friend)
-    void onAddFriend() {
+    private void setUserStatus(int color, int title, int drawable) {
+        profileView.getUserStatus().setTextColor(getResources().getColor(color));
+        profileView.getUserStatus().setText(title);
+        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
 
-    }
-
-    @OnClick(R.id.update_info)
-    void onUpdateInfo() {
-
+        profileToolbarUserStatus.setTextColor(getResources().getColor(color));
+        profileToolbarUserStatus.setText(title);
+        profileToolbarUserStatus.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
     }
 
     @Override
@@ -376,33 +241,36 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter>
 
     @Override
     public void startLoading() {
-        weakHandler.post(() -> {
+        weakHandler.postDelayed(() -> {
+            profileView.getProfileFeedReload().setVisibility(View.GONE);
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
-        });
+        }, 100);
     }
 
     @Override
     public void finishLoading() {
-        weakHandler.post(() -> {
-            if (swipeContainer != null) swipeContainer.setRefreshing(false);
-        });
+        weakHandler.postDelayed(() -> {
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+        }, 100);
     }
 
-    private void showLogoutDialog() {
-        new MaterialDialog.Builder(getActivity())
-                .title(getString(R.string.logout_dialog_title))
-                .content(getString(R.string.logout_dialog_message))
-                .positiveText(getString(R.string.logout_dialog_positive_btn))
-                .negativeText(getString(R.string.logout_dialog_negative_btn))
-                .positiveColorRes(R.color.theme_main_darker)
-                .negativeColorRes(R.color.theme_main_darker)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().logout();
-                    }
-                })
-                .show();
+    @Override
+    public void onFeedError() {
+        weakHandler.postDelayed(() -> {
+            profileView.getProfileFeedReload().setVisibility(View.VISIBLE);
+        }, 100);
+
     }
 
+    @Override
+    public void setFriendButtonText(@StringRes int res) {
+        profileView.getFriends().setText(res);
+    }
+
+    @Override
+    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+        return feedView.getAdapter();
+    }
 }

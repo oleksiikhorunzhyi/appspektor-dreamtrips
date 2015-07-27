@@ -10,31 +10,49 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
+import icepick.Icepick;
+
 public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseActivity implements Presenter.View {
-    private PM presentationModel;
+    private PM presenter;
 
     public PM getPresentationModel() {
-        return presentationModel;
+        return presenter;
     }
 
     abstract protected PM createPresentationModel(Bundle savedInstanceState);
 
     @Override
     protected void beforeCreateView(Bundle savedInstanceState) {
-        this.presentationModel = createPresentationModel(savedInstanceState);
-        inject(this.presentationModel);
-        this.presentationModel.onInjected();
+        this.presenter = createPresentationModel(savedInstanceState);
+        inject(this.presenter);
+        this.presenter.onInjected();
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        this.presenter.restoreInstanceState(savedInstanceState);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+        if (presenter != null) this.presenter.saveInstanceState(outState);
+    }
+
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        this.presentationModel.takeView(this);
+        this.presenter.takeView(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.presenter.onResume();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        this.presentationModel.onMenuPrepared();
+        this.presenter.onMenuPrepared();
         return super.onPrepareOptionsMenu(menu);
     }
 

@@ -18,7 +18,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
         super.setTrip(trip);
         filteredImages = new ArrayList<>();
         filteredImages.addAll(trip.getFilteredImages());
-        TrackingHelper.trip(String.valueOf(trip.getTripId()), getUserId());
+        TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
         loadTripDetails();
     }
 
@@ -26,7 +26,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void onResume() {
         super.onResume();
 
-        if (!appSessionHolder.get().get().getUser().isPlatinum() && trip.isPlatinum()) {
+        if (trip.isSoldOut() || (!appSessionHolder.get().get().getUser().isPlatinum()
+                && trip.isPlatinum())) {
             view.hideBookIt();
         }
     }
@@ -36,13 +37,13 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public void actionBookIt() {
-        TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getUserId());
+        TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getAccountUserId());
         activityRouter.openBookItActivity(trip.getTripId());
     }
 
     @Override
     public void onMenuPrepared() {
-        if (trip != null) {
+        if (view != null && trip != null) {
             view.setLike(trip.isLiked());
             view.setInBucket(trip.isInBucketList());
         }
@@ -51,7 +52,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void loadTripDetails() {
         doRequest(new GetTripDetailsQuery(trip.getTripId()), tripDetails -> {
             view.setContent(tripDetails.getContent());
-            TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getUserId());
+            TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
         });
     }
 

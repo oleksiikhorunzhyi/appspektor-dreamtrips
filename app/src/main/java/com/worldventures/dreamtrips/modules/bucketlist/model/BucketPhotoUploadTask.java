@@ -1,27 +1,25 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-public class BucketPhotoUploadTask {
+import java.io.Serializable;
+
+public class BucketPhotoUploadTask implements Serializable {
 
     private String filePath;
-    private int taskId;
+    private long taskId;
     private int progress;
     private int bucketId;
     private boolean failed;
     private String type;
 
-    public int getProgress() {
-        return progress;
-    }
-
     public void setProgress(int progress) {
         this.progress = progress;
     }
 
-    public void setType(String type) {
+    public void setSelectionType(String type) {
         this.type = type;
     }
 
-    public String getType() {
+    public String getSelectionType() {
         return type;
     }
 
@@ -33,11 +31,11 @@ public class BucketPhotoUploadTask {
         this.filePath = filePath;
     }
 
-    public int getTaskId() {
+    public long getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(int taskId) {
+    public void setTaskId(long taskId) {
         this.taskId = taskId;
     }
 
@@ -55,5 +53,21 @@ public class BucketPhotoUploadTask {
 
     public boolean isFailed() {
         return failed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BucketPhotoUploadTask that = (BucketPhotoUploadTask) o;
+
+        return taskId == that.taskId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) taskId;
     }
 }

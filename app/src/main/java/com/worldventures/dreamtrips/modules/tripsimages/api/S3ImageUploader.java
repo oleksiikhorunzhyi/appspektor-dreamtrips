@@ -34,12 +34,14 @@ public class S3ImageUploader {
     protected transient Context context;
     private transient double byteTransferred;
     private transient int lastPercent;
+    private ImageProgressListener imageProgressListener;
 
     public String uploadImageToS3(String fileUri, String taskId) {
         File file = UploadingFileManager.copyFileIfNeed(fileUri, context);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("");
+        metadata.setContentLength(file.length());
 
         Upload uploadHandler = null;
 
@@ -60,6 +62,9 @@ public class S3ImageUploader {
                 lastPercent = (int) l;
                 Log.v("Progress event", "send UploadProgressUpdateEvent:" + l);
                 eventBus.post(new UploadProgressUpdateEvent(taskId, (int) l));
+                if (imageProgressListener != null) {
+                    imageProgressListener.onProgress((int) l);
+                }
             }
         };
 
@@ -72,6 +77,7 @@ public class S3ImageUploader {
         } catch (InterruptedException e) {
             Log.e(S3ImageUploader.class.getSimpleName(), "", e);
         }
+        eventBus.post(new UploadProgressUpdateEvent(taskId, 100));
 
         file.delete();
         return getURLFromUploadResult(uploadResult);
@@ -80,5 +86,14 @@ public class S3ImageUploader {
 
     private String getURLFromUploadResult(UploadResult uploadResult) {
         return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
+    }
+
+
+    public void setProgressListener(ImageProgressListener progressListener) {
+        this.imageProgressListener = progressListener;
+    }
+
+    public interface ImageProgressListener {
+        void onProgress(int i);
     }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
@@ -7,7 +8,7 @@ import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedE
 public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     public boolean showInvite() {
-        return !getUser().isRep();
+        return !featureManager.available(Feature.REP_TOOLS);
     }
 
     public void onEvent(SearchFocusChangedEvent event) {
@@ -16,11 +17,11 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     public void trackState(int position) {
         if (position == 0) {
-            TrackingHelper.memberVideos(getUserId());
+            TrackingHelper.memberVideos(getAccountUserId());
         } else if (position == 1) {
-            TrackingHelper.enroll(getUserId());
+            TrackingHelper.enroll(getAccountUserId());
         } else if (position == 2) {
-            TrackingHelper.inviteShare(getUserId());
+            TrackingHelper.inviteShare(getAccountUserId());
         }
     }
 

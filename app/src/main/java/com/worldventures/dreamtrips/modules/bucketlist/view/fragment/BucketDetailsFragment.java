@@ -21,8 +21,10 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -118,9 +120,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void setCover() {
-        String medium = getPresenter().getMediumResUrl();
-        String original = getPresenter().getHighResUrl();
+    public void setCover(String medium, String original) {
         loadImage(medium, original);
     }
 
@@ -132,12 +132,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         imageViewCover.setController(draweeController);
     }
 
-    @OnClick(R.id.imageViewEdit)
+    @OnClick(R.id.bucketItemEdit)
     protected void onEdit() {
         getPresenter().onEdit();
     }
 
-    @OnClick(R.id.imageViewShare)
+    @OnClick(R.id.bucketItemShare)
     protected void onShare() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(R.string.action_share)
@@ -168,11 +168,7 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setTime(String time) {
-        if (TextUtils.isEmpty(time)) {
-            textViewDate.setText(R.string.someday);
-        } else {
-            textViewDate.setText(time);
-        }
+        textViewDate.setText(time);
     }
 
     @Override
@@ -195,9 +191,14 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         getPresenter().onStatusUpdated(isChecked);
     }
 
+    @OnClick(R.id.bucketItemDelete)
+    public void onDelete() {
+        getPresenter().onDelete();
+    }
+
     @OnClick(R.id.imageViewCover)
     protected void onCoverClicked() {
-        getPresenter().openFullScreen(0);
+        getPresenter().onCoverClicked();
     }
 
     private void setForeignIntentAction() {
@@ -267,7 +268,10 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     public void onEvent(ActivityResult event) {
         eventBus.removeStickyEvent(event);
-        handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
+        handler.post(() -> {
+            if (bucketPhotosView != null)
+                bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data);
+        });
     }
 
     @Override
@@ -293,6 +297,21 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
         bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
         bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
         bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
+    }
+
+    @Override
+    public void showDeletionDialog(BucketItem bucketItem) {
+        new MaterialDialog.Builder(getActivity())
+                .content(R.string.bucket_delete_dialog)
+                .positiveText(R.string.delete_photo_positiove)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        getPresenter().deleteBucketItem(bucketItem);
+                    }
+                })
+                .show();
     }
 
     public static class ActivityResult {

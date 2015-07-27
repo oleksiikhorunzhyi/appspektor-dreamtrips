@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
@@ -49,9 +50,11 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
     @InjectView(R.id.containerLandscape)
     protected ScrollView scrollView;
 
+    @InjectView(R.id.progress) View progress;
+
     private BaseArrayListAdapter<Video> adapterFeatured;
     private BaseArrayListAdapter<Video> adapterRecent;
-    private BaseArrayListAdapter<Video> adapterAll;
+    private BaseArrayListAdapter<Object> adapterAll;
 
     RecyclerViewStateDelegate stateDelegate;
 
@@ -84,10 +87,13 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
         adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
         adapterAll.registerCell(Video.class, Video360Cell.class);
+        adapterAll.registerCell(String.class, VideoHeaderCell.class);
 
         recyclerViewAll.setAdapter(adapterAll);
         recyclerViewFeatured.setAdapter(adapterFeatured);
         recyclerViewRecent.setAdapter(adapterRecent);
+
+        progress.setVisibility(View.VISIBLE);
 
         setUpRecyclerViews();
     }
@@ -103,6 +109,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
     @Override
     public void finishLoading() {
+        progress.setVisibility(View.GONE);
         setUpRecyclerViews();
         stateDelegate.restoreStateIfNeeded();
     }
@@ -116,7 +123,6 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
     public BaseArrayListAdapter getRecentAdapter() {
         return adapterRecent;
     }
-
 
     @Override
     public BaseArrayListAdapter getAllAdapter() {

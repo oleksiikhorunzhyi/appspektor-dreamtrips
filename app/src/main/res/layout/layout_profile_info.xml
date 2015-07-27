@@ -5,5 +5,5 @@
     xmlns:expandable="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    expandable:contentLayout="@layout/layout_profile_expandable"
-    expandable:headerLayout="@layout/layout_profile_visible"/>
+    expandable:el_contentLayout="@layout/layout_profile_expandable"
+    expandable:el_headerLayout="@layout/layout_profile_visible"/>

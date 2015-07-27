@@ -7,7 +7,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketRequestSelectedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -17,14 +19,19 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITIES;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITY;
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.DINING;
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATION;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Inject
     SnappyRepository db;
+
+    @Inject
+    BucketItemManager bucketItemManager;
+
+    BucketType currentType;
 
     @Override
     public void takeView(View view) {
@@ -40,6 +47,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItemManager.loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 
@@ -49,21 +58,31 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(LOCATIONS, ACTIVITIES, DINING));
+        view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
         view.updateSelection();
     }
 
     public void onTabChange(BucketType type) {
-        db.saveRecentlyAddedBucketItems(type.name, 0);
+        currentType = type;
+        db.saveRecentlyAddedBucketItems(type.name(), 0);
         view.resetRecentlyAddedBucketItem(type);
         TrackingHelper.bucketPopular(type.name);
         eventBus.post(new BucketTabChangedEvent(type));
+        notifyAboutCurrentType();
+    }
+
+    public void onEvent(BucketRequestSelectedEvent event) {
+        notifyAboutCurrentType();
+    }
+
+    private void notifyAboutCurrentType() {
+        eventBus.post(new BucketTabChangedEvent(currentType));
     }
 
     private void setRecentBucketItemsCounts() {
         Map<BucketType, Integer> recentBucketItems = new HashMap<>();
         for (BucketType type : BucketType.values()) {
-            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name));
+            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name()));
         }
         view.setRecentBucketItemsCount(recentBucketItems);
     }
@@ -79,8 +98,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public enum BucketType {
-        LOCATIONS("location", R.string.bucket_locations),
-        ACTIVITIES("activity", R.string.bucket_activities),
+        LOCATION("location", R.string.bucket_locations),
+        ACTIVITY("activity", R.string.bucket_activities),
         DINING("dining", R.string.bucket_restaurants);
 
         protected String name;

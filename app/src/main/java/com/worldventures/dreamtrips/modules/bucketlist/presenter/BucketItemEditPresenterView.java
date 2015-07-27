@@ -24,5 +24,4 @@ public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.
 
     String getDescription();
 
-    void updatePhotos();
 }

@@ -15,14 +15,6 @@ public class TripImage implements Serializable {
     @SerializedName("origin_url")
     private String originUrl;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getUrl() {
         return url != null ? url : "";
     }
@@ -37,22 +29,6 @@ public class TripImage implements Serializable {
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getOriginalUrl() {
-        return originUrl;
-    }
-
-    public void setOriginalUrl(String originalUrl) {
-        this.originUrl = originalUrl;
-    }
-
-    public String getId() {
-        return id;
     }
 
 }

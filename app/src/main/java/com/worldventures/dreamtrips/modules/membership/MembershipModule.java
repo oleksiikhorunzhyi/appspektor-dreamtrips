@@ -5,14 +5,15 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplateActivityPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InviteTemplateSelectorPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
-import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplateActivityPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PreviewTemplateActivityPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
+import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipF
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,7 +54,8 @@ import dagger.Provides;
                 PreviewTemplateActivityPresenter.class,
                 PreviewTemplateActivity.class,
                 PreviewTemplateFragment.class,
-                TemplatePhotoCell.class,
+                TemplatePhotoCell.class
+
         },
         complete = false,
         library = true

@@ -6,13 +6,14 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Photo implements Parcelable, IFullScreenObject {
+public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     private String title;
     private Date shotAt;
@@ -247,4 +248,10 @@ public class Photo implements Parcelable, IFullScreenObject {
             return 0;
         }
     }
+
+    @Override
+    public String place() {
+        return getFsLocation();
+    }
+
 }

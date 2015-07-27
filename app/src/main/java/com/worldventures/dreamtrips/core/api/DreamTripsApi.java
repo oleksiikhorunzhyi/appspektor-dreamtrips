@@ -12,18 +12,22 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
@@ -47,8 +51,9 @@ import retrofit.mime.TypedFile;
 
 public interface DreamTripsApi {
 
-    public static final String TYPE_MEMBER = "DTAPP";
-    public static final String TYPE_MEMBER_360 = "DTAPP360";
+    String TYPE_MEMBER = "DTAPP";
+    String TYPE_MEMBER_360 = "DTAPP360";
+    String TYPE_REP = "dtapprep";
 
     @FormUrlEncoded
     @POST("/api/sessions")
@@ -58,8 +63,15 @@ public interface DreamTripsApi {
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
 
+    @POST("/api/profile/background_photo")
+    @Multipart
+    User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
+
     @GET("/api/profile")
     User getProfile();
+
+    @GET("/api/profiles/{id}")
+    User getPublicProfile(@Path("id") int id);
 
     @GET("/api/trips")
     List<TripModel> getTrips();
@@ -126,13 +138,13 @@ public interface DreamTripsApi {
     BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
 
     @PATCH("/api/bucket_list_items/{id}")
-    BucketItem updateItem(@Path("id") int id, @Body BucketBasePostItem bucketPostItem);
+    BucketItem updateItem(@Path("id") String id, @Body BucketBasePostItem bucketPostItem);
 
     @DELETE("/api/bucket_list_items/{id}")
     JsonObject deleteItem(@Path("id") int id);
 
     @GET("/api/bucket_list_items")
-    ArrayList<BucketItem> getBucketList(@Query("type") String type);
+    ArrayList<BucketItem> getBucketListFull();
 
     @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
     JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
@@ -186,8 +198,8 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
     InviteTemplate createInviteTemplate(@Field("template_id") int id,
-                                               @Field("message") String message,
-                                               @Field("cover_photo_url") String photoUrl);
+                                        @Field("message") String message,
+                                        @Field("cover_photo_url") String photoUrl);
 
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
@@ -198,6 +210,52 @@ public interface DreamTripsApi {
     @GET("/api/member_videos/")
     ArrayList<Video> getVideos(@Query("type") String type);
 
+    @GET("/api/member_videos/")
+    ArrayList<Video> getVideos(@Query("type") String type, @Query("country") String country);
+
+
+    @GET("/api/member_videos/locales")
+    ArrayList<VideoLocale> getTrainingVideosLocales();
+
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
+
+    @GET("/api/social/circles")
+    ArrayList<Circle> getCircles();
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id,
+                                 @Query("query") String query,
+                                 @Query("offset") int offset);
+
+    @GET("/api/social/friends")
+    ArrayList<Friend> getAllFriends(@Query("query") String query, @Query("offset") int offset);
+
+    @GET("/api/social/users")
+    ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
+
+    @GET("/api/social/friends/requests")
+    ArrayList<User> getRequests();
+
+    @POST("/api/social/friends/requests")
+    JSONObject addFriend(@Query("user_id") int userId,
+                         @Query("circle_id") String circleId);
+
+    @FormUrlEncoded
+    @PUT("/api/social/friends/request_responses")
+    JSONObject actOnRequest(@Query("user_id") int userId,
+                            @Field("action") String action,
+                            @Field("circle_id") String circleId);
+
+    @DELETE("/api/social/friends/request_responses")
+    JSONObject deleteRequest(@Query("user_id") int userId);
+
+    @DELETE("/api/social/friends")
+    JSONObject unfriend(@Query("user_id") int userId);
+
+    @GET("/api/social/users/{user_id}/feed")
+    ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+
+    @GET("/api/social/feed")
+    ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
 }

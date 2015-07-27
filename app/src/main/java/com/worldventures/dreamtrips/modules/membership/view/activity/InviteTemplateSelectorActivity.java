@@ -17,7 +17,7 @@ public class InviteTemplateSelectorActivity extends ToolbarActivity<InviteTempla
 
     @Override
     protected int getToolbarTitle() {
-        return R.string.select_template;
+        return R.string.invitation_select_template;
     }
 }
 

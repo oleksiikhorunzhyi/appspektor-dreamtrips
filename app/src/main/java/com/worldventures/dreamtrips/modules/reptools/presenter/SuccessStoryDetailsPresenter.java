@@ -18,16 +18,16 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.viewSS(getUserId(), successStory.getId());
+        TrackingHelper.viewSS(getAccountUserId(), successStory.getId());
     }
 
     public void like(SuccessStory successStory) {
         if (successStory.isLiked()) {
-            TrackingHelper.unlikeSS(getUserId(), successStory.getId());
+            TrackingHelper.unlikeSS(getAccountUserId(), successStory.getId());
             doRequest(new UnlikeSuccessStoryCommand(successStory.getId()),
                     (object) -> onLiked());
         } else {
-            TrackingHelper.likeSS(getUserId(), successStory.getId());
+            TrackingHelper.likeSS(getAccountUserId(), successStory.getId());
             doRequest(new LikeSuccessStoryCommand(successStory.getId()),
                     (object) -> onLiked());
         }

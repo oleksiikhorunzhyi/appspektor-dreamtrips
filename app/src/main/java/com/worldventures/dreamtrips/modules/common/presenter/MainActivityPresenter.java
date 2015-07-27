@@ -9,9 +9,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
-import com.worldventures.dreamtrips.core.utils.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 
 import javax.inject.Inject;
 
@@ -26,19 +24,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         checkGoogleServices();
     }
 
-    public void showUserIfNeeded() {
-        UserClickedEvent event = eventBus.getStickyEvent(UserClickedEvent.class);
-        if (event != null) {
-            eventBus.removeStickyEvent(UserClickedEvent.class);
-            Bundle args = new Bundle();
-            args.putParcelable(ProfileModule.EXTRA_USER, event.getUser());
-            ComponentDescription component = rootComponentsProvider
-                    .getComponentByKey(ProfileModule.MY_PROFILE);
-            view.updateSelection(component);
-            openComponent(component, args);
-        }
-    }
-
     private void checkGoogleServices() {
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (code != ConnectionResult.SUCCESS) {
@@ -46,9 +31,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         }
     }
 
-    public void onEvent(OpenMenuItemEvent event) {
-        view.updateSelection(event.getComponentDescription());
-        openComponent(event.getComponentDescription(), event.getArgs());
+    public void onEvent(ActionBarTransparentEvent event) {
+        view.makeActionBarGone(event.isTransparent());
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {
@@ -82,5 +66,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         void setTitle(int title);
 
         void updateSelection(ComponentDescription componentDescription);
+
+        void makeActionBarGone(boolean isTransparent);
     }
 }

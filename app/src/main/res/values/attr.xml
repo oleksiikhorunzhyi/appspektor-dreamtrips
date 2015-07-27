@@ -3,4 +3,15 @@
     <declare-styleable name="DTEditText">
         <attr name="hintColor" format="color" />
     </declare-styleable>
+    <declare-styleable name="FixedAspectRatioFrameLayout">
+        <attr name="aspectRatioWidth" format="integer"/>
+        <attr name="aspectRatioHeight" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="PinProgressButton">
+        <attr name="pinned" format="boolean" />
+        <attr name="progress" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="circleColor" format="color" />
+        <attr name="progressColor" format="color" />
+    </declare-styleable>
 </resources>

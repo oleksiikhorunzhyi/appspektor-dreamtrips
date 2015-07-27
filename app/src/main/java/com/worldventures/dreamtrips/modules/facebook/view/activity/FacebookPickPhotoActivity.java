@@ -51,7 +51,7 @@ public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPic
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         uiHelper.onSaveInstanceState(outState);
     }

@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
@@ -39,8 +40,8 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(videoCachingSpiceManager);
-        TrackingHelper.video360(getUserId());
+        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
+        TrackingHelper.video360(getAccountUserId());
     }
 
     @Override
@@ -53,7 +54,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     public void fillFeatured() {
         if (featuredVideos != null) {
-            if (view.getFeaturedAdapter() != null) {
+            if (view != null && view.getFeaturedAdapter() != null) {
                 view.getFeaturedAdapter().clear();
                 view.getFeaturedAdapter().addItems(featuredVideos);
 
@@ -69,7 +70,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         if (featuredVideos != null) {
             if (view != null && view.getAllAdapter() != null) {
                 view.getAllAdapter().clear();
+                view.getAllAdapter().addItem(context.getString(R.string.featured_header));
                 view.getAllAdapter().addItems(featuredVideos);
+                view.getAllAdapter().addItem(context.getString(R.string.recent_header));
                 view.getAllAdapter().addItems(recentVideos);
             }
         } else {
@@ -94,12 +97,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
 
     private void loadVideos() {
         MemberVideosRequest memberVideosRequest = new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
-        doRequest(memberVideosRequest, videos -> onSuccess(videos));
+        doRequest(memberVideosRequest, this::onSuccess);
     }
 
     private void onSuccess(List<Video> videos) {
-        recentVideos = Queryable.from(videos).filter(video -> video.isRecent()).toList();
-        featuredVideos = Queryable.from(videos).filter(video -> video.isFeatured()).toList();
+        recentVideos = Queryable.from(videos).filter(Video::isRecent).toList();
+        featuredVideos = Queryable.from(videos).filter(Video::isFeatured).toList();
         attachCacheToVideos(recentVideos);
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);
@@ -117,7 +120,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    videoCachingSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                    mediaSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
                             listener
                     );
                 }
@@ -133,12 +136,12 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_360,
-                getUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
+                getAccountUserId(), TrackingHelper.ACTION_360_LOAD_CANCELED, cacheEntity.getName());
     }
 
     public void onEvent(TrackVideoStatusEvent event) {
         TrackingHelper.videoAction(TrackingHelper.ACTION_360,
-                getUserId(), event.getAction(), event.getName());
+                getAccountUserId(), event.getAction(), event.getName());
     }
 
 

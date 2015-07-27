@@ -145,28 +145,30 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        if (searchOpened) searchItem.expandActionView();
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                searchOpened = true;
-                return true;
-            }
+        if (searchItem != null) {
+            if (searchOpened) searchItem.expandActionView();
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    searchOpened = true;
+                    return true;
+                }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchOpened = false;
-                return true;
-            }
-        });
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint(getString(R.string.search_trips));
-        searchView.setQuery(adapter.getQuery(), false);
-        searchView.setOnCloseListener(() -> {
-            adapter.flushFilter();
-            return false;
-        });
-        searchView.setOnQueryTextListener(this);
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    searchOpened = false;
+                    return true;
+                }
+            });
+            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setQueryHint(getString(R.string.search_trips));
+            searchView.setQuery(adapter.getQuery(), false);
+            searchView.setOnCloseListener(() -> {
+                adapter.flushFilter();
+                return false;
+            });
+            searchView.setOnQueryTextListener(this);
+        }
     }
 
     @Override

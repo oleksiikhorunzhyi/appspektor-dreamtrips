@@ -7,9 +7,11 @@ import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 import java.util.List;
 
 public interface IBucketPhotoView {
-    void addImages(List<BucketPhoto> images);
+    void setImages(List<BucketPhoto> images);
 
     void addImage(BucketPhotoUploadTask images);
+
+    void addImages(List<BucketPhotoUploadTask> tasks);
 
     void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);
 

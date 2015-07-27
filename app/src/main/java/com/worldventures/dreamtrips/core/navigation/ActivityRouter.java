@@ -9,9 +9,12 @@ import android.support.v4.app.Fragment;
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
@@ -19,11 +22,16 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
+import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
+import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
+import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
+import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -39,8 +47,11 @@ import java.util.List;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
-    public ActivityRouter(Activity activity) {
+    private FeatureManager featureManager;
+
+    public ActivityRouter(Activity activity, FeatureManager featureManager) {
         super(activity);
+        this.featureManager = featureManager;
     }
 
     public void openMain() {
@@ -76,6 +87,14 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(SimpleStreamPlayerActivity.class, bundle);
     }
 
+    public void openUserProfile(User user) {
+        if (featureManager.isUserInfoAvailable(user)) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ProfileModule.EXTRA_USER, user);
+            startActivity(ProfileActivity.class, bundle);
+        }
+    }
+
     public void openFullScreenTrip(List<Object> photoList, int position) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(FullScreenTripImageActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
@@ -107,7 +126,11 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketActivity.class, bundle);
     }
 
-    public void openBucketItemDetails(Bundle bundle) {
+    public void openBucketItemDetails(BucketTabsPresenter.BucketType type, int bucketId) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
+        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketId);
+
         bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
         startActivity(BucketActivity.class, bundle);
     }
@@ -171,4 +194,17 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
         startActivity(ComponentActivity.class, bundle);
     }
+
+    public void openFriends() {
+        if (featureManager.available(Feature.SOCIAL)) {
+            startActivity(FriendsActivity.class);
+        }
+    }
+
+    public void openFriendsSearch(String query) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FriendSearchPresenter.EXTRA_QUERY, query);
+        startActivity(FriendSearchActivity.class, bundle);
+    }
+
 }

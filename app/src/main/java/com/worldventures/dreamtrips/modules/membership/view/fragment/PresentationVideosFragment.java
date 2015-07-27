@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +18,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.view.BaseVideoFragment;
@@ -30,7 +29,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class PresentationVideosFragment extends BaseVideoFragment<PresentationVideosPresenter>
+public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseVideoFragment<T>
         implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
@@ -65,11 +64,12 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
+        setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
         this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);
+        this.arrayListAdapter.registerCell(String.class, VideoHeaderLightCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -85,24 +85,26 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setupLayoutManager(ViewUtils.isLandscapeOrientation(getActivity()));
-    }
-
-    @Override
     public void onRefresh() {
         getPresenter().getAdapterController().reload();
     }
 
     @Override
-    protected PresentationVideosPresenter createPresenter(Bundle savedInstanceState) {
-        return new PresentationVideosPresenter();
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new PresentationVideosPresenter();
     }
 
-    private void setupLayoutManager(boolean landscape) {
-        int spanCount = landscape ? 2 : 1;
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+    private void setupLayoutManager() {
+        boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
+        boolean tablet = ViewUtils.isTablet(getActivity());
+        int spanCount = landscape && tablet ? 3 : landscape ? 2 : 1;
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return arrayListAdapter.getItem(position) instanceof String ? spanCount : 1;
+            }
+        });
         this.recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -135,6 +137,12 @@ public class PresentationVideosFragment extends BaseVideoFragment<PresentationVi
             if  (refreshLayout != null) refreshLayout.setRefreshing(false);
         });
         stateDelegate.restoreStateIfNeeded();
+    }
+
+    @Override
+    public void setHeader() {
+        arrayListAdapter.addItem(0, getString(R.string.recent_videos));
+        arrayListAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
@@ -14,41 +12,28 @@ import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import de.greenrobot.event.EventBus;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 public class ProgressVideoCellHelper {
 
-    private final FabButton ivDownload;
-    private final CircleImageView circleView;
+    private final PinProgressButton pinProgressButton;
 
-    private int blue;
-    private int red;
     private String url;
     private CachedEntity cacheEntity;
 
-    private String userId;
-    private String videoName;
-
-    ProgressVideoCellHelper(FabButton ivDownload, CircleImageView circleView) {
-
-        this.ivDownload = ivDownload;
-        this.circleView = circleView;
-
-        blue = ivDownload.getContext().getResources().getColor(R.color.bucket_blue);
-        red = ivDownload.getContext().getResources().getColor(R.color.bucket_red);
+    public ProgressVideoCellHelper(PinProgressButton pinProgressButton) {
+        this.pinProgressButton = pinProgressButton;
     }
 
     public void onEventMainThread(DownloadVideoStartEvent event) {
         if (event.getEntity().getUrl().equals(url)) {
-            ivDownload.setProgress(0);
+            pinProgressButton.setProgress(0);
             setInProgressState();
         }
     }
 
     public void onEventMainThread(DownloadVideoProgressEvent event) {
         if (event.getEntity().getUrl().equals(url)) {
-            ivDownload.setProgress(event.getProgress());
+            pinProgressButton.setProgress(event.getProgress());
         }
     }
 
@@ -59,27 +44,25 @@ public class ProgressVideoCellHelper {
     }
 
     public void syncUIStateWithModel() {
-        ivDownload.setProgress(cacheEntity.getProgress());
+        pinProgressButton.setProgress(cacheEntity.getProgress());
         if (cacheEntity.isFailed()) {
             setFailedState();
         } else {
             setInProgressState();
         }
-        if (cacheEntity.getProgress() == 0) {
-            ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_download);
-        }
-
     }
 
     private void setFailedState() {
-        ivDownload.setProgress(0);
-        ivDownload.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        circleView.setColor(red);
+        pinProgressButton.setFailed(true);
     }
 
     private void setInProgressState() {
-        circleView.setColor(blue);
-        ivDownload.setIcon(R.drawable.ic_video_download, R.drawable.ic_video_done);
+        pinProgressButton.setFailed(false);
+        if (cacheEntity.isCached(pinProgressButton.getContext())) {
+            pinProgressButton.setProgress(100);
+        } else {
+            pinProgressButton.setProgress(cacheEntity.getProgress());
+        }
     }
 
     public void setModelObject(CachedEntity cacheEntity) {
@@ -89,7 +72,6 @@ public class ProgressVideoCellHelper {
     public void setUrl(String url) {
         this.url = url;
     }
-
 
     public void onDownloadCLick(Context context, EventBus eventBus) {
         boolean cached = cacheEntity.isCached(context);
@@ -102,10 +84,5 @@ public class ProgressVideoCellHelper {
         } else {
             eventBus.post(new CancelCachingVideoRequestEvent(cacheEntity));
         }
-    }
-
-    public interface LoadingTracker {
-        void trackStart();
-        void trackFinish();
     }
 }

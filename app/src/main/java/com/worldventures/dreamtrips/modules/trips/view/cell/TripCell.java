@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -41,6 +42,8 @@ public class TripCell extends AbstractCell<TripModel> {
     protected TextView textViewPrice;
     @InjectView(R.id.textViewDate)
     protected TextView textViewDate;
+    @InjectView(R.id.sold_out)
+    protected ImageView soldOut;
     @InjectView(R.id.textViewPoints)
     protected TextView textViewPoints;
     @InjectView(R.id.pointsCountLayout)
@@ -68,6 +71,12 @@ public class TripCell extends AbstractCell<TripModel> {
             textViewFeatured.setVisibility(View.GONE);
         }
 
+        if (getModelObject().isSoldOut()) {
+            soldOut.setVisibility(View.VISIBLE);
+        } else {
+            soldOut.setVisibility(View.GONE);
+        }
+
         String reward = getModelObject().getRewardsLimit(appSessionHolder.get().get().getUser());
 
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
@@ -81,7 +90,7 @@ public class TripCell extends AbstractCell<TripModel> {
         addToBucketView.setChecked(getModelObject().isInBucketList());
         addToBucketView.setEnabled(!getModelObject().isInBucketList());
 
-        PointF pointF = new PointF(.5f, .5f);
+        PointF pointF = new PointF(0.5f, 0.0f);
         imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
         imageViewTripImage.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
     }
@@ -113,4 +122,5 @@ public class TripCell extends AbstractCell<TripModel> {
     @Override
     public void prepareForReuse() {
     }
+
 }

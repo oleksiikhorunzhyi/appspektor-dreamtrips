@@ -12,10 +12,11 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.VideoCachingSpiceManager;
+import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
@@ -40,10 +41,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
     @Inject
+    protected FeatureManager featureManager;
+    @Inject
     protected DreamSpiceManager dreamSpiceManager;
     @Inject
-    protected VideoCachingSpiceManager videoCachingSpiceManager;
-
+    protected MediaSpiceManager mediaSpiceManager;
 
     protected int priorityEventBus = 0;
 
@@ -105,17 +107,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!videoCachingSpiceManager.isStarted()) {
-            videoCachingSpiceManager.start(context);
-        }
     }
 
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
-        }
-        if (videoCachingSpiceManager.isStarted()) {
-            videoCachingSpiceManager.shouldStop();
         }
     }
 
@@ -140,7 +136,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Override
     public void handleError(SpiceException error) {
         if (error != null && !TextUtils.isEmpty(error.getMessage())) {
-            view.informUser(error.getMessage());
+            if (!error.getMessage().contains("cancelled")) //hotfix, as robospice doesn't mark spice exception
+                view.informUser(error.getMessage());
         } else {
             view.informUser(R.string.smth_went_wrong);
         }
@@ -150,12 +147,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     // User helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    public User getUser() {
+    public User getAccount() {
         return appSessionHolder.get().get().getUser();
     }
 
-    public String getUserId() {
-        return getUser().getUsername();
+    public String getAccountUserId() {
+        return getAccount().getUsername();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -170,6 +167,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         void alert(String s);
 
         boolean isTabletLandscape();
+
         boolean isVisibleOnScreen();
     }
 }

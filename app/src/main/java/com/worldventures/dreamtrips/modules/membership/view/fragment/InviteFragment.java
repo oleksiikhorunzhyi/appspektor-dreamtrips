@@ -142,11 +142,16 @@ public class InviteFragment
         buttonContinue.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (isTabletLandscape()) getPresenter().openTemplateInView();
+    }
+
     private void setUpView() {
         if (isTabletLandscape()) {
             containerTemplates.setVisibility(View.VISIBLE);
             buttonContinue.setVisibility(View.GONE);
-            getPresenter().openTemplateInView();
         } else {
             containerTemplates.setVisibility(View.GONE);
             if (!tvSearch.hasFocus() && getPresenter().isVisible())

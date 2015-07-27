@@ -2,105 +2,105 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.annotation.StringRes;
 import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.preference.Prefs;
+import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.events.OpenMenuItemEvent;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
-import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
-import java.io.File;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit.mime.TypedFile;
+public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
-public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
+    protected User user;
 
-    @Inject
-    protected Prefs prefs;
-
-    @Inject
-    protected SnappyRepository snappyRepository;
+    private int previousTotal = 0;
+    private boolean loading = true;
 
     @Inject
-    protected RootComponentsProvider rootComponentsProvider;
+    SnappyRepository snappyRepository;
 
-    private User user;
-    private boolean isCurrentUserProfile;
+    protected DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
+        @Override
+        public SpiceRequest<ArrayList<BaseFeedModel>> getReloadRequest() {
+            return getRefreshRequest();
+        }
 
-    private DecimalFormat df = new DecimalFormat("#0.00");
+        @Override
+        public SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int currentCount) {
+            return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
+        }
 
-    private ImagePickCallback avatarCallback = (fragment, image, error) -> {
-        if (image != null) {
-            final File file = new File(image.getFileThumbnail());
-            final TypedFile typedFile = new TypedFile("image/*", file);
-            view.avatarProgressVisible(true);
-            TrackingHelper.profileUploadStart(getUserId());
-            doRequest(new UploadAvatarCommand(typedFile),
-                    this::onSuccess);
+        @Override
+        public void onStart(LoadType loadType) {
+            view.startLoading();
+        }
+
+        @Override
+        public void onFinish(LoadType type, List<BaseFeedModel> items, SpiceException spiceException) {
+            if (adapterController != null) {
+                view.finishLoading();
+                if (spiceException != null) {
+                    view.onFeedError();
+                }
+                if (type.equals(LoadType.RELOAD)) {
+                    resetLazyLoadFields();
+                }
+            }
         }
     };
 
-    private ImagePickCallback coverCallback = (fragment, image, error) -> {
-        if (image != null) {
-            view.setCoverImage(Uri.fromFile(new File(image.getFileThumbnail())));
+    List<Circle> circles;
 
-            UserSession userSession = this.appSessionHolder.get().get();
-            User user = userSession.getUser();
+    public ProfilePresenter() {
+    }
 
-            user.setCoverPath(image.getFileThumbnail());
-
-            this.appSessionHolder.put(userSession);
-
-            eventBus.post(new UpdateUserInfoEvent());
-        }
-    };
+    public ProfilePresenter(User user) {
+        this.user = user;
+    }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(T view) {
         super.takeView(view);
-        view.hideFriendRequest();
-        if (view.getArguments() != null) {
-            user = view.getArguments().getParcelable(ProfileModule.EXTRA_USER);
-            isCurrentUserProfile = getUser().equals(user);
-        } else {
-            user = getUser();
-            isCurrentUserProfile = true;
-        }
-
+        circles = snappyRepository.getCircles();
         setUserProfileInfo();
-        if (!isCurrentUserProfile) {
-            setOtherUserProfile();
-        } else {
-            setCurrentUserProfile();
-        }
-
+        loadCircles();
         loadProfile();
+        view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
     }
+
+    @Override
+    public void onResume() {
+        if (view.getAdapter().getCount() <= 1/*Header*/) {
+            adapterController.setSpiceManager(dreamSpiceManager);
+            adapterController.setAdapter(view.getAdapter());
+        }
+    }
+
+    public abstract void openBucketList();
+
+    public abstract void openTripImages();
 
     public void onRefresh() {
         loadProfile();
     }
 
-    private void setUserProfileInfo() {
+    protected void setUserProfileInfo() {
         view.setUserName(user.getFullName());
         view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
                 DateFormat.getMediumDateFormat(context)));
@@ -117,109 +117,75 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
             view.setMember();
 
         view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.setCoverImage(Uri.fromFile(new File(user.getCoverPath())));
-        view.setRoviaBucks(df.format(user.getRoviaBucks()));
-        view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
+        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
     }
 
-    private void setOtherUserProfile() {
-        view.hideAccountContent();
-        view.showAddFriend();
-        //TODO check has user sent a friend request
-        view.showFriendRequest();
-        //TODO add friend check
-        boolean isFriend = false;
-        view.setIsFriend(isFriend);
-        //TODO load user profile
-        //
-        view.hideBalance();
-    }
-
-    private void setCurrentUserProfile() {
-        TrackingHelper.profile(getUserId());
-        view.showUpdateProfile();
-        view.showBalance();
-        view.showAccountContent();
-    }
-
-    private void loadProfile() {
-        view.startLoading();
-        doRequest(new GetProfileQuery(), this::onProfileLoaded);
-    }
-
-    private void onProfileLoaded(User user) {
-        view.finishLoading();
+    protected void onProfileLoaded(User user) {
         this.user = user;
-        user.setCoverPath(getUser().getCoverPath());
+        //
         setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-    }
-
-    public boolean isCurrentUserProfile() {
-        return isCurrentUserProfile;
+        view.finishLoading();
+        loadFeed();
     }
 
     @Override
     public void handleError(SpiceException error) {
-        view.avatarProgressVisible(false);
         super.handleError(error);
+        view.finishLoading();
     }
 
-    public void openBucketList() {
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(BucketListModule.BUCKETLIST));
+    public void loadFeed() {
     }
 
-    public void openTripImages() {
-        Bundle args = new Bundle();
-        args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
+    protected abstract void loadProfile();
+
+    public void openFriends() {
+        if (featureManager.available(Feature.SOCIAL)) {
+            if (circles.isEmpty()) {
+                view.startLoading();
+                doRequest(new GetCirclesQuery(), circles -> {
+                    view.finishLoading();
+                    saveCircles(circles);
+                    openFriends();
+                });
+            } else {
+                activityRouter.openFriends();
+            }
+        }
     }
 
-    private void onSuccess(User obj) {
-        TrackingHelper.profileUploadFinish(getUserId());
-        UserSession userSession = appSessionHolder.get().get();
-        User user = userSession.getUser();
-        user.setAvatar(obj.getAvatar());
+    ///Circles
 
-        appSessionHolder.put(userSession);
-        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.avatarProgressVisible(false);
-        eventBus.post(new UpdateUserInfoEvent());
+    private void loadCircles() {
+        if (featureManager.available(Feature.SOCIAL))
+            doRequest(new GetCirclesQuery(), this::saveCircles);
     }
 
-    public void logout() {
-        this.appSessionHolder.destroy();
-        snappyRepository.clearAll();
-        activityRouter.finish();
-        activityRouter.openLogin();
+    protected void saveCircles(List<Circle> circles) {
+        this.circles = circles;
+        snappyRepository.saveCircles(circles);
     }
 
-    @Override
-    public void dropView() {
-        avatarCallback = null;
-        coverCallback = null;
-        super.dropView();
+    private void resetLazyLoadFields() {
+        previousTotal = 0;
+        loading = false;
     }
 
-    public void photoClicked() {
-        view.openAvatarPicker();
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading
+                && lastVisible == totalItemCount - 1
+                && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
+            loading = true;
+        }
     }
 
-    public void coverClicked() {
-    }
+    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest();
 
-    //don't use of get PREFIX
-    public ImagePickCallback provideAvatarChooseCallback() {
-        return avatarCallback;
-    }
-
-    public ImagePickCallback provideCoverChooseCallback() {
-        return coverCallback;
-    }
-
+    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
 
     public interface View extends Presenter.View {
         Bundle getArguments();
@@ -228,21 +194,9 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void finishLoading();
 
-        void openAvatarPicker();
-
-        void hideAccountContent();
-
-        void showAccountContent();
-
-        void showAddFriend();
-
-        void showUpdateProfile();
-
         void setAvatarImage(Uri uri);
 
         void setCoverImage(Uri uri);
-
-        void avatarProgressVisible(boolean visible);
 
         void setDateOfBirth(String format);
 
@@ -258,26 +212,20 @@ public class ProfilePresenter extends Presenter<ProfilePresenter.View> {
 
         void setTripsCount(int count);
 
+        void setSocial(Boolean isEnabled);
+
         void setBucketItemsCount(int count);
-
-        void showFriendRequest();
-
-        void hideFriendRequest();
-
-        void setIsFriend(boolean isFriend);
-
-        void setRoviaBucks(String count);
-
-        void setDreamTripPoints(String count);
-
-        void hideBalance();
-
-        void showBalance();
 
         void setGold();
 
         void setPlatinum();
 
         void setMember();
+
+        IRoboSpiceAdapter<BaseFeedModel> getAdapter();
+
+        void onFeedError();
+
+        void setFriendButtonText(@StringRes int res);
     }
 }

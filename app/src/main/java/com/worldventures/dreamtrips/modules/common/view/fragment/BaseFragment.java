@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -79,7 +79,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (this.presenter != null) this.presenter.onMenuPrepared();
+        if (this.presenter != null && isAdded()) this.presenter.onMenuPrepared();
     }
 
     @Override
@@ -119,20 +119,17 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void informUser(String stringId) {
-        if (getActivity() != null && isAdded()) {
+        if (isAdded()) {
             getActivity().runOnUiThread(() -> {
-                SnackBar snackBar = new SnackBar(getActivity(), stringId);
-                snackBar.setDismissTimer(stringId.length() > 100 ? 4000 : 2000);
-                snackBar.show();
+                Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
             });
         }
     }
 
     @Override
     public void informUser(int stringId) {
-        if (getActivity() != null && isAdded()) {
-            SnackBar snackbar = new SnackBar(getActivity(), getActivity().getString(stringId));
-            snackbar.show();
+        if (isAdded() && getView() != null) {
+            Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
         }
     }
 

@@ -9,54 +9,38 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.DeleteBucketItemEvent;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketListQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.api.MarkBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.api.ReorderBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAddedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketRequestSelectedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.Icicle;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATIONS;
-
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
-
-    private static final int DELETION_DELAY = 3500;
 
     @Inject
     Activity activity;
     @Inject
-    protected SnappyRepository db;
+    DreamTripsApi api;
+
     @Inject
-    protected DreamTripsApi api;
-    @Inject
-    protected Prefs prefs;
+    BucketItemManager bucketItemManager;
 
     private BucketTabsPresenter.BucketType type;
 
@@ -69,57 +53,47 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    private BucketHelper bucketHelper;
     private WeakHandler weakHandler;
+
+    private boolean selected;
 
     public BucketListPresenter(BucketTabsPresenter.BucketType type) {
         super();
         this.type = type;
-        bucketHelper = new BucketHelper();
         weakHandler = new WeakHandler();
+    }
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        TrackingHelper.bucketList(getUserId());
-        loadBucketItems();
+        TrackingHelper.bucketList(getAccountUserId());
+        eventBus.post(new BucketRequestSelectedEvent());
+        view.startLoading();
     }
 
-    public void loadBucketItems() {
-        if (isConnected()) {
-            view.startLoading();
-            doRequest(new GetBucketListQuery(prefs, db, type),
-                    result -> {
-                        view.finishLoading();
-                        addItems(result);
-                    }, exception -> {
-                        view.finishLoading();
-                        addItems(Collections.emptyList());
-                        handleError(exception);
-                    });
-        } else {
-            addItems(db.readBucketList(type.name()));
-        }
+    public void onEvent(BucketItemsLoadedEvent event) {
+        showItems();
     }
 
-    public void trackAddStart() {
-        TrackingHelper.bucketAddStart(type.name);
-    }
-
-    public void trackAddFinish() {
-        TrackingHelper.bucketAddFinish(type.name);
-    }
-
-    private void addItems(Collection<? extends BucketItem> result) {
-        bucketItems.clear();
-        bucketItems.addAll(result);
+    private void showItems() {
+        view.finishLoading();
+        bucketItems = bucketItemManager.getBucketItems(type);
         refresh();
     }
 
     private void refresh() {
         fillWithItems();
         openDetailsIfNeeded(currentItem);
+    }
+
+    private void refresh(List<BucketItem> tempItems) {
+        bucketItems = tempItems;
+        refresh();
     }
 
     private void fillWithItems() {
@@ -136,7 +110,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             view.putCategoryMarker(filteredItems.size());
             if (showCompleted) {
                 Collection<BucketItem> done = Queryable.from(bucketItems)
-                        .filter((bucketItem) -> bucketItem.isDone())
+                        .filter(BucketItem::isDone)
                         .toList();
                 filteredItems.addAll(done);
             }
@@ -152,9 +126,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void onEvent(BucketTabChangedEvent event) {
+        selected = type.equals(event.type);
         if (type.equals(event.type)) {
             // when tab change we need to wait, till pager settles down
-            weakHandler.postDelayed(() -> openDetailsIfNeeded(currentItem), 150L);
+            weakHandler.postDelayed(() -> openDetailsIfNeeded(currentItem), 50L);
         }
     }
 
@@ -167,72 +142,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         openDetails(currentItem);
     }
 
-    public void onEvent(BucketItemUpdatedEvent event) {
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
         if (isTypeCorrect(event.getBucketItem().getType())) {
-            int index = bucketItems.indexOf(event.getBucketItem());
-            bucketItems.remove(index);
-            bucketItems.add(index, event.getBucketItem());
-            fillWithItems();
+            showItems();
         }
-    }
-
-    public void onEvent(BucketItemAddedEvent event) {
-        if (!bucketItems.contains(event.getBucketItem())
-                && isTypeCorrect(event.getBucketItem().getType())) {
-            if (event.getBucketItem().isDone()) {
-                bucketItems.add(0, event.getBucketItem());
-                refresh();
-            } else {
-                bucketItems.add(0, event.getBucketItem());
-                refresh();
-            }
-            eventBus.cancelEventDelivery(event);
-        }
-    }
-
-    public void onEvent(MarkBucketItemDoneEvent event) {
-        if (!bucketItems.isEmpty() && isTypeCorrect(event.getBucketItem().getType())) {
-            BucketItem bucketItem = event.getBucketItem();
-
-            int position = bucketItem.isDone() ?
-                    bucketItems.indexOf(Queryable.from(bucketItems).first(BucketItem::isDone)) : 0;
-            moveItem(bucketItem, position);
-
-            BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
-
-            doRequest(new MarkBucketItemCommand(event.getBucketItem().getId(), bucketStatusItem),
-                    item -> {
-                        db.saveBucketList(bucketItems, type.name());
-                    }, exception -> {
-                        bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(!bucketItem.isDone());
-                        refresh();
-                    });
-
-            bucketItems.get(bucketItems.indexOf(bucketItem)).setDone(bucketItem.isDone());
-            refresh();
-        }
-    }
-
-    public void onEvent(DeleteBucketItemEvent event) {
-        if (bucketItems.isEmpty() || !isTypeCorrect(event.getBucketItem().getType())) return;
-        //
-        eventBus.cancelEventDelivery(event);
-
-        int index = bucketItems.indexOf(event.getBucketItem());
-        bucketItems.remove(event.getBucketItem());
-        //
-        if (currentItem.equals(event.getBucketItem())) {
-            if (bucketItems.isEmpty()) currentItem = null;
-            else {
-                currentItem = index == bucketItems.size() ?
-                        bucketItems.get(index - 1) :
-                        bucketItems.get(index);
-            }
-        }
-        refresh();
-        // make request
-        DeleteBucketItemCommand request = deleteDelayed(event.getBucketItem());
-        view.showUndoBar((v) -> undo(event.getBucketItem(), index, request));
     }
 
     private boolean isTypeCorrect(String bucketType) {
@@ -240,7 +153,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetailsIfNeeded(BucketItem item) {
-        if (!view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
+        if (view == null || !view.isTabletLandscape() || !view.isVisibleOnScreen()) return;
         //
         if (item != null) openDetails(item);
         else {
@@ -250,9 +163,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
+        if (!selected) return;
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketActivity.EXTRA_ITEM, bucketItem);
+        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItem.getId());
         fragmentCompass.removeDetailed();
         if (view.isTabletLandscape()) {
             view.showDetailsContainer();
@@ -260,49 +175,16 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             fragmentCompass.setContainerId(R.id.container_details_fullscreen);
             fragmentCompass.replace(Route.DETAIL_BUCKET, bundle);
         } else {
-            activityRouter.openBucketItemDetails(bundle);
+            activityRouter.openBucketItemDetails(type, bucketItem.getId());
         }
         // set selected
-        Queryable.from(bucketItems).forEachR(item -> {
-            item.setSelected(bucketItem.equals(item));
-        });
+        Queryable.from(bucketItems).forEachR(item ->
+                item.setSelected(bucketItem.equals(item)));
         view.getAdapter().notifyDataSetChanged();
     }
 
     public void addPopular() {
         activityRouter.openBucketListPopularActivity(type);
-    }
-
-    private DeleteBucketItemCommand deleteDelayed(BucketItem item) {
-        DeleteBucketItemCommand request = new DeleteBucketItemCommand(item.getId(), DELETION_DELAY);
-        doRequest(request, obj -> {
-            db.saveBucketList(bucketItems, type.name());
-            if (type.equals(LOCATIONS)) {
-                doRequest(new GetTripsQuery(db, prefs, false), tripModels -> {
-                    TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element -> {
-                        return element.getGeoLocation().getName().equals(item.getName());
-                    });
-                    if (tripFromBucket != null) {
-                        tripFromBucket.setInBucketList(false);
-                        db.saveTrip(tripFromBucket);
-                    }
-                });
-            }
-        });
-        return request;
-    }
-
-    private void undo(BucketItem bucketItem, int index, DeleteBucketItemCommand request) {
-        request.setCanceled(true);
-        bucketItems.add(index, bucketItem);
-        currentItem = bucketItem;
-        refresh();
-    }
-
-    private void moveItem(BucketItem bucketItem, int index) {
-        int itemIndex = bucketItems.indexOf(bucketItem);
-        BucketItem temp = bucketItems.remove(itemIndex);
-        bucketItems.add(index, temp);
     }
 
     public void reloadWithFilter(int filterId) {
@@ -325,38 +207,37 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         refresh();
     }
 
+    public void onEvent(MarkBucketItemDoneEvent event) {
+        if (isTypeCorrect(event.getBucketItem().getType())) {
+            eventBus.cancelEventDelivery(event);
+            markAsDone(event.getBucketItem());
+        }
+    }
+
+    private void markAsDone(BucketItem bucketItem) {
+        refresh(bucketItemManager.markBucketItemAsDone(bucketItem, type, exception -> {
+            bucketItems = bucketItemManager.getBucketItems(type);
+            refresh();
+        }));
+    }
+
     public void itemMoved(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;
         }
 
-        BucketOrderModel orderModel = new BucketOrderModel();
-        orderModel.setPosition(toPosition);
-
-        doRequest(new ReorderBucketItemCommand(bucketItems.get(fromPosition).getId(),
-                orderModel), jsonObject -> {
-            final BucketItem item = bucketItems.remove(fromPosition);
-            bucketItems.add(toPosition, item);
-            db.saveBucketList(bucketItems, type.name());
-        });
+        refresh(bucketItemManager.moveItem(fromPosition, toPosition, type, spiceException -> {
+            refresh();
+            handleError(spiceException);
+        }));
     }
 
     public void addToBucketList(String title) {
-        BucketPostItem bucketPostItem = new BucketPostItem(type.getName(), title, BucketItem.NEW);
-        addBucketItem(bucketPostItem);
-    }
-
-    private void addBucketItem(BucketPostItem bucketPostItem) {
-        doRequest(new AddBucketItemCommand(bucketPostItem), bucketItem -> {
-            bucketHelper.saveBucketItem(db, bucketItem, type.name(), true);
-
-            trackAddFinish();
+        bucketItemManager.addBucketItem(title, type, bucketItem -> {
             bucketItems.add(0, bucketItem);
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
-
-            bucketHelper.notifyItemAddedToBucket(activity, bucketItem);
-        });
+        }, this::handleError);
     }
 
     public boolean isShowToDO() {
@@ -373,8 +254,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public interface View extends Presenter.View {
         BaseArrayListAdapter<BucketItem> getAdapter();
-
-        void showUndoBar(android.view.View.OnClickListener clickListener);
 
         void startLoading();
 

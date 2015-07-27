@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.WebViewReloadEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;
-import icepick.Icepick;
 import icepick.Icicle;
 
 @Layout(R.layout.activity_main)
@@ -57,7 +55,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Icicle
     protected ComponentDescription currentComponent;
     @Icicle
-    protected boolean transparentToolbar;
+    protected boolean toolbarGone;
 
     private NavigationDrawerFragment navigationDrawerFragment;
 
@@ -67,22 +65,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        getPresentationModel().showUserIfNeeded();
-        makeActionBarTransparent(transparentToolbar);
+        makeActionBarGone(toolbarGone);
     }
 
     @Override
@@ -124,18 +109,16 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             getSupportActionBar().setTitle("");
     }
 
-    public void makeActionBarTransparent(boolean isTransparent) {
-        if (ViewUtils.isLandscapeOrientation(this)) isTransparent = false;
-        //
-        this.transparentToolbar = isTransparent;
-        int contentPadding = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
-        if (isTransparent) {
-            toolbar.getBackground().setAlpha(0);
-            wrapperContainer.setPadding(0, 0, 0, 0);
+    @Override
+    public void makeActionBarGone(boolean gone) {
+        this.toolbarGone = gone;
+        if (gone) {
+            toolbar.setVisibility(View.GONE);
         } else {
+            toolbar.setVisibility(View.VISIBLE);
             toolbar.getBackground().setAlpha(255);
-            wrapperContainer.setPadding(0, contentPadding, 0, 0);
         }
+
     }
 
     private void setUpBurger() {
@@ -181,7 +164,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
         handleComponentChange();
         disableRightDrawer();
-        makeActionBarTransparent(false);
+        makeActionBarGone(false);
 
         navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;
@@ -196,7 +179,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void onNavigationDrawerItemReselected(ComponentDescription route) {
-        eventBus.post(new WebViewReloadEvent());
         closeLeftDrawer();
     }
 

@@ -4,6 +4,7 @@
     <color name="theme_main_darker">#76b2fe</color>
     <color name="accent">#76b2fe</color>
 
+    <color name="bg_tablet_menu">#0F2639</color>
 
     <color name="myPrimaryColor">#3F51B5</color>
     <color name="myPrimaryDarkColor">#3F51B5</color>
@@ -21,7 +22,7 @@
     <color name="tripNameColor">#000000</color>
     <color name="tripDateBackgroundColor">#5CBAFC</color>
     <color name="tripDescription">#F8F8F8</color>
-    <color name="tripButtonColor">#FF5D5C</color>
+    <color name="tripButtonColor">#70af29</color>
     <color name="tripButtonDisabled">#A5A5A5</color>
 
     <color name="textViewFilterDisabled">#A5A5A5</color>
@@ -70,4 +71,17 @@
     <color name="bucket_red">#fe5353</color>
     <color name="bucket_blue">#ff6e9cff</color>
 
+    <color name="tab_selected_color">#F0EFEF</color>
+    <color name="tab_default_color">#F8F8F8</color>
+
+    <color name="divider_color">#F8F8F8</color>
+    <color name="bucket_add_phto">#dcdcdc</color>
+    <color name="white">@android:color/white</color>
+
+    <color name="profile_feed_background">#F0EFEF</color>
+    <color name="tab_enabled_color">#dddddd</color>
+
+    <color name="pin_progress_default_circle_color">#80ffffff</color>
+
+    <color name="feed_text_color">#929292</color>
 </resources>

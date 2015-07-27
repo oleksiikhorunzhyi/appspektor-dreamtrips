@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVid
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
 
 import dagger.Module;
@@ -27,7 +29,6 @@ import dagger.Provides;
                 OtaFragment.class,
                 AuthorizedStaticInfoFragment.class,
                 AuthorizedStaticInfoPresenter.class,
-                StaticInfoFragment.TrainingVideosFragment.class,
                 Video360Presenter.class,
                 PresentationVideosPresenter.class,
                 Video360Fragment.class,
@@ -42,6 +43,8 @@ import dagger.Provides;
 
                 VideoCell.class,
                 Video360Cell.class,
+                VideoHeaderLightCell.class,
+                VideoHeaderCell.class,
                 Video360SmallCell.class,
 
                 TermsTabFragment.class,

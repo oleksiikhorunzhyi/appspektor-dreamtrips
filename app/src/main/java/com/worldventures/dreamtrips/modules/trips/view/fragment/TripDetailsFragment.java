@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ImageDetailsPagerFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -56,6 +57,8 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     protected TextView textViewScheduleDescription;
     @InjectView(R.id.viewPagerGallery)
     protected ViewPager viewPagerGallery;
+    @InjectView(R.id.sold_out)
+    protected ImageView soldOut;
     @InjectView(R.id.textViewPoints)
     protected TextView textViewPoints;
     @InjectView(R.id.listViewContent)
@@ -138,14 +141,14 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
                         Bundle args = new Bundle();
                         Object photo = getPresenter().getFilteredImages().get(position);
                         if (photo instanceof Serializable) {
-                            args.putSerializable(ImageDetailsPagerFragment.EXTRA_PHOTO, (Serializable) photo);
+                            args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
                         }
                         fragment.setArguments(args);
                     }
                 };
 
         for (Object photo : getPresenter().getFilteredImages()) {
-            adapter.add(new FragmentItem(ImageDetailsPagerFragment.class, ""));
+            adapter.add(new FragmentItem(TripImagePagerFragment.class, ""));
         }
 
         viewPagerGallery.setAdapter(adapter);
@@ -175,6 +178,11 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     @Override
     public void setLocation(String location) {
         textViewPlace.setText(location);
+    }
+
+    @Override
+    public void setSoldOut() {
+        soldOut.setVisibility(View.VISIBLE);
     }
 
     @Override

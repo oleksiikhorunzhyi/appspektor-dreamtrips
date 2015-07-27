@@ -15,34 +15,42 @@ public class DateFilterItem implements Parcelable {
         reset();
     }
 
-    public DateFilterItem(Date startDate, Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
     public void reset() {
         Calendar calendar = Calendar.getInstance();
-        startDate = calendar.getTime();
+        setStartDate(calendar.getTime());
         calendar.add(Calendar.MONTH, 12);
-        endDate = calendar.getTime();
+        setEndDate(calendar.getTime());
+    }
+
+    public void setStartDate(Date startDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        this.startDate = calendar.getTime();
+    }
+
+    public void setEndDate(Date endDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        this.endDate = calendar.getTime();
     }
 
     public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
     public Date getEndDate() {
         return endDate;
     }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
 
     @Override
     public int describeContents() {

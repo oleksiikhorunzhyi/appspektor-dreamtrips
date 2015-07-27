@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
@@ -74,6 +74,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     protected TextView textViewEmptyAdd;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
+    @InjectView(R.id.buttonNew)
+    AppCompatButton buttonNew;
+    @InjectView(R.id.buttonPopular)
+    AppCompatButton buttonPopular;
     //
     protected View detailsContainer;
 
@@ -82,7 +86,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     private RecyclerViewDragDropManager dragDropManager;
     private RecyclerViewStateDelegate stateDelegate;
 
-    private SnackBar snackBar;
     private MenuItem menuItemAdd;
 
     @Override
@@ -188,7 +191,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 quickInputEditText.onActionViewExpanded();
-                getPresenter().trackAddStart();
                 return true;
             }
 
@@ -208,16 +210,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @OnClick(R.id.buttonPopular)
     void onPopular() {
         getPresenter().addPopular();
-    }
-
-    @Override
-    public void showUndoBar(View.OnClickListener undoListener) {
-        if (snackBar != null && snackBar.isShowing()) {
-            snackBar.hide();
-        }
-        snackBar = new SnackBar(getActivity(), getString(R.string.bucket_delete_undo),
-                getString(R.string.undo), undoListener);
-        snackBar.show();
     }
 
     @Override
@@ -313,4 +305,5 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
             emptyView.setVisibility(View.GONE);
         }
     }
+
 }

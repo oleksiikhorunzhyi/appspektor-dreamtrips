@@ -9,6 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel implements Filterable, Serializable {
+public class TripModel implements Filterable, Serializable, IFeedObject {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
@@ -276,7 +277,9 @@ public class TripModel implements Filterable, Serializable {
 
     @Override
     public boolean containsQuery(String query) {
-        return query == null || name.toLowerCase().contains(query) || location.getName().toLowerCase().contains(query);
+        return name == null || location == null ||
+                query == null || name.toLowerCase().contains(query) ||
+                location.getName().toLowerCase().contains(query);
     }
 
     @Override
@@ -307,4 +310,10 @@ public class TripModel implements Filterable, Serializable {
     public String toString() {
         return tripId;
     }
+
+    @Override
+    public String place() {
+        return null;
+    }
+
 }

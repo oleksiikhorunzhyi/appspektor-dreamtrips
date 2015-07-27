@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 public class UpdateBucketItemCommand extends Command<BucketItem> {
 
     private BucketBasePostItem bucketPostItem;
-    private int id;
+    private String id;
 
-    public UpdateBucketItemCommand(int id, BucketBasePostItem bucketPostItem) {
+    public UpdateBucketItemCommand(String id, BucketBasePostItem bucketPostItem) {
         super(BucketItem.class);
         this.bucketPostItem = bucketPostItem;
         this.id = id;

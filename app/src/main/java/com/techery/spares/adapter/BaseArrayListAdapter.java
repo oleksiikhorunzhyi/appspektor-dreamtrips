@@ -40,7 +40,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
-    public void registerCell(Class itemClass, Class<? extends AbstractCell> cellClass) {
+    public void registerCell(Class<? extends BaseItemClass> itemClass, Class<? extends AbstractCell> cellClass) {
         this.itemCellMapping.put(itemClass, cellClass);
         int type = this.viewTypes.indexOf(itemClass);
         if (type == -1) {
@@ -108,6 +108,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         }
     }
 
+    public void addItems(int index, List<BaseItemClass> result) {
+        if (result != null) {
+            this.items.addAll(index, result);
+            this.notifyDataSetChanged();
+        }
+    }
+
     public void addItem(int location, BaseItemClass obj) {
         this.items.add(location, obj);
     }
@@ -124,8 +131,14 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.items.remove(location);
     }
 
-    public void remove(BaseItemClass location) {
-        this.items.remove(location);
+    public void remove(BaseItemClass item) {
+        if (item != null) {
+            int position = items.indexOf(item);
+            if (position != -1) {
+                this.items.remove(position);
+                this.notifyItemRemoved(position);
+            }
+        }
     }
 
     public void moveItem(int fromPosition, int toPosition) {

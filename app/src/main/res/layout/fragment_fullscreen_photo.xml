@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             android:background="@android:color/black"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/black"
         fresco:actualImageScaleType="fitCenter"/>
 
     <View
@@ -25,7 +20,7 @@
         android:id="@+id/ll_global_content_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@drawable/black_gradient_inspire_me"
         android:orientation="vertical"
         android:paddingTop="24dp">
@@ -39,7 +34,7 @@
             <LinearLayout
                 android:id="@+id/ll_more_info"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:orientation="horizontal"
@@ -55,6 +50,7 @@
                     fresco:roundAsCircle="true"/>
 
                 <LinearLayout
+                    android:id="@+id/title_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -66,8 +62,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:maxLines="3"
-                        android:text="Jason Gordon"
-                        android:textColor="@android:color/white"
+                        android:text="fasdfsadf"
+                        android:textColor="@color/white"
                         android:textSize="18dp"
                         android:visibility="visible"/>
 
@@ -76,9 +72,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="Sun Francisco, CA"
-                        android:textAlignment="viewEnd"
-                        android:textColor="#ff9e9e9e"
+                        android:text="fasdfsdaf"
+                        android:textColor="@color/feed_text_color"
+                        android:drawableLeft="@drawable/feed_location_small"
+                        android:drawableStart="@drawable/feed_location_small"
                         android:visibility="visible"/>
 
                     <TextView
@@ -86,13 +83,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="APR 18, 2014 9:00AM"
-                        android:textColor="#ff9e9e9e"
+                        android:textColor="@color/feed_text_color"
+                        android:drawableLeft="@drawable/feed_calendar_small"
+                        android:drawableStart="@drawable/feed_calendar_small"
                         android:visibility="visible"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/bottom_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -108,7 +107,6 @@
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:singleLine="true"
-                    tools:text="TRIP TO THE GOLDEN GATE"
                     android:textColor="@android:color/white"
                     android:textSize="16dp"/>
 
@@ -153,24 +151,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:drawableLeft="@drawable/ic_fs_comments_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:text="150 likes"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/theme_main_darker"
                     android:textSize="14dp"/>
 
                 <TextView
                     android:id="@+id/tv_comments_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_fs_thumb_up_small"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:text="12 comments"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/theme_main_darker"
                     android:textSize="14dp"/>
             </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@drawable/checko_box_dark"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/textViewInspireMeTitle"
@@ -246,4 +249,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

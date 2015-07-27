@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -14,17 +15,18 @@ import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import icepick.Icepick;
+import icepick.Icicle;
+
 public class ScaleImageView extends SimpleDraweeView {
 
     String TAG = "ScaleImageView";
     private Context context;
-    private float MAX_SCALE = 2f;
+    private float MAX_SCALE = 3f;
     private Matrix matrix;
     // display width height.
     private int width;
     private int height;
-    private int intrinsicWidth;
-    private int intrinsicHeight;
     private float scale;
     private float minScale;
     private float prevDistance;
@@ -32,6 +34,12 @@ public class ScaleImageView extends SimpleDraweeView {
     private int prevMoveX;
     private int prevMoveY;
     private GestureDetector detector;
+
+    private SingleTapListener singleTapListener;
+    private DoubleTapListener doubleTapListener;
+
+    @Icicle int intrinsicWidth;
+    @Icicle int intrinsicHeight;
 
     public ScaleImageView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -43,6 +51,14 @@ public class ScaleImageView extends SimpleDraweeView {
         super(context);
         this.context = context;
         initialize();
+    }
+
+    @Override public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
     private void initialize() {
@@ -64,9 +80,16 @@ public class ScaleImageView extends SimpleDraweeView {
         detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                if (doubleTapListener != null) doubleTapListener.onDoubleTap();
                 maxZoomTo((int) e.getX(), (int) e.getY());
                 cutting();
-                return super.onDoubleTap(e);
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (singleTapListener != null) singleTapListener.onTap();
+                return true;
             }
         });
 
@@ -161,8 +184,6 @@ public class ScaleImageView extends SimpleDraweeView {
         matrix.postTranslate(0, -(y - (height / 2)) * scale);
         invalidate();
     }
-
-    boolean isBorderFaced;
 
     public void cutting() {
         int width = (int) (intrinsicWidth * getScale());
@@ -262,5 +283,21 @@ public class ScaleImageView extends SimpleDraweeView {
     public void reset() {
         matrix.reset();
         invalidate();
+    }
+
+    public void setSingleTapListener(SingleTapListener singleTapListener) {
+        this.singleTapListener = singleTapListener;
+    }
+
+    public void setDoubleTapListener(DoubleTapListener doubleTapListener) {
+        this.doubleTapListener = doubleTapListener;
+    }
+
+    public interface SingleTapListener {
+        void onTap();
+    }
+
+    public interface DoubleTapListener {
+        void onDoubleTap();
     }
 }

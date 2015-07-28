@@ -216,12 +216,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void setGold() {
-        setUserStatus(R.color.golden_user, R.string.profile_golden, R.drawable.gold_member);
+        setUserStatus(R.color.golden_user, R.string.profile_golden, R.drawable.ic_profile_gold_member);
     }
 
     @Override
     public void setPlatinum() {
-        setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.platinum_member);
+        setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.ic_profile_platinum_member);
     }
 
     private void setUserStatus(int color, int title, int drawable) {

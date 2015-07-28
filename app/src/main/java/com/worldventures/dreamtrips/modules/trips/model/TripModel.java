@@ -201,7 +201,7 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     public String getThumb(Resources resources) {
         String url = getImageUrl("THUMB");
-        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.trip_thumb_height);
+        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
         return url + String.format(PATTERN,
                 dimensionPixelSize, dimensionPixelSize);
     }

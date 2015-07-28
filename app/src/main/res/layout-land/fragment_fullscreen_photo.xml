@@ -76,10 +76,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:drawableLeft="@drawable/feed_location_small"
-                        android:drawableStart="@drawable/feed_location_small"
+                        android:drawableLeft="@drawable/ic_feed_location_small"
+                        android:drawableStart="@drawable/ic_feed_location_small"
                         android:gravity="end"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
 
                     <TextView
@@ -87,9 +87,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:drawableLeft="@drawable/feed_calendar_small"
-                        android:drawableStart="@drawable/feed_calendar_small"
-                        android:textColor="@color/feed_text_color"
+                        android:drawableLeft="@drawable/ic_feed_calendar_small"
+                        android:drawableStart="@drawable/ic_feed_calendar_small"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
@@ -179,7 +179,7 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:button="@drawable/checko_box_dark"
+                android:button="@drawable/check_box_dark"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:visibility="gone"/>
@@ -235,7 +235,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:src="@drawable/ic_fs_image"/>
+                        android:src="@drawable/ic_fs_flag"/>
 
                     <ProgressBar
                         android:id="@+id/progress_flag"

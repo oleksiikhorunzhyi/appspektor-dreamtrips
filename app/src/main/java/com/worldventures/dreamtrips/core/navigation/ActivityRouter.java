@@ -201,10 +201,8 @@ public class ActivityRouter extends ActivityBoundRouter {
         }
     }
 
-    public void openFriendsSearch(String query) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FriendSearchPresenter.EXTRA_QUERY, query);
-        startActivity(FriendSearchActivity.class, bundle);
+    public void openFriendsSearch() {
+        startActivity(FriendSearchActivity.class);
     }
 
 }

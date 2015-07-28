@@ -16,7 +16,7 @@
         android:id="@+id/lv_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/margin_small" />
+        android:padding="@dimen/spacing_tiniest" />
 
     <com.facebook.widget.LoginButton
         android:id="@+id/login_button"

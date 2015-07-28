@@ -74,10 +74,10 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
                 int offset;
                 if (ViewUtils.isLandscapeOrientation(getActivity())) {
                     offset = fragmentHeight / 2;
-                    offset += getResources().getDimensionPixelSize(R.dimen.pin_offset);
+                    offset += getResources().getDimensionPixelSize(R.dimen.spacing_huge);
                 } else {
                     int centerY = rootView.getHeight() / 2;
-                    int resultY = fragmentHeight + getResources().getDimensionPixelSize(R.dimen.pin_offset);
+                    int resultY = fragmentHeight + getResources().getDimensionPixelSize(R.dimen.spacing_huge);
                     offset = resultY - centerY;
 
                 }

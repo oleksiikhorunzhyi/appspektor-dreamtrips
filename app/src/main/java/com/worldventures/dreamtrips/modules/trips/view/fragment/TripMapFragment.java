@@ -197,7 +197,7 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
         googleMap.addMarker(new MarkerOptions()
                 .snippet(String.valueOf(id))
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin)));
     }
 
     @Override

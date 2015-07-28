@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:orientation="vertical"
-                android:padding="@dimen/tripDetailPanelPadding">
+                android:padding="@dimen/spacing_medium">
 
                 <TextView
                     android:id="@+id/textViewName"
@@ -78,7 +78,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/selected_gray" />
+                android:background="@color/gray_lighter" />
 
             <FrameLayout
                 android:layout_width="match_parent"

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
+import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
@@ -121,7 +122,8 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void globalSearch() {
-        activityRouter.openFriendsSearch(query);
+        eventBus.postSticky(new QueryStickyEvent(query));
+        activityRouter.openFriendsSearch();
     }
 
     public void reload() {

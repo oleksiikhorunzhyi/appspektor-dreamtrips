@@ -24,7 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/add_friend"
+                android:drawableTop="@drawable/ic_profile_add_friend_selector"
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
@@ -49,7 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/trip_images"
@@ -68,7 +68,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/bucket_list"
@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/dream_trips"
@@ -155,7 +155,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/friends"
@@ -174,7 +174,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/messages"
@@ -192,7 +192,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/profile_spacing_color"/>
+                android:background="@color/gray"/>
 
             <TextView
                 android:id="@+id/control_more"
@@ -217,7 +217,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="@dimen/tripBookItPadding"
+            android:padding="@dimen/spacing_normal"
             android:text="@string/reload_feed"
             android:textColor="@color/tripPlaceColor"
             android:textSize="22sp"

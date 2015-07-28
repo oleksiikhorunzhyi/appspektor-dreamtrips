@@ -4,84 +4,33 @@
     <color name="theme_main_darker">#76b2fe</color>
     <color name="accent">#76b2fe</color>
 
+    <color name="white">@android:color/white</color>
+
+    <color name="black">#000000</color>
+    <color name="black_semi_transparent_darker">#b8000000</color>
+    <color name="black_semi_transparent">#6a000000</color>
+
+    <color name="gray">#A0A0A0</color>
+    <color name="gray_lighter">#e6e6e6</color>
+
     <color name="bg_tablet_menu">#0F2639</color>
 
-    <color name="myPrimaryColor">#3F51B5</color>
-    <color name="myPrimaryDarkColor">#3F51B5</color>
-    <color name="myAccentColor">#3F51B5</color>
-    <color name="myDrawerBackground">#F2F2F2</color>
-    <color name="myWindowBackground">#DEDEDE</color>
-    <color name="myTextPrimaryColor">#FFFFFF</color>
-    <color name="myNavigationColor">#000000</color>
-    <color name="black_semi_transparent">#6a000000</color>
-    <color name="ss_details_black_transparent">#b8000000</color>
-    <color name="white_semi_transparent">#6affffff</color>
-    <color name="selected_gray">#ffdbdbdb</color>
-
     <color name="tripPlaceColor">#025E93</color>
-    <color name="tripNameColor">#000000</color>
-    <color name="tripDateBackgroundColor">#5CBAFC</color>
-    <color name="tripDescription">#F8F8F8</color>
     <color name="tripButtonColor">#70af29</color>
     <color name="tripButtonDisabled">#A5A5A5</color>
 
-    <color name="textViewFilterDisabled">#A5A5A5</color>
-    <color name="textViewFilterEnabled">#000000</color>
-
-    <color name="contentItemBackground">#F7F7F7</color>
-    <color name="contentItemTextColor">#8A8A8A</color>
-
     <color name="bucket_button_selected">#005E92</color>
     <color name="bucket_button_default">#404040</color>
-
     <color name="bucket_detailed_text_color">#54BDFF</color>
-
-    <color name="bucket_text_done">#A0A0A0</color>
-    <color name="bucket_text_to_do">#000000</color>
-
-    <color name="profile_spacing_color">#A0A0A0</color>
-    <color name="profile_background">#F0EFEF</color>
-
-    <color name="golden_user">#E3BC57</color>
-    <color name="platinum_user">#9BA8CB</color>
-
-    <color name="bg_item_normal_state">#fff0f0f0</color>
-    <color name="bg_item_normal_pressed_state">#ffe0e0e0</color>
-    <color name="bg_item_dragging_state">#e1f0fb</color>
-    <color name="bg_item_dragging_active_state">#c0e2fb</color>
-    <color name="bg_item_swiping_state">#ffddddff</color>
-    <color name="bg_item_swiping_active_state">#ff9999ff</color>
-    <color name="bg_group_item_normal_state">#ffddffdd</color>
-    <color name="bg_group_item_normal_pressed_state">#ff99cc99</color>
-    <color name="bg_group_item_expanded_state">#ff88dd88</color>
-    <color name="bg_group_item_expanded_pressed_state">#ff99cc99</color>
-    <color name="bg_group_item_dragging_state">#ffeeccff</color>
-    <color name="bg_group_item_dragging_active_state">#ffee99ff</color>
-    <color name="bg_group_item_swiping_state">#ffddccff</color>
-    <color name="bg_group_item_swiping_active_state">#ffbb99ff</color>
-    <color name="bg_swipe_item_neutral">#ffffffff</color>
-    <color name="bg_swipe_item_left">#fff9930d</color>
-    <color name="bg_swipe_item_right">#ff2f8b2a</color>
-    <color name="bg_swipe_group_item_left">#fff45f30</color>
-    <color name="bg_swipe_group_item_right">#ff295db3</color>
-    <color name="snackbar_action_color_done">#ffccccff</color>
-    <color name="selected_success_story">#ffe6e6e6</color>
-
     <color name="bucket_green">#3fec5b</color>
     <color name="bucket_red">#fe5353</color>
     <color name="bucket_blue">#ff6e9cff</color>
 
-    <color name="tab_selected_color">#F0EFEF</color>
-    <color name="tab_default_color">#F8F8F8</color>
+    <color name="golden_user">#E3BC57</color>
+    <color name="platinum_user">#9BA8CB</color>
 
-    <color name="divider_color">#F8F8F8</color>
-    <color name="bucket_add_phto">#dcdcdc</color>
-    <color name="white">@android:color/white</color>
-
-    <color name="profile_feed_background">#F0EFEF</color>
-    <color name="tab_enabled_color">#dddddd</color>
+    <color name="bg_item_dragging_state">#e1f0fb</color>
+    <color name="bg_item_dragging_active_state">#c0e2fb</color>
 
     <color name="pin_progress_default_circle_color">#80ffffff</color>
-
-    <color name="feed_text_color">#929292</color>
 </resources>

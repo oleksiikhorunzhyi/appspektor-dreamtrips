@@ -38,8 +38,8 @@ public class RegionCell extends AbstractCell<RegionModel> {
     protected void syncUIStateWithModel() {
         textViewName.setText(getModelObject().getName());
         textViewName.setTextColor(getModelObject().isChecked() ?
-                context.getResources().getColor(R.color.textViewFilterEnabled) :
-                context.getResources().getColor(R.color.textViewFilterDisabled));
+                context.getResources().getColor(R.color.black) :
+                context.getResources().getColor(R.color.gray));
         checkBox.setChecked(getModelObject().isChecked());
     }
 

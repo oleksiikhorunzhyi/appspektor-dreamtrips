@@ -4,7 +4,7 @@
              android:layout_height="wrap_content"
              android:paddingLeft="@dimen/feed_spacing"
              android:paddingRight="@dimen/feed_spacing"
-             android:background="@color/profile_feed_background"
+             android:background="@color/gray_lighter"
     >
 
     <android.support.v7.widget.CardView

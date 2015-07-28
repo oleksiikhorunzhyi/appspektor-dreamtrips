@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_small"
-            android:background="@color/profile_spacing_color"/>
+            android:background="@color/gray"/>
 
         <FrameLayout
             android:layout_width="0dp"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_profile_r_bucks"
                 android:drawablePadding="@dimen/spacing_tiny"
-                android:drawableStart="@drawable/bucks"
+                android:drawableStart="@drawable/ic_profile_bucks"
                 android:padding="@dimen/spacing_normal"
                 android:singleLine="true"/>
 

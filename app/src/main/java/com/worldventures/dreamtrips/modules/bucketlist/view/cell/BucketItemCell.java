@@ -96,9 +96,9 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
     private void renderData() {
         if (getModelObject().isDone()) {
-            tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_done));
+            tvName.setTextColor(context.getResources().getColor(R.color.gray));
         } else {
-            tvName.setTextColor(context.getResources().getColor(R.color.bucket_text_to_do));
+            tvName.setTextColor(context.getResources().getColor(R.color.black));
         }
     }
 

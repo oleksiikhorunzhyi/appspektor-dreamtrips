@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewEmptyAdd"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/arrow_small"/>
+                android:src="@drawable/ic_bucket_arrow_small"/>
 
             <Button
                 android:id="@+id/buttonNew"
@@ -93,7 +93,7 @@
         android:layout_height="match_parent"
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
-        android:padding="@dimen/margin_small"
+        android:padding="@dimen/spacing_tiniest"
         android:visibility="visible"/>
 
 </RelativeLayout>

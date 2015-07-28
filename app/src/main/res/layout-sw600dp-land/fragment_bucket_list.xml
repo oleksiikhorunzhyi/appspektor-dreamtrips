@@ -54,11 +54,11 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
                 android:padding="10dp"
-                android:src="@drawable/arrow_big"/>
+                android:src="@drawable/ic_bucket_arrow_big"/>
 
             <Button
                 android:id="@+id/buttonNew"
-                android:layout_width="@dimen/button_width"
+                android:layout_width="@dimen/bucket_button_width"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:layout_below="@+id/imageViewArrow"
@@ -67,7 +67,7 @@
 
             <Button
                 android:id="@+id/buttonPopular"
-                android:layout_width="@dimen/button_width"
+                android:layout_width="@dimen/bucket_button_width"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:layout_below="@+id/buttonNew"
@@ -92,7 +92,7 @@
         android:layout_height="match_parent"
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
-        android:padding="@dimen/margin_small"
+        android:padding="@dimen/spacing_tiniest"
         android:visibility="visible"/>
 
 </RelativeLayout>

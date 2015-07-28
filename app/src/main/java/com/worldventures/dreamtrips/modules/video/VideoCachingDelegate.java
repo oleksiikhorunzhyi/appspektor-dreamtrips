@@ -6,6 +6,7 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
@@ -21,19 +22,16 @@ public class VideoCachingDelegate {
     private SnappyRepository db;
     private Context context;
     private Injector injector;
-    private SpiceManager spiceManager;
+    private VideoDownloadSpiceManager videoDownloadSpiceManager;
     private View view;
 
     public VideoCachingDelegate(SnappyRepository db,
                                 Context context,
-                                Injector injector) {
+                                Injector injector, VideoDownloadSpiceManager spiceManager) {
         this.db = db;
         this.context = context;
         this.injector = injector;
-    }
-
-    public void setSpiceManager(SpiceManager spiceManager) {
-        this.spiceManager = spiceManager;
+        this.videoDownloadSpiceManager = spiceManager;
     }
 
     public void setView(View view) {
@@ -62,23 +60,22 @@ public class VideoCachingDelegate {
 
 
     public void onCancelAction(CachedEntity cacheEntity) {
-        spiceManager.cancel(InputStream.class, cacheEntity.getUuid());
+        videoDownloadSpiceManager.cancel(InputStream.class, cacheEntity.getUuid());
         onDeleteAction(cacheEntity);
     }
 
     private void startCaching(CachedEntity entity) {
-        if (!spiceManager.isStarted()) spiceManager.start(context);
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(entity.getUrl(),
                 new File(CachedEntity.getFilePath(context, entity.getUrl())));
 
         DownloadVideoListener requestListener = new DownloadVideoListener(entity);
-
         injector.inject(requestListener);
-        spiceManager.cancel(InputStream.class, entity.getUuid());
-        spiceManager.execute(bigBinaryRequest,
+        videoDownloadSpiceManager.cancel(InputStream.class, entity.getUuid());
+        videoDownloadSpiceManager.execute(bigBinaryRequest,
                 entity.getUuid(),
                 DurationInMillis.ALWAYS_RETURNED,
                 requestListener);
+        view.notifyItemChanged(entity);
     }
 
     public interface View {

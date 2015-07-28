@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Predicate;
@@ -16,7 +15,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;

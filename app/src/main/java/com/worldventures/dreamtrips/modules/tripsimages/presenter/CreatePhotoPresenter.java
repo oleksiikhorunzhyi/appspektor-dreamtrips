@@ -78,7 +78,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 action.setType(type);
 
                 eventBus.post(new InsertNewImageUploadTaskEvent(action));
-                dreamSpiceManager.uploadPhoto(action);
+                photoUploadSpiceManager.uploadPhoto(action);
                 view.end();
             }
     }

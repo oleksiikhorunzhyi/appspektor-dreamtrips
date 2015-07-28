@@ -8,11 +8,13 @@ import android.text.TextUtils;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceManager;
+import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -20,6 +22,7 @@ import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import de.greenrobot.event.EventBus;
 import icepick.Icepick;
@@ -45,7 +48,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
     @Inject
-    protected MediaSpiceManager mediaSpiceManager;
+    protected PhotoUploadSpiceManager photoUploadSpiceManager;
+    @Inject
+    protected VideoDownloadSpiceManager videoDownloadSpiceManager;
 
     protected int priorityEventBus = 0;
 
@@ -107,11 +112,23 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
+        if (!photoUploadSpiceManager.isStarted()) {
+            photoUploadSpiceManager.start(context);
+        }
+        if (!videoDownloadSpiceManager.isStarted()) {
+            videoDownloadSpiceManager.start(context);
+        }
     }
 
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
+        }
+        if (photoUploadSpiceManager.isStarted()) {
+            photoUploadSpiceManager.shouldStop();
+        }
+        if (videoDownloadSpiceManager.isStarted()) {
+            videoDownloadSpiceManager.shouldStop();
         }
     }
 

@@ -6,8 +6,10 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.MediaSpiceService;
-import com.worldventures.dreamtrips.core.api.MediaSpiceManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceService;
+import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
+import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
@@ -27,9 +29,10 @@ import dagger.Provides;
         injects = {
                 DreamSpiceManager.class,
                 DreamSpiceService.class,
-                MediaSpiceManager.class,
-                MediaSpiceService.class,
+                PhotoUploadSpiceManager.class,
+                PhotoUploadSpiceService.class,
                 VideoCachingDelegate.class,
+                VideoDownloadSpiceService.class,
                 BucketItemManager.class,
                 //
                 DownloadVideoListener.class,
@@ -50,15 +53,21 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    public MediaSpiceManager provideVideoCachingSpiceManager() {
-        return new MediaSpiceManager(MediaSpiceService.class);
+    public PhotoUploadSpiceManager providePhotoUploadSpiceManager(@ForApplication Injector injector) {
+        return new PhotoUploadSpiceManager(PhotoUploadSpiceService.class, injector);
+    }
+
+    @Singleton
+    @Provides
+    public VideoDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
+        return new VideoDownloadSpiceManager(VideoDownloadSpiceService.class);
     }
 
     @Provides
     public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
                                                             Context context,
-                                                            @ForApplication Injector injector) {
-        return new VideoCachingDelegate(snappyRepository, context, injector);
+                                                            @ForApplication Injector injector, VideoDownloadSpiceManager spiceManger) {
+        return new VideoCachingDelegate(snappyRepository, context, injector, spiceManger);
     }
 
     @Singleton

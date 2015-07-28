@@ -19,7 +19,7 @@ public class InstabugInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        if (!PROD.equals(BuildConfig.FLAVOR)) {
+        if (!BuildConfig.FLAVOR.contains(PROD)) {
             Instabug.initialize(context)
                     .setCrashReportingEnabled(false)
                     .setAnnotationActivityClass(InstabugAnnotationActivity.class)

@@ -12,8 +12,11 @@
         android:id="@+id/flag_image"
         android:layout_width="@dimen/locale_flag_size_width"
         android:layout_height="@dimen/locale_flag_size_height"
+        android:background="@color/gray"
+        android:padding="1dp"
+        fresco:actualImageScaleType="fitXY"
         fresco:placeholderImage="@drawable/ic_flag_placeholder"
-        fresco:placeholderImageScaleType="fitCenter"/>
+        fresco:placeholderImageScaleType="fitXY"/>
 
     <TextView
         android:id="@+id/country_name"

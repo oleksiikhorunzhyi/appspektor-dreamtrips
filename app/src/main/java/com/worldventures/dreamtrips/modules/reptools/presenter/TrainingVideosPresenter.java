@@ -22,9 +22,9 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     @Override
     public void onResume() {
-        super.onResume();
         videoLocale = db.getLastSelectedVideoLocale();
         videoLanguage = db.getLastSelectedVideoLanguage();
+        super.onResume();
         loadLocales();
     }
 

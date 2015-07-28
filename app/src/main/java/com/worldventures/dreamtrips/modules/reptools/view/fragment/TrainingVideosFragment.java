@@ -41,8 +41,13 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
             }
         });
         if (defaultValue != null)
-            selectedLocaleView.setImageURI(Uri.parse(defaultValue.getImage()));
+            setupView(defaultValue);
         dialog.setData(locales);
+    }
+
+    @Override
+    public void setupView(VideoLocale defaultValue) {
+        selectedLocaleView.setImageURI(Uri.parse(defaultValue.getImage()));
     }
 
 }

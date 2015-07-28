@@ -29,7 +29,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     }
 
     private void loadLocales() {
-          doRequest(new GetVideoLocales(), locales -> view.setLocales(locales, videoLocale));
+        doRequest(new GetVideoLocales(), locales -> view.setLocales(locales, videoLocale));
     }
 
     public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {
@@ -38,6 +38,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         db.saveLastSelectedVideoLocale(videoLocale);
         db.saveLastSelectedVideoLanguage(videoLanguage);
         getAdapterController().reload();
+        view.setupView(videoLocale);
     }
 
     @Override
@@ -50,5 +51,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     public interface View extends PresentationVideosPresenter.View {
         void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue);
+
+        void setupView(VideoLocale videoLocale);
     }
 }

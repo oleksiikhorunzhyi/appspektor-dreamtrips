@@ -208,7 +208,7 @@ dependencies {
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0-SNAPSHOT'
     // Data storage, flow
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.snappydb:snappydb-lib:0.5.0'
+    compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     // Networking
     compile 'com.octo.android.robospice:robospice:1.4.14'

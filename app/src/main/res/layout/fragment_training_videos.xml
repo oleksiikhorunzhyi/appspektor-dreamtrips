@@ -11,7 +11,7 @@
         android:gravity="center_vertical|right"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/wrapper_spinner_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -20,18 +20,23 @@
                 android:id="@+id/spinner_language"
                 android:layout_width="@dimen/locale_flag_size_width"
                 android:layout_height="@dimen/locale_flag_size_height"
+                android:layout_alignParentTop="true"
                 android:layout_margin="@dimen/spacing_normal"
+                app:actualImageScaleType="fitCenter"
                 app:ms_floatingLabelText="@string/training_video_hint"
                 app:placeholderImage="@drawable/ic_flag_placeholder"
+                app:placeholderImageScaleType="fitCenter"
                 />
 
             <ImageView
                 android:layout_width="@dimen/locale_flag_size_width"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginTop="20dp"
+                android:layout_alignLeft="@+id/spinner_language"
+                android:layout_alignStart="@+id/spinner_language"
+                android:layout_alignTop="@+id/spinner_language"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/abc_spinner_mtrl_am_alpha"/>
-        </FrameLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -39,7 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="-46dp"
-        android:background="@null">
+        android:background="@null"
+        >
 
         <include layout="@layout/fragment_presentation_videos"/>
     </LinearLayout>

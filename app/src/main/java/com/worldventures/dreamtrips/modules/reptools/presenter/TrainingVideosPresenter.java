@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
@@ -9,6 +10,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -29,7 +31,20 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     }
 
     private void loadLocales() {
-        doRequest(new GetVideoLocales(), locales -> view.setLocales(locales, videoLocale));
+        doRequest(new GetVideoLocales(), this::localesLoaded);
+    }
+
+    private void localesLoaded(ArrayList<VideoLocale> locales) {
+        if (view != null) {
+            Locale current = context.getResources().getConfiguration().locale;
+            if (videoLocale == null) {
+                videoLocale = Queryable.from(locales).firstOrDefault(videoLocale ->
+                        videoLocale.getCountry().equalsIgnoreCase(current.getCountry()));
+                if (videoLocale != null)
+                    videoLanguage = Queryable.from(videoLocale.getLanguage()).firstOrDefault();
+            }
+            view.setLocales(locales, videoLocale);
+        }
     }
 
     public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {

@@ -30,7 +30,11 @@
     <dimen name="font_small">12sp</dimen>
 
     <!-- dimen for trip items -->
-    <dimen name="tripImageHeight">200dp</dimen>
+    <dimen name="tripImageHeight">180dp</dimen>
+    <dimen name="tripImagePanelMargin">10dp</dimen>
+    <dimen name="tripImagePanelPaddingHorizontal">10dp</dimen>
+    <dimen name="tripImagePanelPaddingVertical">5dp</dimen>
+    <dimen name="tripDetailPanelPadding">10dp</dimen>
     <dimen name="tripImageHeightDetailed">300dp</dimen>
 
     <!-- dimen for video items -->
@@ -48,7 +52,6 @@
     <dimen name="bucket_popular_cover_width">512dp</dimen>
 
     <dimen name="photo_thumb_size">150dp</dimen>
-    <dimen name="trip_thumb_height">200dp</dimen>
 
     <dimen name="profile_cover_height">250dp</dimen>
 

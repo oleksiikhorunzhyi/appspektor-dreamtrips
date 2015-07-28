@@ -2,10 +2,9 @@
 <resources>
 
     <dimen name="tripImageHeightDetailed">300dp</dimen>
-    <dimen name="trip_thumb_height">300dp</dimen>
 
     <dimen name="photo_thumb_size">200dp</dimen>
-    <dimen name="tripImageHeight">300dp</dimen>
+    <dimen name="tripImageHeight">240dp</dimen>
 
     /////Map info sizes
     <dimen name="map_trip_info_size">412dp</dimen>

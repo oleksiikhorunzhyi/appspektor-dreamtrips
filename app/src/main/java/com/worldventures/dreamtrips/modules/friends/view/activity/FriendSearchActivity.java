@@ -116,8 +116,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
         searchView.setDelayInMillis(500);
         searchItem.expandActionView();
 
-        searchView.setQuery(getPresentationModel().getQuery(), false);
-
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -130,6 +128,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
                 return false;
             }
         });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -143,18 +142,15 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
             }
         });
 
+
+        searchView.setQuery(getPresentationModel().getQuery(), true);
+
         return true;
     }
 
     @Override
-    public void setQuery(String query) {
-        if (searchView != null) searchView.setQuery(getPresentationModel().getQuery(), false);
-    }
-
-    @Override
     protected FriendSearchPresenter createPresentationModel(Bundle savedInstanceState) {
-        String query = getIntent().getStringExtra(FriendSearchPresenter.EXTRA_QUERY);
-        return new FriendSearchPresenter(query);
+        return new FriendSearchPresenter();
     }
 
     @Override

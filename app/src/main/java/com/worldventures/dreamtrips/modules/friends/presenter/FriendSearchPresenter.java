@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
@@ -21,8 +22,6 @@ import javax.inject.Inject;
 import icepick.Icicle;
 
 public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View> {
-
-    public static final String EXTRA_QUERY = "query_extra";
 
     private static final int PER_PAGE = 20;
 
@@ -67,8 +66,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         }
     };
 
-    public FriendSearchPresenter(String query) {
-        this.query = query;
+    public FriendSearchPresenter() {
     }
 
     @Override
@@ -85,7 +83,11 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
             adapterController.setAdapter(view.getAdapter());
             adapterController.reload();
         }
-        view.setQuery(query);
+        QueryStickyEvent event = eventBus.getStickyEvent(QueryStickyEvent.class);
+        if (event != null) {
+            query = event.getQuery();
+            eventBus.removeStickyEvent(event);
+        }
     }
 
     public void onEvent(AddUserRequestEvent event) {
@@ -161,7 +163,5 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 
-        void setQuery(String query);
     }
-
 }

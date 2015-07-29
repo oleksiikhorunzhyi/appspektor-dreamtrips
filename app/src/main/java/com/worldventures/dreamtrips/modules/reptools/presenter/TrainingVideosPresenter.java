@@ -36,15 +36,21 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     private void localesLoaded(ArrayList<VideoLocale> locales) {
         if (view != null) {
-            Locale current = context.getResources().getConfiguration().locale;
             if (videoLocale == null) {
-                videoLocale = Queryable.from(locales).firstOrDefault(videoLocale ->
-                        videoLocale.getCountry().equalsIgnoreCase(current.getCountry()));
+                videoLocale = getCurrentLocale(locales, context.getResources().getConfiguration().locale);
+                if (videoLocale == null) videoLocale = getCurrentLocale(locales, Locale.US);
+
                 if (videoLocale != null)
                     videoLanguage = Queryable.from(videoLocale.getLanguage()).firstOrDefault();
+
             }
             view.setLocales(locales, videoLocale);
         }
+    }
+
+    private VideoLocale getCurrentLocale(ArrayList<VideoLocale> locales, Locale locale) {
+        return Queryable.from(locales).firstOrDefault(tempLocale ->
+                tempLocale.getCountry().equalsIgnoreCase(locale.getCountry()));
     }
 
     public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +45,12 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
         return new PostPresenter();
+    }
+
+    @OnClick(R.id.close)
+    void onClose() {
+        getPresenter().cancel();
+        getActivity().onBackPressed();
     }
 
     @OnClick(R.id.post_button)

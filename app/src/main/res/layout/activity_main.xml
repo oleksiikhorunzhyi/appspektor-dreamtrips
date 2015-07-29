@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout android:id="@+id/drawer"
-                                        xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,6 +49,12 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/container_details_floating"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
     <fragment
         android:id="@+id/fragment_drawer"
         android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
@@ -65,11 +72,5 @@
         android:layout_gravity="end"
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/layout_filters"/>
-
-    <FrameLayout
-        android:id="@+id/container_details_floating"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
 </android.support.v4.widget.DrawerLayout>

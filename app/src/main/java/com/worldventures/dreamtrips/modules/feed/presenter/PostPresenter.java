@@ -20,7 +20,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void cancel() {
-        fragmentCompass.pop();
+        fragmentCompass.removePost();
     }
 
     public void post() {

@@ -71,6 +71,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             resetSelected();
             setMembers();
             getInvitations();
+            openTemplateInView();
             TrackingHelper.inviteShareContacts(getAccountUserId());
         });
     }
@@ -278,11 +279,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void openTemplateInView() {
-        if (view.isVisibleOnScreen()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.container_templates);
-            fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
-        }
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_templates);
+        fragmentCompass.add(Route.SELECT_INVITE_TEMPLATE);
     }
 
     private void setMembers() {

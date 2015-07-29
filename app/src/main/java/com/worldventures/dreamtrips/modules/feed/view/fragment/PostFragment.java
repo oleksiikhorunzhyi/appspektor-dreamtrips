@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
@@ -29,6 +30,22 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     EditText post;
     @InjectView(R.id.post_button)
     Button postButton;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).disableLeftDrawer();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).enableLeftDrawer();
+        }
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

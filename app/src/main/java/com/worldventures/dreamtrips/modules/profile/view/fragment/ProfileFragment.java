@@ -82,6 +82,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
         profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
         profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
+        profileView.setOnCreatePostClick(() -> getPresenter().makePost());
 
         profileView.setOnFeedReload(() -> getPresenter().loadFeed());
         feedView.setup(injectorProvider, savedInstanceState);

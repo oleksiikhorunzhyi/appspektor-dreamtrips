@@ -285,11 +285,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void showEditContainer() {
-        getActivity().findViewById(R.id.container_details_floating).setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void updatePhotos() {
         bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
         bucketPhotosView.multiSelectAvailable(true);

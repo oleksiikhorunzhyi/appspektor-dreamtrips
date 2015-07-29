@@ -9,6 +9,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -138,6 +139,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     public void loadFeed() {
         if (featureManager.available(Feature.SOCIAL))
             adapterController.reload();
+    }
+
+    public void makePost() {
+        fragmentCompass.removePost();
+        view.showEditContainer();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        fragmentCompass.add(Route.POST_CREATE);
     }
 
     protected abstract void loadProfile();

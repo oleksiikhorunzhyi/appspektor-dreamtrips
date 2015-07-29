@@ -101,8 +101,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setCover(String medium, String original);
 
-        void showEditContainer();
-
         void disableCheckbox();
 
         void enableCheckbox();

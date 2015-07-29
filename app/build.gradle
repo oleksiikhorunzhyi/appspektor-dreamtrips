@@ -217,7 +217,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     compile 'com.google.code.gson:gson:2.3.1'
     // Media
-    compile 'io.techery:ijkmediaplayer:0.2.3@aar'
+    compile 'io.techery:ijkmediaplayer:1.0.0@aar'
     compile 'io.techery:ijkmediawidget:0.2.3@aar'
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.1.10'
@@ -266,7 +266,7 @@ dependencies {
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.1'
 
     // Util
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:22.2.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton.timber:timber:2.7.1'

@@ -113,6 +113,12 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         super.onDestroyView();
     }
 
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Notif helpers
     ///////////////////////////////////////////////////////////////////////////

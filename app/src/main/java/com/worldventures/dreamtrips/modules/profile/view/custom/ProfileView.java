@@ -101,6 +101,7 @@ public class ProfileView extends LinearLayout {
     OnClickListener onRejectRequest;
     OnClickListener onAddFriend;
     OnClickListener onFeedReload;
+    OnClickListener onCreatePostClick;
 
     public ProfileView(Context context) {
         this(context, null);
@@ -263,6 +264,10 @@ public class ProfileView extends LinearLayout {
         if (onFriendsClicked != null) onFriendsClicked.click();
     }
 
+    @OnClick(R.id.post)
+    protected void onPostClick() {
+        if (onCreatePostClick != null) onCreatePostClick.click();
+    }
 
     @OnClick(R.id.user_photo)
     protected void onPhotoClick() {
@@ -310,6 +315,10 @@ public class ProfileView extends LinearLayout {
 
     public void setOnFriendsClicked(OnClickListener onFriendsClicked) {
         this.onFriendsClicked = onFriendsClicked;
+    }
+
+    public void setOnCreatePostClick(OnClickListener onCreatePostClick) {
+        this.onCreatePostClick = onCreatePostClick;
     }
 
     public void setOnPhotoClick(OnClickListener onPhotoClick) {

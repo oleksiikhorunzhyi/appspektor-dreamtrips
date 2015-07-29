@@ -10,9 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_marginLeft="@dimen/post_spacing_horizontal"
+        android:layout_marginRight="@dimen/post_spacing_horizontal"
+        android:layout_marginTop="@dimen/post_spacing_vertical"
         android:background="@color/white"
         android:orientation="vertical">
 

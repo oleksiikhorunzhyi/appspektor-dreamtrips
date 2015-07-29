@@ -37,8 +37,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected View wrapperContainer;
     @InjectView(R.id.container_main)
     protected View mainContainer;
-    @InjectView(R.id.container_details)
-    protected FrameLayout detailsContainer;
     @Optional
     @InjectView(R.id.container_details_floating)
     protected FrameLayout detailsFloatingContainer;
@@ -196,10 +194,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
             fragmentCompass.removeDetailed();
             detailsFullScreenContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

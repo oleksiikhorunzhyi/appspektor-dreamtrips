@@ -15,8 +15,6 @@ import butterknife.Optional;
 @Layout(R.layout.activity_component)
 public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
 
-    @InjectView(R.id.container_details)
-    protected FrameLayout detailsContainer;
     @Optional
     @InjectView(R.id.container_details_floating)
     protected FrameLayout detailsFloatingContainer;
@@ -29,17 +27,14 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
     }
 
     boolean handleComponentChange() {
-        if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
+        if (detailsFloatingContainer.getVisibility() == View.VISIBLE) {
             fragmentCompass.removeEdit();
-            detailsFullScreenContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsFloatingContainer != null && detailsFloatingContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
             detailsFloatingContainer.setVisibility(View.GONE);
+            return true;
+        } else if (detailsFullScreenContainer != null
+                && detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
+            fragmentCompass.removeDetailed();
+            detailsFullScreenContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

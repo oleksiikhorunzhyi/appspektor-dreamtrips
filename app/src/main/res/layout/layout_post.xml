@@ -75,18 +75,38 @@
 
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/post"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/container_user"
             android:layout_above="@+id/container_post"
-            android:layout_marginLeft="@dimen/spacing_medium"
-            android:layout_marginRight="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="@string/post_hint"/>
+            android:layout_below="@+id/container_user"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_medium"
+                    android:layout_marginRight="@dimen/spacing_medium"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="@string/post_hint"/>
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/attached_photo"
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:layout_below="@+id/post"
+                    android:layout_margin="@dimen/spacing_normal"/>
+
+            </RelativeLayout>
+        </ScrollView>
+
 
         <include
             layout="@layout/include_divider"
@@ -129,9 +149,9 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/image"
                 android:layout_toRightOf="@+id/image"
-                android:visibility="gone"
                 android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_post_more_normal"/>
+                android:src="@drawable/ic_post_more_normal"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/post_button"

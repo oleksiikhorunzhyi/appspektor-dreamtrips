@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedAvatarEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.HeaderLayoutManagerFixed;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 
@@ -61,6 +63,7 @@ public class FeedView extends RecyclerView {
         adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
         adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
         adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
 
         adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
 

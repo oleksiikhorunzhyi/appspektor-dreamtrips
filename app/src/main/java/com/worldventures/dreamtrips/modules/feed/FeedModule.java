@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedAvatarEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
@@ -45,6 +46,9 @@ import dagger.Module;
 
                 FeedBucketEventCell.class,
                 LoadMoreCell.class,
+                FeedPhotoEventCell.class,
+                FeedPostEventModel.class,
+
                 FeedBucketEventModel.class,
 
                 FeedUndefinedEventCell.class,

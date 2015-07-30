@@ -10,9 +10,11 @@ import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UploadPostPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFailed;
 import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -112,7 +114,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
             post.getImageUploadTask().setTitle(post.getText());
             doRequest(new AddTripPhotoCommand(post.getImageUploadTask()), this::processPhoto);
         } else if (!TextUtils.isEmpty(post.getText())) {
-
+            doRequest(new NewPostCommand(post.getText()), this::processPost);
         }
     }
 
@@ -127,6 +129,11 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     private void processPhoto(Photo photo) {
+        cancel();
+    }
+
+    private void processPost(TextualPost post) {
+        eventBus.post(new PostCreatedEvent(post));
         cancel();
     }
 

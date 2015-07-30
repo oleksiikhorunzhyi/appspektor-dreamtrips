@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageVi
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -81,6 +82,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected CheckBox checkBox;
     @InjectView(R.id.progress_flag)
     protected ProgressBar progressFlag;
+    @InjectView(R.id.iv_comment)
+    protected ImageView ivComment;
 
     private TripImagesListFragment.Type type;
 
@@ -108,6 +111,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         if (ivImage != null && ivImage.getController() != null)
             ivImage.getController().onDetach();
         super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -244,6 +248,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onFlagAction();
     }
 
+    @OnClick(R.id.iv_comment)
+    public void actionComment() {
+        getPresenter().openComments();
+    }
+
+
     @Override
     public void setFlags(List<Flag> flags) {
         PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
@@ -283,9 +293,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        String desc = ((EditText) dialog.getCustomView()
-                                .findViewById(R.id.tv_description))
-                                .getText().toString();
+                        EditText et = ButterKnife.findById(dialog, R.id.tv_description);
+                        String desc = et.getText().toString();
                         showFlagConfirmDialog(reason, desc);
                     }
                 }).build();

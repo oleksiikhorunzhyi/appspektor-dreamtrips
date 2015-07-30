@@ -327,4 +327,7 @@
     <string name="loading">Loading…</string>
     <string name="filter_video_title_language">Choose language</string>
     <string name="filter_video_title_country">Choose country</string>
+    <string name="comments_title">Comments</string>
+    <string name="comment_add_hint">Add a comment</string>
+    <string name="comment_post_btn_title">POST</string>
 </resources>

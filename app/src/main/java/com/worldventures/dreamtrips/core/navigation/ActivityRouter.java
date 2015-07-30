@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.activity.CommentsActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -205,4 +205,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FriendSearchActivity.class);
     }
 
+    public void openCommentsScreen() {
+        startActivity(CommentsActivity.class);
+    }
 }

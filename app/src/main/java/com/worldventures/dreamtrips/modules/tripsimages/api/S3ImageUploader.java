@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.event.ProgressListener;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
@@ -74,7 +75,7 @@ public class S3ImageUploader {
 
         try {
             uploadResult = uploadHandler.waitForUploadResult();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | AmazonClientException e) {
             Log.e(S3ImageUploader.class.getSimpleName(), "", e);
         }
         eventBus.post(new UploadProgressUpdateEvent(taskId, 100));

@@ -99,6 +99,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         eventBus.post(new UpdateUserInfoEvent());
     }
 
+    @Override
+    protected void onProfileLoaded(User user) {
+        super.onProfileLoaded(user);
+        UserSession userSession = appSessionHolder.get().get();
+        userSession.setUser(user);
+        appSessionHolder.put(userSession);
+    }
+
     public void logout() {
         this.appSessionHolder.destroy();
         snappyRepository.clearAll();

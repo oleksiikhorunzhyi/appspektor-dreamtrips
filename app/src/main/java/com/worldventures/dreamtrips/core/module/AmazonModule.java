@@ -28,14 +28,18 @@ public class AmazonModule {
     }
 
     @Provides
-    @Singleton
-    public TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
-        int connectionTimeout = 90 * 1000; // 90 secs
+    public AmazonS3Client provideAmazonS3Client(CognitoCachingCredentialsProvider credentialsProvider) {
+        int connectionTimeout = 30 * 1000; // 30 secs
         //
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setConnectionTimeout(connectionTimeout);
         clientConfiguration.setSocketTimeout(connectionTimeout);
-        //
-        return new TransferManager(new AmazonS3Client(credentialsProvider, clientConfiguration));
+        return new AmazonS3Client(credentialsProvider, clientConfiguration);
+    }
+
+    @Provides
+    @Singleton
+    public TransferManager provideTransferManager(AmazonS3Client amazonS3Client) {
+        return new TransferManager(amazonS3Client);
     }
 }

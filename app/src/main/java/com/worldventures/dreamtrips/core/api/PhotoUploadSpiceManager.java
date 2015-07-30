@@ -11,12 +11,16 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
+import com.worldventures.dreamtrips.modules.feed.api.UploadPostPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFailed;
+import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -64,6 +68,21 @@ public class PhotoUploadSpiceManager extends SpiceManager {
                         }
                     }
                 });
+    }
+
+    public void uploadPostPhoto(ImageUploadTask task) {
+        UploadPostPhotoCommand requst = new UploadPostPhotoCommand(task, injector);
+        execute(requst, new RequestListener<String>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFailed(task.getTaskId())), 300);
+            }
+
+            @Override
+            public void onRequestSuccess(String s) {
+                new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFinished(task.getTaskId(), s)), 300);
+            }
+        });
     }
 
     public void uploadPhoto(ImageUploadTask task) {

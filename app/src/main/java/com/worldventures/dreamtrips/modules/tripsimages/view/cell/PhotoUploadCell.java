@@ -90,12 +90,9 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     public void onEventMainThread(UploadProgressUpdateEvent event) {
         if (getModelObject().getTaskId().equalsIgnoreCase(event.getTaskId())) {
-            Log.d("Progress event", event.getProgress() + "");
             if (event.getProgress() <= 100) {
                 if (event.getProgress() > pb.getProgress())
                     pb.setProgress(event.getProgress());
-                Log.i("Progress event", "set progress:" + event.getProgress());
-
             }
         }
     }

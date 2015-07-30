@@ -27,6 +27,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
     protected User user;
@@ -84,6 +86,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loadCircles();
         loadProfile();
         view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
+        checkPostShown();
     }
 
     @Override
@@ -92,6 +95,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
         }
+    }
+
+    private void checkPostShown() {
+        if (snappyRepository.hasPost()) makePost();
     }
 
     public abstract void openBucketList();

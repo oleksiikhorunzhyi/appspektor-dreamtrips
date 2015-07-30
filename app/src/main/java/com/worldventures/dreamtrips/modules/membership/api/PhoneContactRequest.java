@@ -7,8 +7,6 @@ import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
-import com.amazonaws.com.google.gson.reflect.TypeToken;
-import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -16,11 +14,10 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-public class PhoneContactRequest extends SpiceRequest<List<Member>> {
+public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
 
     private InviteTemplate.Type type;
 
@@ -30,16 +27,16 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
     SnappyRepository db;
 
     public PhoneContactRequest(InviteTemplate.Type type) {
-        super((Class<List<Member>>) new TypeToken<List<Member>>(){}.getRawType());
+        super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
         this.type = type;
     }
 
     @Override
-    public List<Member> loadDataFromNetwork() {
+    public ArrayList<Member> loadDataFromNetwork() {
         return readContacts();
     }
 
-    public List<Member> readContacts() {
+    public ArrayList<Member> readContacts() {
         Uri contentURI = null;
         String[] projection = null;
         String selection = null;
@@ -95,9 +92,9 @@ public class PhoneContactRequest extends SpiceRequest<List<Member>> {
         }
         cur.close();
 
-
-
-        return Queryable.from(result).distinct().toList();
+        ArrayList<Member> resultList = new ArrayList<>();
+        resultList.addAll(Queryable.from(result).distinct().toList());
+        return resultList;
     }
 
 }

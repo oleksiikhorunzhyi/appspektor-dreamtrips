@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -14,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
@@ -37,6 +39,12 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     EditText post;
     @InjectView(R.id.post_button)
     Button postButton;
+    @InjectView(R.id.download_progress)
+    PinProgressButton pinProgressButton;
+    @InjectView(R.id.shadow)
+    View shadow;
+    @InjectView(R.id.image)
+    ImageView image;
 
     private PickImageDelegate pickImageDelegate;
 
@@ -66,6 +74,9 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         pickImageDelegate.setChooseImageCallback(getPresenter().provideSelectImageCallback());
         pickImageDelegate.setFbImageCallback(getPresenter().provideFbCallback());
         pickImageDelegate.setMakePhotoImageCallback(getPresenter().provideSelectImageCallback());
+
+        pinProgressButton.setVisibility(View.GONE);
+        shadow.setVisibility(View.GONE);
 
         post.addTextChangedListener(new TextWatcherAdapter() {
             @Override
@@ -133,6 +144,39 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void attachPhoto(Uri uri) {
         attachedPhoto.setImageURI(uri);
+        if (uri != null) {
+            image.setImageResource(R.drawable.ic_post_add_image_selected);
+        } else {
+            image.setImageResource(R.drawable.ic_post_add_image_normal);
+        }
+    }
+
+    @Override
+    public void showProgress() {
+        pinProgressButton.setFailed(false);
+        pinProgressButton.setVisibility(View.VISIBLE);
+        shadow.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setText(String text) {
+        post.setText(text);
+    }
+
+    @Override
+    public void imageError() {
+        pinProgressButton.setFailed(true);
+    }
+
+    @Override
+    public void setProgress(int progress) {
+        pinProgressButton.setProgress(progress);
+    }
+
+    @Override
+    public void hideProgress() {
+        pinProgressButton.setVisibility(View.GONE);
+        shadow.setVisibility(View.GONE);
     }
 
     @Override

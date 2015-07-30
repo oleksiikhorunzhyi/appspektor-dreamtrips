@@ -9,6 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.feed.model.Post;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -39,6 +40,7 @@ public class SnappyRepository {
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
+    public static final String POST = "post";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
@@ -162,6 +164,29 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // POST
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void savePost(Post post) {
+        act(db -> db.put(POST, post));
+    }
+
+    public boolean hasPost() {
+        return actWithResult(db -> {
+            String[] keys = db.findKeys(POST);
+            return keys != null && keys.length > 0;
+        }).or(false);
+    }
+
+    public Post getPost() {
+        return actWithResult(db -> db.get(POST, Post.class)).orNull();
+    }
+
+    public void removePost() {
+        act(db -> db.del(POST));
     }
 
     ///////////////////////////////////////////////////////////////////////////

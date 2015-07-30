@@ -97,12 +97,34 @@
                     android:gravity="top"
                     android:hint="@string/post_hint"/>
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/attached_photo"
-                    android:layout_width="256dp"
-                    android:layout_height="256dp"
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/post"
-                    android:layout_margin="@dimen/spacing_normal"/>
+                    android:layout_margin="@dimen/spacing_normal"
+                    >
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/attached_photo"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
+                        />
+
+                    <View
+                        android:id="@+id/shadow"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
+                        android:background="@color/black_semi_transparent"/>
+
+                    <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+                        android:id="@+id/download_progress"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        />
+
+                </FrameLayout>
 
             </RelativeLayout>
         </ScrollView>

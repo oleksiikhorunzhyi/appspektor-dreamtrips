@@ -263,7 +263,6 @@ public interface DreamTripsApi {
     @GET("/api/social/items/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") int objectId, @Query("per_page") int perPage, @Query("page") int page);
 
-    @POST("/api/social/feed/test")
-    JSONObject post(@Field("text") String text);
-
+    @POST("/api/social/posts")
+    JSONObject post(@Field("description") String description);
 }

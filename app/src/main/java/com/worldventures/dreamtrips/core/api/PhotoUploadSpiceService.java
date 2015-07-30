@@ -17,6 +17,6 @@ public class PhotoUploadSpiceService extends DreamSpiceService {
 
     @Override
     public int getThreadCount() {
-        return 1;
+        return 2;
     }
 }

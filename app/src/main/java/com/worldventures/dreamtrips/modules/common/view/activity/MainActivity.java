@@ -160,7 +160,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     public void onNavigationDrawerItemSelected(ComponentDescription component) {
         eventBus.post(new MenuPressedEvent());
 
-        handleComponentChange();
+        closeLeftDrawer();
         disableRightDrawer();
         makeActionBarGone(false);
 
@@ -188,6 +188,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             closeLeftDrawer();
             return true;
         } else if (detailsFloatingContainer != null && detailsFloatingContainer.getVisibility() == View.VISIBLE) {
+            fragmentCompass.removePost();
             fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
             return true;

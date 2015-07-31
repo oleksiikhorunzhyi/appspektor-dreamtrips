@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.modules.bucketlist;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -52,7 +52,6 @@ import dagger.Provides;
                 AutoCompleteAdapter.class,
                 IgnoreFirstItemAdapter.class,
                 BucketAddPhotoCell.class,
-                UploadBucketPhotoCommand.class,
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
                 BucketPhotoCellForDetails.class,

@@ -1,15 +1,8 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.event.ProgressEvent;
-import com.amazonaws.event.ProgressListener;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
-import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -18,8 +11,6 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
-import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFailed;
-import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.io.File;
@@ -31,7 +22,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 public class S3ImageUploader {
 
@@ -76,12 +66,6 @@ public class S3ImageUploader {
                 BuildConfig.BUCKET_ROOT_PATH + file.getName());
         URL pictureUrl = amazonS3Client.generatePresignedUrl(urlRequest);
         eventBus.post(new UploadProgressUpdateEvent(taskId, 100));
-        if (pictureUrl != null) {
-            new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFinished(taskId,
-                    pictureUrl.toString())), 300);
-        } else {
-            new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFailed(taskId)), 300);
-        }
 
         return null;
     }

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed;
 
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.feed.api.UploadPostPhotoCommand;
+
 import com.worldventures.dreamtrips.modules.feed.model.FeedAvatarEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
@@ -71,7 +71,6 @@ import dagger.Module;
                 PostPresenter.class,
                 PostFragment.class,
                 ParallaxRecyclerAdapter.class,
-                UploadPostPhotoCommand.class
         },
         complete = false,
         library = true

@@ -17,6 +17,6 @@
     <dimen name="locale_flag_size_height">26dp</dimen>
 
     ///////Post sizes
-    <dimen name="post_spacing_horizontal">128dp</dimen>
-    <dimen name="post_spacing_vertical">16dp</dimen>
+    <dimen name="post_spacing_horizontal">64dp</dimen>
+    <dimen name="post_spacing_vertical">64dp</dimen>
 </resources>

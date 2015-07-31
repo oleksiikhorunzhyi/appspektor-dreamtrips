@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:fresco="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/black_semi_transparent"
-             android:clickable="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black_semi_transparent"
+                android:clickable="true">
 
     <RelativeLayout
+        android:id="@+id/post_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/divider"
         android:layout_marginLeft="@dimen/post_spacing_horizontal"
         android:layout_marginRight="@dimen/post_spacing_horizontal"
         android:layout_marginTop="@dimen/post_spacing_vertical"
@@ -79,7 +81,6 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/container_post"
             android:layout_below="@+id/container_user"
             >
 
@@ -91,12 +92,13 @@
                     android:id="@+id/post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/spacing_medium"
-                    android:paddingRight="@dimen/spacing_medium"
-                    android:paddingTop="@dimen/spacing_normal"
                     android:background="@null"
                     android:gravity="top"
-                    android:hint="@string/post_hint"/>
+                    android:hint="@string/post_hint"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingLeft="@dimen/spacing_medium"
+                    android:paddingRight="@dimen/spacing_medium"
+                    android:paddingTop="@dimen/spacing_normal"/>
 
 
                 <FrameLayout
@@ -150,66 +152,67 @@
             </RelativeLayout>
         </ScrollView>
 
-
-        <include
-            layout="@layout/include_divider"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_above="@+id/container_post"
-            />
-
-        <RelativeLayout
-            android:id="@+id/container_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_lighter"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_small">
-
-            <ImageView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_post_location_off"/>
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/location"
-                android:layout_toRightOf="@+id/location"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_post_add_image_normal"/>
-
-            <ImageView
-                android:id="@+id/more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/image"
-                android:layout_toRightOf="@+id/image"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_post_more_normal"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/post_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="@string/post"
-                android:textAllCaps="true"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/font_normal"/>
-        </RelativeLayout>
-
     </RelativeLayout>
 
-</FrameLayout>
+
+    <include
+        android:id="@+id/divider"
+        layout="@layout/include_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/container_post"
+        />
+
+    <RelativeLayout
+        android:id="@+id/container_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_lighter"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_small">
+
+        <ImageView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_post_location_off"/>
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/location"
+            android:layout_toRightOf="@+id/location"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_post_add_image_normal"/>
+
+        <ImageView
+            android:id="@+id/more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/image"
+            android:layout_toRightOf="@+id/image"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_post_more_normal"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/post_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/post"
+            android:textAllCaps="true"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_normal"/>
+    </RelativeLayout>
+
+</RelativeLayout>

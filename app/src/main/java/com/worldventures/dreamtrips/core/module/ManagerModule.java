@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceService;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
@@ -39,7 +39,6 @@ import dagger.Provides;
                 PhoneContactRequest.class,
                 S3ImageUploader.class,
                 UploadTripPhotoCommand.class,
-                UploadBucketPhotoCommand.class,
                 UploadTemplatePhotoCommand.class,
         },
         library = true, complete = false

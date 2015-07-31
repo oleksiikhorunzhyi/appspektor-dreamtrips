@@ -10,7 +10,7 @@
     <dimen name="map_trip_image_size">300dp</dimen>
 
     ///////Post sizes
-    <dimen name="post_spacing_horizontal">256dp</dimen>
+    <dimen name="post_spacing_horizontal">64dp</dimen>
     <dimen name="post_spacing_vertical">128dp</dimen>
 
 </resources>

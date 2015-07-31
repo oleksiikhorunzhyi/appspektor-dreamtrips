@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:fresco="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
@@ -90,15 +91,16 @@
                     android:id="@+id/post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_medium"
-                    android:layout_marginRight="@dimen/spacing_medium"
-                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:paddingLeft="@dimen/spacing_medium"
+                    android:paddingRight="@dimen/spacing_medium"
+                    android:paddingTop="@dimen/spacing_normal"
                     android:background="@null"
                     android:gravity="top"
                     android:hint="@string/post_hint"/>
 
 
                 <FrameLayout
+                    android:id="@+id/image_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/post"
@@ -118,12 +120,30 @@
                         android:layout_height="256dp"
                         android:background="@color/black_semi_transparent"/>
 
-                    <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
-                        android:id="@+id/download_progress"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                    <ImageView
+                        android:id="@+id/cancel_action"
+                        android:layout_width="@dimen/size_small"
+                        android:layout_height="@dimen/size_small"
+                        android:layout_gravity="end"
+                        android:layout_margin="@dimen/spacing_small"
+                        android:src="@drawable/ic_action_cancel"/>
+
+                    <view
+                        android:id="@+id/fab_progress"
+                        class="mbanje.kurt.fabbutton.FabButton"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
                         android:layout_gravity="center"
-                        />
+                        android:color="@color/bucket_blue"
+                        android:enabled="false"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:src="@drawable/ic_upload_cloud"
+                        app:fbb_autoStart="true"
+                        app:fbb_endBitmap="@drawable/ic_upload_cloud"
+                        app:fbb_progressColor="#ffffff"
+                        app:fbb_progressWidthRatio="0.1"
+                        app:fbb_showEndBitmap="true"/>
 
                 </FrameLayout>
 

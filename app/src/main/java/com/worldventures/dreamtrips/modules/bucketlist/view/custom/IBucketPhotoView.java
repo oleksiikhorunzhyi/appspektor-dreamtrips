@@ -11,6 +11,8 @@ public interface IBucketPhotoView {
 
     void addImage(BucketPhotoUploadTask images);
 
+    BucketPhotoUploadTask getBucketPhotoUploadTask(int taskId);
+
     void addImages(List<BucketPhotoUploadTask> tasks);
 
     void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto);

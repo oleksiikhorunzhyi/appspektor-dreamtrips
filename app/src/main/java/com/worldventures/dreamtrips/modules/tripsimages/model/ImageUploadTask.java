@@ -22,6 +22,7 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
         }
     };
     private String taskId;
+    private int amazonTaskId;
     private String fileUri;
     private float progress;
     private String title;
@@ -41,6 +42,7 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
 
     private ImageUploadTask(Parcel in) {
         this.taskId = in.readString();
+        this.amazonTaskId = in.readInt();
         this.fileUri = in.readString();
         this.progress = in.readFloat();
         this.title = in.readString();
@@ -52,6 +54,14 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
         this.originUrl = in.readString();
         this.type = in.readString();
         this.tags = (ArrayList<String>) in.readSerializable();
+    }
+
+    public int getAmazonTaskId() {
+        return amazonTaskId;
+    }
+
+    public void setAmazonTaskId(int amazonTaskId) {
+        this.amazonTaskId = amazonTaskId;
     }
 
     public String getTaskId() {
@@ -208,6 +218,7 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.taskId);
+        dest.writeInt(this.amazonTaskId);
         dest.writeString(this.fileUri);
         dest.writeFloat(this.progress);
         dest.writeString(this.title);

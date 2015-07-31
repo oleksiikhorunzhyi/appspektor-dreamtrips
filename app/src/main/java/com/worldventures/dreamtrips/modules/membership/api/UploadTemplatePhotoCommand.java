@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTa
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 
 public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate> {
@@ -27,7 +28,7 @@ public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate
     }
 
     @Override
-    public InviteTemplate loadDataFromNetwork() {
+    public InviteTemplate loadDataFromNetwork() throws FileNotFoundException {
         String fileUri = photoUploadTask.getFilePath();
         long taskId = photoUploadTask.getTaskId();
 

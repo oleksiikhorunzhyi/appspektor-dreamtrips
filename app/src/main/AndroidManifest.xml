@@ -141,6 +141,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"/>
         <service android:name="com.instabug.library.network.UploadCacheService"/>
 
         <!-- This will prevent VERBOSE and DEBUG level logging. -->

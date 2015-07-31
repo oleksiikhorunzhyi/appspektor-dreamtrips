@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +15,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
@@ -25,6 +24,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDia
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icicle;
+import mbanje.kurt.fabbutton.CircleImageView;
+import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.layout_post)
 public class PostFragment extends BaseFragment<PostPresenter> implements PostPresenter.View {
@@ -39,10 +40,14 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     EditText post;
     @InjectView(R.id.post_button)
     Button postButton;
-    @InjectView(R.id.download_progress)
-    PinProgressButton pinProgressButton;
+    @InjectView(R.id.fab_progress)
+    FabButton fabProgress;
+    @InjectView(R.id.fabbutton_circle)
+    CircleImageView circleView;
     @InjectView(R.id.shadow)
     View shadow;
+    @InjectView(R.id.image_container)
+    FrameLayout imageContainer;
     @InjectView(R.id.image)
     ImageView image;
 
@@ -75,7 +80,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         pickImageDelegate.setFbImageCallback(getPresenter().provideFbCallback());
         pickImageDelegate.setMakePhotoImageCallback(getPresenter().provideSelectImageCallback());
 
-        pinProgressButton.setVisibility(View.GONE);
+        fabProgress.setVisibility(View.GONE);
         shadow.setVisibility(View.GONE);
 
         post.addTextChangedListener(new TextWatcherAdapter() {
@@ -90,6 +95,16 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
         return new PostPresenter();
+    }
+
+    @OnClick(R.id.cancel_action)
+    void onPhotoCancel() {
+        getPresenter().removeImage();
+    }
+
+    @OnClick(R.id.fab_progress)
+    void onProgressClick() {
+        getPresenter().restartPhotoUpload();
     }
 
     @OnClick(R.id.close)
@@ -145,17 +160,23 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void attachPhoto(Uri uri) {
         attachedPhoto.setImageURI(uri);
         if (uri != null) {
+            imageContainer.setVisibility(View.VISIBLE);
             image.setImageResource(R.drawable.ic_post_add_image_selected);
         } else {
+            imageContainer.setVisibility(View.GONE);
             image.setImageResource(R.drawable.ic_post_add_image_normal);
         }
     }
 
     @Override
     public void showProgress() {
-        pinProgressButton.setFailed(false);
-        pinProgressButton.setVisibility(View.VISIBLE);
         shadow.setVisibility(View.VISIBLE);
+        fabProgress.setVisibility(View.VISIBLE);
+        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
+        fabProgress.setIndeterminate(true);
+        fabProgress.showProgress(true);
+        int color = getResources().getColor(R.color.bucket_blue);
+        circleView.setColor(color);
     }
 
     @Override
@@ -165,17 +186,15 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     @Override
     public void imageError() {
-        pinProgressButton.setFailed(true);
-    }
-
-    @Override
-    public void setProgress(int progress) {
-        pinProgressButton.setProgress(progress);
+        fabProgress.showProgress(false);
+        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
+        int color = getResources().getColor(R.color.bucket_red);
+        circleView.setColor(color);
     }
 
     @Override
     public void hideProgress() {
-        pinProgressButton.setVisibility(View.GONE);
+        fabProgress.setVisibility(View.GONE);
         shadow.setVisibility(View.GONE);
     }
 

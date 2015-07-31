@@ -57,7 +57,7 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
     private void clearTempDirectory() {
         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDialog.FOLDERNAME));
-        if (!directory.exists()) {
+        if (directory.exists()) {
             try {
                 FileUtils.deleteDirectory(directory);
             } catch (IOException e) {

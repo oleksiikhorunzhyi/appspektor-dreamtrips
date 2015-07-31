@@ -3,9 +3,14 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -14,7 +19,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverR
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscreenRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -25,6 +29,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActiv
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 
@@ -32,12 +37,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V>
+        implements TransferListener {
 
     @Inject
     BucketItemManager bucketItemManager;
@@ -48,6 +55,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @ForApplication
     Injector injector;
 
+    @Inject
+    TransferUtility transferUtility;
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
@@ -154,37 +163,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         return multiSelectPickCallback;
     }
 
-    private void handlePhotoPick(Uri uri, String type) {
-        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId(System.currentTimeMillis());
-        task.setBucketId(bucketItem.getId());
-        task.setFilePath(uri.toString());
-        task.setSelectionType(type);
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
-        startUpload(task);
-
-        if (view != null)
-            view.getBucketPhotosView().addImage(task);
-    }
-
-    private void startUpload(final BucketPhotoUploadTask task) {
-        photoUploadSpiceManager.uploadPhoto(task, bucketItem, type, this);
-    }
-
-    public void onEvent(BucketPhotoReuploadRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
-                event.getTask().getSelectionType(),
-                bucketItem.getType());
-        startUpload(event.getTask());
-    }
-
-    public void onEvent(BucketPhotoUploadCancelEvent event) {
-        view.getBucketPhotosView().deleteImage(event.getTask());
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_CANCEL,
-                event.getTask().getSelectionType(),
-                bucketItem.getType());
-    }
 
     public void onEvent(BucketAddPhotoClickEvent event) {
         eventBus.cancelEventDelivery(event);
@@ -232,6 +210,61 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected void deleted(BucketPhoto bucketPhoto) {
         view.getBucketPhotosView().deleteImage(bucketPhoto);
+    }
+
+    ////////////////////////////////////////
+    /////// Photo upload
+    ////////////////////////////////////////
+
+    private void handlePhotoPick(Uri uri, String type) {
+        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
+        task.setBucketId(bucketItem.getId());
+        task.setFilePath(uri.toString());
+        task.setSelectionType(type);
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
+        startUpload(task);
+
+        if (view != null)
+            view.getBucketPhotosView().addImage(task);
+    }
+
+    private void startUpload(final BucketPhotoUploadTask task) {
+        File file = UploadingFileManager.copyFileIfNeed(task.getFilePath(), context);
+        String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
+        String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
+        TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
+        task.setTaskId(transferObserver.getId());
+        transferObserver.setTransferListener(this);
+    }
+
+    public void onEvent(BucketPhotoReuploadRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
+                event.getTask().getSelectionType(),
+                bucketItem.getType());
+        startUpload(event.getTask());
+    }
+
+    private void addPhotoToBucketItem(String originUrl) {
+
+    }
+
+    @Override
+    public void onStateChanged(int id, TransferState state) {
+        switch (state) {
+            case COMPLETED:
+
+        }
+    }
+
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+
+    }
+
+    @Override
+    public void onError(int id, Exception ex) {
+
     }
 
     public interface View extends Presenter.View {

@@ -12,13 +12,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadFinishEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadStarted;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
@@ -39,7 +34,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -48,9 +42,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Icicle
     int pidTypeShown;
-    @Inject
-    @Global
-    EventBus eventBus;
 
     @Inject
     SnappyRepository db;
@@ -77,7 +68,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public void init(Fragment fragment, Provider<Injector> injector, Type type) {
         injector.get().inject(this);
-        if (!eventBus.isRegistered(this)) eventBus.register(this);
 
         pickImageDelegate = new PickImageDelegate(getContext(), fragment, pidTypeShown);
 
@@ -117,7 +107,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     protected void onDetachedFromWindow() {
         this.setAdapter(null);
         super.onDetachedFromWindow();
-        if (eventBus.isRegistered(this)) eventBus.unregister(this);
     }
 
     @Override
@@ -316,36 +305,12 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         this.multiselectAvalbile = available;
     }
 
-    public void onEventMainThread(BucketPhotoUploadStarted event) {
-        imagesAdapter.notifyDataSetChanged();
-    }
-
-    public void onEventMainThread(BucketPhotoUploadFailedEvent event) {
-        BucketPhotoUploadTask task = getBucketPhotoUploadTask(event.getTaskId());
-        if (task != null) task.setFailed(true);
-        imagesAdapter.notifyDataSetChanged();
-    }
-
-    public void onEventMainThread(BucketPhotoUploadFinishEvent event) {
-        replace(event.getTask(), event.getBucketPhoto());
-        imagesAdapter.notifyDataSetChanged();
-    }
-
-    private BucketPhotoUploadTask getBucketPhotoUploadTask(long taskId) {
+    @Override
+    public BucketPhotoUploadTask getBucketPhotoUploadTask(int taskId) {
         return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element -> {
             boolean b = element instanceof BucketPhotoUploadTask;
             return b && ((BucketPhotoUploadTask) element).getTaskId() == taskId;
         });
-    }
-
-    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        BucketPhotoUploadTask photoUploadTask = getBucketPhotoUploadTask(event.
-                getModelObject().getTaskId());
-        if (photoUploadTask != null) {
-            db.removeBucketPhotoTask(photoUploadTask);
-            deleteImage(photoUploadTask);
-        }
-
     }
 
     public enum Type {

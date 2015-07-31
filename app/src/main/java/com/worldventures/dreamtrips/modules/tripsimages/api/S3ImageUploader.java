@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.amazonaws.AmazonClientException;
@@ -17,6 +18,8 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
+import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFailed;
+import com.worldventures.dreamtrips.modules.feed.event.PostPhotoUploadFinished;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.io.File;
@@ -43,14 +46,16 @@ public class S3ImageUploader {
     private transient int lastPercent;
     private ImageProgressListener imageProgressListener;
 
-    public URL uploadImageToS3(String filePath, String taskId) {
-        URL pictureUrl = null;
+    public URL uploadImageToS3(String filePath, String taskId) throws FileNotFoundException {
         File file = UploadingFileManager.copyFileIfNeed(filePath, context);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.length());
 
         PutObjectRequest request = new PutObjectRequest(
                 BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
                 BuildConfig.BUCKET_ROOT_PATH + file.getName(),
-                file);
+                new FileInputStream(file), objectMetadata);
 
         request.setGeneralProgressListener(progressEvent -> {
             byteTransferred += progressEvent.getBytesTransferred();
@@ -66,24 +71,20 @@ public class S3ImageUploader {
         });
 
         PutObjectResult result = amazonS3Client.putObject(request);
-
-        if (result != null) {
-            GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(
-                    BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
-                    BuildConfig.BUCKET_ROOT_PATH + file.getName());
-            pictureUrl = amazonS3Client.generatePresignedUrl(urlRequest);
+        GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(
+                BuildConfig.BUCKET_NAME.toLowerCase(Locale.US),
+                BuildConfig.BUCKET_ROOT_PATH + file.getName());
+        URL pictureUrl = amazonS3Client.generatePresignedUrl(urlRequest);
+        eventBus.post(new UploadProgressUpdateEvent(taskId, 100));
+        if (pictureUrl != null) {
+            new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFinished(taskId,
+                    pictureUrl.toString())), 300);
+        } else {
+            new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFailed(taskId)), 300);
         }
 
-        eventBus.post(new UploadProgressUpdateEvent(taskId, 100));
-
-        file.delete();
-        return pictureUrl;
+        return null;
     }
-
-    private String getURLFromUploadResult(UploadResult uploadResult) {
-        return "https://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey();
-    }
-
 
     public void setProgressListener(ImageProgressListener progressListener) {
         this.imageProgressListener = progressListener;

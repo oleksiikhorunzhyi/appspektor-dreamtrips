@@ -257,7 +257,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void handlePhotoPick(Uri uri) {
         selectedImageUri = uri;
         BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId(System.currentTimeMillis());
         task.setBucketId(template.getId());
         task.setFilePath(uri.toString());
         startUpload(task);

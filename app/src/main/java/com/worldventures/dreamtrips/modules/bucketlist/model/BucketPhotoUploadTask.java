@@ -5,15 +5,10 @@ import java.io.Serializable;
 public class BucketPhotoUploadTask implements Serializable {
 
     private String filePath;
-    private long taskId;
-    private int progress;
+    private int taskId;
     private int bucketId;
     private boolean failed;
     private String type;
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
 
     public void setSelectionType(String type) {
         this.type = type;
@@ -31,11 +26,11 @@ public class BucketPhotoUploadTask implements Serializable {
         this.filePath = filePath;
     }
 
-    public long getTaskId() {
+    public int getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
+    public void setTaskId(int taskId) {
         this.taskId = taskId;
     }
 

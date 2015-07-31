@@ -226,7 +226,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     }
 
     public void onEvent(PostCreatedEvent event) {
-        view.getAdapter().addItem(0, FeedPostEventModel.create(user, event.getTextualPost()));
+        view.getAdapter().addItem(1, FeedPostEventModel.create(user, event.getTextualPost()));
+        view.getAdapter().notifyItemInserted(1);
     }
 
     public interface View extends ProfilePresenter.View {

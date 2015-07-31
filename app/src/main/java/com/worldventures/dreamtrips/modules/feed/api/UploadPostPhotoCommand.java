@@ -5,20 +5,22 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
-public class UploadPostPhotoCommand extends SpiceRequest<String> {
+import java.net.URL;
+
+public class UploadPostPhotoCommand extends SpiceRequest<URL> {
 
     protected S3ImageUploader s3uploader = new S3ImageUploader();
 
     private ImageUploadTask uploadTask;
 
     public UploadPostPhotoCommand(ImageUploadTask uploadTask, Injector injector) {
-        super(String.class);
+        super(URL.class);
         this.uploadTask = uploadTask;
         injector.inject(s3uploader);
     }
 
     @Override
-    public String loadDataFromNetwork() {
+    public URL loadDataFromNetwork() {
         String fileUri = uploadTask.getFileUri();
         String taskId = uploadTask.getTaskId();
         s3uploader.setProgressListener(uploadTask::setProgress);

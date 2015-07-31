@@ -220,8 +220,8 @@ dependencies {
     compile 'io.techery:ijkmediaplayer:0.2.3@aar'
     compile 'io.techery:ijkmediawidget:0.2.3@aar'
     // 3rd services
-    compile 'com.amazonaws:aws-android-sdk-core:2.1.10'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.1.10'
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.4'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.4'
     compile 'com.google.android.gms:play-services-maps:7.5.0'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.instabug.library:instabugsupport:1.2.7'

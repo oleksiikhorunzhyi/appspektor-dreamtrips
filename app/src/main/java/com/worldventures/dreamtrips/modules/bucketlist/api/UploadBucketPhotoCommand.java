@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTa
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
+import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,9 +68,9 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
             String fileUri = photoUploadTask.getFilePath();
             long taskId = photoUploadTask.getTaskId();
 
-            String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
+            URL urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
-            BucketPhoto uploadObject = getUploadObject(urlFromUploadResult);
+            BucketPhoto uploadObject = getUploadObject(urlFromUploadResult.toString());
 
             BucketPhoto photo = null;
             if (isCancelled()) {

@@ -6,6 +6,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTa
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
 
+import java.net.URL;
+
 public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate> {
 
     private String personalMessage;
@@ -29,12 +31,12 @@ public class UploadTemplatePhotoCommand extends DreamTripsRequest<InviteTemplate
         String fileUri = photoUploadTask.getFilePath();
         long taskId = photoUploadTask.getTaskId();
 
-        String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
+        URL urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, String.valueOf(taskId));
 
         return getService()
                 .createInviteTemplate(photoUploadTask.getBucketId(),
                         personalMessage,
-                        urlFromUploadResult);
+                        urlFromUploadResult.toString());
     }
 
 }

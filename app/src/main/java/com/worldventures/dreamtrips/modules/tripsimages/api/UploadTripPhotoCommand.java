@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
+import java.net.URL;
+
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
@@ -45,9 +47,9 @@ public class UploadTripPhotoCommand extends DreamTripsRequest<Photo> {
             String fileUri = uploadTask.getFileUri();
             String taskId = uploadTask.getTaskId();
 
-            String urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, taskId);
+            URL urlFromUploadResult = s3uploader.uploadImageToS3(fileUri, taskId);
 
-            uploadTask.setOriginUrl(urlFromUploadResult);
+            uploadTask.setOriginUrl(urlFromUploadResult.toString());
 
             eventBus.post(new UploadProgressUpdateEvent(uploadTask.getTaskId(), 100));
 

@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoComma
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.net.URL;
+
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
@@ -72,15 +74,17 @@ public class PhotoUploadSpiceManager extends SpiceManager {
 
     public void uploadPostPhoto(ImageUploadTask task) {
         UploadPostPhotoCommand requst = new UploadPostPhotoCommand(task, injector);
-        execute(requst, new RequestListener<String>() {
+        execute(requst, new RequestListener<URL>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFailed(task.getTaskId())), 300);
             }
 
             @Override
-            public void onRequestSuccess(String s) {
-                new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFinished(task.getTaskId(), s)), 300);
+            public void onRequestSuccess(URL url) {
+                if (url != null)
+                    new Handler().postDelayed(() -> eventBus.post(new PostPhotoUploadFinished(task.getTaskId(),
+                            url.toString())), 300);
             }
         });
     }

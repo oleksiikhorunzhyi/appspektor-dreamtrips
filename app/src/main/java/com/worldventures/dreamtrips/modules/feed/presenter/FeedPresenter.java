@@ -6,7 +6,9 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

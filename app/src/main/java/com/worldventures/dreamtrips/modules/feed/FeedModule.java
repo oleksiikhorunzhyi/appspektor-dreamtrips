@@ -19,9 +19,9 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoCommentsFragment;
 
 import dagger.Module;
 
@@ -40,6 +40,7 @@ import dagger.Module;
                 FeedPhotoEventModel.class,
 
                 FeedBucketEventCell.class,
+                LoadMoreCell.class,
                 FeedBucketEventModel.class,
 
                 FeedUndefinedEventCell.class,
@@ -49,7 +50,6 @@ import dagger.Module;
                 FeedFragment.class,
                 ParallaxRecyclerAdapter.class,
 
-                PhotoCommentsFragment.class,
                 CommentsFragment.class,
                 ComponentPresenter.class,
                 CommentCell.class,

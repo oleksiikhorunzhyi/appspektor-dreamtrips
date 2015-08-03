@@ -8,11 +8,16 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
 public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
@@ -42,6 +47,12 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
         photo.setImageURI(Uri.parse(photoObj.getImages()
                 .getUrl(size, size)));
+    }
+
+    @OnClick(R.id.comments)
+    void commentsClicked() {
+        getEventBus().removeStickyEvent(CommentsPressedEvent.class);
+        getEventBus().postSticky(new CommentsPressedEvent(getModelObject()));
     }
 
     @Override

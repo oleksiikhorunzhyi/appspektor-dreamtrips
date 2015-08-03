@@ -14,10 +14,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
 public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
@@ -89,6 +91,12 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Override
     public void prepareForReuse() {
 
+    }
+
+    @OnClick(R.id.comments)
+    void commentsClicked() {
+        getEventBus().removeStickyEvent(CommentsPressedEvent.class);
+        getEventBus().postSticky(new CommentsPressedEvent(getModelObject()));
     }
 
     private BucketTabsPresenter.BucketType getType(String name) {

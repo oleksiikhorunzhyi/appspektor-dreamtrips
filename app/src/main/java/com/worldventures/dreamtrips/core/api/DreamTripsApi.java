@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -258,4 +259,7 @@ public interface DreamTripsApi {
 
     @GET("/api/social/feed")
     ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
+
+    @GET("/api/social/items/{object_id}/comments")
+    ArrayList<Comment> getComments(@Path("object_id") int objectId, @Query("per_page") int perPage, @Query("page") int page);
 }

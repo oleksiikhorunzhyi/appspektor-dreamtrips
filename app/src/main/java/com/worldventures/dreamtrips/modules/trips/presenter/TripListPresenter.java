@@ -178,7 +178,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
                 sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
             }, spiceException -> {
                 trip.setInBucketList(!trip.isInBucketList());
-                onFailure();
+                handleError(spiceException);
             });
         } else {
             trip.setInBucketList(!trip.isInBucketList());

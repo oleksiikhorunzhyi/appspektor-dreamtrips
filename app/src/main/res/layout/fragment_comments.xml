@@ -8,11 +8,11 @@
         android:id="@+id/commentsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="54dp"
-        android:layout_weight="1"/>
+        android:layout_above="@+id/input_container"/>
 
 
     <android.support.v7.widget.CardView
+        android:id="@+id/input_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

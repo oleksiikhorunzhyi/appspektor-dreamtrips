@@ -1,46 +1,57 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.view.LayoutInflater;
-
-import com.techery.spares.adapter.AdapterHelper;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
+import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
+    BaseFeedModel feedModel;
+
+    private int page = 1;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
 
-        ArrayList<Comment> commentList = new ArrayList<>();
-        Comment object = new Comment();
-        object.setOwner(appSessionHolder.get().get().getUser());
-        object.setCreatedAt(new Date());
-        object.setMessage("Amazing photo");
-        commentList.add(object);
-        commentList.add(object);
-        commentList.add(object);
-        commentList.add(object);
-        commentList.add(object);
-        commentList.add(object);
-        view.setData(commentList);
+        CommentsPressedEvent event = eventBus.getStickyEvent(CommentsPressedEvent.class);
+        feedModel = event.getModel();
 
-        AdapterHelper adapterHelper = new AdapterHelper(LayoutInflater.from(context));
-        AbstractCell abstractCell = adapterHelper.buildCell(FeedPhotoEventCell.class, null);
-        view.setHeader((FeedPhotoEventCell) abstractCell);
+        setHeader();
+        loadComments();
     }
 
-    public interface View<HEADER extends FeedHeaderCell> extends Presenter.View {
-        void setData(List<Comment> commentList);
+    private void loadComments() {
+        view.setLoading(true);
+        doRequest(new GetCommentsQuery(feedModel.getId(), page), this::onCommentsLoaded);
+    }
 
-        void setHeader(HEADER header);
+    public void onEvent(LoadMoreEvent event) {
+        loadComments();
+    }
+
+    private void onCommentsLoaded(ArrayList<Comment> comments) {
+        page++;
+        view.setLoading(false);
+        view.addComments(comments);
+    }
+
+    private void setHeader() {
+        view.setHeader(feedModel);
+    }
+
+    public interface View extends Presenter.View {
+        void addComments(List<Comment> commentList);
+
+        void setLoading(boolean loading);
+
+        void setHeader(BaseFeedModel header);
     }
 }

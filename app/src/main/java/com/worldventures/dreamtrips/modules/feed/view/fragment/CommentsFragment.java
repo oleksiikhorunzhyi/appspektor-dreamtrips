@@ -1,20 +1,30 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.HeaderLayoutManagerFixed;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 
 import java.util.List;
 
@@ -23,7 +33,8 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 
-public abstract class CommentsFragment<PM extends BaseCommentPresenter, HEADER extends FeedHeaderCell> extends BaseFragment<PM> implements BaseCommentPresenter.View<HEADER> {
+@Layout(R.layout.fragment_comments)
+public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
 
     @InjectView(R.id.commentsList)
     RecyclerView commentsList;
@@ -35,29 +46,48 @@ public abstract class CommentsFragment<PM extends BaseCommentPresenter, HEADER e
     @InjectView(R.id.btnPost)
     Button btnPost;
 
-    ParallaxRecyclerAdapter adapter;
-    private HeaderLayoutManagerFixed layoutManagerFixed;
+    LoadMore loadMore;
+
+    BaseArrayListAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+
+    @Override
+    protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
+        return new BaseCommentPresenter();
+    }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new ParallaxRecyclerAdapter<>(getActivity(), injectorProvider);
+        loadMore = new LoadMore();
+
+        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+
         adapter.registerCell(Comment.class, CommentCell.class);
-        adapter.setShouldClipView(false);
-        layoutManagerFixed = new HeaderLayoutManagerFixed(rootView.getContext());
-        commentsList.setLayoutManager(layoutManagerFixed);
+        adapter.registerCell(LoadMore.class, LoadMoreCell.class);
+        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
+        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
+        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+
+        linearLayoutManager = new LinearLayoutManager(rootView.getContext());
+        commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
     }
 
-    public void setData(List<Comment> commentList) {
-        adapter.addItems(commentList);
+    @Override
+    public void addComments(List<Comment> commentList) {
+        adapter.addItems(2, commentList);
     }
 
     @Override
-    public void setHeader(HEADER header) {
-        //TODO setup header
-        layoutManagerFixed.setHeaderIncrementFixer(header.itemView);
-        adapter.setParallaxHeader(header.itemView, commentsList);
+    public void setHeader(BaseFeedModel baseFeedModel) {
+        adapter.addItem(0, baseFeedModel);
+        adapter.addItem(1, loadMore);
     }
 
+    @Override
+    public void setLoading(boolean loading) {
+        loadMore.setLoading(loading);
+        adapter.notifyItemChanged(1);
+    }
 }

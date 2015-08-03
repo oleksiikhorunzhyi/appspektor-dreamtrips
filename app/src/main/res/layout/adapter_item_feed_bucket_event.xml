@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
+             android:background="@color/gray_lighter"
              android:paddingLeft="@dimen/feed_spacing"
              android:paddingRight="@dimen/feed_spacing"
-             android:background="@color/gray_lighter"
     >
 
     <android.support.v7.widget.CardView
@@ -25,6 +25,7 @@
 
             <include layout="@layout/include_bucket_item_meta"/>
 
+            <include layout="@layout/adapter_item_feed_footer"/>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

@@ -33,4 +33,6 @@
     <color name="bg_item_dragging_active_state">#c0e2fb</color>
 
     <color name="pin_progress_default_circle_color">#80ffffff</color>
+
+    <color name="load_more_color">#e5eff4</color>
 </resources>

@@ -250,7 +250,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick(R.id.iv_comment)
     public void actionComment() {
-        getPresenter().openComments();
     }
 
 

@@ -330,4 +330,6 @@
     <string name="comments_title">Comments</string>
     <string name="comment_add_hint">Add a comment</string>
     <string name="comment_post_btn_title">POST</string>
+    <string name="comment_view_more">View more comments</string>
+
 </resources>

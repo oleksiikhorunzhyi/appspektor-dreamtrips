@@ -22,6 +22,7 @@
 
             <include layout="@layout/adapter_item_feed_trip_child"/>
 
+            <include layout="@layout/adapter_item_feed_footer"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>

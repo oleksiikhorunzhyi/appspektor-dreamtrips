@@ -11,8 +11,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoCommentsFragment;
+
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -65,7 +66,7 @@ public enum Route {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
-    PHOTO_COMMENTS(PhotoCommentsFragment.class);
+    PHOTO_COMMENTS(CommentsFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
 

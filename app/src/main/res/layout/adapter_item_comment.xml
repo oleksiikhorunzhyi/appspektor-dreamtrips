@@ -4,8 +4,8 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/user_photo"
@@ -37,21 +37,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/spacing_tiny">
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/font_normal"
-                tools:text="Eldar Mensutov"
-                android:textColor="@android:color/black"/>
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:layout_weight="1"/>
+                tools:text="Eldar Mensutov"/>
 
             <TextView
                 android:id="@+id/date"
@@ -66,7 +64,9 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaLorem ipsulm bla blablaLorem ipsulm bla blabla Lorem ipsulm bla blabla"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"
             />
 
         <LinearLayout
@@ -81,18 +81,15 @@
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_small"
-                android:layout_marginRight="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small"
+                android:padding="@dimen/spacing_small"
                 android:src="@drawable/ic_commnet_edit"/>
 
             <ImageView
                 android:id="@+id/reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small"
                 android:focusableInTouchMode="false"
+                android:padding="@dimen/spacing_small"
                 android:src="@drawable/ic_comment_reply"/>
         </LinearLayout>
 

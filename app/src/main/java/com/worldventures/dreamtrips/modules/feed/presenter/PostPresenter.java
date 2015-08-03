@@ -6,11 +6,10 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
@@ -19,11 +18,9 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.io.File;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -39,7 +36,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     SnappyRepository snapper;
 
     @Inject
-    TransferUtility transferUtility;
+    AmazonDelegate amazonDelegate;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -79,6 +76,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
         if (post.getImageUploadTask() != null) {
             view.attachPhoto(Uri.parse(post.getImageUploadTask().getFileUri()));
+
             if (TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl()))
                 view.showProgress();
 
@@ -92,17 +90,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         enablePostButton();
     }
 
-    public void removeImage() {
-        if (post.getImageUploadTask() != null)
-            transferUtility.cancel(post.getImageUploadTask().getAmazonTaskId());
-        post.setImageUploadTask(null);
-        enablePostButton();
-        view.attachPhoto(null);
-    }
-
     public void cancel() {
         if (post.getImageUploadTask() != null)
-            transferUtility.cancel(post.getImageUploadTask().getAmazonTaskId());
+            amazonDelegate.cancel(post.getImageUploadTask().getAmazonTaskId());
         fragmentCompass.removePost();
         deletePost();
     }
@@ -158,10 +148,30 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         enablePostButton();
     }
 
-    public void restartPhotoUpload() {
-        if (post.getImageUploadTask().isFailed()) {
-            uploadPhoto();
+
+    private void setTransferListenereIfNeeded() {
+        if (post.getImageUploadTask() != null &&
+                TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl())) {
+            TransferObserver transferObserver = amazonDelegate.getTransferById(post.getImageUploadTask().getAmazonTaskId());
+            if (transferObserver != null)
+                initListener(transferObserver);
         }
+    }
+
+    private void initListener(TransferObserver transferObserver) {
+        transferObserver.setTransferListener(this);
+    }
+
+    ////////////////////////////////////////
+    /////// Photo upload
+    ////////////////////////////////////////
+
+    public ImagePickCallback provideSelectImageCallback() {
+        return selectImageCallback;
+    }
+
+    public ImagePickCallback provideFbCallback() {
+        return fbCallback;
     }
 
     private void handlePhotoPick(Uri uri) {
@@ -174,45 +184,13 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     private void uploadPhoto() {
         view.showProgress();
-        File file = UploadingFileManager.copyFileIfNeed(post.getImageUploadTask().getFileUri(), context);
-        String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
-        String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
-        post.setImageUploadUrl(key);
-        TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
-        post.getImageUploadTask().setAmazonTaskId(transferObserver.getId());
-        initListener(transferObserver);
+        initListener(amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask()));
     }
 
-    private void setTransferListenereIfNeeded() {
-        if (post.getImageUploadTask() != null &&
-                TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl())) {
-            TransferObserver transferObserver = transferUtility.getTransferById(post.getImageUploadTask().getAmazonTaskId());
-            if (transferObserver != null)
-                initListener(transferObserver);
+    public void restartPhotoUpload() {
+        if (post.getImageUploadTask().isFailed()) {
+            uploadPhoto();
         }
-    }
-
-    private void initListener(TransferObserver transferObserver) {
-        transferObserver.setTransferListener(this);
-    }
-
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        switch (state) {
-            case COMPLETED:
-                photoUploaded("https://" + BuildConfig.BUCKET_NAME.toLowerCase(Locale.US)
-                        + ".s3.amazonaws.com/" + post.getImageUploadUrl());
-                break;
-        }
-    }
-
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        photoFailed();
     }
 
     private void photoUploaded(String url) {
@@ -226,12 +204,30 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         view.imageError();
     }
 
-    public ImagePickCallback provideSelectImageCallback() {
-        return selectImageCallback;
+    public void removeImage() {
+        if (post.getImageUploadTask() != null)
+            amazonDelegate.cancel(post.getImageUploadTask().getAmazonTaskId());
+        post.setImageUploadTask(null);
+        enablePostButton();
+        view.attachPhoto(null);
     }
 
-    public ImagePickCallback provideFbCallback() {
-        return fbCallback;
+    @Override
+    public void onStateChanged(int id, TransferState state) {
+        switch (state) {
+            case COMPLETED:
+                photoUploaded(post.getImageUploadTask().getAmazonResultUrl());
+                break;
+        }
+    }
+
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+    }
+
+    @Override
+    public void onError(int id, Exception ex) {
+        photoFailed();
     }
 
     public interface View extends Presenter.View {

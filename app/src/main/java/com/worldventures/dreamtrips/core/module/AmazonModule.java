@@ -4,12 +4,12 @@ import android.content.Context;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
 
 import javax.inject.Singleton;
 
@@ -41,7 +41,7 @@ public class AmazonModule {
 
     @Provides
     @Singleton
-    public TransferUtility provideTransferManager(AmazonS3Client amazonS3Client, @ForApplication Context context) {
-        return new TransferUtility(amazonS3Client, context);
+    public AmazonDelegate provideTransferManager(AmazonS3Client amazonS3Client, @ForApplication Context context) {
+        return new AmazonDelegate(new TransferUtility(amazonS3Client, context));
     }
 }

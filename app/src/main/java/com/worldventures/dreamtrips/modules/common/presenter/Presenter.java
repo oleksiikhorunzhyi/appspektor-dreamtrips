@@ -13,7 +13,7 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceManager;
+
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -47,8 +47,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     protected FeatureManager featureManager;
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected PhotoUploadSpiceManager photoUploadSpiceManager;
     @Inject
     protected VideoDownloadSpiceManager videoDownloadSpiceManager;
 
@@ -112,9 +110,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!photoUploadSpiceManager.isStarted()) {
-            photoUploadSpiceManager.start(context);
-        }
         if (!videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.start(context);
         }
@@ -123,9 +118,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
-        }
-        if (photoUploadSpiceManager.isStarted()) {
-            photoUploadSpiceManager.shouldStop();
         }
         if (videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.shouldStop();

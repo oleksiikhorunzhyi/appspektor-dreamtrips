@@ -41,7 +41,7 @@ public class SnappyRepository {
     public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
-    public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
+    public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
@@ -247,11 +247,11 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveUploadImageTask(ImageUploadTask ut) {
-        act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId(), ut));
+        act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getAmazonTaskId(), ut));
     }
 
     public void removeImageUploadTask(ImageUploadTask ut) {
-        act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId()));
+        act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getAmazonTaskId()));
     }
 
     public List<ImageUploadTask> getAllImageUploadTask() {

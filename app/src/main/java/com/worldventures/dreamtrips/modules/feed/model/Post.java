@@ -9,7 +9,6 @@ public class Post implements Serializable {
     private String text;
     private ImageUploadTask imageUploadTask;
 
-    private String imageUploadUrl;
 
     public String getText() {
         return text;
@@ -27,11 +26,4 @@ public class Post implements Serializable {
         this.imageUploadTask = imageUploadTask;
     }
 
-    public String getImageUploadUrl() {
-        return imageUploadUrl;
-    }
-
-    public void setImageUploadUrl(String imageUploadUrl) {
-        this.imageUploadUrl = imageUploadUrl;
-    }
 }

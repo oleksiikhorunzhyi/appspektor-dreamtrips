@@ -12,6 +12,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -56,7 +57,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     Injector injector;
 
     @Inject
-    TransferUtility transferUtility;
+    AmazonDelegate amazonDelegate;
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
@@ -121,7 +122,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        photoUploadSpiceManager.cancel(BucketPhoto.class, event.getModelObject().getTaskId());
+        //   photoUploadSpiceManager.cancel(BucketPhoto.class, event.getModelObject().getTaskId());
     }
 
     protected void syncUI() {
@@ -232,9 +233,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         File file = UploadingFileManager.copyFileIfNeed(task.getFilePath(), context);
         String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
         String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
-        TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
-        task.setTaskId(transferObserver.getId());
-        transferObserver.setTransferListener(this);
+        //     TransferObserver transferObserver = amazonDelegate.uploadTripPhoto(bucketName, key, file);
+        //     task.setTaskId(transferObserver.getId());
+        //     transferObserver.setTransferListener(this);
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {

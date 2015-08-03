@@ -1,30 +1,21 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
 import android.net.Uri;
-import android.os.Handler;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.filippudak.ProgressPieView.ProgressPieView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFinished;
-import com.worldventures.dreamtrips.core.utils.events.PhotoUploadStarted;
-import com.worldventures.dreamtrips.core.utils.events.UploadProgressUpdateEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
+import mbanje.kurt.fabbutton.CircleImageView;
+import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_upload)
 public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
@@ -32,17 +23,11 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView imageView;
 
-    @InjectView(R.id.iv_result)
-    protected ImageView ivResult;
+    @InjectView(R.id.fab_progress)
+    protected FabButton fabProgress;
+    @InjectView(R.id.fabbutton_circle)
+    protected CircleImageView circleView;
 
-    @InjectView(R.id.pb)
-    protected ProgressPieView pb;
-
-    @InjectView(R.id.vg_upload_holder)
-    protected ViewGroup vgUploadHolder;
-
-    @InjectView(R.id.btn_action)
-    protected ImageButton btnCancelUpload;
     @Inject
     protected SnappyRepository db;
 
@@ -52,77 +37,42 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
-
         imageView.setImageURI(Uri.parse(getModelObject().getFileUri()));
 
         if (getModelObject().isFailed()) {
             setupViewAsFailed();
+        } else if (!TextUtils.isEmpty(getModelObject().getOriginUrl())) {
+            setupViewAsFinished();
+        } else {
+            setupViewAsLoading();
         }
     }
 
     @Override
     public void prepareForReuse() {
-        Log.d("Progress event", "prepareForReuse");
-        imageView.setImageBitmap(null);
-        pb.setProgress(0);
-        pb.setVisibility(View.VISIBLE);
-        ivResult.setBackgroundResource(R.drawable.circle_blue);
-        btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
     }
 
-    @OnClick(R.id.btn_action)
-    public void onBtnAction() {
-        //TODO
-    }
-
-    public void onEventMainThread(PhotoUploadStarted event) {
-        if (getModelObject().getTaskId().equalsIgnoreCase(event.getUploadTask().getTaskId())) {
-            pb.setProgress(0);
-            pb.setVisibility(View.VISIBLE);
-            ivResult.setBackgroundResource(R.drawable.circle_blue);
-            btnCancelUpload.setImageResource(R.drawable.ic_upload_cloud);
-            TrackingHelper.photoUploadStarted(getModelObject().getType(), "");
-        }
-    }
-
-    public void onEventMainThread(UploadProgressUpdateEvent event) {
-        if (getModelObject().getTaskId().equalsIgnoreCase(event.getTaskId())) {
-            if (event.getProgress() <= 100) {
-                if (event.getProgress() > pb.getProgress())
-                    pb.setProgress(event.getProgress());
-            }
-        }
-    }
-
-    public void onEventMainThread(PhotoUploadFailedEvent event) {
-        if (event.getTaskId().equals(getModelObject().getTaskId())) {
-            new Handler().postDelayed(() -> {
-                Log.i("Progress event", "PhotoUploadFailed");
-                  setupViewAsFailed();
-            }, 300);
-        }
+    private void setupViewAsLoading() {
+        fabProgress.setVisibility(View.VISIBLE);
+        fabProgress.setIndeterminate(true);
+        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
+        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
+        circleView.setColor(color);
+        fabProgress.showProgress(true);
     }
 
     private void setupViewAsFailed() {
-        pb.setProgress(0);
-        pb.setVisibility(View.INVISIBLE);
-        ivResult.setBackgroundResource(R.drawable.circle_red);
-        btnCancelUpload.setImageResource(R.drawable.ic_upload_retry);
+        fabProgress.showProgress(false);
+        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
+        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
+        circleView.setColor(color);
     }
 
-
-    public void onEventMainThread(PhotoUploadFinished event) {
-        Log.i("Progress event", "PhotoUploadFinished");
-
-        if (event.getPhoto().getTaskId().equals(getModelObject().getTaskId())) {
-            pb.setVisibility(View.INVISIBLE);
-            ivResult.setBackgroundResource(R.drawable.circle_green);
-            btnCancelUpload.setImageResource(R.drawable.ic_upload_done);
-            TrackingHelper.photoUploadFinished(getModelObject().getType(), "");
-        }
+    private void setupViewAsFinished() {
+        fabProgress.showProgress(false);
+        fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
+        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
+        circleView.setColor(color);
     }
 
 }

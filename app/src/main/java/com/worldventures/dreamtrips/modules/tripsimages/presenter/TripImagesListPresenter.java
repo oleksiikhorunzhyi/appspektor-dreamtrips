@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.os.Handler;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -218,6 +218,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         if (!roboSpiceAdapterController.hasAdapter()) {
             roboSpiceAdapterController.setAdapter(view.getAdapter());
         }
+
         return roboSpiceAdapterController;
     }
 
@@ -258,25 +259,23 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
 
         @Override
         public void onStart(LoadType loadType) {
-            if (loadType == LoadType.RELOAD) {
+            if (loadType.equals(LoadType.RELOAD)) {
                 view.startLoading();
             }
         }
 
         @Override
-        public void onFinish(RoboSpiceAdapterController.LoadType
-                                     loadType, List<IFullScreenObject> items, SpiceException spiceException) {
+        protected void onRefresh(ArrayList<IFullScreenObject> iFullScreenObjects) {
+            super.onRefresh(processTransferTasks(iFullScreenObjects));
+        }
+
+        @Override
+        public void onFinish(RoboSpiceAdapterController.LoadType loadType,
+                             List<IFullScreenObject> items, SpiceException spiceException) {
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
-                    if (loadType == RoboSpiceAdapterController.LoadType.RELOAD) {
-
-                        if (type.equals(Type.MY_IMAGES)) {
-                            Queryable.from(amazonDelegate.getUploadingTransfers())
-                                    .forEachR(transferObserver ->
-                                            transferObserver.setTransferListener(TripImagesListPresenter.this));
-                        }
-
+                    if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
                         photos.clear();
                         photos.addAll(items);
                         resetLazyLoadFields();
@@ -289,6 +288,40 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                     handleError(spiceException);
                 }
             }
+        }
+    }
+
+    private ArrayList<IFullScreenObject> processTransferTasks(List<IFullScreenObject> fullScreenObjects) {
+        ArrayList<IFullScreenObject> result = new ArrayList<>();
+
+        //filter
+        result.addAll(Queryable.from(fullScreenObjects)
+                .filter(element -> !(element instanceof ImageUploadTask)
+                        || amazonDelegate.getTransferById(((ImageUploadTask) element)
+                        .getAmazonTaskId()) != null).toList());
+
+        //handle transfer status
+        Queryable.from(result).forEachR(this::processTask);
+
+        return result;
+    }
+
+    private void processTask(IFullScreenObject element) {
+        if (type.equals(Type.MY_IMAGES) && element instanceof ImageUploadTask) {
+            ImageUploadTask temp = (ImageUploadTask) element;
+            TransferObserver transferObserver = amazonDelegate.getTransferById(temp.getAmazonTaskId());
+            switch (transferObserver.getState()) {
+                case COMPLETED:
+                    //add photo if uploaded
+                    photoUploaded(transferObserver.getId());
+                    break;
+                case FAILED:
+                    //mark as failed
+                    temp.setFailed(true);
+                    break;
+            }
+            //listen for results here
+            transferObserver.setTransferListener(this);
         }
     }
 

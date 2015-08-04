@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
+import mbanje.kurt.fabbutton.ProgressRingView;
 
 @Layout(R.layout.adapter_item_photo_upload)
 public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
@@ -27,6 +28,8 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     protected FabButton fabProgress;
     @InjectView(R.id.fabbutton_circle)
     protected CircleImageView circleView;
+    @InjectView(R.id.fabbutton_ring)
+    protected ProgressRingView ring;
 
     @Inject
     protected SnappyRepository db;
@@ -38,6 +41,7 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
     @Override
     protected void syncUIStateWithModel() {
         imageView.setImageURI(Uri.parse(getModelObject().getFileUri()));
+        ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 
         if (getModelObject().isFailed()) {
             setupViewAsFailed();

@@ -52,7 +52,7 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         super.takeView(view);
         GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
         doRequest(getLocaleQuery, this::onLocaleSuccess);
-        clearTempDirectory();
+        //clearTempDirectory();
     }
 
     private void clearTempDirectory() {

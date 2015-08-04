@@ -26,7 +26,7 @@ public class AmazonDelegate {
         String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
         String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
         TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
-        imageUploadTask.setAmazonResultUrl("https://" + BuildConfig.BUCKET_NAME.toLowerCase(Locale.US)
+        imageUploadTask.setAmazonResultUrl("https://" + bucketName
                 + ".s3.amazonaws.com/" + key);
         imageUploadTask.setAmazonTaskId(transferObserver.getId());
         return transferObserver;

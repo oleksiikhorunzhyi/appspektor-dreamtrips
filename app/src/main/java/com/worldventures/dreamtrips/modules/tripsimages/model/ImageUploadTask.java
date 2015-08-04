@@ -77,14 +77,6 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
         this.amazonResultUrl = amazonResultUrl;
     }
 
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
     public String getFileUri() {
         return fileUri;
     }

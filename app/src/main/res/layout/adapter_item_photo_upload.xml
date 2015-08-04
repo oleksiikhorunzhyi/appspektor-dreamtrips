@@ -14,13 +14,20 @@
         android:layout_margin="@dimen/spacing_tiniest"
         fresco:actualImageScaleType="centerCrop"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_semi_transparent"/>
+
     <view
         android:id="@+id/fab_progress"
         class="mbanje.kurt.fabbutton.FabButton"
-        android:layout_width="@dimen/size_large"
-        android:layout_height="@dimen/size_large"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerInParent="true"
         android:color="@color/bucket_blue"
+        android:enabled="false"
+        android:indeterminate="false"
         android:max="100"
         android:src="@drawable/ic_upload_cloud"
         app:fbb_autoStart="true"

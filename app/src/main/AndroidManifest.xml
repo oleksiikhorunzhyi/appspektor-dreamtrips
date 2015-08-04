@@ -153,9 +153,6 @@
             android:name=".core.api.DreamSpiceService"
             android:exported="false"/>
         <service
-            android:name=".core.api.PhotoUploadSpiceService"
-            android:exported="false"/>
-        <service
             android:name=".core.api.VideoDownloadSpiceService"
             android:exported="false"/>
 

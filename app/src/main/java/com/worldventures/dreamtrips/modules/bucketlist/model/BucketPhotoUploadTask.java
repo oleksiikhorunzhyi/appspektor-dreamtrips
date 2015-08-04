@@ -5,10 +5,12 @@ import java.io.Serializable;
 public class BucketPhotoUploadTask implements Serializable {
 
     private String filePath;
-    private int taskId;
     private int bucketId;
     private boolean failed;
     private String type;
+
+    private int taskId;
+    private String amazonResultUrl;
 
     public void setSelectionType(String type) {
         this.type = type;
@@ -32,6 +34,14 @@ public class BucketPhotoUploadTask implements Serializable {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public String getAmazonResultUrl() {
+        return amazonResultUrl;
+    }
+
+    public void setAmazonResultUrl(String amazonResultUrl) {
+        this.amazonResultUrl = amazonResultUrl;
     }
 
     public int getBucketId() {

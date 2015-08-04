@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.core.utils;
 
-import android.content.Context;
-
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.io.File;
 import java.util.List;
@@ -21,14 +19,29 @@ public class AmazonDelegate {
         this.transferUtility = transferUtility;
     }
 
-    public TransferObserver uploadTripPhoto(Context context, ImageUploadTask imageUploadTask) {
-        File file = UploadingFileManager.copyFileIfNeed(imageUploadTask.getFileUri(), context);
+    public TransferObserver uploadTripPhoto(ImageUploadTask imageUploadTask) {
+        String filePath = imageUploadTask.getFileUri().replace("file://", "");
+        File file = new File(filePath);
+
         String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
         String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
         TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
         imageUploadTask.setAmazonResultUrl("https://" + bucketName
                 + ".s3.amazonaws.com/" + key);
         imageUploadTask.setAmazonTaskId(transferObserver.getId());
+        return transferObserver;
+    }
+
+    public TransferObserver uploadBucketPhoto(BucketPhotoUploadTask imageUploadTask) {
+        String filePath = imageUploadTask.getFilePath().replace("file://", "");
+        File file = new File(filePath);
+
+        String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
+        String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
+        TransferObserver transferObserver = transferUtility.upload(bucketName, key, file);
+        imageUploadTask.setAmazonResultUrl("https://" + bucketName
+                + ".s3.amazonaws.com/" + key);
+        imageUploadTask.setTaskId(transferObserver.getId());
         return transferObserver;
     }
 

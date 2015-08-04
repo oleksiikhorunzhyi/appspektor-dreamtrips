@@ -3,10 +3,14 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 import android.view.View;
 
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCell<T> {
 
@@ -36,4 +40,11 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
         }
 
     }
+
+    @Optional
+    @OnClick(R.id.comments)
+    void commentsClicked() {
+        getEventBus().post(new CommentsPressedEvent(getModelObject()));
+    }
+
 }

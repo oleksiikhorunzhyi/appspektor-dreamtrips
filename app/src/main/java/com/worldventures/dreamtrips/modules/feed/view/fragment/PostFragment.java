@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -75,13 +76,11 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        pidTypeShown = getPresenter().getPidType();
         pickImageDelegate = new PickImageDelegate(getActivity(), this, pidTypeShown);
         pickImageDelegate.setChooseImageCallback(getPresenter().provideSelectImageCallback());
         pickImageDelegate.setFbImageCallback(getPresenter().provideFbCallback());
         pickImageDelegate.setMakePhotoImageCallback(getPresenter().provideSelectImageCallback());
-
-        fabProgress.setVisibility(View.GONE);
-        shadow.setVisibility(View.GONE);
 
         post.addTextChangedListener(new TextWatcherAdapter() {
             @Override
@@ -107,14 +106,16 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         getPresenter().restartPhotoUpload();
     }
 
-    @OnClick(R.id.close)
+    @OnClick({R.id.close, R.id.space})
     void onClose() {
+        SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         getActivity().onBackPressed();
     }
 
     @OnClick(R.id.post_button)
     void onPost() {
+        SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().post();
     }
 
@@ -138,6 +139,8 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
                             pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
                             break;
                     }
+
+                    getPresenter().setPidType(pidTypeShown);
                 });
         builder.show();
     }
@@ -148,6 +151,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         if (pidTypeShown != 0) {
             pickImageDelegate.handlePickDialogActivityResult(requestCode, resultCode, data);
             pidTypeShown = 0;
+            getPresenter().setPidType(pidTypeShown);
         }
     }
 
@@ -160,9 +164,11 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void attachPhoto(Uri uri) {
         attachedPhoto.setImageURI(uri);
         if (uri != null) {
+            post.setHint(R.string.photo_hint);
             imageContainer.setVisibility(View.VISIBLE);
             image.setImageResource(R.drawable.ic_post_add_image_selected);
         } else {
+            post.setHint(R.string.post_hint);
             imageContainer.setVisibility(View.GONE);
             image.setImageResource(R.drawable.ic_post_add_image_normal);
         }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -8,8 +9,10 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
@@ -175,16 +178,21 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     private void handlePhotoPick(Uri uri) {
-        view.attachPhoto(uri);
-        ImageUploadTask imageUploadTask = new ImageUploadTask();
-        imageUploadTask.setFileUri(uri.toString());
-        post.setImageUploadTask(imageUploadTask);
-        uploadPhoto();
+        if (view != null) {
+            ImageUploadTask imageUploadTask = new ImageUploadTask();
+            imageUploadTask.setFileUri(uri.toString());
+            post.setImageUploadTask(imageUploadTask);
+            uploadPhoto();
+        }
     }
 
     private void uploadPhoto() {
         view.showProgress();
-        initListener(amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask()));
+        doRequest(new CopyFileCommand(context, post.getImageUploadTask().getFileUri()), filePath -> {
+            post.getImageUploadTask().setFileUri(filePath);
+            view.attachPhoto(Uri.parse(filePath));
+            initListener(amazonDelegate.uploadTripPhoto(post.getImageUploadTask()));
+        });
     }
 
     public void restartPhotoUpload() {
@@ -204,6 +212,14 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         view.imageError();
     }
 
+    public void setPidType(int pidType) {
+        post.setPidType(pidType);
+    }
+
+    public int getPidType() {
+        return post.getPidType();
+    }
+
     public void removeImage() {
         if (post.getImageUploadTask() != null)
             amazonDelegate.cancel(post.getImageUploadTask().getAmazonTaskId());
@@ -216,13 +232,16 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void onStateChanged(int id, TransferState state) {
         switch (state) {
             case COMPLETED:
-                photoUploaded(post.getImageUploadTask().getAmazonResultUrl());
+                if (post != null && post.getImageUploadTask() != null)
+                    photoUploaded(post.getImageUploadTask().getAmazonResultUrl());
                 break;
         }
     }
 
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+        if (view != null)
+            view.showProgress();
     }
 
     @Override

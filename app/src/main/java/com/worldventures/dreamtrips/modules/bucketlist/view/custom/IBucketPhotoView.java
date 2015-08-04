@@ -29,5 +29,7 @@ public interface IBucketPhotoView {
 
     void addFirstItem();
 
+    void itemChanged(Object item);
+
     List getImages();
 }

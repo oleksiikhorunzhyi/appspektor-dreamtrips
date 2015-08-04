@@ -13,6 +13,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
@@ -25,6 +26,9 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
 
 import java.util.List;
 
@@ -32,6 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
 public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
@@ -43,8 +48,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     Provider<Injector> injectorProvider;
     @InjectView(R.id.input)
     EditText input;
-    @InjectView(R.id.btnPost)
-    Button btnPost;
+    @InjectView(R.id.post)
+    Button post;
 
     LoadMore loadMore;
 
@@ -65,13 +70,21 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
-        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
-        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoCommentCell.class);
+        adapter.registerCell(FeedTripEventModel.class, FeedTripCommentCell.class);
+        adapter.registerCell(FeedBucketEventModel.class, FeedBucketCommentCell.class);
 
         linearLayoutManager = new LinearLayoutManager(rootView.getContext());
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
+
+        input.addTextChangedListener(new TextWatcherAdapter() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                super.onTextChanged(s, start, before, count);
+                post.setEnabled(s.length() > 0);
+            }
+        });
     }
 
     @Override
@@ -83,6 +96,19 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     public void setHeader(BaseFeedModel baseFeedModel) {
         adapter.addItem(0, baseFeedModel);
         adapter.addItem(1, loadMore);
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        adapter.addItem(comment);
+        adapter.notifyItemInserted(adapter.getItemCount());
+        commentsList.scrollToPosition(adapter.getItemCount());
+    }
+
+    @OnClick(R.id.post)
+    void onPost() {
+        getPresenter().post(input.getText().toString());
+        input.setText(null);
     }
 
     @Override

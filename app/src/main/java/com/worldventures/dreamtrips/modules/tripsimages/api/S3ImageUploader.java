@@ -37,7 +37,7 @@ public class S3ImageUploader {
     private ImageProgressListener imageProgressListener;
 
     public URL uploadImageToS3(String filePath, String taskId) throws FileNotFoundException {
-        File file = UploadingFileManager.copyFileIfNeed(filePath, context);
+        File file = new File(filePath);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.length());

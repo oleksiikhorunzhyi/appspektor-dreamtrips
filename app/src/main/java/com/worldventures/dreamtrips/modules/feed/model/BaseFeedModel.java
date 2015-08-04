@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.Date;
 
@@ -60,6 +61,7 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
         }
         return null;
     }
+
 
     private String getTypeCaption(Resources resources) {
         switch (type) {

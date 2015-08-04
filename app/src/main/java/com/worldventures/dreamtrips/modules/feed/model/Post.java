@@ -9,6 +9,15 @@ public class Post implements Serializable {
     private String text;
     private ImageUploadTask imageUploadTask;
 
+    private int pidType;
+
+    public void setPidType(int pidType) {
+        this.pidType = pidType;
+    }
+
+    public int getPidType() {
+        return pidType;
+    }
 
     public String getText() {
         return text;

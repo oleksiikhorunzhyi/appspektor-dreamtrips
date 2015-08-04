@@ -25,6 +25,9 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -34,29 +37,17 @@ import dagger.Module;
 @Module(
         injects = {
                 FeedAvatarEventCell.class,
-                FeedAvatarEventModel.class,
-
                 FeedCoverEventCell.class,
-                FeedCoverEventModel.class,
-
                 FeedTripEventCell.class,
-                FeedTripEventModel.class,
-
+                FeedTripCommentCell.class,
                 FeedPhotoEventCell.class,
-                FeedPhotoEventModel.class,
-
+                FeedPhotoCommentCell.class,
                 FeedBucketEventCell.class,
-
+                FeedBucketCommentCell.class,
                 LoadMoreCell.class,
                 FeedPhotoEventCell.class,
-
                 FeedPostEventCell.class,
-                FeedPostEventModel.class,
-
-                FeedBucketEventModel.class,
-
                 FeedUndefinedEventCell.class,
-                FeedUndefinedEventModel.class,
 
                 FeedPresenter.class,
                 FeedFragment.class,

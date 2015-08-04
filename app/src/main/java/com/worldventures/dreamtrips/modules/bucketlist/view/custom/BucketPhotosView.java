@@ -240,6 +240,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenObject).toList();
     }
 
+    @Override
+    public void itemChanged(Object item) {
+        imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item));
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         handlePickDialogActivityResult(requestCode, resultCode, data);
     }
@@ -307,10 +312,9 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public BucketPhotoUploadTask getBucketPhotoUploadTask(int taskId) {
-        return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element -> {
-            boolean b = element instanceof BucketPhotoUploadTask;
-            return b && ((BucketPhotoUploadTask) element).getTaskId() == taskId;
-        });
+        return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
+                element instanceof BucketPhotoUploadTask &&
+                        ((BucketPhotoUploadTask) element).getTaskId() == taskId);
     }
 
     public enum Type {

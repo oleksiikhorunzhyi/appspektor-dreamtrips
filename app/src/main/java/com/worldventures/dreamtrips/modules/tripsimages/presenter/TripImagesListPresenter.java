@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEv
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -124,14 +125,17 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
     }
 
     private void uploadPhoto(ImageUploadTask imageUploadTask) {
-        TrackingHelper.photoUploadStarted(imageUploadTask.getType(), "");
+        doRequest(new CopyFileCommand(context, imageUploadTask.getFileUri()), filePath -> {
+            TrackingHelper.photoUploadStarted(imageUploadTask.getType(), "");
 
-        amazonDelegate.uploadTripPhoto(context, imageUploadTask).setTransferListener(this);
-        db.saveUploadImageTask(imageUploadTask);
+            imageUploadTask.setFileUri(filePath);
+            amazonDelegate.uploadTripPhoto(imageUploadTask).setTransferListener(this);
+            db.saveUploadImageTask(imageUploadTask);
 
-        photos.add(0, imageUploadTask);
-        view.add(0, imageUploadTask);
-        db.savePhotoEntityList(type, photos);
+            photos.add(0, imageUploadTask);
+            view.add(0, imageUploadTask);
+            db.savePhotoEntityList(type, photos);
+        });
     }
 
     private void photoUploaded(int id) {

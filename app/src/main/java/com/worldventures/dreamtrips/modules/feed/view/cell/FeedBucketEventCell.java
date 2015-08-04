@@ -93,12 +93,6 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
 
     }
 
-    @OnClick(R.id.comments)
-    void commentsClicked() {
-        getEventBus().removeStickyEvent(CommentsPressedEvent.class);
-        getEventBus().postSticky(new CommentsPressedEvent(getModelObject()));
-    }
-
     private BucketTabsPresenter.BucketType getType(String name) {
         return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
     }

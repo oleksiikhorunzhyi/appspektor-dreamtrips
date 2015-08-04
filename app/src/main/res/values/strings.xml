@@ -333,5 +333,6 @@
     <string name="comment_view_more">View more comments</string>
     <string name="post_visibility_public">Public</string>
     <string name="post_hint">Write something…</string>
+    <string name="photo_hint">Say something about photo…</string>
     <string name="post">Post</string>
 </resources>

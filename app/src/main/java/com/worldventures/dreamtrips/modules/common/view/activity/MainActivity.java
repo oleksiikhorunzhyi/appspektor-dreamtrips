@@ -167,6 +167,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;
         getPresentationModel().openComponent(component);
+
+        handleComponentChange();
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -192,6 +193,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void onEvent(CommentsPressedEvent event) {
+        eventBus.cancelEventDelivery(event);
+        eventBus.removeStickyEvent(FeedItemStickyEvent.class);
+        eventBus.postSticky(new FeedItemStickyEvent(event.getModel()));
         activityRouter.openCommentsScreen();
     }
 

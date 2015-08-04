@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/black_semi_transparent"
-                android:clickable="true">
+<RelativeLayout
+    android:id="@+id/space"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_semi_transparent"
+    android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/post_container"
@@ -17,6 +19,7 @@
         android:layout_marginRight="@dimen/post_spacing_horizontal"
         android:layout_marginTop="@dimen/post_spacing_vertical"
         android:background="@drawable/background_post"
+        android:clickable="true"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -120,7 +123,8 @@
                         android:id="@+id/shadow"
                         android:layout_width="256dp"
                         android:layout_height="256dp"
-                        android:background="@color/black_semi_transparent"/>
+                        android:background="@color/black_semi_transparent"
+                        android:visibility="gone"/>
 
                     <ImageView
                         android:id="@+id/cancel_action"
@@ -141,6 +145,7 @@
                         android:indeterminate="false"
                         android:max="100"
                         android:src="@drawable/ic_upload_cloud"
+                        android:visibility="gone"
                         app:fbb_autoStart="true"
                         app:fbb_endBitmap="@drawable/ic_upload_cloud"
                         app:fbb_progressColor="#ffffff"
@@ -169,6 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/gray_lighter"
+        android:clickable="true"
         android:orientation="vertical"
         android:padding="@dimen/spacing_small">
 

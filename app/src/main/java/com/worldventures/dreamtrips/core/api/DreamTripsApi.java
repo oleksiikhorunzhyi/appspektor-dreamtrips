@@ -265,6 +265,14 @@ public interface DreamTripsApi {
     ArrayList<Comment> getComments(@Path("object_id") int objectId, @Query("per_page") int perPage, @Query("page") int page);
 
     @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment createComment(@Field("object_id") int objectId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment replyComment(@Field("reply_comment_id") int commentId, @Field("text") String text);
+
+    @FormUrlEncoded
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
 }

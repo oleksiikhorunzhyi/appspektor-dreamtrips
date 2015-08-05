@@ -45,6 +45,7 @@ public class AmazonDelegate {
         return transferObserver;
     }
 
+
     public void cancel(int id) {
         transferUtility.cancel(id);
     }

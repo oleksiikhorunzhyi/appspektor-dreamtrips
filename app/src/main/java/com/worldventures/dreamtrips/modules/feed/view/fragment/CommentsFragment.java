@@ -102,7 +102,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     public void addComment(Comment comment) {
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
-        commentsList.scrollToPosition(adapter.getItemCount());
+        commentsList.
+                smoothScrollToPosition(linearLayoutManager.getItemCount());
     }
 
     @OnClick(R.id.post)

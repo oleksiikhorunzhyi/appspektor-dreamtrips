@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -102,25 +103,26 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         return photos.get(position);
     }
 
+    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
+        if (type != Type.MY_IMAGES) {
+            getAdapterController().reload();
+        } else {
+            uploadPhoto(event.getUploadTask());
+        }
+    }
+
     public void onItemClick(int position) {
         if (position != -1) {
             IFullScreenObject obj = photos.get(position);
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
                     ((ImageUploadTask) obj).setFailed(false);
-                    uploadPhoto((ImageUploadTask) obj);
+                    view.getAdapter().notifyDataSetChanged();
+                    amazonDelegate.uploadTripPhoto((ImageUploadTask) obj).setTransferListener(this);
                 }
             } else {
                 this.activityRouter.openFullScreenPhoto(position, type);
             }
-        }
-    }
-
-    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
-        if (type != Type.MY_IMAGES) {
-            getAdapterController().reload();
-        } else {
-            uploadPhoto(event.getUploadTask());
         }
     }
 
@@ -161,7 +163,9 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         photos.add(index, photo);
         db.savePhotoEntityList(type, photos);
 
-        new Handler().postDelayed(() -> view.replace(index, photo), 300);
+        new Handler().postDelayed(() -> {
+            if (view != null) view.replace(index, photo);
+        }, 300);
     }
 
     private void photoFailed(int id) {
@@ -172,8 +176,24 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         if (task != null) {
             task.setFailed(true);
             db.saveUploadImageTask(task);
-            view.getAdapter().notifyDataSetChanged();
+            if (view != null)
+                view.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    private void photoInProgress(int id) {
+        ImageUploadTask task = (ImageUploadTask)
+                Queryable.from(photos).firstOrDefault(photo -> photo instanceof ImageUploadTask &&
+                        ((ImageUploadTask) photo).getAmazonTaskId() == id);
+
+        if (task != null) {
+            task.setFailed(false);
+            db.saveUploadImageTask(task);
+
+            if (view != null)
+                view.getAdapter().notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -182,11 +202,18 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             case COMPLETED:
                 photoUploaded(id);
                 break;
+            case FAILED:
+                photoFailed(id);
+                break;
+            case IN_PROGRESS:
+                photoInProgress(id);
+                break;
         }
     }
 
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+        photoInProgress(id);
     }
 
     @Override
@@ -279,6 +306,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
+
                     if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
                         photos.clear();
                         photos.addAll(items);
@@ -286,6 +314,9 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                     } else {
                         photos.addAll(items);
                     }
+
+                    //handle transfer status
+                    Queryable.from(items).forEachR(TripImagesListPresenter.this::processTask);
 
                     db.savePhotoEntityList(type, photos);
                 } else {
@@ -304,9 +335,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
                         || amazonDelegate.getTransferById(((ImageUploadTask) element)
                         .getAmazonTaskId()) != null).toList());
 
-        //handle transfer status
-        Queryable.from(result).forEachR(this::processTask);
-
         return result;
     }
 
@@ -314,16 +342,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         if (type.equals(Type.MY_IMAGES) && element instanceof ImageUploadTask) {
             ImageUploadTask temp = (ImageUploadTask) element;
             TransferObserver transferObserver = amazonDelegate.getTransferById(temp.getAmazonTaskId());
-            switch (transferObserver.getState()) {
-                case COMPLETED:
-                    //add photo if uploaded
-                    photoUploaded(transferObserver.getId());
-                    break;
-                case FAILED:
-                    //mark as failed
-                    temp.setFailed(true);
-                    break;
-            }
+            onStateChanged(transferObserver.getId(), transferObserver.getState());
             //listen for results here
             transferObserver.setTransferListener(this);
         }

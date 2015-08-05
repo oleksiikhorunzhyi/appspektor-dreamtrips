@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
@@ -46,12 +47,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     BucketItemManager bucketItemManager;
-    @Inject
-    SnappyRepository db;
 
     @Inject
-    @ForApplication
-    Injector injector;
+    SnappyRepository db;
 
     @Inject
     AmazonDelegate amazonDelegate;
@@ -136,6 +134,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         Collections.reverse(tasks);
 
         view.getBucketPhotosView().addImages(tasks);
+
+        Queryable.from(tasks).forEachR(this::processTask);
+    }
+
+    private void processTask(BucketPhotoUploadTask task) {
+        TransferObserver transferObserver = amazonDelegate.getTransferById(task.getTaskId());
+        onStateChanged(transferObserver.getId(), transferObserver.getState());
+        transferObserver.setTransferListener(this);
     }
 
 
@@ -226,9 +232,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
         startUpload(task);
-
-        if (view != null)
-            view.getBucketPhotosView().addImage(task);
     }
 
     private void startUpload(BucketPhotoUploadTask task) {
@@ -236,6 +239,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             task.setFilePath(filePath);
             amazonDelegate.uploadBucketPhoto(task).setTransferListener(this);
             db.saveBucketPhotoTask(task);
+
+            if (view != null)
+                view.getBucketPhotosView().addImage(task);
         });
 
     }
@@ -245,11 +251,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
                 event.getTask().getSelectionType(),
                 bucketItem.getType());
-        startUpload(event.getTask());
+        restartUpload(event.getTask());
+    }
+
+    private void restartUpload(BucketPhotoUploadTask task) {
+        task.setFailed(false);
+        db.saveBucketPhotoTask(task);
+        amazonDelegate.uploadBucketPhoto(task).setTransferListener(this);
+        view.getBucketPhotosView().itemChanged(task);
     }
 
     private void addPhotoToBucketItem(BucketPhotoUploadTask task) {
-        doRequest(new UploadBucketPhotoCommand(task), photo -> photoAdded(task, photo));
+        doRequest(new UploadBucketPhotoCommand(task), photo -> photoAdded(task, photo),
+                spiceException -> photoUploadError(task.getTaskId()));
     }
 
     private void photoAdded(BucketPhotoUploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
@@ -268,16 +282,26 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             case FAILED:
                 photoUploadError(id);
                 break;
+            case IN_PROGRESS:
+                photoInProgress(id);
         }
     }
 
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+        photoInProgress(id);
     }
 
     @Override
     public void onError(int id, Exception ex) {
         photoUploadError(id);
+    }
+
+    private void photoInProgress(int id) {
+        BucketPhotoUploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
+                .getBucketPhotoUploadTask(id);
+        bucketPhotoUploadTask.setFailed(false);
+        view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
     }
 
     private void photoUploadError(int id) {

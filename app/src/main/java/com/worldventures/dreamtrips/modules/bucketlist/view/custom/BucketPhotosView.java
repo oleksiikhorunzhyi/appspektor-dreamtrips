@@ -242,7 +242,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public void itemChanged(Object item) {
-        imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item));
+        imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item) + 1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -40,7 +40,6 @@ public class AmazonModule {
     }
 
     @Provides
-    @Singleton
     public AmazonDelegate provideTransferManager(AmazonS3Client amazonS3Client, @ForApplication Context context) {
         return new AmazonDelegate(new TransferUtility(amazonS3Client, context));
     }

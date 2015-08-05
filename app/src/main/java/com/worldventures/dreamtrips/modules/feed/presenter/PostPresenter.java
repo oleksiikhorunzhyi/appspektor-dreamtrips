@@ -197,7 +197,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     public void restartPhotoUpload() {
         if (post.getImageUploadTask().isFailed()) {
-            uploadPhoto();
+            post.getImageUploadTask().setFailed(false);
+            view.showProgress();
+            amazonDelegate.uploadTripPhoto(post.getImageUploadTask());
         }
     }
 
@@ -234,6 +236,10 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
             case COMPLETED:
                 if (post != null && post.getImageUploadTask() != null)
                     photoUploaded(post.getImageUploadTask().getAmazonResultUrl());
+                break;
+            case IN_PROGRESS:
+                if (view != null)
+                    view.showProgress();
                 break;
         }
     }

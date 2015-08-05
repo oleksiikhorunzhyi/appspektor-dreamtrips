@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -263,12 +262,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private void startUpload(final BucketPhotoUploadTask task) {
+        //TODO photo upload
         view.startLoading();
-        UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
-                getMessage(), injector);
-        doRequest(uploadBucketPhotoCommand,
-                this::photoUploaded,
-                this::getFilledInvitationsTemplateFailed);
     }
 
     private void photoUploaded(InviteTemplate inviteTemplate) {

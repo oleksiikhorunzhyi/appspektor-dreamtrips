@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,9 +117,13 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
             IFullScreenObject obj = photos.get(position);
             if (obj instanceof ImageUploadTask) {
                 if (((ImageUploadTask) obj).isFailed()) {
-                    ((ImageUploadTask) obj).setFailed(false);
-                    view.getAdapter().notifyDataSetChanged();
-                    amazonDelegate.uploadTripPhoto((ImageUploadTask) obj).setTransferListener(this);
+                    try {
+                        ((ImageUploadTask) obj).setFailed(false);
+                        view.getAdapter().notifyDataSetChanged();
+                        amazonDelegate.uploadTripPhoto(context, (ImageUploadTask) obj).setTransferListener(this);
+                    } catch (URISyntaxException e) {
+                        photoFailed(((ImageUploadTask) obj).getAmazonTaskId());
+                    }
                 }
             } else {
                 this.activityRouter.openFullScreenPhoto(position, type);
@@ -128,15 +133,19 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
 
     private void uploadPhoto(ImageUploadTask imageUploadTask) {
         doRequest(new CopyFileCommand(context, imageUploadTask.getFileUri()), filePath -> {
-            TrackingHelper.photoUploadStarted(imageUploadTask.getType(), "");
+            try {
+                TrackingHelper.photoUploadStarted(imageUploadTask.getType(), "");
+                imageUploadTask.setFileUri(filePath);
+                amazonDelegate.uploadTripPhoto(context, imageUploadTask).setTransferListener(this);
 
-            imageUploadTask.setFileUri(filePath);
-            amazonDelegate.uploadTripPhoto(imageUploadTask).setTransferListener(this);
-            db.saveUploadImageTask(imageUploadTask);
+                db.saveUploadImageTask(imageUploadTask);
 
-            photos.add(0, imageUploadTask);
-            view.add(0, imageUploadTask);
-            db.savePhotoEntityList(type, photos);
+                photos.add(0, imageUploadTask);
+                view.add(0, imageUploadTask);
+                db.savePhotoEntityList(type, photos);
+            } catch (URISyntaxException e) {
+                photoFailed(imageUploadTask.getAmazonTaskId());
+            }
         });
     }
 

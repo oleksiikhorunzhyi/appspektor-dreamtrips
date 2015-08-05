@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
+import android.app.Dialog;
 import android.net.Uri;
+import android.support.v7.widget.PopupMenu;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,14 +12,19 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
 public class CommentCell extends AbstractCell<Comment> {
@@ -34,6 +41,8 @@ public class CommentCell extends AbstractCell<Comment> {
     ImageView edit;
     @InjectView(R.id.reply)
     ImageView reply;
+    @InjectView(R.id.edited)
+    ImageView edited;
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
@@ -50,11 +59,47 @@ public class CommentCell extends AbstractCell<Comment> {
         text.setText(getModelObject().getMessage());
         CharSequence relativeTimeSpanString = DateUtils.getRelativeTimeSpanString(getModelObject().getCreatedAt().getTime());
         date.setText(relativeTimeSpanString);
+
         if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
             edit.setVisibility(View.VISIBLE);
         } else {
             edit.setVisibility(View.GONE);
         }
+
+        if (getModelObject().isUpdate()) {
+            edited.setVisibility(View.VISIBLE);
+        } else {
+            edited.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @OnClick(R.id.edit)
+    void onEditClicked() {
+        PopupMenu popup = new PopupMenu(itemView.getContext(), edit);
+        popup.inflate(R.menu.menu_comment_edit);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    Dialog dialog = new SweetAlertDialog(itemView.getContext(), SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText(itemView.getResources().getString(R.string.comment_delete))
+                            .setContentText(itemView.getResources().getString(R.string.comment_delete_caption))
+                            .setConfirmText(itemView.getResources().getString(R.string.comment_delete_confirm))
+                            .setConfirmClickListener(sDialog -> {
+                                sDialog.dismissWithAnimation();
+                                getEventBus().post(new DeleteCommentEvent(getModelObject()));
+                            });
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    break;
+                case R.id.action_edit:
+                    SoftInputUtil.hideSoftInputMethod(text);
+                    getEventBus().post(new EditCommentEvent(getModelObject()));
+                    break;
+            }
+
+            return true;
+        });
+        popup.show();
     }
 
     @Override

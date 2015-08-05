@@ -329,8 +329,13 @@
     <string name="filter_video_title_country">Choose country</string>
     <string name="comments_title">Comments</string>
     <string name="comment_add_hint">Add a comment</string>
-    <string name="comment_post_btn_title">POST</string>
+    <string name="comment_post_btn_title">Post</string>
     <string name="comment_view_more">View more comments</string>
+    <string name="comment_edit">Edit comment</string>
+    <string name="save">Save</string>
+    <string name="comment_delete">Delete comment</string>
+    <string name="comment_delete_caption">Are you sure want to delete this comment?</string>
+    <string name="comment_delete_confirm">Yes, delete it!</string>
     <string name="post_visibility_public">Public</string>
     <string name="post_hint">Write something…</string>
     <string name="photo_hint">Say something about photo…</string>

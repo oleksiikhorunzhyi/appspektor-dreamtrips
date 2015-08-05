@@ -275,4 +275,11 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
+
+    @DELETE("/api/social/comments/{id}")
+    JSONObject deleteComment(@Path("id") int commentId);
+
+    @FormUrlEncoded
+    @PUT("/api/social/comments/{id}")
+    Comment editComment(@Path("id") int commentId, @Field("text") String text);
 }

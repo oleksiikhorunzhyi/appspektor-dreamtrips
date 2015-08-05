@@ -25,6 +25,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/black_gradient"
+        android:ellipsize="end"
+        android:maxLines="3"
         android:padding="@dimen/spacing_normal"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/white"

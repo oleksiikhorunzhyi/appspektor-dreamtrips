@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCal
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -236,12 +237,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void startUpload(BucketPhotoUploadTask task) {
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> {
-            task.setFilePath(filePath);
-            amazonDelegate.uploadBucketPhoto(task).setTransferListener(this);
-            db.saveBucketPhotoTask(task);
-
             if (view != null)
                 view.getBucketPhotosView().addImage(task);
+
+            try {
+                task.setFilePath(filePath);
+                amazonDelegate.uploadBucketPhoto(context, task).setTransferListener(this);
+                db.saveBucketPhotoTask(task);
+            } catch (URISyntaxException e) {
+                photoUploadError(task.getTaskId());
+            }
+
         });
 
     }
@@ -255,10 +261,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void restartUpload(BucketPhotoUploadTask task) {
-        task.setFailed(false);
-        db.saveBucketPhotoTask(task);
-        amazonDelegate.uploadBucketPhoto(task).setTransferListener(this);
-        view.getBucketPhotosView().itemChanged(task);
+        try {
+            task.setFailed(false);
+            db.saveBucketPhotoTask(task);
+            amazonDelegate.uploadBucketPhoto(context, task).setTransferListener(this);
+            view.getBucketPhotosView().itemChanged(task);
+        } catch (URISyntaxException e) {
+            photoUploadError(task.getTaskId());
+        }
     }
 
     private void addPhotoToBucketItem(BucketPhotoUploadTask task) {

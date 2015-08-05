@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CommentsActivityPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.activity.CommentsActivity;
 
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCom
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 
@@ -52,6 +54,9 @@ import dagger.Module;
                 FeedPresenter.class,
                 FeedFragment.class,
                 ParallaxRecyclerAdapter.class,
+
+                EditCommentFragment.class,
+                EditCommentPresenter.class,
 
                 CommentsFragment.class,
                 ComponentPresenter.class,

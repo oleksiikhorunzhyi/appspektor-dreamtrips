@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.io.File;
+import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
@@ -189,17 +190,25 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     private void uploadPhoto() {
         view.showProgress();
         doRequest(new CopyFileCommand(context, post.getImageUploadTask().getFileUri()), filePath -> {
-            post.getImageUploadTask().setFileUri(filePath);
-            view.attachPhoto(Uri.parse(filePath));
-            initListener(amazonDelegate.uploadTripPhoto(post.getImageUploadTask()));
+            try {
+                post.getImageUploadTask().setFileUri(filePath);
+                view.attachPhoto(Uri.parse(filePath));
+                initListener(amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask()));
+            } catch (URISyntaxException e) {
+                photoFailed();
+            }
         });
     }
 
     public void restartPhotoUpload() {
         if (post.getImageUploadTask().isFailed()) {
-            post.getImageUploadTask().setFailed(false);
-            view.showProgress();
-            amazonDelegate.uploadTripPhoto(post.getImageUploadTask());
+            try {
+                post.getImageUploadTask().setFailed(false);
+                view.showProgress();
+                amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask());
+            } catch (URISyntaxException e) {
+                photoFailed();
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -53,6 +54,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     LoadMore loadMore;
 
+    RecyclerViewStateDelegate stateDelegate;
+
     BaseArrayListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
 
@@ -62,8 +65,22 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stateDelegate.saveStateIfNeeded(outState);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        stateDelegate.setRecyclerView(commentsList);
         loadMore = new LoadMore();
 
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
@@ -90,6 +107,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @Override
     public void addComments(List<Comment> commentList) {
         adapter.addItems(2, commentList);
+        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
@@ -102,8 +120,21 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     public void addComment(Comment comment) {
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
-        commentsList.
-                smoothScrollToPosition(linearLayoutManager.getItemCount());
+        commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
+    }
+
+    @Override
+    public void removeComment(Comment comment) {
+        int index = adapter.getItems().indexOf(comment);
+        adapter.remove(index);
+        adapter.notifyItemRemoved(index);
+    }
+
+    @Override
+    public void updateComment(Comment comment) {
+        int index = adapter.getItems().indexOf(comment);
+        adapter.replaceItem(index, comment);
+        adapter.notifyItemChanged(index);
     }
 
     @OnClick(R.id.post)

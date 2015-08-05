@@ -51,6 +51,13 @@
                 android:textSize="@dimen/font_normal"
                 tools:text="Eldar Mensutov"/>
 
+            <ImageView
+                android:id="@+id/edited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_tiny"
+                android:src="@drawable/ic_edited"/>
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"

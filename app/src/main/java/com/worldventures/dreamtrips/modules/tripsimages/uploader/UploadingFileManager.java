@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -58,16 +57,15 @@ public class UploadingFileManager {
         Uri uri = Uri.parse(filePath);
         ValidationUtils.checkNotNull(uri);
 
-        InputStream in = null;
-        FileOutputStream out = null;
+        if (uri.getScheme().startsWith("http")) {
+            InputStream in = null;
+            FileOutputStream out = null;
 
-        String fileKey = filePath + new Date().toString();
-        String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
-        ValidationUtils.checkNotNull(extension);
-        String fileKeyHash = md5(fileKey);
-
-        try {
-            if (uri.getScheme().startsWith("http")) {
+            try {
+                String fileKey = filePath + new Date().toString();
+                String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+                ValidationUtils.checkNotNull(extension);
+                String fileKeyHash = md5(fileKey);
                 in = new URL(uri.toString()).openStream();
                 File file = File.createTempFile(
                         fileKeyHash,
@@ -83,26 +81,28 @@ public class UploadingFileManager {
                 out.flush();
 
                 finalPath = "file://" + file.getAbsolutePath();
-            } else {
-                finalPath = filePath;
-            }
-        } catch (IOException e) {
-            Timber.e(e, "Problem on file copying");
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Timber.e(e, "Problem on file copying");
+
+            } catch (IOException e) {
+                Timber.e(e, "Problem on file copying");
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        Timber.e(e, "Problem on file copying");
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        Timber.e(e, "Problem on file copying");
+                    }
                 }
             }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    Timber.e(e, "Problem on file copying");
-                }
-            }
+
+        } else {
+            finalPath = filePath;
         }
 
         return finalPath;

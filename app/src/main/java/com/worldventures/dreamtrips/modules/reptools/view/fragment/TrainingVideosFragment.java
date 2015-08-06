@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
@@ -14,16 +11,9 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPre
 
 import java.util.ArrayList;
 
-import butterknife.InjectView;
-
-@Layout(R.layout.fragment_training_videos)
-public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter> implements TrainingVideosPresenter.View {
-
-    @InjectView(R.id.spinner_language)
-    SimpleDraweeView selectedLocaleView;
-
-    @InjectView(R.id.wrapper_spinner_language)
-    View wrapperSpinnerLanguage;
+@Layout(R.layout.fragment_presentation_videos)
+public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter>
+        implements TrainingVideosPresenter.View {
 
     FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
@@ -34,20 +24,15 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
 
     @Override
     public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
-        wrapperSpinnerLanguage.setOnClickListener(view -> {
-            if (!dialog.isAdded()) {
-                dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
-                dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
-            }
-        });
-        if (defaultValue != null)
-            setupView(defaultValue);
         dialog.setData(locales);
     }
 
     @Override
-    public void setupView(VideoLocale defaultValue) {
-        selectedLocaleView.setImageURI(Uri.parse(defaultValue.getImage()));
+    public void showDialog() {
+        if (!dialog.isAdded()) {
+            dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
+            dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
+        }
     }
 
 }

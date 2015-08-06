@@ -3,13 +3,17 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
+import com.worldventures.dreamtrips.modules.video.event.LanguageClickedEvent;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -45,6 +49,10 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
             }
             view.setLocales(locales, videoLocale);
+
+            VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
+            firstHeader.setVideoLocale(videoLocale);
+            view.getAdapter().notifyItemChanged(0);
         }
     }
 
@@ -59,7 +67,20 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         db.saveLastSelectedVideoLocale(videoLocale);
         db.saveLastSelectedVideoLanguage(videoLanguage);
         reload();
-        view.setupView(videoLocale);
+
+        VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
+        firstHeader.setVideoLocale(videoLocale);
+    }
+
+    @Override
+    protected void addCategoryHeader(String category, List<Video> videos, int index) {
+        currentItems.add(new VideoHeader(category, index == 0));
+        currentItems.addAll(Queryable.from(videos).filter(video ->
+                video.getCategory().equals(category)).toList());
+    }
+
+    public void onEvent(LanguageClickedEvent event) {
+        view.showDialog();
     }
 
     @Override
@@ -73,6 +94,6 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     public interface View extends PresentationVideosPresenter.View {
         void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue);
 
-        void setupView(VideoLocale videoLocale);
+        void showDialog();
     }
 }

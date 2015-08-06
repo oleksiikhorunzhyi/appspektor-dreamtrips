@@ -16,6 +16,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
@@ -69,7 +70,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
         this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);
-        this.arrayListAdapter.registerCell(String.class, VideoHeaderLightCell.class);
+        this.arrayListAdapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 

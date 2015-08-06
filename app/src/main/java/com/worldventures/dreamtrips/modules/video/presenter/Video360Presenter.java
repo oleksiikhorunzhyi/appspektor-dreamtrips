@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
@@ -77,9 +78,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         if (featuredVideos != null) {
             if (view != null && view.getAllAdapter() != null) {
                 view.getAllAdapter().clear();
-                view.getAllAdapter().addItem(context.getString(R.string.featured_header));
+                view.getAllAdapter().addItem(new VideoHeader(context.getString(R.string.featured_header)));
                 view.getAllAdapter().addItems(featuredVideos);
-                view.getAllAdapter().addItem(context.getString(R.string.recent_header));
+                view.getAllAdapter().addItem(new VideoHeader(context.getString(R.string.recent_header)));
                 view.getAllAdapter().addItems(recentVideos);
             }
         } else {

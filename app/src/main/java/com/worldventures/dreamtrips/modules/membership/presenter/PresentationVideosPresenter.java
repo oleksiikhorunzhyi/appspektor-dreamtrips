@@ -1,14 +1,18 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
@@ -33,6 +37,8 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @Inject
     protected VideoCachingDelegate videoCachingDelegate;
 
+    protected List<Object> currentItems;
+
     protected MemberVideosRequest getMemberVideosRequest() {
         return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
     }
@@ -46,6 +52,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @Override
     public void onResume() {
         super.onResume();
+        view.startLoading();
         loadVideos();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
@@ -77,6 +84,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
     private void loadVideos() {
         doRequest(getMemberVideosRequest(), videos -> {
+            view.finishLoading();
             attachCacheToVideos(videos);
             addCategories(videos);
             attachListeners(videos);
@@ -87,29 +95,35 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         Queryable.from(videos).forEachR(video -> {
             CachedEntity e = db.getDownloadVideoEntity(video.getUid());
             video.setCacheEntity(e);
+
+            if (TextUtils.isEmpty(video.getCategory())) doOnVideoCategoryEmpty(video);
         });
     }
 
+    protected void doOnVideoCategoryEmpty(Video video) {
+        video.setCategory(context.getString(R.string.recent_videos));
+    }
+
     private void addCategories(List<Video> videos) {
-        ArrayList<Object> objects = new ArrayList<>();
+        currentItems = new ArrayList<>();
 
-
-        Queryable<String> categories = Queryable.from(videos)
+        List<String> categories = Queryable.from(videos)
                 .map(Video::getCategory)
-                .distinct();
+                .distinct().toList();
 
-        if (categories.count() > 0)
-            categories.forEachR(category -> {
-                objects.add(category);
-                objects.addAll(Queryable.from(videos).filter(video ->
-                        video.getCategory().equals(category)).toList());
-            });
-        else
-            objects.addAll(videos);
+        Queryable.from(categories).forEachR(category -> addCategoryHeader(category,
+                videos, categories.indexOf(category)));
 
         view.getAdapter().clear();
-        view.getAdapter().addItems(objects);
+        view.getAdapter().addItems(currentItems);
     }
+
+    protected void addCategoryHeader(String category, List<Video> videos, int categoryIndex) {
+        currentItems.add(new VideoHeader(category));
+        currentItems.addAll(Queryable.from(videos).filter(video ->
+                video.getCategory().equals(category)).toList());
+    }
+
 
     private void attachListeners(List<Video> items) {
         Queryable.from(items).forEachR(item -> {

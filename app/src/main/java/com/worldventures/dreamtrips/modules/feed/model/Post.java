@@ -1,15 +1,25 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import java.io.Serializable;
 
 public class Post implements Serializable {
 
     private String text;
-    private ImageUploadTask imageUploadTask;
+    private int imageUploadTaskId;
+
+    private UploadTask uploadTask;
 
     private int pidType;
+
+    public void setImageUploadTaskId(int imageUploadTaskId) {
+        this.imageUploadTaskId = imageUploadTaskId;
+    }
+
+    public int getImageUploadTaskId() {
+        return imageUploadTaskId;
+    }
 
     public void setPidType(int pidType) {
         this.pidType = pidType;
@@ -27,12 +37,12 @@ public class Post implements Serializable {
         this.text = text;
     }
 
-    public ImageUploadTask getImageUploadTask() {
-        return imageUploadTask;
+    public UploadTask getUploadTask() {
+        return uploadTask;
     }
 
-    public void setImageUploadTask(ImageUploadTask imageUploadTask) {
-        this.imageUploadTask = imageUploadTask;
+    public void setUploadTask(UploadTask uploadTask) {
+        this.uploadTask = uploadTask;
     }
 
 }

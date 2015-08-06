@@ -103,7 +103,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     @OnClick(R.id.fab_progress)
     void onProgressClick() {
-        getPresenter().restartPhotoUpload();
+        getPresenter().onProgressClicked();
     }
 
     @OnClick({R.id.close, R.id.space})

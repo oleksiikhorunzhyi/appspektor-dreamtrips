@@ -62,6 +62,10 @@ public class Comment extends BaseEntity implements Parcelable {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -126,6 +127,9 @@ public interface DreamTripsApi {
 
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
+
+    @POST("/api/photos")
+    Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
     @POST("/api/bucket_list_items/{id}/photos")
     BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);

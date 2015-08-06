@@ -56,8 +56,8 @@ public class DateTimeUtils {
 
     public static DateFormat[] getISO1DateFormats() {
         return new DateFormat[]{
-                new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
+                new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault()),

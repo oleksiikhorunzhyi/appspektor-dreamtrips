@@ -9,6 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -42,6 +43,7 @@ public class SnappyRepository {
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
     public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task";
+    public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
     public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
@@ -240,6 +242,22 @@ public class SnappyRepository {
     public CachedEntity getDownloadVideoEntity(String id) {
         return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Image Tasks
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveUploadTask(UploadTask uploadTask) {
+        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getAmazonTaskId(), uploadTask));
+    }
+
+    public UploadTask getUploadTask(int id) {
+        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + id, UploadTask.class)).orNull();
+    }
+
+    public void removeUploadTask(UploadTask uploadTask) {
+        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getAmazonTaskId()));
     }
 
     ///////////////////////////////////////////////////////////////////////////

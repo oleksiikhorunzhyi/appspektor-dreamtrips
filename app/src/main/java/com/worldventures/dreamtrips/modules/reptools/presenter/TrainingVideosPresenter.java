@@ -58,7 +58,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         this.videoLanguage = videoLanguage;
         db.saveLastSelectedVideoLocale(videoLocale);
         db.saveLastSelectedVideoLanguage(videoLanguage);
-        getAdapterController().reload();
+        reload();
         view.setupView(videoLocale);
     }
 

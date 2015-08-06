@@ -20,6 +20,10 @@ public class Video {
     public Video() {
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

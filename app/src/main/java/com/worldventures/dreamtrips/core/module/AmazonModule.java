@@ -7,6 +7,7 @@ import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
@@ -36,6 +37,7 @@ public class AmazonModule {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setConnectionTimeout(connectionTimeout);
         clientConfiguration.setSocketTimeout(connectionTimeout);
+
         return new AmazonS3Client(credentialsProvider, clientConfiguration);
     }
 

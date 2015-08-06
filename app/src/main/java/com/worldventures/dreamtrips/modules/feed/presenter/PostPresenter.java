@@ -1,34 +1,31 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
+import com.worldventures.dreamtrips.modules.common.api.CancelUploadCommand;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import java.io.File;
-import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
-public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
+public class PostPresenter extends Presenter<PostPresenter.View> {
 
     private Post post;
 
@@ -40,7 +37,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     SnappyRepository snapper;
 
     @Inject
-    AmazonDelegate amazonDelegate;
+    AmazonS3Client amazonS3;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -64,9 +61,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         super.takeView(view);
 
         post = snapper.getPost();
+
         if (post == null) {
             post = new Post();
             savePost();
+        } else if (post.getImageUploadTaskId() != 0) {
+            post.setUploadTask(snapper.getUploadTask(post.getImageUploadTaskId()));
         }
 
         view.setName(getAccount().getFullName());
@@ -78,25 +78,21 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     private void updateUi() {
         view.setText(post.getText());
 
-        if (post.getImageUploadTask() != null) {
-            view.attachPhoto(Uri.parse(post.getImageUploadTask().getFileUri()));
+        if (post.getUploadTask() != null && post.getUploadTask().getStatus() != null) {
+            view.attachPhoto(Uri.parse(post.getUploadTask().getFilePath()));
 
-            if (TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl()))
+            if (!post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))
                 view.showProgress();
 
-            if (post.getImageUploadTask().isFailed()) {
+            if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
                 view.imageError();
             }
         }
-
-        setTransferListenereIfNeeded();
 
         enablePostButton();
     }
 
     public void cancel() {
-        if (post.getImageUploadTask() != null)
-            amazonDelegate.cancel(post.getImageUploadTask().getAmazonTaskId());
         fragmentCompass.removePost();
         deletePost();
     }
@@ -119,10 +115,10 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void post() {
-        if (post.getImageUploadTask() != null
-                && !TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl())) {
-            post.getImageUploadTask().setTitle(post.getText());
-            doRequest(new AddTripPhotoCommand(post.getImageUploadTask()), this::processPhoto);
+        if (post.getUploadTask() != null &&
+                post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED)) {
+            post.getUploadTask().setTitle(post.getText());
+            doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPhoto);
         } else if (!TextUtils.isEmpty(post.getText())) {
             doRequest(new NewPostCommand(post.getText()), this::processPost);
         }
@@ -130,8 +126,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     private void enablePostButton() {
         if (!TextUtils.isEmpty(post.getText()) ||
-                (post.getImageUploadTask() != null &&
-                        !TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl()))) {
+                (post.getUploadTask() != null &&
+                        post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
             view.enableButton();
         } else {
             view.disableButton();
@@ -152,20 +148,6 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         enablePostButton();
     }
 
-
-    private void setTransferListenereIfNeeded() {
-        if (post.getImageUploadTask() != null &&
-                TextUtils.isEmpty(post.getImageUploadTask().getOriginUrl())) {
-            TransferObserver transferObserver = amazonDelegate.getTransferById(post.getImageUploadTask().getAmazonTaskId());
-            if (transferObserver != null)
-                initListener(transferObserver);
-        }
-    }
-
-    private void initListener(TransferObserver transferObserver) {
-        transferObserver.setTransferListener(this);
-    }
-
     ////////////////////////////////////////
     /////// Photo upload
     ////////////////////////////////////////
@@ -180,47 +162,69 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     private void handlePhotoPick(Uri uri) {
         if (view != null) {
-            ImageUploadTask imageUploadTask = new ImageUploadTask();
-            imageUploadTask.setFileUri(uri.toString());
-            post.setImageUploadTask(imageUploadTask);
-            uploadPhoto();
+            UploadTask imageUploadTask = new UploadTask();
+            imageUploadTask.setFilePath(uri.toString());
+            imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+            post.setUploadTask(imageUploadTask);
+            savePhotoIfNeeded();
         }
     }
 
-    private void uploadPhoto() {
+    private void savePhotoIfNeeded() {
+        doRequest(new CopyFileCommand(context, post.getUploadTask().getFilePath()), this::uploadPhoto);
+    }
+
+    private void uploadPhoto(String filePath) {
+        post.getUploadTask().setFilePath(filePath);
+        view.attachPhoto(Uri.parse(filePath));
+        startUpload();
+    }
+
+    private void startUpload() {
         view.showProgress();
-        doRequest(new CopyFileCommand(context, post.getImageUploadTask().getFileUri()), filePath -> {
-            try {
-                post.getImageUploadTask().setFileUri(filePath);
-                view.attachPhoto(Uri.parse(filePath));
-                initListener(amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask()));
-            } catch (URISyntaxException e) {
-                photoFailed();
-            }
+
+        UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
+                eventBus, snapper, post.getUploadTask());
+        doRequest(uploadToS3Command, url -> {
         });
     }
 
-    public void restartPhotoUpload() {
-        if (post.getImageUploadTask().isFailed()) {
-            try {
-                post.getImageUploadTask().setFailed(false);
-                view.showProgress();
-                amazonDelegate.uploadTripPhoto(context, post.getImageUploadTask());
-            } catch (URISyntaxException e) {
-                photoFailed();
-            }
+    public void onEventMainThread(UploadStatusChanged event) {
+        if (post.getUploadTask().equals(event.getUploadTask())) {
+            post.setUploadTask(event.getUploadTask());
+            processUploadTask();
         }
     }
 
-    private void photoUploaded(String url) {
+    private void processUploadTask() {
+        switch (post.getUploadTask().getStatus()) {
+            case IN_PROGRESS:
+                photoInProgress();
+                break;
+            case FAILED:
+                photoFailed();
+                break;
+            case CANCELED:
+                break;
+            case COMPLETED:
+                photoCompleted();
+                break;
+        }
+    }
+
+    private void photoInProgress() {
+        view.showProgress();
+        enablePostButton();
+    }
+
+    private void photoCompleted() {
         view.hideProgress();
-        post.getImageUploadTask().setOriginUrl(url);
         enablePostButton();
     }
 
     private void photoFailed() {
-        post.getImageUploadTask().setFailed(true);
         view.imageError();
+        enablePostButton();
     }
 
     public void setPidType(int pidType) {
@@ -231,37 +235,18 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         return post.getPidType();
     }
 
-    public void removeImage() {
-        if (post.getImageUploadTask() != null)
-            amazonDelegate.cancel(post.getImageUploadTask().getAmazonTaskId());
-        post.setImageUploadTask(null);
-        enablePostButton();
-        view.attachPhoto(null);
-    }
-
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        switch (state) {
-            case COMPLETED:
-                if (post != null && post.getImageUploadTask() != null)
-                    photoUploaded(post.getImageUploadTask().getAmazonResultUrl());
-                break;
-            case IN_PROGRESS:
-                if (view != null)
-                    view.showProgress();
-                break;
+    public void onProgressClicked() {
+        if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
+            startUpload();
         }
     }
 
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-        if (view != null)
-            view.showProgress();
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        photoFailed();
+    public void removeImage() {
+        doRequest(new CancelUploadCommand(amazonS3, snapper, post.getUploadTask()), temp -> {
+        });
+        post.setUploadTask(null);
+        enablePostButton();
+        view.attachPhoto(null);
     }
 
     public interface View extends Presenter.View {

@@ -8,14 +8,12 @@ import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentUpdatedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 
 import java.util.ArrayList;
 import java.util.List;

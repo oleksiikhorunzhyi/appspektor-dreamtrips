@@ -158,8 +158,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject> exten
         if (task != null) {
             task.setOriginUrl(task.getAmazonResultUrl());
             doRequest(new AddTripPhotoCommand(task), photo -> {
-                db.removeImageUploadTask(task);
                 processPhoto(photos.indexOf(task), photo);
+                db.removeImageUploadTask(task);
             });
         }
 

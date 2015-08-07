@@ -103,7 +103,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return arrayListAdapter.getItem(position) instanceof String ? spanCount : 1;
+                return arrayListAdapter.getItem(position) instanceof VideoHeader ? spanCount : 1;
             }
         });
         this.recyclerView.setLayoutManager(layoutManager);

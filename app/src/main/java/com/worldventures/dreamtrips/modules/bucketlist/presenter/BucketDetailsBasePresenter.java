@@ -3,14 +3,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -23,18 +18,20 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCa
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
+import com.worldventures.dreamtrips.modules.common.api.CancelUploadCommand;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,8 +40,7 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V>
-        implements TransferListener {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
     @Inject
     BucketItemManager bucketItemManager;
@@ -53,7 +49,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     SnappyRepository db;
 
     @Inject
-    AmazonDelegate amazonDelegate;
+    AmazonS3Client amazonS3;
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
@@ -131,20 +127,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.getBucketPhotosView().setImages(photos);
         }
 
-        List<BucketPhotoUploadTask> tasks = db.getBucketPhotoTasksBy(bucketItem.getId());
+        List<UploadTask> tasks = db.getUploadTasks(bucketItem.getUploadTasksPaths());
         Collections.reverse(tasks);
 
         view.getBucketPhotosView().addImages(tasks);
-
-        Queryable.from(tasks).forEachR(this::processTask);
     }
-
-    private void processTask(BucketPhotoUploadTask task) {
-        TransferObserver transferObserver = amazonDelegate.getTransferById(task.getTaskId());
-        onStateChanged(transferObserver.getId(), transferObserver.getState());
-        transferObserver.setTransferListener(this);
-    }
-
 
     //////////////////////////////
     ///////// Photo upload staff
@@ -173,9 +160,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        amazonDelegate.cancel(event.getModelObject().getTaskId());
-        db.removeBucketPhotoTask(event.getModelObject());
-        view.getBucketPhotosView().deleteImage(event.getModelObject());
+        doRequest(new CancelUploadCommand(amazonS3, db, event.getModelObject()), temp -> {
+        });
+
+        bucketItem.removeTaskPath(event.getModelObject().getFilePath());
+        bucketItemManager.resaveBucketItem(bucketItem);
     }
 
     public void onCoverClicked() {
@@ -226,98 +215,74 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
 
     private void handlePhotoPick(Uri uri, String type) {
-        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setBucketId(bucketItem.getId());
+        UploadTask task = new UploadTask();
         task.setFilePath(uri.toString());
-        task.setSelectionType(type);
+        task.setType(type);
 
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, type, bucketItem.getType());
-        startUpload(task);
+        copyFileIfNeeded(task);
     }
 
-    private void startUpload(BucketPhotoUploadTask task) {
-        doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> {
-            if (view != null)
-                view.getBucketPhotosView().addImage(task);
+    private void copyFileIfNeeded(UploadTask task) {
+        doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
+    }
 
-            try {
-                task.setFilePath(filePath);
-                amazonDelegate.uploadBucketPhoto(context, task).setTransferListener(this);
-                db.saveBucketPhotoTask(task);
-            } catch (URISyntaxException e) {
-                photoUploadError(task.getTaskId());
-            }
+    private void upload(UploadTask uploadTask, String filePath) {
+        uploadTask.setFilePath(filePath);
+        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
 
+        bucketItem.addTaskPath(filePath);
+        bucketItemManager.resaveBucketItem(bucketItem);
+
+        startUpload(uploadTask);
+    }
+
+    private void startUpload(UploadTask uploadTask) {
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
+                uploadTask.getType(), bucketItem.getType());
+        UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
+                eventBus, db, uploadTask);
+
+        doRequest(uploadToS3Command, url -> {
         });
+    }
 
+    public void onEventMainThread(UploadStatusChanged event) {
+        UploadTask uploadTask = view.getBucketPhotosView()
+                .getBucketPhotoUploadTask(event.getUploadTask().getFilePath());
+
+        if (uploadTask != null) {
+            uploadTask.changed(event.getUploadTask());
+            view.getBucketPhotosView().itemChanged(uploadTask);
+
+            if (uploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
+                addPhotoToBucketItem(uploadTask);
+        }
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
         eventBus.cancelEventDelivery(event);
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
-                event.getTask().getSelectionType(),
-                bucketItem.getType());
-        restartUpload(event.getTask());
+
+        event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
+        view.getBucketPhotosView().itemChanged(event.getTask());
+
+        startUpload(event.getTask());
     }
 
-    private void restartUpload(BucketPhotoUploadTask task) {
-        try {
-            task.setFailed(false);
-            db.saveBucketPhotoTask(task);
-            amazonDelegate.uploadBucketPhoto(context, task).setTransferListener(this);
-            view.getBucketPhotosView().itemChanged(task);
-        } catch (URISyntaxException e) {
-            photoUploadError(task.getTaskId());
-        }
+    private void addPhotoToBucketItem(UploadTask task) {
+        doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
+                photo -> photoAdded(task, photo),
+                spiceException -> photoUploadError(task));
     }
 
-    private void addPhotoToBucketItem(BucketPhotoUploadTask task) {
-        doRequest(new UploadBucketPhotoCommand(task), photo -> photoAdded(task, photo),
-                spiceException -> photoUploadError(task.getTaskId()));
-    }
-
-    private void photoAdded(BucketPhotoUploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-        db.removeBucketPhotoTask(bucketPhotoUploadTask);
-        view.getBucketPhotosView().replace(bucketPhotoUploadTask, bucketPhoto);
+    private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+        bucketItem.removeTaskPath(bucketPhotoUploadTask.getFilePath());
         bucketItemManager.updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        switch (state) {
-            case COMPLETED:
-                addPhotoToBucketItem(view.getBucketPhotosView()
-                        .getBucketPhotoUploadTask(id));
-                break;
-            case FAILED:
-                photoUploadError(id);
-                break;
-            case IN_PROGRESS:
-                photoInProgress(id);
-        }
-    }
-
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-        photoInProgress(id);
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        photoUploadError(id);
-    }
-
-    private void photoInProgress(int id) {
-        BucketPhotoUploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(id);
-        bucketPhotoUploadTask.setFailed(false);
-        view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
-    }
-
-    private void photoUploadError(int id) {
-        BucketPhotoUploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(id);
-        bucketPhotoUploadTask.setFailed(true);
+    private void photoUploadError(UploadTask task) {
+        UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
+                .getBucketPhotoUploadTask(task.getFilePath());
+        bucketPhotoUploadTask.setStatus(UploadTask.Status.FAILED);
         view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
     }
 

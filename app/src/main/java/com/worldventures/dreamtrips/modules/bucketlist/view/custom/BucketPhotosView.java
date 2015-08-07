@@ -15,14 +15,12 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
-import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
-import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
@@ -74,17 +72,17 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         if (imagesAdapter == null) {
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 
-            if (type == Type.DEFAULT) {
-                imagesAdapter.registerCell(TemplatePhoto.class, TemplatePhotoCell.class);
-            } else if (type == Type.EDIT) {
+            if (type == Type.EDIT) {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
             } else {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForDetails.class);
             }
 
-            imagesAdapter.registerCell(BucketPhotoUploadTask.class, BucketPhotoUploadCell.class);
+            imagesAdapter.registerCell(UploadTask.class, BucketPhotoUploadCell.class);
             imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
+
             imagesAdapter.addItem(new Object());
+
             setLayoutManager(new LinearLayoutManager(
                             getContext(),
                             LinearLayoutManager.HORIZONTAL,
@@ -124,11 +122,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void deleteImage(BucketPhotoUploadTask photo) {
+    public void deleteImage(UploadTask photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             Object item = imagesAdapter.getItem(i);
-            if (item instanceof BucketPhotoUploadTask &&
-                    photo.getTaskId() == ((BucketPhotoUploadTask) item).getTaskId()) {
+            if (item instanceof UploadTask &&
+                    photo.getAmazonTaskId().equals(((UploadTask) item).getAmazonTaskId())) {
                 imagesAdapter.remove(item);
                 break;
             }
@@ -136,7 +134,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void replace(BucketPhotoUploadTask photoUploadTask, BucketPhoto bucketPhoto) {
+    public void replace(UploadTask photoUploadTask, BucketPhoto bucketPhoto) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             if (photoUploadTask.equals(imagesAdapter.getItem(i))) {
                 imagesAdapter.replaceItem(i, bucketPhoto);
@@ -154,21 +152,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void addImage(BucketPhotoUploadTask image) {
+    public void addImage(UploadTask image) {
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
     }
 
     @Override
-    public void addImages(List<BucketPhotoUploadTask> tasks) {
+    public void addImages(List<UploadTask> tasks) {
         imagesAdapter.addItems(1, tasks);
         imagesAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void addTemplatePhoto(TemplatePhoto templatePhoto) {
-        imagesAdapter.addItem(templatePhoto);
-        imagesAdapter.notifyItemInserted(0);
     }
 
     @Override
@@ -311,10 +303,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public BucketPhotoUploadTask getBucketPhotoUploadTask(int taskId) {
-        return (BucketPhotoUploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
-                element instanceof BucketPhotoUploadTask &&
-                        ((BucketPhotoUploadTask) element).getTaskId() == taskId);
+    public UploadTask getBucketPhotoUploadTask(String filePath) {
+        return (UploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
+                element instanceof UploadTask &&
+                        ((UploadTask) element).getFilePath().equals(filePath));
     }
 
     public enum Type {

@@ -7,18 +7,18 @@ import java.io.Serializable;
 public class Post implements Serializable {
 
     private String text;
-    private int imageUploadTaskId;
+    private String filePath;
 
     private UploadTask uploadTask;
 
     private int pidType;
 
-    public void setImageUploadTaskId(int imageUploadTaskId) {
-        this.imageUploadTaskId = imageUploadTaskId;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public int getImageUploadTaskId() {
-        return imageUploadTaskId;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public void setPidType(int pidType) {

@@ -75,24 +75,24 @@ public class UploadToS3Command extends Command<String> {
 
         Timber.d("Preparing image upload");
 
-        // Step 1: Initialize.
-        InitiateMultipartUploadRequest initRequest = new
-                InitiateMultipartUploadRequest(bucketName, key);
-        InitiateMultipartUploadResult initResponse =
-                amazonS3Client.initiateMultipartUpload(initRequest);
-
-        uploadTask.setAmazonTaskId(initResponse.getUploadId());
-        uploadTask.setBucketName(bucketName);
-        uploadTask.setKey(key);
-        saveUploadTask();
-
-        long contentLength = file.length();
-
-        long partSize = 5242880;
-
-        Timber.d("Upload started; File length = " + contentLength);
-
         try {
+            // Step 1: Initialize.
+            InitiateMultipartUploadRequest initRequest = new
+                    InitiateMultipartUploadRequest(bucketName, key);
+            InitiateMultipartUploadResult initResponse =
+                    amazonS3Client.initiateMultipartUpload(initRequest);
+
+            uploadTask.setAmazonTaskId(initResponse.getUploadId());
+            uploadTask.setBucketName(bucketName);
+            uploadTask.setKey(key);
+            saveUploadTask();
+
+            long contentLength = file.length();
+
+            long partSize = 5242880;
+
+            Timber.d("Upload started; File length = " + contentLength);
+
             // Step 2: Upload parts.
             long filePosition = 0;
             for (int i = 1; filePosition < contentLength; i++) {
@@ -112,8 +112,6 @@ public class UploadToS3Command extends Command<String> {
                 Timber.d("Uploaded part " + i);
 
                 filePosition += partSize;
-
-                uploadTask.setProgress((int) (filePosition / contentLength) * 100);
             }
 
             // Step 3: Complete.
@@ -140,8 +138,6 @@ public class UploadToS3Command extends Command<String> {
             Timber.e(e, "Upload was failed");
             uploadTask.setStatus(UploadTask.Status.FAILED);
             saveUploadTask();
-            amazonS3Client.abortMultipartUpload(new AbortMultipartUploadRequest(
-                    bucketName, key, initResponse.getUploadId()));
         }
 
         return null;

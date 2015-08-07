@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class UploadTask implements IFullScreenObject {
 
@@ -65,6 +66,14 @@ public class UploadTask implements IFullScreenObject {
             return new UploadTask[size];
         }
     };
+
+    public void changed(UploadTask newTask) {
+        amazonTaskId = newTask.getAmazonTaskId();
+        bucketName = newTask.getBucketName();
+        key = newTask.getKey();
+        status = newTask.getStatus();
+        originUrl = newTask.getOriginUrl();
+    }
 
     public Module getModule() {
         return module;
@@ -193,12 +202,12 @@ public class UploadTask implements IFullScreenObject {
 
         UploadTask that = (UploadTask) o;
 
-        return !(amazonTaskId != null ? !amazonTaskId.equals(that.amazonTaskId) : that.amazonTaskId != null);
+        return !(filePath != null ? !filePath.equals(that.filePath) : that.filePath != null);
     }
 
     @Override
     public int hashCode() {
-        return amazonTaskId != null ? amazonTaskId.hashCode() : 0;
+        return filePath != null ? filePath.hashCode() : 0;
     }
 
     @Override

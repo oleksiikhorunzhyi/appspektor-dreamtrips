@@ -65,8 +65,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         if (post == null) {
             post = new Post();
             savePost();
-        } else if (post.getImageUploadTaskId() != 0) {
-            post.setUploadTask(snapper.getUploadTask(post.getImageUploadTaskId()));
+        } else if (!TextUtils.isEmpty(post.getFilePath())) {
+            post.setUploadTask(snapper.getUploadTask(post.getFilePath()));
         }
 
         view.setName(getAccount().getFullName());
@@ -175,6 +175,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     private void uploadPhoto(String filePath) {
+        post.setFilePath(filePath);
         post.getUploadTask().setFilePath(filePath);
         view.attachPhoto(Uri.parse(filePath));
         startUpload();

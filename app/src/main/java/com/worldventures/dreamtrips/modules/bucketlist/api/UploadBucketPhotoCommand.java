@@ -2,23 +2,25 @@ package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
 
-    protected BucketPhotoUploadTask photoUploadTask;
+    protected UploadTask photoUploadTask;
+    private int bucketItemId;
 
-    public UploadBucketPhotoCommand(BucketPhotoUploadTask photoUploadTask) {
+    public UploadBucketPhotoCommand(int bucketItemId, UploadTask photoUploadTask) {
         super(BucketPhoto.class);
+        this.bucketItemId = bucketItemId;
         this.photoUploadTask = photoUploadTask;
     }
 
     @Override
     public BucketPhoto loadDataFromNetwork() {
-        BucketPhoto uploadObject = getUploadObject(photoUploadTask.getAmazonResultUrl());
+        BucketPhoto uploadObject = getUploadObject(photoUploadTask.getOriginUrl());
 
-        return getService().uploadBucketPhoto(photoUploadTask.getBucketId(), uploadObject);
+        return getService().uploadBucketPhoto(bucketItemId, uploadObject);
     }
 
 

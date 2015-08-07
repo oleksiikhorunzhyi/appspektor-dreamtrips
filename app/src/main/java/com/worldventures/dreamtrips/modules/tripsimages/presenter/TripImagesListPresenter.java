@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Handler;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -39,7 +41,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
     protected SnappyRepository db;
 
     @Inject
-    AmazonS3 amazonS3;
+    AmazonS3Client amazonS3;
 
     protected Type type;
     private boolean isFullscreen;
@@ -133,6 +135,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     private void uploadPhoto(UploadTask uploadTask, String filePath) {
         uploadTask.setFilePath(filePath);
+        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+
         photos.add(0, uploadTask);
         view.add(0, uploadTask);
         db.savePhotoEntityList(type, photos);
@@ -152,6 +156,12 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
         doRequest(new AddTripPhotoCommand(task), photo -> {
             processPhoto(photos.indexOf(task), photo);
             db.removeUploadTask(task);
+        }, spiceException -> {
+            UploadTask uploadTask = getCurrentTask(task);
+            if (uploadTask != null) {
+                uploadTask.setStatus(UploadTask.Status.FAILED);
+                updateTask(uploadTask);
+            }
         });
     }
 
@@ -167,20 +177,28 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     public void onEventMainThread(UploadStatusChanged event) {
         UploadTask uploadTask = event.getUploadTask();
-        UploadTask currentTask = (UploadTask) Queryable.from(photos).firstOrDefault(item ->
-                item instanceof UploadTask
-                        && uploadTask.getAmazonTaskId().equals(((UploadTask) item).getAmazonTaskId()));
+        UploadTask currentTask = getCurrentTask(uploadTask);
 
         if (currentTask != null) {
-            int index = photos.indexOf(currentTask);
-            photos.remove(index);
-            photos.add(index, uploadTask);
+            currentTask.changed(uploadTask);
 
-            view.replace(index, uploadTask);
+            updateTask(currentTask);
 
             if (uploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
                 photoUploaded(uploadTask);
         }
+    }
+
+    private void updateTask(UploadTask task) {
+        int index = photos.indexOf(task);
+
+        view.replace(index, task);
+    }
+
+    private UploadTask getCurrentTask(UploadTask uploadTask) {
+        return (UploadTask) Queryable.from(photos).firstOrDefault(item ->
+                item instanceof UploadTask
+                        && uploadTask.getFilePath().equals(((UploadTask) item).getFilePath()));
 
     }
 

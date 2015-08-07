@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -42,9 +41,7 @@ public class SnappyRepository {
     public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
-    public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
-    public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
     public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
@@ -249,15 +246,26 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveUploadTask(UploadTask uploadTask) {
-        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getAmazonTaskId(), uploadTask));
+        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
     }
 
-    public UploadTask getUploadTask(int id) {
-        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + id, UploadTask.class)).orNull();
+    public UploadTask getUploadTask(String filePath) {
+        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + filePath, UploadTask.class)).orNull();
     }
 
     public void removeUploadTask(UploadTask uploadTask) {
-        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getAmazonTaskId()));
+        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getFilePath()));
+    }
+
+    public List<UploadTask> getUploadTasks(ArrayList<String> paths) {
+        return actWithResult(db -> Queryable.from(paths).map(element -> {
+            try {
+                return db.get(UPLOAD_TASK_KEY + element, UploadTask.class);
+            } catch (SnappydbException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).toList()).or(Collections.emptyList());
     }
 
     public List<UploadTask> getAllUploadTask() {
@@ -273,58 +281,8 @@ public class SnappyRepository {
 
 
     ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
+    // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
-
-    public void saveUploadImageTask(ImageUploadTask ut) {
-        act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getAmazonTaskId(), ut));
-    }
-
-    public void removeImageUploadTask(ImageUploadTask ut) {
-        act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getAmazonTaskId()));
-    }
-
-    public List<ImageUploadTask> getAllImageUploadTask() {
-        return actWithResult(db -> {
-            List<ImageUploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(IMAGE_UPLOAD_TASK_KEY);
-            for (String key : keys) {
-                tasks.add(db.get(key, ImageUploadTask.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
-
-    public List<BucketPhotoUploadTask> getBucketPhotoTasksBy(int bucketId) {
-        return actWithResult(db -> {
-            List<BucketPhotoUploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY);
-            for (String key : keys) {
-                BucketPhotoUploadTask task = db.get(key, BucketPhotoUploadTask.class);
-                if (task.getBucketId() == bucketId) {
-                    tasks.add(task);
-                }
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveBucketPhotoTask(BucketPhotoUploadTask task) {
-        act(db -> db.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId(), task));
-    }
-
-    public void removeBucketPhotoTask(BucketPhotoUploadTask task) {
-        act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
-    }
-
-    public Boolean containsBucketPhotoUploadTask() {
-        return actWithResult(db -> db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY).length > 0)
-                .or(false);
-    }
 
     public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type, items);

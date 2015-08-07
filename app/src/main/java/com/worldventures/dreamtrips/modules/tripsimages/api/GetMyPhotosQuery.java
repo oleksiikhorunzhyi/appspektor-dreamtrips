@@ -37,7 +37,8 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     private List<UploadTask> getUploadTasks() {
         return Queryable.from(db.getAllUploadTask())
-                .filter(item -> item.getModule().equals(UploadTask.Module.IMAGES))
+                .filter(item -> item.getModule() != null &&
+                        item.getModule().equals(UploadTask.Module.IMAGES))
                 .sortReverse()
                 .toList();
     }

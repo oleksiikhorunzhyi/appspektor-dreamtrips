@@ -27,6 +27,8 @@
                 android:padding="@dimen/spacing_small"
                 android:textColor="@color/black"/>
 
+            <include layout="@layout/adapter_item_feed_footer"/>
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>

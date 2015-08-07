@@ -9,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import mbanje.kurt.fabbutton.FabButton;
 import mbanje.kurt.fabbutton.ProgressRingView;
 
 @Layout(R.layout.adapter_item_photo_upload)
-public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
+public class PhotoUploadCell extends AbstractCell<UploadTask> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView imageView;
@@ -40,12 +41,12 @@ public class PhotoUploadCell extends AbstractCell<ImageUploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
-        imageView.setImageURI(Uri.parse(getModelObject().getFileUri()));
+        imageView.setImageURI(Uri.parse(getModelObject().getFilePath()));
         ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 
-        if (getModelObject().isFailed()) {
+        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
             setupViewAsFailed();
-        } else if (!TextUtils.isEmpty(getModelObject().getOriginUrl())) {
+        } else if (getModelObject().getStatus().equals(UploadTask.Status.COMPLETED)) {
             setupViewAsFinished();
         } else {
             setupViewAsLoading();

@@ -7,13 +7,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class AddTripPhotoCommand extends DreamTripsRequest<Photo> {
 
-    private ImageUploadTask uploadTask;
     private UploadTask uploadTask2;
 
-    public AddTripPhotoCommand(ImageUploadTask uploadTask) {
-        super(Photo.class);
-        this.uploadTask = uploadTask;
-    }
 
     public AddTripPhotoCommand(UploadTask uploadTask2) {
         super(Photo.class);

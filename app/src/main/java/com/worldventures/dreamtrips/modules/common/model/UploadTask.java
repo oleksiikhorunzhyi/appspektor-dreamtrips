@@ -3,11 +3,14 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class UploadTask implements Serializable {
+public class UploadTask implements IFullScreenObject {
 
     protected static final long serialVersionUID = 1233322;
 
@@ -31,6 +34,8 @@ public class UploadTask implements Serializable {
 
     private String type;
 
+    private Module module;
+
     public UploadTask() {
     }
 
@@ -47,6 +52,26 @@ public class UploadTask implements Serializable {
         longitude = in.readFloat();
         originUrl = in.readString();
         type = in.readString();
+    }
+
+    public static final Creator<UploadTask> CREATOR = new Creator<UploadTask>() {
+        @Override
+        public UploadTask createFromParcel(Parcel in) {
+            return new UploadTask(in);
+        }
+
+        @Override
+        public UploadTask[] newArray(int size) {
+            return new UploadTask[size];
+        }
+    };
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
     }
 
     public String getFilePath() {
@@ -176,7 +201,91 @@ public class UploadTask implements Serializable {
         return amazonTaskId != null ? amazonTaskId.hashCode() : 0;
     }
 
+    @Override
+    public Image getFSImage() {
+        Image image = new Image();
+        image.setUrl(getFilePath());
+        image.setFromFile(true);
+        return image;
+    }
+
+    @Override
+    public String getFSTitle() {
+        return null;
+    }
+
+    @Override
+    public String getFsDescription() {
+        return title;
+    }
+
+    @Override
+    public String getFsShareText() {
+        return title;
+    }
+
+    @Override
+    public int getFsCommentCount() {
+        return -1;
+    }
+
+    @Override
+    public int getFsLikeCount() {
+        return 0;
+    }
+
+    @Override
+    public String getFsLocation() {
+        return locationName;
+    }
+
+    @Override
+    public String getFsDate() {
+        return "";
+    }
+
+    @Override
+    public String getFsUserPhoto() {
+        return null;
+    }
+
+    @Override
+    public String getFsId() {
+        return amazonTaskId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(filePath);
+        parcel.writeInt(progress);
+        parcel.writeString(amazonTaskId);
+        parcel.writeString(bucketName);
+        parcel.writeString(key);
+        parcel.writeStringList(tags);
+        parcel.writeString(title);
+        parcel.writeString(locationName);
+        parcel.writeFloat(latitude);
+        parcel.writeFloat(longitude);
+        parcel.writeString(originUrl);
+        parcel.writeString(type);
+    }
+
+    @Override
+    public User getUser() {
+        return null;
+    }
+
     public enum Status {
         COMPLETED, CANCELED, IN_PROGRESS, FAILED
     }
+
+    public enum Module {
+        BUCKET, IMAGES, POST
+    }
+
 }

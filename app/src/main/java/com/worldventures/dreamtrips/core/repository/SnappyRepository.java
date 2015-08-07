@@ -260,6 +260,18 @@ public class SnappyRepository {
         act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getAmazonTaskId()));
     }
 
+    public List<UploadTask> getAllUploadTask() {
+        return actWithResult(db -> {
+            List<UploadTask> tasks = new ArrayList<>();
+            String[] keys = db.findKeys(UPLOAD_TASK_KEY);
+            for (String key : keys) {
+                tasks.add(db.get(key, UploadTask.class));
+            }
+            return tasks;
+        }).or(Collections.emptyList());
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////

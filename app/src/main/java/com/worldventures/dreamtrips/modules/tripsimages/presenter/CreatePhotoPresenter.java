@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
@@ -62,10 +63,9 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 view.informUser(context.getString(R.string.wrong_image));
             } else {
                 saved = true;
-                ImageUploadTask imageUploadTask = new ImageUploadTask();
-                imageUploadTask.setFileUri(view.getImageUri().toString());
+                UploadTask imageUploadTask = new UploadTask();
+                imageUploadTask.setFilePath(view.getImageUri().toString());
                 imageUploadTask.setTitle(view.getTitle());
-                imageUploadTask.setUser(appSessionHolder.get().get().getUser());
 
                 List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
                 imageUploadTask.setTags(new ArrayList<>(tags));
@@ -73,11 +73,12 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 imageUploadTask.setLongitude(0);
                 imageUploadTask.setLocationName(view.getLocation());
 
+                imageUploadTask.setModule(UploadTask.Module.IMAGES);
+
                 Date date = DateTimeUtils.dateFromString(view.getDate());
                 Date time = DateTimeUtils.timeFromString(view.getTime());
                 imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
                 imageUploadTask.setType(type);
-
 
                 eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask));
                 view.end();

@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 
 import java.util.List;
 

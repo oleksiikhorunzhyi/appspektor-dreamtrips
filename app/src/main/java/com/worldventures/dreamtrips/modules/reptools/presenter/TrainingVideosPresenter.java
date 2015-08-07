@@ -76,6 +76,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     private void setLocale() {
         VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
         firstHeader.setVideoLocale(videoLocale);
+        firstHeader.setVideoLanguage(videoLanguage);
         view.getAdapter().notifyItemChanged(0);
     }
 

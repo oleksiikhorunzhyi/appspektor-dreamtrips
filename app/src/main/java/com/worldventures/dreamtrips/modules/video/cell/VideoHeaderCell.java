@@ -21,6 +21,8 @@ public class VideoHeaderCell extends AbstractCell<VideoHeader> {
     TextView header;
     @InjectView((R.id.wrapper_spinner_language))
     View language;
+    @InjectView(R.id.language)
+    TextView languageCaption;
     @InjectView(R.id.spinner_language)
     SimpleDraweeView flag;
 
@@ -34,10 +36,12 @@ public class VideoHeaderCell extends AbstractCell<VideoHeader> {
         header.setTextColor(itemView.getResources().getColor(R.color.white));
         language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
 
-        if (getModelObject().getVideoLocale() != null)
+        if (getModelObject().getVideoLocale() != null) {
             flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));
-        else
+            languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
+        } else {
             flag.setImageURI(null);
+        }
     }
 
     @OnClick(R.id.wrapper_spinner_language)

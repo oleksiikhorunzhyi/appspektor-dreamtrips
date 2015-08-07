@@ -3,13 +3,10 @@ package com.worldventures.dreamtrips.modules.tripsimages.api;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AmazonDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,9 +15,6 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     @Inject
     protected SnappyRepository db;
-
-    @Inject
-    protected AmazonDelegate amazonDelegate;
 
     protected int perPage;
     protected int page;

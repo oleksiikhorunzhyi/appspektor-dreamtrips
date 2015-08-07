@@ -53,7 +53,7 @@ public class Video {
     }
 
     public boolean isRecent() {
-        return category.equals(RECENT);
+        return !isFeatured();
     }
 
     public CachedEntity getCacheEntity() {

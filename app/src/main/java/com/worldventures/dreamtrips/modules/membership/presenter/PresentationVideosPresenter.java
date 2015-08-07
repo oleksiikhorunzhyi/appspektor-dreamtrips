@@ -104,7 +104,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         video.setCategory(context.getString(R.string.recent_videos));
     }
 
-    private void addCategories(List<Video> videos) {
+    protected void addCategories(List<Video> videos) {
         currentItems = new ArrayList<>();
 
         List<String> categories = Queryable.from(videos)

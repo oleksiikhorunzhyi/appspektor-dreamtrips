@@ -49,10 +49,6 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
             }
             view.setLocales(locales, videoLocale);
-
-            VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
-            firstHeader.setVideoLocale(videoLocale);
-            view.getAdapter().notifyItemChanged(0);
         }
     }
 
@@ -68,8 +64,19 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         db.saveLastSelectedVideoLanguage(videoLanguage);
         reload();
 
+        setLocale();
+    }
+
+    @Override
+    protected void addCategories(List<Video> videos) {
+        super.addCategories(videos);
+        setLocale();
+    }
+
+    private void setLocale() {
         VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
         firstHeader.setVideoLocale(videoLocale);
+        view.getAdapter().notifyItemChanged(0);
     }
 
     @Override

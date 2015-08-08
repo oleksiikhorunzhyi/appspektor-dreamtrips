@@ -60,9 +60,16 @@ public class DreamTripsHttpClient implements HttpClient {
         URL url = request.getUri().toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+        Timber.d("Configuring connection");
         configureConnection(connection);
+
+        Timber.d("Applying headers");
         applyHeadersAndMethod(request, connection);
+
+        Timber.d("Writing content to connection");
         writeContentToConnection(request, connection);
+
+        Timber.d("Creating http response");
         return createHttpResponse(request, connection);
     }
 

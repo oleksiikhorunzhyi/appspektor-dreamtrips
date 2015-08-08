@@ -6,6 +6,7 @@ import android.util.Log;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -48,7 +49,8 @@ public class PhotoUploadingSpiceManager extends SpiceManager {
     public void uploadPhotoToS3(UploadTask uploadTask) {
         UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
                 eventBus, snapper, uploadTask);
-        execute(uploadToS3Command, null);
+        execute(uploadToS3Command, uploadTask.getFilePath(), DurationInMillis.ALWAYS_RETURNED,
+                null);
     }
 
     public void cancelUploading(UploadTask uploadTask) {

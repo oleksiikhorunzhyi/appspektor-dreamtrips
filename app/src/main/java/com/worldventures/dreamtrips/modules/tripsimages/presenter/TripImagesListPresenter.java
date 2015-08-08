@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Handler;
 
-import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -16,7 +13,6 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
@@ -39,9 +35,6 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     @Inject
     protected SnappyRepository db;
-
-    @Inject
-    AmazonS3Client amazonS3;
 
     protected Type type;
     private boolean isFullscreen;
@@ -145,11 +138,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     private void startUpload(UploadTask uploadTask) {
         TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
-        UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
-                eventBus, db, uploadTask);
-
-        doRequest(uploadToS3Command, url -> {
-        });
+        photoUploadingSpiceManager.uploadPhotoToS3(uploadTask);
     }
 
     private void photoUploaded(UploadTask task) {

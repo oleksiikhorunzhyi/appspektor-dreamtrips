@@ -8,6 +8,7 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
@@ -255,6 +256,16 @@ public class SnappyRepository {
 
     public void removeUploadTask(UploadTask uploadTask) {
         act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getFilePath()));
+    }
+
+    public void removeAllUploadTasks() {
+        act(db -> Queryable.from(db.findKeys(UPLOAD_TASK_KEY)).forEachR(key -> {
+            try {
+                db.del(key);
+            } catch (SnappydbException e) {
+                Timber.e(e, "Error while deleting");
+            }
+        }));
     }
 
     public List<UploadTask> getUploadTasks(ArrayList<String> paths) {

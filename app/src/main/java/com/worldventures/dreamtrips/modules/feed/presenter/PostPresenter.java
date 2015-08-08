@@ -3,13 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.api.CancelUploadCommand;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
@@ -29,15 +24,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     private Post post;
 
-    @ForApplication
-    @Inject
-    Injector injector;
-
     @Inject
     SnappyRepository snapper;
-
-    @Inject
-    AmazonS3Client amazonS3;
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
@@ -125,7 +113,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     private void enablePostButton() {
-        if (!TextUtils.isEmpty(post.getText()) ||
+        if ((!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) ||
                 (post.getUploadTask() != null &&
                         post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
             view.enableButton();
@@ -183,11 +171,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     private void startUpload() {
         view.showProgress();
-
-        UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
-                eventBus, snapper, post.getUploadTask());
-        doRequest(uploadToS3Command, url -> {
-        });
+        photoUploadingSpiceManager.uploadPhotoToS3(post.getUploadTask());
     }
 
     public void onEventMainThread(UploadStatusChanged event) {
@@ -243,8 +227,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void removeImage() {
-        doRequest(new CancelUploadCommand(amazonS3, snapper, post.getUploadTask()), temp -> {
-        });
+        photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
         post.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);

@@ -52,10 +52,11 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         super.takeView(view);
         GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
         doRequest(getLocaleQuery, this::onLocaleSuccess);
-        //clearTempDirectory();
+        clearTempDirectory();
     }
 
     private void clearTempDirectory() {
+        snappyRepository.removeAllUploadTasks();
         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDialog.FOLDERNAME));
         if (directory.exists()) {
             try {

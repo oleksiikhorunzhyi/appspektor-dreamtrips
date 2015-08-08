@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -21,9 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.common.api.CancelUploadCommand;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
@@ -47,9 +44,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     SnappyRepository db;
-
-    @Inject
-    AmazonS3Client amazonS3;
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
@@ -160,8 +154,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        doRequest(new CancelUploadCommand(amazonS3, db, event.getModelObject()), temp -> {
-        });
+        photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
         bucketItem.removeTaskPath(event.getModelObject().getFilePath());
         bucketItemManager.resaveBucketItem(bucketItem);
@@ -239,11 +232,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     private void startUpload(UploadTask uploadTask) {
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
                 uploadTask.getType(), bucketItem.getType());
-        UploadToS3Command uploadToS3Command = new UploadToS3Command(context, amazonS3,
-                eventBus, db, uploadTask);
-
-        doRequest(uploadToS3Command, url -> {
-        });
+        photoUploadingSpiceManager.uploadPhotoToS3(uploadTask);
     }
 
     public void onEventMainThread(UploadStatusChanged event) {

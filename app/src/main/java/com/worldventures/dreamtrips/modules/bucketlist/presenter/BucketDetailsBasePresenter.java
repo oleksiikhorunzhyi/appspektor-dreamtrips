@@ -124,6 +124,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         List<UploadTask> tasks = db.getUploadTasks(bucketItem.getUploadTasksPaths());
         Collections.reverse(tasks);
 
+        Queryable.from(tasks).forEachR(task -> {
+            if (task.getStatus().equals(UploadTask.Status.COMPLETED)) addPhotoToBucketItem(task);
+        });
+
         view.getBucketPhotosView().addImages(tasks);
     }
 

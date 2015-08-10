@@ -280,6 +280,15 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
                         photos.addAll(items);
                     }
 
+                    Queryable.from(photos).forEachR(photo -> {
+                        if (photo instanceof UploadTask) {
+                            UploadTask temp = (UploadTask) photo;
+
+                            if (temp.getStatus().equals(UploadTask.Status.COMPLETED))
+                                photoUploaded(temp);
+                        }
+                    });
+
                     db.savePhotoEntityList(type, photos);
                 } else {
                     handleError(spiceException);

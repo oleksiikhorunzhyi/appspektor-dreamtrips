@@ -192,7 +192,7 @@ public class BucketItemManager {
     }
 
     public List<BucketItem> moveItem(int from, int to, BucketTabsPresenter.BucketType bucketType,
-                         DreamSpiceManager.FailureListener failureListener) {
+                                     DreamSpiceManager.FailureListener failureListener) {
         //get bucket items by type
         List<BucketItem> tempItems = new ArrayList<>();
         tempItems.addAll(getBucketItems(bucketType));
@@ -323,6 +323,16 @@ public class BucketItemManager {
 
             resaveBucketItem(bucketItem);
         }, failureListener);
+    }
+
+    public void updateBucketItemWithPhoto(BucketItem bucketItem, BucketPhoto photo) {
+        if (bucketItem.getCoverPhoto() == null) {
+            bucketItem.setCoverPhoto(photo);
+        }
+
+        bucketItem.getPhotos().add(0, photo);
+
+        resaveBucketItem(bucketItem);
     }
 
     public BucketItem getBucketItemByPhoto(BucketPhoto bucketPhoto) {

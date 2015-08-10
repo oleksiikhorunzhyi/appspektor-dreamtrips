@@ -16,6 +16,7 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -82,6 +83,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
         profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
         profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
+        profileView.setOnCreatePostClick(() -> getPresenter().makePost());
 
         profileView.setOnFeedReload(() -> getPresenter().loadFeed());
         feedView.setup(injectorProvider, savedInstanceState);
@@ -270,7 +272,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
         return feedView.getAdapter();
     }
 }

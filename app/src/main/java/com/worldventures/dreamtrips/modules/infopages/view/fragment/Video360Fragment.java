@@ -14,6 +14,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
@@ -50,7 +51,8 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
     @InjectView(R.id.containerLandscape)
     protected ScrollView scrollView;
 
-    @InjectView(R.id.progress) View progress;
+    @InjectView(R.id.progress)
+    View progress;
 
     private BaseArrayListAdapter<Video> adapterFeatured;
     private BaseArrayListAdapter<Video> adapterRecent;
@@ -87,7 +89,7 @@ public class Video360Fragment extends BaseVideoFragment<Video360Presenter> imple
 
         adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
         adapterAll.registerCell(Video.class, Video360Cell.class);
-        adapterAll.registerCell(String.class, VideoHeaderCell.class);
+        adapterAll.registerCell(VideoHeader.class, VideoHeaderCell.class);
 
         recyclerViewAll.setAdapter(adapterAll);
         recyclerViewFeatured.setAdapter(adapterFeatured);

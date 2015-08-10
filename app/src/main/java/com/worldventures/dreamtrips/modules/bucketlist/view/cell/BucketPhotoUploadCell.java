@@ -9,7 +9,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -17,7 +17,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
+public class BucketPhotoUploadCell extends AbstractCell<UploadTask> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView ivPhoto;
@@ -34,14 +34,17 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
     protected void syncUIStateWithModel() {
         ivPhoto.setImageURI(Uri.parse(getModelObject().getFilePath()));
 
-        if (getModelObject().isFailed()) {
+        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
             fabProgress.showProgress(false);
             fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
             circleView.setColor(color);
         } else {
             fabProgress.setVisibility(View.VISIBLE);
+            fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
             fabProgress.setIndeterminate(true);
+            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
+            circleView.setColor(color);
             fabProgress.showProgress(true);
         }
     }
@@ -52,13 +55,8 @@ public class BucketPhotoUploadCell extends AbstractCell<BucketPhotoUploadTask> {
 
     @OnClick(R.id.fab_progress)
     public void onCellClick() {
-        if (getModelObject().isFailed()) {
+        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
             getEventBus().post(new BucketPhotoReuploadRequestEvent(getModelObject()));
-            getModelObject().setFailed(false);
-            fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-            fabProgress.showProgress(true);
-            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
-            circleView.setColor(color);
         } else {
             getEventBus().post(new BucketPhotoUploadCancelRequestEvent(getModelObject()));
         }

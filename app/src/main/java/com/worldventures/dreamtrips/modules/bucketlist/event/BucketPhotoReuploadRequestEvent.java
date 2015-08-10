@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.bucketlist.event;
 
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 public class BucketPhotoReuploadRequestEvent {
 
-    private BucketPhotoUploadTask task;
+    private UploadTask task;
 
-    public BucketPhotoReuploadRequestEvent(BucketPhotoUploadTask task) {
+    public BucketPhotoReuploadRequestEvent(UploadTask task) {
         this.task = task;
     }
 
-    public BucketPhotoUploadTask getTask() {
+    public UploadTask getTask() {
         return task;
     }
 

@@ -6,9 +6,6 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.Command;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ReorderBucketItemCommand extends Command<JsonObject> {
     private BucketOrderModel bucketOrderModel;
     private int id;

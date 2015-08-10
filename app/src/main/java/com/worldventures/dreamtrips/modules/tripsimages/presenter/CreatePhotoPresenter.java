@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
@@ -62,23 +63,24 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 view.informUser(context.getString(R.string.wrong_image));
             } else {
                 saved = true;
-                ImageUploadTask action = new ImageUploadTask();
-                action.setFileUri(view.getImageUri().toString());
-                action.setTitle(view.getTitle());
-                action.setUser(appSessionHolder.get().get().getUser());
+                UploadTask imageUploadTask = new UploadTask();
+                imageUploadTask.setFilePath(view.getImageUri().toString());
+                imageUploadTask.setTitle(view.getTitle());
+
                 List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
-                action.setTags(new ArrayList<>(tags));
-                action.setLatitude(0);
-                action.setLongitude(0);
-                action.setLocationName(view.getLocation());
+                imageUploadTask.setTags(new ArrayList<>(tags));
+                imageUploadTask.setLatitude(0);
+                imageUploadTask.setLongitude(0);
+                imageUploadTask.setLocationName(view.getLocation());
+
+                imageUploadTask.setModule(UploadTask.Module.IMAGES);
+
                 Date date = DateTimeUtils.dateFromString(view.getDate());
                 Date time = DateTimeUtils.timeFromString(view.getTime());
-                action.setShotAt(DateTimeUtils.mergeDateTime(date, time));
-                action.setTaskId(UUID.randomUUID().toString());
-                action.setType(type);
+                imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+                imageUploadTask.setType(type);
 
-                eventBus.post(new InsertNewImageUploadTaskEvent(action));
-                photoUploadSpiceManager.uploadPhoto(action);
+                eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask));
                 view.end();
             }
     }

@@ -17,6 +17,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -80,7 +81,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(UploadTask.class, PhotoUploadCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
         this.refreshLayout.setOnRefreshListener(this);

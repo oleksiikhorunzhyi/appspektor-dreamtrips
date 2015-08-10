@@ -43,12 +43,6 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
         tripCell.fillWithItem(item.getEntities()[0]);
     }
 
-    @OnClick(R.id.comments)
-    void commentsClicked() {
-        getEventBus().removeStickyEvent(CommentsPressedEvent.class);
-        getEventBus().postSticky(new CommentsPressedEvent(getModelObject()));
-    }
-
     @Override
     public void prepareForReuse() {
 

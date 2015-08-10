@@ -60,11 +60,8 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     protected Context context;
 
-    private Injector injector;
-
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
-        this.injector = injector;
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
     }

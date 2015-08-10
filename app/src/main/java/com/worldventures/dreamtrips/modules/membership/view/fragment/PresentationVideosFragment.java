@@ -16,6 +16,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
@@ -69,7 +70,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
         this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         this.arrayListAdapter.registerCell(Video.class, VideoCell.class);
-        this.arrayListAdapter.registerCell(String.class, VideoHeaderLightCell.class);
+        this.arrayListAdapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
 
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
@@ -86,7 +87,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
     @Override
     public void onRefresh() {
-        getPresenter().getAdapterController().reload();
+        getPresenter().reload();
     }
 
     @Override
@@ -102,7 +103,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return arrayListAdapter.getItem(position) instanceof String ? spanCount : 1;
+                return arrayListAdapter.getItem(position) instanceof VideoHeader ? spanCount : 1;
             }
         });
         this.recyclerView.setLayoutManager(layoutManager);
@@ -126,7 +127,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     @Override
     public void startLoading() {
         weakHandler.post(() -> {
-           if  (refreshLayout != null) refreshLayout.setRefreshing(true);
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
 
     }
@@ -134,7 +135,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     @Override
     public void finishLoading() {
         weakHandler.post(() -> {
-            if  (refreshLayout != null) refreshLayout.setRefreshing(false);
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });
         stateDelegate.restoreStateIfNeeded();
     }

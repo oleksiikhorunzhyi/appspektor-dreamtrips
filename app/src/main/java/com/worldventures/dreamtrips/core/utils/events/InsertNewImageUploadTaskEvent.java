@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 public class InsertNewImageUploadTaskEvent {
 
+    private UploadTask uploadTask;
 
-    private ImageUploadTask uploadTask;
-
-    public InsertNewImageUploadTaskEvent(ImageUploadTask uploadTask) {
+    public InsertNewImageUploadTaskEvent(UploadTask uploadTask) {
         this.uploadTask = uploadTask;
     }
 
-    public ImageUploadTask getUploadTask() {
+    public UploadTask getUploadTask() {
         return uploadTask;
     }
 }

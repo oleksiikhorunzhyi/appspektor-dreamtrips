@@ -6,17 +6,13 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceService;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceService;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
-import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.S3ImageUploader;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 
@@ -29,18 +25,14 @@ import dagger.Provides;
         injects = {
                 DreamSpiceManager.class,
                 DreamSpiceService.class,
-                PhotoUploadSpiceManager.class,
-                PhotoUploadSpiceService.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
+                PhotoUploadingSpiceService.class,
+                PhotoUploadingSpiceManager.class,
                 BucketItemManager.class,
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
-                S3ImageUploader.class,
-                UploadTripPhotoCommand.class,
-                UploadBucketPhotoCommand.class,
-                UploadTemplatePhotoCommand.class,
         },
         library = true, complete = false
 )
@@ -51,10 +43,9 @@ public class ManagerModule {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
-    @Singleton
     @Provides
-    public PhotoUploadSpiceManager providePhotoUploadSpiceManager(@ForApplication Injector injector) {
-        return new PhotoUploadSpiceManager(PhotoUploadSpiceService.class, injector);
+    public PhotoUploadingSpiceManager providePhotoSpiceManager(@ForApplication Injector injector) {
+        return new PhotoUploadingSpiceManager(PhotoUploadingSpiceService.class, injector);
     }
 
     @Singleton

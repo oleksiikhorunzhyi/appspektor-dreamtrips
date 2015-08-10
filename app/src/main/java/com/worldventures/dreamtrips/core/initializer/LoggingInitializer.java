@@ -10,7 +10,6 @@ public class LoggingInitializer implements AppInitializer {
 
     @Override
     public void initialize(Injector injector) {
-
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }

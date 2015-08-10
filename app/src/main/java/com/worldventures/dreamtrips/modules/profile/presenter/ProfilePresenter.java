@@ -7,8 +7,10 @@ import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -17,6 +19,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import icepick.Icicle;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
@@ -83,6 +88,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loadCircles();
         loadProfile();
         view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
+        checkPostShown();
     }
 
     @Override
@@ -91,6 +97,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
         }
+    }
+
+    private void checkPostShown() {
+        if (snappyRepository.hasPost()) makePost();
     }
 
     public abstract void openBucketList();
@@ -140,6 +150,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
             adapterController.reload();
     }
 
+    public void makePost() {
+        fragmentCompass.removePost();
+        view.showEditContainer();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        fragmentCompass.add(Route.POST_CREATE);
+    }
+
     protected abstract void loadProfile();
 
     public void openFriends() {
@@ -175,6 +193,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void onEvent(CommentsPressedEvent event) {
+        eventBus.cancelEventDelivery(event);
+        eventBus.removeStickyEvent(FeedItemStickyEvent.class);
+        eventBus.postSticky(new FeedItemStickyEvent(event.getModel()));
         activityRouter.openCommentsScreen();
     }
 
@@ -232,7 +253,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
         void setMember();
 
-        IRoboSpiceAdapter<BaseFeedModel> getAdapter();
+        BaseArrayListAdapter<BaseFeedModel> getAdapter();
 
         void onFeedError();
 

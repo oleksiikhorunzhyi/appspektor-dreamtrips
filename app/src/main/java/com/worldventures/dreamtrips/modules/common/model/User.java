@@ -12,11 +12,11 @@ import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
 
-    public static final String RBS_SUBSCTIPTION = "RBS";
-    public static final String DTM_SUBSCTIPTION = "DTM";
-    public static final String DTS_SUBSCTIPTION = "DTS";
-    public static final String DTG_SUBSCTIPTION = "DTG";
-    public static final String DTP_SUBSCRIPTION = "DTP";
+    public static final String RBS_SUBSCTIPTION = "RBS"; //rep
+    public static final String DTM_SUBSCTIPTION = "DTM"; //member
+    public static final String DTS_SUBSCTIPTION = "DTS"; //standard
+    public static final String DTG_SUBSCTIPTION = "DTG"; //gold
+    public static final String DTP_SUBSCRIPTION = "DTP"; //platinum
 
     public static final String RELATION_NONE = "none";
     public static final String RELATION_FRIEND = "friend";

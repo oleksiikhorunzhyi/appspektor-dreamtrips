@@ -4,12 +4,10 @@ import android.content.Context;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.worldventures.dreamtrips.BuildConfig;
-
-import javax.inject.Singleton;
+import com.worldventures.dreamtrips.core.api.DreamTripsHttpClient;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,14 +26,13 @@ public class AmazonModule {
     }
 
     @Provides
-    @Singleton
-    public TransferManager provideTransferManager(CognitoCachingCredentialsProvider credentialsProvider) {
-        int connectionTimeout = 90 * 1000; // 90 secs
+    public AmazonS3Client provideAmazonS3Client(CognitoCachingCredentialsProvider credentialsProvider) {
+        int connectionTimeout = 30 * 1000; // 30 secs
         //
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setConnectionTimeout(connectionTimeout);
         clientConfiguration.setSocketTimeout(connectionTimeout);
-        //
-        return new TransferManager(new AmazonS3Client(credentialsProvider, clientConfiguration));
+
+        return new AmazonS3Client(credentialsProvider, clientConfiguration, new DreamTripsHttpClient(clientConfiguration));
     }
 }

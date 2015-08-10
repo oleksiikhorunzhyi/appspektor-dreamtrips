@@ -113,24 +113,26 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         super.onDestroyView();
     }
 
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Notif helpers
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void informUser(String stringId) {
-        if (isAdded()) {
-            getActivity().runOnUiThread(() -> {
-                Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
-            });
-        }
+    public void informUser(String message) {
+        if (isAdded() && getView() != null)
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void informUser(int stringId) {
-        if (isAdded() && getView() != null) {
+        if (isAdded() && getView() != null)
             Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
-        }
     }
 
     @Override

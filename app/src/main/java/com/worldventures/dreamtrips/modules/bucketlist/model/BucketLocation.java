@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import com.amazonaws.com.google.gson.annotations.SerializedName;
+
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 public class BucketLocation extends BaseEntity{

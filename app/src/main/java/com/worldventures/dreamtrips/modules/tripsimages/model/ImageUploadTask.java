@@ -21,18 +21,24 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
             return new ImageUploadTask[size];
         }
     };
-    private String taskId;
+
     private String fileUri;
     private float progress;
     private String title;
+
     private String locationName;
     private float latitude;
     private float longitude;
+
     private Date shotAt;
     private String originUrl;
+
     private ArrayList<String> tags;
     private boolean failed;
     private User user;
+
+    private int amazonTaskId;
+    private String amazonResultUrl;
 
     private String type;
 
@@ -40,7 +46,8 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
     }
 
     private ImageUploadTask(Parcel in) {
-        this.taskId = in.readString();
+        this.amazonTaskId = in.readInt();
+        this.amazonResultUrl = in.readString();
         this.fileUri = in.readString();
         this.progress = in.readFloat();
         this.title = in.readString();
@@ -54,12 +61,20 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
         this.tags = (ArrayList<String>) in.readSerializable();
     }
 
-    public String getTaskId() {
-        return taskId;
+    public int getAmazonTaskId() {
+        return amazonTaskId;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setAmazonTaskId(int amazonTaskId) {
+        this.amazonTaskId = amazonTaskId;
+    }
+
+    public String getAmazonResultUrl() {
+        return amazonResultUrl;
+    }
+
+    public void setAmazonResultUrl(String amazonResultUrl) {
+        this.amazonResultUrl = amazonResultUrl;
     }
 
     public String getFileUri() {
@@ -192,7 +207,7 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
 
     @Override
     public String getFsId() {
-        return taskId.hashCode() + "";
+        return String.valueOf(amazonTaskId);
     }
 
     @Override
@@ -207,7 +222,8 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.taskId);
+        dest.writeInt(this.amazonTaskId);
+        dest.writeString(this.amazonResultUrl);
         dest.writeString(this.fileUri);
         dest.writeFloat(this.progress);
         dest.writeString(this.title);

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -50,65 +49,62 @@ public class UploadingFileManager {
         return "";
     }
 
-    public  static File copyFileIfNeed(String filePath, Context context) {
+    public static String copyFileIfNeed(String filePath, Context context) {
         ValidationUtils.checkNotNull(filePath);
 
-        File file = null;
+        String finalPath = null;
 
         Uri uri = Uri.parse(filePath);
-
         ValidationUtils.checkNotNull(uri);
 
-        ContentResolver resolver = context.getContentResolver();
-        InputStream in = null;
-        FileOutputStream out = null;
+        if (uri.getScheme().startsWith("http")) {
+            InputStream in = null;
+            FileOutputStream out = null;
 
-        String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
-
-        ValidationUtils.checkNotNull(extension);
-
-
-        String fileKey = filePath + new Date().toString();
-
-        String fileKeyHash = md5(fileKey);
-
-        try {
-            if (uri.getScheme().startsWith("http")) {
+            try {
+                String fileKey = filePath + new Date().toString();
+                String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+                ValidationUtils.checkNotNull(extension);
+                String fileKeyHash = md5(fileKey);
                 in = new URL(uri.toString()).openStream();
-            } else {
-                in = resolver.openInputStream(uri);
-            }
-            file = File.createTempFile(
-                    fileKeyHash,
-                    "." + extension,
-                    context.getFilesDir()
-            );
-            out = new FileOutputStream(file, false);
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            out.flush();
-        } catch (IOException e) {
-            Timber.e(e, "Problem on file copying");
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Timber.e(e, "Problem on file copying");
+                File file = File.createTempFile(
+                        fileKeyHash,
+                        "." + extension,
+                        context.getFilesDir()
+                );
+                out = new FileOutputStream(file, false);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                out.flush();
+
+                finalPath = "file://" + file.getAbsolutePath();
+
+            } catch (IOException e) {
+                Timber.e(e, "Problem on file copying");
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        Timber.e(e, "Problem on file copying");
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        Timber.e(e, "Problem on file copying");
+                    }
                 }
             }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    Timber.e(e, "Problem on file copying");
-                }
-            }
+
+        } else {
+            finalPath = filePath;
         }
 
-        return file;
+        return finalPath;
     }
 }

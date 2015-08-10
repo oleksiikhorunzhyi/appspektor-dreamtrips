@@ -13,7 +13,8 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSpiceManager;
+
+import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -48,9 +49,9 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
     @Inject
-    protected PhotoUploadSpiceManager photoUploadSpiceManager;
-    @Inject
     protected VideoDownloadSpiceManager videoDownloadSpiceManager;
+    @Inject
+    protected PhotoUploadingSpiceManager photoUploadingSpiceManager;
 
     protected int priorityEventBus = 0;
 
@@ -112,11 +113,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!photoUploadSpiceManager.isStarted()) {
-            photoUploadSpiceManager.start(context);
-        }
         if (!videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.start(context);
+        }
+        if (!photoUploadingSpiceManager.isStarted()) {
+            photoUploadingSpiceManager.start(context);
+
         }
     }
 
@@ -124,11 +126,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
-        if (photoUploadSpiceManager.isStarted()) {
-            photoUploadSpiceManager.shouldStop();
-        }
         if (videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.shouldStop();
+        }
+        if (photoUploadingSpiceManager.isStarted()) {
+            photoUploadingSpiceManager.shouldStop();
         }
     }
 
@@ -186,5 +188,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         boolean isTabletLandscape();
 
         boolean isVisibleOnScreen();
+
+        void showEditContainer();
+
     }
 }

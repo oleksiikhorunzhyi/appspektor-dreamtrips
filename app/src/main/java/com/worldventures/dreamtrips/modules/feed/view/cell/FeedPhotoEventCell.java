@@ -49,12 +49,6 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
                 .getUrl(size, size)));
     }
 
-    @OnClick(R.id.comments)
-    void commentsClicked() {
-        getEventBus().removeStickyEvent(CommentsPressedEvent.class);
-        getEventBus().postSticky(new CommentsPressedEvent(getModelObject()));
-    }
-
     @Override
     public void prepareForReuse() {
 

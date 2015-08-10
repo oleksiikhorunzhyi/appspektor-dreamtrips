@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.Date;
 
@@ -61,6 +62,7 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
         return null;
     }
 
+
     private String getTypeCaption(Resources resources) {
         switch (type) {
             case TRIP:
@@ -69,6 +71,8 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
                 return resources.getString(R.string.feed_photo);
             case BUCKET_LIST_ITEM:
                 return resources.getString(R.string.feed_bucket);
+            case POST:
+                return "Post";
         }
         return null;
     }
@@ -82,6 +86,7 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
         BUCKET_LIST_ITEM(FeedBucketEventModel.class),
         AVATAR(FeedAvatarEventModel.class),
         BACKGROUND_PHOTO(FeedCoverEventModel.class),
+        POST(FeedPostEventModel.class),
 
         UNDEFINED(FeedUndefinedEventModel.class);
 

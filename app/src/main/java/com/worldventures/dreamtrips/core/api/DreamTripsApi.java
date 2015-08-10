@@ -11,9 +11,11 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -125,6 +127,9 @@ public interface DreamTripsApi {
 
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
+
+    @POST("/api/photos")
+    Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
     @POST("/api/bucket_list_items/{id}/photos")
     BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
@@ -262,4 +267,23 @@ public interface DreamTripsApi {
 
     @GET("/api/social/items/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") int objectId, @Query("per_page") int perPage, @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment createComment(@Field("object_id") int objectId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment replyComment(@Field("reply_comment_id") int commentId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/posts")
+    TextualPost post(@Field("description") String description);
+
+    @DELETE("/api/social/comments/{id}")
+    JSONObject deleteComment(@Path("id") int commentId);
+
+    @FormUrlEncoded
+    @PUT("/api/social/comments/{id}")
+    Comment editComment(@Path("id") int commentId, @Field("text") String text);
 }

@@ -20,6 +20,14 @@ public class Video {
     public Video() {
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -45,7 +53,7 @@ public class Video {
     }
 
     public boolean isRecent() {
-        return category.equals(RECENT);
+        return !isFeatured();
     }
 
     public CachedEntity getCacheEntity() {

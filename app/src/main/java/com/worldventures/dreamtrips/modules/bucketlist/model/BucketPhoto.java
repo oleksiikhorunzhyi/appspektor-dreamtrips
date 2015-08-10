@@ -22,6 +22,7 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
             return new BucketPhoto[size];
         }
     };
+
     @SerializedName("origin_url")
     private String originUrl;
     private String url;

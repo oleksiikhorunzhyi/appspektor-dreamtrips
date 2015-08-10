@@ -142,12 +142,6 @@ public class InviteFragment
         buttonContinue.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (isTabletLandscape()) getPresenter().openTemplateInView();
-    }
-
     private void setUpView() {
         if (isTabletLandscape()) {
             containerTemplates.setVisibility(View.VISIBLE);

@@ -12,18 +12,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.api.UploadTemplatePhotoCommand;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import org.json.JSONObject;
@@ -243,9 +240,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     //Photo upload staff
 
-    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = () -> {
-        delete();
-    };
+    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = this::delete;
 
     private void delete() {
         selectedImageUri = null;
@@ -256,30 +251,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
     private void handlePhotoPick(Uri uri) {
         selectedImageUri = uri;
-        BucketPhotoUploadTask task = new BucketPhotoUploadTask();
-        task.setTaskId(System.currentTimeMillis());
-        task.setBucketId(template.getId());
-        task.setFilePath(uri.toString());
-        startUpload(task);
     }
 
-    private void startUpload(final BucketPhotoUploadTask task) {
-        view.startLoading();
-        UploadTemplatePhotoCommand uploadBucketPhotoCommand = new UploadTemplatePhotoCommand(task,
-                getMessage(), injector);
-        doRequest(uploadBucketPhotoCommand,
-                this::photoUploaded,
-                this::getFilledInvitationsTemplateFailed);
-    }
-
-    private void photoUploaded(InviteTemplate inviteTemplate) {
-        view.finishLoading();
-        if (inviteTemplate != null) {
-            uploadedPhotoUrl = inviteTemplate.getCoverImage().getOriginUrl();
-            view.getBucketPhotosView().deleteAtPosition(0);
-            view.getBucketPhotosView().addTemplatePhoto(new TemplatePhoto(selectedImageUri));
-        }
-    }
 
     public interface View extends Presenter.View {
 

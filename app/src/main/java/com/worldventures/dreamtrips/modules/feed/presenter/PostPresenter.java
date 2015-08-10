@@ -107,7 +107,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
                 post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED)) {
             post.getUploadTask().setTitle(post.getText());
             doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPhoto);
-        } else if (!TextUtils.isEmpty(post.getText())) {
+        } else if (!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
             doRequest(new NewPostCommand(post.getText()), this::processPost);
         }
     }

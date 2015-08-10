@@ -6,9 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.util.Date;
+import java.util.List;
 
 public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
 
@@ -17,10 +18,16 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
     protected BaseFeedModel.Action action;
     protected Date postedAt;
     protected T[] entities;
-
+    protected List<Comment> comments;
+    @SerializedName("comments_count")
+    protected int commentsCount;
 
     public User[] getUsers() {
         return users;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
     }
 
     public Type getType() {
@@ -37,6 +44,10 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
 
     public T[] getEntities() {
         return entities;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public String infoText(Resources resources) {

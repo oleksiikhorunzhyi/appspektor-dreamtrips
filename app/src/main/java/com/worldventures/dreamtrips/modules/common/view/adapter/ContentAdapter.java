@@ -21,10 +21,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Edward on 23.01.15.
- */
-//TODO replace with recycler adapter
 public class ContentAdapter extends BaseAdapter {
 
     private List<ContentItem> contentItems;

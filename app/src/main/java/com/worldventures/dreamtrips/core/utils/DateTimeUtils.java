@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.worldventures.dreamtrips.R;
 
@@ -8,9 +9,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
-import org.joda.time.Months;
-import org.joda.time.Weeks;
-import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -20,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -269,5 +266,39 @@ public class DateTimeUtils {
 
         return calendar.getTime();
     }
+
+    public static CharSequence getRelativeTimeSpanString(Resources res, long startTime) {
+        int deltaSeconds = (int) ((Calendar.getInstance().getTimeInMillis() - startTime) / 1000);
+        int deltaMinutes = (int) Math.floor(deltaSeconds / 60);
+
+        if (deltaSeconds < 60) {
+            return res.getString(R.string.just_now);
+        } else if (deltaSeconds < 120) {
+            return res.getString(R.string.minute_ago);
+        } else if (deltaMinutes < 60) {
+            return res.getString(R.string.minutes_ago, deltaMinutes);
+        } else if (deltaMinutes < 120) {
+            return res.getString(R.string.hour_ago);
+        } else if (deltaMinutes < (24 * 60)) {
+            return res.getString(R.string.hours_ago, (int) Math.floor(deltaMinutes / 60));
+        } else if (deltaMinutes < (24 * 60 * 2)) {
+            return res.getString(R.string.yesterday);
+        } else if (deltaMinutes < (24 * 60 * 7)) {
+            return res.getString(R.string.days_ago, (int) Math.floor(deltaMinutes / (60 * 24)));
+        } else if (deltaMinutes < (24 * 60 * 14)) {
+            return res.getString(R.string.last_week);
+        } else if (deltaMinutes < (24 * 60 * 31)) {
+            return res.getString(R.string.weeks_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 7)));
+        } else if (deltaMinutes < (24 * 60 * 61)) {
+            return res.getString(R.string.last_month);
+        } else if (deltaMinutes < (24 * 60 * 365.25)) {
+            return res.getString(R.string.month_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 30)));
+        } else if (deltaMinutes < (24 * 60 * 731)) {
+            return res.getString(R.string.last_year);
+        }
+
+        return res.getString(R.string.weeks_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 365)));
+    }
+
 
 }

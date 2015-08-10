@@ -8,7 +8,6 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.model.Post;
@@ -268,15 +267,14 @@ public class SnappyRepository {
         }));
     }
 
-    public List<UploadTask> getUploadTasks(ArrayList<String> paths) {
-        return actWithResult(db -> Queryable.from(paths).map(element -> {
-            try {
-                return db.get(UPLOAD_TASK_KEY + element, UploadTask.class);
-            } catch (SnappydbException e) {
-                e.printStackTrace();
+    public List<UploadTask> getUploadTasks(ArrayList<String> keys) {
+        return actWithResult(db -> {
+            List<UploadTask> tasks = new ArrayList<>();
+            for (String key : keys) {
+                tasks.add(db.get(key, UploadTask.class));
             }
-            return null;
-        }).toList()).or(Collections.emptyList());
+            return tasks;
+        }).or(Collections.emptyList());
     }
 
     public List<UploadTask> getAllUploadTask() {

@@ -65,7 +65,7 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     @TaggedFieldSerializer.Tag(15)
     private DiningItem dining;
 
-    @TaggedFieldSerializer.Tag(15)
+    @TaggedFieldSerializer.Tag(16)
     private ArrayList<String> uploadTasksPaths;
 
     private transient boolean selected;

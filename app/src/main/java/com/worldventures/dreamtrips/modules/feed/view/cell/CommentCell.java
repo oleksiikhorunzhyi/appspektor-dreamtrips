@@ -15,6 +15,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
@@ -37,8 +39,10 @@ public class CommentCell extends AbstractCell<Comment> {
     TextView date;
     @InjectView(R.id.text)
     TextView text;
+    @Optional
     @InjectView(R.id.edit)
     ImageView edit;
+    @Optional
     @InjectView(R.id.reply)
     ImageView reply;
     @InjectView(R.id.edited)
@@ -57,14 +61,16 @@ public class CommentCell extends AbstractCell<Comment> {
         userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
         userName.setText(owner.getFullName());
         text.setText(getModelObject().getMessage());
-        CharSequence relativeTimeSpanString = DateUtils.getRelativeTimeSpanString(getModelObject().getCreatedAt().getTime());
+        CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
+                getModelObject().getCreatedAt().getTime());
         date.setText(relativeTimeSpanString);
 
-        if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
-            edit.setVisibility(View.VISIBLE);
-        } else {
-            edit.setVisibility(View.GONE);
-        }
+        if (edit != null)
+            if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
+                edit.setVisibility(View.VISIBLE);
+            } else {
+                edit.setVisibility(View.GONE);
+            }
 
         if (getModelObject().isUpdate()) {
             edited.setVisibility(View.VISIBLE);
@@ -73,6 +79,7 @@ public class CommentCell extends AbstractCell<Comment> {
         }
     }
 
+    @Optional
     @OnClick(R.id.edit)
     void onEditClicked() {
         PopupMenu popup = new PopupMenu(itemView.getContext(), edit);

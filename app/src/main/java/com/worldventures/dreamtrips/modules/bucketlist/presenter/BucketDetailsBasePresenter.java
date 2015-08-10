@@ -91,11 +91,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void takeView(V view) {
         super.takeView(view);
         view.updatePhotos();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
 
@@ -121,14 +117,18 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.getBucketPhotosView().setImages(photos);
         }
 
-        List<UploadTask> tasks = db.getUploadTasks(bucketItem.getUploadTasksPaths());
-        Collections.reverse(tasks);
+        if (bucketItem.getUploadTasksPaths() != null) {
+            List<UploadTask> tasks = db.getUploadTasks(bucketItem.getUploadTasksPaths());
+            Collections.reverse(tasks);
 
-        Queryable.from(tasks).forEachR(task -> {
-            if (task.getStatus().equals(UploadTask.Status.COMPLETED)) addPhotoToBucketItem(task);
-        });
+            Queryable.from(tasks).forEachR(task -> {
+                if (task.getStatus() != null &&
+                        task.getStatus().equals(UploadTask.Status.COMPLETED))
+                    addPhotoToBucketItem(task);
+            });
+            view.getBucketPhotosView().addImages(tasks);
 
-        view.getBucketPhotosView().addImages(tasks);
+        }
     }
 
     //////////////////////////////
@@ -213,6 +213,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void handlePhotoPick(Uri uri, String type) {
         UploadTask task = new UploadTask();
+        task.setStatus(UploadTask.Status.IN_PROGRESS);
         task.setFilePath(uri.toString());
         task.setType(type);
 
@@ -225,7 +226,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void upload(UploadTask uploadTask, String filePath) {
         uploadTask.setFilePath(filePath);
-        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
 
         bucketItem.addTaskPath(filePath);
         bucketItemManager.resaveBucketItem(bucketItem);

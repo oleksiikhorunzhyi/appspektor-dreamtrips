@@ -26,7 +26,7 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
 
     @Override
     protected void syncUIStateWithModel() {
-        feedItemHeaderHelper.set(getModelObject(), itemView.getResources());
+        feedItemHeaderHelper.set(getModelObject(), itemView.getContext());
         syncUIStateWithModelWasCalled = true;
     }
 
@@ -42,7 +42,7 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
     }
 
     @Optional
-    @OnClick(R.id.comments)
+    @OnClick({R.id.commentsList, R.id.comments})
     void commentsClicked() {
         getEventBus().post(new CommentsPressedEvent(getModelObject()));
     }

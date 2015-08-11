@@ -1,22 +1,19 @@
 package com.worldventures.dreamtrips.modules.friends.model;
 
+import android.os.Parcel;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
-import com.innahema.collections.query.functions.Converter;
-import com.innahema.collections.query.functions.Predicate;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class Friend extends User {
 
     @SerializedName("circle_ids")
-    String[] circleIds;
+    HashSet<String> circleIds;
 
     @SerializedName("mutual_friends")
     int mutualFriends;
@@ -46,5 +43,41 @@ public class Friend extends User {
         return circles;
     }
 
+    public HashSet<String> getCircleIds() {
+        return circleIds;
+    }
 
+    public Friend() {
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeSerializable(this.circleIds);
+        dest.writeInt(this.mutualFriends);
+        dest.writeString(this.circles);
+    }
+
+    protected Friend(Parcel in) {
+        super(in);
+        this.circleIds = (HashSet<String>) in.readSerializable();
+        this.mutualFriends = in.readInt();
+        this.circles = in.readString();
+    }
+
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        public Friend createFromParcel(Parcel source) {
+            return new Friend(source);
+        }
+
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 }

@@ -22,9 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
-import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.activity.CommentsActivity;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -33,6 +32,7 @@ import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplat
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWrapperActivity;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
@@ -173,6 +173,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
         startActivity(SuccessStoryDetailsActivity.class, bundle);
+    }
+
+    public void openFriendPrefs(Friend friend) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FriendPrefsWrapperActivity.BUNDLE_FRIEND, friend);
+        startActivity(FriendPrefsWrapperActivity.class, bundle);
     }
 
     public void openEditInviteActivity(InviteTemplate inviteTemplate) {

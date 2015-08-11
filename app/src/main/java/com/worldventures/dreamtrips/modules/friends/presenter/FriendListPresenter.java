@@ -10,12 +10,14 @@ import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
+import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +156,28 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     public void onEvent(UnfriendEvent event) {
         unfriend(event.getFriend());
     }
+
+    public void onEvent(OpenFriendPrefsEvent event) {
+        activityRouter.openFriendPrefs(event.getFriend());
+    }
+
+    public void onEvent(FriendGroupRelationChangedEvent event) {
+        for (Friend friend : view.getAdapter().getItems()) {
+            if (friend.getId() == event.getFriend().getId()) {
+                switch (event.getState()) {
+                    case REMOVED:
+                        friend.getCircleIds().remove(event.getCircle().getId());
+                        break;
+                    case ADDED:
+                        friend.getCircleIds().add(event.getCircle().getId());
+                        break;
+                }
+                friend.setCircles(snappyRepository.getCircles());
+            }
+        }
+        view.getAdapter().notifyDataSetChanged();
+    }
+
 
     public void scrolled(int totalItemCount, int lastVisible) {
         if (totalItemCount > previousTotal) {

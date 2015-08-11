@@ -104,6 +104,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/empty"/>
         <activity
+            android:name=".modules.profile.view.activity.FriendPrefsWrapperActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/empty"/>
+        <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"/>

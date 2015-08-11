@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipF
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
@@ -67,7 +68,8 @@ public enum Route {
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
     PHOTO_COMMENTS(CommentsFragment.class),
-    POST_CREATE(PostFragment.class);
+    POST_CREATE(PostFragment.class),
+    FRIEND_PREFERENCES(FriendPreferenceFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
 

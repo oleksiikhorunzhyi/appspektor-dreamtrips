@@ -28,9 +28,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
+import icepick.Icicle;
 
-    protected User user;
+public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
+
+    protected U user;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -73,7 +75,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     public ProfilePresenter() {
     }
 
-    public ProfilePresenter(User user) {
+    public ProfilePresenter(U user) {
         this.user = user;
     }
 
@@ -128,7 +130,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
     }
 
-    protected void onProfileLoaded(User user) {
+    protected void onProfileLoaded(U user) {
         this.user = user;
         //
         setUserProfileInfo();

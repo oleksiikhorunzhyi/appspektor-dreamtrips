@@ -340,7 +340,7 @@
     <string name="post_hint">What are you up to?</string>
     <string name="photo_hint">Say something about photo…</string>
     <string name="post">Post</string>
-    
+
     /////////Date time relative strings
     <string name="just_now">Just now</string>
     <string name="days_ago">%d days ago</string>
@@ -359,4 +359,12 @@
     <string name="month_ago">1 month ago</string>
     <string name="week_ago">1 week ago</string>
     <string name="day_ago">1 day ago</string>
+
+
+    <string name="social_remove_and_block_friend_title">Unfriend and block</string>
+    <string name="social_friend_preference_title">Edit friend preferences</string>
+    <string name="friend_pref_create_new_list">Create new list</string>
+    <string name="friend_pref_lists_title">Lists</string>
+    <string name="friend_pref_lists_header">Friend Preferences</string>
+
 </resources>

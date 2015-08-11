@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 import android.app.Dialog;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -99,7 +97,6 @@ public class CommentCell extends AbstractCell<Comment> {
                     dialog.show();
                     break;
                 case R.id.action_edit:
-                    SoftInputUtil.hideSoftInputMethod(text);
                     getEventBus().post(new EditCommentEvent(getModelObject()));
                     break;
             }

@@ -267,14 +267,11 @@ public class SnappyRepository {
         }));
     }
 
-    public List<UploadTask> getUploadTasks(ArrayList<String> keys) {
-        return actWithResult(db -> {
-            List<UploadTask> tasks = new ArrayList<>();
-            for (String key : keys) {
-                tasks.add(db.get(key, UploadTask.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
+    public List<UploadTask> getUploadTasksForId(String linkedId) {
+        List<UploadTask> items = getAllUploadTask();
+        return Queryable.from(items)
+                .filter(item -> linkedId.equals(item.getLinkedItemId()))
+                .toList();
     }
 
     public List<UploadTask> getAllUploadTask() {

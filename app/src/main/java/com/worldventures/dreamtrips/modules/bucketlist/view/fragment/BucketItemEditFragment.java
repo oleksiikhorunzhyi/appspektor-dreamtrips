@@ -24,6 +24,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
@@ -258,12 +259,11 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        eventBus.postSticky(new BucketDetailsFragment.ActivityResult(requestCode, resultCode, data));
-
+        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
     }
 
 
-    public void onEvent(BucketDetailsFragment.ActivityResult event) {
+    public void onEvent(ActivityResult event) {
         eventBus.removeStickyEvent(event);
         handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
     }

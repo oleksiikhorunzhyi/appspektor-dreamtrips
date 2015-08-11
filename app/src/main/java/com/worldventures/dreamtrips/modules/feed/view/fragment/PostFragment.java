@@ -11,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -56,6 +58,8 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     @Icicle
     int pidTypeShown;
+
+    WeakHandler handler = new WeakHandler();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -148,11 +152,19 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (pidTypeShown != 0) {
-            pickImageDelegate.handlePickDialogActivityResult(requestCode, resultCode, data);
-            pidTypeShown = 0;
-            getPresenter().setPidType(pidTypeShown);
-        }
+        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
+    }
+
+    public void onEvent(ActivityResult event) {
+        eventBus.removeStickyEvent(event);
+        handler.post(() -> {
+            if (pidTypeShown != 0) {
+                pickImageDelegate.handlePickDialogActivityResult(event.requestCode,
+                        event.resultCode, event.data);
+                pidTypeShown = 0;
+                getPresenter().setPidType(pidTypeShown);
+            }
+        });
     }
 
     @Override

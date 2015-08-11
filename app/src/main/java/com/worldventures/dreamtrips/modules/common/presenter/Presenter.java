@@ -8,12 +8,10 @@ import android.text.TextUtils;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-
 import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -23,7 +21,6 @@ import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import de.greenrobot.event.EventBus;
 import icepick.Icepick;
@@ -188,8 +185,5 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         boolean isTabletLandscape();
 
         boolean isVisibleOnScreen();
-
-        void showEditContainer();
-
     }
 }

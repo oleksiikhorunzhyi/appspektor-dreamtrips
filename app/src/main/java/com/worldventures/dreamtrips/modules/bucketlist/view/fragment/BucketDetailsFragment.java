@@ -21,10 +21,10 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -309,15 +310,10 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
                 .show();
     }
 
-    public static class ActivityResult {
-        public final int requestCode;
-        public final int resultCode;
-        public final Intent data;
-
-        public ActivityResult(int requestCode, int resultCode, Intent data) {
-            this.requestCode = requestCode;
-            this.resultCode = resultCode;
-            this.data = data;
-        }
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
+
 }

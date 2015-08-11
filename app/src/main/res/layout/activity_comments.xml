@@ -9,11 +9,12 @@
         style="@style/ToolBarStyle"
         android:layout_width="match_parent"/>
 
-
-    <FrameLayout
+    <fragment
         android:id="@+id/container_main"
+        android:name="com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_actionbar"/>
+        android:layout_below="@id/toolbar_actionbar"/>
+
 
 </RelativeLayout>

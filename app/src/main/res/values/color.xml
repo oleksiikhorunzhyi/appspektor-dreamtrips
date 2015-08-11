@@ -35,4 +35,6 @@
     <color name="pin_progress_default_circle_color">#80ffffff</color>
 
     <color name="load_more_color">#e5eff4</color>
+
+    <color name="white_semi_transparent">#CCffffff</color>
 </resources>

@@ -277,7 +277,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public void showEditContainer() {
+    public void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);
     }

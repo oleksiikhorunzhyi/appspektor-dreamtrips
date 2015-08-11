@@ -11,7 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -81,8 +80,6 @@ public class CommentCell extends AbstractCell<Comment> {
     @Optional
     @OnClick(R.id.edit)
     void onEditClicked() {
-        SoftInputUtil.hideSoftInputMethod(text);
-
         PopupMenu popup = new PopupMenu(itemView.getContext(), edit);
         popup.inflate(R.menu.menu_comment_edit);
         popup.setOnMenuItemClickListener(item -> {

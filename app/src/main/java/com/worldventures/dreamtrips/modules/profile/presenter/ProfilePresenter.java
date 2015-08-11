@@ -149,7 +149,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
     public void makePost() {
         fragmentCompass.removePost();
-        view.showEditContainer();
+        view.showPostContainer();
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.add(Route.POST_CREATE);
@@ -256,6 +256,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
         void setFriendButtonText(@StringRes int res);
 
-        void showEditContainer();
+        void showPostContainer();
     }
 }

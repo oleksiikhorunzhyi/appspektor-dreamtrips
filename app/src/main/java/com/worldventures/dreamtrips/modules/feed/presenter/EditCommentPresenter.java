@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
-    public static final String EXTRA_COMMENT = "comment";
-
     private Comment comment;
 
     public EditCommentPresenter(Comment comment) {
@@ -27,15 +25,11 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
         view.setUsername(owner.getFullName());
     }
 
-    public void onCancel() {
-        fragmentCompass.pop();
-    }
-
     public void onSave() {
         comment.setMessage(view.getText());
         doRequest(new EditCommentCommand(comment), result -> {
             eventBus.post(new CommentUpdatedEvent(result));
-            fragmentCompass.pop();
+            view.close();
         });
     }
 
@@ -45,6 +39,8 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
         void setUsername(String name);
 
         void setImageURI(Uri uri);
+
+        void close();
 
         String getText();
     }

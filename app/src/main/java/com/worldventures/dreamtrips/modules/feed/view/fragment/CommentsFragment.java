@@ -3,15 +3,18 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -23,15 +26,14 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
 
 import java.util.List;
 
@@ -102,6 +104,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 super.onTextChanged(s, start, before, count);
+                getPresenter().setComment(s.toString());
                 post.setEnabled(s.length() > 0);
             }
         });
@@ -121,6 +124,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     @Override
     public void addComment(Comment comment) {
+        input.setText(null);
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
         commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
@@ -140,10 +144,32 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         adapter.notifyItemChanged(index);
     }
 
+    @Override
+    public void editComment(EditCommentPresenter presenter) {
+        EditCommentViewHolder editCommentViewHolder = new EditCommentViewHolder();
+        injectorProvider.get().inject(presenter);
+        editCommentViewHolder.setPresenter(presenter);
+
+        DialogPlus editDialog = DialogPlus.newDialog(getActivity())
+                .setContentHolder(editCommentViewHolder)
+                .setCancelable(true)
+                .setOnCancelListener(dialog -> SoftInputUtil.hideSoftInputMethod(getActivity()))
+                .setGravity(Gravity.TOP)
+                .create();
+
+        editCommentViewHolder.setDialog(editDialog);
+
+        editDialog.show();
+    }
+
     @OnClick(R.id.post)
     void onPost() {
-        getPresenter().post(input.getText().toString());
-        input.setText(null);
+        getPresenter().post();
+    }
+
+    @Override
+    public void setComment(String comment) {
+        input.setText(comment);
     }
 
     @Override

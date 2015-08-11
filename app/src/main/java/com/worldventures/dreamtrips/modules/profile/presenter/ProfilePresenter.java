@@ -8,7 +8,6 @@ import android.text.format.DateFormat;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import icepick.Icicle;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
 
@@ -258,5 +255,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         void onFeedError();
 
         void setFriendButtonText(@StringRes int res);
+
+        void showEditContainer();
     }
 }

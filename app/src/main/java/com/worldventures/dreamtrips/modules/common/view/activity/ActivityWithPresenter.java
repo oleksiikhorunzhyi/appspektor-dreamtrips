@@ -86,12 +86,6 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     @Override
-    public void showEditContainer() {
-        View container = ButterKnife.findById(this, R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         getPresentationModel().onStart();

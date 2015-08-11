@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -308,4 +309,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
                 })
                 .show();
     }
+
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
 }

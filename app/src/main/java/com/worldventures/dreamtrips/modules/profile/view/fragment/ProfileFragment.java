@@ -17,7 +17,6 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icicle;
 
@@ -275,4 +275,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
         return feedView.getAdapter();
     }
+
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
 }

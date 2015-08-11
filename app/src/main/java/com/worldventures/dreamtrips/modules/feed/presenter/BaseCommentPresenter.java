@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.os.Bundle;
-
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
@@ -18,11 +15,16 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icicle;
+
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     BaseFeedModel feedModel;
 
     private int page = 1;
+
+    @Icicle
+    String comment;
 
     @Override
     public void takeView(View view) {
@@ -33,6 +35,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         setHeader();
         loadComments();
+
+        view.setComment(comment);
     }
 
     private void loadComments() {
@@ -40,8 +44,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         doRequest(new GetCommentsQuery(feedModel.getId(), page), this::onCommentsLoaded);
     }
 
-    public void post(String constraint) {
-        doRequest(new CreateCommentCommand(feedModel.getId(), constraint), view::addComment);
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void post() {
+        doRequest(new CreateCommentCommand(feedModel.getId(), comment), view::addComment);
     }
 
     public void onEvent(LoadMoreEvent event) {
@@ -54,14 +62,13 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         });
     }
 
-    public void onEvent(EditCommentEvent event) {
-        Bundle args = new Bundle();
-        args.putParcelable(EditCommentPresenter.EXTRA_COMMENT, event.getComment());
-        fragmentCompass.add(Route.EDIT_COMMENT, args);
-    }
-
     public void onEvent(CommentUpdatedEvent event) {
         view.updateComment(event.getComment());
+    }
+
+    public void onEvent(EditCommentEvent event) {
+        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
+        view.editComment(editCommentPresenter);
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {
@@ -83,8 +90,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         void updateComment(Comment comment);
 
+        void setComment(String comment);
+
         void setLoading(boolean loading);
 
         void setHeader(BaseFeedModel header);
+
+        void editComment(EditCommentPresenter presenter);
     }
 }

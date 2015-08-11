@@ -108,6 +108,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void setupDiningView(DiningItem diningItem);
 
         void showDeletionDialog(BucketItem bucketItem);
+
+        void showEditContainer();
     }
 
 }

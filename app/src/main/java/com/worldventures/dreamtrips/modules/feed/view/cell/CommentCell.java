@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 import android.app.Dialog;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,6 +81,8 @@ public class CommentCell extends AbstractCell<Comment> {
     @Optional
     @OnClick(R.id.edit)
     void onEditClicked() {
+        SoftInputUtil.hideSoftInputMethod(text);
+
         PopupMenu popup = new PopupMenu(itemView.getContext(), edit);
         popup.inflate(R.menu.menu_comment_edit);
         popup.setOnMenuItemClickListener(item -> {
@@ -99,7 +100,6 @@ public class CommentCell extends AbstractCell<Comment> {
                     dialog.show();
                     break;
                 case R.id.action_edit:
-                    SoftInputUtil.hideSoftInputMethod(text);
                     getEventBus().post(new EditCommentEvent(getModelObject()));
                     break;
             }

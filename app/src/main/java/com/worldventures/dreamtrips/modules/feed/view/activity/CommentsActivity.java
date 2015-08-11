@@ -4,12 +4,11 @@ import android.os.Bundle;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ToolbarActivity;
-import com.worldventures.dreamtrips.modules.feed.presenter.CommentsActivityPresenter;
 
 @Layout(R.layout.activity_comments)
-public class CommentsActivity extends ToolbarActivity<CommentsActivityPresenter> {
+public class CommentsActivity extends ToolbarActivity<ActivityPresenter> {
 
     @Override
     protected int getToolbarTitle() {
@@ -22,8 +21,7 @@ public class CommentsActivity extends ToolbarActivity<CommentsActivityPresenter>
     }
 
     @Override
-    protected CommentsActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
-        return new CommentsActivityPresenter(bundleExtra);
+    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new ActivityPresenter();
     }
 }

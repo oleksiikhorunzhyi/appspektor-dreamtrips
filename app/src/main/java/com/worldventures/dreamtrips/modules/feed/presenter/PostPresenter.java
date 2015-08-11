@@ -29,7 +29,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
         if (error != null) {
-            view.informUser(error);
+            if (view != null)
+                view.informUser(error);
         } else {
             Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
             handlePhotoPick(uri);
@@ -37,7 +38,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     };
     protected ImagePickCallback fbCallback = (fragment, image, error) -> {
         if (error != null) {
-            view.informUser(error);
+            if (view != null)
+                view.informUser(error);
         } else {
             Uri uri = Uri.parse(image.getFilePathOriginal());
             handlePhotoPick(uri);

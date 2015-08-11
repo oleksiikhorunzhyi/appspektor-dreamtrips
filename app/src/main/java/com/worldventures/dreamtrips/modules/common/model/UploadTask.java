@@ -1,15 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 
 public class UploadTask implements IFullScreenObject {
 
@@ -37,6 +34,8 @@ public class UploadTask implements IFullScreenObject {
 
     private Module module;
 
+    private String linkedItemId;
+
     public UploadTask() {
     }
 
@@ -53,6 +52,7 @@ public class UploadTask implements IFullScreenObject {
         longitude = in.readFloat();
         originUrl = in.readString();
         type = in.readString();
+        linkedItemId = in.readString();
     }
 
     public static final Creator<UploadTask> CREATOR = new Creator<UploadTask>() {
@@ -205,6 +205,14 @@ public class UploadTask implements IFullScreenObject {
         return !(filePath != null ? !filePath.equals(that.filePath) : that.filePath != null);
     }
 
+    public String getLinkedItemId() {
+        return linkedItemId;
+    }
+
+    public void setLinkedItemId(String linkedItemId) {
+        this.linkedItemId = linkedItemId;
+    }
+
     @Override
     public int hashCode() {
         return filePath != null ? filePath.hashCode() : 0;
@@ -282,6 +290,7 @@ public class UploadTask implements IFullScreenObject {
         parcel.writeFloat(longitude);
         parcel.writeString(originUrl);
         parcel.writeString(type);
+        parcel.writeString(linkedItemId);
     }
 
     @Override

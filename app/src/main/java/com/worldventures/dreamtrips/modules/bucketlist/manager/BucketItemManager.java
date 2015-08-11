@@ -305,6 +305,7 @@ public class BucketItemManager {
         tempItems.remove(oldPosition);
         tempItems.add(newPosition, updatedItem);
         saveBucketItems(tempItems, bucketType);
+
         eventBus.post(new BucketItemUpdatedEvent(updatedItem));
     }
 

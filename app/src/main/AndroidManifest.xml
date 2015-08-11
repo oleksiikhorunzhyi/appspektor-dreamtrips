@@ -183,7 +183,8 @@
         </activity>
         <activity
             android:name=".modules.feed.view.activity.CommentsActivity"
-            android:label="@string/empty">
+            android:label="@string/empty"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

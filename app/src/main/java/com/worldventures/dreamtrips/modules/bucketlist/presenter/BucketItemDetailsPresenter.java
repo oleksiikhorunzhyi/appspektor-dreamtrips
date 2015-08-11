@@ -70,7 +70,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (event.getBucketItem().equals(bucketItem)) {
             bucketItem = event.getBucketItem();
-            syncUI();
+            syncUI(false);
         }
     }
 
@@ -81,8 +81,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     @Override
-    protected void syncUI() {
-        super.syncUI();
+    protected void syncUI(boolean uploadCompletedTasks) {
+        super.syncUI(uploadCompletedTasks);
         if (!TextUtils.isEmpty(bucketItem.getType())) {
             String s = bucketItem.getCategoryName();
             view.setCategory(s);

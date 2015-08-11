@@ -35,6 +35,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
@@ -95,15 +97,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
 
-        syncUI();
+        syncUI(true);
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
-        syncUI();
+        syncUI(false);
     }
 
-    protected void syncUI() {
+    protected void syncUI(boolean uploadCompletedTasks) {
         view.setTitle(bucketItem.getName());
         view.setDescription(bucketItem.getDescription());
         view.setStatus(bucketItem.isDone());
@@ -117,19 +119,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.getBucketPhotosView().setImages(photos);
         }
 
-        if (bucketItem.getUploadTasksPaths() != null) {
-            List<UploadTask> tasks = db.getUploadTasks(bucketItem.getUploadTasksPaths());
-            Collections.reverse(tasks);
+        List<UploadTask> tasks = db.getUploadTasksForId(String.valueOf(bucketItem.getId()));
+        Collections.reverse(tasks);
 
+        if (uploadCompletedTasks)
             Queryable.from(tasks).forEachR(task -> {
                 if (task.getStatus() != null &&
                         task.getStatus().equals(UploadTask.Status.COMPLETED))
                     addPhotoToBucketItem(task);
             });
-            view.getBucketPhotosView().addImages(tasks);
 
-        }
+        view.getBucketPhotosView().addImages(tasks);
     }
+
 
     //////////////////////////////
     ///////// Photo upload staff
@@ -160,7 +162,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
-        bucketItem.removeTaskPath(event.getModelObject().getFilePath());
+        db.removeUploadTask(event.getModelObject());
         bucketItemManager.resaveBucketItem(bucketItem);
     }
 
@@ -216,6 +218,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         task.setStatus(UploadTask.Status.IN_PROGRESS);
         task.setFilePath(uri.toString());
         task.setType(type);
+        task.setLinkedItemId(String.valueOf(bucketItemId));
 
         copyFileIfNeeded(task);
     }
@@ -225,10 +228,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void upload(UploadTask uploadTask, String filePath) {
+        Timber.d("Starting bucket photo upload");
         uploadTask.setFilePath(filePath);
 
-        bucketItem.addTaskPath(filePath);
-        bucketItemManager.resaveBucketItem(bucketItem);
+        view.getBucketPhotosView().addImage(uploadTask);
 
         startUpload(uploadTask);
     }
@@ -268,7 +271,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-        bucketItem.removeTaskPath(bucketPhotoUploadTask.getFilePath());
+        view.getBucketPhotosView().replace(bucketPhotoUploadTask, bucketPhoto);
+        db.removeUploadTask(bucketPhotoUploadTask);
+
         bucketItemManager.updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 

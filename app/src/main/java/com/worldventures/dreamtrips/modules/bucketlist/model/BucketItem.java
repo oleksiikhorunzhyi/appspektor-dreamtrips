@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -65,27 +64,7 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     @TaggedFieldSerializer.Tag(15)
     private DiningItem dining;
 
-    @TaggedFieldSerializer.Tag(16)
-    private ArrayList<String> uploadTasksPaths;
-
     private transient boolean selected;
-
-    public ArrayList<String> getUploadTasksPaths() {
-        return uploadTasksPaths;
-    }
-
-    public void addTaskPath(String filePath) {
-        if (uploadTasksPaths == null) {
-            uploadTasksPaths = new ArrayList<>();
-        }
-        uploadTasksPaths.add(filePath);
-    }
-
-    public void removeTaskPath(String filePath) {
-        if (uploadTasksPaths != null) {
-            uploadTasksPaths.remove(filePath);
-        }
-    }
 
     public String getName() {
         return name;

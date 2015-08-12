@@ -14,13 +14,14 @@ import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -74,7 +75,7 @@ public interface DreamTripsApi {
     User getProfile();
 
     @GET("/api/profiles/{id}")
-    User getPublicProfile(@Path("id") int id);
+    Friend getPublicProfile(@Path("id") int id);
 
     @GET("/api/trips")
     List<TripModel> getTrips();
@@ -286,4 +287,12 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @PUT("/api/social/comments/{id}")
     Comment editComment(@Path("id") int commentId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/circles/{circle_id}/users")
+    Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+
+    @FormUrlEncoded
+    @BODY_DELETE("/api/social/circles/{circle_id}/users")
+    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 }

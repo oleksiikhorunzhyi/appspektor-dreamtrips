@@ -24,16 +24,6 @@ public class User extends BaseEntity implements Parcelable {
     public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
     public static final String RELATION_REJECT = "rejected";
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
     private String username;
     private String email;
     private Avatar avatar;
@@ -66,22 +56,6 @@ public class User extends BaseEntity implements Parcelable {
     private boolean socialEnabled;
 
     public User() {
-    }
-
-    private User(Parcel in) {
-        this.username = in.readString();
-        this.email = in.readString();
-        this.firstName = in.readString();
-        this.lastName = in.readString();
-        long tmpBirthDate = in.readLong();
-        this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
-        this.location = in.readString();
-        this.avatar = in.readParcelable(Avatar.class.getClassLoader());
-        this.backgroundPhotoUrl = in.readString();
-        this.id = in.readInt();
-        this.enrollDate = (Date) in.readSerializable();
-        this.relationship = in.readString();
-        this.socialEnabled = in.readInt() != 0;
     }
 
     public String getBackgroundPhotoUrl() {
@@ -208,27 +182,6 @@ public class User extends BaseEntity implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.username);
-        dest.writeString(this.email);
-        dest.writeString(this.firstName);
-        dest.writeString(this.lastName);
-        dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
-        dest.writeString(this.location);
-        dest.writeParcelable(this.avatar, flags);
-        dest.writeString(this.backgroundPhotoUrl);
-        dest.writeInt(this.id);
-        dest.writeSerializable(enrollDate);
-        dest.writeString(this.relationship);
-        dest.writeInt(socialEnabled ? 1 : 0);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -312,4 +265,63 @@ public class User extends BaseEntity implements Parcelable {
             return "";
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.username);
+        dest.writeString(this.email);
+        dest.writeParcelable(this.avatar, 0);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.location);
+        dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
+        dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
+        dest.writeDouble(this.dreamTripsPoints);
+        dest.writeDouble(this.roviaBucks);
+        dest.writeInt(this.tripImagesCount);
+        dest.writeInt(this.bucketListItemsCount);
+        dest.writeString(this.relationship);
+        dest.writeString(this.backgroundPhotoUrl);
+        dest.writeStringList(this.subscriptions);
+        dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
+    }
+
+    protected User(Parcel in) {
+        super(in);
+        this.username = in.readString();
+        this.email = in.readString();
+        this.avatar = in.readParcelable(Avatar.class.getClassLoader());
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.location = in.readString();
+        long tmpBirthDate = in.readLong();
+        this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
+        long tmpEnrollDate = in.readLong();
+        this.enrollDate = tmpEnrollDate == -1 ? null : new Date(tmpEnrollDate);
+        this.dreamTripsPoints = in.readDouble();
+        this.roviaBucks = in.readDouble();
+        this.tripImagesCount = in.readInt();
+        this.bucketListItemsCount = in.readInt();
+        this.relationship = in.readString();
+        this.backgroundPhotoUrl = in.readString();
+        this.subscriptions = in.createStringArrayList();
+        this.socialEnabled = in.readByte() != 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

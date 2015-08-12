@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
@@ -14,13 +13,15 @@ import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
+import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
+public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> {
 
     public UserPresenter(Bundle args) {
         super(args.getParcelable(ProfileModule.EXTRA_USER));
@@ -93,6 +94,16 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
         });
     }
 
+
+    public void unfriendAndBlock() {
+        view.informUser("TODO");
+    }
+
+    public void openFriendPrefs() {
+        activityRouter.openFriendPrefs(user);
+    }
+
+
     public void acceptClicked() {
         view.showAddFriendDialog(circles, this::accept);
     }
@@ -142,6 +153,20 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
                 });
     }
 
+
+    public void onEvent(FriendGroupRelationChangedEvent event) {
+        if (user.getId() == event.getFriend().getId()) {
+            switch (event.getState()) {
+                case REMOVED:
+                    user.getCircleIds().remove(event.getCircle().getId());
+                    break;
+                case ADDED:
+                    user.getCircleIds().add(event.getCircle().getId());
+                    break;
+            }
+            user.setCircles(snappyRepository.getCircles());
+        }
+    }
 
     @Override
     public void openBucketList() {

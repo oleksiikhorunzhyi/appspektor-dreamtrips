@@ -10,6 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
@@ -66,9 +67,16 @@ public class FriendCell extends AbstractCell<Friend> {
         builder.setIcon(userPhoto.getDrawable());
         builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
                 dialogInterface.dismiss());
-        builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)},
+        builder.setItems(new String[]{
+                        c.getString(R.string.social_remove_friend_title),
+                        c.getString(R.string.social_friend_preference_title)
+                },
                 (dialogInterface, i) -> {
-                    getEventBus().post(new UnfriendEvent(getModelObject()));
+                    if (i == 0) {
+                        getEventBus().post(new UnfriendEvent(getModelObject()));
+                    } else if (i == 1) {
+                        getEventBus().post(new OpenFriendPrefsEvent(getModelObject()));
+                    }
                 });
         builder.show();
     }

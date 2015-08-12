@@ -2,18 +2,19 @@ package com.worldventures.dreamtrips.modules.profile.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
-public class GetPublicProfileQuery extends Query<User> {
+public class GetPublicProfileQuery extends Query<Friend> {
 
-    private User user;
+    private Friend user;
 
-    public GetPublicProfileQuery(User user) {
-        super(User.class);
+    public GetPublicProfileQuery(Friend user) {
+        super(Friend.class);
         this.user = user;
     }
 
     @Override
-    public User loadDataFromNetwork() throws Exception {
+    public Friend loadDataFromNetwork() throws Exception {
         return getService().getPublicProfile(user.getId());
     }
 }

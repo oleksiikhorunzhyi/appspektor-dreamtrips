@@ -39,7 +39,7 @@ import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 
-public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
+public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
     @Inject
     RootComponentsProvider rootComponentsProvider;

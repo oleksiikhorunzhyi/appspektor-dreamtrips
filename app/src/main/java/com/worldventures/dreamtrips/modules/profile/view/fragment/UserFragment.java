@@ -113,9 +113,17 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         builder.setIcon(profileView.getUserPhoto().getDrawable());
         builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
                 dialogInterface.dismiss());
-        builder.setItems(new String[]{getString(R.string.social_remove_friend_title)},
-                (dialogInterface, i) ->
-                        getPresenter().unfriend()
+        builder.setItems(new String[]{
+                        getString(R.string.social_remove_friend_title),
+                        getString(R.string.social_friend_preference_title)
+                },
+                (dialogInterface, i) -> {
+                    if (i == 0) {
+                        getPresenter().unfriend();
+                    } else if (i == 1) {
+                        getPresenter().openFriendPrefs();
+                    }
+                }
         );
         builder.show();
 

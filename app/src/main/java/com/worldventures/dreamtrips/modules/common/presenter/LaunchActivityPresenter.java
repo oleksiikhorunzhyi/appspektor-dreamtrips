@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import org.apache.commons.io.FileUtils;
 
@@ -57,7 +57,7 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
     private void clearTempDirectory() {
         snappyRepository.removeAllUploadTasks();
-        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDialog.FOLDERNAME));
+        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
         if (directory.exists()) {
             try {
                 FileUtils.deleteDirectory(directory);

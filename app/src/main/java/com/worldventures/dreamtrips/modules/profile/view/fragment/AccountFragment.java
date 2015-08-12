@@ -2,20 +2,21 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
@@ -32,8 +33,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     String filePath;
     @Icicle
     int callbackType;
+    @Icicle
+    int pidType;
 
-    private PickImageDialog pid;
+    private PickImageDelegate pickImageDelegate;
+
+    WeakHandler handler = new WeakHandler();
 
     @Override
     protected AccountPresenter createPresenter(Bundle savedInstanceState) {
@@ -50,6 +55,13 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileView.getAddFriend().setVisibility(View.GONE);
         profileView.getUpdateInfo().setVisibility(View.VISIBLE);
         profileView.getUserBalance().setVisibility(View.VISIBLE);
+
+        pickImageDelegate = new PickImageDelegate(this);
+        pickImageDelegate.setRequestType(callbackType);
+        pickImageDelegate.setFilePath(filePath);
+
+        pickImageDelegate.setErrorCallback(this::informUser);
+
 
         profileView.setOnPhotoClick(() -> getPresenter().photoClicked());
         profileView.setOnCoverClick(() -> getPresenter().coverClicked());
@@ -92,18 +104,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void openAvatarPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_avatar_header));
-        this.pid.setCallback(getPresenter()::onAvatarChosen);
+        pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onAvatarChosen(chosenImage[0]));
         callbackType = AVATAR_CALLBACK;
         showChooseSelectPhotoTypeDialog();
     }
 
     @Override
     public void openCoverPicker() {
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle(getString(R.string.profile_select_cover_header));
-        this.pid.setCallback(getPresenter()::onCoverChosen);
+        pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onCoverChosen(chosenImage[0]));
         callbackType = COVER_CALLBACK;
         showChooseSelectPhotoTypeDialog();
     }
@@ -112,14 +120,16 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
                 .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
                     if (which == 0) {
-                        pid.setRequestTypes(PickImageDialog.REQUEST_CAPTURE_PICTURE);
+                        pidType = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
                     } else if (which == 1) {
-                        pid.setRequestTypes(PickImageDialog.REQUEST_PICK_PICTURE);
+                        pidType = PickImageDelegate.REQUEST_PICK_PICTURE;
                     } else {
-                        pid.setRequestTypes(PickImageDialog.REQUEST_FACEBOOK);
+                        pidType = PickImageDelegate.REQUEST_FACEBOOK;
                     }
-                    pid.show();
-                    filePath = pid.getFilePath();
+
+                    pickImageDelegate.setRequestType(pidType);
+                    pickImageDelegate.show();
+                    filePath = pickImageDelegate.getFilePath();
                 });
         builder.show();
     }
@@ -135,22 +145,33 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
-            return;
+        if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
+            eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
         }
-        if (pid == null) {
-            this.pid = new PickImageDialog(getActivity(), this);
-            if (callbackType == AVATAR_CALLBACK)
-                this.pid.setCallback(getPresenter()::onAvatarChosen);
-            else if (callbackType == COVER_CALLBACK)
-                this.pid.setCallback(getPresenter()::onCoverChosen);
-            this.pid.setChooserType(requestCode);
-            this.pid.setFilePath(filePath);
-        }
-        this.pid.onActivityResult(requestCode, resultCode, data);
     }
+
+    public void onEvent(ActivityResult event) {
+        eventBus.removeStickyEvent(event);
+        handler.post(() -> {
+            if (pidType != 0) {
+                pickImageDelegate.setRequestType(pidType);
+                pickImageDelegate.setFilePath(filePath);
+
+                if (callbackType == AVATAR_CALLBACK)
+                    pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onAvatarChosen(chosenImage[0]));
+                else if (callbackType == COVER_CALLBACK)
+                    pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onCoverChosen(chosenImage[0]));
+
+                pickImageDelegate.onActivityResult(event.requestCode,
+                        event.resultCode, event.data);
+
+                pidType = 0;
+            }
+        });
+    }
+
 
     @Override
     public void setRoviaBucks(String count) {

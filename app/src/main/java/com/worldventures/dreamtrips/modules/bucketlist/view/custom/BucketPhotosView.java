@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUplo
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import java.util.List;
 
@@ -188,15 +187,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
-                            pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
+                            pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
                             break;
                         case 1:
-                            pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
+                            pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
                             break;
                         case 2:
                             if (multiselectAvalbile)
-                                pidTypeShown = PickImageDialog.REQUEST_MULTI_SELECT;
-                            else pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
+                                pidTypeShown = PickImageDelegate.REQUEST_MULTI_SELECT;
+                            else pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
                             break;
                         default:
                             break;
@@ -225,16 +224,16 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private void setCallback() {
         switch (pidTypeShown) {
-            case PickImageDialog.REQUEST_FACEBOOK:
+            case PickImageDelegate.REQUEST_FACEBOOK:
                 pickImageDelegate.setImageCallback(fbCallback);
                 break;
-            case PickImageDialog.REQUEST_MULTI_SELECT:
+            case PickImageDelegate.REQUEST_MULTI_SELECT:
                 pickImageDelegate.setImageCallback(mulitImageCallback);
                 break;
-            case PickImageDialog.REQUEST_PICK_PICTURE:
+            case PickImageDelegate.REQUEST_PICK_PICTURE:
                 pickImageDelegate.setImageCallback(chooseImageCallback);
                 break;
-            case PickImageDialog.REQUEST_CAPTURE_PICTURE:
+            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
                 pickImageDelegate.setImageCallback(captureImageCallback);
                 break;
         }

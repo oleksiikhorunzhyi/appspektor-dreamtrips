@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Frag
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -123,19 +122,19 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
 
     @OnClick(R.id.fab_facebook)
     public void actionFacebook() {
-        pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
+        pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
         openPicker();
     }
 
     @OnClick(R.id.fab_gallery)
     public void actionGallery() {
-        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
+        pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
         openPicker();
     }
 
     @OnClick(R.id.fab_photo)
     public void actionPhoto() {
-        pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
+        pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
         openPicker();
     }
 

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
@@ -67,11 +66,11 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
 
     public PickImageDelegate.ImagePickCallback provideCallback(int pidType) {
         switch (pidType) {
-            case PickImageDialog.REQUEST_FACEBOOK:
+            case PickImageDelegate.REQUEST_FACEBOOK:
                 return fbCallback;
-            case PickImageDialog.REQUEST_CAPTURE_PICTURE:
+            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
                 return captureImageCallback;
-            case PickImageDialog.REQUEST_PICK_PICTURE:
+            case PickImageDelegate.REQUEST_PICK_PICTURE:
                 return chooseImageCallback;
         }
         return null;

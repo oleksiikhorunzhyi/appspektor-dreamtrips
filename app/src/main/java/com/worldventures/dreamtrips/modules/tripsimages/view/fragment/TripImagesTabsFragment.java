@@ -7,12 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.kbeanie.imagechooser.api.ChooserType;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
 import butterknife.InjectView;
@@ -51,13 +53,15 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     protected FloatingActionButton fabPhoto;
 
     private BaseStatePagerAdapter adapter;
-    private PickImageDialog pid;
+
+    private PickImageDelegate pickImageDelegate;
+
+    WeakHandler handler = new WeakHandler();
 
     @Icicle
     int pidTypeShown;
     @Icicle
     String filePath;
-
 
     @Override
     public void afterCreateView(View rootView) {
@@ -85,6 +89,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
 
         this.pager.setAdapter(adapter);
         this.pager.addOnPageChangeListener(this);
+
+        pickImageDelegate = new PickImageDelegate(this);
 
         tabs.setupWithPagerBadged(pager);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
@@ -118,57 +124,57 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     @OnClick(R.id.fab_facebook)
     public void actionFacebook() {
         pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
-        this.pid.setRequestTypes(PickImageDialog.REQUEST_FACEBOOK);
-        this.pid.show();
-        filePath = pid.getFilePath();
-        this.multipleActionsDown.collapse();
+        openPicker();
     }
 
     @OnClick(R.id.fab_gallery)
     public void actionGallery() {
         pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
-        this.pid.setRequestTypes(ChooserType.REQUEST_PICK_PICTURE);
-        this.pid.show();
-        filePath = pid.getFilePath();
-        this.multipleActionsDown.collapse();
+        openPicker();
     }
 
     @OnClick(R.id.fab_photo)
     public void actionPhoto() {
         pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
-        this.pid = new PickImageDialog(getActivity(), this);
-        this.pid.setTitle("");
-        this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
-        this.pid.setRequestTypes(ChooserType.REQUEST_CAPTURE_PICTURE);
-        this.pid.show();
-        filePath = pid.getFilePath();
+        openPicker();
+    }
+
+    private void openPicker() {
+        pickImageDelegate.setFilePath(filePath);
+        pickImageDelegate.setRequestType(pidTypeShown);
+
+        pickImageDelegate.setImageCallback(getPresenter().provideCallback(pidTypeShown));
+        pickImageDelegate.setErrorCallback(this::informUser);
+        pickImageDelegate.show();
+        filePath = pickImageDelegate.getFilePath();
         this.multipleActionsDown.collapse();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (pidTypeShown != 0) {
-            this.pid = new PickImageDialog(getActivity(), this);
-            this.pid.setCallback(getPresenter().provideCallback(pidTypeShown));
-            this.pid.setChooserType(pidTypeShown);
-            this.pid.setFilePath(filePath);
-            pidTypeShown = 0;
-        }
-        //
-        if (this.pid != null)
-            this.pid.onActivityResult(requestCode, resultCode, data);
-        //
+        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
+
         if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
             pager.setCurrentItem(1, false);
         }
     }
+
+    public void onEvent(ActivityResult event) {
+        eventBus.removeStickyEvent(event);
+        handler.post(() -> {
+            if (pidTypeShown != 0) {
+                pickImageDelegate.setRequestType(pidTypeShown);
+                pickImageDelegate.setFilePath(filePath);
+                pickImageDelegate.setImageCallback(getPresenter().provideCallback(pidTypeShown));
+                pickImageDelegate.setErrorCallback(this::informUser);
+                pickImageDelegate.onActivityResult(event.requestCode,
+                        event.resultCode, event.data);
+                pidTypeShown = 0;
+            }
+        });
+    }
+
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

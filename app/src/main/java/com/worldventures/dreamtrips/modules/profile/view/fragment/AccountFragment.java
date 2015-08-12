@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
 
+import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
@@ -26,6 +27,11 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     private static final int AVATAR_CALLBACK = 1;
     private static final int COVER_CALLBACK = 2;
+
+    @Icicle
+    String filePath;
+    @Icicle
+    int callbackType;
 
     private PickImageDialog pid;
 

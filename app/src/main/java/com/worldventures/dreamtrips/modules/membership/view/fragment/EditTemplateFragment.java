@@ -51,9 +51,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @InjectView(R.id.photoContainer)
     ViewGroup photoContainer;
 
-    @InjectView(R.id.bucket_photos)
-    protected BucketPhotosView bucketPhotosView;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -91,12 +88,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         wvPreview.getSettings().setLoadWithOverviewMode(true);
         wvPreview.getSettings().setUseWideViewPort(true);
         progressView.setVisibility(View.GONE);
-
-        bucketPhotosView.init(this, injector, BucketPhotosView.Type.DEFAULT);
-        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setChooseImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
-        bucketPhotosView.setDeleteButtonCallback(getPresenter().getDeleteCallback());
     }
 
     @Override
@@ -105,12 +96,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
         if (savedInstanceState != null) {
             etMessage.setText(savedInstanceState.getString(EXTRA_MESSAGE));
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        bucketPhotosView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -141,11 +126,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @Override
     public void startLoading() {
         progressView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public IBucketPhotoView getBucketPhotosView() {
-        return bucketPhotosView;
     }
 
     @Override

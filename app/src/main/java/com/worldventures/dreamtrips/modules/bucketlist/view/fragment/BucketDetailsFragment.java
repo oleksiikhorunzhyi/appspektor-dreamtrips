@@ -289,10 +289,10 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     public void updatePhotos() {
         bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
         bucketPhotosView.multiSelectAvailable(true);
-        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
+        bucketPhotosView.setCaptureImageCallback(getPresenter().getPhotoChooseCallback());
+        bucketPhotosView.setFbCallback(getPresenter().getFbCallback());
         bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
-        bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
+        bucketPhotosView.setMulitImageCallback(getPresenter().getMultiSelectPickCallback());
     }
 
     @Override

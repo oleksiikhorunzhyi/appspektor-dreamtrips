@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivi
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -141,10 +142,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
         startActivity(DetailTripActivity.class, bundle);
-    }
-
-    public void openFacebookPhoto(Fragment fm) {
-        startForResult(fm, FacebookPickPhotoActivity.class, FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {

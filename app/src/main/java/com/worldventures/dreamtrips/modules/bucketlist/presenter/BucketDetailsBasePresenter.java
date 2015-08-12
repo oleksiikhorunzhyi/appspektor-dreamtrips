@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
@@ -25,10 +26,8 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,33 +51,24 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected BucketItem bucketItem;
 
-    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri, "camera");
+    protected PickImageDelegate.ImagePickCallback captureImageCallback = chosenImage -> {
+        if (chosenImage != null) {
+            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "camera");
         }
     };
-    protected ImagePickCallback chooseImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri, "album");
+    protected PickImageDelegate.ImagePickCallback chooseImageCallback = chosenImage -> {
+        if (chosenImage != null) {
+            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "album");
         }
     };
-    protected MultiSelectPickCallback multiSelectPickCallback = (fm, list, error) -> {
-        for (Uri uri : list) {
-            handlePhotoPick(Uri.fromFile(new File(uri.toString())), "album");
+    protected PickImageDelegate.ImagePickCallback mulitImageCallback = chosenImages -> {
+        for (ChosenImage image : chosenImages) {
+            handlePhotoPick(Uri.parse(image.getFilePathOriginal()), "album");
         }
     };
-    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri, "facebook");
+    protected PickImageDelegate.ImagePickCallback fbCallback = chosenImage -> {
+        if (chosenImage != null) {
+            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "facebook");
         }
     };
 
@@ -137,20 +127,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ///////// Photo upload staff
     //////////////////////////////
 
-    public ImagePickCallback getGalleryChooseCallback() {
+    public PickImageDelegate.ImagePickCallback getGalleryChooseCallback() {
         return chooseImageCallback;
     }
 
-    public ImagePickCallback getPhotoChooseCallback() {
-        return selectImageCallback;
+    public PickImageDelegate.ImagePickCallback getPhotoChooseCallback() {
+        return captureImageCallback;
     }
 
-    public ImagePickCallback getFbCallback() {
+    public PickImageDelegate.ImagePickCallback getFbCallback() {
         return fbCallback;
     }
 
-    public MultiSelectPickCallback getMultiSelectPickCallback() {
-        return multiSelectPickCallback;
+    public PickImageDelegate.ImagePickCallback getMultiSelectPickCallback() {
+        return mulitImageCallback;
     }
 
 
@@ -163,7 +153,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
         db.removeUploadTask(event.getModelObject());
-        bucketItemManager.resaveBucketItem(bucketItem);
+        view.getBucketPhotosView().deleteImage(event.getModelObject());
     }
 
     public void onCoverClicked() {

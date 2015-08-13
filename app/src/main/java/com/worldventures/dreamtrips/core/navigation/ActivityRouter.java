@@ -21,9 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.feed.view.activity.CommentsActivity;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -42,7 +40,6 @@ import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivi
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -172,7 +169,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(SuccessStoryDetailsActivity.class, bundle);
     }
 
-    public void openFriendPrefs(Friend friend) {
+    public void openFriendPrefs(User friend) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(FriendPrefsWrapperActivity.BUNDLE_FRIEND, friend);
         startActivity(FriendPrefsWrapperActivity.class, bundle);

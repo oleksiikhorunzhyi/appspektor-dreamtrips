@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.FriendPreferenceFragment;
 
 public class FriendPrefsWrapperPresenter extends Presenter<Presenter.View> {
 
-    private final Friend friend;
+    private final User friend;
 
-    public FriendPrefsWrapperPresenter(Friend friend) {
+    public FriendPrefsWrapperPresenter(User friend) {
         this.friend = friend;
     }
 

@@ -8,15 +8,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_friend)
-public class FriendCell extends AbstractCell<Friend> {
+public class FriendCell extends AbstractCell<User> {
 
     @InjectView(R.id.avatar)
     SimpleDraweeView userPhoto;
@@ -35,7 +35,7 @@ public class FriendCell extends AbstractCell<Friend> {
 
     @Override
     protected void syncUIStateWithModel() {
-        Friend user = getModelObject();
+        User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         tvName.setText(user.getFullName());
         tvGroup.setText(user.getCircles());

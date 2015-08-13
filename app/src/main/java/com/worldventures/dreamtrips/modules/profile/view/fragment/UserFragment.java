@@ -9,8 +9,8 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
@@ -107,7 +107,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     }
 
     @Override
-    public void showFriendDialog(Friend user) {
+    public void showFriendDialog(User user) {
         new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, profileView.getUserPhoto().getDrawable());
     }
 }

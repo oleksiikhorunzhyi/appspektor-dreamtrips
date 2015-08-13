@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -36,6 +35,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         super.takeView(view);
         setTabs();
         loadCategories();
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItemManager.loadBucketItems(this);
     }
 
     @Override
@@ -45,8 +46,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItemManager.loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 

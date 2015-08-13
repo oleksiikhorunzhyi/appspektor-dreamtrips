@@ -87,15 +87,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
 
-        syncUI(true);
+        syncUI();
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
-        syncUI(false);
+        syncUI();
     }
 
-    protected void syncUI(boolean uploadCompletedTasks) {
+    protected void syncUI() {
         view.setTitle(bucketItem.getName());
         view.setDescription(bucketItem.getDescription());
         view.setStatus(bucketItem.isDone());
@@ -111,13 +111,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         List<UploadTask> tasks = db.getUploadTasksForId(String.valueOf(bucketItem.getId()));
         Collections.reverse(tasks);
-
-        if (uploadCompletedTasks)
-            Queryable.from(tasks).forEachR(task -> {
-                if (task.getStatus() != null &&
-                        task.getStatus().equals(UploadTask.Status.COMPLETED))
-                    addPhotoToBucketItem(task);
-            });
 
         view.getBucketPhotosView().addImages(tasks);
     }

@@ -13,7 +13,6 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
-import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -142,36 +141,26 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void coverProgressVisible(boolean visible) {
         profileView.getCoverProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE);
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
-            eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
-        }
-    }
-
-    public void onEvent(ActivityResult event) {
-        eventBus.removeStickyEvent(event);
-        handler.post(() -> {
             if (pidType != 0) {
-                pickImageDelegate.setRequestType(pidType);
-                pickImageDelegate.setFilePath(filePath);
-
                 if (callbackType == AVATAR_CALLBACK)
-                    pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onAvatarChosen(chosenImage[0]));
+                    pickImageDelegate.setImageCallback(chosenImage -> profileView.post(() ->
+                            getPresenter().onAvatarChosen(chosenImage[0])));
                 else if (callbackType == COVER_CALLBACK)
-                    pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onCoverChosen(chosenImage[0]));
+                    pickImageDelegate.setImageCallback(chosenImage -> profileView.post(() ->
+                            getPresenter().onCoverChosen(chosenImage[0])));
 
-                pickImageDelegate.onActivityResult(event.requestCode,
-                        event.resultCode, event.data);
+                pickImageDelegate.onActivityResult(requestCode,
+                        resultCode, data);
 
                 pidType = 0;
             }
-        });
+        }
     }
-
 
     @Override
     public void setRoviaBucks(String count) {

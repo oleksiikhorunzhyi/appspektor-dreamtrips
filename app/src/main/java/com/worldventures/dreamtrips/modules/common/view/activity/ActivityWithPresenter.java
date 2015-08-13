@@ -85,6 +85,13 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
         });
     }
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getPresentationModel().onCreate(savedInstanceState);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();

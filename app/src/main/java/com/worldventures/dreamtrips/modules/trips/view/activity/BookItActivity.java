@@ -22,12 +22,6 @@ public class BookItActivity extends ToolbarActivity<BookItActivityPresenter> imp
     }
 
     @Override
-    protected void afterCreateView(Bundle savedInstanceState) {
-        super.afterCreateView(savedInstanceState);
-        getPresentationModel().onCreate();
-    }
-
-    @Override
     protected int getToolbarTitle() {
         return R.string.book_it;
     }

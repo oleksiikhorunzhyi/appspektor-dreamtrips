@@ -16,11 +16,12 @@ public class SuccessStoryDetailsProxyPresenter extends Presenter<Presenter.View>
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
-        fragmentCompass.switchBranch(Route.SUCCESS_STORES_DETAILS, bundle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState==null){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
+            fragmentCompass.switchBranch(Route.SUCCESS_STORES_DETAILS, bundle);
+        }
     }
-
 }

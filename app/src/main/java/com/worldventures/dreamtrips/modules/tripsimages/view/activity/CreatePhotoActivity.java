@@ -34,9 +34,7 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParent
         Bundle bundle = getIntent().getBundleExtra(BaseRouter.EXTRA_BUNDLE);
         Uri imageUri = bundle.getParcelable(EXTRA_FILE_URI);
         String type = bundle.getString(EXTRA_TYPE);
-
-        getPresentationModel().setImageUri(imageUri, type);
-        getPresentationModel().onCreate();
+        getPresentationModel().onCreate(savedInstanceState, imageUri, type);
     }
 
     @Override

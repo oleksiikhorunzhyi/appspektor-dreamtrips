@@ -13,9 +13,11 @@ public class ComponentPresenter extends Presenter<Presenter.View> {
     private Bundle componentExtras;
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        fragmentCompass.replace(componentDescription, componentExtras);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            fragmentCompass.replace(componentDescription, componentExtras);
+        }
     }
 
     public int getTitle() {

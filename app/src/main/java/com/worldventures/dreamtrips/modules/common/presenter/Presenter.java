@@ -102,6 +102,11 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         // hook for onPreparedMenu
     }
 
+    public void onCreate(Bundle savedInstanceState) {
+
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // Spice manager
     ///////////////////////////////////////////////////////////////////////////

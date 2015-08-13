@@ -9,18 +9,13 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhot
 
 public class CreatePhotoParentPresenter extends Presenter<Presenter.View> {
 
-    private Uri imageUri;
-    private String type;
-
-    public void setImageUri(Uri imageUri, String type) {
-        this.imageUri = imageUri;
-        this.type = type;
-    }
-
-    public void onCreate() {
-        Bundle b = new Bundle();
-        b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
-        b.putString(CreatePhotoFragment.BUNDLE_TYPE, type);
-        fragmentCompass.add(Route.CREATE_PHOTO, b);
+    public void onCreate(Bundle savedInstanceState,Uri imageUri, String type) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Bundle b = new Bundle();
+            b.putParcelable(CreatePhotoFragment.BUNDLE_IMAGE_URI, imageUri);
+            b.putString(CreatePhotoFragment.BUNDLE_TYPE, type);
+            fragmentCompass.add(Route.CREATE_PHOTO, b);
+        }
     }
 }

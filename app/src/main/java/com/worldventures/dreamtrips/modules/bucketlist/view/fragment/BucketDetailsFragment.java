@@ -21,13 +21,13 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -105,7 +105,9 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        bucketPhotosView.init(injector, BucketPhotosView.Type.DETAILS);
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
+
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -262,20 +264,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
-    }
-
-    public void onEvent(ActivityResult event) {
-        eventBus.removeStickyEvent(event);
-        handler.post(() -> {
-            if (bucketPhotosView != null)
-                bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data);
-        });
-    }
-
-    @Override
     public void done() {
         getActivity().onBackPressed();
     }
@@ -283,16 +271,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public IBucketPhotoView getBucketPhotosView() {
         return bucketPhotosView;
-    }
-
-    @Override
-    public void updatePhotos() {
-        bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
-        bucketPhotosView.multiSelectAvailable(true);
-        bucketPhotosView.setCaptureImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbCallback(getPresenter().getFbCallback());
-        bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
-        bucketPhotosView.setMulitImageCallback(getPresenter().getMultiSelectPickCallback());
     }
 
     @Override
@@ -308,6 +286,29 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
                     }
                 })
                 .show();
+    }
+
+    @Override
+    public void showAddPhotoDialog() {
+        int items = R.array.dialog_add_bucket_photo_multiselect;
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(getActivity().getString(R.string.select_photo))
+                .items(items)
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
+                            break;
+                        case 1:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
+                            break;
+                        case 2:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
+                            break;
+                    }
+                });
+
+        builder.show();
     }
 
     @Override

@@ -11,31 +11,12 @@ public class Post implements Serializable {
 
     private UploadTask uploadTask;
 
-    private int pidType;
-    private String photoCapturingFilePath;
-
     public String getFilePath() {
         return filePath;
     }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public void setPidType(int pidType) {
-        this.pidType = pidType;
-    }
-
-    public int getPidType() {
-        return pidType;
-    }
-
-    public String getPhotoCapturingFilePath() {
-        return photoCapturingFilePath;
-    }
-
-    public void setPhotoCapturingFilePath(String photoCapturingFilePath) {
-        this.photoCapturingFilePath = photoCapturingFilePath;
     }
 
     public String getText() {

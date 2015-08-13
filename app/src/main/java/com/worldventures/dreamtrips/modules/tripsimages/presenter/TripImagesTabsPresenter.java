@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -12,22 +14,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
 
     public static final String SELECTION_EXTRA = "selection_extra";
-
-    protected PickImageDelegate.ImagePickCallback captureImageCallback = chosenImage -> {
-        if (chosenImage != null) {
-            imageSelected(Uri.parse(chosenImage[0].getFilePathOriginal()), "camera");
-        }
-    };
-    protected PickImageDelegate.ImagePickCallback chooseImageCallback = chosenImage -> {
-        if (chosenImage != null) {
-            imageSelected(Uri.parse(chosenImage[0].getFilePathOriginal()), "album");
-        }
-    };
-    protected PickImageDelegate.ImagePickCallback fbCallback = chosenImage -> {
-        if (chosenImage != null) {
-            imageSelected(Uri.parse(chosenImage[0].getFilePathOriginal()), "facebook");
-        }
-    };
 
     private int selection;
 
@@ -58,22 +44,33 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
         view.setSelection(selection);
     }
 
-    public void imageSelected(Uri uri, String type) {
+    public void imageSelected(Uri uri, int requestType) {
         if (activityRouter != null) {
+            String type = "";
+
+            switch (requestType) {
+                case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                    type = "camera";
+                    break;
+                case PickImageDelegate.REQUEST_PICK_PICTURE:
+                    type = "album";
+                    break;
+                case PickImageDelegate.REQUEST_FACEBOOK:
+                    type = "facebook";
+                    break;
+            }
+
             activityRouter.openCreatePhoto((Fragment) view, uri, type);
         }
     }
 
-    public PickImageDelegate.ImagePickCallback provideCallback(int pidType) {
-        switch (pidType) {
-            case PickImageDelegate.REQUEST_FACEBOOK:
-                return fbCallback;
-            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
-                return captureImageCallback;
-            case PickImageDelegate.REQUEST_PICK_PICTURE:
-                return chooseImageCallback;
-        }
-        return null;
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, -1));
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == -1)
+            imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
     }
 
     @Override

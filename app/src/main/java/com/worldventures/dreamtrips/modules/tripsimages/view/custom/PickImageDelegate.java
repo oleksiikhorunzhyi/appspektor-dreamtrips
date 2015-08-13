@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.custom;
 
 import android.app.Activity;
-
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 
 import com.google.gson.Gson;
 import com.innahema.collections.query.queriables.Queryable;
@@ -15,6 +14,8 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 
+import icepick.Icepick;
+import icepick.Icicle;
 import nl.changer.polypicker.ImagePickerActivity;
 import nl.changer.polypicker.IntentBuilder;
 import timber.log.Timber;
@@ -28,18 +29,34 @@ public class PickImageDelegate implements ImageChooserListener {
 
     public static final String FOLDERNAME = "dreamtrip_folder_temp_sd";
 
-    private Fragment fragment;
+    private Activity activity;
 
-    private int requestType;
+    @Icicle
+    int requestType;
+    @Icicle
+    String filePath;
+    @Icicle
+    int requesterId;
 
     private ImageChooserManager imageChooserManager;
-    private String filePath;
 
     private ImagePickCallback imageCallback;
     private ImagePickErrorCallback errorCallback;
 
-    public PickImageDelegate(Fragment fragment) {
-        this.fragment = fragment;
+    public PickImageDelegate(Activity activity) {
+        this.activity = activity;
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    public void restoreInstanceState(Bundle savedState) {
+        Icepick.restoreInstanceState(this, savedState);
+    }
+
+    public void setRequesterId(int requesterId) {
+        this.requesterId = requesterId;
     }
 
     public void setRequestType(int requestType) {
@@ -72,20 +89,20 @@ public class PickImageDelegate implements ImageChooserListener {
     }
 
     private void chooseFacebook() {
-        Intent intent = new Intent(fragment.getActivity(), FacebookPickPhotoActivity.class);
-        fragment.startActivityForResult(intent, REQUEST_FACEBOOK);
+        Intent intent = new Intent(activity, FacebookPickPhotoActivity.class);
+        activity.startActivityForResult(intent, REQUEST_FACEBOOK);
     }
 
     private void chooseMultiSelect() {
         Intent intent = new IntentBuilder()
                 .setSelectionLimit(5)
                 .setOptions(IntentBuilder.Option.GALLERY)
-                .createIntent(fragment.getActivity());
-        fragment.startActivityForResult(intent, REQUEST_MULTI_SELECT);
+                .createIntent(activity);
+        activity.startActivityForResult(intent, REQUEST_MULTI_SELECT);
     }
 
     private void chooseImage() {
-        imageChooserManager = new ImageChooserManager(fragment, requestType, FOLDERNAME, true);
+        imageChooserManager = new ImageChooserManager(activity, requestType, FOLDERNAME, true);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -95,7 +112,7 @@ public class PickImageDelegate implements ImageChooserListener {
     }
 
     private void takePicture() {
-        imageChooserManager = new ImageChooserManager(fragment, requestType, FOLDERNAME, true);
+        imageChooserManager = new ImageChooserManager(activity, requestType, FOLDERNAME, true);
         imageChooserManager.setImageChooserListener(this);
         try {
             filePath = imageChooserManager.choose();
@@ -109,7 +126,7 @@ public class PickImageDelegate implements ImageChooserListener {
             if (requestCode == ChooserType.REQUEST_PICK_PICTURE
                     || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE) {
                 if (imageChooserManager == null) {
-                    imageChooserManager = new ImageChooserManager(fragment.getActivity(), requestType, FOLDERNAME, true);
+                    imageChooserManager = new ImageChooserManager(activity, requestType, FOLDERNAME, true);
                     imageChooserManager.setImageChooserListener(this);
                 }
 
@@ -143,6 +160,14 @@ public class PickImageDelegate implements ImageChooserListener {
     private void handleFacebookActivityResult(Intent data) {
         ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
         if (imageCallback != null) imageCallback.onImagePicked(image);
+    }
+
+    public int getRequesterId() {
+        return requesterId;
+    }
+
+    public int getRequestType() {
+        return requestType;
     }
 
     @Override

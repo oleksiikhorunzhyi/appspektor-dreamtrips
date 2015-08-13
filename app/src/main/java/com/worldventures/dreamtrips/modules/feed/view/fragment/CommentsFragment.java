@@ -128,6 +128,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
         commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
+        SoftInputUtil.hideSoftInputMethod(input);
     }
 
     @Override

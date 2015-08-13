@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
-import android.content.Context;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,10 +8,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,6 +26,8 @@ public class FriendCell extends AbstractCell<Friend> {
     TextView tvGroup;
     @InjectView(R.id.tvMutual)
     TextView tvMutual;
+
+    FriendActionDialogDelegate dialog;
 
     public FriendCell(View view) {
         super(view);
@@ -49,6 +48,14 @@ public class FriendCell extends AbstractCell<Friend> {
         }
     }
 
+    @Override
+    public void afterInject() {
+        super.afterInject();
+        if (dialog == null) {
+            dialog = new FriendActionDialogDelegate(itemView.getContext(), getEventBus());
+        }
+    }
+
     @OnClick(R.id.avatar)
     void onUserClicked() {
         getEventBus().post(new UserClickedEvent(getModelObject()));
@@ -61,24 +68,7 @@ public class FriendCell extends AbstractCell<Friend> {
 
     @OnClick(R.id.actions)
     public void onAction(View v) {
-        Context c = v.getContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setTitle(getModelObject().getFullName());
-        builder.setIcon(userPhoto.getDrawable());
-        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
-                dialogInterface.dismiss());
-        builder.setItems(new String[]{
-                        c.getString(R.string.social_remove_friend_title),
-                        c.getString(R.string.social_friend_preference_title)
-                },
-                (dialogInterface, i) -> {
-                    if (i == 0) {
-                        getEventBus().post(new UnfriendEvent(getModelObject()));
-                    } else if (i == 1) {
-                        getEventBus().post(new OpenFriendPrefsEvent(getModelObject()));
-                    }
-                });
-        builder.show();
+        dialog.showFriendDialog(getModelObject(), userPhoto.getDrawable());
     }
 
 

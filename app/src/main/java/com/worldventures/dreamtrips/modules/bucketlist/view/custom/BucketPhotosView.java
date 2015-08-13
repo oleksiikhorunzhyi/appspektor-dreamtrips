@@ -22,10 +22,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.MultiSelectPickCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.List;
 
@@ -40,6 +37,8 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Icicle
     int pidTypeShown;
+    @Icicle
+    String filePath;
 
     @Inject
     SnappyRepository db;
@@ -47,6 +46,11 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     private IgnoreFirstItemAdapter imagesAdapter;
 
     private DeleteButtonCallback deleteButtonCallback;
+    private PickImageDelegate.ImagePickCallback captureImageCallback;
+    private PickImageDelegate.ImagePickCallback chooseImageCallback;
+    private PickImageDelegate.ImagePickCallback mulitImageCallback;
+    private PickImageDelegate.ImagePickCallback fbCallback;
+
     private boolean multiselectAvalbile;
 
     private PickImageDelegate pickImageDelegate;
@@ -67,7 +71,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void init(Fragment fragment, Provider<Injector> injector, Type type) {
         injector.get().inject(this);
 
-        pickImageDelegate = new PickImageDelegate(getContext(), fragment, pidTypeShown);
+        pickImageDelegate = new PickImageDelegate(fragment);
+        pickImageDelegate.setRequestType(pidTypeShown);
+        pickImageDelegate.setFilePath(filePath);
+        setCallback();
 
         if (imagesAdapter == null) {
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
@@ -169,28 +176,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         imagesAdapter.notifyItemRemoved(0);
     }
 
-    private void actionFacebook() {
-        pickImageDelegate.actionFacebook();
-        pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
-
-    }
-
-    private void actionGallery() {
-        pickImageDelegate.actionGallery();
-        pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
-    }
-
-    private void actionCapture() {
-        pickImageDelegate.actionCapture();
-        pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
-    }
-
-
-    private void actionMultiSelect() {
-        pickImageDelegate.actionMultiSelect();
-        pidTypeShown = PickImageDialog.REQUEST_MULTI_SELECT;
-    }
-
     @Override
     public void showAddPhotoDialog(boolean showDeleteButton) {
         int items = multiselectAvalbile ?
@@ -202,19 +187,27 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
-                            actionFacebook();
+                            pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
                             break;
                         case 1:
-                            actionCapture();
+                            pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
                             break;
                         case 2:
-                            if (multiselectAvalbile) actionMultiSelect();
-                            else actionGallery();
+                            if (multiselectAvalbile)
+                                pidTypeShown = PickImageDelegate.REQUEST_MULTI_SELECT;
+                            else pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
                             break;
                         default:
                             break;
                     }
+
+                    setCallback();
+                    pickImageDelegate.setRequestType(pidTypeShown);
+                    pickImageDelegate.show();
+
+                    filePath = pickImageDelegate.getFilePath();
                 });
+
         if (showDeleteButton) {
             builder.positiveText(R.string.delete_photo_positiove);
             builder.callback(new MaterialDialog.ButtonCallback() {
@@ -224,7 +217,26 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
                 }
             });
         }
+
         builder.show();
+    }
+
+
+    private void setCallback() {
+        switch (pidTypeShown) {
+            case PickImageDelegate.REQUEST_FACEBOOK:
+                pickImageDelegate.setImageCallback(fbCallback);
+                break;
+            case PickImageDelegate.REQUEST_MULTI_SELECT:
+                pickImageDelegate.setImageCallback(mulitImageCallback);
+                break;
+            case PickImageDelegate.REQUEST_PICK_PICTURE:
+                pickImageDelegate.setImageCallback(chooseImageCallback);
+                break;
+            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                pickImageDelegate.setImageCallback(captureImageCallback);
+                break;
+        }
     }
 
     @Override
@@ -244,7 +256,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private void handlePickDialogActivityResult(int requestCode, int resultCode, Intent data) {
         if (pidTypeShown != 0) {
-            pickImageDelegate.handlePickDialogActivityResult(requestCode, resultCode, data);
+            pickImageDelegate.setFilePath(filePath);
+            pickImageDelegate.setRequestType(pidTypeShown);
+            setCallback();
+            pickImageDelegate.onActivityResult(requestCode, resultCode, data);
             pidTypeShown = 0;
         }
     }
@@ -277,25 +292,24 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void setMakePhotoImageCallback(ImagePickCallback makePhotoImageCallback) {
-        pickImageDelegate.setMakePhotoImageCallback(makePhotoImageCallback);
+    public void setCaptureImageCallback(PickImageDelegate.ImagePickCallback captureImageCallback) {
+        this.captureImageCallback = captureImageCallback;
     }
 
-    public void setChooseImageCallback(ImagePickCallback chooseImageCallback) {
-        pickImageDelegate.setChooseImageCallback(chooseImageCallback);
+    public void setChooseImageCallback(PickImageDelegate.ImagePickCallback chooseImageCallback) {
+        this.chooseImageCallback = chooseImageCallback;
     }
 
+    public void setMulitImageCallback(PickImageDelegate.ImagePickCallback mulitImageCallback) {
+        this.mulitImageCallback = mulitImageCallback;
+    }
 
-    public void setFbImageCallback(ImagePickCallback fbImageCallback) {
-        pickImageDelegate.setFbImageCallback(fbImageCallback);
+    public void setFbCallback(PickImageDelegate.ImagePickCallback fbCallback) {
+        this.fbCallback = fbCallback;
     }
 
     public void setDeleteButtonCallback(DeleteButtonCallback deleteButtonCallback) {
         this.deleteButtonCallback = deleteButtonCallback;
-    }
-
-    public void setMultiSelectPickCallback(MultiSelectPickCallback multiSelectPickCallback) {
-        pickImageDelegate.setMultiSelectPickCallback(multiSelectPickCallback);
     }
 
     public void multiSelectAvailable(boolean available) {

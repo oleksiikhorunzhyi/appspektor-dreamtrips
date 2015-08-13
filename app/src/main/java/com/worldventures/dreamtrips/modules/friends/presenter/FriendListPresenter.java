@@ -41,7 +41,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     @Icicle
     String query;
     @Icicle
-    int position = -1;
+    int position = 0;
 
     @Inject
     SnappyRepository snappyRepository;

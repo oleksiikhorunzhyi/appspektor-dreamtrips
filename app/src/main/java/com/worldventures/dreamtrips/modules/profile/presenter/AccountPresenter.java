@@ -162,7 +162,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
     }
 
-    public void onAvatarChosen(Fragment fragment, ChosenImage image, String error) {
+    public void onAvatarChosen(ChosenImage image) {
         if (image != null) {
             view.avatarProgressVisible(true);
             String fileThumbnail = image.getFileThumbnail();
@@ -181,7 +181,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
     }
 
-    public void onCoverChosen(Fragment fragment, ChosenImage image, String error) {
+    public void onCoverChosen(ChosenImage image) {
         if (image != null) {
             if (ValidationUtils.isUrl(image.getFileThumbnail())) {
                 cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));

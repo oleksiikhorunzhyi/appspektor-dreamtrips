@@ -14,9 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
-
-import java.io.File;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -27,22 +25,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     @Inject
     SnappyRepository snapper;
 
-    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            if (view != null)
-                view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri);
-        }
-    };
-    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
-            if (view != null)
-                view.informUser(error);
-        } else {
-            Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri);
+    protected PickImageDelegate.ImagePickCallback imagePickCallback = chosenImage -> {
+        if (chosenImage != null) {
+            handlePhotoPick(chosenImage[0].getFilePathOriginal());
         }
     };
 
@@ -142,18 +127,14 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     /////// Photo upload
     ////////////////////////////////////////
 
-    public ImagePickCallback provideSelectImageCallback() {
-        return selectImageCallback;
+    public PickImageDelegate.ImagePickCallback provideSelectImageCallback() {
+        return imagePickCallback;
     }
 
-    public ImagePickCallback provideFbCallback() {
-        return fbCallback;
-    }
-
-    private void handlePhotoPick(Uri uri) {
+    private void handlePhotoPick(String filePath) {
         if (view != null) {
             UploadTask imageUploadTask = new UploadTask();
-            imageUploadTask.setFilePath(uri.toString());
+            imageUploadTask.setFilePath(filePath);
             imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
             post.setUploadTask(imageUploadTask);
             savePhotoIfNeeded();
@@ -218,8 +199,16 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         post.setPidType(pidType);
     }
 
+    public void setFilePath(String filePath) {
+        post.setPhotoCapturingFilePath(filePath);
+    }
+
     public int getPidType() {
         return post.getPidType();
+    }
+
+    public String getFilePath() {
+        return post.getPhotoCapturingFilePath();
     }
 
     public void onProgressClicked() {

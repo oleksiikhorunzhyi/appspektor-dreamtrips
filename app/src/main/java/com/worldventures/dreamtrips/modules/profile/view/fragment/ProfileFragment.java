@@ -37,11 +37,6 @@ import icepick.Icicle;
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @Icicle
-    String filePath;
-    @Icicle
-    int callbackType;
-
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;

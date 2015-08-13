@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -11,9 +10,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -21,11 +17,9 @@ import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.ImagePickCallback;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,30 +32,11 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private InviteTemplate template;
     private boolean preview = false;
 
-    private Uri selectedImageUri;
     private String uploadedPhotoUrl;
 
     @Inject
     @ForApplication
     protected Injector injector;
-
-    protected ImagePickCallback selectImageCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.fromFile(new File(image.getFileThumbnail()));
-            handlePhotoPick(uri);
-        }
-    };
-
-    protected ImagePickCallback fbCallback = (fragment, image, error) -> {
-        if (error != null) {
-            view.informUser(error);
-        } else {
-            Uri uri = Uri.parse(image.getFilePathOriginal());
-            handlePhotoPick(uri);
-        }
-    };
 
     public EditTemplatePresenter(InviteTemplate template) {
         super();
@@ -88,23 +63,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             to.add(member.getSubtitle());
         }
         return to;
-    }
-
-    public void onEvent(BucketAddPhotoClickEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.getBucketPhotosView().showAddPhotoDialog(selectedImageUri != null);
-    }
-
-    public ImagePickCallback getPhotoChooseCallback() {
-        return selectImageCallback;
-    }
-
-    public ImagePickCallback getFbCallback() {
-        return fbCallback;
-    }
-
-    public BucketPhotosView.DeleteButtonCallback getDeleteCallback() {
-        return deleteButtonCallback;
     }
 
     private Intent getShareIntent() {
@@ -238,22 +196,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
                 this::createInviteFailed);
     }
 
-    //Photo upload staff
-
-    protected BucketPhotosView.DeleteButtonCallback deleteButtonCallback = this::delete;
-
-    private void delete() {
-        selectedImageUri = null;
-        uploadedPhotoUrl = null;
-        view.getBucketPhotosView().deleteAtPosition(0);
-        view.getBucketPhotosView().addFirstItem();
-    }
-
-    private void handlePhotoPick(Uri uri) {
-        selectedImageUri = uri;
-    }
-
-
     public interface View extends Presenter.View {
 
         void setFrom(String from);
@@ -269,8 +211,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         void startLoading();
 
         void finishLoading();
-
-        IBucketPhotoView getBucketPhotosView();
 
         void hidePhotoUpload();
     }

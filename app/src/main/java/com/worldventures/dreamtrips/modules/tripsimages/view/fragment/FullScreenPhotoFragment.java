@@ -369,7 +369,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         if (count == -1) {
             tvLikesCount.setVisibility(View.GONE);
         }
-        tvLikesCount.setText(count + getString(R.string.likes));
+        tvLikesCount.setText(getString(R.string.likes, count));
     }
 
     @Override

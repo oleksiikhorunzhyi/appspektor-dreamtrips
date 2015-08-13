@@ -21,12 +21,10 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import icepick.Icicle;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -56,8 +54,8 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     private PickImageDelegate pickImageDelegate;
 
-    @Icicle
     int pidTypeShown;
+    String filePath;
 
     WeakHandler handler = new WeakHandler();
 
@@ -81,10 +79,12 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pidTypeShown = getPresenter().getPidType();
-        pickImageDelegate = new PickImageDelegate(getActivity(), this, pidTypeShown);
-        pickImageDelegate.setChooseImageCallback(getPresenter().provideSelectImageCallback());
-        pickImageDelegate.setFbImageCallback(getPresenter().provideFbCallback());
-        pickImageDelegate.setMakePhotoImageCallback(getPresenter().provideSelectImageCallback());
+        filePath = getPresenter().getFilePath();
+        pickImageDelegate = new PickImageDelegate(this);
+        pickImageDelegate.setRequestType(pidTypeShown);
+
+        pickImageDelegate.setImageCallback(getPresenter().provideSelectImageCallback());
+        pickImageDelegate.setErrorCallback(this::informUser);
 
         post.addTextChangedListener(new TextWatcherAdapter() {
             @Override
@@ -131,19 +131,23 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
-                            pickImageDelegate.actionFacebook();
-                            pidTypeShown = PickImageDialog.REQUEST_FACEBOOK;
+                            pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
                             break;
                         case 1:
-                            pickImageDelegate.actionCapture();
-                            pidTypeShown = PickImageDialog.REQUEST_CAPTURE_PICTURE;
+                            pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
                             break;
                         case 2:
-                            pickImageDelegate.actionGallery();
-                            pidTypeShown = PickImageDialog.REQUEST_PICK_PICTURE;
+                            pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
                             break;
                     }
 
+
+                    pickImageDelegate.setRequestType(pidTypeShown);
+                    pickImageDelegate.show();
+
+                    filePath = pickImageDelegate.getFilePath();
+
+                    getPresenter().setFilePath(filePath);
                     getPresenter().setPidType(pidTypeShown);
                 });
         builder.show();
@@ -159,7 +163,10 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         eventBus.removeStickyEvent(event);
         handler.post(() -> {
             if (pidTypeShown != 0) {
-                pickImageDelegate.handlePickDialogActivityResult(event.requestCode,
+                pickImageDelegate.setRequestType(pidTypeShown);
+                pickImageDelegate.setFilePath(filePath);
+
+                pickImageDelegate.onActivityResult(event.requestCode,
                         event.resultCode, event.data);
                 pidTypeShown = 0;
                 getPresenter().setPidType(pidTypeShown);

@@ -19,9 +19,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
@@ -72,7 +72,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         recyclerView.setLayoutManager(getLayoutManager());
 
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
-        adapter.registerCell(User.class, RequestCell.class);
+        adapter.registerCell(Friend.class, RequestCell.class);
         adapter.registerCell(String.class, RequestHeaderCell.class);
 
         recyclerView.setAdapter(adapter);

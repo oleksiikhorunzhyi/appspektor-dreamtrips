@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                 });
     }
 
-    private void addItems(List<User> items) {
+    private void addItems(List<Friend> items) {
         if (items != null) {
             List<Object> sortedItems = new ArrayList<>();
             sortedItems.add(context.getString(R.string.request_incoming));

@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import java.util.ArrayList;
 
-public class GetRequestsQuery extends Query<ArrayList<User>> {
+public class GetRequestsQuery extends Query<ArrayList<Friend>> {
 
     public GetRequestsQuery() {
-        super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
+        super((Class<ArrayList<Friend>>) new ArrayList<Friend>().getClass());
     }
 
     @Override
-    public ArrayList<User> loadDataFromNetwork() throws Exception {
+    public ArrayList<Friend> loadDataFromNetwork() throws Exception {
         return getService().getRequests();
     }
 }

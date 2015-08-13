@@ -16,6 +16,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -110,8 +111,17 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         getPresenter().onProgressClicked();
     }
 
-    @OnClick({R.id.close, R.id.space})
+    @OnClick(R.id.close)
     void onClose() {
+        cancel();
+    }
+
+    @OnClick(R.id.space)
+    void onSpaceClicked() {
+        if (ViewUtils.isTablet(getActivity())) cancel();
+    }
+
+    private void cancel() {
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         getActivity().onBackPressed();

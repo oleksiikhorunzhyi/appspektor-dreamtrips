@@ -68,8 +68,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void cancel() {
-        fragmentCompass.removePost();
+        cancelUplad();
         deletePost();
+        fragmentCompass.removePost();
     }
 
     private void savePost() {
@@ -218,10 +219,15 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void removeImage() {
-        photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
+        cancelUplad();
         post.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
+    }
+
+    private void cancelUplad() {
+        if (post.getUploadTask() != null)
+            photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
     }
 
     public interface View extends Presenter.View {

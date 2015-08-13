@@ -4,6 +4,7 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -51,6 +52,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
@@ -79,6 +81,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @InjectView(R.id.buttonPopular)
     AppCompatButton buttonPopular;
     //
+    @Optional
+    @InjectView(R.id.detail_container)
     protected View detailsContainer;
 
     private DraggableArrayListAdapter<BucketItem> adapter;
@@ -104,8 +108,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        detailsContainer = getActivity().findViewById(R.id.container_details_fullscreen);
-
         // setup layout manager and item decoration
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new RefactoredDefaultItemAnimator());
@@ -253,12 +255,14 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.VISIBLE), 200l);
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
-    public void hideDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.GONE), 200l);
+    public void hideDetailContainer() {
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.GONE));
     }
 
     @Override
@@ -306,4 +310,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         }
     }
 
+    @Override
+    public FragmentManager getCurrentFragmentManager() {
+        return getChildFragmentManager();
+    }
 }

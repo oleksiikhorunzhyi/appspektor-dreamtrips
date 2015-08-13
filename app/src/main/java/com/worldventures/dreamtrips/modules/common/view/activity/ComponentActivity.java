@@ -18,8 +18,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
     @Optional
     @InjectView(R.id.container_details_floating)
     protected FrameLayout detailsFloatingContainer;
-    @InjectView(R.id.container_details_fullscreen)
-    protected FrameLayout detailsFullScreenContainer;
 
     @Override
     protected int getToolbarTitle() {
@@ -30,11 +28,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
         if (detailsFloatingContainer.getVisibility() == View.VISIBLE) {
             fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsFullScreenContainer != null
-                && detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsFullScreenContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

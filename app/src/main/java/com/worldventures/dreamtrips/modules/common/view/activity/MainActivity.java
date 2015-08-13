@@ -40,8 +40,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Optional
     @InjectView(R.id.container_details_floating)
     protected FrameLayout detailsFloatingContainer;
-    @InjectView(R.id.container_details_fullscreen)
-    protected FrameLayout detailsFullScreenContainer;
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
 
@@ -193,10 +191,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             fragmentCompass.removePost();
             fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
-            return true;
-        } else if (detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsFullScreenContainer.setVisibility(View.GONE);
             return true;
         }
         return false;

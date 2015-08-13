@@ -126,11 +126,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(BucketActivity.class, bundle);
     }
 
-    public void openBucketItemDetails(BucketTabsPresenter.BucketType type, int bucketId) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketId);
-
+    public void openBucketItemDetails(Bundle bundle) {
         bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
         startActivity(BucketActivity.class, bundle);
     }

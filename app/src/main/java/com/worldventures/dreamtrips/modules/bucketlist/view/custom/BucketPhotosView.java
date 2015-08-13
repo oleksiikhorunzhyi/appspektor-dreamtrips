@@ -45,7 +45,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private IgnoreFirstItemAdapter imagesAdapter;
 
-    private DeleteButtonCallback deleteButtonCallback;
     private PickImageDelegate.ImagePickCallback captureImageCallback;
     private PickImageDelegate.ImagePickCallback chooseImageCallback;
     private PickImageDelegate.ImagePickCallback mulitImageCallback;
@@ -177,7 +176,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void showAddPhotoDialog(boolean showDeleteButton) {
+    public void showAddPhotoDialog() {
         int items = multiselectAvalbile ?
                 R.array.dialog_add_bucket_photo_multiselect :
                 R.array.dialog_add_bucket_photo;
@@ -207,16 +206,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
                     filePath = pickImageDelegate.getFilePath();
                 });
-
-        if (showDeleteButton) {
-            builder.positiveText(R.string.delete_photo_positiove);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    showDeleteDialog(getContext());
-                }
-            });
-        }
 
         builder.show();
     }
@@ -270,27 +259,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         imagesAdapter.notifyDataSetChanged();
     }
 
-    private void showDeleteDialog(Context context) {
-        new MaterialDialog.Builder(context)
-                .title(R.string.delete_photo_title)
-                .content(R.string.delete_photo_text)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        if (deleteButtonCallback != null) {
-                            deleteButtonCallback.onDelete();
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
-    }
-
 
     public void setCaptureImageCallback(PickImageDelegate.ImagePickCallback captureImageCallback) {
         this.captureImageCallback = captureImageCallback;
@@ -308,10 +276,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         this.fbCallback = fbCallback;
     }
 
-    public void setDeleteButtonCallback(DeleteButtonCallback deleteButtonCallback) {
-        this.deleteButtonCallback = deleteButtonCallback;
-    }
-
     public void multiSelectAvailable(boolean available) {
         this.multiselectAvalbile = available;
     }
@@ -325,10 +289,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public enum Type {
         DETAILS, EDIT, DEFAULT
-    }
-
-    public interface DeleteButtonCallback {
-        void onDelete();
     }
 
 }

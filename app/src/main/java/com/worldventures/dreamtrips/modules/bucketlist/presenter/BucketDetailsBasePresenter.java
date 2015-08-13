@@ -139,7 +139,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketAddPhotoClickEvent event) {
         eventBus.cancelEventDelivery(event);
-        view.getBucketPhotosView().showAddPhotoDialog(false);
+        view.getBucketPhotosView().showAddPhotoDialog();
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {

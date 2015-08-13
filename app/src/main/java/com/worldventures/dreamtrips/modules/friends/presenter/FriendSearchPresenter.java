@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +36,14 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     SnappyRepository snappyRepository;
     private List<Circle> circles;
 
-    private DreamSpiceAdapterController<Friend> adapterController = new DreamSpiceAdapterController<Friend>() {
+    private DreamSpiceAdapterController<User> adapterController = new DreamSpiceAdapterController<User>() {
         @Override
-        public SpiceRequest<ArrayList<Friend>> getReloadRequest() {
+        public SpiceRequest<ArrayList<User>> getReloadRequest() {
             return new SearchUsersQuery(query, 0, PER_PAGE);
         }
 
         @Override
-        public SpiceRequest<ArrayList<Friend>> getNextPageRequest(int currentCount) {
+        public SpiceRequest<ArrayList<User>> getNextPageRequest(int currentCount) {
             return new SearchUsersQuery(query, currentCount / PER_PAGE + 1, PER_PAGE);
         }
 
@@ -53,7 +53,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
         }
 
         @Override
-        public void onFinish(LoadType type, List<Friend> items, SpiceException spiceException) {
+        public void onFinish(LoadType type, List<User> items, SpiceException spiceException) {
             if (adapterController != null) {
                 view.finishLoading();
                 if (spiceException != null) {
@@ -156,7 +156,7 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
 
     public interface View extends Presenter.View {
 
-        BaseArrayListAdapter<Friend> getAdapter();
+        BaseArrayListAdapter<User> getAdapter();
 
         void finishLoading();
 

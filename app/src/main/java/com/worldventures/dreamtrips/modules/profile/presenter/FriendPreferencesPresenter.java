@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.common.model.User;
+
 import com.worldventures.dreamtrips.modules.profile.FriendGroupRelation;
 import com.worldventures.dreamtrips.modules.profile.api.AddFriendToGroupCommand;
 import com.worldventures.dreamtrips.modules.profile.api.DeleteFriendFromGroupCommand;
@@ -26,9 +27,9 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
     @Inject
     SnappyRepository db;
 
-    Friend friend;
+    User friend;
 
-    public FriendPreferencesPresenter(Friend friend) {
+    public FriendPreferencesPresenter(User friend) {
         this.friend = friend;
     }
 

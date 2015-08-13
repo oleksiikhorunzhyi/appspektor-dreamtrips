@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
@@ -23,7 +22,7 @@ import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationCha
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> {
+public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     public UserPresenter(Bundle args) {
         super(args.getParcelable(ProfileModule.EXTRA_USER));
@@ -196,6 +195,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 
-        void showFriendDialog(Friend user);
+        void showFriendDialog(User user);
     }
 }

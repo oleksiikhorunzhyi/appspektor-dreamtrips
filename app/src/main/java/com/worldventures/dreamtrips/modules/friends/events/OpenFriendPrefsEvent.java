@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.friends.events;
 
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class OpenFriendPrefsEvent {
-    Friend friend;
+    User friend;
 
-    public OpenFriendPrefsEvent(Friend friend) {
+    public OpenFriendPrefsEvent(User friend) {
         this.friend = friend;
     }
 
-    public Friend getFriend() {
+    public User getFriend() {
         return friend;
     }
 }

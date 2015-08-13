@@ -6,8 +6,11 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
@@ -55,7 +58,44 @@ public class User extends BaseEntity implements Parcelable {
     //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
     private boolean socialEnabled;
 
+
+    @SerializedName("circle_ids")
+    HashSet<String> circleIds;
+
+    @SerializedName("mutual_friends")
+    int mutualFriends;
+
+    private transient String circles;
+
+
     public User() {
+    }
+
+    public int getMutualFriends() {
+        return mutualFriends;
+    }
+
+    public void setCircles(List<Circle> circles) {
+        List<String> userCircles = new ArrayList<>();
+
+        for (String s : circleIds) {
+            for (Circle circle : circles) {
+                if (circle.getId() != null && circle.getId().equals(s)) {
+                    userCircles.add(circle.getName());
+                    break;
+                }
+            }
+        }
+
+        this.circles = TextUtils.join(", ", userCircles);
+    }
+
+    public String getCircles() {
+        return circles;
+    }
+
+    public HashSet<String> getCircleIds() {
+        return circleIds;
     }
 
     public String getBackgroundPhotoUrl() {
@@ -295,6 +335,9 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
         dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.circleIds);
+        dest.writeInt(this.mutualFriends);
+        dest.writeString(this.circles);
     }
 
     protected User(Parcel in) {
@@ -317,6 +360,9 @@ public class User extends BaseEntity implements Parcelable {
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
         this.socialEnabled = in.readByte() != 0;
+        this.circleIds = (HashSet<String>) in.readSerializable();
+        this.mutualFriends = in.readInt();
+        this.circles = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

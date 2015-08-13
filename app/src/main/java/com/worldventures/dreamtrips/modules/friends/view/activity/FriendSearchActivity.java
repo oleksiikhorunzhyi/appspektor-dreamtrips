@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
@@ -61,7 +61,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     Provider<Injector> injectorProvider;
     private RecyclerViewStateDelegate stateDelegate;
 
-    private LoaderRecycleAdapter<Friend> adapter;
+    private LoaderRecycleAdapter<User> adapter;
     private LinearLayoutManager layoutManager;
 
     @Override
@@ -160,7 +160,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
-    public BaseArrayListAdapter<Friend> getAdapter() {
+    public BaseArrayListAdapter<User> getAdapter() {
         return adapter;
     }
 

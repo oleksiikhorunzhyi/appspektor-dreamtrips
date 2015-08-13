@@ -6,9 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 
 import de.greenrobot.event.EventBus;
 
@@ -22,7 +22,7 @@ public class FriendActionDialogDelegate {
         this.eventBus = eventBus;
     }
 
-    public void showFriendDialog(Friend user, Drawable profileIcon) {
+    public void showFriendDialog(User user, Drawable profileIcon) {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle(user.getFullName());
         if (profileIcon != null)

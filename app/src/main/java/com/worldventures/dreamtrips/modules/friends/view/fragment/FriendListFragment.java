@@ -26,11 +26,11 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 
@@ -63,7 +63,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
 
     private RecyclerViewStateDelegate stateDelegate;
 
-    private LoaderRecycleAdapter<Friend> adapter;
+    private LoaderRecycleAdapter<User> adapter;
     private ListPopupWindow popupWindow;
 
     private WeakHandler weakHandler;
@@ -103,7 +103,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
-        adapter.registerCell(Friend.class, FriendCell.class);
+        adapter.registerCell(User.class, FriendCell.class);
 
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
@@ -194,7 +194,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     }
 
     @Override
-    public BaseArrayListAdapter<Friend> getAdapter() {
+    public BaseArrayListAdapter<User> getAdapter() {
         return adapter;
     }
 

@@ -18,12 +18,15 @@ import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
+import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.OUTGOING_REQUEST;
+import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECT;
 
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
@@ -61,12 +64,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         if (items != null) {
             List<Object> sortedItems = new ArrayList<>();
             sortedItems.add(context.getString(R.string.request_incoming));
-            sortedItems.addAll(Queryable.from(items).filter(item ->
-                    item.getRelationship().equals(User.RELATION_INCOMING_REQUEST)).toList());
+            sortedItems.addAll(Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList());
             sortedItems.add(context.getString(R.string.request_outgoing));
-            sortedItems.addAll(Queryable.from(items).filter(item ->
-                    (item.getRelationship().equals(User.RELATION_OUTGOING_REQUEST)
-                            || item.getRelationship().equals(User.RELATION_REJECT)))
+            sortedItems.addAll(Queryable.from(items).filter(item -> (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECT))
                     .toList());
             view.getAdapter().setItems(sortedItems);
         }

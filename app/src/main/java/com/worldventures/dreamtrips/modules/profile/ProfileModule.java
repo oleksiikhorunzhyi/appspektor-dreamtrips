@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWrapperActivity;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.profile.view.cell.FriendPrefGroupCell;
+import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
+import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
@@ -30,7 +32,9 @@ import dagger.Provides;
                 FriendPreferencesPresenter.class,
                 FriendPrefGroupCell.class,
                 FriendPrefsWrapperActivity.class,
-                FriendPrefsWrapperPresenter.class
+                FriendPrefsWrapperPresenter.class,
+                ProfileCell.class,
+                ReloadFeedCell.class,
         },
         complete = false,
         library = true

@@ -834,9 +834,9 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
         }
         final int scrolled = absDy > consumed ? layoutDirection * consumed : dy;
         mOrientationHelper.offsetChildren(-scrolled);
-        if (DEBUG) {
-            Log.d(TAG, "scroll req: " + dy + " scrolled: " + scrolled);
-        }
+        // if (DEBUG) {
+        //     Log.d(TAG, "scroll req: " + dy + " scrolled: " + scrolled);
+        // }
         return scrolled;
     }
 
@@ -1283,7 +1283,6 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * be closest to position WIDTH  or HEIGHT
      */
     private void validateChildOrder() {
-        Log.d(TAG, "validating child count " + getChildCount());
         if (getChildCount() < 1) {
             return;
         }

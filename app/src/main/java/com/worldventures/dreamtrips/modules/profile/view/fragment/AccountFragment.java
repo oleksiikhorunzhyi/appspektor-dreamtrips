@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -31,20 +30,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         return new AccountPresenter();
     }
 
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        profileView.getControlPanel().setVisibility(View.VISIBLE);
-
-        profileView.getCover().setVisibility(View.VISIBLE);
-        profileView.getAvatar().setVisibility(View.VISIBLE);
-        profileView.getAddFriend().setVisibility(View.GONE);
-        profileView.getUpdateInfo().setVisibility(View.VISIBLE);
-        profileView.getUserBalance().setVisibility(View.VISIBLE);
-
-        profileView.setOnPhotoClick(() -> getPresenter().photoClicked());
-        profileView.setOnCoverClick(() -> getPresenter().coverClicked());
-
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
@@ -108,31 +97,12 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     @Override
-    public void avatarProgressVisible(boolean visible) {
-        profileView.post(() -> profileView.getProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE));
-    }
-
-    @Override
-    public void coverProgressVisible(boolean visible) {
-        profileView.post(() -> profileView.getCoverProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE));
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    @Override
-    public void setRoviaBucks(String count) {
-        profileView.getRoviaBucks().setText(Html.fromHtml(getString(R.string.profile_rovia_bucks, count)));
-    }
-
-    @Override
-    public void setDreamTripPoints(String count) {
-        profileView.getDtPoints().setText(Html.fromHtml(getString(R.string.profile_dt_points, count)));
-    }
 
     private void showLogoutDialog() {
         new MaterialDialog.Builder(getActivity())

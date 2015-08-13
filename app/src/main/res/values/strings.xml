@@ -366,5 +366,8 @@
     <string name="friend_pref_create_new_list">Create new list</string>
     <string name="friend_pref_lists_title">Lists</string>
     <string name="friend_pref_lists_header">Friend Preferences</string>
+    <string name="social_unfriend_confirmation_title">Are you sure want to delete user from friends?</string>
+    <string name="social_unfriend_confiramation_accept">Yes</string>
+    <string name="social_unfriend_confiramation_cancel">No</string>
 
 </resources>

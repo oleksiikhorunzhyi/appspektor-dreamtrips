@@ -11,7 +11,9 @@ import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
+import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
+import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -82,7 +84,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
 
     }
 
-    public void unfriend() {
+    private void unfriend() {
         view.startLoading();
         doRequest(new UnfriendCommand(user.getId()), object -> {
             if (view != null) {
@@ -94,15 +96,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
         });
     }
 
-
-    public void unfriendAndBlock() {
-        view.informUser("TODO");
-    }
-
-    public void openFriendPrefs() {
+    private void openFriendPrefs() {
         activityRouter.openFriendPrefs(user);
     }
-
 
     public void acceptClicked() {
         view.showAddFriendDialog(circles, this::accept);
@@ -154,6 +150,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
     }
 
 
+    public void onEvent(UnfriendEvent event) {
+        unfriend();
+    }
+
+    public void onEvent(OpenFriendPrefsEvent event) {
+        openFriendPrefs();
+    }
+
+
     public void onEvent(FriendGroupRelationChangedEvent event) {
         if (user.getId() == event.getFriend().getId()) {
             switch (event.getState()) {
@@ -167,6 +172,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
             user.setCircles(snappyRepository.getCircles());
         }
     }
+
 
     @Override
     public void openBucketList() {
@@ -190,6 +196,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, Friend> 
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 
-        void showFriendDialog(User user);
+        void showFriendDialog(Friend user);
     }
 }

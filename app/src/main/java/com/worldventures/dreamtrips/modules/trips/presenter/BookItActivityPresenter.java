@@ -20,7 +20,10 @@ public class BookItActivityPresenter extends Presenter<BookItActivityPresenter.V
         super();
     }
 
-    public void onCreate() {
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
         UserSession userSession = appSessionHolder.get().get();
 
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {

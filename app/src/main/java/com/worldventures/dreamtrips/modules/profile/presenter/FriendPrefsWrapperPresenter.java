@@ -16,12 +16,13 @@ public class FriendPrefsWrapperPresenter extends Presenter<Presenter.View> {
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(FriendPreferenceFragment.BUNDLE_FRIEND, friend);
-        fragmentCompass.switchBranch(Route.FRIEND_PREFERENCES, bundle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(FriendPreferenceFragment.BUNDLE_FRIEND, friend);
+            fragmentCompass.switchBranch(Route.FRIEND_PREFERENCES, bundle);
+        }
     }
-
 }
 

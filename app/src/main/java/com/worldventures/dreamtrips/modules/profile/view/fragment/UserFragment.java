@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -10,9 +9,10 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
+import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import java.util.List;
 
@@ -107,25 +107,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     }
 
     @Override
-    public void showFriendDialog(User user) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(user.getFullName());
-        builder.setIcon(profileView.getUserPhoto().getDrawable());
-        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
-                dialogInterface.dismiss());
-        builder.setItems(new String[]{
-                        getString(R.string.social_remove_friend_title),
-                        getString(R.string.social_friend_preference_title)
-                },
-                (dialogInterface, i) -> {
-                    if (i == 0) {
-                        getPresenter().unfriend();
-                    } else if (i == 1) {
-                        getPresenter().openFriendPrefs();
-                    }
-                }
-        );
-        builder.show();
-
+    public void showFriendDialog(Friend user) {
+        new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, profileView.getUserPhoto().getDrawable());
     }
 }

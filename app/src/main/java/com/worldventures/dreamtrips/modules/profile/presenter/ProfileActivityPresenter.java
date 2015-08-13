@@ -16,15 +16,17 @@ public class ProfileActivityPresenter extends Presenter<Presenter.View> {
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        User account = getAccount();
-        if (user.equals(account)) {
-            fragmentCompass.replace(Route.MY_PROFILE);
-        } else {
-            Bundle args = new Bundle();
-            args.putParcelable(ProfileModule.EXTRA_USER, user);
-            fragmentCompass.replace(Route.PROFILE, args);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            User account = getAccount();
+            if (user.equals(account)) {
+                fragmentCompass.replace(Route.MY_PROFILE);
+            } else {
+                Bundle args = new Bundle();
+                args.putParcelable(ProfileModule.EXTRA_USER, user);
+                fragmentCompass.replace(Route.PROFILE, args);
+            }
         }
     }
 }

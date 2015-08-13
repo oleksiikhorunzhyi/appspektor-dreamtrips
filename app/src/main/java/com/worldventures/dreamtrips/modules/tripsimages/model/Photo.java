@@ -15,6 +15,8 @@ import java.util.List;
 
 public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
+    private long uid;
+
     private String title;
     private Date shotAt;
     private Location location;
@@ -252,6 +254,11 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
     @Override
     public String place() {
         return getFsLocation();
+    }
+
+    @Override
+    public long getUid() {
+        return uid;
     }
 
 }

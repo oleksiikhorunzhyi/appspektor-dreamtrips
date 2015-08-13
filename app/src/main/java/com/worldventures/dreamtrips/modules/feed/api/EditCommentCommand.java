@@ -14,6 +14,6 @@ public class EditCommentCommand extends Command<Comment> {
 
     @Override
     public Comment loadDataFromNetwork() throws Exception {
-        return getService().editComment(comment.getId(), comment.getMessage());
+        return getService().editComment(comment.getUid(), comment.getMessage());
     }
 }

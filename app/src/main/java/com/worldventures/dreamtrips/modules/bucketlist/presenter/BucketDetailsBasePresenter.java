@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.navigation.Navigator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;

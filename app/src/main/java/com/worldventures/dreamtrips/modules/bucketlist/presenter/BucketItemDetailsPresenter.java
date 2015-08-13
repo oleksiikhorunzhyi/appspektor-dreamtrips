@@ -30,7 +30,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openBucketItemEditActivity(bundle);
+            activityRouter.openComponentActivity(Route.BUCKET_EDIT, bundle);
         }
     }
 

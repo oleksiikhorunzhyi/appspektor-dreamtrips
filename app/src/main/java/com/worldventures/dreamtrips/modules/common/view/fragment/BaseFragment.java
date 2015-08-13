@@ -13,8 +13,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
@@ -23,6 +27,12 @@ import icepick.Icepick;
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
 
     private PM presenter;
+
+    @Inject
+    protected ActivityRouter activityRouter;
+    @Inject
+    protected FragmentCompass fragmentCompass;
+
 
     public PM getPresenter() {
         return presenter;

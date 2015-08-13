@@ -4,7 +4,6 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -37,6 +36,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityNavigator;
+import com.worldventures.dreamtrips.core.navigation.FragmentNavigator;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -137,6 +139,24 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setNavigator();
+    }
+
+    private void setNavigator() {
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            getPresenter().setNavigator(new FragmentNavigator(fragmentCompass));
+        } else {
+            getPresenter().setNavigator(new ActivityNavigator(activityRouter));
+        }
+
+    }
+
+    @Override
     public void onDestroyView() {
         stateDelegate.onDestroyView();
         if (dragDropManager != null) {
@@ -204,6 +224,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         });
     }
 
+    public void onEvent(BucketItemClickedEvent event) {
+        getPresenter().itemClicked(event.getBucketItem());
+    }
+
     @OnClick(R.id.buttonNew)
     void onAdd() {
         menuItemAdd.expandActionView();
@@ -211,6 +235,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @OnClick(R.id.buttonPopular)
     void onPopular() {
+        getPresenter().setNavigator(new ActivityNavigator(activityRouter));
         getPresenter().addPopular();
     }
 
@@ -310,8 +335,4 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         }
     }
 
-    @Override
-    public FragmentManager getCurrentFragmentManager() {
-        return getChildFragmentManager();
-    }
 }

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import icepick.Icicle;
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     BaseFeedModel feedModel;
+    IFeedObject feedEntity;
 
     private int page = 1;
 
@@ -32,6 +34,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         FeedItemStickyEvent event = eventBus.getStickyEvent(FeedItemStickyEvent.class);
         feedModel = event.getModel();
+        feedEntity = event.getModel().getEntities()[0];
 
         setHeader();
         loadComments();
@@ -41,7 +44,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     private void loadComments() {
         view.setLoading(true);
-        doRequest(new GetCommentsQuery(feedModel.getId(), page), this::onCommentsLoaded);
+        doRequest(new GetCommentsQuery(feedEntity.getUid(), page), this::onCommentsLoaded);
     }
 
     public void setComment(String comment) {
@@ -49,7 +52,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void post() {
-        doRequest(new CreateCommentCommand(feedModel.getId(), comment), view::addComment);
+        doRequest(new CreateCommentCommand(feedEntity.getUid(), comment), view::addComment);
     }
 
     public void onEvent(LoadMoreEvent event) {
@@ -57,7 +60,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void onEvent(DeleteCommentEvent event) {
-        doRequest(new DeleteCommentCommand(event.getComment().getId()), jsonObject -> {
+        doRequest(new DeleteCommentCommand(event.getComment().getUid()), jsonObject -> {
             view.removeComment(event.getComment());
         });
     }

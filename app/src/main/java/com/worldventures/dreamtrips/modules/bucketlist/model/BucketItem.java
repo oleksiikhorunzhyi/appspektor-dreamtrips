@@ -18,6 +18,9 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";
 
+    @TaggedFieldSerializer.Tag(16)
+    private long uid;
+
     @TaggedFieldSerializer.Tag(1)
     private String name;
 
@@ -200,4 +203,10 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     public String place() {
         return BucketItemInfoUtil.getPlace(this);
     }
+
+    @Override
+    public long getUid() {
+        return uid;
+    }
+
 }

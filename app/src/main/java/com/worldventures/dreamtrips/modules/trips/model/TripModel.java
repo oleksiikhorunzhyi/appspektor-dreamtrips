@@ -23,6 +23,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     public static final long serialVersionUID = 123L;
 
+    private long uid;
+
     @SerializedName("id")
     private String likeId;
     @SerializedName("trip_id")
@@ -316,4 +318,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         return null;
     }
 
+    @Override
+    public long getUid() {
+        return uid;
+    }
 }

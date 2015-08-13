@@ -247,6 +247,10 @@ public class User extends BaseEntity implements Parcelable {
             this.thumb = thumb;
         }
 
+        @Override
+        public long getUid() {
+            return 0;
+        }
 
         @Override
         public int describeContents() {

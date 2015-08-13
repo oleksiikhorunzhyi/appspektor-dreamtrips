@@ -9,9 +9,9 @@ public class GetCommentsQuery extends Query<ArrayList<Comment>> {
 
     public static final int LIMIT = 10;
     private int page;
-    private int feedItemId;
+    private long feedItemId;
 
-    public GetCommentsQuery(int feedItemId, int page) {
+    public GetCommentsQuery(long feedItemId, int page) {
         super((Class<ArrayList<Comment>>) new ArrayList<Comment>().getClass());
         this.feedItemId = feedItemId;
         this.page = page;

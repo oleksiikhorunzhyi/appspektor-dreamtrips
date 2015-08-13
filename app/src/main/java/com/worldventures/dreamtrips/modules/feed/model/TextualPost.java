@@ -14,4 +14,9 @@ public class TextualPost extends BaseEntity implements IFeedObject{
     public String place() {
         return null;
     }
+
+    @Override
+    public long getUid() {
+        return 0;
+    }
 }

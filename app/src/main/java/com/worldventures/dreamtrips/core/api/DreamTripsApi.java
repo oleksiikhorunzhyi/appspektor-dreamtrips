@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
+import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
-import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -267,26 +267,26 @@ public interface DreamTripsApi {
     ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/social/items/{object_id}/comments")
-    ArrayList<Comment> getComments(@Path("object_id") int objectId, @Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Comment> getComments(@Path("object_id") long objectId, @Query("per_page") int perPage, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/api/social/comments")
-    Comment createComment(@Field("object_id") int objectId, @Field("text") String text);
+    Comment createComment(@Field("entity_id") long objectId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/comments")
-    Comment replyComment(@Field("reply_comment_id") int commentId, @Field("text") String text);
+    Comment replyComment(@Field("reply_comment_id") long commentId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
 
     @DELETE("/api/social/comments/{id}")
-    JSONObject deleteComment(@Path("id") int commentId);
+    JSONObject deleteComment(@Path("id") long commentId);
 
     @FormUrlEncoded
     @PUT("/api/social/comments/{id}")
-    Comment editComment(@Path("id") int commentId, @Field("text") String text);
+    Comment editComment(@Path("id") long commentId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/circles/{circle_id}/users")

@@ -4,15 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Date;
 
-public class Comment extends BaseEntity implements Parcelable {
+public class Comment implements Parcelable {
 
-    int object_id;
-    int parent_id;
+    long uid;
+    long parent_id;
     String text;
     User user;
     @SerializedName("created_at")
@@ -23,9 +22,9 @@ public class Comment extends BaseEntity implements Parcelable {
 
 
     protected Comment(Parcel in) {
-        id = in.readInt();
-        object_id = in.readInt();
-        parent_id = in.readInt();
+        uid = in.readLong();
+        parent_id = in.readLong();
+        parent_id = in.readLong();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
     }
@@ -62,6 +61,10 @@ public class Comment extends BaseEntity implements Parcelable {
         return createdAt;
     }
 
+    public long getUid() {
+        return uid;
+    }
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
@@ -73,9 +76,8 @@ public class Comment extends BaseEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeInt(object_id);
-        parcel.writeInt(parent_id);
+        parcel.writeLong(uid);
+        parcel.writeLong(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
     }

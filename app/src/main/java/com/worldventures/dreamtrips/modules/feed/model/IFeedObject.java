@@ -4,4 +4,5 @@ public interface IFeedObject {
 
     String place();
 
+    long getUid();
 }

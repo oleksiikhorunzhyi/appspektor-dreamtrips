@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.ActivityResult;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -52,13 +50,6 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @InjectView(R.id.image)
     ImageView image;
 
-    private PickImageDelegate pickImageDelegate;
-
-    int pidTypeShown;
-    String filePath;
-
-    WeakHandler handler = new WeakHandler();
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -78,13 +69,6 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pidTypeShown = getPresenter().getPidType();
-        filePath = getPresenter().getFilePath();
-        pickImageDelegate = new PickImageDelegate(this);
-        pickImageDelegate.setRequestType(pidTypeShown);
-
-        pickImageDelegate.setImageCallback(getPresenter().provideSelectImageCallback());
-        pickImageDelegate.setErrorCallback(this::informUser);
 
         post.addTextChangedListener(new TextWatcherAdapter() {
             @Override
@@ -110,8 +94,17 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         getPresenter().onProgressClicked();
     }
 
-    @OnClick({R.id.close, R.id.space})
+    @OnClick(R.id.close)
     void onClose() {
+        cancel();
+    }
+
+    @OnClick(R.id.space)
+    void onSpaceClicked() {
+        if (ViewUtils.isTablet(getActivity())) cancel();
+    }
+
+    private void cancel() {
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         getActivity().onBackPressed();
@@ -131,47 +124,17 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
                 .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
-                            pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
                             break;
                         case 1:
-                            pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
                             break;
                         case 2:
-                            pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
                             break;
                     }
-
-
-                    pickImageDelegate.setRequestType(pidTypeShown);
-                    pickImageDelegate.show();
-
-                    filePath = pickImageDelegate.getFilePath();
-
-                    getPresenter().setFilePath(filePath);
-                    getPresenter().setPidType(pidTypeShown);
                 });
         builder.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
-    }
-
-    public void onEvent(ActivityResult event) {
-        eventBus.removeStickyEvent(event);
-        handler.post(() -> {
-            if (pidTypeShown != 0) {
-                pickImageDelegate.setRequestType(pidTypeShown);
-                pickImageDelegate.setFilePath(filePath);
-
-                pickImageDelegate.onActivityResult(event.requestCode,
-                        event.resultCode, event.data);
-                pidTypeShown = 0;
-                getPresenter().setPidType(pidTypeShown);
-            }
-        });
     }
 
     @Override

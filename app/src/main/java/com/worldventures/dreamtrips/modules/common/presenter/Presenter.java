@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.Navigator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -52,6 +53,8 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     protected int priorityEventBus = 0;
 
+    protected Navigator navigator;
+
     ///////////////////////////////////////////////////////////////////////////
     // Lifecycle
     ///////////////////////////////////////////////////////////////////////////
@@ -62,6 +65,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
 
     public void restoreInstanceState(Bundle savedState) {
         Icepick.restoreInstanceState(this, savedState);
+    }
+
+    public void setNavigator(Navigator navigator) {
+        this.navigator = navigator;
     }
 
     public void saveInstanceState(Bundle outState) {

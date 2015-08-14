@@ -4,8 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
@@ -51,27 +52,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected BucketItem bucketItem;
 
-    protected PickImageDelegate.ImagePickCallback captureImageCallback = chosenImage -> {
-        if (chosenImage != null) {
-            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "camera");
-        }
-    };
-    protected PickImageDelegate.ImagePickCallback chooseImageCallback = chosenImage -> {
-        if (chosenImage != null) {
-            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "album");
-        }
-    };
-    protected PickImageDelegate.ImagePickCallback mulitImageCallback = chosenImages -> {
-        for (ChosenImage image : chosenImages) {
-            handlePhotoPick(Uri.parse(image.getFilePathOriginal()), "album");
-        }
-    };
-    protected PickImageDelegate.ImagePickCallback fbCallback = chosenImage -> {
-        if (chosenImage != null) {
-            handlePhotoPick(Uri.parse(chosenImage[0].getFilePathOriginal()), "facebook");
-        }
-    };
-
     public BucketDetailsBasePresenter(Bundle bundle) {
         super();
         type = (BucketTabsPresenter.BucketType)
@@ -82,8 +62,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void takeView(V view) {
         super.takeView(view);
-        view.updatePhotos();
-
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
 
@@ -117,29 +95,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
 
     //////////////////////////////
-    ///////// Photo upload staff
+    ///////// Photo processing
     //////////////////////////////
 
-    public PickImageDelegate.ImagePickCallback getGalleryChooseCallback() {
-        return chooseImageCallback;
-    }
-
-    public PickImageDelegate.ImagePickCallback getPhotoChooseCallback() {
-        return captureImageCallback;
-    }
-
-    public PickImageDelegate.ImagePickCallback getFbCallback() {
-        return fbCallback;
-    }
-
-    public PickImageDelegate.ImagePickCallback getMultiSelectPickCallback() {
-        return mulitImageCallback;
-    }
-
-
     public void onEvent(BucketAddPhotoClickEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.getBucketPhotosView().showAddPhotoDialog(false);
+        if (view.isVisibleOnScreen()) {
+            eventBus.cancelEventDelivery(event);
+            view.showAddPhotoDialog();
+        }
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
@@ -159,7 +122,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void openFullScreen(BucketPhoto selectedPhoto) {
-        if (!view.getBucketPhotosView().getImages().isEmpty()) {
+        if ((bucketItem.getPhotos().contains(selectedPhoto))) {
             List<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
@@ -183,9 +146,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-        bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
-                bucketItem, jsonObject -> deleted(event.getPhoto()), this);
+        if (bucketItem.getPhotos().size() > 0 &&
+                bucketItem.getPhotos().contains(event.getPhoto())) {
+            eventBus.cancelEventDelivery(event);
+            bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
+                    bucketItem, jsonObject -> deleted(event.getPhoto()), this);
+        }
     }
 
     protected void deleted(BucketPhoto bucketPhoto) {
@@ -195,16 +161,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
     /////// Photo upload
     ////////////////////////////////////////
-
-    private void handlePhotoPick(Uri uri, String type) {
-        UploadTask task = new UploadTask();
-        task.setStatus(UploadTask.Status.IN_PROGRESS);
-        task.setFilePath(uri.toString());
-        task.setType(type);
-        task.setLinkedItemId(String.valueOf(bucketItemId));
-
-        copyFileIfNeeded(task);
-    }
 
     private void copyFileIfNeeded(UploadTask task) {
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
@@ -267,6 +223,46 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
     }
 
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
+    }
+
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == bucketItemId) {
+            eventBus.cancelEventDelivery(event);
+            Queryable.from(event.getImages()).forEachR(choseImage ->
+                    imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+        }
+    }
+
+    private void imageSelected(Uri uri, int requestType) {
+        String type = "";
+        switch (requestType) {
+            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                type = "camera";
+                break;
+            case PickImageDelegate.REQUEST_PICK_PICTURE:
+                type = "album";
+                break;
+            case PickImageDelegate.REQUEST_FACEBOOK:
+                type = "facebook";
+                break;
+        }
+
+        UploadTask task = new UploadTask();
+        task.setStatus(UploadTask.Status.IN_PROGRESS);
+        task.setFilePath(uri.toString());
+        task.setType(type);
+        task.setLinkedItemId(String.valueOf(bucketItemId));
+
+        copyFileIfNeeded(task);
+    }
+
+
     public interface View extends Presenter.View {
         void setTitle(String title);
 
@@ -282,7 +278,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         void done();
 
-        void updatePhotos();
+        void showAddPhotoDialog();
 
         IBucketPhotoView getBucketPhotosView();
     }

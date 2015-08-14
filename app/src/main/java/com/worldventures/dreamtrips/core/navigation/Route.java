@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
@@ -44,10 +47,12 @@ public enum Route {
     BOOK_IT(StaticInfoFragment.BookItFragment.class),
     SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
-    BUCKET_EDIT(BucketItemEditFragment.class),
+
+    BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_edit_header),
     POPULAR_BUCKET(BucketListPopuralFragment.class),
-    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class),
+    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class),
+
     MAP(TripMapFragment.class),
     ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
@@ -72,15 +77,26 @@ public enum Route {
     FRIEND_PREFERENCES(FriendPreferenceFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
+    @StringRes
+    private int titleRes;
 
     Route(Class<? extends BaseFragment> fragmentClass) {
         this.fragmentClass = fragmentClass;
+    }
+
+    Route(Class<? extends BaseFragment> fragmentClass, @StringRes int titleRes) {
+        this.fragmentClass = fragmentClass;
+        this.titleRes = titleRes;
     }
 
     public static Route restoreByKey(String key) {
         Route result = Queryable.from(values()).firstOrDefault(route ->
                 route.name().equalsIgnoreCase(key));
         return result != null ? result : TRIPLIST;
+    }
+
+    public int getTitleRes() {
+        return titleRes;
     }
 
     public String getClazzName() {

@@ -7,7 +7,6 @@ import android.text.Html;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
-import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
@@ -25,19 +23,8 @@ import io.techery.scalablecropp.library.Crop;
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
 
-    private static final int AVATAR_CALLBACK = 1;
-    private static final int COVER_CALLBACK = 2;
-
-    @Icicle
-    String filePath;
-    @Icicle
-    int callbackType;
-    @Icicle
-    int pidType;
-
-    private PickImageDelegate pickImageDelegate;
-
-    WeakHandler handler = new WeakHandler();
+    public static final int AVATAR_CALLBACK = 1;
+    public static final int COVER_CALLBACK = 2;
 
     @Override
     protected AccountPresenter createPresenter(Bundle savedInstanceState) {
@@ -54,13 +41,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileView.getAddFriend().setVisibility(View.GONE);
         profileView.getUpdateInfo().setVisibility(View.VISIBLE);
         profileView.getUserBalance().setVisibility(View.VISIBLE);
-
-        pickImageDelegate = new PickImageDelegate(this);
-        pickImageDelegate.setRequestType(callbackType);
-        pickImageDelegate.setFilePath(filePath);
-
-        pickImageDelegate.setErrorCallback(this::informUser);
-
 
         profileView.setOnPhotoClick(() -> getPresenter().photoClicked());
         profileView.setOnCoverClick(() -> getPresenter().coverClicked());
@@ -103,15 +83,13 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void openAvatarPicker() {
-        pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onAvatarChosen(chosenImage[0]));
-        callbackType = AVATAR_CALLBACK;
+        getPresenter().setCallbackType(AVATAR_CALLBACK);
         showChooseSelectPhotoTypeDialog();
     }
 
     @Override
     public void openCoverPicker() {
-        pickImageDelegate.setImageCallback(chosenImage -> getPresenter().onCoverChosen(chosenImage[0]));
-        callbackType = COVER_CALLBACK;
+        getPresenter().setCallbackType(COVER_CALLBACK);
         showChooseSelectPhotoTypeDialog();
     }
 
@@ -119,46 +97,30 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
                 .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
                     if (which == 0) {
-                        pidType = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
+                        getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
                     } else if (which == 1) {
-                        pidType = PickImageDelegate.REQUEST_PICK_PICTURE;
+                        getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
                     } else {
-                        pidType = PickImageDelegate.REQUEST_FACEBOOK;
+                        getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
                     }
-
-                    pickImageDelegate.setRequestType(pidType);
-                    pickImageDelegate.show();
-                    filePath = pickImageDelegate.getFilePath();
                 });
         builder.show();
     }
 
     @Override
     public void avatarProgressVisible(boolean visible) {
-        profileView.getProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE);
+        profileView.post(() -> profileView.getProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE));
     }
 
     @Override
     public void coverProgressVisible(boolean visible) {
-        profileView.getCoverProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE);
+        profileView.post(() -> profileView.getCoverProgressBar().setVisibility(visible ? View.VISIBLE : View.GONE));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
-            if (pidType != 0) {
-                if (callbackType == AVATAR_CALLBACK)
-                    pickImageDelegate.setImageCallback(chosenImage -> profileView.post(() ->
-                            getPresenter().onAvatarChosen(chosenImage[0])));
-                else if (callbackType == COVER_CALLBACK)
-                    pickImageDelegate.setImageCallback(chosenImage -> profileView.post(() ->
-                            getPresenter().onCoverChosen(chosenImage[0])));
-
-                pickImageDelegate.onActivityResult(requestCode,
-                        resultCode, data);
-
-                pidType = 0;
-            }
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

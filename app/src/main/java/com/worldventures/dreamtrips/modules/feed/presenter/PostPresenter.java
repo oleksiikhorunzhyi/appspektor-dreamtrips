@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -14,22 +16,17 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
 public class PostPresenter extends Presenter<PostPresenter.View> {
 
+    public static final int REQUESTER_ID = -2;
+
     private Post post;
 
     @Inject
     SnappyRepository snapper;
-
-    protected PickImageDelegate.ImagePickCallback imagePickCallback = chosenImage -> {
-        if (chosenImage != null) {
-            handlePhotoPick(chosenImage[0].getFilePathOriginal());
-        }
-    };
 
     @Override
     public void takeView(View view) {
@@ -68,8 +65,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void cancel() {
-        fragmentCompass.removePost();
+        cancelUplad();
         deletePost();
+        fragmentCompass.removePost();
     }
 
     private void savePost() {
@@ -127,20 +125,6 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     /////// Photo upload
     ////////////////////////////////////////
 
-    public PickImageDelegate.ImagePickCallback provideSelectImageCallback() {
-        return imagePickCallback;
-    }
-
-    private void handlePhotoPick(String filePath) {
-        if (view != null) {
-            UploadTask imageUploadTask = new UploadTask();
-            imageUploadTask.setFilePath(filePath);
-            imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
-            post.setUploadTask(imageUploadTask);
-            savePhotoIfNeeded();
-        }
-    }
-
     private void savePhotoIfNeeded() {
         doRequest(new CopyFileCommand(context, post.getUploadTask().getFilePath()), this::uploadPhoto);
     }
@@ -195,22 +179,6 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         enablePostButton();
     }
 
-    public void setPidType(int pidType) {
-        post.setPidType(pidType);
-    }
-
-    public void setFilePath(String filePath) {
-        post.setPhotoCapturingFilePath(filePath);
-    }
-
-    public int getPidType() {
-        return post.getPidType();
-    }
-
-    public String getFilePath() {
-        return post.getPhotoCapturingFilePath();
-    }
-
     public void onProgressClicked() {
         if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
             startUpload();
@@ -218,10 +186,41 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void removeImage() {
-        photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
+        cancelUplad();
         post.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
+    }
+
+    private void cancelUplad() {
+        if (post.getUploadTask() != null)
+            photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
+    }
+
+
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
+            imageSelected(event.getImages()[0].getFilePathOriginal());
+        }
+    }
+
+    private void imageSelected(String filePath) {
+        if (view != null) {
+            UploadTask imageUploadTask = new UploadTask();
+            imageUploadTask.setFilePath(filePath);
+            imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+            post.setUploadTask(imageUploadTask);
+            savePhotoIfNeeded();
+        }
     }
 
     public interface View extends Presenter.View {

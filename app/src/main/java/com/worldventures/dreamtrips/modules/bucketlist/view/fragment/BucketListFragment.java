@@ -36,6 +36,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityNavigator;
+import com.worldventures.dreamtrips.core.navigation.FragmentNavigator;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -51,6 +54,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
@@ -79,6 +83,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @InjectView(R.id.buttonPopular)
     AppCompatButton buttonPopular;
     //
+    @Optional
+    @InjectView(R.id.detail_container)
     protected View detailsContainer;
 
     private DraggableArrayListAdapter<BucketItem> adapter;
@@ -104,8 +110,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        detailsContainer = getActivity().findViewById(R.id.container_details_fullscreen);
-
         // setup layout manager and item decoration
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new RefactoredDefaultItemAnimator());
@@ -132,6 +136,24 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         dragDropManager.attachRecyclerView(recyclerView);
         // set state delegate
         stateDelegate.setRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setNavigator();
+    }
+
+    private void setNavigator() {
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            getPresenter().setNavigator(new FragmentNavigator(fragmentCompass));
+        } else {
+            getPresenter().setNavigator(new ActivityNavigator(activityRouter));
+        }
+
     }
 
     @Override
@@ -202,6 +224,10 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         });
     }
 
+    public void onEvent(BucketItemClickedEvent event) {
+        getPresenter().itemClicked(event.getBucketItem());
+    }
+
     @OnClick(R.id.buttonNew)
     void onAdd() {
         menuItemAdd.expandActionView();
@@ -209,7 +235,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @OnClick(R.id.buttonPopular)
     void onPopular() {
-        getPresenter().addPopular();
+        openPopular();
     }
 
     @Override
@@ -219,10 +245,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
                 actionFilter();
                 break;
             case R.id.action_popular:
-                getPresenter().addPopular();
+                openPopular();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void openPopular() {
+        getPresenter().setNavigator(new ActivityNavigator(activityRouter));
+        getPresenter().addPopular();
     }
 
     private void actionFilter() {
@@ -253,12 +285,15 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.VISIBLE), 200l);
+        setNavigator();
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
-    public void hideDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.GONE), 200l);
+    public void hideDetailContainer() {
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.GONE));
     }
 
     @Override

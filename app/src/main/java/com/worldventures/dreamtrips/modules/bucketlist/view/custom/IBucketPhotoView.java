@@ -22,8 +22,6 @@ public interface IBucketPhotoView {
 
     void deleteAtPosition(int position);
 
-    void showAddPhotoDialog(boolean showButton);
-
     void addFirstItem();
 
     void itemChanged(Object item);

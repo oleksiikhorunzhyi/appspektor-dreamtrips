@@ -114,27 +114,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(PreviewTemplateActivity.class, bundle);
     }
 
-    public void openBucketListPopularActivity(BucketTabsPresenter.BucketType type) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.POPULAR_TAB_BUCKER);
-        startActivity(BucketActivity.class, bundle);
-    }
-
-    public void openBucketItemEditActivity(Bundle bundle) {
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.BUCKET_EDIT);
-        startActivity(BucketActivity.class, bundle);
-    }
-
-    public void openBucketItemDetails(BucketTabsPresenter.BucketType type, int bucketId) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketId);
-
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
-        startActivity(BucketActivity.class, bundle);
-    }
-
     public void openTripDetails(TripModel trip) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
@@ -189,10 +168,20 @@ public class ActivityRouter extends ActivityBoundRouter {
         openComponentActivity(component, null);
     }
 
-
     public void openComponentActivity(ComponentDescription component, Bundle args) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ComponentPresenter.COMPONENT, component);
+        bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
+        startActivity(ComponentActivity.class, bundle);
+    }
+
+    public void openComponentActivity(Route route) {
+        openComponentActivity(route, null);
+    }
+
+    public void openComponentActivity(Route route, Bundle args) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ComponentPresenter.ROUTE, route);
         bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
         startActivity(ComponentActivity.class, bundle);
     }

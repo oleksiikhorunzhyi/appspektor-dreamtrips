@@ -228,27 +228,18 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Photo photo = (Photo) o;
 
-        if (id != null ? !id.equals(photo.id) : photo.id != null) {
-            return false;
-        }
-        return true;
+        return uid == photo.uid;
+
     }
 
     @Override
     public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
-        } else {
-            return 0;
-        }
+        return (int) (uid ^ (uid >>> 32));
     }
 
     @Override

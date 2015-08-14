@@ -1,19 +1,14 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
@@ -22,38 +17,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 
 import icepick.Icepick;
-import icepick.Icicle;
 
 
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
-    @Icicle
-    int pidTypeShown;
-    @Icicle
-    String filePath;
-
-    @Inject
-    SnappyRepository db;
-
     private IgnoreFirstItemAdapter imagesAdapter;
-
-    private DeleteButtonCallback deleteButtonCallback;
-    private PickImageDelegate.ImagePickCallback captureImageCallback;
-    private PickImageDelegate.ImagePickCallback chooseImageCallback;
-    private PickImageDelegate.ImagePickCallback mulitImageCallback;
-    private PickImageDelegate.ImagePickCallback fbCallback;
-
-    private boolean multiselectAvalbile;
-
-    private PickImageDelegate pickImageDelegate;
 
     public BucketPhotosView(Context context) {
         super(context);
@@ -68,14 +42,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Fragment fragment, Provider<Injector> injector, Type type) {
-        injector.get().inject(this);
-
-        pickImageDelegate = new PickImageDelegate(fragment);
-        pickImageDelegate.setRequestType(pidTypeShown);
-        pickImageDelegate.setFilePath(filePath);
-        setCallback();
-
+    public void init(Provider<Injector> injector, Type type) {
         if (imagesAdapter == null) {
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 
@@ -177,69 +144,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void showAddPhotoDialog(boolean showDeleteButton) {
-        int items = multiselectAvalbile ?
-                R.array.dialog_add_bucket_photo_multiselect :
-                R.array.dialog_add_bucket_photo;
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
-        builder.title(getContext().getString(R.string.select_photo))
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            pidTypeShown = PickImageDelegate.REQUEST_FACEBOOK;
-                            break;
-                        case 1:
-                            pidTypeShown = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
-                            break;
-                        case 2:
-                            if (multiselectAvalbile)
-                                pidTypeShown = PickImageDelegate.REQUEST_MULTI_SELECT;
-                            else pidTypeShown = PickImageDelegate.REQUEST_PICK_PICTURE;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    setCallback();
-                    pickImageDelegate.setRequestType(pidTypeShown);
-                    pickImageDelegate.show();
-
-                    filePath = pickImageDelegate.getFilePath();
-                });
-
-        if (showDeleteButton) {
-            builder.positiveText(R.string.delete_photo_positiove);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    showDeleteDialog(getContext());
-                }
-            });
-        }
-
-        builder.show();
-    }
-
-
-    private void setCallback() {
-        switch (pidTypeShown) {
-            case PickImageDelegate.REQUEST_FACEBOOK:
-                pickImageDelegate.setImageCallback(fbCallback);
-                break;
-            case PickImageDelegate.REQUEST_MULTI_SELECT:
-                pickImageDelegate.setImageCallback(mulitImageCallback);
-                break;
-            case PickImageDelegate.REQUEST_PICK_PICTURE:
-                pickImageDelegate.setImageCallback(chooseImageCallback);
-                break;
-            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
-                pickImageDelegate.setImageCallback(captureImageCallback);
-                break;
-        }
-    }
-
-    @Override
     public List getImages() {
         return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenObject).toList();
     }
@@ -249,71 +153,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item) + 1);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        handlePickDialogActivityResult(requestCode, resultCode, data);
-    }
-
-
-    private void handlePickDialogActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pidTypeShown != 0) {
-            pickImageDelegate.setFilePath(filePath);
-            pickImageDelegate.setRequestType(pidTypeShown);
-            setCallback();
-            pickImageDelegate.onActivityResult(requestCode, resultCode, data);
-            pidTypeShown = 0;
-        }
-    }
-
     @Override
     public void addFirstItem() {
         imagesAdapter.addItem(new Object());
         imagesAdapter.notifyDataSetChanged();
-    }
-
-    private void showDeleteDialog(Context context) {
-        new MaterialDialog.Builder(context)
-                .title(R.string.delete_photo_title)
-                .content(R.string.delete_photo_text)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        if (deleteButtonCallback != null) {
-                            deleteButtonCallback.onDelete();
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
-    }
-
-
-    public void setCaptureImageCallback(PickImageDelegate.ImagePickCallback captureImageCallback) {
-        this.captureImageCallback = captureImageCallback;
-    }
-
-    public void setChooseImageCallback(PickImageDelegate.ImagePickCallback chooseImageCallback) {
-        this.chooseImageCallback = chooseImageCallback;
-    }
-
-    public void setMulitImageCallback(PickImageDelegate.ImagePickCallback mulitImageCallback) {
-        this.mulitImageCallback = mulitImageCallback;
-    }
-
-    public void setFbCallback(PickImageDelegate.ImagePickCallback fbCallback) {
-        this.fbCallback = fbCallback;
-    }
-
-    public void setDeleteButtonCallback(DeleteButtonCallback deleteButtonCallback) {
-        this.deleteButtonCallback = deleteButtonCallback;
-    }
-
-    public void multiSelectAvailable(boolean available) {
-        this.multiselectAvalbile = available;
     }
 
     @Override
@@ -325,10 +168,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     public enum Type {
         DETAILS, EDIT, DEFAULT
-    }
-
-    public interface DeleteButtonCallback {
-        void onDelete();
     }
 
 }

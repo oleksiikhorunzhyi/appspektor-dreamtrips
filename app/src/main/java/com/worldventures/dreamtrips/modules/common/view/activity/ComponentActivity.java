@@ -13,13 +13,11 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.activity_component)
-public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
+public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
     @Optional
     @InjectView(R.id.container_details_floating)
     protected FrameLayout detailsFloatingContainer;
-    @InjectView(R.id.container_details_fullscreen)
-    protected FrameLayout detailsFullScreenContainer;
 
     @Override
     protected int getToolbarTitle() {
@@ -31,11 +29,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
             fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
             return true;
-        } else if (detailsFullScreenContainer != null
-                && detailsFullScreenContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeDetailed();
-            detailsFullScreenContainer.setVisibility(View.GONE);
-            return true;
         }
         return false;
     }
@@ -44,6 +37,11 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
     public void onBackPressed() {
         if (!handleComponentChange())
             super.onBackPressed();
+    }
+
+    @Override
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
     }
 
     @Override

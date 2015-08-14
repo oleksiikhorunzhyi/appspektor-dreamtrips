@@ -202,7 +202,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void addToBucketList(String title) {
         bucketItemManager.addBucketItem(title, type, bucketItem -> {
-            bucketItems.add(0, bucketItem);
             view.getAdapter().addItem(0, bucketItem);
             view.getAdapter().notifyDataSetChanged();
             if (bucketItems.size() == 1) currentItem = bucketItem;

@@ -299,6 +299,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 }).build();
         dialog.show();
         View positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
+        positiveButton.setEnabled(false);
         EditText etDesc = (EditText) dialog.getCustomView().findViewById(R.id.tv_description);
         etDesc.addTextChangedListener(new TextWatcherAdapter() {
             @Override

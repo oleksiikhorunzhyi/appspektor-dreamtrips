@@ -285,6 +285,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
+        setNavigator();
         if (detailsContainer != null)
             handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
     }

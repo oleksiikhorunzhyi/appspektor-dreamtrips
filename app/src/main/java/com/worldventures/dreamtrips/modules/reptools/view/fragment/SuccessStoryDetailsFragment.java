@@ -63,13 +63,18 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
             ivLike.setImageResource(R.drawable.ic_success_heart_normal);
         }
 
+        webView.getSettings().setUseWideViewPort(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (getActivity() instanceof SuccessStoryDetailsActivity) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
         } else {
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);
         }
-        webView.getSettings().setUseWideViewPort(true);
     }
 
     @Override

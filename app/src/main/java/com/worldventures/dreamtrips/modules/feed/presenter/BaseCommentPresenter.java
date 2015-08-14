@@ -75,9 +75,13 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {
-        page++;
-        view.setLoading(false);
-        view.addComments(comments);
+        if (comments.size() > 0) {
+            page++;
+            view.setLoading(false);
+            view.addComments(comments);
+        } else {
+            view.hideViewMore();
+        }
     }
 
     private void setHeader() {
@@ -100,5 +104,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         void setHeader(BaseFeedModel header);
 
         void editComment(EditCommentPresenter presenter);
+
+        void hideViewMore();
     }
 }

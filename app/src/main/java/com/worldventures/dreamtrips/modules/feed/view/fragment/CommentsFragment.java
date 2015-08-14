@@ -86,6 +86,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(commentsList);
         loadMore = new LoadMore();
+        loadMore.setVisible(true);
 
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
 
@@ -161,6 +162,12 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         editCommentViewHolder.setDialog(editDialog);
 
         editDialog.show();
+    }
+
+    @Override
+    public void hideViewMore() {
+        loadMore.setVisible(false);
+        adapter.notifyItemChanged(1);
     }
 
     @OnClick(R.id.post)

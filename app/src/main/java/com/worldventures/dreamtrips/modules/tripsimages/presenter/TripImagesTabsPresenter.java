@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
 
+    public static final int REQUESTER_ID = -1;
+
     public static final String SELECTION_EXTRA = "selection_extra";
 
     private int selection;
@@ -65,12 +67,14 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
     }
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, -1));
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == -1)
+        if (event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
             imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
+        }
     }
 
     @Override

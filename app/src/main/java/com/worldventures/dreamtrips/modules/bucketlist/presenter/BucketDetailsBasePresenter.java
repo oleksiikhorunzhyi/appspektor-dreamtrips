@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Navigator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -100,8 +99,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     //////////////////////////////
 
     public void onEvent(BucketAddPhotoClickEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.showAddPhotoDialog();
+        if (view.isVisibleOnScreen()) {
+            eventBus.cancelEventDelivery(event);
+            view.showAddPhotoDialog();
+        }
     }
 
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
@@ -121,7 +122,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void openFullScreen(BucketPhoto selectedPhoto) {
-        if (!view.getBucketPhotosView().getImages().isEmpty()) {
+        if ((bucketItem.getPhotos().contains(selectedPhoto))) {
             List<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
@@ -145,9 +146,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-        bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
-                bucketItem, jsonObject -> deleted(event.getPhoto()), this);
+        if (bucketItem.getPhotos().size() > 0 &&
+                bucketItem.getPhotos().contains(event.getPhoto())) {
+            eventBus.cancelEventDelivery(event);
+            bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
+                    bucketItem, jsonObject -> deleted(event.getPhoto()), this);
+        }
     }
 
     protected void deleted(BucketPhoto bucketPhoto) {
@@ -228,8 +232,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == bucketItemId)
-            imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
+        if (event.getRequesterID() == bucketItemId) {
+            eventBus.cancelEventDelivery(event);
+            Queryable.from(event.getImages()).forEachR(choseImage ->
+                    imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+        }
     }
 
     private void imageSelected(Uri uri, int requestType) {

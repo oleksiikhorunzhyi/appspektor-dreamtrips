@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -112,6 +113,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
                 item -> {
                     if (view != null) {
+                        eventBus.post(new BucketItemUpdatedEvent(item));
                         sweetDialogHelper.notifyItemAddedToBucket(activity, item);
                         view.getAdapter().remove(popularBucketItem);
                     }

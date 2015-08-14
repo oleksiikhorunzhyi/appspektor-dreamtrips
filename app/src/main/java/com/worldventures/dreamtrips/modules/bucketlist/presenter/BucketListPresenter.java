@@ -40,7 +40,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     boolean showToDO = true;
     @Icicle
     boolean showCompleted = true;
-    @Icicle
+
     BucketItem currentItem;
 
     private List<BucketItem> bucketItems = new ArrayList<>();

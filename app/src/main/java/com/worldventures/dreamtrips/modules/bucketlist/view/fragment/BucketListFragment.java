@@ -235,8 +235,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @OnClick(R.id.buttonPopular)
     void onPopular() {
-        getPresenter().setNavigator(new ActivityNavigator(activityRouter));
-        getPresenter().addPopular();
+        openPopular();
     }
 
     @Override
@@ -246,10 +245,16 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
                 actionFilter();
                 break;
             case R.id.action_popular:
-                getPresenter().addPopular();
+                openPopular();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void openPopular() {
+        getPresenter().setNavigator(new ActivityNavigator(activityRouter));
+        getPresenter().addPopular();
     }
 
     private void actionFilter() {

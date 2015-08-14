@@ -42,7 +42,7 @@
     <dimen name="video_three_sixty_width_small">300dp</dimen>
     <dimen name="video_three_sixty_height">300dp</dimen>
     <dimen name="video_three_sixty_height_small">200dp</dimen>
-    <dimen name="video_item_height">250dp</dimen>
+    <dimen name="video_item_height">200dp</dimen>
 
     <dimen name="bucket_button_width">250dp</dimen>
 

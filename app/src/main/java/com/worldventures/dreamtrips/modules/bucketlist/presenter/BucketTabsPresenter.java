@@ -35,8 +35,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         super.takeView(view);
         setTabs();
         loadCategories();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItemManager.loadBucketItems(this);
     }
 
     @Override
@@ -46,6 +44,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItemManager.loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 

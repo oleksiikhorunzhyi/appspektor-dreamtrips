@@ -48,9 +48,9 @@ public enum Route {
     SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
 
-    BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_location_popular),
-    POPULAR_BUCKET(BucketListPopuralFragment.class, R.string.bucket_list_edit_header),
-    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class),
+    BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_edit_header),
+    POPULAR_BUCKET(BucketListPopuralFragment.class),
+    POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class),
 
     MAP(TripMapFragment.class),

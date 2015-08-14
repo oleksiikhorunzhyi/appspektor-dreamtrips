@@ -21,6 +21,8 @@ import javax.inject.Inject;
 
 public class PostPresenter extends Presenter<PostPresenter.View> {
 
+    public static final int REQUESTER_ID = -2;
+
     private Post post;
 
     @Inject
@@ -201,12 +203,14 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     ////////////////////////////////////////
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, -2));
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == -2)
+        if (event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
             imageSelected(event.getImages()[0].getFilePathOriginal());
+        }
     }
 
     private void imageSelected(String filePath) {

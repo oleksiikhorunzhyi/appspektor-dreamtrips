@@ -2,7 +2,7 @@
 <resources>
 
     <dimen name="tripImageHeightDetailed">450dp</dimen>
-    <dimen name="bucket_detail_cover_size">450dp</dimen>
+    <dimen name="bucket_detail_cover_size">300dp</dimen>
 
     <dimen name="feed_spacing">300dp</dimen>
 

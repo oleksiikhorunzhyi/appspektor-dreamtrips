@@ -11,6 +11,8 @@ import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -41,6 +44,8 @@ import retrofit.mime.TypedFile;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
+    public static final int REQUESTER_ID = -3;
+
     @Inject
     RootComponentsProvider rootComponentsProvider;
 
@@ -49,6 +54,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Icicle
     boolean shouldReload;
+    @Icicle
+    int callbackType;
 
     public AccountPresenter() {
         super();
@@ -162,33 +169,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
     }
 
-    public void onAvatarChosen(ChosenImage image) {
-        if (image != null) {
-            view.avatarProgressVisible(true);
-            String fileThumbnail = image.getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
-            } else {
-                uploadAvatar(fileThumbnail);
-            }
-        }
-    }
-
     private void uploadAvatar(String fileThumbnail) {
         final File file = new File(fileThumbnail);
         final TypedFile typedFile = new TypedFile("image/*", file);
         TrackingHelper.profileUploadStart(getAccountUserId());
         doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
-    }
-
-    public void onCoverChosen(ChosenImage image) {
-        if (image != null) {
-            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
-                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
-            } else {
-                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
-            }
-        }
     }
 
     //Called from onActivityResult
@@ -228,6 +213,60 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onEvent(PostCreatedEvent event) {
         view.getAdapter().addItem(1, FeedPostEventModel.create(user, event.getTextualPost()));
         view.getAdapter().notifyItemInserted(1);
+    }
+
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    public void setCallbackType(int callbackType) {
+        this.callbackType = callbackType;
+    }
+
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
+            imageSelected(event.getImages()[0]);
+        }
+    }
+
+    private void imageSelected(ChosenImage chosenImage) {
+        if (view != null) {
+            switch (callbackType) {
+                case AccountFragment.AVATAR_CALLBACK:
+                    onAvatarChosen(chosenImage);
+                    break;
+                case AccountFragment.COVER_CALLBACK:
+                    onCoverChosen(chosenImage);
+                    break;
+            }
+        }
+    }
+
+    public void onAvatarChosen(ChosenImage image) {
+        if (image != null) {
+            view.avatarProgressVisible(true);
+            String fileThumbnail = image.getFileThumbnail();
+            if (ValidationUtils.isUrl(fileThumbnail)) {
+                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
+            } else {
+                uploadAvatar(fileThumbnail);
+            }
+        }
+    }
+
+    public void onCoverChosen(ChosenImage image) {
+        if (image != null) {
+            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
+                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
+            } else {
+                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+            }
+        }
     }
 
     public interface View extends ProfilePresenter.View {

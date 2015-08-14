@@ -13,7 +13,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.activity_component)
-public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
+public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
     @Optional
     @InjectView(R.id.container_details_floating)
@@ -37,6 +37,11 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> {
     public void onBackPressed() {
         if (!handleComponentChange())
             super.onBackPressed();
+    }
+
+    @Override
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
     }
 
     @Override

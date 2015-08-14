@@ -286,26 +286,18 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         TripModel tripModel = (TripModel) o;
 
-        return !(tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null);
+        return uid == tripModel.uid;
 
     }
 
     @Override
     public int hashCode() {
-        if (tripId != null) {
-            return tripId.hashCode();
-        } else {
-            return 0;
-        }
+        return (int) (uid ^ (uid >>> 32));
     }
 
     @Override

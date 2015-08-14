@@ -191,12 +191,12 @@ public class BucketItem extends BaseEntity implements IFeedObject {
         if (!super.equals(o)) return false;
 
         BucketItem that = (BucketItem) o;
-        return that.id == id;
+        return that.uid == uid;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return (int) (uid ^ (uid >>> 32));
     }
 
     @Override

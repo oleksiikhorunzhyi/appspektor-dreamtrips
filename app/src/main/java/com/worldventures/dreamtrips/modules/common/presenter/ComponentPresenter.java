@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 
-public class ComponentPresenter extends Presenter<Presenter.View> {
+public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
 
     public static final String COMPONENT = "component";
     public static final String ROUTE = "route";
@@ -27,6 +27,13 @@ public class ComponentPresenter extends Presenter<Presenter.View> {
         }
     }
 
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        if (route != null &&
+                route.equals(Route.DETAIL_BUCKET)) view.hideToolbar();
+    }
+
     public int getTitle() {
         if (componentDescription != null)
             return componentDescription.getToolbarTitle();
@@ -41,5 +48,9 @@ public class ComponentPresenter extends Presenter<Presenter.View> {
         componentDescription = args.getParcelable(COMPONENT);
         route = (Route) args.getSerializable(ROUTE);
         componentExtras = args.getBundle(COMPONENT_EXTRA);
+    }
+
+    public interface View extends Presenter.View {
+        void hideToolbar();
     }
 }

@@ -219,7 +219,7 @@
     <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
     <string name="fail">Failure</string>
     <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
+    <string name="cancel_cached_video_text">Are you sure you want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
     <string name="cancel_photo_negative">No</string>
     <string name="presentations">Videos</string>
@@ -278,7 +278,7 @@
     <string name="profile_golden">Gold member</string>
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
-    <string name="bucket_delete_dialog">Are you sure want to delete this bucket list item?</string>
+    <string name="bucket_delete_dialog">Are you sure you want to delete this bucket list item?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>

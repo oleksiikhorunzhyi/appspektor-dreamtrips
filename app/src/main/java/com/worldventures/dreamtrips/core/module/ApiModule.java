@@ -62,6 +62,7 @@ public class ApiModule {
                 request.addHeader("Authorization", authToken);
             }
             request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
+            request.addHeader("API-Version", BuildConfig.API_VERSION);
         };
     }
 

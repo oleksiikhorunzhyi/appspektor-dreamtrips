@@ -22,7 +22,7 @@ android {
     def versionMajor = 1
     def versionMinor = 2
     def versionPatch = 0
-    def versionBuild = 44 // bump for dogfood builds, public betas, etc.
+    def versionBuild = 45 // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -44,6 +44,7 @@ android {
         buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
         buildConfigField 'String', 'GoogleTrackingID', '"UA-41142403-2"'
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+        buildConfigField 'String', 'API_VERSION', '"v2"'
 
         buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
         buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'

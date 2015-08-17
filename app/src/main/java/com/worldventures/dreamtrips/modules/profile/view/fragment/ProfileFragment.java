@@ -20,9 +20,12 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
 
@@ -31,7 +34,6 @@ import javax.inject.Provider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import icepick.Icicle;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
@@ -262,6 +264,37 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
+    public void openComments(BaseFeedModel baseFeedModel) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
+        //
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .args(bundle)
+                .move(Route.PHOTO_COMMENTS);
+    }
+
+    @Override
+    public void openFriends() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .move(Route.FRIENDS);
+    }
+
+    @Override
+    public void openPost() {
+        showPostContainer();
+
+        fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        //
+        NavigationBuilder.create()
+                .with(fragmentCompass)
+                .attach(Route.PHOTO_COMMENTS);
+    }
+
+    @Override
     public void setFriendButtonText(@StringRes int res) {
         profileView.getFriends().setText(res);
     }
@@ -271,7 +304,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         return feedView.getAdapter();
     }
 
-    @Override
     public void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);

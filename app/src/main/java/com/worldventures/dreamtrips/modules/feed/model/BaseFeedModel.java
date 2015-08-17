@@ -4,14 +4,14 @@ import android.content.res.Resources;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
+public class BaseFeedModel<T extends IFeedObject> implements Serializable {
 
     protected User[] users;
     protected BaseFeedModel.Type type;

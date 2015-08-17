@@ -119,9 +119,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onCheckboxPressed(boolean status) {
     }
 
-    public void openComments() {
-        activityRouter.openCommentsScreen();
-    }
 
     public interface View extends Presenter.View {
         void setTitle(String title);

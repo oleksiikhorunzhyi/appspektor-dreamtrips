@@ -13,7 +13,6 @@ public class GetVideoLocales extends Query<ArrayList<VideoLocale>> {
 
     @Override
     public ArrayList<VideoLocale> loadDataFromNetwork() throws Exception {
-        ArrayList<VideoLocale> successStores = getService().getTrainingVideosLocales();
-        return successStores;
+        return getService().getTrainingVideosLocales();
     }
 }

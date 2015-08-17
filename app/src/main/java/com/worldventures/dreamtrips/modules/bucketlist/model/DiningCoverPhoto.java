@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
-public class DiningCoverPhoto extends BaseEntity {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class DiningCoverPhoto {
     String url;
 }

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentUpdatedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
@@ -19,7 +18,6 @@ import java.util.List;
 import icepick.Icicle;
 
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
-
     BaseFeedModel feedModel;
     IFeedObject feedEntity;
 
@@ -28,13 +26,14 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @Icicle
     String comment;
 
+    public BaseCommentPresenter(BaseFeedModel feedModel) {
+        this.feedModel = feedModel;
+        feedEntity = feedModel.getEntities()[0];
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
-
-        FeedItemStickyEvent event = eventBus.getStickyEvent(FeedItemStickyEvent.class);
-        feedModel = event.getModel();
-        feedEntity = event.getModel().getEntities()[0];
 
         setHeader();
         loadComments();

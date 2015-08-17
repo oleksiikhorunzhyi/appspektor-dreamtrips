@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 import java.io.Serializable;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketTag implements Serializable {
 
     private String name;

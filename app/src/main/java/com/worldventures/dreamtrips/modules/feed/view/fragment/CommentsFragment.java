@@ -45,6 +45,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
 public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
+    public static final String EXTRA_FEED_ITEM = "item";
 
     @InjectView(R.id.commentsList)
     RecyclerView commentsList;
@@ -65,7 +66,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter();
+        return new BaseCommentPresenter((BaseFeedModel) getArguments().
+                getSerializable(EXTRA_FEED_ITEM));
     }
 
     @Override

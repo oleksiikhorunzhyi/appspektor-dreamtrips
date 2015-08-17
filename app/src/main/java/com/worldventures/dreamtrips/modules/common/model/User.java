@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -240,7 +241,7 @@ public class User extends BaseEntity implements Parcelable {
         return result;
     }
 
-    public static class Avatar implements Parcelable, IFeedObject {
+    public static class Avatar implements Parcelable, IFeedObject, Serializable {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
             public Avatar createFromParcel(Parcel source) {
                 return new Avatar(source);

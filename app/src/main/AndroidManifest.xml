@@ -78,11 +78,11 @@
             android:label="@string/trips"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.trips.view.activity.BookItActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/trips"/>
+            android:name=".modules.common.view.activity.ComponentActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
         <activity
-            android:name=".modules.bucketlist.view.activity.BucketActivity"
+            android:name=".modules.trips.view.activity.BookItActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/trips"/>
         <activity
@@ -127,7 +127,6 @@
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"/>
-        <activity android:name=".modules.common.view.activity.ComponentActivity"/>
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
@@ -147,24 +146,11 @@
             android:label="@string/title_activity_invite"/>
         <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
         <activity
-            android:name=".modules.friends.view.activity.FriendsActivity"
-            android:label="@string/title_activity_friends"
-            android:parentActivityName=".modules.common.view.activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
-        </activity>
-        <activity
             android:name=".modules.friends.view.activity.FriendSearchActivity"
             android:label="@string/empty">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
-        </activity>
-        <activity
-            android:name=".modules.feed.view.activity.CommentsActivity"
-            android:label="@string/empty"
-            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">

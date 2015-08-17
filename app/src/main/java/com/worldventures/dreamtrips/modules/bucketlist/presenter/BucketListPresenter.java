@@ -9,11 +9,11 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -143,8 +143,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItem.getId());
+        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
+        bundle.putInt(BucketListModule.EXTRA_ITEM, bucketItem.getId());
 
         view.showDetailsContainer();
         navigator.move(Route.DETAIL_BUCKET, bundle);
@@ -158,7 +158,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void addPopular() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
+        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
         navigator.move(Route.POPULAR_TAB_BUCKER, bundle);
     }
 

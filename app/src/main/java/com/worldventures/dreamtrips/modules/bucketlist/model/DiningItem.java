@@ -1,47 +1,26 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-@DefaultSerializer(TaggedFieldSerializer.class)
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DiningItem extends BaseEntity {
 
-    @TaggedFieldSerializer.Tag(1)
     String name;
-
-    @TaggedFieldSerializer.Tag(2)
     String country;
-
-    @TaggedFieldSerializer.Tag(3)
     String city;
-
-    @TaggedFieldSerializer.Tag(4)
     String address;
-
-    @TaggedFieldSerializer.Tag(5)
     String cuisine;
-
     @SerializedName("phone_number")
-    @TaggedFieldSerializer.Tag(6)
     String phone_number;
-
-    @TaggedFieldSerializer.Tag(7)
     String url;
-
-    @TaggedFieldSerializer.Tag(8)
     String description;
-
-    @TaggedFieldSerializer.Tag(9)
     @SerializedName("short_description")
     String shortDescription;
-
-    @TaggedFieldSerializer.Tag(10)
     @SerializedName("cover_photo")
     DiningCoverPhoto coverPhoto;
-
-    @TaggedFieldSerializer.Tag(11)
     @SerializedName("price_range")
     String priceRange;
 

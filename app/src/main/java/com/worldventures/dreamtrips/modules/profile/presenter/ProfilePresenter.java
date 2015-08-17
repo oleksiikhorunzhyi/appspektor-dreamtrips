@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.text.format.DateFormat;
 
@@ -9,7 +8,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -18,7 +16,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemStickyEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -27,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import icepick.Icicle;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
@@ -150,11 +145,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void makePost() {
-        fragmentCompass.removePost();
-        view.showPostContainer();
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        fragmentCompass.add(Route.POST_CREATE);
+        view.openPost();
     }
 
     protected abstract void loadProfile();
@@ -169,7 +160,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
                     openFriends();
                 });
             } else {
-                activityRouter.openFriends();
+                view.openFriends();
             }
         }
     }
@@ -193,9 +184,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void onEvent(CommentsPressedEvent event) {
         eventBus.cancelEventDelivery(event);
-        eventBus.removeStickyEvent(FeedItemStickyEvent.class);
-        eventBus.postSticky(new FeedItemStickyEvent(event.getModel()));
-        activityRouter.openCommentsScreen();
+        view.openComments(event.getModel());
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
@@ -218,8 +207,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
 
     public interface View extends Presenter.View {
-        Bundle getArguments();
-
         void startLoading();
 
         void finishLoading();
@@ -258,6 +245,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
         void setFriendButtonText(@StringRes int res);
 
-        void showPostContainer();
+        void openComments(BaseFeedModel baseFeedModel);
+
+        void openPost();
+
+        void openFriends();
     }
 }

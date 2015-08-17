@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.io.Serializable;
@@ -54,6 +55,9 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     @SerializedName("recent")
     private boolean recentlyAdded;
     private boolean inBucketList;
+
+    private List<Comment> comments;
+    private int comments_count;
 
 
     public String getLikeId() {

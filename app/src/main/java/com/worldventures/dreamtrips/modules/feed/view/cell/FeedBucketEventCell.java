@@ -60,7 +60,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        BucketItem bucketItem = getModelObject().getEntities()[0];
+        BucketItem bucketItem = getModelObject().getItem();
         String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);
         String big = BucketItemInfoUtil.getHighResUrl(itemView.getContext(), bucketItem);
         loadImage(small, big);

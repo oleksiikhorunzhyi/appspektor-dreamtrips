@@ -28,7 +28,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public BaseCommentPresenter(BaseFeedModel feedModel) {
         this.feedModel = feedModel;
-        feedEntity = feedModel.getEntities()[0];
+        feedEntity = feedModel.getItem();
     }
 
     @Override

@@ -39,19 +39,22 @@ public class FeedItemHeaderHelper {
 
     public void set(BaseFeedModel feedModel, Context context) {
         try {
-            User user = feedModel.getUsers()[0];
+            User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             text.setText(feedModel.infoText(context.getResources()));
-            if (TextUtils.isEmpty(feedModel.getEntities()[0].place())) {
+            if (TextUtils.isEmpty(feedModel.getItem().place())) {
                 location.setVisibility(View.GONE);
             } else {
                 location.setVisibility(View.VISIBLE);
-                location.setText(feedModel.getEntities()[0].place());
+                location.setText(feedModel.getItem().place());
             }
+
+/*
             date.setText(DateTimeUtils.convertDateToString(feedModel.getPostedAt(),
                     DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
+*/
 
-            if (commentsCount != null) {
+            /*if (commentsCount != null) {
                 commentsCount.setText(context.getString(R.string.comments, feedModel.getCommentsCount()));
             }
 
@@ -60,7 +63,7 @@ public class FeedItemHeaderHelper {
                 comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getComments())
                         .take(2)
                         .toList(), context));
-            }
+            }*/
 
         } catch (Exception e) {
             Timber.e(e, "Feed header error");

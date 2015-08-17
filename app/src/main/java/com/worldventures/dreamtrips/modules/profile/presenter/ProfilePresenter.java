@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -35,14 +36,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     @Inject
     SnappyRepository snappyRepository;
 
-    protected DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
+    protected DreamSpiceAdapterController<ParentFeedModel> adapterController = new DreamSpiceAdapterController<ParentFeedModel>() {
         @Override
-        public SpiceRequest<ArrayList<BaseFeedModel>> getReloadRequest() {
+        public SpiceRequest<ArrayList<ParentFeedModel>> getReloadRequest() {
             return getRefreshRequest();
         }
 
         @Override
-        public SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int currentCount) {
+        public SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int currentCount) {
             return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
         }
 
@@ -52,7 +53,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         }
 
         @Override
-        public void onFinish(LoadType type, List<BaseFeedModel> items, SpiceException spiceException) {
+        public void onFinish(LoadType type, List<ParentFeedModel> items, SpiceException spiceException) {
+
             if (adapterController != null) {
                 view.finishLoading();
                 if (spiceException != null) {
@@ -202,9 +204,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         }
     }
 
-    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest();
+    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest();
 
-    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
+    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int count);
 
     public interface View extends Presenter.View {
         void startLoading();
@@ -239,7 +241,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
         void setMember();
 
-        BaseArrayListAdapter<BaseFeedModel> getAdapter();
+        BaseArrayListAdapter<ParentFeedModel> getAdapter();
 
         void onFeedError();
 

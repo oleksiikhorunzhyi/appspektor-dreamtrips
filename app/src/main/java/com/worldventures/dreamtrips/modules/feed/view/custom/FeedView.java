@@ -9,19 +9,15 @@ import android.view.View;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedAvatarEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.HeaderLayoutManagerFixed;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
@@ -31,7 +27,7 @@ import javax.inject.Provider;
 
 public class FeedView extends RecyclerView {
 
-    private ParallaxRecyclerAdapter<BaseFeedModel> adapter;
+    private ParallaxRecyclerAdapter<ParentFeedModel> adapter;
     private RecyclerViewStateDelegate stateDelegate;
     private HeaderLayoutManagerFixed layoutManagerFixed;
 
@@ -57,8 +53,6 @@ public class FeedView extends RecyclerView {
         stateDelegate.onCreate(savedInstanceState);
 
         adapter = new ParallaxRecyclerAdapter<>(getContext(), injectorProvider);
-        adapter.registerCell(FeedAvatarEventModel.class, FeedAvatarEventCell.class);
-        adapter.registerCell(FeedCoverEventModel.class, FeedCoverEventCell.class);
 
         adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
         adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
@@ -107,7 +101,7 @@ public class FeedView extends RecyclerView {
     }
 
     @Override
-    public LoaderRecycleAdapter<BaseFeedModel> getAdapter() {
+    public LoaderRecycleAdapter<ParentFeedModel> getAdapter() {
         return adapter;
     }
 

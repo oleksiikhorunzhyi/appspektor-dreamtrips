@@ -36,7 +36,7 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         super.syncUIStateWithModel();
         FeedPhotoEventModel obj = getModelObject();
         if (obj != null) {
-            Photo photoObj = obj.getEntities()[0];
+            Photo photoObj = obj.getItem();
             photo.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
             loadPhoto(photoObj);
             title.setText(photoObj.getTitle());

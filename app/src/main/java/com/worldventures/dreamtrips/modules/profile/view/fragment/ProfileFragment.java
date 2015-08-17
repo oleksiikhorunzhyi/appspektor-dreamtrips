@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
@@ -300,7 +301,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
+    public BaseArrayListAdapter<ParentFeedModel> getAdapter() {
         return feedView.getAdapter();
     }
 

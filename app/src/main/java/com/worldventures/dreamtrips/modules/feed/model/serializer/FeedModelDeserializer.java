@@ -21,7 +21,6 @@ public class FeedModelDeserializer implements JsonDeserializer<BaseFeedModel> {
 
     public FeedModelDeserializer() {
         gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
@@ -33,6 +32,7 @@ public class FeedModelDeserializer implements JsonDeserializer<BaseFeedModel> {
     public BaseFeedModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
         BaseFeedModel.Type type = gson.fromJson(json.getAsJsonObject().getAsJsonPrimitive("type"), BaseFeedModel.Type.class);
+
         if (type != null) {
             return gson.fromJson(json, type.getClazz());
         } else {

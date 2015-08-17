@@ -11,7 +11,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 
@@ -76,12 +76,12 @@ public class FeedFragment extends BaseFragment<FeedPresenter> implements SwipeRe
     }
 
     @Override
-    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+    public IRoboSpiceAdapter<ParentFeedModel> getAdapter() {
         return feedView.getAdapter();
     }
 
     @Override
-    public void finishLoading(List<BaseFeedModel> items) {
+    public void finishLoading(List<ParentFeedModel> items) {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });

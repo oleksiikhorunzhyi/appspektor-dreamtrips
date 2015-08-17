@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
+
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
+
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
@@ -26,8 +26,6 @@ import dagger.Module;
 
 @Module(
         injects = {
-                FeedAvatarEventCell.class,
-                FeedCoverEventCell.class,
                 FeedTripEventCell.class,
                 FeedTripCommentCell.class,
                 FeedPhotoEventCell.class,

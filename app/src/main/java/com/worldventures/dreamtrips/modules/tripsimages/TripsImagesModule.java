@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.api.UploadToS3Command;
+
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
@@ -66,7 +66,6 @@ import dagger.Provides;
                 PhotoUploadCell.class,
 
                 GetMyPhotosQuery.class,
-                UploadToS3Command.class,
         },
         complete = false,
         library = true

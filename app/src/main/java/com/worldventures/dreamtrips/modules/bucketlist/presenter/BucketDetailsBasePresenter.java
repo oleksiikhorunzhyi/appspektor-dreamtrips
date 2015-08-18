@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -25,7 +28,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoV
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -39,7 +41,8 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V>
+        implements TransferListener {
 
     @Inject
     BucketItemManager bucketItemManager;
@@ -51,6 +54,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected int bucketItemId;
 
     protected BucketItem bucketItem;
+
+    List<UploadTask> tasks;
 
     public BucketDetailsBasePresenter(Bundle bundle) {
         super();
@@ -66,6 +71,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
 
         syncUI();
+
+        if (tasks != null)
+            Queryable.from(tasks).forEachR(task -> {
+                TransferObserver transferObserver = photoUploadingSpiceManager
+                        .getTransferById(task.getAmazonTaskId());
+                transferObserver.setTransferListener(this);
+                onStateChanged(transferObserver.getId(), transferObserver.getState());
+            });
+
+        ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
+        if (event != null) {
+            imagePicked(event);
+        }
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
@@ -87,7 +105,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.getBucketPhotosView().setImages(photos);
         }
 
-        List<UploadTask> tasks = db.getUploadTasksForId(String.valueOf(bucketItem.getId()));
+        tasks = db.getUploadTasksForId(String.valueOf(bucketItem.getId()));
         Collections.reverse(tasks);
 
         view.getBucketPhotosView().addImages(tasks);
@@ -178,35 +196,44 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     private void startUpload(UploadTask uploadTask) {
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
                 uploadTask.getType(), bucketItem.getType());
-        photoUploadingSpiceManager.uploadPhotoToS3(uploadTask);
+
+        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
+
+        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+
+        db.saveUploadTask(uploadTask);
+
+        transferObserver.setTransferListener(this);
     }
 
-    public void onEventMainThread(UploadStatusChanged event) {
-        UploadTask uploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(event.getUploadTask().getFilePath());
-
-        if (uploadTask != null) {
-            uploadTask.changed(event.getUploadTask());
-            view.getBucketPhotosView().itemChanged(uploadTask);
-
-            if (uploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
-                addPhotoToBucketItem(uploadTask);
-        }
+    @Override
+    public void onStateChanged(int id, TransferState state) {
+        if (view != null)
+            if (state.equals(TransferState.COMPLETED)) {
+                UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
+                        .getBucketPhotoUploadTask(String.valueOf(id));
+                bucketPhotoUploadTask.setOriginUrl(photoUploadingSpiceManager
+                        .getResultUrl(bucketPhotoUploadTask));
+                bucketPhotoUploadTask.setStatus(UploadTask.Status.COMPLETED);
+                addPhotoToBucketItem(bucketPhotoUploadTask);
+            } else if (state.equals(TransferState.FAILED)) {
+                photoUploadError(String.valueOf(id));
+            }
     }
 
-    public void onEvent(BucketPhotoReuploadRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+    }
 
-        event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
-        view.getBucketPhotosView().itemChanged(event.getTask());
-
-        startUpload(event.getTask());
+    @Override
+    public void onError(int id, Exception ex) {
+        photoUploadError(String.valueOf(id));
     }
 
     private void addPhotoToBucketItem(UploadTask task) {
         doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
                 photo -> photoAdded(task, photo),
-                spiceException -> photoUploadError(task));
+                spiceException -> photoUploadError(task.getAmazonTaskId()));
     }
 
     private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
@@ -216,24 +243,32 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         bucketItemManager.updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
-    private void photoUploadError(UploadTask task) {
+    private void photoUploadError(String taskId) {
         UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(task.getFilePath());
+                .getBucketPhotoUploadTask(taskId);
         bucketPhotoUploadTask.setStatus(UploadTask.Status.FAILED);
+        db.saveUploadTask(bucketPhotoUploadTask);
         view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
     }
 
-    public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
+    public void onEvent(BucketPhotoReuploadRequestEvent event) {
+        eventBus.cancelEventDelivery(event);
+
+        db.removeUploadTask(event.getTask());
+
+        event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
+        upload(event.getTask(), event.getTask().getFilePath());
     }
 
     ////////////////////////////////////////
     /////// Photo picking
     ////////////////////////////////////////
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
+    }
 
-    public void onEvent(ImagePickedEvent event) {
+    public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId) {
-            eventBus.cancelEventDelivery(event);
             Queryable.from(event.getImages()).forEachR(choseImage ->
                     imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
         }
@@ -262,6 +297,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         copyFileIfNeeded(task);
     }
 
+    @Override
+    public void dropView() {
+        super.dropView();
+        Queryable.from(photoUploadingSpiceManager.getUploadingTranferListeners())
+                .forEachR(observer ->
+                        observer.setTransferListener(null));
+    }
 
     public interface View extends Presenter.View {
         void setTitle(String title);

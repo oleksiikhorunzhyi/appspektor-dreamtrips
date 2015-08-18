@@ -6,8 +6,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceService;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -27,8 +26,7 @@ import dagger.Provides;
                 DreamSpiceService.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
-                PhotoUploadingSpiceService.class,
-                PhotoUploadingSpiceManager.class,
+                PhotoUploadingManager.class,
                 BucketItemManager.class,
                 //
                 DownloadVideoListener.class,
@@ -44,8 +42,8 @@ public class ManagerModule {
     }
 
     @Provides
-    public PhotoUploadingSpiceManager providePhotoSpiceManager(@ForApplication Injector injector) {
-        return new PhotoUploadingSpiceManager(PhotoUploadingSpiceService.class, injector);
+    public PhotoUploadingManager providePhotoSpiceManager(@ForApplication Injector injector) {
+        return new PhotoUploadingManager(injector);
     }
 
     @Singleton

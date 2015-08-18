@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Handler;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -16,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -28,7 +30,7 @@ import javax.inject.Inject;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public abstract class TripImagesListPresenter<T extends IFullScreenObject>
-        extends Presenter<TripImagesListPresenter.View> {
+        extends Presenter<TripImagesListPresenter.View> implements TransferListener {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -138,7 +140,48 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     private void startUpload(UploadTask uploadTask) {
         TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
-        photoUploadingSpiceManager.uploadPhotoToS3(uploadTask);
+        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
+        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+
+        db.saveUploadTask(uploadTask);
+        transferObserver.setTransferListener(this);
+    }
+
+    @Override
+    public void onStateChanged(int id, TransferState state) {
+        if (view != null) {
+            UploadTask uploadTask = getCurrentTask(String.valueOf(id));
+            if (uploadTask != null) {
+                if (state.equals(TransferState.COMPLETED)) {
+                    uploadTask.setStatus(UploadTask.Status.COMPLETED);
+                    uploadTask.setOriginUrl
+                            (photoUploadingSpiceManager.getResultUrl(uploadTask));
+                    photoUploaded(uploadTask);
+                } else if (state.equals(TransferState.FAILED)) {
+                    photoError(getCurrentTask(String.valueOf(id)));
+                }
+
+                updateTask(uploadTask);
+            }
+
+        }
+    }
+
+    private void photoError(UploadTask uploadTask) {
+        if (uploadTask != null) {
+            uploadTask.setStatus(UploadTask.Status.FAILED);
+            updateTask(uploadTask);
+        }
+
+    }
+
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+    }
+
+    @Override
+    public void onError(int id, Exception ex) {
+        photoError(getCurrentTask(String.valueOf(id)));
     }
 
     private void photoUploaded(UploadTask task) {
@@ -146,11 +189,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
             processPhoto(photos.indexOf(task), photo);
             db.removeUploadTask(task);
         }, spiceException -> {
-            UploadTask uploadTask = getCurrentTask(task);
-            if (uploadTask != null) {
-                uploadTask.setStatus(UploadTask.Status.FAILED);
-                updateTask(uploadTask);
-            }
+            photoError(getCurrentTask(task.getAmazonTaskId()));
+
         });
     }
 
@@ -164,30 +204,16 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
         }, 300);
     }
 
-    public void onEventMainThread(UploadStatusChanged event) {
-        UploadTask uploadTask = event.getUploadTask();
-        UploadTask currentTask = getCurrentTask(uploadTask);
-
-        if (currentTask != null) {
-            currentTask.changed(uploadTask);
-
-            updateTask(currentTask);
-
-            if (uploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
-                photoUploaded(uploadTask);
-        }
-    }
-
     private void updateTask(UploadTask task) {
         int index = photos.indexOf(task);
 
         view.replace(index, task);
     }
 
-    private UploadTask getCurrentTask(UploadTask uploadTask) {
+    private UploadTask getCurrentTask(String id) {
         return (UploadTask) Queryable.from(photos).firstOrDefault(item ->
                 item instanceof UploadTask
-                        && uploadTask.getFilePath().equals(((UploadTask) item).getFilePath()));
+                        && id.equals(((UploadTask) item).getAmazonTaskId()));
 
     }
 
@@ -266,6 +292,12 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
         }
 
         @Override
+        protected void onRefresh(ArrayList<IFullScreenObject> iFullScreenObjects) {
+            prepareTasks(iFullScreenObjects);
+            super.onRefresh(iFullScreenObjects);
+        }
+
+        @Override
         public void onFinish(RoboSpiceAdapterController.LoadType loadType,
                              List<IFullScreenObject> items, SpiceException spiceException) {
             if (getAdapterController() != null) {
@@ -286,6 +318,19 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
                 }
             }
         }
+    }
+
+    private void prepareTasks(List<IFullScreenObject> items) {
+        Queryable.from(items).forEachR(item -> {
+            if (item instanceof UploadTask) prepareTask((UploadTask) item);
+        });
+    }
+
+    private void prepareTask(UploadTask uploadTask) {
+        TransferObserver transferObserver = photoUploadingSpiceManager
+                .getTransferById(uploadTask.getAmazonTaskId());
+        transferObserver.setTransferListener(this);
+        onStateChanged(transferObserver.getId(), transferObserver.getState());
     }
 
     public interface View extends Presenter.View, AdapterView<IFullScreenObject> {

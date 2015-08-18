@@ -6,9 +6,9 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -38,7 +38,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
         super.afterCreateView(rootView);
 
         BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments()
-                .getSerializable(BucketActivity.EXTRA_TYPE);
+                .getSerializable(BucketListModule.EXTRA_TYPE);
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter<FragmentItem>(getChildFragmentManager()) {

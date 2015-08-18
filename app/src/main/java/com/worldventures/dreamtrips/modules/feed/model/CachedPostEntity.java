@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import java.io.Serializable;
 
-public class Post implements Serializable {
+public class CachedPostEntity implements Serializable {
 
     private String text;
     private String filePath;

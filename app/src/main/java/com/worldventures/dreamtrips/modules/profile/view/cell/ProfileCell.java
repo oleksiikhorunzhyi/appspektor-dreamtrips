@@ -35,7 +35,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsC
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtil;
+import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.text.DecimalFormat;
 
@@ -168,7 +168,7 @@ public class ProfileCell extends AbstractCell<User> {
         setUserId(user.getUsername());
         setFrom(user.getLocation());
 
-        ProfileViewUtil.setUserStatus(user, userStatus, context.getResources());
+        ProfileViewUtils.setUserStatus(user, userStatus, context.getResources());
 
         setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));

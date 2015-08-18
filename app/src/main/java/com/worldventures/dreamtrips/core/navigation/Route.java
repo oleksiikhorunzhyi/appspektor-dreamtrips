@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -70,8 +71,9 @@ public enum Route {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
-    PHOTO_COMMENTS(CommentsFragment.class),
+    PHOTO_COMMENTS(CommentsFragment.class, R.string.comments_title),
     POST_CREATE(PostFragment.class),
+    FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
@@ -83,7 +85,7 @@ public enum Route {
     }
 
     Route(Class<? extends BaseFragment> fragmentClass, @StringRes int titleRes) {
-        this.fragmentClass = fragmentClass;
+        this(fragmentClass);
         this.titleRes = titleRes;
     }
 

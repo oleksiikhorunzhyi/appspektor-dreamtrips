@@ -16,8 +16,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -195,18 +194,17 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int page) {
         return new GetFeedQuery(page);
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
         return new GetFeedQuery(0);
     }
 
     public void onEvent(PostCreatedEvent event) {
-        view.getAdapter().addItem(NEW_POST_POSITION, FeedPostEventModel.create(user, event.getTextualPost()));
-        view.getAdapter().notifyItemInserted(1);
+        onRefresh();
     }
 
     ////////////////////////////////////////

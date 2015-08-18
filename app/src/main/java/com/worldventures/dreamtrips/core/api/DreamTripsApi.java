@@ -17,8 +17,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -260,11 +260,11 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/{user_id}")
     JSONObject unfriend(@Path("user_id") int userId);
 
-    @GET("/api/social/users/{user_id}/feed")
-    ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+    @GET("/api/social/users/{user_id}/timeline")
+    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
 
-    @GET("/api/social/feed")
-    ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
+    @GET("/api/social/timeline")
+    ArrayList<ParentFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/social/items/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") long objectId, @Query("per_page") int perPage, @Query("page") int page);

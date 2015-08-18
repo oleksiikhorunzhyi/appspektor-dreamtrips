@@ -11,16 +11,12 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedAvatarEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedCoverEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedAvatarEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedCoverEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
@@ -32,6 +28,7 @@ import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
 public class FeedView extends RecyclerView {
 
     private IgnoreFirstItemAdapter adapter;
+
     private RecyclerViewStateDelegate stateDelegate;
     private OffsetYListener offsetYListener;
     private LinearLayoutManager layoutManager;
@@ -60,9 +57,6 @@ public class FeedView extends RecyclerView {
         this.adapter = adapter;
         this.adapter.registerCell(User.class, ProfileCell.class);
         this.adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
-
-        this.adapter.registerCell(FeedAvatarEventModel.class, FeedAvatarEventCell.class);
-        this.adapter.registerCell(FeedCoverEventModel.class, FeedCoverEventCell.class);
 
         this.adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
         this.adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
@@ -98,7 +92,6 @@ public class FeedView extends RecyclerView {
         stateDelegate.onDestroyView();
     }
 
-    @Override
     public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
         return adapter;
     }

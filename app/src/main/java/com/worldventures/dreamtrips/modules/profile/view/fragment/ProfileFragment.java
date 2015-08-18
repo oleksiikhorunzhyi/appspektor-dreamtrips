@@ -13,14 +13,17 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtil;
+import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +135,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         adapter.remove(ProfilePresenter.HEADER_USER_POSITION);
         adapter.addItem(ProfilePresenter.HEADER_USER_POSITION, user);
         adapter.notifyDataSetChanged();
-        ProfileViewUtil.setUserStatus(user, profileToolbarUserStatus, getResources());
+        ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
     }
 
@@ -173,13 +176,38 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         }, 100);
     }
 
-    @Override
-    public void onFeedError() {
-        //now nothing to do
+    public void openComments(BaseFeedModel baseFeedModel) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
+        //
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .args(bundle)
+                .move(Route.PHOTO_COMMENTS);
     }
 
     @Override
-    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
+    public void openFriends() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .move(Route.FRIENDS);
+    }
+
+    @Override
+    public void openPost() {
+        showPostContainer();
+
+        fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        //
+        NavigationBuilder.create()
+                .with(fragmentCompass)
+                .attach(Route.POST_CREATE);
+    }
+
+    @Override
+    public BaseArrayListAdapter getAdapter() {
         return feedView.getAdapter();
     }
 
@@ -189,7 +217,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         feedView.getAdapter().notifyItemChanged(0);
     }
 
-    @Override
     public void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);

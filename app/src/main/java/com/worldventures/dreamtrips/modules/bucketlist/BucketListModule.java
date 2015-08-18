@@ -4,14 +4,12 @@ package com.worldventures.dreamtrips.modules.bucketlist;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
@@ -39,7 +37,6 @@ import dagger.Provides;
                 BucketItemEditFragment.class,
                 BucketTabsPresenter.class,
                 BucketListPresenter.class,
-                BucketActivity.class,
                 BucketPopularPresenter.class,
                 BucketListPopuralFragment.class,
                 BucketTabsFragment.class,
@@ -63,6 +60,8 @@ import dagger.Provides;
 )
 public class BucketListModule {
 
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
+    public static final String EXTRA_ITEM = "EXTRA_ITEM";
     public static final String BUCKETLIST = Route.BUCKET_LIST.name();
 
     @Provides(type = Provides.Type.SET)

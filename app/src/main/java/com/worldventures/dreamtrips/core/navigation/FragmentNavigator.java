@@ -10,19 +10,10 @@ public class FragmentNavigator implements Navigator {
         this.fragmentCompass = fragmentCompass;
     }
 
-    @Override
-    public void move(Route route) {
-        fragmentCompass.replace(route);
-    }
 
     @Override
     public void move(Route route, Bundle bundle) {
         fragmentCompass.replace(route, bundle);
-    }
-
-    @Override
-    public void attach(Route route) {
-        fragmentCompass.add(route);
     }
 
     @Override

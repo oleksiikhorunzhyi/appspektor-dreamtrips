@@ -40,7 +40,7 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
     @Override
     public void fillWithItem(FeedTripEventModel item) {
         super.fillWithItem(item);
-        tripCell.fillWithItem(item.getEntities()[0]);
+        tripCell.fillWithItem(item.getItem());
     }
 
     @Override

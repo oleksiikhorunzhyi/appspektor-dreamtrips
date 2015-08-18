@@ -16,9 +16,8 @@ public class FeatureManager {
 
     public boolean available(@Feature.FeatureName String name) {
         UserSession userSession = sessionHolder.get().orNull();
-        if (userSession == null || userSession.getFeatures() == null) return false;
-        boolean available = Queryable.from(userSession.getFeatures()).any(f -> f.name.equals(name));
-        return available && ((!name.equals(Feature.SOCIAL)) || BuildConfig.SOCIAL_ENABLED);
+        return !(userSession == null || userSession.getFeatures() == null)
+                && Queryable.from(userSession.getFeatures()).any(f -> f.name.equals(name));
     }
 
     public void checkIf(@Feature.FeatureName String name, OnFeatureChecked onFeatureChecked) {

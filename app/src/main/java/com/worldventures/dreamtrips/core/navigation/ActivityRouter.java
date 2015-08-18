@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
@@ -21,9 +19,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.feed.view.activity.CommentsActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
-import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
+
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
@@ -188,7 +185,6 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openFriends() {
         if (featureManager.available(Feature.SOCIAL)) {
-            startActivity(FriendsActivity.class);
         }
     }
 
@@ -196,7 +192,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(FriendSearchActivity.class);
     }
 
-    public void openCommentsScreen() {
-        startActivity(CommentsActivity.class);
+    public FeatureManager getFeatureManager() {
+        return featureManager;
     }
 }

@@ -62,7 +62,8 @@ public class ApiModule {
                 request.addHeader("Authorization", authToken);
             }
             request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
-            request.addHeader("API-Version", BuildConfig.API_VERSION);
+            request.addHeader("Accept", "application/com.dreamtrips.api+json;version="
+                    + BuildConfig.API_VERSION);
         };
     }
 
@@ -74,7 +75,6 @@ public class ApiModule {
     @Provides
     Gson provideGson() {
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())

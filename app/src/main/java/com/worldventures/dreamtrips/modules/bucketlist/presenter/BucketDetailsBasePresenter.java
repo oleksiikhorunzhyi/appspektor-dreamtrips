@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -20,7 +21,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -55,8 +55,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public BucketDetailsBasePresenter(Bundle bundle) {
         super();
         type = (BucketTabsPresenter.BucketType)
-                bundle.getSerializable(BucketActivity.EXTRA_TYPE);
-        bucketItemId = bundle.getInt(BucketActivity.EXTRA_ITEM);
+                bundle.getSerializable(BucketListModule.EXTRA_TYPE);
+        bucketItemId = bundle.getInt(BucketListModule.EXTRA_ITEM);
     }
 
     @Override

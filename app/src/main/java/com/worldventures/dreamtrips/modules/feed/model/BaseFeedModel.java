@@ -4,31 +4,21 @@ import android.content.res.Resources;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
+public class BaseFeedModel<T extends IFeedObject> implements Serializable {
 
-    protected User[] users;
     protected BaseFeedModel.Type type;
     protected BaseFeedModel.Action action;
-    protected Date postedAt;
-    protected T[] entities;
-    protected List<Comment> comments;
-    @SerializedName("comments_count")
-    protected int commentsCount;
 
-    public User[] getUsers() {
-        return users;
-    }
-
-    public int getCommentsCount() {
-        return commentsCount;
-    }
+    protected Links links;
+    protected T item;
 
     public Type getType() {
         return type;
@@ -38,23 +28,20 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
         return action;
     }
 
-    public Date getPostedAt() {
-        return postedAt;
-    }
-
-    public T[] getEntities() {
-        return entities;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
     public String infoText(Resources resources) {
         String action = getActionCaption(resources);
         String type = getTypeCaption(resources);
 
-        return resources.getString(R.string.feed_header, users[0].getFullName(), action, type);
+        return resources.getString(R.string.feed_header, links.getUsers().get(0)
+                .getFullName(), action, type);
+    }
+
+    public Links getLinks() {
+        return links;
+    }
+
+    public T getItem() {
+        return item;
     }
 
     private String getActionCaption(Resources resources) {
@@ -95,8 +82,7 @@ public class BaseFeedModel<T extends IFeedObject> extends BaseEntity {
         PHOTO(FeedPhotoEventModel.class),
         @SerializedName("BucketListItem")
         BUCKET_LIST_ITEM(FeedBucketEventModel.class),
-        AVATAR(FeedAvatarEventModel.class),
-        BACKGROUND_PHOTO(FeedCoverEventModel.class),
+        @SerializedName("Post")
         POST(FeedPostEventModel.class),
 
         UNDEFINED(FeedUndefinedEventModel.class);

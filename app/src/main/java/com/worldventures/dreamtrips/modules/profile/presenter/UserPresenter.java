@@ -7,6 +7,7 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
@@ -38,12 +39,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
         return new GetUserFeedQuery(user.getId(), 0);
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int page) {
         return new GetUserFeedQuery(user.getId(), page);
     }
 

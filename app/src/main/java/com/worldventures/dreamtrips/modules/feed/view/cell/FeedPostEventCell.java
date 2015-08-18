@@ -24,7 +24,7 @@ public class FeedPostEventCell extends FeedHeaderCell<FeedPostEventModel> {
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
         FeedPostEventModel obj = getModelObject();
-        post.setText(obj.getEntities()[0].getDescription());
+        post.setText(obj.getItem().getDescription());
     }
 
 

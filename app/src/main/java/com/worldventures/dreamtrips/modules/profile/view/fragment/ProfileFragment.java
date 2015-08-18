@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtil;
+import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +135,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         adapter.remove(ProfilePresenter.HEADER_USER_POSITION);
         adapter.addItem(ProfilePresenter.HEADER_USER_POSITION, user);
         adapter.notifyDataSetChanged();
-        ProfileViewUtil.setUserStatus(user, profileToolbarUserStatus, getResources());
+        ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
     }
 

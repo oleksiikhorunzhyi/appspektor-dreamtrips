@@ -6,16 +6,16 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-public class ProfileViewUtil {
+public class ProfileViewUtils {
 
 
     public static void setUserStatus(User user, TextView userStatus, Resources resources) {
         if (user.isGold())
-            ProfileViewUtil.setGold(userStatus, resources);
+            ProfileViewUtils.setGold(userStatus, resources);
         else if (user.isPlatinum())
-            ProfileViewUtil.setPlatinum(userStatus, resources);
+            ProfileViewUtils.setPlatinum(userStatus, resources);
         else
-            ProfileViewUtil.setMember(userStatus, resources);
+            ProfileViewUtils.setMember(userStatus, resources);
     }
 
     private static void setMember(TextView tv, Resources res) {

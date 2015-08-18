@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
@@ -215,10 +216,10 @@ public interface DreamTripsApi {
     ArrayList<AvailableLocale> getLocales();
 
     @GET("/api/member_videos/")
-    ArrayList<Video> getVideos(@Query("type") String type);
+    ArrayList<Category> getVideos(@Query("type") String type);
 
     @GET("/api/member_videos/")
-    ArrayList<Video> getVideos(@Query("type") String type, @Query("locale") String locale);
+    ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
 
 
     @GET("/api/member_videos/locales")

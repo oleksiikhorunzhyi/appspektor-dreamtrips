@@ -39,9 +39,6 @@ import icepick.Icicle;
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private final static float FRACTURE_COEFFICIENT = 345;
-
-    private float fracture = 0;
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -83,7 +80,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         super.onCreate(savedInstanceState);
         weakHandler = new WeakHandler();
         screenHeight = ViewUtils.getScreenHeight(getActivity());
-        fracture = FRACTURE_COEFFICIENT / screenHeight;
     }
 
 
@@ -111,7 +107,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
-            if (percent > fracture) {
+            if (percent >= 0.6) {
                 profileToolbarTitle.setVisibility(View.VISIBLE);
                 profileToolbarUserStatus.setVisibility(View.VISIBLE);
             } else {

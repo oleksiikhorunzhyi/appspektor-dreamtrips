@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -62,6 +61,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         circles = snappyRepository.getCircles();
         loadCircles();
         loadProfile();
+        loadFeed();
         checkPostShown();
     }
 
@@ -79,11 +79,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     protected void onProfileLoaded(U user) {
         attachUserToView(user);
-        if (view.getAdapter().getCount() <= HEADERS_COUNT) {
-            loadFeed();
-        } else {
-            view.finishLoading();
-        }
+        view.finishLoading();
     }
 
     private void attachUserToView(U user) {
@@ -98,8 +94,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void loadFeed() {
-        if (featureManager.available(Feature.SOCIAL))
-            doRequest(getRefreshRequest(), this::refreshFeedItems);
+        if (featureManager.available(Feature.SOCIAL)) {
+            resetLazyLoadFields();
+            doRequest(getRefreshRequest(), this::refreshFeedItems, spiceException -> {
+                reloadFeedModel.setVisible(true);
+                view.getAdapter().notifyDataSetChanged();
+                view.finishLoading();
+            });
+        }
     }
 
     public void makePost() {
@@ -167,6 +169,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void refreshFeedItems(List<ParentFeedModel> feedItems) {
+        reloadFeedModel.setVisible(false);
         view.finishLoading();
         view.getAdapter().clear();
         view.getAdapter().addItems(HEADER_RELOAD_POSITION, Queryable.from(feedItems)

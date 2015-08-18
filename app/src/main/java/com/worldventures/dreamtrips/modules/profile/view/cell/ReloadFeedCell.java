@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.profile.view.cell;
 
+import android.app.ActionBar;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -20,6 +22,9 @@ public class ReloadFeedCell extends AbstractCell<ReloadFeedModel> {
     @Override
     protected void syncUIStateWithModel() {
         itemView.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);
+        ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
+        layoutParams.height = getModelObject().isVisible() ? ActionBar.LayoutParams.WRAP_CONTENT : 0;
+        itemView.setLayoutParams(layoutParams);
     }
 
     @Override

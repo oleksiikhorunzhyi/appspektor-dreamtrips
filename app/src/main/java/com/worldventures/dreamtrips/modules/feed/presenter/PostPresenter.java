@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -14,12 +17,11 @@ import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 
-public class PostPresenter extends Presenter<PostPresenter.View> {
+public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
     public static final int REQUESTER_ID = -2;
 
@@ -39,6 +41,10 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
             savePost();
         } else if (!TextUtils.isEmpty(post.getFilePath())) {
             post.setUploadTask(snapper.getUploadTask(post.getFilePath()));
+            TransferObserver transferObserver =
+                    photoUploadingSpiceManager.getTransferById(post.getUploadTask().getAmazonTaskId());
+            onStateChanged(transferObserver.getId(), transferObserver.getState());
+            transferObserver.setTransferListener(this);
         }
 
         view.setName(getAccount().getFullName());
@@ -65,7 +71,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
     }
 
     public void cancel() {
-        cancelUplad();
+        cancelUpload();
         deletePost();
         fragmentCompass.removePost();
     }
@@ -133,30 +139,53 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         post.setFilePath(filePath);
         post.getUploadTask().setFilePath(filePath);
         view.attachPhoto(Uri.parse(filePath));
-        startUpload();
+        startUpload(post.getUploadTask());
     }
 
-    private void startUpload() {
+    private void startUpload(UploadTask uploadTask) {
         view.showProgress();
-        photoUploadingSpiceManager.uploadPhotoToS3(post.getUploadTask());
+        TransferObserver transferObserver = photoUploadingSpiceManager.upload(post.getUploadTask());
+        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+
+        snapper.saveUploadTask(uploadTask);
+        transferObserver.setTransferListener(this);
+
     }
 
-    public void onEventMainThread(UploadStatusChanged event) {
-        if (post.getUploadTask().equals(event.getUploadTask())) {
-            post.setUploadTask(event.getUploadTask());
+    @Override
+    public void onStateChanged(int id, TransferState state) {
+        if (view != null) {
+            if (state.equals(TransferState.COMPLETED)) {
+                post.getUploadTask().setStatus(UploadTask.Status.COMPLETED);
+                post.getUploadTask().setOriginUrl
+                        (photoUploadingSpiceManager.getResultUrl(post.getUploadTask()));
+            } else if (state.equals(TransferState.FAILED)) {
+                post.getUploadTask().setStatus(UploadTask.Status.FAILED);
+            }
+
             processUploadTask();
         }
     }
 
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+    }
+
+    @Override
+    public void onError(int id, Exception ex) {
+        post.getUploadTask().setStatus(UploadTask.Status.FAILED);
+        processUploadTask();
+    }
+
     private void processUploadTask() {
+        snapper.saveUploadTask(post.getUploadTask());
+
         switch (post.getUploadTask().getStatus()) {
             case IN_PROGRESS:
                 photoInProgress();
                 break;
             case FAILED:
                 photoFailed();
-                break;
-            case CANCELED:
                 break;
             case COMPLETED:
                 photoCompleted();
@@ -181,18 +210,18 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     public void onProgressClicked() {
         if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
-            startUpload();
+            startUpload(post.getUploadTask());
         }
     }
 
     public void removeImage() {
-        cancelUplad();
+        cancelUpload();
         post.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
     }
 
-    private void cancelUplad() {
+    private void cancelUpload() {
         if (post.getUploadTask() != null)
             photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
     }
@@ -208,7 +237,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
-            eventBus.cancelEventDelivery(event);
+            eventBus.removeStickyEvent(event);
             imageSelected(event.getImages()[0].getFilePathOriginal());
         }
     }

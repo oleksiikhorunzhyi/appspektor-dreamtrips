@@ -12,7 +12,7 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingSpiceManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
@@ -49,7 +49,7 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     @Inject
     protected VideoDownloadSpiceManager videoDownloadSpiceManager;
     @Inject
-    protected PhotoUploadingSpiceManager photoUploadingSpiceManager;
+    protected PhotoUploadingManager photoUploadingSpiceManager;
 
     protected int priorityEventBus = 0;
 
@@ -125,10 +125,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         if (!videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.start(context);
         }
-        if (!photoUploadingSpiceManager.isStarted()) {
-            photoUploadingSpiceManager.start(context);
-
-        }
     }
 
     private void stopSpiceManagers() {
@@ -137,9 +133,6 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         }
         if (videoDownloadSpiceManager.isStarted()) {
             videoDownloadSpiceManager.shouldStop();
-        }
-        if (photoUploadingSpiceManager.isStarted()) {
-            photoUploadingSpiceManager.shouldStop();
         }
     }
 

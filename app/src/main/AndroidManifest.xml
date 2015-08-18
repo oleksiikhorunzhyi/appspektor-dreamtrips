@@ -161,13 +161,14 @@
 
         <service android:name="com.instabug.library.network.UploadCacheService"/>
         <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true"/>
+
+        <service
             android:name=".core.api.DreamSpiceService"
             android:exported="false"/>
         <service
             android:name=".core.api.VideoDownloadSpiceService"
-            android:exported="false"/>
-        <service
-            android:name=".core.api.PhotoUploadingSpiceService"
             android:exported="false"/>
     </application>
 

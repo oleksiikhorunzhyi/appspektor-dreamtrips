@@ -169,10 +169,9 @@ public class BucketItem implements IFeedObject, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         BucketItem that = (BucketItem) o;
-        return that.uid == uid;
+        return uid == that.uid;
     }
 
     @Override

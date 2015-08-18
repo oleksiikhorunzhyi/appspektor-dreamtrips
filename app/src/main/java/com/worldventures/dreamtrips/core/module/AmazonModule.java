@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamTripsHttpClient;
 
@@ -34,5 +36,10 @@ public class AmazonModule {
         clientConfiguration.setSocketTimeout(connectionTimeout);
 
         return new AmazonS3Client(credentialsProvider, clientConfiguration, new DreamTripsHttpClient(clientConfiguration));
+    }
+
+    @Provides
+    public TransferUtility provideTransferUtiltiy(AmazonS3Client amazonS3Client, @ForApplication Context context) {
+        return new TransferUtility(amazonS3Client, context);
     }
 }

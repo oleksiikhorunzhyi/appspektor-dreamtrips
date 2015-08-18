@@ -69,8 +69,10 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        List<Object> items = adapter.getItemsWithHeader();
-        this.items = new ArrayList<>(items);
+        if (adapter != null) {
+            List<Object> items = adapter.getItemsWithHeader();
+            this.items = new ArrayList<>(items);
+        }
         super.onSaveInstanceState(outState);
     }
 

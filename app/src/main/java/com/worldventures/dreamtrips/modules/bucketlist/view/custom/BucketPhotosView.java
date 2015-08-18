@@ -160,10 +160,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(String filePath) {
+    public UploadTask getBucketPhotoUploadTask(String taskId) {
         return (UploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
                 element instanceof UploadTask &&
-                        ((UploadTask) element).getFilePath().equals(filePath));
+                        ((UploadTask) element).getAmazonTaskId().equals(taskId));
     }
 
     public enum Type {

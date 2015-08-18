@@ -269,6 +269,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId) {
+            eventBus.removeStickyEvent(event);
             Queryable.from(event.getImages()).forEachR(choseImage ->
                     imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
         }

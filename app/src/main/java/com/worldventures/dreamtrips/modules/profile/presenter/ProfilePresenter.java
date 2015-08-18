@@ -75,6 +75,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void onRefresh() {
         loadProfile();
+        loadFeed();
     }
 
     protected void onProfileLoaded(U user) {

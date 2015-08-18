@@ -72,7 +72,7 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
 
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
-            eventBus.cancelEventDelivery(event);
+            eventBus.removeStickyEvent(event);
             imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
         }
     }

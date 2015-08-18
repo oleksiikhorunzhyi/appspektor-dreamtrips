@@ -333,7 +333,9 @@ public class ProfileCell extends AbstractCell<User> {
     }
 
 
-    /*** View Events *********************/
+    /***
+     * View Events
+     *********************/
 
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {

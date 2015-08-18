@@ -31,4 +31,8 @@ public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
     public List getItems() {
         return super.getItems().subList(1, getCount());
     }
+
+    public List getItemsWithHeader() {
+        return super.getItems();
+    }
 }

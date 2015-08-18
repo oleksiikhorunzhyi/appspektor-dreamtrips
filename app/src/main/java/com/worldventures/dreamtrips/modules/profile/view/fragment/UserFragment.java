@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
@@ -15,6 +16,8 @@ import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import java.util.List;
+
+import butterknife.ButterKnife;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.menu_empty)
@@ -29,68 +32,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
-        profileView.getControlPanel().setVisibility(View.GONE);
-        profileView.getCover().setVisibility(View.GONE);
-        profileView.getAvatar().setVisibility(View.GONE);
-        profileView.getUpdateInfo().setVisibility(View.GONE);
-        profileView.getUserBalance().setVisibility(View.GONE);
-        profileView.getAddFriend().setVisibility(View.VISIBLE);
-
-        profileView.getBuckets().setClickable(false);
-        profileView.getTripImages().setClickable(false);
-
-        profileView.getBuckets().setText(R.string.coming_soon);
-        profileView.getTripImages().setText(R.string.coming_soon);
-
-        profileView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
-        profileView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
-        profileView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
-        profileView.getMore().setVisibility(View.INVISIBLE);
-
-        profileView.setIsExpandEnabled(false);
-        profileView.getInfo().show();
-
-        profileView.setOnAcceptRequest(() -> getPresenter().acceptClicked());
-        profileView.setOnRejectRequest(() -> getPresenter().rejectClicked());
-        profileView.setOnAddFriend(() -> getPresenter().addFriendClicked());
-
-    }
-
-    @Override
-    public void setIsFriend(boolean isFriend) {
-        profileView.getAddFriend().setText(isFriend ? R.string.profile_friends : R.string.profile_add_friend);
-        profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                isFriend ? R.drawable.ic_profile_friend
-                        : R.drawable.ic_profile_add_friend_selector,
-                0, 0);
-    }
-
-    @Override
-    public void setWaiting() {
-        profileView.getAddFriend().setText(R.string.profile_waiting);
-        profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.ic_profile_friend_respond,
-                0, 0);
-    }
-
-    @Override
-    public void setRespond() {
-        profileView.getAddFriend().setText(R.string.profile_respond);
-        profileView.getAddFriend().setCompoundDrawablesWithIntrinsicBounds(0,
-                R.drawable.ic_profile_respond,
-                0, 0);
-    }
-
-    @Override
-    public void showFriendRequest(String name) {
-        profileView.getFriendRequestCaption().setText(String.format(getString(R.string.profile_friend_request), name));
-        profileView.getFriendRequest().setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideFriendRequest() {
-        profileView.getFriendRequest().setVisibility(View.GONE);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -108,6 +49,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     public void showFriendDialog(User user) {
-        new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, profileView.getUserPhoto().getDrawable());
+        ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
+        if (userPhoto != null) {
+            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, userPhoto.getDrawable());
+        }
     }
 }

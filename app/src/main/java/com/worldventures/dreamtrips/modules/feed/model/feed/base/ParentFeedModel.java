@@ -17,6 +17,10 @@ public class ParentFeedModel {
         return type;
     }
 
+    public boolean isSingle() {
+        return type.equals("Single");
+    }
+
     public void setItems(List<BaseFeedModel> items) {
         this.items = items;
     }

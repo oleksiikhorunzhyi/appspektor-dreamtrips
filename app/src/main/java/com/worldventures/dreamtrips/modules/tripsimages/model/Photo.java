@@ -4,9 +4,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
@@ -27,6 +29,10 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
     private String taskId;
     private User user;
     private String id;
+
+    private List<Comment> comments;
+    @SerializedName("comments_count")
+    private int commentsCount;
 
     public Photo() {
     }
@@ -242,14 +248,33 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
         return (int) (uid ^ (uid >>> 32));
     }
 
+    ///////////////////////////////////////////
+    //////// Feed item
+    ///////////////////////////////////////////
+
     @Override
     public String place() {
-        return getFsLocation();
+        return null;
     }
 
     @Override
     public long getUid() {
         return uid;
+    }
+
+    @Override
+    public Date getCreatedAt() {
+        return shotAt;
+    }
+
+    @Override
+    public int commentsCount() {
+        return commentsCount;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        return comments;
     }
 
 }

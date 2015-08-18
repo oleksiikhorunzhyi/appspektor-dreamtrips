@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.io.Serializable;
@@ -240,7 +239,7 @@ public class User extends BaseEntity implements Parcelable {
         return result;
     }
 
-    public static class Avatar implements Parcelable, IFeedObject, Serializable {
+    public static class Avatar implements Parcelable, Serializable {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
             public Avatar createFromParcel(Parcel source) {
                 return new Avatar(source);
@@ -288,11 +287,6 @@ public class User extends BaseEntity implements Parcelable {
         }
 
         @Override
-        public long getUid() {
-            return 0;
-        }
-
-        @Override
         public int describeContents() {
             return 0;
         }
@@ -304,10 +298,6 @@ public class User extends BaseEntity implements Parcelable {
             dest.writeString(this.thumb);
         }
 
-        @Override
-        public String place() {
-            return "";
-        }
     }
 
 

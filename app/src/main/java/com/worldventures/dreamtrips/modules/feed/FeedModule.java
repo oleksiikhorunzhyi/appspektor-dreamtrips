@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.feed;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -36,7 +36,6 @@ import dagger.Module;
                 FeedPostEventCell.class,
                 FeedUndefinedEventCell.class,
 
-                FeedPresenter.class,
                 ParallaxRecyclerAdapter.class,
 
                 EditCommentPresenter.class,

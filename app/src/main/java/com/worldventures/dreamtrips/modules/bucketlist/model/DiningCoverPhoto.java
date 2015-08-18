@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
+import java.io.Serializable;
+
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DiningCoverPhoto {
+public class DiningCoverPhoto implements Serializable {
     String url;
 }

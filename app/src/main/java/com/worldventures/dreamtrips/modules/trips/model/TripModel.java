@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -57,7 +58,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     private boolean inBucketList;
 
     private List<Comment> comments;
-    private int comments_count;
+    @SerializedName("comments_count")
+    private int commentsCount;
 
 
     public String getLikeId() {
@@ -309,6 +311,10 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         return tripId;
     }
 
+    ///////////////////////////////////////////
+    //////// Feed item
+    ///////////////////////////////////////////
+
     @Override
     public String place() {
         return null;
@@ -317,5 +323,20 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     @Override
     public long getUid() {
         return uid;
+    }
+
+    @Override
+    public Date getCreatedAt() {
+        return null;
+    }
+
+    @Override
+    public int commentsCount() {
+        return commentsCount;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        return comments;
     }
 }

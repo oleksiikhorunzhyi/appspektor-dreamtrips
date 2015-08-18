@@ -41,7 +41,8 @@ public class BucketItem implements IFeedObject, Serializable {
     private DiningItem dining;
 
     private List<Comment> comments;
-    private int comments_count;
+    @SerializedName("comments_count")
+    private int commentsCount;
 
     private transient boolean selected;
 
@@ -179,9 +180,13 @@ public class BucketItem implements IFeedObject, Serializable {
         return (int) (uid ^ (uid >>> 32));
     }
 
+    ///////////////////////////////////////////
+    //////// Feed item
+    ///////////////////////////////////////////
+
     @Override
     public String place() {
-        return BucketItemInfoUtil.getPlace(this);
+        return null;
     }
 
     @Override
@@ -189,4 +194,18 @@ public class BucketItem implements IFeedObject, Serializable {
         return uid;
     }
 
+    @Override
+    public Date getCreatedAt() {
+        return targetDate;
+    }
+
+    @Override
+    public int commentsCount() {
+        return commentsCount;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        return comments;
+    }
 }

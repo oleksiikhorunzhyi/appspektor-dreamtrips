@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.Post;
+import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.events.UploadStatusChanged;
@@ -23,7 +23,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
 
     public static final int REQUESTER_ID = -2;
 
-    private Post post;
+    private CachedPostEntity post;
 
     @Inject
     SnappyRepository snapper;
@@ -35,7 +35,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         post = snapper.getPost();
 
         if (post == null) {
-            post = new Post();
+            post = new CachedPostEntity();
             savePost();
         } else if (!TextUtils.isEmpty(post.getFilePath())) {
             post.setUploadTask(snapper.getUploadTask(post.getFilePath()));

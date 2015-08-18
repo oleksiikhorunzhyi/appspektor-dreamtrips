@@ -42,6 +42,7 @@ public class FeedItemHeaderHelper {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             text.setText(feedModel.infoText(context.getResources()));
+
             if (TextUtils.isEmpty(feedModel.getItem().place())) {
                 location.setVisibility(View.GONE);
             } else {
@@ -49,21 +50,20 @@ public class FeedItemHeaderHelper {
                 location.setText(feedModel.getItem().place());
             }
 
-/*
-            date.setText(DateTimeUtils.convertDateToString(feedModel.getPostedAt(),
-                    DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
-*/
 
-            /*if (commentsCount != null) {
-                commentsCount.setText(context.getString(R.string.comments, feedModel.getCommentsCount()));
+            date.setText(DateTimeUtils.convertDateToString(feedModel.getItem().getCreatedAt(),
+                    DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
+
+            if (commentsCount != null) {
+                commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().commentsCount()));
             }
 
-            if (comments != null && feedModel.getComments() != null) {
-                Collections.reverse(feedModel.getComments());
-                comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getComments())
+            if (comments != null && feedModel.getItem().getComments() != null) {
+                Collections.reverse(feedModel.getItem().getComments());
+                comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getItem().getComments())
                         .take(2)
                         .toList(), context));
-            }*/
+            }
 
         } catch (Exception e) {
             Timber.e(e, "Feed header error");

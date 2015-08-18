@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Comment implements Parcelable {
+public class Comment implements Parcelable, Serializable {
 
     long uid;
     long parent_id;

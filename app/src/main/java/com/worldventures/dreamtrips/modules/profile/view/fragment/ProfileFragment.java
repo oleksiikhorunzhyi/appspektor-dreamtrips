@@ -33,6 +33,7 @@ import javax.inject.Provider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icicle;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
@@ -65,6 +66,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     private IgnoreFirstItemAdapter adapter;
 
+    @Icicle
     ArrayList<Object> items;
     private int screenHeight;
 
@@ -174,11 +176,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         }, 100);
     }
 
-    @Override
-    public void onFeedError() {
-        //now nothing to do
-    }
-
     public void openComments(BaseFeedModel baseFeedModel) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
@@ -206,7 +203,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         //
         NavigationBuilder.create()
                 .with(fragmentCompass)
-                .attach(Route.PHOTO_COMMENTS);
+                .attach(Route.POST_CREATE);
     }
 
     @Override
@@ -215,6 +212,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
 
+    @Override
     public void notifyUserChanged() {
         feedView.getAdapter().notifyItemChanged(0);
     }

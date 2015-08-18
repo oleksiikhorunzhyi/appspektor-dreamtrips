@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
@@ -35,9 +35,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     public static final int HEADER_RELOAD_POSITION = 1;
     public static final int HEADERS_COUNT = 2;
 
-    public static final int NEW_POST_POSITION = 2;
-
-
     protected U user;
 
     private int previousTotal = 0;
@@ -49,42 +46,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     List<Circle> circles;
     private ReloadFeedModel reloadFeedModel = new ReloadFeedModel();
 
-    protected DreamSpiceAdapterController<ParentFeedModel> adapterController = new DreamSpiceAdapterController<ParentFeedModel>() {
-        @Override
-        public SpiceRequest<ArrayList<ParentFeedModel>> getReloadRequest() {
-            return getRefreshRequest();
-        }
-
-        @Override
-        public SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int currentCount) {
-            return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
-
-            //TODO
-        }
-
-        @Override
-        public void onStart(LoadType loadType) {
-            view.startLoading();
-            reloadFeedModel.setVisible(false);
-        }
-
-        @Override
-        public void onFinish(LoadType type, List<ParentFeedModel> items, SpiceException spiceException) {
-            if (adapterController != null) {
-                view.finishLoading();
-                if (spiceException != null) {
-                    view.onFeedError();
-                    if (view.getAdapter().getItems().size() <= HEADERS_COUNT) {
-                        reloadFeedModel.setVisible(true);
-                        view.getAdapter().notifyDataSetChanged();
-                    }
-                }
-                if (type.equals(LoadType.RELOAD)) {
-                    resetLazyLoadFields();
-                }
-            }
-        }
-    };
 
     public ProfilePresenter() {
     }
@@ -102,14 +63,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         loadCircles();
         loadProfile();
         checkPostShown();
-    }
-
-    @Override
-    public void onResume() {
-        if (view.getAdapter().getCount() <= HEADERS_COUNT) {
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-        }
     }
 
     private void checkPostShown() {
@@ -146,7 +99,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void loadFeed() {
         if (featureManager.available(Feature.SOCIAL))
-            adapterController.reload();
+            doRequest(getRefreshRequest(), this::refreshFeedItems);
     }
 
     public void makePost() {
@@ -207,9 +160,23 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
                     && lastVisible == totalItemCount - 1
                     && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
                 loading = true;
-                adapterController.loadNext();
+
+                doRequest(getNextPageRequest(previousTotal / GetFeedQuery.LIMIT), this::addFeedItems);
             }
         }
+    }
+
+    public void refreshFeedItems(List<ParentFeedModel> feedItems) {
+        view.finishLoading();
+        view.getAdapter().clear();
+        view.getAdapter().addItems(HEADER_RELOAD_POSITION, Queryable.from(feedItems)
+                .filter(ParentFeedModel::isSingle).map(element -> element.getItems().get(0)).toList());
+    }
+
+    public void addFeedItems(List<ParentFeedModel> feedItems) {
+        view.finishLoading();
+        view.getAdapter().addItems(Queryable.from(feedItems)
+                .filter(ParentFeedModel::isSingle).map(element -> element.getItems().get(0)).toList());
     }
 
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest();
@@ -244,10 +211,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void finishLoading();
 
         BaseArrayListAdapter getAdapter();
-
-        void onFeedError();
-
-        void setFriendButtonText(@StringRes int res);
 
         void openComments(BaseFeedModel baseFeedModel);
 

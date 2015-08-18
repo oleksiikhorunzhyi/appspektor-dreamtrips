@@ -49,19 +49,19 @@ public class RequestCell extends AbstractCell<User> {
         container.setVisibility(View.VISIBLE);
 
         switch (getModelObject().getRelationship()) {
-            case User.RELATION_INCOMING_REQUEST:
+            case INCOMING_REQUEST:
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.GONE);
                 reject.setVisibility(View.VISIBLE);
                 accept.setVisibility(View.VISIBLE);
                 break;
-            case User.RELATION_OUTGOING_REQUEST:
+            case OUTGOING_REQUEST:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
                 break;
-            case User.RELATION_REJECT:
+            case REJECT:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);

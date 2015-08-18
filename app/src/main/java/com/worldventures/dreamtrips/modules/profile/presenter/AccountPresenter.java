@@ -1,16 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
@@ -25,6 +22,8 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
@@ -86,23 +85,25 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     private void onAvatarUploadSuccess(User obj) {
         TrackingHelper.profileUploadFinish(getAccountUserId());
         UserSession userSession = appSessionHolder.get().get();
-        User user = userSession.getUser();
-        user.setAvatar(obj.getAvatar());
+        User currentUser = userSession.getUser();
+        currentUser.setAvatar(obj.getAvatar());
 
         appSessionHolder.put(userSession);
-        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.avatarProgressVisible(false);
+        this.user.setAvatar(currentUser.getAvatar());
+        this.user.setAvatarUploadInProgress(false);
+        view.notifyUserChanged();
         eventBus.post(new UpdateUserInfoEvent());
     }
 
     private void onCoverUploadSuccess(User obj) {
         UserSession userSession = appSessionHolder.get().get();
-        User user = userSession.getUser();
-        user.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
-        this.user = user;
+        User currentUser = userSession.getUser();
+        currentUser.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
+
         appSessionHolder.put(userSession);
-        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
-        view.coverProgressVisible(false);
+        this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
+        this.user.setCoverUploadInProgress(false);
+        view.notifyUserChanged();
         if (coverTempFilePath != null) {
             new File(coverTempFilePath).delete();
         }
@@ -125,16 +126,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    public void handleError(SpiceException error) {
-        view.avatarProgressVisible(false);
-        super.handleError(error);
-    }
-
-    @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        view.setSocial(featureManager.available(Feature.SOCIAL));
     }
 
     @Override
@@ -161,20 +155,16 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         view.openCoverPicker();
     }
 
-    @Override
-    protected void setUserProfileInfo() {
-        super.setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-        view.setRoviaBucks(df.format(user.getRoviaBucks()));
-        view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
-    }
-
     private void uploadAvatar(String fileThumbnail) {
         final File file = new File(fileThumbnail);
         final TypedFile typedFile = new TypedFile("image/*", file);
         TrackingHelper.profileUploadStart(getAccountUserId());
-        doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
+        this.user.setAvatarUploadInProgress(true);
+        view.notifyUserChanged();
+        doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess, spiceException -> {
+            user.setAvatarUploadInProgress(false);
+            view.notifyUserChanged();
+        });
     }
 
     //Called from onActivityResult
@@ -183,9 +173,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             this.coverTempFilePath = path;
             final File file = new File(path);
             final TypedFile typedFile = new TypedFile("image/*", file);
-            view.coverProgressVisible(true);
+            user.setCoverUploadInProgress(true);
+            view.notifyUserChanged();
             TrackingHelper.profileUploadStart(getAccountUserId());
-            doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess);
+            doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess, spiceException -> {
+                user.setCoverUploadInProgress(false);
+                view.notifyUserChanged();
+            });
 
         } else {
             view.informUser(errorMsg);
@@ -250,7 +244,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public void onAvatarChosen(ChosenImage image) {
         if (image != null) {
-            view.avatarProgressVisible(true);
             String fileThumbnail = image.getFileThumbnail();
             if (ValidationUtils.isUrl(fileThumbnail)) {
                 cacheFacebookImage(fileThumbnail, this::uploadAvatar);
@@ -270,19 +263,18 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
+    public void onEvent(OnPhotoClickEvent e) {
+        photoClicked();
+    }
+
+    public void onEvent(OnCoverClickEvent e) {
+        coverClicked();
+    }
+
     public interface View extends ProfilePresenter.View {
-        void avatarProgressVisible(boolean visible);
-
-        void coverProgressVisible(boolean visible);
-
         void openAvatarPicker();
 
         void openCoverPicker();
-
-        void setRoviaBucks(String count);
-
-        void setDreamTripPoints(String count);
-
     }
 
 }

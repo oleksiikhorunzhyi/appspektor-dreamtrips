@@ -22,12 +22,6 @@ public class User extends BaseEntity implements Parcelable {
     public static final String DTG_SUBSCTIPTION = "DTG"; //gold
     public static final String DTP_SUBSCRIPTION = "DTP"; //platinum
 
-    public static final String RELATION_NONE = "none";
-    public static final String RELATION_FRIEND = "friend";
-    public static final String RELATION_INCOMING_REQUEST = "incoming_request";
-    public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
-    public static final String RELATION_REJECT = "rejected";
-
     private String username;
     private String email;
     private Avatar avatar;
@@ -42,7 +36,7 @@ public class User extends BaseEntity implements Parcelable {
     private int tripImagesCount;
     private int bucketListItemsCount;
 
-    private String relationship;
+    private Relationship relationship;
 
     @SerializedName("background_photo_url")
     private String backgroundPhotoUrl;
@@ -67,7 +61,8 @@ public class User extends BaseEntity implements Parcelable {
     int mutualFriends;
 
     private transient String circles;
-
+    private transient boolean avatarUploadInProgress;
+    private transient boolean coverUploadInProgress;
 
     public User() {
     }
@@ -214,12 +209,16 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
-    public String getRelationship() {
+    public Relationship getRelationship() {
         return relationship;
     }
 
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
+    }
+
     public void unfriend() {
-        relationship = RELATION_NONE;
+        relationship = Relationship.NONE;
     }
 
     @Override
@@ -312,6 +311,30 @@ public class User extends BaseEntity implements Parcelable {
     }
 
 
+    public void setAvatarUploadInProgress(boolean avatarUploadInProgress) {
+        this.avatarUploadInProgress = avatarUploadInProgress;
+    }
+
+    public void setCoverUploadInProgress(boolean coverUploadInProgress) {
+        this.coverUploadInProgress = coverUploadInProgress;
+    }
+
+    public boolean isAvatarUploadInProgress() {
+        return avatarUploadInProgress;
+    }
+
+    public boolean isCoverUploadInProgress() {
+        return coverUploadInProgress;
+    }
+
+    public enum Relationship {
+        @SerializedName("none")NONE,
+        @SerializedName("friend")FRIEND,
+        @SerializedName("incoming_request")INCOMING_REQUEST,
+        @SerializedName("outgoing_request")OUTGOING_REQUEST,
+        @SerializedName("rejected")REJECT
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -332,7 +355,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeDouble(this.roviaBucks);
         dest.writeInt(this.tripImagesCount);
         dest.writeInt(this.bucketListItemsCount);
-        dest.writeString(this.relationship);
+        dest.writeInt(this.relationship == null ? -1 : this.relationship.ordinal());
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
         dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
@@ -357,7 +380,8 @@ public class User extends BaseEntity implements Parcelable {
         this.roviaBucks = in.readDouble();
         this.tripImagesCount = in.readInt();
         this.bucketListItemsCount = in.readInt();
-        this.relationship = in.readString();
+        int tmpRelationship = in.readInt();
+        this.relationship = tmpRelationship == -1 ? null : Relationship.values()[tmpRelationship];
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
         this.socialEnabled = in.readByte() != 0;

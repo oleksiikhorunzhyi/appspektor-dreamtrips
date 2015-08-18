@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -57,7 +56,6 @@ public enum Route {
     MAP(TripMapFragment.class),
     ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
-    FEED(FeedFragment.class),
     OTA(OtaFragment.class),
     TRIP_IMAGES(TripImagesTabsFragment.class),
     MEMBERSHIP(MembershipFragment.class),

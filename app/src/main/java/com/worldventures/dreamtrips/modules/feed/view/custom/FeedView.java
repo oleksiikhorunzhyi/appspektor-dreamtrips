@@ -2,34 +2,36 @@ package com.worldventures.dreamtrips.modules.feed.view.custom;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
 
-import com.techery.spares.adapter.LoaderRecycleAdapter;
-import com.techery.spares.module.Injector;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.HeaderLayoutManagerFixed;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
-
-import javax.inject.Provider;
+import com.worldventures.dreamtrips.modules.profile.ReloadFeedModel;
+import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
+import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
 
 public class FeedView extends RecyclerView {
 
-    private ParallaxRecyclerAdapter<ParentFeedModel> adapter;
+    private IgnoreFirstItemAdapter adapter;
+
     private RecyclerViewStateDelegate stateDelegate;
-    private HeaderLayoutManagerFixed layoutManagerFixed;
+    private OffsetYListener offsetYListener;
+    private LinearLayoutManager layoutManager;
 
     public FeedView(Context context) {
         this(context, null);
@@ -48,47 +50,37 @@ public class FeedView extends RecyclerView {
         stateDelegate.saveStateIfNeeded(outState);
     }
 
-    public void setup(Provider<Injector> injectorProvider, Bundle savedInstanceState) {
+    public void setup(Bundle savedInstanceState, IgnoreFirstItemAdapter adapter) {
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
 
-        adapter = new ParallaxRecyclerAdapter<>(getContext(), injectorProvider);
+        this.adapter = adapter;
+        this.adapter.registerCell(User.class, ProfileCell.class);
+        this.adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
 
-        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
-        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
-        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
+        this.adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
+        this.adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
+        this.adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+        this.adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
 
-        adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        this.adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
 
-        layoutManagerFixed = new HeaderLayoutManagerFixed(getContext());
-        setLayoutManager(layoutManagerFixed);
-        adapter.setShouldClipView(false);
+        layoutManager = new LinearLayoutManager(getContext());
+        setLayoutManager(layoutManager);
 
-        setAdapter(adapter);
+        setAdapter(this.adapter);
 
         stateDelegate.setRecyclerView(this);
 
-    }
 
-    @Override
-    public HeaderLayoutManagerFixed getLayoutManager() {
-        return layoutManagerFixed;
+        addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (offsetYListener != null)
+                    offsetYListener.onScroll(FeedView.this.computeVerticalScrollOffset());
+            }
+        });
     }
-
-    public void setHeader(View header) {
-        layoutManagerFixed.setHeaderIncrementFixer(header);
-        adapter.setParallaxHeader(header, this);
-    }
-
-    public void setOnParallaxScroll(ParallaxRecyclerAdapter.OnParallaxScroll p1) {
-        adapter.setOnParallaxScroll(p1);
-    }
-
-    public float getParallaxPrecentage() {
-        return adapter.getCurrentPercentage();
-    }
-
 
     public void restoreStateIfNeeded() {
         stateDelegate.restoreStateIfNeeded();
@@ -100,19 +92,24 @@ public class FeedView extends RecyclerView {
         stateDelegate.onDestroyView();
     }
 
-    @Override
-    public LoaderRecycleAdapter<ParentFeedModel> getAdapter() {
+    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
         return adapter;
     }
 
-    @Override
-    public boolean canScrollVertically(int direction) {
-        // check if scrolling up
-        if (direction < 1) {
-            boolean original = super.canScrollVertically(direction);
-            return !original && getChildAt(0) != null && getChildAt(0).getTop() < 0 || original;
-        }
-        return super.canScrollVertically(direction);
+    public void setOffsetYListener(OffsetYListener offsetYListener) {
+        this.offsetYListener = offsetYListener;
+    }
 
+    public float getScrollOffset() {
+        return FeedView.this.computeVerticalScrollOffset();
+    }
+
+    public interface OffsetYListener {
+        void onScroll(int yOffset);
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
     }
 }

@@ -19,6 +19,9 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,40 +48,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         return new GetUserFeedQuery(user.getId(), page);
     }
 
-    @Override
-    protected void setUserProfileInfo() {
-        super.setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-        view.setSocial(user.isSocialEnabled());
-        view.setIsFriend(false);
-        if (user.getRelationship() != null) {
-            switch (user.getRelationship()) {
-                case User.RELATION_FRIEND:
-                    view.setIsFriend(true);
-                    view.hideFriendRequest();
-                    break;
-                case User.RELATION_OUTGOING_REQUEST:
-                    view.setWaiting();
-                    view.hideFriendRequest();
-                    break;
-                case User.RELATION_INCOMING_REQUEST:
-                    view.setRespond();
-                    view.showFriendRequest(user.getFirstName());
-                    break;
-                default:
-                    view.hideFriendRequest();
-                    break;
-            }
-        }
-    }
-
     public void addFriendClicked() {
         if (user.getRelationship() != null) {
-            if (user.getRelationship().equals(User.RELATION_NONE)
-                    || user.getRelationship().equals(User.RELATION_REJECT))
+            if (user.getRelationship().equals(User.Relationship.NONE)
+                    || user.getRelationship().equals(User.Relationship.REJECT))
                 view.showAddFriendDialog(circles, this::addAsFriend);
-            else if (user.getRelationship().equals(User.RELATION_FRIEND))
+            else if (user.getRelationship().equals(User.Relationship.FRIEND))
                 view.showFriendDialog(user);
         }
 
@@ -90,7 +65,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             if (view != null) {
                 view.finishLoading();
                 user.unfriend();
-                setUserProfileInfo();
+                view.notifyUserChanged();
                 eventBus.postSticky(new RemoveUserEvent(user));
             }
         });
@@ -121,8 +96,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             Circle circle = circles.get(position);
             doRequest(new AddUserRequestCommand(user.getId(), circle),
                     jsonObject -> {
+                        user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                         view.finishLoading();
-                        view.setWaiting();
+                        view.notifyUserChanged();
                     });
         }
     }
@@ -133,8 +109,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
                     view.finishLoading();
-                    view.setIsFriend(false);
-                    view.hideFriendRequest();
+                    user.setRelationship(User.Relationship.REJECT);
+                    view.notifyUserChanged();
                 });
     }
 
@@ -144,8 +120,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                         ActOnRequestCommand.Action.CONFIRM.name(),
                         circle.getId()),
                 object -> {
-                    view.setIsFriend(true);
-                    view.hideFriendRequest();
+                    user.setRelationship(User.Relationship.FRIEND);
+                    view.notifyUserChanged();
                 });
     }
 
@@ -170,6 +146,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                     break;
             }
             user.setCircles(snappyRepository.getCircles());
+            view.notifyUserChanged();
         }
     }
 
@@ -182,17 +159,19 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     public void openTripImages() {
     }
 
+    public void onEvent(OnAcceptRequestEvent e) {
+        acceptClicked();
+    }
+
+    public void onEvent(OnRejectRequestEvent e) {
+        rejectClicked();
+    }
+
+    public void onEvent(OnAddFriendEvent e) {
+        addFriendClicked();
+    }
+
     public interface View extends ProfilePresenter.View {
-
-        void showFriendRequest(String name);
-
-        void hideFriendRequest();
-
-        void setIsFriend(boolean isFriend);
-
-        void setRespond();
-
-        void setWaiting();
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 

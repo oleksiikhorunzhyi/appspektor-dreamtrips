@@ -1,16 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.text.format.DateFormat;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -20,6 +17,12 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.profile.ReloadFeedModel;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsClickedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,13 @@ import javax.inject.Inject;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
+    public static final int HEADER_USER_POSITION = 0;
+    public static final int HEADER_RELOAD_POSITION = 1;
+    public static final int HEADERS_COUNT = 2;
+
+    public static final int NEW_POST_POSITION = 2;
+
+
     protected U user;
 
     private int previousTotal = 0;
@@ -35,6 +45,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     @Inject
     SnappyRepository snappyRepository;
+
+    List<Circle> circles;
+    private ReloadFeedModel reloadFeedModel = new ReloadFeedModel();
 
     protected DreamSpiceAdapterController<ParentFeedModel> adapterController = new DreamSpiceAdapterController<ParentFeedModel>() {
         @Override
@@ -45,20 +58,26 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         @Override
         public SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int currentCount) {
             return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
+
+            //TODO
         }
 
         @Override
         public void onStart(LoadType loadType) {
             view.startLoading();
+            reloadFeedModel.setVisible(false);
         }
 
         @Override
         public void onFinish(LoadType type, List<ParentFeedModel> items, SpiceException spiceException) {
-
             if (adapterController != null) {
                 view.finishLoading();
                 if (spiceException != null) {
                     view.onFeedError();
+                    if (view.getAdapter().getItems().size() <= HEADERS_COUNT) {
+                        reloadFeedModel.setVisible(true);
+                        view.getAdapter().notifyDataSetChanged();
+                    }
                 }
                 if (type.equals(LoadType.RELOAD)) {
                     resetLazyLoadFields();
@@ -66,8 +85,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             }
         }
     };
-
-    List<Circle> circles;
 
     public ProfilePresenter() {
     }
@@ -79,17 +96,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        attachUserToView(user);
+        addReloadFeedView();
         circles = snappyRepository.getCircles();
-        setUserProfileInfo();
         loadCircles();
         loadProfile();
-        view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
         checkPostShown();
     }
 
     @Override
     public void onResume() {
-        if (view.getAdapter().getCount() <= 1/*Header*/) {
+        if (view.getAdapter().getCount() <= HEADERS_COUNT) {
             adapterController.setSpiceManager(dreamSpiceManager);
             adapterController.setAdapter(view.getAdapter());
         }
@@ -107,32 +124,18 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         loadProfile();
     }
 
-    protected void setUserProfileInfo() {
-        view.setUserName(user.getFullName());
-        view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
-                DateFormat.getMediumDateFormat(context)));
-        view.setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(),
-                DateFormat.getMediumDateFormat(context)));
-        view.setUserId(user.getUsername());
-        view.setFrom(user.getLocation());
-
-        if (user.isGold())
-            view.setGold();
-        else if (user.isPlatinum())
-            view.setPlatinum();
-        else
-            view.setMember();
-
-        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
+    protected void onProfileLoaded(U user) {
+        attachUserToView(user);
+        if (view.getAdapter().getCount() <= HEADERS_COUNT) {
+            loadFeed();
+        } else {
+            view.finishLoading();
+        }
     }
 
-    protected void onProfileLoaded(U user) {
+    private void attachUserToView(U user) {
         this.user = user;
-        //
-        setUserProfileInfo();
-        view.finishLoading();
-        loadFeed();
+        view.setUser(this.user);
     }
 
     @Override
@@ -189,6 +192,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         view.openComments(event.getModel());
     }
 
+    private void addReloadFeedView() {
+        view.getAdapter().remove(HEADER_RELOAD_POSITION);
+        view.getAdapter().addItem(HEADER_RELOAD_POSITION, this.reloadFeedModel);
+    }
+
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
             if (totalItemCount > previousTotal) {
@@ -208,40 +216,34 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int count);
 
+    public void onEvent(OnBucketListClickedEvent event) {
+        openBucketList();
+    }
+
+    public void onEvent(OnTripImageClickedEvent event) {
+        openTripImages();
+    }
+
+    public void onEvent(OnFriendsClickedEvent event) {
+        openFriends();
+    }
+
+    public void onEvent(OnCreatePostClickEvent event) {
+        makePost();
+    }
+
+    public void onEvent(OnFeedReloadEvent event) {
+        loadFeed();
+    }
+
     public interface View extends Presenter.View {
+        Bundle getArguments();
+
         void startLoading();
 
         void finishLoading();
 
-        void setAvatarImage(Uri uri);
-
-        void setCoverImage(Uri uri);
-
-        void setDateOfBirth(String format);
-
-        void setFrom(String location);
-
-        void setUserName(String username);
-
-        void setUserId(String username);
-
-        void setEnrollDate(String date);
-
-        void setTripImagesCount(int count);
-
-        void setTripsCount(int count);
-
-        void setSocial(Boolean isEnabled);
-
-        void setBucketItemsCount(int count);
-
-        void setGold();
-
-        void setPlatinum();
-
-        void setMember();
-
-        BaseArrayListAdapter<ParentFeedModel> getAdapter();
+        BaseArrayListAdapter getAdapter();
 
         void onFeedError();
 
@@ -252,5 +254,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void openPost();
 
         void openFriends();
+
+        void showPostContainer();
+
+        void notifyUserChanged();
+
+        void setUser(User user);
     }
 }

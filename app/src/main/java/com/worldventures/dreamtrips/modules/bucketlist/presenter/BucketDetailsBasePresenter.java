@@ -60,10 +60,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     @Override
-    public void takeView(V view) {
-        super.takeView(view);
-        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
+    public void onResume() {
+        super.onResume();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
 
         syncUI();
     }

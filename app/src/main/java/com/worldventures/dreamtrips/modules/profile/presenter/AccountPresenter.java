@@ -14,8 +14,7 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.event.PostCreatedEvent;
+import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -195,16 +194,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int page) {
-        return new GetFeedQuery(page);
+        return new GetAccountTimelineQuery(page);
     }
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetFeedQuery(0);
-    }
-
-    public void onEvent(PostCreatedEvent event) {
-        onRefresh();
+        return new GetAccountTimelineQuery(0);
     }
 
     ////////////////////////////////////////

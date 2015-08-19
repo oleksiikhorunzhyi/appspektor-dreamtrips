@@ -174,6 +174,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         }, 100);
     }
 
+    @Override
     public void openComments(BaseFeedModel baseFeedModel) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
@@ -215,7 +216,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         feedView.getAdapter().notifyItemChanged(0);
     }
 
-    public void showPostContainer() {
+    private void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);
     }

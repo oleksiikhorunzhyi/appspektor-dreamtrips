@@ -29,6 +29,8 @@ public class BucketItem implements IFeedObject, Serializable {
     private Date completionDate;
     private String type;
     private String description;
+    private boolean liked;
+    private int likesCount;
     private List<BucketTag> tags;
     @SerializedName("category")
     private CategoryItem categoryItem;
@@ -206,5 +208,15 @@ public class BucketItem implements IFeedObject, Serializable {
     @Override
     public List<Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public boolean isLiked() {
+        return liked;
+    }
+
+    @Override
+    public int likesCount() {
+        return likesCount;
     }
 }

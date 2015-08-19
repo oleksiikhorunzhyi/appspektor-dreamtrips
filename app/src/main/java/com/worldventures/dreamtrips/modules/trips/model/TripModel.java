@@ -37,6 +37,7 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     private boolean featured;
     private boolean rewarded;
     private boolean liked;
+    private int likesCount;
     private int duration;
     @SerializedName("price_available")
     private boolean priceAvailable;
@@ -172,10 +173,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     public void setAvailabilityDates(Schedule availabilityDates) {
         this.dates = availabilityDates;
-    }
-
-    public boolean isLiked() {
-        return liked;
     }
 
     public void setLiked(boolean liked) {
@@ -338,5 +335,15 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     @Override
     public List<Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public boolean isLiked() {
+        return liked;
+    }
+
+    @Override
+    public int likesCount() {
+        return likesCount;
     }
 }

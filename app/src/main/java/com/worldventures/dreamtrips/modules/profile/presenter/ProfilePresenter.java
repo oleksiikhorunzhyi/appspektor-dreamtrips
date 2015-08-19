@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -161,10 +161,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             }
             if (!loading
                     && lastVisible == totalItemCount - 1
-                    && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
+                    && (totalItemCount - 1) % GetAccountTimelineQuery.LIMIT == 0) {
                 loading = true;
 
-                doRequest(getNextPageRequest(previousTotal / GetFeedQuery.LIMIT), this::addFeedItems);
+                doRequest(getNextPageRequest(previousTotal / GetAccountTimelineQuery.LIMIT), this::addFeedItems);
             }
         }
     }
@@ -221,8 +221,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void openPost();
 
         void openFriends();
-
-        void showPostContainer();
 
         void notifyUserChanged();
 

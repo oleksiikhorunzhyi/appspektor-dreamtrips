@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
@@ -27,7 +26,7 @@ import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
 
 public class FeedView extends RecyclerView {
 
-    private IgnoreFirstItemAdapter adapter;
+    private BaseArrayListAdapter adapter;
 
     private RecyclerViewStateDelegate stateDelegate;
     private OffsetYListener offsetYListener;
@@ -50,7 +49,7 @@ public class FeedView extends RecyclerView {
         stateDelegate.saveStateIfNeeded(outState);
     }
 
-    public void setup(Bundle savedInstanceState, IgnoreFirstItemAdapter adapter) {
+    public void setup(Bundle savedInstanceState, BaseArrayListAdapter adapter) {
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
 

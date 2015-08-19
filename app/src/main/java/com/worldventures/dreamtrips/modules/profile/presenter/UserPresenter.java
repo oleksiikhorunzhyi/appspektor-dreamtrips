@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -39,12 +39,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetUserFeedQuery(user.getId(), 0);
+        return new GetUserTimelineQuery(user.getId(), 0);
     }
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int page) {
-        return new GetUserFeedQuery(user.getId(), page);
+        return new GetUserTimelineQuery(user.getId(), page);
     }
 
     public void addFriendClicked() {

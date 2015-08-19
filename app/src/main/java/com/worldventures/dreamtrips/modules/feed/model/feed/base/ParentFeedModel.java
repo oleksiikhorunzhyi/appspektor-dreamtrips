@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.feed.model.feed.base;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class ParentFeedModel {
 
     private String type;

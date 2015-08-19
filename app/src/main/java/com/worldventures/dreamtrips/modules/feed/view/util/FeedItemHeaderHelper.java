@@ -51,7 +51,7 @@ public class FeedItemHeaderHelper {
             }
 
 
-            date.setText(DateTimeUtils.convertDateToString(feedModel.getItem().getCreatedAt(),
+            date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
                     DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
 
             if (commentsCount != null) {

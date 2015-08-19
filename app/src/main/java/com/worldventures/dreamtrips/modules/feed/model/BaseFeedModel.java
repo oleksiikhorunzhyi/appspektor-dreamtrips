@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.content.res.Resources;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -12,12 +14,15 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class BaseFeedModel<T extends IFeedObject> implements Serializable {
 
     protected BaseFeedModel.Type type;
     protected BaseFeedModel.Action action;
 
     protected Links links;
+    @SerializedName("posted_at")
+    protected Date createdAt;
     protected T item;
 
     public Type getType() {
@@ -26,6 +31,10 @@ public class BaseFeedModel<T extends IFeedObject> implements Serializable {
 
     public Action getAction() {
         return action;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public String infoText(Resources resources) {

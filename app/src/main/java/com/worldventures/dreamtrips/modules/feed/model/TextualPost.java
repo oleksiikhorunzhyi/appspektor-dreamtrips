@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -7,7 +9,8 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import java.util.Date;
 import java.util.List;
 
-public class TextualPost extends BaseEntity implements IFeedObject{
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class TextualPost implements IFeedObject{
 
     private long uid;
 
@@ -15,6 +18,9 @@ public class TextualPost extends BaseEntity implements IFeedObject{
     private List<Comment> comments;
     @SerializedName("comments_count")
     private int commentsCount;
+    private boolean liked;
+    private int likesCount;
+
     public String getDescription() {
         return description;
     }
@@ -43,4 +49,15 @@ public class TextualPost extends BaseEntity implements IFeedObject{
     public List<Comment> getComments() {
         return comments;
     }
+
+    @Override
+    public boolean isLiked() {
+        return liked;
+    }
+
+    @Override
+    public int likesCount() {
+        return likesCount;
+    }
+
 }

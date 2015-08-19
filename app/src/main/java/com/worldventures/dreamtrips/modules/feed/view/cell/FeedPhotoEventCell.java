@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +14,8 @@ import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -39,7 +42,12 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
             Photo photoObj = obj.getItem();
             photo.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
             loadPhoto(photoObj);
-            title.setText(photoObj.getTitle());
+            if (!TextUtils.isEmpty(photoObj.getTitle())) {
+                title.setVisibility(View.VISIBLE);
+                title.setText(photoObj.getTitle());
+            } else {
+                title.setVisibility(View.GONE);
+            }
         }
     }
 

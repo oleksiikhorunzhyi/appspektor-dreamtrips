@@ -4,10 +4,13 @@ import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-public class Image extends BaseEntity implements Parcelable {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class Image implements Parcelable {
 
     public static final String PATTERN = "?width=%d&height=%d";
 

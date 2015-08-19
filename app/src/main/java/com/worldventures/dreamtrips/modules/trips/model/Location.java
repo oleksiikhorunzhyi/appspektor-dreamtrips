@@ -3,8 +3,12 @@ package com.worldventures.dreamtrips.modules.trips.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.io.Serializable;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class Location implements Serializable, Parcelable {
 
     public static final Creator<Location> CREATOR = new Creator<Location>() {

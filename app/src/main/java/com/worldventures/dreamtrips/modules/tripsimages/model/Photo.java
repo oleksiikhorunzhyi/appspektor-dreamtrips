@@ -4,6 +4,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     private long uid;
@@ -108,16 +111,8 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
         this.images = images;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
     public void setLiked(boolean liked) {
         this.liked = liked;
-    }
-
-    public int getLikesCount() {
-        return likesCount;
     }
 
     public void setLikesCount(int likesCount) {
@@ -275,6 +270,16 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
     @Override
     public List<Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public boolean isLiked() {
+        return liked;
+    }
+
+    @Override
+    public int likesCount() {
+        return likesCount;
     }
 
 }

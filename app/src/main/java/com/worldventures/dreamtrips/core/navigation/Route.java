@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -74,7 +75,8 @@ public enum Route {
     PHOTO_COMMENTS(CommentsFragment.class, R.string.comments_title),
     POST_CREATE(PostFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
-    FRIEND_PREFERENCES(FriendPreferenceFragment.class);
+    FRIEND_PREFERENCES(FriendPreferenceFragment.class),
+    FEED(FeedFragment.class, R.string.feed_title);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

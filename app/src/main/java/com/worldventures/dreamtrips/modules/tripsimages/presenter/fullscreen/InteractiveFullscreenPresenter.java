@@ -58,7 +58,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     private void onLikeSuccess() {
         boolean isLiked = !photo.isLiked();
         photo.setLiked(isLiked);
-        int likesCount = photo.getLikesCount();
+        int likesCount = photo.likesCount();
         int actualLikeCount = isLiked ? likesCount + 1 : likesCount - 1;
         photo.setLikesCount(actualLikeCount);
         view.setLiked(isLiked);

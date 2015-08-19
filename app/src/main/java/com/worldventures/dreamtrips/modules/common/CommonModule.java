@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPla
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -76,6 +77,8 @@ public class CommonModule {
     @Provides
     ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
         List<String> activeComponents = new ArrayList<>();
+
+        activeComponents.add(FeedModule.FEED);
 
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 

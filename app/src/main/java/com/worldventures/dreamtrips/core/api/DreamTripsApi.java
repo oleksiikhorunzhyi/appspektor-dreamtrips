@@ -262,10 +262,16 @@ public interface DreamTripsApi {
     JSONObject unfriend(@Path("user_id") int userId);
 
     @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/social/timeline")
-    ArrayList<ParentFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("page") int page);
+
+    @GET("/api/social/users/{user_id}/fedd")
+    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+
+    @GET("/api/social/feed")
+    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/social/items/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") long objectId, @Query("per_page") int perPage, @Query("page") int page);

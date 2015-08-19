@@ -21,6 +21,7 @@ public class Comment implements Parcelable, Serializable {
     Date updatedAt;
     boolean update;
 
+    long entityId;
 
     protected Comment(Parcel in) {
         uid = in.readLong();
@@ -81,5 +82,21 @@ public class Comment implements Parcelable, Serializable {
         parcel.writeLong(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Comment comment = (Comment) o;
+
+        return uid == comment.uid;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (uid ^ (uid >>> 32));
     }
 }

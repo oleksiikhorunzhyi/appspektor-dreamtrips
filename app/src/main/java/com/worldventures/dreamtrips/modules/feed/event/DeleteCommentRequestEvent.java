@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.feed.event;
 
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
-public class DeleteCommentEvent {
+public class DeleteCommentRequestEvent {
 
     private Comment comment;
 
-    public DeleteCommentEvent(Comment comment) {
+    public DeleteCommentRequestEvent(Comment comment) {
         this.comment = comment;
     }
 

@@ -48,6 +48,7 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
         getEventBus().post(new CommentsPressedEvent(getModelObject()));
     }
 
+    @Optional
     @OnClick(R.id.likes)
     void likeClicked() {
         getEventBus().post(new LikesPressedEvent(getModelObject()));

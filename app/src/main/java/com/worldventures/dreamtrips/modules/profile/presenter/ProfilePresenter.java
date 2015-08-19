@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -172,6 +173,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             }
         }
     }
+
+
+    public void onEvent(FeedObjectChangedEvent event) {
+        view.getAdapter().itemUpdated(event.getFeedObject());
+    }
+
 
     public void refreshFeedItems(List<ParentFeedModel> feedItems) {
         reloadFeedModel.setVisible(false);

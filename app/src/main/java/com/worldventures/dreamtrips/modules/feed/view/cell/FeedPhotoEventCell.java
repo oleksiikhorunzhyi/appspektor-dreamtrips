@@ -9,18 +9,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import org.w3c.dom.Text;
-
-import javax.inject.Inject;
-
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
 public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {

@@ -4,9 +4,10 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
-import com.worldventures.dreamtrips.modules.feed.event.CommentUpdatedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
+import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
@@ -51,26 +52,41 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void post() {
-        doRequest(new CreateCommentCommand(feedEntity.getUid(), comment), view::addComment);
+        doRequest(new CreateCommentCommand(feedEntity.getUid(), comment), this::onCommentPosted);
     }
 
     public void onEvent(LoadMoreEvent event) {
         loadComments();
     }
 
-    public void onEvent(DeleteCommentEvent event) {
+    public void onEvent(DeleteCommentRequestEvent event) {
         doRequest(new DeleteCommentCommand(event.getComment().getUid()), jsonObject -> {
             view.removeComment(event.getComment());
+            feedEntity.getComments().remove(event.getComment());
+            feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
+            eventBus.post(new FeedObjectChangedEvent(feedModel));
+
         });
     }
 
-    public void onEvent(CommentUpdatedEvent event) {
-        view.updateComment(event.getComment());
+    public void onEvent(EditCommentRequestEvent event) {
+        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(feedModel, event.getComment());
+        view.editComment(editCommentPresenter);
     }
 
-    public void onEvent(EditCommentEvent event) {
-        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
-        view.editComment(editCommentPresenter);
+
+    public void onEvent(CommentChangedEvent event) {
+        view.updateComment(event.getComment());
+        feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
+        eventBus.post(new FeedObjectChangedEvent(feedModel));
+
+    }
+
+    private void onCommentPosted(Comment comment) {
+        view.addComment(comment);
+        feedEntity.getComments().add(0, comment);
+        feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
+        eventBus.post(new FeedObjectChangedEvent(feedModel));
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {

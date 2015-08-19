@@ -11,7 +11,9 @@ public interface IFeedObject {
 
     long getUid();
 
-    int commentsCount();
+    int getCommentsCount();
+
+    void setCommentsCount(int count);
 
     List<Comment> getComments();
 

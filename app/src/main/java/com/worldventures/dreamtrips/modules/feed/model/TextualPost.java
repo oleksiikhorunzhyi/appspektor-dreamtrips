@@ -41,8 +41,13 @@ public class TextualPost implements IFeedObject {
     }
 
     @Override
-    public int commentsCount() {
+    public int getCommentsCount() {
         return commentsCount;
+    }
+
+    @Override
+    public void setCommentsCount(int count) {
+        commentsCount = count;
     }
 
     @Override

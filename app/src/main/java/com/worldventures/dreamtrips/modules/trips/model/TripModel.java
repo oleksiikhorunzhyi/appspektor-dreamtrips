@@ -175,10 +175,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         this.dates = availabilityDates;
     }
 
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
     public RegionModel getRegion() {
         return region;
     }
@@ -323,8 +319,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     }
 
     @Override
-    public Date getCreatedAt() {
-        return null;
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     @Override

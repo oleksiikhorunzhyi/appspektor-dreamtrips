@@ -6,13 +6,10 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BaseFeedModel<T extends IFeedObject> implements Serializable {
@@ -116,5 +113,21 @@ public class BaseFeedModel<T extends IFeedObject> implements Serializable {
         UPDATE,
         @SerializedName("like")
         LIKE
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseFeedModel<?> that = (BaseFeedModel<?>) o;
+
+        return !(item != null ? !item.equals(that.item) : that.item != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return item != null ? item.hashCode() : 0;
     }
 }

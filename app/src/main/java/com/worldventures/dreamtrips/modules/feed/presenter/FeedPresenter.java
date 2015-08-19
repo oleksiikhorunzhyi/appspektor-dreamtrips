@@ -2,11 +2,15 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -30,6 +34,21 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onEvent(CommentsPressedEvent event) {
         eventBus.cancelEventDelivery(event);
         view.openComments(event.getModel());
+    }
+
+    public void onEvent(LikesPressedEvent event) {
+        BaseFeedModel model = event.getModel();
+        DreamTripsRequest command = model.getItem().isLiked() ?
+                new UnlikeEntityCommand(model.getItem().getUid()) :
+                new LikeEntityCommand(model.getItem().getUid());
+        doRequest(command, element -> {
+            model.getItem().setLiked(!model.getItem().isLiked());
+            itemChanged(model);
+        });
+    }
+
+    private void itemChanged(BaseFeedModel baseFeedModel) {
+        view.getAdapter().itemUpdated(baseFeedModel);
     }
 
     public void loadFeed() {

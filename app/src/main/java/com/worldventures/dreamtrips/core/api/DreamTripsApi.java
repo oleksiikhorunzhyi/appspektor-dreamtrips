@@ -109,23 +109,11 @@ public interface DreamTripsApi {
     @DELETE("/api/photos/{id}")
     JsonObject deletePhoto(@Path("id") String photoId);
 
-    @POST("/api/photos/{id}/like")
-    JsonObject likePhoto(@Path("id") String photoId);
-
-    @DELETE("/api/photos/{id}/like")
-    JsonObject unlikePhoto(@Path("id") String photoId);
-
     @POST("/api/success_stories/{id}/like")
     JsonObject likeSS(@Path("id") int photoId);
 
     @DELETE("/api/success_stories/{id}/like")
     JsonObject unlikeSS(@Path("id") int photoId);
-
-    @POST("/api/trips/{id}/like")
-    JsonObject likeTrip(@Path("id") String photoId);
-
-    @DELETE("/api/trips/{id}/like")
-    JsonObject unlikeTrio(@Path("id") String photoId);
 
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
@@ -233,8 +221,8 @@ public interface DreamTripsApi {
 
     @GET("/api/social/friends")
     ArrayList<User> getFriends(@Query("circle_id") String circle_id,
-                                 @Query("query") String query,
-                                 @Query("offset") int offset);
+                               @Query("query") String query,
+                               @Query("offset") int offset);
 
     @GET("/api/social/friends")
     ArrayList<User> getAllFriends(@Query("query") String query, @Query("offset") int offset);
@@ -302,4 +290,10 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @BODY_DELETE("/api/social/circles/{circle_id}/users")
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+
+    @POST("/api/entities/{uid}/likes")
+    Void likeEntity(@Path("uid") long uid);
+
+    @DELETE("/api/entities/{uid}/likes")
+    Void dislikeEntity(@Path("uid") long uid);
 }

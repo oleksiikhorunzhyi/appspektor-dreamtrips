@@ -3,14 +3,13 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
-import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
+import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
@@ -87,9 +86,9 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     public void likeTrip() {
         toggleTripLike();
 
-        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
-                new LikeTripCommand(trip.getLikeId()) :
-                new UnlikeTripCommand(trip.getLikeId());
+        DreamTripsRequest<Void> request = trip.isLiked() ?
+                new LikeEntityCommand(trip.getUid()) :
+                new UnlikeEntityCommand(trip.getUid());
 
         doRequest(request, object -> {
             sweetDialogHelper.notifyTripLiked(activity, trip);

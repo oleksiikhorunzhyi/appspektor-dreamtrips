@@ -5,6 +5,7 @@ import android.view.View;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 
@@ -45,6 +46,11 @@ public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCe
     @OnClick({R.id.commentsList, R.id.comments})
     void commentsClicked() {
         getEventBus().post(new CommentsPressedEvent(getModelObject()));
+    }
+
+    @OnClick(R.id.likes)
+    void likeClicked() {
+        getEventBus().post(new LikesPressedEvent(getModelObject()));
     }
 
 }

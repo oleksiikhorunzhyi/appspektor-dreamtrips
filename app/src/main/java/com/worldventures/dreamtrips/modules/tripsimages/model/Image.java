@@ -9,8 +9,10 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import java.io.Serializable;
+
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Image implements Parcelable {
+public class Image implements Parcelable, Serializable {
 
     public static final String PATTERN = "?width=%d&height=%d";
 

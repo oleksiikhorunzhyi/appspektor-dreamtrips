@@ -19,18 +19,16 @@
             android:padding="@dimen/spacing_normal">
 
             <TextView
-                android:id="@+id/comments_count"
+                android:id="@+id/likes_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 comments"
                 android:textColor="@color/theme_main_darker"
                 />
 
             <TextView
-                android:id="@+id/likes_count"
+                android:id="@+id/comments_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 likes"
                 android:textColor="@color/theme_main_darker"
                 />
 
@@ -43,7 +41,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/comments"
             android:layout_toStartOf="@+id/comments"
-            android:padding="@dimen/spacing_normal"
+            android:padding="@dimen/spacing_small"
             android:src="@drawable/ic_feed_thumb_up"/>
 
         <ImageView
@@ -54,7 +52,9 @@
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/likes"
             android:layout_centerVertical="true"
-            android:padding="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:padding="@dimen/spacing_small"
             android:src="@drawable/ic_feed_footer_comments"/>
 
     </RelativeLayout>

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
 
-import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -18,9 +17,9 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
-import com.worldventures.dreamtrips.modules.trips.api.LikeTripCommand;
-import com.worldventures.dreamtrips.modules.trips.api.UnlikeTripCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
@@ -150,9 +149,9 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     }
 
     public void onItemLike(TripModel trip) {
-        DreamTripsRequest<JsonObject> request = trip.isLiked() ?
-                new LikeTripCommand(trip.getLikeId()) :
-                new UnlikeTripCommand(trip.getLikeId());
+        DreamTripsRequest<Void> request = trip.isLiked() ?
+                new LikeEntityCommand(trip.getUid()) :
+                new UnlikeEntityCommand(trip.getUid());
 
         doRequest(request, (object) -> {
             onSuccess(trip);

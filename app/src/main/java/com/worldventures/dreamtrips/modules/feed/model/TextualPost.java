@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TextualPost implements IFeedObject{
+public class TextualPost implements IFeedObject {
 
     private long uid;
 
@@ -36,8 +36,8 @@ public class TextualPost implements IFeedObject{
     }
 
     @Override
-    public Date getCreatedAt() {
-        return null;
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     @Override
@@ -60,4 +60,19 @@ public class TextualPost implements IFeedObject{
         return likesCount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TextualPost that = (TextualPost) o;
+
+        return uid == that.uid;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (uid ^ (uid >>> 32));
+    }
 }

@@ -13,12 +13,13 @@ import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
+public class Photo implements Parcelable, Serializable, IFullScreenObject, IFeedObject {
 
     private long uid;
 
@@ -109,10 +110,6 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     public void setImages(Image images) {
         this.images = images;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
     }
 
     public void setLikesCount(int likesCount) {
@@ -258,13 +255,13 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
     }
 
     @Override
-    public Date getCreatedAt() {
-        return shotAt;
+    public int commentsCount() {
+        return commentsCount;
     }
 
     @Override
-    public int commentsCount() {
-        return commentsCount;
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -18,7 +19,7 @@ import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapt
 import java.util.Collections;
 
 import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class FeedItemHeaderHelper {
@@ -30,12 +31,14 @@ public class FeedItemHeaderHelper {
     TextView location;
     @InjectView(R.id.feed_header_date)
     TextView date;
-    @Optional
     @InjectView(R.id.comments_count)
     TextView commentsCount;
-    @Optional
     @InjectView(R.id.commentsList)
     LinearListView comments;
+    @InjectView(R.id.likes_count)
+    TextView likesCount;
+    @InjectView(R.id.likes)
+    ImageView likes;
 
     public void set(BaseFeedModel feedModel, Context context) {
         try {
@@ -54,11 +57,14 @@ public class FeedItemHeaderHelper {
             date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
                     DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
 
-            if (commentsCount != null) {
-                commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().commentsCount()));
-            }
+            likesCount.setText(context.getString(R.string.likes, feedModel.getItem().likesCount()));
+            commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().commentsCount()));
 
-            if (comments != null && feedModel.getItem().getComments() != null) {
+            likes.setImageResource(feedModel.getItem().isLiked() ?
+                    R.drawable.ic_feed_thumb_up_blue :
+                    R.drawable.ic_feed_thumb_up);
+
+            if (feedModel.getItem().getComments() != null) {
                 Collections.reverse(feedModel.getItem().getComments());
                 comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getItem().getComments())
                         .take(2)

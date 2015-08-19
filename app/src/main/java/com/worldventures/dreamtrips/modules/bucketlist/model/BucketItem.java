@@ -196,8 +196,8 @@ public class BucketItem implements IFeedObject, Serializable {
     }
 
     @Override
-    public Date getCreatedAt() {
-        return targetDate;
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     @Override

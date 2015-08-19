@@ -6,12 +6,16 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
@@ -181,6 +185,21 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         view.finishLoading();
         view.getAdapter().addItems(Queryable.from(feedItems)
                 .filter(ParentFeedModel::isSingle).map(element -> element.getItems().get(0)).toList());
+    }
+
+    public void onEvent(LikesPressedEvent event) {
+        BaseFeedModel model = event.getModel();
+        DreamTripsRequest command = model.getItem().isLiked() ?
+                new UnlikeEntityCommand(model.getItem().getUid()) :
+                new LikeEntityCommand(model.getItem().getUid());
+        doRequest(command, element -> {
+            model.getItem().setLiked(!model.getItem().isLiked());
+            itemChanged(model);
+        });
+    }
+
+    private void itemChanged(BaseFeedModel baseFeedModel) {
+        view.getAdapter().itemUpdated(baseFeedModel);
     }
 
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest();

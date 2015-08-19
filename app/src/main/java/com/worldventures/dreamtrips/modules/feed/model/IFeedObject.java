@@ -11,8 +11,6 @@ public interface IFeedObject {
 
     long getUid();
 
-    Date getCreatedAt();
-
     int commentsCount();
 
     List<Comment> getComments();
@@ -20,4 +18,6 @@ public interface IFeedObject {
     int likesCount();
 
     boolean isLiked();
+
+    void setLiked(boolean isLiked);
 }

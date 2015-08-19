@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -168,6 +169,14 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void setItems(List<BaseItemClass> baseItemClasses) {
         this.items = baseItemClasses;
         this.notifyDataSetChanged();
+    }
+
+    public void itemUpdated(BaseItemClass changedItem) {
+        Queryable.from(items).forEachR(item -> {
+            int position = items.indexOf(item);
+            if (changedItem.equals(item)) items.set(position, changedItem);
+            notifyItemChanged(position);
+        });
     }
 
     public List<BaseItemClass> getItems() {

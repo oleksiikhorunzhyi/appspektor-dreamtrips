@@ -192,11 +192,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         DreamTripsRequest command = model.getItem().isLiked() ?
                 new UnlikeEntityCommand(model.getItem().getUid()) :
                 new LikeEntityCommand(model.getItem().getUid());
-        doRequest(command, element -> itemChanged(model));
+        doRequest(command, element -> {
+            model.getItem().setLiked(!model.getItem().isLiked());
+            itemChanged(model);
+        });
     }
 
     private void itemChanged(BaseFeedModel baseFeedModel) {
-        baseFeedModel.getItem().setLiked(!baseFeedModel.getItem().isLiked());
         view.getAdapter().itemUpdated(baseFeedModel);
     }
 

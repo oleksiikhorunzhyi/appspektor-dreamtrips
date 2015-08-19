@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.event.LanguageClickedEvent;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     }
 
     @Override
-    protected void addCategories(List<Video> videos) {
+    protected void addCategories(List<Category> videos) {
         super.addCategories(videos);
         setLocale();
     }
@@ -83,8 +84,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     @Override
     protected void addCategoryHeader(String category, List<Video> videos, int index) {
         currentItems.add(new VideoHeader(category, index == 0));
-        currentItems.addAll(Queryable.from(videos).filter(video ->
-                video.getCategory().equals(category)).toList());
+        currentItems.addAll(videos);
     }
 
     public void onEvent(LanguageClickedEvent event) {

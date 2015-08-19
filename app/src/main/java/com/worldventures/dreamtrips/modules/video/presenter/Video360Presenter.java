@@ -15,9 +15,11 @@ import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -102,9 +104,15 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         doRequest(memberVideosRequest, this::onSuccess);
     }
 
-    private void onSuccess(List<Video> videos) {
-        recentVideos = Queryable.from(videos).filter(Video::isRecent).toList();
-        featuredVideos = Queryable.from(videos).filter(Video::isFeatured).toList();
+    private void onSuccess(List<Category> categories) {
+        recentVideos = new ArrayList<>();
+        featuredVideos = new ArrayList<>();
+
+        Queryable.from(categories).forEachR(cat -> {
+            recentVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isRecent).toList());
+            featuredVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isFeatured).toList());
+        });
+
         attachCacheToVideos(recentVideos);
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);

@@ -32,7 +32,12 @@ public class VideoHeaderCell extends AbstractCell<VideoHeader> {
 
     @Override
     protected void syncUIStateWithModel() {
-        header.setText(getModelObject().getTitle());
+        if (android.text.TextUtils.isEmpty(getModelObject().getTitle())) {
+            header.setText(itemView.getContext().getString(R.string.recent_videos));
+        } else {
+            header.setText(getModelObject().getTitle());
+        }
+
         header.setTextColor(itemView.getResources().getColor(R.color.white));
         language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
 

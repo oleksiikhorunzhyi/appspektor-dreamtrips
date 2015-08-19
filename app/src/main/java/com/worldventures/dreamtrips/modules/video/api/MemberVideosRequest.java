@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.video.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
-import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import java.util.ArrayList;
 
-public class MemberVideosRequest extends Query<ArrayList<Video>> {
+public class MemberVideosRequest extends Query<ArrayList<Category>> {
 
     private String type;
     private String locale;
 
     public MemberVideosRequest(String type, String locale) {
-        super((Class<ArrayList<Video>>) new ArrayList<Video>().getClass());
+        super((Class<ArrayList<Category>>) new ArrayList<Category>().getClass());
         this.type = type;
         this.locale = locale;
     }
@@ -23,7 +23,7 @@ public class MemberVideosRequest extends Query<ArrayList<Video>> {
 
 
     @Override
-    public ArrayList<Video> loadDataFromNetwork() throws Exception {
+    public ArrayList<Category> loadDataFromNetwork() throws Exception {
         if (locale != null) return getService().getVideos(type, locale);
         return getService().getVideos(type);
     }

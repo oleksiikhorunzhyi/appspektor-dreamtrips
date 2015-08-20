@@ -16,8 +16,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapter;
 
-import java.util.Collections;
-
 import butterknife.InjectView;
 import butterknife.Optional;
 import timber.log.Timber;
@@ -76,7 +74,6 @@ public class FeedItemHeaderHelper {
             }
 
             if (comments != null && feedModel.getItem().getComments() != null) {
-                Collections.reverse(feedModel.getItem().getComments());
                 comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getItem().getComments())
                         .take(2)
                         .toList(), context));

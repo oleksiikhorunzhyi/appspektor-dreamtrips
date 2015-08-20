@@ -14,7 +14,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapter;
+
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -74,9 +78,9 @@ public class FeedItemHeaderHelper {
             }
 
             if (comments != null && feedModel.getItem().getComments() != null) {
-                comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getItem().getComments())
-                        .take(2)
-                        .toList(), context));
+                List<Comment> comments = Queryable.from(feedModel.getItem().getComments()).take(2).toList();
+                Collections.reverse(comments);
+                this.comments.setAdapter(new CommentLinearAdapter(comments, context));
             }
 
         } catch (Exception e) {

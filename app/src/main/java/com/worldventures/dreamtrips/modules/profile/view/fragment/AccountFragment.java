@@ -72,14 +72,18 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void openAvatarPicker() {
-        getPresenter().setCallbackType(AVATAR_CALLBACK);
-        showChooseSelectPhotoTypeDialog();
+        if (isVisibleOnScreen()) {
+            getPresenter().setCallbackType(AVATAR_CALLBACK);
+            showChooseSelectPhotoTypeDialog();
+        }
     }
 
     @Override
     public void openCoverPicker() {
-        getPresenter().setCallbackType(COVER_CALLBACK);
-        showChooseSelectPhotoTypeDialog();
+        if (isVisibleOnScreen()) {
+            getPresenter().setCallbackType(COVER_CALLBACK);
+            showChooseSelectPhotoTypeDialog();
+        }
     }
 
     private void showChooseSelectPhotoTypeDialog() {

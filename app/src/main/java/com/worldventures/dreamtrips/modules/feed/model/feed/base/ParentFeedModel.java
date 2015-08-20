@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model.feed.base;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
 public class ParentFeedModel {
 
     private String type;
-    List<BaseFeedModel> items;
+    List<BaseEventModel> items;
 
-    public List<BaseFeedModel> getItems() {
+    public List<BaseEventModel> getItems() {
         return items;
     }
 
@@ -24,7 +24,7 @@ public class ParentFeedModel {
         return type.equals("Single");
     }
 
-    public void setItems(List<BaseFeedModel> items) {
+    public void setItems(List<BaseEventModel> items) {
         this.items = items;
     }
 }

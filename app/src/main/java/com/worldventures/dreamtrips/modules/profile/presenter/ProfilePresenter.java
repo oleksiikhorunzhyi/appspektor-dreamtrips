@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -195,7 +195,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(LikesPressedEvent event) {
-        BaseFeedModel model = event.getModel();
+        BaseEventModel model = event.getModel();
         DreamTripsRequest command = model.getItem().isLiked() ?
                 new UnlikeEntityCommand(model.getItem().getUid()) :
                 new LikeEntityCommand(model.getItem().getUid());
@@ -205,7 +205,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         });
     }
 
-    private void itemChanged(BaseFeedModel baseFeedModel) {
+    private void itemChanged(BaseEventModel baseFeedModel) {
         view.getAdapter().itemUpdated(baseFeedModel);
     }
 
@@ -242,7 +242,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
         BaseArrayListAdapter getAdapter();
 
-        void openComments(BaseFeedModel baseFeedModel);
+        void openComments(BaseEventModel baseFeedModel);
 
         void openPost();
 

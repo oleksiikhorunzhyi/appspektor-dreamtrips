@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
@@ -175,7 +175,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public void openComments(BaseFeedModel baseFeedModel) {
+    public void openComments(BaseEventModel baseFeedModel) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
         //

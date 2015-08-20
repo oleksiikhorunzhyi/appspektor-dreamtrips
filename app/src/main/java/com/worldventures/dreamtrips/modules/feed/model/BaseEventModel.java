@@ -12,10 +12,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseFeedModel<T extends IFeedObject> implements Serializable {
+public class BaseEventModel<T extends IFeedObject> implements Serializable {
 
-    protected BaseFeedModel.Type type;
-    protected BaseFeedModel.Action action;
+    protected BaseEventModel.Type type;
+    protected BaseEventModel.Action action;
 
     protected Links links;
     @SerializedName("posted_at")
@@ -95,11 +95,11 @@ public class BaseFeedModel<T extends IFeedObject> implements Serializable {
 
         private Class clazz;
 
-        Type(Class<? extends BaseFeedModel> clazz) {
+        Type(Class<? extends BaseEventModel> clazz) {
             this.clazz = clazz;
         }
 
-        public Class<? extends BaseFeedModel> getClazz() {
+        public Class<? extends BaseEventModel> getClazz() {
             return clazz;
         }
     }
@@ -120,7 +120,7 @@ public class BaseFeedModel<T extends IFeedObject> implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseFeedModel<?> that = (BaseFeedModel<?>) o;
+        BaseEventModel<?> that = (BaseEventModel<?>) o;
 
         return !(item != null ? !item.equals(that.item) : that.item != null);
 

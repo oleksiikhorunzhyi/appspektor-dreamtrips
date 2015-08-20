@@ -5,10 +5,10 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 public class CreateCommentCommand extends Command<Comment> {
 
-    private long objectId;
+    private String objectId;
     private String text;
 
-    public CreateCommentCommand(long objectId, String text) {
+    public CreateCommentCommand(String objectId, String text) {
         super(Comment.class);
         this.objectId = objectId;
         this.text = text;

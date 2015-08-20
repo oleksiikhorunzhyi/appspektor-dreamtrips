@@ -13,10 +13,12 @@ import com.linearlistview.LinearListView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapter;
 
 import java.util.Collections;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -45,7 +47,7 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.likes)
     ImageView likes;
 
-    public void set(BaseFeedModel feedModel, Context context) {
+    public void set(BaseEventModel feedModel, Context context) {
         try {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
@@ -76,10 +78,9 @@ public class FeedItemHeaderHelper {
             }
 
             if (comments != null && feedModel.getItem().getComments() != null) {
-                Collections.reverse(feedModel.getItem().getComments());
-                comments.setAdapter(new CommentLinearAdapter(Queryable.from(feedModel.getItem().getComments())
-                        .take(2)
-                        .toList(), context));
+                List<Comment> comments = Queryable.from(feedModel.getItem().getComments()).take(2).toList();
+                Collections.reverse(comments);
+                this.comments.setAdapter(new CommentLinearAdapter(comments, context));
             }
 
         } catch (Exception e) {

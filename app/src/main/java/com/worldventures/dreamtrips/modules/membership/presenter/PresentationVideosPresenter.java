@@ -110,7 +110,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         currentItems.addAll(videos);
     }
 
-
     private void attachListeners(List<Category> categories) {
         Queryable.from(categories).forEachR((cat) -> {
             Queryable.from(cat.getVideos()).forEachR(items -> Queryable.from(items).forEachR(item -> {

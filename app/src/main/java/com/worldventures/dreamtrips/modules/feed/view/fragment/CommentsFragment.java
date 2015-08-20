@@ -18,7 +18,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
@@ -66,7 +66,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter((BaseFeedModel) getArguments().
+        return new BaseCommentPresenter((BaseEventModel) getArguments().
                 getSerializable(EXTRA_FEED_ITEM));
     }
 
@@ -120,7 +120,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     }
 
     @Override
-    public void setHeader(BaseFeedModel baseFeedModel) {
+    public void setHeader(BaseEventModel baseFeedModel) {
         adapter.addItem(0, baseFeedModel);
         adapter.addItem(1, loadMore);
     }

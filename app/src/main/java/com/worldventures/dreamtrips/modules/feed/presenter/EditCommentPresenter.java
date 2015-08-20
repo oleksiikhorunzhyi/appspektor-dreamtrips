@@ -6,15 +6,15 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
-    BaseFeedModel feedObject;
+    BaseEventModel feedObject;
     private Comment comment;
 
-    public EditCommentPresenter(BaseFeedModel feedObject, Comment comment) {
+    public EditCommentPresenter(BaseEventModel feedObject, Comment comment) {
         this.feedObject = feedObject;
         this.comment = comment;
     }

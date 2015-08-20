@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -14,39 +12,32 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BucketItem implements IFeedObject, Serializable {
+public class BucketItem extends BaseFeedObject implements IFeedObject, Serializable {
 
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";
 
     private int id;
-    private long uid;
     private String name;
     private String status = NEW;
-    @SerializedName("target_date")
     private Date targetDate;
-    @SerializedName("completion_date")
     private Date completionDate;
     private String type;
     private String description;
-    private boolean liked;
-    private int likesCount;
     private List<BucketTag> tags;
-    @SerializedName("category")
-    private CategoryItem categoryItem;
+    private CategoryItem category;
     private List<String> friends;
     private List<BucketPhoto> photos = Collections.emptyList();
-    @SerializedName("cover_photo")
     private BucketPhoto coverPhoto;
     private BucketLocation location;
     private String link;
     private DiningItem dining;
 
-    private List<Comment> comments;
-    @SerializedName("comments_count")
-    private int commentsCount;
-
     private transient boolean selected;
+
+    public int getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -80,10 +71,6 @@ public class BucketItem implements IFeedObject, Serializable {
         }
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getUrl() {
         return link;
     }
@@ -113,7 +100,7 @@ public class BucketItem implements IFeedObject, Serializable {
     }
 
     public CategoryItem getCategory() {
-        return categoryItem;
+        return category;
     }
 
     public DiningItem getDining() {
@@ -121,8 +108,8 @@ public class BucketItem implements IFeedObject, Serializable {
     }
 
     public String getCategoryName() {
-        if (categoryItem != null) {
-            return categoryItem.getName();
+        if (category != null) {
+            return category.getName();
         } else {
             return "";
         }
@@ -160,68 +147,10 @@ public class BucketItem implements IFeedObject, Serializable {
 
     public String getBucketTags() {
         if (tags != null) {
-            return Queryable.from(tags).joinStrings(", ", (element) -> element.getName());
+            return Queryable.from(tags).joinStrings(", ", BucketTag::getName);
         } else {
             return "";
         }
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BucketItem that = (BucketItem) o;
-        return uid == that.uid;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (uid ^ (uid >>> 32));
-    }
-
-    ///////////////////////////////////////////
-    //////// Feed item
-    ///////////////////////////////////////////
-
-    @Override
-    public String place() {
-        return null;
-    }
-
-    @Override
-    public long getUid() {
-        return uid;
-    }
-
-    @Override
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    @Override
-    public int getCommentsCount() {
-        return commentsCount;
-    }
-
-    @Override
-    public void setCommentsCount(int count) {
-        commentsCount = count;
-    }
-
-    @Override
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    @Override
-    public boolean isLiked() {
-        return liked;
-    }
-
-    @Override
-    public int likesCount() {
-        return likesCount;
-    }
 }

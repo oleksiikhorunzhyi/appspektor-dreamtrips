@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 
 public class FeedObjectChangedEvent {
 
-    BaseFeedModel feedModel;
+    BaseEventModel feedModel;
 
-    public FeedObjectChangedEvent(BaseFeedModel feedModel) {
+    public FeedObjectChangedEvent(BaseEventModel feedModel) {
         this.feedModel = feedModel;
     }
 
-    public BaseFeedModel getFeedObject() {
+    public BaseEventModel getFeedObject() {
         return feedModel;
     }
 }

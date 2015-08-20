@@ -255,11 +255,15 @@ public class Photo implements Parcelable, Serializable, IFullScreenObject, IFeed
     }
 
     @Override
-    public int commentsCount() {
+    public int getCommentsCount() {
         return commentsCount;
     }
 
     @Override
+    public void setCommentsCount(int count) {
+        commentsCount = count;
+    }
+    
     public void setLiked(boolean liked) {
         this.liked = liked;
     }

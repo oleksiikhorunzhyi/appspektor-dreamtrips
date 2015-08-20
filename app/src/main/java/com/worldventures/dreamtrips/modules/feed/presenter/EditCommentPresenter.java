@@ -5,14 +5,17 @@ import android.net.Uri;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.EditCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.event.CommentUpdatedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
+    BaseFeedModel feedObject;
     private Comment comment;
 
-    public EditCommentPresenter(Comment comment) {
+    public EditCommentPresenter(BaseFeedModel feedObject, Comment comment) {
+        this.feedObject = feedObject;
         this.comment = comment;
     }
 
@@ -28,7 +31,7 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
     public void onSave() {
         comment.setMessage(view.getText());
         doRequest(new EditCommentCommand(comment), result -> {
-            eventBus.post(new CommentUpdatedEvent(result));
+            eventBus.post(new CommentChangedEvent(result));
             view.close();
         });
     }

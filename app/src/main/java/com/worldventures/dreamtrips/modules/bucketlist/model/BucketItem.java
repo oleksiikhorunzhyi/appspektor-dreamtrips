@@ -201,8 +201,13 @@ public class BucketItem implements IFeedObject, Serializable {
     }
 
     @Override
-    public int commentsCount() {
+    public int getCommentsCount() {
         return commentsCount;
+    }
+
+    @Override
+    public void setCommentsCount(int count) {
+        commentsCount = count;
     }
 
     @Override

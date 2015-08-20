@@ -6,15 +6,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
 public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {

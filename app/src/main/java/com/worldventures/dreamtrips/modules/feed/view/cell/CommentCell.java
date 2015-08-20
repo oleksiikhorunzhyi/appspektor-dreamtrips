@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import javax.inject.Inject;
@@ -91,13 +91,13 @@ public class CommentCell extends AbstractCell<Comment> {
                             .setConfirmText(itemView.getResources().getString(R.string.comment_delete_confirm))
                             .setConfirmClickListener(sDialog -> {
                                 sDialog.dismissWithAnimation();
-                                getEventBus().post(new DeleteCommentEvent(getModelObject()));
+                                getEventBus().post(new DeleteCommentRequestEvent(getModelObject()));
                             });
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.show();
                     break;
                 case R.id.action_edit:
-                    getEventBus().post(new EditCommentEvent(getModelObject()));
+                    getEventBus().post(new EditCommentRequestEvent(getModelObject()));
                     break;
             }
 

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -34,6 +35,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onEvent(CommentsPressedEvent event) {
         eventBus.cancelEventDelivery(event);
         view.openComments(event.getModel());
+    }
+
+    public void onEvent(FeedObjectChangedEvent event) {
+        view.getAdapter().itemUpdated(event.getFeedObject());
     }
 
     public void onEvent(LikesPressedEvent event) {

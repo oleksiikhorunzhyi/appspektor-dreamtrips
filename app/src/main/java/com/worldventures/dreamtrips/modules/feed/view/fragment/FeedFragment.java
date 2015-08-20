@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 
@@ -47,15 +47,15 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
 
-    private BaseArrayListAdapter<BaseFeedModel> adapter;
+    private BaseArrayListAdapter<BaseEventModel> adapter;
 
     @Icicle
-    ArrayList<BaseFeedModel> items;
+    ArrayList<BaseEventModel> items;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (adapter != null) {
-            List<BaseFeedModel> items = adapter.getItems();
+            List<BaseEventModel> items = adapter.getItems();
             this.items = new ArrayList<>(items);
         }
         super.onSaveInstanceState(outState);
@@ -120,12 +120,12 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     }
 
     @Override
-    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
+    public BaseArrayListAdapter<BaseEventModel> getAdapter() {
         return adapter;
     }
 
     @Override
-    public void openComments(BaseFeedModel baseFeedModel) {
+    public void openComments(BaseEventModel baseFeedModel) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
         //

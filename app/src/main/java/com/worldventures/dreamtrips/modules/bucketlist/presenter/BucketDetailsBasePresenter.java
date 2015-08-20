@@ -267,6 +267,11 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
     }
 
+    public void onEvent(ImagePickedEvent event) {
+        eventBus.removeStickyEvent(event);
+        imagePicked(event);
+    }
+
     public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId) {
             eventBus.removeStickyEvent(event);

@@ -9,26 +9,20 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel implements Filterable, Serializable, IFeedObject {
+public class TripModel extends BaseFeedObject implements Filterable, Serializable {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
 
-    private long uid;
-
-    @SerializedName("id")
-    private String likeId;
     @SerializedName("trip_id")
     private String tripId;
 
@@ -36,8 +30,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     private String description;
     private boolean featured;
     private boolean rewarded;
-    private boolean liked;
-    private int likesCount;
     private int duration;
     @SerializedName("price_available")
     private boolean priceAvailable;
@@ -57,15 +49,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     @SerializedName("recent")
     private boolean recentlyAdded;
     private boolean inBucketList;
-
-    private List<Comment> comments;
-    @SerializedName("comments_count")
-    private int commentsCount;
-
-
-    public String getLikeId() {
-        return likeId;
-    }
 
     public String getTripId() {
         return tripId;
@@ -284,67 +267,9 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TripModel tripModel = (TripModel) o;
-
-        return uid == tripModel.uid;
-
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (uid ^ (uid >>> 32));
-    }
-
-    @Override
     public String toString() {
         return tripId;
     }
 
-    ///////////////////////////////////////////
-    //////// Feed item
-    ///////////////////////////////////////////
 
-    @Override
-    public String place() {
-        return null;
-    }
-
-    @Override
-    public long getUid() {
-        return uid;
-    }
-
-    @Override
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    @Override
-    public int getCommentsCount() {
-        return commentsCount;
-    }
-
-    @Override
-    public void setCommentsCount(int count) {
-        commentsCount = count;
-    }
-
-    @Override
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    @Override
-    public boolean isLiked() {
-        return liked;
-    }
-
-    @Override
-    public int likesCount() {
-        return likesCount;
-    }
 }

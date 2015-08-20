@@ -13,7 +13,7 @@ import com.linearlistview.LinearListView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapter;
 
 import butterknife.InjectView;
@@ -43,7 +43,7 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.likes)
     ImageView likes;
 
-    public void set(BaseFeedModel feedModel, Context context) {
+    public void set(BaseEventModel feedModel, Context context) {
         try {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));

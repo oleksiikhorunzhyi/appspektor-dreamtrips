@@ -9,7 +9,7 @@ public interface IFeedObject {
 
     String place();
 
-    long getUid();
+    String getUid();
 
     int getCommentsCount();
 

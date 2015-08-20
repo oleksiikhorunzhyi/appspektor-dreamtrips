@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -33,7 +32,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.video.model.Category;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import org.json.JSONObject;
 
@@ -262,11 +260,11 @@ public interface DreamTripsApi {
     ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/social/items/{object_id}/comments")
-    ArrayList<Comment> getComments(@Path("object_id") long objectId, @Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/api/social/comments")
-    Comment createComment(@Field("entity_id") long objectId, @Field("text") String text);
+    Comment createComment(@Field("entity_id") String objectId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/comments")
@@ -292,8 +290,8 @@ public interface DreamTripsApi {
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
     @POST("/api/entities/{uid}/likes")
-    Void likeEntity(@Path("uid") long uid);
+    Void likeEntity(@Path("uid") String uid);
 
     @DELETE("/api/entities/{uid}/likes")
-    Void dislikeEntity(@Path("uid") long uid);
+    Void dislikeEntity(@Path("uid") String uid);
 }

@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
@@ -91,7 +91,7 @@ public class FeedView extends RecyclerView {
         stateDelegate.onDestroyView();
     }
 
-    public BaseArrayListAdapter<BaseFeedModel> getAdapter() {
+    public BaseArrayListAdapter<BaseEventModel> getAdapter() {
         return adapter;
     }
 

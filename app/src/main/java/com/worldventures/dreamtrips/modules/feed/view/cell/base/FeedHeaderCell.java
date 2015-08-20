@@ -6,14 +6,14 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class FeedHeaderCell<T extends BaseFeedModel> extends AbstractCell<T> {
+public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractCell<T> {
 
     private boolean syncUIStateWithModelWasCalled = false;
 

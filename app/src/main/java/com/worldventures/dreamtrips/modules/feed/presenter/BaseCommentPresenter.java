@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -19,7 +19,7 @@ import java.util.List;
 import icepick.Icicle;
 
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
-    BaseFeedModel feedModel;
+    BaseEventModel feedModel;
     IFeedObject feedEntity;
 
     private int page = 1;
@@ -27,7 +27,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @Icicle
     String comment;
 
-    public BaseCommentPresenter(BaseFeedModel feedModel) {
+    public BaseCommentPresenter(BaseEventModel feedModel) {
         this.feedModel = feedModel;
         feedEntity = feedModel.getItem();
     }
@@ -116,7 +116,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         void setLoading(boolean loading);
 
-        void setHeader(BaseFeedModel header);
+        void setHeader(BaseEventModel header);
 
         void editComment(EditCommentPresenter presenter);
 

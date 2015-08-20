@@ -4,9 +4,9 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 
 public class LikeEntityCommand extends DreamTripsRequest<Void> {
 
-    private long uid;
+    private String uid;
 
-    public LikeEntityCommand(long uid) {
+    public LikeEntityCommand(String uid) {
         super(Void.class);
         this.uid = uid;
     }

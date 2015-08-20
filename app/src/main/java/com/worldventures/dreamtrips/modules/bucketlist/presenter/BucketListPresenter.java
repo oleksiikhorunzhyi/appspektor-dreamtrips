@@ -144,7 +144,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putInt(BucketListModule.EXTRA_ITEM, bucketItem.getId());
+        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, bucketItem.getId());
 
         view.showDetailsContainer();
         view.openDetails(bundle);

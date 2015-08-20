@@ -371,4 +371,6 @@
     <string name="social_unfriend_confiramation_cancel">No</string>
     <string name="feed_title">My Activity Feed</string>
 
+    <string name="pictures">Pictures</string>
+
 </resources>

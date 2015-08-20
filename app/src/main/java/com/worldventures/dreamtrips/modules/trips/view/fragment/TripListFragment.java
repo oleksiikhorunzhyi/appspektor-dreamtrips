@@ -22,7 +22,6 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
-import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -135,10 +134,6 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     @Override
     public void showErrorMessage() {
         ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
-    }
-
-    public void onEvent(TouchTripEvent event) {
-        getPresenter().onItemClick(event.getTrip());
     }
 
     @Override

@@ -117,7 +117,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/my_pictures"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                android:id="@+id/pictures_title"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -159,7 +160,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="12dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/controllerWrapper">
 
         <ImageView
             android:id="@+id/bucketItemDelete"

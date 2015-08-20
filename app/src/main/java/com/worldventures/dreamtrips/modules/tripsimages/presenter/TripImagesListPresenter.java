@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import android.os.Bundle;
 import android.os.Handler;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -9,6 +10,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
@@ -19,8 +22,10 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +71,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
         view.fillWithItems(photos);
         view.setSelection();
 
-        if (type != Type.BUCKET_PHOTOS && !isFullscreen)
+        if (type != Type.FIXED_LIST && !isFullscreen)
             reload();
     }
 
@@ -118,7 +123,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
                     startUpload((UploadTask) obj);
                 }
             } else {
-                this.activityRouter.openFullScreenPhoto(position, type);
+                Bundle args = new Bundle();
+                args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
+                args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, type);
+                view.openFullscreen(args);
             }
         }
     }
@@ -260,6 +268,10 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen) {
+        return create(type, isFullscreen, null);
+    }
+
+    public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos) {
         TripImagesListPresenter presenter = new MyImagesPresenter();
         switch (type) {
             case MEMBER_IMAGES:
@@ -274,8 +286,8 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
             case INSPIRE_ME:
                 presenter = new InspireMePresenter();
                 break;
-            case BUCKET_PHOTOS:
-                presenter = new BucketPhotoFsPresenter();
+            case FIXED_LIST:
+                presenter = new FixedPhotoFsPresenter(photos);
                 break;
         }
         presenter.setFullscreen(isFullscreen);
@@ -344,7 +356,9 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
         IRoboSpiceAdapter getAdapter();
 
-        void inject(Object getMyPhotos);
+        void openFullscreen(Bundle args);
+
+        void inject(Object getMyPhotosQuery);
     }
 
 }

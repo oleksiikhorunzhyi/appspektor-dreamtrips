@@ -198,11 +198,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         fragmentCompass.replace(Route.MAP);
     }
 
-    public void onItemClick(TripModel trip) {
-        activityRouter.openTripDetails(trip);
-    }
-
-
     public interface View extends Presenter.View {
         void dataSetChanged();
 

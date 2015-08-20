@@ -11,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,6 +19,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -39,7 +41,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragment<T> implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
@@ -100,8 +102,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @ForActivity
     Provider<Injector> injector;
 
-    WeakHandler handler = new WeakHandler();
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -118,8 +118,8 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    protected BucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemDetailsPresenter(getArguments());
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new BucketItemDetailsPresenter(getArguments());
     }
 
     @Override
@@ -271,6 +271,15 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @Override
     public IBucketPhotoView getBucketPhotosView() {
         return bucketPhotosView;
+    }
+
+    @Override
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .args(args)
+                .move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

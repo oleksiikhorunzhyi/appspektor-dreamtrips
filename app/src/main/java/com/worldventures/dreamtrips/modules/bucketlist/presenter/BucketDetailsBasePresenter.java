@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +40,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V>
         implements TransferListener {
@@ -52,6 +52,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected BucketTabsPresenter.BucketType type;
     protected int bucketItemId;
+    protected BucketItem extraBucketItem;
 
     protected BucketItem bucketItem;
 
@@ -61,15 +62,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         super();
         type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketListModule.EXTRA_TYPE);
-        bucketItemId = bundle.getInt(BucketListModule.EXTRA_ITEM);
+        bucketItemId = bundle.getInt(BucketListModule.EXTRA_ITEM_ID);
+        extraBucketItem = (BucketItem) bundle.getSerializable(BucketListModule.EXTRA_ITEM);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
-
+        restoreBucketItem();
         syncUI();
 
         if (tasks != null)
@@ -86,8 +88,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     }
 
-    public void onEventMainThread(BucketItemUpdatedEvent event) {
+    private void restoreBucketItem() {
         bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
+        if (bucketItem == null) {
+            bucketItem = extraBucketItem;
+        }
+    }
+
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
+        restoreBucketItem();
         syncUI();
     }
 
@@ -141,14 +150,18 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void openFullScreen(BucketPhoto selectedPhoto) {
         if ((bucketItem.getPhotos().contains(selectedPhoto))) {
-            List<IFullScreenObject> photos = new ArrayList<>();
+            ArrayList<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
                         photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
             }
             photos.addAll(bucketItem.getPhotos());
-            db.savePhotoEntityList(Type.BUCKET_PHOTOS, photos);
-            this.activityRouter.openFullScreenPhoto(photos.indexOf(selectedPhoto), Type.BUCKET_PHOTOS);
+
+            Bundle args = new Bundle();
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, photos.indexOf(selectedPhoto));
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, photos);
+          view.openFullscreen(args);
         }
     }
 
@@ -329,5 +342,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         void showAddPhotoDialog();
 
         IBucketPhotoView getBucketPhotosView();
+
+        void openFullscreen(Bundle args);
     }
 }

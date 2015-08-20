@@ -21,7 +21,7 @@ public class Comment implements Parcelable, Serializable {
     Date updatedAt;
     boolean update;
 
-    long entityId;
+    long originalId;
 
     protected Comment(Parcel in) {
         uid = in.readLong();

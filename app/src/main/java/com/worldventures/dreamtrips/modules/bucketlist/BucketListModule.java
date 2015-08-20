@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPrese
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
@@ -25,7 +26,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListF
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.BucketPhotoFsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedPhotoFsPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,8 +54,10 @@ import dagger.Provides;
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
                 BucketPhotoCellForDetails.class,
-                BucketPhotoFsPresenter.class,
-                BucketPhotosView.class
+                FixedPhotoFsPresenter.class,
+                BucketPhotosView.class,
+                ForeignBucketItemDetailsPresenter.class,
+                ForeignBucketDetailsFragment.class
         },
         complete = false,
         library = true
@@ -61,6 +65,7 @@ import dagger.Provides;
 public class BucketListModule {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
+    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
     public static final String BUCKETLIST = Route.BUCKET_LIST.name();
 

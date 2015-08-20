@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemE
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
@@ -35,6 +36,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
 public enum Route {
@@ -53,6 +55,7 @@ public enum Route {
     POPULAR_BUCKET(BucketListPopuralFragment.class),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class),
+    DETAIL_FOREIGN_BUCKET(ForeignBucketDetailsFragment.class),
 
     MAP(TripMapFragment.class),
     ENROLL(StaticInfoFragment.EnrollFragment.class),
@@ -76,7 +79,8 @@ public enum Route {
     POST_CREATE(PostFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class),
-    FEED(FeedFragment.class, R.string.feed_title);
+    FEED(FeedFragment.class, R.string.feed_title),
+    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

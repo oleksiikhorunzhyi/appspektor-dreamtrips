@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.FIXED_LIST;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
@@ -68,6 +69,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
         view.setFlagVisibility(isFlagVisible());
+        view.setCommentVisibility(isCommentVisible());
         view.loadImage(photo.getFSImage());
         view.setDescription(photo.getFsDescription());
         view.setCommentCount(photo.getFsCommentCount());
@@ -75,7 +77,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
-
+        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() || isDeleteVisible() || isFlagVisible() || isCommentVisible());
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
         }
@@ -88,12 +90,17 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected abstract boolean isLikeVisible();
 
+    protected boolean isCommentVisible() {
+        return false;
+    }
+
     protected boolean isLiked() {
         return false;
     }
 
+
     private boolean isLikeCountVisible() {
-        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
+        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME && type != FIXED_LIST;
     }
 
     public void sendFlagAction(String title, String desc) {
@@ -164,5 +171,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void showCoverProgress();
 
         void hideCoverProgress();
+
+        void setContentDividerVisibility(boolean b);
+
+        void setCommentVisibility(boolean commentVisible);
     }
 }

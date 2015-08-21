@@ -147,7 +147,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         bundle.putInt(BucketListModule.EXTRA_ITEM, bucketItem.getId());
 
         view.showDetailsContainer();
-        navigator.move(Route.DETAIL_BUCKET, bundle);
+        view.openDetails(bundle);
 
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
@@ -156,10 +156,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         view.getAdapter().notifyDataSetChanged();
     }
 
-    public void addPopular() {
+    public void popularClicked() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        navigator.move(Route.POPULAR_TAB_BUCKER, bundle);
+        view.openPopular(bundle);
     }
 
     public void reloadWithFilter(int filterId) {
@@ -235,5 +235,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void putCategoryMarker(int position);
 
         void checkEmpty(int count);
+
+        void openDetails(Bundle args);
+
+        void openPopular(Bundle args);
     }
 }

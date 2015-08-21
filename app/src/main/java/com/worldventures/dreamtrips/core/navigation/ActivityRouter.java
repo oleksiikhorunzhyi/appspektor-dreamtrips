@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -20,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
-
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
@@ -161,31 +159,9 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(InviteTemplateSelectorActivity.class);
     }
 
-    public void openComponentActivity(ComponentDescription component) {
-        openComponentActivity(component, null);
-    }
-
-    public void openComponentActivity(ComponentDescription component, Bundle args) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ComponentPresenter.COMPONENT, component);
-        bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
-        startActivity(ComponentActivity.class, bundle);
-    }
-
-    public void openComponentActivity(Route route) {
-        openComponentActivity(route, null);
-    }
-
-    public void openComponentActivity(Route route, Bundle args) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ComponentPresenter.ROUTE, route);
-        bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
-        startActivity(ComponentActivity.class, bundle);
-    }
-
-    public void openFriends() {
-        if (featureManager.available(Feature.SOCIAL)) {
-        }
+    public void openComponentActivity(@NonNull Route route, @NonNull Bundle args) {
+        args.putSerializable(ComponentPresenter.ROUTE, route);
+        startActivityWithArgs(ComponentActivity.class, args);
     }
 
     public void openFriendsSearch() {

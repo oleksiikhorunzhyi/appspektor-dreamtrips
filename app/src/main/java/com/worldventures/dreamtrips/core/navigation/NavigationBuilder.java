@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+
 public class NavigationBuilder {
 
     Navigator navigator;
     Bundle args;
+    ToolbarConfig toolbarConfig;
 
     public static NavigationBuilder create() {
         return new NavigationBuilder();
@@ -26,11 +29,24 @@ public class NavigationBuilder {
         return this;
     }
 
+    public NavigationBuilder toolbarConfig(ToolbarConfig toolbarConfig) {
+        this.toolbarConfig = toolbarConfig;
+        return this;
+    }
+
     public void move(Route route) {
-        navigator.move(route, args);
+        navigator.move(route, getArgs());
     }
 
     public void attach(Route route) {
-        navigator.attach(route, args);
+        navigator.attach(route, getArgs());
+    }
+
+    private Bundle getArgs() {
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, toolbarConfig);
+        return args;
     }
 }

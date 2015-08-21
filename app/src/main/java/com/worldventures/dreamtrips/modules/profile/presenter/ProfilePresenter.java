@@ -158,7 +158,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
-            if (totalItemCount > previousTotal) {
+            if (totalItemCount > 0 && totalItemCount > previousTotal) {
                 loading = false;
                 previousTotal = totalItemCount;
             }

@@ -102,7 +102,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int itemCount = feedView.getLayoutManager().getItemCount();
                 int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
-                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+
+                if (itemCount > 0)
+                    getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
 

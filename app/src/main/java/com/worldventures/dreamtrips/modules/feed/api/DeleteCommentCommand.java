@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 public class DeleteCommentCommand extends Command<JSONObject> {
 
-    private long id;
+    private String id;
 
-    public DeleteCommentCommand(long id) {
+    public DeleteCommentCommand(String id) {
         super(JSONObject.class);
         this.id = id;
     }

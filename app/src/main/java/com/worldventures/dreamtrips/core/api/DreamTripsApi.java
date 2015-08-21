@@ -254,9 +254,6 @@ public interface DreamTripsApi {
     @GET("/api/social/timeline")
     ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
-    @GET("/api/social/users/{user_id}/fedd")
-    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
-
     @GET("/api/social/feed")
     ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
 
@@ -265,22 +262,22 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/social/comments")
-    Comment createComment(@Field("entity_id") String objectId, @Field("text") String text);
+    Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/comments")
-    Comment replyComment(@Field("reply_comment_id") long commentId, @Field("text") String text);
+    Comment replyComment(@Field("reply_comment_id") String commentId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
 
     @DELETE("/api/social/comments/{id}")
-    JSONObject deleteComment(@Path("id") long commentId);
+    JSONObject deleteComment(@Path("id") String commentId);
 
     @FormUrlEncoded
     @PUT("/api/social/comments/{id}")
-    Comment editComment(@Path("id") long commentId, @Field("text") String text);
+    Comment editComment(@Path("id") String commentId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/circles/{circle_id}/users")
@@ -293,6 +290,6 @@ public interface DreamTripsApi {
     @POST("/api/{uid}/likes")
     Void likeEntity(@Path("uid") String uid);
 
-    @DELETE("/api/entities/{uid}/likes")
+    @DELETE("/api/{uid}/likes")
     Void dislikeEntity(@Path("uid") String uid);
 }

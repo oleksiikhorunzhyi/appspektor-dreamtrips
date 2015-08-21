@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class Comment implements Parcelable, Serializable {
 
-    long uid;
+    String uid;
     long parent_id;
     String text;
     User user;
@@ -21,10 +21,8 @@ public class Comment implements Parcelable, Serializable {
     Date updatedAt;
     boolean update;
 
-    long originalId;
-
     protected Comment(Parcel in) {
-        uid = in.readLong();
+        uid = in.readString();
         parent_id = in.readLong();
         parent_id = in.readLong();
         text = in.readString();
@@ -63,7 +61,7 @@ public class Comment implements Parcelable, Serializable {
         return createdAt;
     }
 
-    public long getUid() {
+    public String getUid() {
         return uid;
     }
 
@@ -78,7 +76,7 @@ public class Comment implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(uid);
+        parcel.writeString(uid);
         parcel.writeLong(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
@@ -91,12 +89,12 @@ public class Comment implements Parcelable, Serializable {
 
         Comment comment = (Comment) o;
 
-        return uid == comment.uid;
+        return !(uid != null ? !uid.equals(comment.uid) : comment.uid != null);
 
     }
 
     @Override
     public int hashCode() {
-        return (int) (uid ^ (uid >>> 32));
+        return uid != null ? uid.hashCode() : 0;
     }
 }

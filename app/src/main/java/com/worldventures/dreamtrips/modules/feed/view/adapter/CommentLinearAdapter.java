@@ -40,7 +40,7 @@ public class CommentLinearAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return comments.get(position).getUid();
+        return Long.parseLong(comments.get(position).getUid());
     }
 
     @Override

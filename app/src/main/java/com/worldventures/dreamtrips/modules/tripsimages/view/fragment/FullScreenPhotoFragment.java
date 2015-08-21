@@ -84,6 +84,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ProgressBar progressFlag;
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
+    @InjectView(R.id.content_divider)
+    protected ImageView contentDivider;
 
     private TripImagesListFragment.Type type;
 
@@ -91,7 +93,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type == TripImagesListFragment.Type.FIXED_LIST) {
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
@@ -210,7 +212,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick({R.id.bottom_container, R.id.title_container})
     public void actionSeeLess() {
-        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type != TripImagesListFragment.Type.FIXED_LIST) {
             llMoreInfo.setVisibility(View.GONE);
             tvDescription.setSingleLine(true);
             tvDescription.setVisibility(View.VISIBLE);
@@ -362,7 +364,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         if (count == -1) {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvCommentsCount.setText(count + getString(R.string.comments));
+        tvCommentsCount.setText(getString(R.string.comments,count));
     }
 
     @Override
@@ -376,9 +378,19 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setDescription(String desc) {
         tvDescription.setText(desc);
-        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type != TripImagesListFragment.Type.FIXED_LIST) {
             actionSeeMore();
         }
+    }
+
+    @Override
+    public void setContentDividerVisibility(boolean show) {
+        contentDivider.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setCommentVisibility(boolean commentVisible) {
+        ivComment.setVisibility(commentVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

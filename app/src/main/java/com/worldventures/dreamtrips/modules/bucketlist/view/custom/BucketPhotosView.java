@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.AddBucketPhotoModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import icepick.Icepick;
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private IgnoreFirstItemAdapter imagesAdapter;
+    private AddBucketPhotoModel createBtnObject = new AddBucketPhotoModel();
 
     public BucketPhotosView(Context context) {
         super(context);
@@ -53,9 +55,9 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
             }
 
             imagesAdapter.registerCell(UploadTask.class, BucketPhotoUploadCell.class);
-            imagesAdapter.registerCell(Object.class, BucketAddPhotoCell.class);
-
-            imagesAdapter.addItem(new Object());
+            imagesAdapter.registerCell(AddBucketPhotoModel.class, BucketAddPhotoCell.class);
+            createBtnObject.setVisibility(true);
+            imagesAdapter.addItem(createBtnObject);
 
             setLayoutManager(new LinearLayoutManager(
                             getContext(),
@@ -138,12 +140,6 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void deleteAtPosition(int position) {
-        imagesAdapter.remove(0);
-        imagesAdapter.notifyItemRemoved(0);
-    }
-
-    @Override
     public List getImages() {
         return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenObject).toList();
     }
@@ -154,16 +150,14 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public void addFirstItem() {
-        imagesAdapter.addItem(new Object());
-        imagesAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public UploadTask getBucketPhotoUploadTask(String taskId) {
         return (UploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
                 element instanceof UploadTask &&
                         ((UploadTask) element).getAmazonTaskId().equals(taskId));
+    }
+
+    public void hideCreateBtn() {
+        createBtnObject.setVisibility(false);
     }
 
     public enum Type {

@@ -22,6 +22,8 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
@@ -244,6 +246,11 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public IBucketPhotoView getBucketPhotosView() {
         return bucketPhotosView;
+    }
+
+    @Override
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

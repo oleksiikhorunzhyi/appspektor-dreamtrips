@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.activity_full_screen_photo)
+@Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenTripImageActivity extends ActivityWithPresenter<FullScreenParentPresenter> {
     public static final String EXTRA_PHOTOS_LIST = "EXTRA_PHOTOS_LIST";
     public static final String EXTRA_POSITION = "EXTRA_POSITION";

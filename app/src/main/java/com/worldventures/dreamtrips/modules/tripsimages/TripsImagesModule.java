@@ -20,11 +20,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.Ful
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SimpleFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
@@ -36,7 +36,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                FullScreenPhotoActivity.class,
                 FullScreenTripImageActivity.class,
                 CreatePhotoActivity.class,
                 TripImagesTabsPresenter.class,
@@ -66,6 +65,7 @@ import dagger.Provides;
                 PhotoUploadCell.class,
 
                 GetMyPhotosQuery.class,
+                FullScreenPhotoWrapperFragment.class,
         },
         complete = false,
         library = true

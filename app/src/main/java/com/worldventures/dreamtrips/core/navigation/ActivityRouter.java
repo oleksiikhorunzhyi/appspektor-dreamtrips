@@ -29,16 +29,8 @@ import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWra
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
@@ -69,13 +61,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         finish();
     }
 
-    public void openFullScreenPhoto(int position, TripImagesListFragment.Type type) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(FullScreenPhotoActivity.EXTRA_POSITION, position);
-        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_TYPE, type);
-        startActivity(FullScreenPhotoActivity.class, bundle);
-    }
-
     public void open360Activity(String url) {
         Bundle bundle = new Bundle();
         bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
@@ -90,13 +75,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         }
     }
 
-    public void openFullScreenTrip(List<Object> photoList, int position) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
-        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_POSITION, position);
-        startActivity(FullScreenTripImageActivity.class, bundle);
-    }
-
     public void openBookItActivity(String tripId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
@@ -107,12 +85,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putSerializable(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
         startActivity(PreviewTemplateActivity.class, bundle);
-    }
-
-    public void openTripDetails(TripModel trip) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
-        startActivity(DetailTripActivity.class, bundle);
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {

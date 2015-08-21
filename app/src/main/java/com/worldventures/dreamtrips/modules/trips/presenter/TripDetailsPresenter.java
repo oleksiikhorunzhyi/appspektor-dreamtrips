@@ -1,11 +1,17 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.os.Bundle;
+
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +70,18 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
     public void onItemClick(int position) {
         if (filteredImages.get(position) instanceof TripImage) {
-            this.activityRouter.openFullScreenTrip(this.filteredImages, position);
+            Bundle args = new Bundle();
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
+            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, new ArrayList<>(filteredImages));
+view.openFullscreen(args);
         }
     }
 
     public interface View extends BaseTripPresenter.View {
         void setContent(List<ContentItem> contentItems);
+
         void hideBookIt();
+        void openFullscreen(Bundle args);
     }
 }

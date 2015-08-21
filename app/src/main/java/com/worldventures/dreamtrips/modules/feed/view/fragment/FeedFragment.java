@@ -97,7 +97,7 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
 
     @Override
     public void onRefresh() {
-        getPresenter().loadFeed();
+        getPresenter().reloadFeed();
     }
 
     @Override
@@ -146,6 +146,11 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
+    }
+
+    @Override
+    public void setEmptyViewVisibility(boolean visible) {
+        //TODO
     }
 
     private void showPostContainer() {

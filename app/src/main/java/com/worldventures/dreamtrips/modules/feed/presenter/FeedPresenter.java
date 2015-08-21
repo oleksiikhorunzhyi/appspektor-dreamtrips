@@ -4,15 +4,13 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -31,7 +29,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        loadFeed();
+        reloadFeed();
     }
 
     public void onEvent(CommentsPressedEvent event) {
@@ -58,10 +56,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.getAdapter().itemUpdated(baseFeedModel);
     }
 
-    public void loadFeed() {
+    public void reloadFeed() {
         view.startLoading();
+        view.setEmptyViewVisibility(false);
         doRequest(new GetAccountFeedQuery(Calendar.getInstance().getTime()),
-                this::itemsLoaded);
+                this::itemsLoaded, spiceException -> {
+                    this.handleError(spiceException);
+                    view.finishLoading();
+                    view.setEmptyViewVisibility(true);
+                });
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
@@ -74,16 +77,19 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             if (!loading
                     && lastVisible == totalItemCount - 1) {
                 loading = true;
-
-                doRequest(new GetAccountFeedQuery(view.getAdapter()
-                                .getItem(view.getAdapter().getItemCount() - 1).getCreatedAt()),
-                        this::addFeedItems);
+                loadMore();
             }
         }
     }
 
+    private void loadMore() {
+        doRequest(new GetAccountFeedQuery(view.getAdapter()
+                        .getItem(view.getAdapter().getItemCount() - 1).getCreatedAt()),
+                this::addFeedItems);
+    }
+
     public void onEvent(OnFeedReloadEvent event) {
-        loadFeed();
+        reloadFeed();
     }
 
     private void itemsLoaded(List<ParentFeedModel> feedItems) {
@@ -108,5 +114,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         void openComments(BaseEventModel baseFeedModel);
 
         void openPost();
+
+        void setEmptyViewVisibility(boolean visible);
     }
 }

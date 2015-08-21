@@ -198,8 +198,8 @@ public class TripModel extends BaseFeedObject implements Filterable, Serializabl
         return images;
     }
 
-    public List<Object> getFilteredImages() {
-        List<Object> filteredImages = new ArrayList<>();
+    public List<TripImage> getFilteredImages() {
+        List<TripImage> filteredImages = new ArrayList<>();
         filteredImages.addAll(getFilteredImagesByTag("RETINA"));
 
         if (filteredImages.isEmpty()) {

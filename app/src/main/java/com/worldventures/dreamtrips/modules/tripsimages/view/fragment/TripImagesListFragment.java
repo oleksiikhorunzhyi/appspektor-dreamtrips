@@ -16,13 +16,15 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
@@ -151,6 +153,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create().with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+    }
+
+    @Override
     public void fillWithItems(List<IFullScreenObject> items) {
         int itemCount = arrayListAdapter.getItemCount();
         arrayListAdapter.addItems(items);
@@ -189,6 +198,6 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     public enum Type {
-        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, BUCKET_PHOTOS
+        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, FIXED_LIST
     }
 }

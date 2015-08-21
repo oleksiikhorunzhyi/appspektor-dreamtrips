@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.view.cell;
 
 import android.graphics.PointF;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckedTextView;
@@ -14,11 +15,15 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
-import com.worldventures.dreamtrips.core.utils.events.TouchTripEvent;
+import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 
 import javax.inject.Inject;
 
@@ -53,6 +58,9 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
+
+    @Inject
+    ActivityRouter activityRouter;
 
     public TripCell(View view) {
         super(view);
@@ -111,7 +119,13 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @OnClick(R.id.itemLayout)
     void actionItemClick() {
-        getEventBus().post(new TouchTripEvent(getModelObject()));
+        Bundle args = new Bundle();
+        args.putSerializable(DetailTripActivity.EXTRA_TRIP, getModelObject());
+        NavigationBuilder.create()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .with(activityRouter)
+                .args(args)
+                .attach(Route.DETAILED_TRIP);
     }
 
     @OnClick(R.id.layoutInfo)

@@ -20,10 +20,6 @@ public interface IBucketPhotoView {
 
     void deleteImage(UploadTask photo);
 
-    void deleteAtPosition(int position);
-
-    void addFirstItem();
-
     void itemChanged(Object item);
 
     List getImages();

@@ -17,7 +17,7 @@ public class ActivityNavigator implements Navigator {
 
     @Override
     public void attach(Route route, Bundle bundle) {
-
+        activityRouter.openComponentActivity(route, bundle);
     }
 
 }

@@ -39,6 +39,7 @@ public class DateTimeUtils {
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     private DateTimeUtils() {
     }
@@ -53,7 +54,7 @@ public class DateTimeUtils {
 
     public static DateFormat[] getISO1DateFormats() {
         return new DateFormat[]{
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
+                new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, Locale.getDefault()),
                 new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.getDefault()),
@@ -160,6 +161,13 @@ public class DateTimeUtils {
             }
         }
         return null;
+    }
+
+    public static String convertDateToUTCString(Date date) {
+        DateTime dt = new DateTime(date);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(ISO_FORMAT_WITH_TIMEZONE);
+        fmt = fmt.withZone(DateTimeZone.UTC);
+        return fmt.print(dt);
     }
 
     public static String convertDateToReference(Context context, Date dateTarget) {

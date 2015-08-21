@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
@@ -58,7 +60,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void loadFeed() {
         view.startLoading();
-        doRequest(new GetAccountFeedQuery(0), this::itemsLoaded);
+        doRequest(new GetAccountFeedQuery(Calendar.getInstance().getTime()),
+                this::itemsLoaded);
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
@@ -69,11 +72,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             }
 
             if (!loading
-                    && lastVisible == totalItemCount
-                    && (totalItemCount) % GetAccountTimelineQuery.LIMIT == 0) {
+                    && lastVisible == totalItemCount - 1) {
                 loading = true;
 
-                doRequest(new GetAccountFeedQuery(previousTotal / GetAccountTimelineQuery.LIMIT),
+                doRequest(new GetAccountFeedQuery(view.getAdapter()
+                                .getItem(view.getAdapter().getItemCount() - 1).getCreatedAt()),
                         this::addFeedItems);
             }
         }

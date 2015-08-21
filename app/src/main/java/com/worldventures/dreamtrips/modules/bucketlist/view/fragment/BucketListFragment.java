@@ -36,8 +36,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityNavigator;
-import com.worldventures.dreamtrips.core.navigation.FragmentNavigator;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -139,24 +140,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        setNavigator();
-    }
-
-    private void setNavigator() {
-        if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            getPresenter().setNavigator(new FragmentNavigator(fragmentCompass));
-        } else {
-            getPresenter().setNavigator(new ActivityNavigator(activityRouter));
-        }
-
-    }
-
-    @Override
     public void onDestroyView() {
         stateDelegate.onDestroyView();
         if (dragDropManager != null) {
@@ -235,7 +218,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @OnClick(R.id.buttonPopular)
     void onPopular() {
-        openPopular();
+        getPresenter().popularClicked();
     }
 
     @Override
@@ -245,16 +228,38 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
                 actionFilter();
                 break;
             case R.id.action_popular:
-                openPopular();
+                getPresenter().popularClicked();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void openDetails(Bundle args) {
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .args(args)
+                    .move(Route.DETAIL_BUCKET);
+        } else {
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .args(args)
+                    .move(Route.DETAIL_BUCKET);
+        }
 
-    private void openPopular() {
-        getPresenter().setNavigator(new ActivityNavigator(activityRouter));
-        getPresenter().addPopular();
+    }
+
+    @Override
+    public void openPopular(Bundle args) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .args(args)
+                .move(Route.POPULAR_TAB_BUCKER);
     }
 
     private void actionFilter() {
@@ -285,7 +290,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        setNavigator();
         if (detailsContainer != null)
             handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
     }

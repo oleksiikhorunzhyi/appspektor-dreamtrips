@@ -2,55 +2,39 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 
 public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
 
-    public static final String COMPONENT = "component";
     public static final String ROUTE = "route";
-    public static final String COMPONENT_EXTRA = "component_extra";
 
-    private ComponentDescription componentDescription;
-    private Bundle componentExtras;
+    public static final String COMPONENT_EXTRA = "component_extras";
+    public static final String COMPONENT_TOOLBAR_CONFIG = "component_toolbar";
+
+    private Bundle args;
     private Route route;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            if (componentDescription != null)
-                fragmentCompass.replace(componentDescription, componentExtras);
-            else if (route != null) {
-                fragmentCompass.replace(route, componentExtras);
-            }
+            fragmentCompass.replace(route, args);
         }
-    }
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        if (route != null &&
-                route.equals(Route.DETAIL_BUCKET)) view.hideToolbar();
     }
 
     public int getTitle() {
-        if (componentDescription != null)
-            return componentDescription.getToolbarTitle();
-        else if (route != null) {
+        if (route != null) {
             return route.getTitleRes();
+        } else {
+            return 0;
         }
-
-        return 0;
     }
 
     public ComponentPresenter(Bundle args) {
-        componentDescription = args.getParcelable(COMPONENT);
         route = (Route) args.getSerializable(ROUTE);
-        componentExtras = args.getBundle(COMPONENT_EXTRA);
+        this.args = args;
     }
 
     public interface View extends Presenter.View {
-        void hideToolbar();
     }
 }

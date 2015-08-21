@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -30,7 +31,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openComponentActivity(Route.BUCKET_EDIT, bundle);
+            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.BUCKET_EDIT);
         }
     }
 

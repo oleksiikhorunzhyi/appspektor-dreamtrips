@@ -8,6 +8,8 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -50,7 +52,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Inject
     RootComponentsProvider rootComponentsProvider;
 
-    private DecimalFormat df = new DecimalFormat("#0.00");
     private String coverTempFilePath;
 
     @Icicle
@@ -135,8 +136,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     public void openBucketList() {
         shouldReload = true;
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(BucketListModule.BUCKETLIST));
+        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
     }
 
     @Override
@@ -144,8 +144,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         shouldReload = true;
         Bundle args = new Bundle();
         args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.BUCKET_LIST);
     }
 
     public void photoClicked() {

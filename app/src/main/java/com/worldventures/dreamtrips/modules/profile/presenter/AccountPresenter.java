@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
@@ -15,6 +16,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -32,6 +35,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -193,13 +197,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int page) {
-        return new GetAccountTimelineQuery(page);
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
+        Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
+        return new GetAccountTimelineQuery(((BaseEventModel) lastItem).getCreatedAt());
     }
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetAccountTimelineQuery(0);
+        return new GetAccountTimelineQuery(Calendar.getInstance().getTime());
     }
 
     ////////////////////////////////////////

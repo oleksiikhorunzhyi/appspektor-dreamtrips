@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
@@ -37,7 +36,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public static final int HEADER_USER_POSITION = 0;
     public static final int HEADER_RELOAD_POSITION = 1;
-    public static final int HEADERS_COUNT = 2;
 
     protected U user;
 
@@ -165,11 +163,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
                 previousTotal = totalItemCount;
             }
             if (!loading
-                    && lastVisible == totalItemCount - 1
-                    && (totalItemCount - 1) % GetAccountTimelineQuery.LIMIT == 0) {
+                    && lastVisible == totalItemCount - 1) {
                 loading = true;
-
-                doRequest(getNextPageRequest(previousTotal / GetAccountTimelineQuery.LIMIT), this::addFeedItems);
+                doRequest(getNextPageRequest(), this::addFeedItems);
             }
         }
     }
@@ -211,7 +207,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest();
 
-    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest(int count);
+    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest();
 
     public void onEvent(OnBucketListClickedEvent event) {
         openBucketList();

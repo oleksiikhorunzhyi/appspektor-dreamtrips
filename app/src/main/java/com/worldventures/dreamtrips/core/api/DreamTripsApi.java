@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.video.model.Category;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit.http.Body;
@@ -248,18 +249,18 @@ public interface DreamTripsApi {
     JSONObject unfriend(@Path("user_id") int userId);
 
     @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/timeline")
-    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/users/{user_id}/fedd")
-    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
 
-    @GET("/api/social/items/{object_id}/comments")
+    @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
 
     @FormUrlEncoded
@@ -289,7 +290,7 @@ public interface DreamTripsApi {
     @BODY_DELETE("/api/social/circles/{circle_id}/users")
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-    @POST("/api/entities/{uid}/likes")
+    @POST("/api/{uid}/likes")
     Void likeEntity(@Path("uid") String uid);
 
     @DELETE("/api/entities/{uid}/likes")

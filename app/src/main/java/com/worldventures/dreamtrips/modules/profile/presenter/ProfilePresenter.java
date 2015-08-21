@@ -100,6 +100,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void loadFeed() {
+        view.startLoading();
         if (featureManager.available(Feature.SOCIAL)) {
             resetLazyLoadFields();
             doRequest(getRefreshRequest(), this::refreshFeedItems, spiceException -> {

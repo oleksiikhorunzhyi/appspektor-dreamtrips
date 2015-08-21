@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
@@ -33,8 +34,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public void onEvent(CommentsPressedEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.openComments(event.getModel());
+        if (view.isVisibleOnScreen()) {
+            eventBus.cancelEventDelivery(event);
+            view.openComments(event.getModel());
+        }
     }
 
     public void onEvent(FeedObjectChangedEvent event) {
@@ -82,10 +85,18 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         }
     }
 
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.finishLoading();
+    }
+
     private void loadMore() {
-        doRequest(new GetAccountFeedQuery(view.getAdapter()
-                        .getItem(view.getAdapter().getItemCount() - 1).getCreatedAt()),
-                this::addFeedItems);
+        if (view.getAdapter().getItemCount() > 0) {
+            doRequest(new GetAccountFeedQuery(view.getAdapter()
+                            .getItem(view.getAdapter().getItemCount() - 1).getCreatedAt()),
+                    this::addFeedItems);
+        }
     }
 
     public void onEvent(OnFeedReloadEvent event) {

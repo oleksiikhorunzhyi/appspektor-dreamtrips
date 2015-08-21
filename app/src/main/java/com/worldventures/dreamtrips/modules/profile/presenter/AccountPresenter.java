@@ -192,8 +192,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
-        Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
-        return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
+        if (view.getAdapter().getItemCount() > 0) {
+            Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
+            return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
+        } else return null;
     }
 
     @Override

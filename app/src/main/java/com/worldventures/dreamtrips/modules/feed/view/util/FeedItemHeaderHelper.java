@@ -61,7 +61,7 @@ public class FeedItemHeaderHelper {
                     DateTimeUtils.FEED_DATE_FORMAT));
 
             if (likesCount != null) {
-                if (feedModel.getItem().getCommentsCount() > 0) {
+                if (feedModel.getItem().getLikesCount() > 0) {
                     likesCount.setVisibility(View.VISIBLE);
                     likesCount.setText(context.getString(R.string.likes, feedModel.getItem().getLikesCount()));
                 } else likesCount.setVisibility(View.GONE);
@@ -88,14 +88,6 @@ public class FeedItemHeaderHelper {
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }
-    }
-
-    public void onCommentClicked() {
-        comments.setEnabled(false);
-    }
-
-    public void onLikeClicked() {
-        likes.setEnabled(false);
     }
 
 }

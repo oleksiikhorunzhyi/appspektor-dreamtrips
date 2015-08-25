@@ -9,7 +9,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -204,7 +203,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     //TODO Refactor this after apperean release
-    public void onEvent(PhotoLikeEvent event) {
+    public void onEvent(EntityLikedEvent event) {
         BaseEventModel model = (BaseEventModel) Queryable.from(view.getAdapter().getItems())
                 .firstOrDefault(element -> element instanceof BaseEventModel &&
                         (((BaseEventModel) element).getItem().getUid().equals(event.getId())));

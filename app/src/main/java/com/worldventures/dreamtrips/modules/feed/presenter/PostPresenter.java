@@ -217,6 +217,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         post.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
+        view.enableImagePicker();
     }
 
     private void cancelUpload() {
@@ -230,6 +231,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     ////////////////////////////////////////
 
     public void pickImage(int requestType) {
+        view.disableImagePicker();
         eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
@@ -268,5 +270,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         void hideProgress();
 
         void imageError();
+
+        void enableImagePicker();
+
+        void disableImagePicker();
     }
 }

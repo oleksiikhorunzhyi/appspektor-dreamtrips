@@ -24,6 +24,7 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     FeedItemHeaderHelper feedItemHeaderHelper;
     CommentCellHelper commentCellHelper;
 
+    @Optional
     @InjectView(R.id.comment_preview)
     View commentPreview;
 
@@ -70,14 +71,12 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @Optional
     @OnClick({R.id.comments, R.id.comment_preview})
     void commentsClicked() {
-        feedItemHeaderHelper.onCommentClicked();
         getEventBus().post(new CommentsPressedEvent(getModelObject()));
     }
 
     @Optional
     @OnClick(R.id.likes)
     void likeClicked() {
-        feedItemHeaderHelper.onLikeClicked();
         getEventBus().post(new LikesPressedEvent(getModelObject()));
     }
 

@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.Calendar;
 import java.util.List;
@@ -59,7 +57,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     //TODO Refactor this after apperean release
-    public void onEvent(PhotoLikeEvent event) {
+    public void onEvent(EntityLikedEvent event) {
         BaseEventModel model = Queryable.from(view.getAdapter().getItems())
                 .firstOrDefault(element -> element.getItem().getUid().equals(event.getId()));
 

@@ -369,7 +369,7 @@
     <string name="social_unfriend_confirmation_title">Are you sure you want to delete user from friends?</string>
     <string name="social_unfriend_confiramation_accept">Yes</string>
     <string name="social_unfriend_confiramation_cancel">No</string>
-    <string name="feed_title">My Activity Feed</string>
+    <string name="feed_title">Activity Feed</string>
 
     <string name="pictures">Pictures</string>
 

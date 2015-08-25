@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.FIXED_LIST;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
@@ -77,7 +76,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
-        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() || isDeleteVisible() || isFlagVisible() || isCommentVisible());
+        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() ||
+                isDeleteVisible() || isFlagVisible() || isCommentVisible());
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
         }

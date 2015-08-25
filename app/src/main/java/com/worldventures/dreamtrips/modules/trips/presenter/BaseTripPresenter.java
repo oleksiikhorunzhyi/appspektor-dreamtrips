@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -92,6 +93,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
         doRequest(request, object -> {
             sweetDialogHelper.notifyTripLiked(activity, trip);
+            eventBus.post(new EntityLikedEvent(trip.getUid(), trip.isLiked()));
             onSuccessTripAction();
         }, (error) -> {
             toggleTripLike();

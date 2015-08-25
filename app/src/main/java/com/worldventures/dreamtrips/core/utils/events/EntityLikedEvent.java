@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-public class PhotoLikeEvent {
+public class EntityLikedEvent {
 
     protected boolean liked;
-    protected String  id;
+    protected String id;
 
-    public PhotoLikeEvent(String id, boolean liked) {
+    public EntityLikedEvent(String id, boolean liked) {
         this.id = id;
         this.liked = liked;
     }
@@ -14,7 +14,7 @@ public class PhotoLikeEvent {
         return liked;
     }
 
-    public String  getId() {
+    public String getId() {
         return id;
     }
 }

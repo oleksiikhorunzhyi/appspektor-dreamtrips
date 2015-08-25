@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
@@ -63,7 +63,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         photo.setLikesCount(actualLikeCount);
         view.setLiked(isLiked);
         view.setLikeCount(actualLikeCount);
-        eventBus.postSticky(new PhotoLikeEvent(photo.getFsId(), isLiked));
+        eventBus.post(new EntityLikedEvent(photo.getFsId(), isLiked));
         TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 

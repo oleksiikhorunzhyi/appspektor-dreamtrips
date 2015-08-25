@@ -161,7 +161,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, photos.indexOf(selectedPhoto));
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, photos);
-          view.openFullscreen(args);
+            view.openFullscreen(args);
         }
     }
 
@@ -268,6 +268,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.cancelEventDelivery(event);
 
         db.removeUploadTask(event.getTask());
+        view.getBucketPhotosView().deleteImage(event.getTask());
 
         event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
         upload(event.getTask(), event.getTask().getFilePath());

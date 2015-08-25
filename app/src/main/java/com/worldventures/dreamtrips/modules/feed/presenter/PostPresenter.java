@@ -39,10 +39,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
             savePost();
         } else if (!TextUtils.isEmpty(post.getFilePath())) {
             post.setUploadTask(snapper.getUploadTask(post.getFilePath()));
-            TransferObserver transferObserver =
-                    photoUploadingSpiceManager.getTransferById(post.getUploadTask().getAmazonTaskId());
-            onStateChanged(transferObserver.getId(), transferObserver.getState());
-            transferObserver.setTransferListener(this);
+            if (post.getUploadTask() != null) {
+                TransferObserver transferObserver =
+                        photoUploadingSpiceManager.getTransferById(post.getUploadTask().getAmazonTaskId());
+                onStateChanged(transferObserver.getId(), transferObserver.getState());
+                transferObserver.setTransferListener(this);
+            }
         }
 
         view.setName(getAccount().getFullName());
@@ -172,18 +174,20 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     private void processUploadTask() {
-        snapper.saveUploadTask(post.getUploadTask());
+        if (post != null && post.getUploadTask() != null) {
+            snapper.saveUploadTask(post.getUploadTask());
 
-        switch (post.getUploadTask().getStatus()) {
-            case IN_PROGRESS:
-                photoInProgress();
-                break;
-            case FAILED:
-                photoFailed();
-                break;
-            case COMPLETED:
-                photoCompleted();
-                break;
+            switch (post.getUploadTask().getStatus()) {
+                case IN_PROGRESS:
+                    photoInProgress();
+                    break;
+                case FAILED:
+                    photoFailed();
+                    break;
+                case COMPLETED:
+                    photoCompleted();
+                    break;
+            }
         }
     }
 

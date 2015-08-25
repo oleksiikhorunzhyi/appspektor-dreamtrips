@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAd
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
@@ -36,6 +37,7 @@ import dagger.Provides;
                 FeedPhotoCommentCell.class,
                 FeedBucketEventCell.class,
                 FeedBucketCommentCell.class,
+                FeedPostCommentCell.class,
                 LoadMoreCell.class,
                 FeedPhotoEventCell.class,
                 FeedPostEventCell.class,

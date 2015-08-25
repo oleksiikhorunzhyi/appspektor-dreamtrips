@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
@@ -98,6 +99,13 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             view.hideViewMore();
         }
     }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.setLoading(false);
+    }
+
 
     private void setHeader() {
         view.setHeader(feedModel);

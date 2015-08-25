@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
@@ -15,11 +14,9 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetAccountTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -27,7 +24,6 @@ import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -35,7 +31,6 @@ import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -144,7 +139,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         shouldReload = true;
         Bundle args = new Bundle();
         args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.BUCKET_LIST);
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.TRIP_IMAGES);
     }
 
     public void photoClicked() {
@@ -197,13 +192,15 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
-        Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
-        return new GetAccountTimelineQuery(((BaseEventModel) lastItem).getCreatedAt());
+        if (view.getAdapter().getItemCount() > 0) {
+            Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getItemCount() - 1);
+            return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
+        } else return null;
     }
 
     @Override
     protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetAccountTimelineQuery(Calendar.getInstance().getTime());
+        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
     }
 
     ////////////////////////////////////////

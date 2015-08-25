@@ -37,6 +37,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     public static final int HEADER_USER_POSITION = 0;
     public static final int HEADER_RELOAD_POSITION = 1;
 
+    public static final int HEADER_COUNT = 2;
+
     protected U user;
 
     private int previousTotal = 0;
@@ -98,6 +100,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void loadFeed() {
+        view.startLoading();
         if (featureManager.available(Feature.SOCIAL)) {
             resetLazyLoadFields();
             doRequest(getRefreshRequest(), this::refreshFeedItems, spiceException -> {
@@ -157,7 +160,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
-        if (featureManager.available(Feature.SOCIAL)) {
+        if (featureManager.available(Feature.SOCIAL) && view.getAdapter().getItemCount() > HEADER_COUNT) {
             if (totalItemCount > 0 && totalItemCount > previousTotal) {
                 loading = false;
                 previousTotal = totalItemCount;

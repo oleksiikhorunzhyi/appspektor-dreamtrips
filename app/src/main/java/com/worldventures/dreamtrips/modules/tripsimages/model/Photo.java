@@ -6,21 +6,17 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo extends BaseFeedObject implements Serializable, IFullScreenObject {
+public class Photo extends BaseFeedObject implements Serializable, IFullScreenObject, Parcelable {
 
     private String title;
     private Date shotAt;
@@ -35,7 +31,6 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
 
     protected Photo(Parcel in) {
         uid = in.readString();
-        comments = in.createTypedArrayList(Comment.CREATOR);
         commentsCount = in.readInt();
         likesCount = in.readInt();
         title = in.readString();
@@ -194,7 +189,6 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(uid);
-        parcel.writeTypedList(comments);
         parcel.writeInt(commentsCount);
         parcel.writeInt(likesCount);
         parcel.writeString(title);

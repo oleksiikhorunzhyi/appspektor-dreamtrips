@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
@@ -97,7 +97,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoCommentCell.class);
         adapter.registerCell(FeedTripEventModel.class, FeedTripCommentCell.class);
         adapter.registerCell(FeedBucketEventModel.class, FeedBucketCommentCell.class);
-        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
+        adapter.registerCell(FeedPostEventModel.class, FeedPostCommentCell.class);
 
         linearLayoutManager = new LinearLayoutManager(rootView.getContext());
         commentsList.setLayoutManager(linearLayoutManager);

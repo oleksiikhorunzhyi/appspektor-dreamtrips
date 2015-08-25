@@ -4,10 +4,11 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseFeedObject implements IFeedObject {
+public class BaseFeedObject implements IFeedObject, Serializable {
 
     protected String uid;
 

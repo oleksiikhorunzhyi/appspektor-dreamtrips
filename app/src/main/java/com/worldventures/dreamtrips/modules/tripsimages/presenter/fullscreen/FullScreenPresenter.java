@@ -100,7 +100,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
 
     private boolean isLikeCountVisible() {
-        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME && type != FIXED_LIST;
+        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
     public void sendFlagAction(String title, String desc) {

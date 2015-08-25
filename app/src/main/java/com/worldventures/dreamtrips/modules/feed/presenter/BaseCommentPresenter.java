@@ -95,6 +95,9 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             page++;
             view.setLoading(false);
             view.addComments(comments);
+
+            if (comments.size() == feedEntity.getCommentsCount()) view.hideViewMore();
+            
         } else {
             view.hideViewMore();
         }

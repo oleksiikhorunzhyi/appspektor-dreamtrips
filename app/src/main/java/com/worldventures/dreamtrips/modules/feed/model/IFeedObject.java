@@ -17,7 +17,9 @@ public interface IFeedObject {
 
     List<Comment> getComments();
 
-    int likesCount();
+    void setLikesCount(int count);
+
+    int getLikesCount();
 
     boolean isLiked();
 

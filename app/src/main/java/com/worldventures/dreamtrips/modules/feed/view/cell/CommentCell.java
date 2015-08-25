@@ -18,9 +18,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -49,19 +51,18 @@ public class CommentCell extends AbstractCell<Comment> {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
+    private CommentCellHelper commentCellHelper;
+
     public CommentCell(View view) {
         super(view);
+        commentCellHelper = new CommentCellHelper();
+        ButterKnife.inject(commentCellHelper, view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
+        commentCellHelper.set(itemView.getContext(), getModelObject());
         User owner = getModelObject().getOwner();
-        userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
-        userName.setText(owner.getFullName());
-        text.setText(getModelObject().getMessage());
-        CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
-                getModelObject().getCreatedAt().getTime());
-        date.setText(relativeTimeSpanString);
 
         if (edit != null)
             if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {

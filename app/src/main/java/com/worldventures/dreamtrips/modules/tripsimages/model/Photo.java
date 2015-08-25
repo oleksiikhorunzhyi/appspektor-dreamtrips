@@ -156,7 +156,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
 
     @Override
     public int getFsLikeCount() {
-        return likesCount();
+        return getLikesCount();
     }
 
     @Override

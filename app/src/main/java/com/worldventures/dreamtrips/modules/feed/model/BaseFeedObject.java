@@ -42,6 +42,7 @@ public class BaseFeedObject implements IFeedObject, Serializable {
         commentsCount = count;
     }
 
+    @Override
     public void setLikesCount(int likesCount) {
         this.likesCount = likesCount;
     }
@@ -57,7 +58,7 @@ public class BaseFeedObject implements IFeedObject, Serializable {
     }
 
     @Override
-    public int likesCount() {
+    public int getLikesCount() {
         return likesCount;
     }
 

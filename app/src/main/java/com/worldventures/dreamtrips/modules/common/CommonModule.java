@@ -78,7 +78,7 @@ public class CommonModule {
     ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
         List<String> activeComponents = new ArrayList<>();
 
-        activeComponents.add(FeedModule.FEED);
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
 
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 

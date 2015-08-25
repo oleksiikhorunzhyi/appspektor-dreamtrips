@@ -249,7 +249,7 @@
     <string name="error_personal_message_is_empty">個人訊息不應該是空的</string>
     <string name="email_is_not_valid">電子郵件無效</string>
     <string name="invitation_deselect_all">全部取消</string>
-    <string name="invitation_text_template" formatted="false"><![CDATA[%1$s 您好，%2$s <br/>若要深入瞭解，請按 <a href=\"%3$s\">這裡</a>。]]></string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[%s 您好，%s <br/>若要深入瞭解，請按 <a href=\"%s\">這裡</a>。]]></string>
     <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
     <string name="invite_add_photo">新增照片</string>
     <string name="invite_select_first">在第一選擇聯繫人</string>
@@ -283,7 +283,7 @@
     <string name="action_add_to_bucket">添加到清單列表</string>
     <string name="profile_dream_trips">%1$d DreamTrips</string>
     <string name="profile_add_friend">添加朋友</string>
-    <string name="profile_friend_request" formatted="false">%1$s向你發出交友請求</string>
+    <string name="profile_friend_request" formatted="false">%s向你發出交友請求</string>
     <string name="profile_accept">確認</string>
     <string name="profile_reject">刪除要求</string>
     <string name="title_activity_friends">朋友們</string>
@@ -295,7 +295,7 @@
     <string name="social_add_friend_yes">是</string>
     <string name="social_add_friend_no">否</string>
     <string name="social_add_friend_title">添加朋友</string>
-    <string name="social_add_friend_content" formatted="false">添加 %1$s作為你的朋友？</string>
+    <string name="social_add_friend_content" formatted="false">添加 %s作為你的朋友？</string>
     <string name="social_postfix_mutual_friends">%1$d共同朋友</string>
     <string name="social_user_wrapper_cell_actions">行動</string>
     <string name="social_remove_friend_title">解除朋友關係</string>
@@ -314,7 +314,7 @@
     <string name="bucket_current_cover">當前封面</string>
     <string name="bucket_item_edit_completed">標記為已完成！</string>
     <string name="reload_feed">重新載入來源</string>
-    <string name="feed_header" formatted="false">%1$s %2$s %3$s</string>
+    <string name="feed_header" formatted="false">&lt;b>%s&lt;/b> %s &lt;b>%s&lt;/b></string>
     <string name="added">已添加</string>
     <string name="booked">已預訂</string>
     <string name="shared">分享的</string>

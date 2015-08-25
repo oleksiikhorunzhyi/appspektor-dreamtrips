@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,16 +10,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
-import com.linearlistview.LinearListView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.CommentLinearAdapter;
-
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -38,8 +34,8 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.comments_count)
     TextView commentsCount;
     @Optional
-    @InjectView(R.id.commentsList)
-    LinearListView comments;
+    @InjectView(R.id.comments)
+    ImageView comments;
     @Optional
     @InjectView(R.id.likes_count)
     TextView likesCount;
@@ -51,7 +47,7 @@ public class FeedItemHeaderHelper {
         try {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            text.setText(feedModel.infoText(context.getResources()));
+            text.setText(Html.fromHtml(feedModel.infoText(context.getResources())));
 
             if (TextUtils.isEmpty(feedModel.getItem().place())) {
                 location.setVisibility(View.GONE);
@@ -62,30 +58,44 @@ public class FeedItemHeaderHelper {
 
 
             date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
-                    DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT));
+                    DateTimeUtils.FEED_DATE_FORMAT));
 
             if (likesCount != null) {
-                likesCount.setText(context.getString(R.string.likes, feedModel.getItem().likesCount()));
+                if (feedModel.getItem().getCommentsCount() > 0) {
+                    likesCount.setVisibility(View.VISIBLE);
+                    likesCount.setText(context.getString(R.string.likes, feedModel.getItem().getLikesCount()));
+                } else likesCount.setVisibility(View.GONE);
             }
+
             if (commentsCount != null) {
-                commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().getCommentsCount()));
+                if (feedModel.getItem().getCommentsCount() > 0) {
+                    commentsCount.setVisibility(View.VISIBLE);
+                    commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().getCommentsCount()));
+                } else commentsCount.setVisibility(View.GONE);
             }
 
             if (likes != null) {
+                likes.setEnabled(true);
                 likes.setImageResource(feedModel.getItem().isLiked() ?
                         R.drawable.ic_feed_thumb_up_blue :
                         R.drawable.ic_feed_thumb_up);
             }
 
-            if (comments != null && feedModel.getItem().getComments() != null) {
-                List<Comment> comments = Queryable.from(feedModel.getItem().getComments()).take(2).toList();
-                Collections.reverse(comments);
-                this.comments.setAdapter(new CommentLinearAdapter(comments, context));
+            if (comments != null) {
+                comments.setEnabled(true);
             }
 
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }
+    }
+
+    public void onCommentClicked() {
+        comments.setEnabled(false);
+    }
+
+    public void onLikeClicked() {
+        likes.setEnabled(false);
     }
 
 }

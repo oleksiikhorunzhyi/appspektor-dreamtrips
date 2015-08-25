@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@drawable/black_gradient"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -62,12 +63,12 @@
                 android:id="@+id/textViewPlace"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="10dp"
+                android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_location"
                 android:drawablePadding="4dp"
-                android:singleLine="true"
                 android:ellipsize="end"
+                android:singleLine="true"
                 android:textColor="@color/bucket_detailed_text_color"
                 android:visibility="visible"
                 tools:text="Byron Bay, Australia"/>

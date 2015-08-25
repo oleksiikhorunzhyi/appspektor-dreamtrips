@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
@@ -143,11 +144,29 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveBucketList(List<BucketItem> items, String type) {
-        putList(BUCKET_LIST + ":" + type, items);
+        saveBucketList(items, type, null);
+    }
+
+    public void saveBucketList(List<BucketItem> items, String type, String userId) {
+        String key = getBucketKey(type, userId);
+        putList(key, items);
+    }
+
+    @NonNull
+    private String getBucketKey(String type, String userId) {
+        String key = BUCKET_LIST + ":" + type;
+        if (userId != null) {
+            key += "_" + userId;
+        }
+        return key;
     }
 
     public List<BucketItem> readBucketList(String type) {
-        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        return readBucketList(type, null);
+    }
+
+    public List<BucketItem> readBucketList(String type, String userId) {
+        List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) return 0;
             else if (lhs.isDone() && !rhs.isDone()) return 1;

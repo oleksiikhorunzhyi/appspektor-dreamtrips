@@ -32,4 +32,7 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
         picturesTitle.setText(R.string.pictures);
         bucketPhotosView.hideCreateBtn();
     }
+
+
+
 }

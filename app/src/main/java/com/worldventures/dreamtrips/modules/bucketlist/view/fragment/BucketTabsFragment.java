@@ -8,14 +8,15 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,7 +30,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 @Layout(R.layout.fragment_bucket_tab)
 @MenuResource(R.menu.menu_mock)
-public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implements BucketTabsPresenter.View {
+public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends BaseFragment<PRESENTER> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs)
     BadgedTabLayout tabStrip;
@@ -41,8 +42,8 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
     int currentPosition;
 
     @Override
-    protected BucketTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketTabsPresenter();
+    protected PRESENTER createPresenter(Bundle savedInstanceState) {
+        return (PRESENTER) new BucketTabsPresenter();
     }
 
     @Override
@@ -81,6 +82,32 @@ public class BucketTabsFragment extends BaseFragment<BucketTabsPresenter> implem
             }
         });
     }
+
+    @Override
+    public void openDetails(Bundle args) {
+        Route detailsRoute = getDetailsRoute();
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .args(args)
+                    .move(detailsRoute);
+        } else {
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .args(args)
+                    .move(detailsRoute);
+        }
+    }
+
+
+    protected Route getDetailsRoute() {
+        return Route.DETAIL_BUCKET;
+    }
+
 
     @Override
     public void onResume() {

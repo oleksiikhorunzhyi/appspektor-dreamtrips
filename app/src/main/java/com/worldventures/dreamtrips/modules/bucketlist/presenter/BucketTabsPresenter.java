@@ -5,7 +5,9 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
+import com.worldventures.dreamtrips.modules.bucketlist.event.OpenBucketDetailsRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -73,6 +75,14 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         view.setRecentBucketItemsCount(recentBucketItems);
     }
 
+
+    public void onEvent(OpenBucketDetailsRequestEvent event) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListModule.EXTRA_TYPE, event.getType());
+        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, event.getBucketItemId());
+        view.openDetails(bundle);
+    }
+
     public interface View extends Presenter.View {
         void setTypes(List<BucketType> type);
 
@@ -81,6 +91,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void resetRecentlyAddedBucketItem(BucketType type);
 
         void updateSelection();
+
+        void openDetails(Bundle args);
     }
 
     public enum BucketType {

@@ -4,10 +4,11 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -156,6 +157,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openBucketList() {
+        NavigationBuilder.create().with(activityRouter).move(Route.FOREIGN_BUCKET_LIST);
     }
 
     @Override

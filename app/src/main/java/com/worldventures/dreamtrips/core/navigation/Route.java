@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListP
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
@@ -66,6 +67,7 @@ public enum Route {
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
+    FOREIGN_BUCKET_LIST(ForeignBucketTabsFragment.class, R.string.bucket_list),
     MY_PROFILE(AccountFragment.class),
     PROFILE(UserFragment.class),
     REP_TOOLS(RepToolsFragment.class),

@@ -236,23 +236,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void openDetails(Bundle args) {
-        if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
-                    .args(args)
-                    .move(Route.DETAIL_BUCKET);
-        } else {
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .args(args)
-                    .move(Route.DETAIL_BUCKET);
-        }
-
     }
+
+
 
     @Override
     public void openPopular(Bundle args) {

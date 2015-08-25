@@ -44,6 +44,8 @@ public class BucketItemManager {
         injector.inject(this);
     }
 
+    String userId;
+
     @Inject
     SnappyRepository snapper;
 
@@ -60,6 +62,7 @@ public class BucketItemManager {
 
     DreamSpiceManager dreamSpiceManager;
 
+
     public void setDreamSpiceManager(DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
     }
@@ -69,11 +72,10 @@ public class BucketItemManager {
             eventBus.post(new BucketItemsLoadedEvent());
         }
 
-        dreamSpiceManager.execute(new GetBucketItemsQuery(),
-                items -> {
-                    saveBucketItems(items);
-                    eventBus.post(new BucketItemsLoadedEvent());
-                }, failureListener);
+        dreamSpiceManager.execute(new GetBucketItemsQuery(userId), items -> {
+            saveBucketItems(items);
+            eventBus.post(new BucketItemsLoadedEvent());
+        }, failureListener);
     }
 
     private void saveBucketItems(List<BucketItem> bucketItems) {
@@ -96,9 +98,8 @@ public class BucketItemManager {
                 bucketItemsDining = bucketItems;
                 break;
         }
-        snapper.saveBucketList(bucketItems, type.name());
+        snapper.saveBucketList(bucketItems, type.name(), userId);
     }
-
 
     public void addBucketItem(BucketItem item, BucketTabsPresenter.BucketType type, boolean asFirst) {
         List<BucketItem> bucketItems = getBucketItems(type);
@@ -123,7 +124,7 @@ public class BucketItemManager {
         }
 
         if (items == null || items.isEmpty()) {
-            items = snapper.readBucketList(type.name());
+            items = snapper.readBucketList(type.name(), userId);
         }
 
         return items;
@@ -351,4 +352,8 @@ public class BucketItemManager {
         return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
     }
 
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

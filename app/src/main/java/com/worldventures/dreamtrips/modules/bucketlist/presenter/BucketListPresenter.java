@@ -6,12 +6,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.OpenBucketDetailsRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
@@ -142,13 +142,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, bucketItem.getId());
-
         view.showDetailsContainer();
-        view.openDetails(bundle);
-
+        eventBus.post(new OpenBucketDetailsRequestEvent(type, bucketItem.getId()));
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
                 item.setSelected(bucketItem.equals(item)));

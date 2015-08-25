@@ -143,7 +143,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void openDetails(BucketItem bucketItem) {
         view.showDetailsContainer();
-        eventBus.post(new OpenBucketDetailsRequestEvent(type, bucketItem.getId()));
+        eventBus.post(new OpenBucketDetailsRequestEvent(type, bucketItem.getUid()));
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
                 item.setSelected(bucketItem.equals(item)));

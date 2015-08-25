@@ -27,11 +27,10 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import javax.inject.Provider;
 
-public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
+public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
         implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
     private MoveListener moveListener;
@@ -44,13 +43,7 @@ public class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
     }
 
     @Override
-    public long getItemId(int position) {
-        V baseItemClass = getItem(position);
-        if (baseItemClass instanceof BaseEntity) {
-            return ((BaseEntity) baseItemClass).getId();
-        }
-        return 0;
-    }
+    public abstract long getItemId(int position);
 
     @Override
     public boolean onCheckCanStartDrag(DraggableCell bucketItemCell, int position, int x, int y) {

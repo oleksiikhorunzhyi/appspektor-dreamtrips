@@ -4,9 +4,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 
 public class OpenBucketDetailsRequestEvent {
     private BucketTabsPresenter.BucketType type;
-    private int bucketItemId;
+    private String bucketItemId;
 
-    public OpenBucketDetailsRequestEvent(BucketTabsPresenter.BucketType type, int bucketItemId) {
+    public OpenBucketDetailsRequestEvent(BucketTabsPresenter.BucketType type, String bucketItemId) {
         this.type = type;
         this.bucketItemId = bucketItemId;
     }
@@ -15,7 +15,7 @@ public class OpenBucketDetailsRequestEvent {
         return type;
     }
 
-    public int getBucketItemId() {
+    public String getBucketItemId() {
         return bucketItemId;
     }
 }

@@ -130,8 +130,8 @@ public class BucketItemManager {
         return items;
     }
 
-    public BucketItem getBucketItem(BucketTabsPresenter.BucketType type, int id) {
-        return Queryable.from(getBucketItems(type)).firstOrDefault(item -> item.getId() == id);
+    public BucketItem getBucketItem(BucketTabsPresenter.BucketType type, String uid) {
+        return Queryable.from(getBucketItems(type)).firstOrDefault(item -> item.getUid().equals(uid));
     }
 
     public List<BucketItem> markBucketItemAsDone(BucketItem bucketItem, BucketTabsPresenter.BucketType bucketType,
@@ -155,7 +155,7 @@ public class BucketItemManager {
 
         //notify server about bucketItemChange
         BucketStatusItem bucketStatusItem = new BucketStatusItem(bucketItem.getStatus());
-        dreamSpiceManager.execute(new MarkBucketItemCommand(bucketItem.getId(), bucketStatusItem),
+        dreamSpiceManager.execute(new MarkBucketItemCommand(bucketItem.getUid(), bucketStatusItem),
                 item -> saveBucketItems(tempItems, bucketType),
                 failureListener::handleError);
 
@@ -169,7 +169,7 @@ public class BucketItemManager {
         List<BucketItem> tempItems = new ArrayList<>();
         tempItems.addAll(getBucketItems(bucketType));
         tempItems.remove(bucketItem);
-        dreamSpiceManager.execute(new DeleteBucketItemCommand(bucketItem.getId()),
+        dreamSpiceManager.execute(new DeleteBucketItemCommand(bucketItem.getUid()),
                 jsonObject -> {
                     if (bucketType.equals(BucketTabsPresenter.BucketType.LOCATION)) {
                         dreamSpiceManager.execute(new GetTripsQuery(snapper, prefs, false), tripModels -> {
@@ -201,7 +201,7 @@ public class BucketItemManager {
         BucketOrderModel orderModel = new BucketOrderModel();
         orderModel.setPosition(to);
 
-        dreamSpiceManager.execute(new ReorderBucketItemCommand(tempItems.get(from).getId(),
+        dreamSpiceManager.execute(new ReorderBucketItemCommand(tempItems.get(from).getUid(),
                 orderModel), jsonObject -> {
             BucketItem item = tempItems.remove(from);
             tempItems.add(to, item);
@@ -253,20 +253,20 @@ public class BucketItemManager {
 
     }
 
-    public void updateBucketItemCoverId(BucketItem bucketItem, int coverID,
+    public void updateBucketItemCoverId(BucketItem bucketItem, String coverID,
                                         DreamSpiceManager.FailureListener failureListener) {
         updateBucketItemCoverId(bucketItem, coverID, null, failureListener);
     }
 
 
-    public void updateBucketItemCoverId(BucketItem bucketItem, int coverID,
+    public void updateBucketItemCoverId(BucketItem bucketItem, String coverID,
                                         @Nullable DreamSpiceManager.SuccessListener<BucketItem> successListener,
                                         DreamSpiceManager.FailureListener failureListener) {
         BucketCoverModel bucketCoverModel = new BucketCoverModel();
         bucketCoverModel.setCoverId(coverID);
         bucketCoverModel.setStatus(bucketItem.getStatus());
         bucketCoverModel.setType(bucketItem.getType());
-        bucketCoverModel.setId(String.valueOf(bucketItem.getId()));
+        bucketCoverModel.setId(bucketItem.getUid());
         updateBucketItem(bucketCoverModel, successListener, failureListener);
     }
 
@@ -314,7 +314,7 @@ public class BucketItemManager {
                                       DreamSpiceManager.SuccessListener<JsonObject> successListener,
                                       DreamSpiceManager.FailureListener failureListener) {
         dreamSpiceManager.execute(new DeleteBucketPhotoCommand(bucketPhoto.getFsId(),
-                bucketItem.getId()), jsonObject -> {
+                bucketItem.getUid()), jsonObject -> {
             successListener.onRequestSuccess(jsonObject);
             bucketItem.getPhotos().remove(bucketPhoto);
 

@@ -4,15 +4,15 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.Command;
 
 public class DeleteBucketItemCommand extends Command<JsonObject> {
-    private int id;
+    private String uid;
 
-    public DeleteBucketItemCommand(int id) {
+    public DeleteBucketItemCommand(String uid) {
         super(JsonObject.class);
-        this.id = id;
+        this.uid = uid;
     }
 
     @Override
     public JsonObject loadDataFromNetwork() {
-        return getService().deleteItem(id);
+        return getService().deleteItem(uid);
     }
 }

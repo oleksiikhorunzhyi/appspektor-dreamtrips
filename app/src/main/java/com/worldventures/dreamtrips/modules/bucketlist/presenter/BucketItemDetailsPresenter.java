@@ -23,7 +23,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEdit() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();

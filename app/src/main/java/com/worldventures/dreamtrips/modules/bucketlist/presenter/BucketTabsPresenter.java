@@ -79,7 +79,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public void onEvent(OpenBucketDetailsRequestEvent event) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, event.getType());
-        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, event.getBucketItemId());
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, event.getBucketItemId());
         view.openDetails(bundle);
     }
 

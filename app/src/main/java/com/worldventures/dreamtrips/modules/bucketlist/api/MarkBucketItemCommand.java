@@ -6,16 +6,16 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 
 public class MarkBucketItemCommand extends Command<BucketItem> {
     private BucketStatusItem bucketStatusItem;
-    private int id;
+    private String uid;
 
-    public MarkBucketItemCommand(int id, BucketStatusItem bucketStatusItem) {
+    public MarkBucketItemCommand(String uid, BucketStatusItem bucketStatusItem) {
         super(BucketItem.class);
         this.bucketStatusItem = bucketStatusItem;
-        this.id = id;
+        this.uid = uid;
     }
 
     @Override
     public BucketItem loadDataFromNetwork() {
-        return getService().completeItem(id, bucketStatusItem);
+        return getService().completeItem(uid, bucketStatusItem);
     }
 }

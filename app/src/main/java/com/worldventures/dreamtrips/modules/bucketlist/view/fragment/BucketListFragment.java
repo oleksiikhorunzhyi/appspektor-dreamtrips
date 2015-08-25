@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
+import android.content.Context;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,12 +39,12 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
@@ -129,7 +130,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         dragDropManager = new RecyclerViewDragDropManager();
         dragDropManager.setInitiateOnLongPress(true); // not working :(
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
-        adapter = new DraggableArrayListAdapter<>(getActivity(), injector);
+        adapter = new BucketItemAdapter(getActivity(), injector);
         adapter.registerCell(BucketItem.class, BucketItemCell.class);
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
@@ -237,7 +238,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void openDetails(Bundle args) {
     }
-
 
 
     @Override

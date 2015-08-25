@@ -6,7 +6,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -35,8 +34,6 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
 
     @Inject
     ActivityRouter activityRouter;
-    @Inject
-    FeatureManager featureManager;
 
     public FeedHeaderCell(View view) {
         super(view);

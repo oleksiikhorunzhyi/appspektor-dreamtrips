@@ -6,6 +6,9 @@ import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -24,6 +27,7 @@ import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationCha
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -157,11 +161,18 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openBucketList() {
-        NavigationBuilder.create().with(activityRouter).move(Route.FOREIGN_BUCKET_LIST);
+        Bundle args = new Bundle();
+        args.putSerializable(ForeignBucketTabsFragment.EXTRA_USER_ID, user.getId());
+        NavigationBuilder.create().args(args).with(activityRouter).move(Route.FOREIGN_BUCKET_LIST);
     }
 
     @Override
     public void openTripImages() {
+        Bundle args = new Bundle();
+        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.FOREIGN_IMAGES);
+        args.putSerializable(TripImagesListFragment.BUNDLE_FOREIGN_USER_ID, user.getId());
+
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FOREIGN_TRIP_IMAGES);
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

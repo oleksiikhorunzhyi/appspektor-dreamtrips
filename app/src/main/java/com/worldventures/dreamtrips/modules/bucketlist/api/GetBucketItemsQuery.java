@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class GetBucketItemsQuery extends Query<ArrayList<BucketItem>> {
 
-    String userId;
+    int userId;
 
-    public GetBucketItemsQuery(String userId) {
+    public GetBucketItemsQuery(int userId) {
         super((Class<ArrayList<BucketItem>>) new ArrayList<BucketItem>().getClass());
         this.userId = userId;
     }
@@ -20,7 +20,7 @@ public class GetBucketItemsQuery extends Query<ArrayList<BucketItem>> {
 
     @Override
     public ArrayList<BucketItem> loadDataFromNetwork() throws Exception {
-        if (userId != null) {
+        if (userId != 0) {
             return getService().getBucketListFull(userId);
         }
         return getService().getBucketListFull();

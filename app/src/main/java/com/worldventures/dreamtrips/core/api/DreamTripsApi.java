@@ -91,8 +91,8 @@ public interface DreamTripsApi {
     @GET("/api/users/{id}/photos")
     ArrayList<Photo> getAccountPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
-    @GET("/api/social/users/{user_id}/photos")
-    ArrayList<Photo> getForeignUserPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    @GET("/api/users/{user_id}/photos")
+    ArrayList<Photo> getForeignUserPhotos(@Path("user_id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
     ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
@@ -142,6 +142,9 @@ public interface DreamTripsApi {
 
     @GET("/api/bucket_list_items")
     ArrayList<BucketItem> getBucketListFull();
+
+    @GET("/api/users/{user_id}/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull(@Path("user_id") int userId);
 
     @GET("/api/social/users/{user_id}/bucket_list_items")
     ArrayList<BucketItem> getBucketListFull(@Path("user_id") String userId);

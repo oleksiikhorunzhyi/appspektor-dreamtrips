@@ -5,9 +5,9 @@ import icepick.Icicle;
 public class ForeignBucketTabPresenter extends BucketTabsPresenter {
 
     @Icicle
-    protected String userId;
+    protected int userId;
 
-    public ForeignBucketTabPresenter(String userId) {
+    public ForeignBucketTabPresenter(int userId) {
         this.userId = userId;
     }
 

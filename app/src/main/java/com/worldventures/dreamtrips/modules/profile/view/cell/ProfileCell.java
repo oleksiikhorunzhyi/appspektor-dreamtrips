@@ -333,12 +333,12 @@ public class ProfileCell extends AbstractCell<User> {
 
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {
-        getEventBus().post(new OnBucketListClickedEvent());
+        getEventBus().post(new OnBucketListClickedEvent(getModelObject().getId()));
     }
 
     @OnClick(R.id.trip_images)
     protected void onTripImageClicked() {
-        getEventBus().post(new OnTripImageClickedEvent());
+        getEventBus().post(new OnTripImageClickedEvent(getModelObject().getId()));
 
     }
 

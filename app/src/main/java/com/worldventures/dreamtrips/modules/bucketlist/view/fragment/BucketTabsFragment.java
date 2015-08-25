@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -46,6 +47,15 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
         return (PRESENTER) new BucketTabsPresenter();
     }
 
+    @NonNull
+    protected Bundle createListFragmentArgs(int position) {
+        Bundle args = new Bundle();
+        Serializable type = adapter.getFragmentItem(position).data;
+        args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
+        args.putBoolean(BucketListFragment.BUNDLE_DRAG_ENABLED, true);
+        return args;
+    }
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -54,11 +64,10 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     super.setArgs(position, fragment);
-                    Bundle args = new Bundle();
-                    Serializable type = this.getFragmentItem(position).data;
-                    args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
+                    Bundle args = createListFragmentArgs(position);
                     fragment.setArguments(args);
                 }
+
             };
         }
 

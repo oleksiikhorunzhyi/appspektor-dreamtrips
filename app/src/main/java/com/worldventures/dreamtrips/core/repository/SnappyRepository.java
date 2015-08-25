@@ -144,28 +144,28 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveBucketList(List<BucketItem> items, String type) {
-        saveBucketList(items, type, null);
+        saveBucketList(items, type, 0);
     }
 
-    public void saveBucketList(List<BucketItem> items, String type, String userId) {
+    public void saveBucketList(List<BucketItem> items, String type, int userId) {
         String key = getBucketKey(type, userId);
         putList(key, items);
     }
 
     @NonNull
-    private String getBucketKey(String type, String userId) {
+    private String getBucketKey(String type, int userId) {
         String key = BUCKET_LIST + ":" + type;
-        if (userId != null) {
+        if (userId != 0) {
             key += "_" + userId;
         }
         return key;
     }
 
     public List<BucketItem> readBucketList(String type) {
-        return readBucketList(type, null);
+        return readBucketList(type, 0);
     }
 
-    public List<BucketItem> readBucketList(String type, String userId) {
+    public List<BucketItem> readBucketList(String type, int userId) {
         List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) return 0;

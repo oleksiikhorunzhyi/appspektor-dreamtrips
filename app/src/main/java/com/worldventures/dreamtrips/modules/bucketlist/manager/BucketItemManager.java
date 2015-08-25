@@ -44,7 +44,7 @@ public class BucketItemManager {
         injector.inject(this);
     }
 
-    String userId;
+    int userId;
 
     @Inject
     SnappyRepository snapper;
@@ -352,8 +352,7 @@ public class BucketItemManager {
         return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
     }
 
-
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 }

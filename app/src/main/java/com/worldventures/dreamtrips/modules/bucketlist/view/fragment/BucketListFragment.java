@@ -70,6 +70,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     Provider<Injector> injector;
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
+    public static final String BUNDLE_DRAG_ENABLED = "BUNDLE_DRAG_ENABLED";
     public static final int MIN_SYMBOL_COUNT = 3;
 
     @InjectView(R.id.lv_items)
@@ -124,6 +125,8 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         recyclerView.setFadingEdgeLength(0);
         // setup empty view
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        boolean dragEnabled = getArguments().getBoolean(BUNDLE_DRAG_ENABLED);
+
         textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
         recyclerView.setEmptyView(emptyView);
         // setup drag&drop with adapter
@@ -135,7 +138,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
-        dragDropManager.attachRecyclerView(recyclerView);
+        if (dragEnabled) dragDropManager.attachRecyclerView(recyclerView);
         // set state delegate
         stateDelegate.setRecyclerView(recyclerView);
     }

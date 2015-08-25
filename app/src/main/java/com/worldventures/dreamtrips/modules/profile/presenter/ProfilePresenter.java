@@ -223,11 +223,15 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest();
 
     public void onEvent(OnBucketListClickedEvent event) {
-        openBucketList();
+        if (event.getUserId() == user.getId()) {
+            openBucketList();
+        }
     }
 
     public void onEvent(OnTripImageClickedEvent event) {
-        openTripImages();
+        if (event.getUserId() == user.getId()) {
+            openTripImages();
+        }
     }
 
     public void onEvent(OnFriendsClickedEvent event) {

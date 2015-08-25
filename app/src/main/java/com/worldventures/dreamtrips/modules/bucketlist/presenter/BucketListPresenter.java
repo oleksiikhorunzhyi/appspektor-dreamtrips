@@ -142,6 +142,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItem.getUid());
+
         view.showDetailsContainer();
         eventBus.post(new OpenBucketDetailsRequestEvent(type, bucketItem.getUid()));
         // set selected

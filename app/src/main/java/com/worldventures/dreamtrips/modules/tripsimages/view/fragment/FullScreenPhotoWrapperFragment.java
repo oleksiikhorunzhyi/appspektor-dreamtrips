@@ -32,6 +32,8 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_FIXED_LIST = "EXTRA_FIXED_LIST";
+    public static final String EXTRA_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
+
 
     @InjectView(R.id.pager)
     protected ViewPager pager;
@@ -47,9 +49,10 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
         Bundle args = getArguments();
         TripImagesListFragment.Type type = (TripImagesListFragment.Type) args.getSerializable(EXTRA_TYPE);
+        int foreignUserId = args.getInt(EXTRA_FOREIGN_USER_ID);
         position = args.getInt(EXTRA_POSITION);
         ArrayList<IFullScreenObject> fixedList = (ArrayList<IFullScreenObject>) args.getSerializable(EXTRA_FIXED_LIST);
-        return TripImagesListPresenter.create(type, true, fixedList);
+        return TripImagesListPresenter.create(type, true, fixedList, foreignUserId);
     }
 
 

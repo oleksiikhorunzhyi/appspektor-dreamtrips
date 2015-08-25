@@ -132,9 +132,13 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void setUser(User user) {
-        adapter.remove(ProfilePresenter.HEADER_USER_POSITION);
-        adapter.addItem(ProfilePresenter.HEADER_USER_POSITION, user);
-        adapter.notifyDataSetChanged();
+        if (adapter.getItems().contains(user)) {
+            adapter.itemUpdated(user);
+        } else {
+            adapter.addItem(0, user);
+            adapter.notifyItemInserted(0);
+        }
+
         ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
     }

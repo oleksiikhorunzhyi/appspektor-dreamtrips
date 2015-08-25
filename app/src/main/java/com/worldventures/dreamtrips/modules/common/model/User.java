@@ -220,24 +220,7 @@ public class User extends BaseEntity implements Parcelable {
         relationship = Relationship.NONE;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
-        User user = (User) o;
-
-        return !(firstName != null ? !firstName.equals(user.firstName) : user.firstName != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        return result;
-    }
 
     public static class Avatar implements Parcelable, Serializable {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {

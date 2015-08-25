@@ -106,7 +106,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             resetLazyLoadFields();
             doRequest(getRefreshRequest(), this::refreshFeedItems, spiceException -> {
                 reloadFeedModel.setVisible(true);
-                view.getAdapter().notifyDataSetChanged();
+                view.getAdapter().notifyItemChanged(HEADER_RELOAD_POSITION);
                 view.finishLoading();
             });
         }

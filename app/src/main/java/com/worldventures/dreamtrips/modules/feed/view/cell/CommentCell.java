@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.app.Dialog;
-import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,8 +11,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
@@ -50,6 +50,10 @@ public class CommentCell extends AbstractCell<Comment> {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    ActivityRouter activityRouter;
+    @Inject
+    FeatureManager featureManager;
 
     private CommentCellHelper commentCellHelper;
 
@@ -111,4 +115,16 @@ public class CommentCell extends AbstractCell<Comment> {
     public void prepareForReuse() {
 
     }
+
+    @Optional
+    @OnClick(R.id.user_photo)
+    void commentOwnerClicked() {
+        User user = commentCellHelper.getComment().getOwner();
+        openUser(user);
+    }
+
+    private void openUser(User user) {
+        activityRouter.openUserProfile(user);
+    }
+
 }

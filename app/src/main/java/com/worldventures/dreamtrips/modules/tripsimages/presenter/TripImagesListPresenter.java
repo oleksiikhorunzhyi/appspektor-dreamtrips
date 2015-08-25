@@ -10,19 +10,16 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoLikeEvent;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -225,7 +222,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
 
     }
 
-    public void onEvent(PhotoLikeEvent event) {
+    public void onEvent(EntityLikedEvent event) {
         for (Object o : photos) {
             if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getId())) {
                 ((Photo) o).setLiked(event.isLiked());

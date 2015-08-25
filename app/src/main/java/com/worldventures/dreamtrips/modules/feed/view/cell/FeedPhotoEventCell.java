@@ -59,7 +59,7 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         }
 
         itemView.setOnClickListener(v -> {
-            ArrayList<IFullScreenObject> items = new ArrayList<>();
+            ArrayList<Photo> items = new ArrayList<>();
             items.add(getModelObject().getItem());
             Bundle args = new Bundle();
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, 0);

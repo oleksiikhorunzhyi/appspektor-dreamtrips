@@ -21,15 +21,15 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
     BucketItem bucketItem;
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
+    public void onInjected() {
+        super.onInjected();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
         if (bucketItem != null) view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
     }
 

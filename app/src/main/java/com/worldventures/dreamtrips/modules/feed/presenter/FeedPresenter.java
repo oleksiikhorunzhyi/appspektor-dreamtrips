@@ -5,6 +5,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -18,6 +19,8 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedRelo
 
 import java.util.Calendar;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
@@ -33,6 +36,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         reloadFeed();
     }
 
+    public void onEvent(FeedObjectChangedEvent event) {
+        view.getAdapter().itemUpdated(event.getFeedObject());
+    }
+
     public void onEvent(CommentsPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             eventBus.cancelEventDelivery(event);
@@ -40,19 +47,35 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         }
     }
 
-    public void onEvent(FeedObjectChangedEvent event) {
-        view.getAdapter().itemUpdated(event.getFeedObject());
-    }
-
     public void onEvent(LikesPressedEvent event) {
         BaseEventModel model = event.getModel();
+        Timber.d("Like item " + model.getItem().getUid());
         DreamTripsRequest command = model.getItem().isLiked() ?
                 new UnlikeEntityCommand(model.getItem().getUid()) :
                 new LikeEntityCommand(model.getItem().getUid());
-        doRequest(command, element -> {
-            model.getItem().setLiked(!model.getItem().isLiked());
-            itemChanged(model);
-        });
+        doRequest(command, element -> itemLiked(model));
+    }
+
+    //TODO Refactor this after apperean release
+    public void onEvent(EntityLikedEvent event) {
+        BaseEventModel model = Queryable.from(view.getAdapter().getItems())
+                .firstOrDefault(element -> element.getItem().getUid().equals(event.getId()));
+
+        if (model != null) {
+            itemLiked(model);
+        }
+    }
+
+    private void itemLiked(BaseEventModel model) {
+        model.getItem().setLiked(!model.getItem().isLiked());
+        int likesCount = model.getItem().getLikesCount();
+
+        if (model.getItem().isLiked()) likesCount++;
+        else likesCount--;
+
+        model.getItem().setLikesCount(likesCount);
+
+        itemChanged(model);
     }
 
     private void itemChanged(BaseEventModel baseFeedModel) {

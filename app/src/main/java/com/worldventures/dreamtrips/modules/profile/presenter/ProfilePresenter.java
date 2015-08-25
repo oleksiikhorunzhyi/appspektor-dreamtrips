@@ -9,6 +9,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -198,10 +199,30 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         DreamTripsRequest command = model.getItem().isLiked() ?
                 new UnlikeEntityCommand(model.getItem().getUid()) :
                 new LikeEntityCommand(model.getItem().getUid());
-        doRequest(command, element -> {
-            model.getItem().setLiked(!model.getItem().isLiked());
-            itemChanged(model);
-        });
+        doRequest(command, element -> itemLiked(model));
+    }
+
+    //TODO Refactor this after apperean release
+    public void onEvent(EntityLikedEvent event) {
+        BaseEventModel model = (BaseEventModel) Queryable.from(view.getAdapter().getItems())
+                .firstOrDefault(element -> element instanceof BaseEventModel &&
+                        (((BaseEventModel) element).getItem().getUid().equals(event.getId())));
+
+        if (model != null) {
+            itemLiked(model);
+        }
+    }
+
+    private void itemLiked(BaseEventModel model) {
+        model.getItem().setLiked(!model.getItem().isLiked());
+        int likesCount = model.getItem().getLikesCount();
+
+        if (model.getItem().isLiked()) likesCount++;
+        else likesCount--;
+
+        model.getItem().setLikesCount(likesCount);
+
+        itemChanged(model);
     }
 
     private void itemChanged(BaseEventModel baseFeedModel) {

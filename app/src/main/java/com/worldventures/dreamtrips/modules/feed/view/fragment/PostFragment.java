@@ -200,4 +200,14 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void setAvatar(String avatarUrl) {
         avatar.setImageURI(Uri.parse(avatarUrl));
     }
+
+    @Override
+    public void enableImagePicker() {
+        image.setEnabled(true);
+    }
+
+    @Override
+    public void disableImagePicker() {
+        image.setEnabled(false);
+    }
 }

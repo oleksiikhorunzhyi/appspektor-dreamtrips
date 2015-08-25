@@ -51,6 +51,11 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @InjectView(R.id.textViewTags)
     TextView textViewTags;
 
+    @InjectView(R.id.bucket_tags_container)
+    View bucketTags;
+    @InjectView(R.id.bucket_who_container)
+    View bucketWho;
+
     @Inject
     ActivityRouter activityRouter;
 
@@ -89,8 +94,18 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
         }
 
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
-        textViewFriends.setText(bucketItem.getFriends());
-        textViewTags.setText(bucketItem.getBucketTags());
+
+        if (!TextUtils.isEmpty(bucketItem.getFriends())) {
+            bucketWho.setVisibility(View.VISIBLE);
+            textViewFriends.setText(bucketItem.getFriends());
+        } else
+            bucketWho.setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(bucketItem.getBucketTags())) {
+            bucketTags.setVisibility(View.VISIBLE);
+            textViewTags.setText(bucketItem.getBucketTags());
+        } else
+            bucketTags.setVisibility(View.GONE);
 
 
         itemView.setOnClickListener(v -> {

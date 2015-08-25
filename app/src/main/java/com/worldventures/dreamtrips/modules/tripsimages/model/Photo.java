@@ -33,6 +33,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
         uid = in.readString();
         commentsCount = in.readInt();
         likesCount = in.readInt();
+        liked = in.readInt() == 1;
         title = in.readString();
         location = in.readParcelable(Location.class.getClassLoader());
         tags = in.createStringArrayList();
@@ -156,7 +157,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
 
     @Override
     public int getFsLikeCount() {
-        return likesCount();
+        return getLikesCount();
     }
 
     @Override
@@ -191,6 +192,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
         parcel.writeString(uid);
         parcel.writeInt(commentsCount);
         parcel.writeInt(likesCount);
+        parcel.writeInt(liked ? 1 : 0);
         parcel.writeString(title);
         parcel.writeParcelable(location, i);
         parcel.writeStringList(tags);

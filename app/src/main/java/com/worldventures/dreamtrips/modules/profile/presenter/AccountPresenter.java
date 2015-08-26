@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
@@ -136,10 +135,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     public void openTripImages() {
-        shouldReload = true;
         Bundle args = new Bundle();
-        args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.TRIP_IMAGES);
+        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.MY_IMAGES);
+
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FOREIGN_TRIP_IMAGES);
     }
 
     public void photoClicked() {

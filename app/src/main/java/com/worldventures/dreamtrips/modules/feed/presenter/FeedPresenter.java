@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -115,7 +116,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public void onEvent(OnFeedReloadEvent event) {
-        reloadFeed();
+        new WeakHandler().postDelayed(this::reloadFeed, 100);
     }
 
     private void itemsLoaded(List<ParentFeedModel> feedItems) {

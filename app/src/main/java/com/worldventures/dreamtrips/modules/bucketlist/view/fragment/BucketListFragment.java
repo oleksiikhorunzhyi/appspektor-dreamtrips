@@ -46,6 +46,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPrese
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -132,7 +133,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         dragDropManager.setInitiateOnLongPress(true); // not working :(
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
         adapter = new BucketItemAdapter(getActivity(), injector);
-        adapter.registerCell(BucketItem.class, BucketItemCell.class);
+
+        if (isSwipeEnabled())
+            adapter.registerCell(BucketItem.class, BucketItemCell.class);
+        else
+            adapter.registerCell(BucketItem.class, BucketItemStaticCell.class);
+
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
@@ -142,6 +148,10 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     protected boolean isDragEnabled() {
+        return true;
+    }
+
+    protected boolean isSwipeEnabled() {
         return true;
     }
 
@@ -168,7 +178,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menuItemAdd = menu.findItem(R.id.action_quick);
-        setupQuickTypeInput(menuItemAdd);
+
+        if (menuItemAdd != null)
+            setupQuickTypeInput(menuItemAdd);
     }
 
     private void setupQuickTypeInput(MenuItem item) {

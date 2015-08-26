@@ -18,8 +18,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAd
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForeign;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
@@ -59,6 +61,7 @@ import dagger.Provides;
                 BucketAddPhotoCell.class,
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
+                BucketPhotoCellForeign.class,
                 BucketPhotoCellForDetails.class,
                 FixedPhotoFsPresenter.class,
                 BucketPhotosView.class,
@@ -67,6 +70,7 @@ import dagger.Provides;
                 ForeignBucketTabsFragment.class,
                 ForeignBucketTabPresenter.class,
                 ForeignBucketListFragment.class,
+                BucketItemStaticCell.class,
                 ForeignBucketListPresenter.class
         },
         complete = false,

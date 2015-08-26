@@ -105,7 +105,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        bucketPhotosView.init(injector, BucketPhotosView.Type.DETAILS);
+        bucketPhotosView.init(injector, getBucketPhotosType());
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
 
         if (toolbar != null) {
@@ -115,6 +115,10 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             toolbar.getBackground().setAlpha(0);
         }
         setForeignIntentAction();
+    }
+
+    protected BucketPhotosView.Type getBucketPhotosType() {
+        return BucketPhotosView.Type.DETAILS;
     }
 
     @Override

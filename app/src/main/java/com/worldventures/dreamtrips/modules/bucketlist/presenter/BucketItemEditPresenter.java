@@ -53,7 +53,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
-        bucketItemManager.updateBucketItem(bucketPostItem, item -> {
+        getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
                 savingItem = false;
                 view.done();

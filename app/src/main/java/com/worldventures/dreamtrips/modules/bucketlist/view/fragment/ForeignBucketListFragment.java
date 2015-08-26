@@ -1,31 +1,31 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketListPresenter;
 
-import butterknife.InjectView;
-
-@Layout(R.layout.fragment_bucket_list)
-@MenuResource(R.menu.menu_bucket)
+@Layout(R.layout.fragment_foreign_bucket_list)
+@MenuResource(R.menu.menu_bucket_foreign)
 public class ForeignBucketListFragment extends BucketListFragment<ForeignBucketListPresenter> {
 
-    @InjectView(R.id.ll_empty_view_container)
-    View emptyViewContainer;
-
+    @Override
     protected boolean isDragEnabled() {
         return false;
     }
 
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        emptyViewContainer.setVisibility(View.GONE);
+    protected boolean isSwipeEnabled() {
+        return false;
+    }
+
+    @Override
+    public Route getDetailsRoute() {
+        return Route.DETAIL_FOREIGN_BUCKET;
     }
 
     @Override

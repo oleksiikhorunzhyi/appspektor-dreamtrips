@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -77,14 +76,11 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
+    @Optional
     @InjectView(R.id.textViewEmptyAdd)
     protected TextView textViewEmptyAdd;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
-    @InjectView(R.id.buttonNew)
-    AppCompatButton buttonNew;
-    @InjectView(R.id.buttonPopular)
-    AppCompatButton buttonPopular;
     //
     @Optional
     @InjectView(R.id.detail_container)
@@ -126,7 +122,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         // setup empty view
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
 
-        textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
+        if (textViewEmptyAdd != null)
+            textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
         recyclerView.setEmptyView(emptyView);
         // setup drag&drop with adapter
         dragDropManager = new RecyclerViewDragDropManager();
@@ -229,11 +226,13 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         getPresenter().itemClicked(event.getBucketItem());
     }
 
+    @Optional
     @OnClick(R.id.buttonNew)
     void onAdd() {
         menuItemAdd.expandActionView();
     }
 
+    @Optional
     @OnClick(R.id.buttonPopular)
     void onPopular() {
         getPresenter().popularClicked();

@@ -27,6 +27,10 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
+    /**
+     * Use getter getBucketItemManager() because we have
+     * {@link com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager}
+     */
     @Inject
     BucketItemManager bucketItemManager;
 
@@ -46,8 +50,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItemManager.loadBucketItems(this);
+        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
+        getBucketItemManager().loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 
@@ -93,6 +97,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void updateSelection();
 
         void openDetails(Bundle args);
+    }
+
+
+    protected <T extends BucketItemManager> T getBucketItemManager() {
+        return (T) bucketItemManager;
     }
 
     public enum BucketType {

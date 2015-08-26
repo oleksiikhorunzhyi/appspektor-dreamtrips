@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.manager;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.gson.JsonObject;
@@ -44,8 +45,6 @@ public class BucketItemManager {
         injector.inject(this);
     }
 
-    int userId;
-
     @Inject
     SnappyRepository snapper;
 
@@ -72,10 +71,24 @@ public class BucketItemManager {
             eventBus.post(new BucketItemsLoadedEvent());
         }
 
-        dreamSpiceManager.execute(new GetBucketItemsQuery(userId), items -> {
+        dreamSpiceManager.execute(getBucketListRequest(), items -> {
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
+    }
+
+    @NonNull
+    protected GetBucketItemsQuery getBucketListRequest() {
+        return new GetBucketItemsQuery();
+    }
+
+    protected List<BucketItem> readBucketItems(BucketTabsPresenter.BucketType type) {
+        return snapper.readBucketList(type.name());
+    }
+
+
+    protected void doLocalSave(List<BucketItem> bucketItems, BucketTabsPresenter.BucketType type) {
+        snapper.saveBucketList(bucketItems, type.name());
     }
 
     private void saveBucketItems(List<BucketItem> bucketItems) {
@@ -98,7 +111,7 @@ public class BucketItemManager {
                 bucketItemsDining = bucketItems;
                 break;
         }
-        snapper.saveBucketList(bucketItems, type.name(), userId);
+        doLocalSave(bucketItems, type);
     }
 
     public void addBucketItem(BucketItem item, BucketTabsPresenter.BucketType type, boolean asFirst) {
@@ -124,7 +137,7 @@ public class BucketItemManager {
         }
 
         if (items == null || items.isEmpty()) {
-            items = snapper.readBucketList(type.name(), userId);
+            items = readBucketItems(type);
         }
 
         return items;
@@ -350,9 +363,5 @@ public class BucketItemManager {
 
     private BucketTabsPresenter.BucketType getType(String name) {
         return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 }

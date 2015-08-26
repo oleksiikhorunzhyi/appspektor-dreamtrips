@@ -40,6 +40,7 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
+    public static final String FOREIGN_BUCKET_LIST = "foreign_bucket_list";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
@@ -152,9 +153,22 @@ public class SnappyRepository {
         putList(key, items);
     }
 
+
+    public List<List<BucketItem>> deleteAllForeignBucketList() {
+        return actWithResult(db -> {
+            List<List<BucketItem>> trips = new ArrayList<>();
+            String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
+            for (String key : keys) {
+                db.del(key);
+            }
+            return trips;
+        }).or(Collections.emptyList());
+    }
+
+
     @NonNull
     private String getBucketKey(String type, int userId) {
-        String key = BUCKET_LIST + ":" + type;
+        String key = userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST + ":" + type;
         if (userId != 0) {
             key += "_" + userId;
         }

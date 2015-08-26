@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
@@ -39,6 +40,7 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
+    public static final String FOREIGN_BUCKET_LIST = "foreign_bucket_list";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
@@ -143,11 +145,40 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveBucketList(List<BucketItem> items, String type) {
-        putList(BUCKET_LIST + ":" + type, items);
+        saveBucketList(items, type, 0);
+    }
+
+    public void saveBucketList(List<BucketItem> items, String type, int userId) {
+        String key = getBucketKey(type, userId);
+        putList(key, items);
+    }
+
+
+    public void deleteAllForeignBucketList() {
+        act(db -> {
+            String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
+            for (String key : keys) {
+                db.del(key);
+            }
+        });
+    }
+
+
+    @NonNull
+    private String getBucketKey(String type, int userId) {
+        String key = (userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST) + ":" + type;
+        if (userId != 0) {
+            key += "_" + userId;
+        }
+        return key;
     }
 
     public List<BucketItem> readBucketList(String type) {
-        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        return readBucketList(type, 0);
+    }
+
+    public List<BucketItem> readBucketList(String type, int userId) {
+        List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) return 0;
             else if (lhs.isDone() && !rhs.isDone()) return 1;

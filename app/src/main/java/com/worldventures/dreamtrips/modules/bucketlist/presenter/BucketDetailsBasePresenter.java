@@ -51,7 +51,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     SnappyRepository db;
 
     protected BucketTabsPresenter.BucketType type;
-    protected int bucketItemId;
+    protected String bucketItemId;
     protected BucketItem extraBucketItem;
 
     protected BucketItem bucketItem;
@@ -62,7 +62,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         super();
         type = (BucketTabsPresenter.BucketType)
                 bundle.getSerializable(BucketListModule.EXTRA_TYPE);
-        bucketItemId = bundle.getInt(BucketListModule.EXTRA_ITEM_ID);
+        bucketItemId = bundle.getString(BucketListModule.EXTRA_ITEM_ID);
         extraBucketItem = (BucketItem) bundle.getSerializable(BucketListModule.EXTRA_ITEM);
 
     }
@@ -70,7 +70,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void onResume() {
         super.onResume();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         restoreBucketItem();
         syncUI();
 
@@ -89,7 +89,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void restoreBucketItem() {
-        bucketItem = bucketItemManager.getBucketItem(type, bucketItemId);
+        bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
         if (bucketItem == null) {
             bucketItem = extraBucketItem;
         }
@@ -110,11 +110,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         List<BucketPhoto> photos = bucketItem.getPhotos();
         if (photos != null) {
-            Collections.sort(photos, (lhs, rhs) -> rhs.getId() - lhs.getId());
             view.getBucketPhotosView().setImages(photos);
         }
 
-        tasks = db.getUploadTasksForId(String.valueOf(bucketItem.getId()));
+        tasks = db.getUploadTasksForId(bucketItemId);
         Collections.reverse(tasks);
 
         view.getBucketPhotosView().addImages(tasks);
@@ -153,7 +152,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             ArrayList<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
-                        photo.setIsCover(bucketItem.getCoverPhoto().getId() == photo.getId()));
+                        photo.setIsCover(photo.getFsId().equals(bucketItem.getCoverPhoto().getFsId())));
             }
             photos.addAll(bucketItem.getPhotos());
 
@@ -168,19 +167,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         if (bucketItem.getPhotos().contains(event.getPhoto())) {
             eventBus.cancelEventDelivery(event);
-            saveCover(event.getPhoto().getId());
+            saveCover(event.getPhoto().getFsId());
         }
     }
 
-    private void saveCover(int coverID) {
-        bucketItemManager.updateBucketItemCoverId(bucketItem, coverID, this);
+    private void saveCover(String coverID) {
+        getBucketItemManager().updateBucketItemCoverId(bucketItem, coverID, this);
     }
 
     public void onEvent(BucketPhotoDeleteRequestEvent event) {
         if (bucketItem.getPhotos().size() > 0 &&
                 bucketItem.getPhotos().contains(event.getPhoto())) {
             eventBus.cancelEventDelivery(event);
-            bucketItemManager.deleteBucketItemPhoto(event.getPhoto(),
+            getBucketItemManager().deleteBucketItemPhoto(event.getPhoto(),
                     bucketItem, jsonObject -> deleted(event.getPhoto()), this);
         }
     }
@@ -254,7 +253,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         view.getBucketPhotosView().replace(bucketPhotoUploadTask, bucketPhoto);
         db.removeUploadTask(bucketPhotoUploadTask);
 
-        bucketItemManager.updateBucketItemWithPhoto(bucketItem, bucketPhoto);
+        getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
     private void photoUploadError(String taskId) {
@@ -275,15 +274,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         upload(event.getTask(), event.getTask().getFilePath());
     }
 
+    protected BucketItemManager getBucketItemManager() {
+        return bucketItemManager;
+    }
+
     ////////////////////////////////////////
     /////// Photo picking
     ////////////////////////////////////////
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
+        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId.hashCode()));
     }
 
     public void imagePicked(ImagePickedEvent event) {
-        if (event.getRequesterID() == bucketItemId) {
+        if (event.getRequesterID() == bucketItemId.hashCode()) {
+            eventBus.removeStickyEvent(event);
             Queryable.from(event.getImages()).forEachR(choseImage ->
                     imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
         }

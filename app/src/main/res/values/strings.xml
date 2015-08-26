@@ -372,5 +372,6 @@
     <string name="feed_title">Activity Feed</string>
     <string name="post_cancel_message">Are you sure you want to discard changes?</string>
     <string name="pictures">Pictures</string>
+    <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
 
 </resources>

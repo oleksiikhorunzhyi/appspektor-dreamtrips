@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.os.Bundle;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -223,11 +224,15 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest();
 
     public void onEvent(OnBucketListClickedEvent event) {
-        openBucketList();
+        if (event.getUserId() == user.getId()) {
+            openBucketList();
+        }
     }
 
     public void onEvent(OnTripImageClickedEvent event) {
-        openTripImages();
+        if (event.getUserId() == user.getId()) {
+            openTripImages();
+        }
     }
 
     public void onEvent(OnFriendsClickedEvent event) {
@@ -239,7 +244,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(OnFeedReloadEvent event) {
-        loadFeed();
+        new WeakHandler().postDelayed(this::loadFeed, 100);
     }
 
     public interface View extends Presenter.View {

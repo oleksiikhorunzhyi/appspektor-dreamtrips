@@ -23,7 +23,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEdit() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
@@ -40,7 +40,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     public void deleteBucketItem(BucketItem bucketItem) {
-        bucketItemManager.deleteBucketItem(bucketItem, type,
+        getBucketItemManager().deleteBucketItem(bucketItem, type,
                 jsonObject -> {
                     if (!view.isTabletLandscape()) view.done();
                     else eventBus.post(new BucketItemUpdatedEvent(bucketItem));
@@ -51,7 +51,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onStatusUpdated(boolean status) {
         if (bucketItem != null && status != bucketItem.isDone()) {
             view.disableCheckbox();
-            bucketItemManager.updateItemStatus(String.valueOf(bucketItemId),
+            getBucketItemManager().updateItemStatus(String.valueOf(bucketItemId),
                     status, item -> view.enableCheckbox(), this);
         }
     }

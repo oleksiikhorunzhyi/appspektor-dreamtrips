@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
@@ -28,6 +29,8 @@ import dagger.Provides;
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManager.class,
                 BucketItemManager.class,
+                ForeignBucketItemManager.class,
+
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
@@ -63,5 +66,10 @@ public class ManagerModule {
     @Provides
     public BucketItemManager provideBucketItemManager(@ForApplication Injector injector) {
         return new BucketItemManager(injector);
+    }
+    @Singleton
+    @Provides
+    public ForeignBucketItemManager provideForeignBucketItemManager(@ForApplication Injector injector) {
+        return new ForeignBucketItemManager(injector);
     }
 }

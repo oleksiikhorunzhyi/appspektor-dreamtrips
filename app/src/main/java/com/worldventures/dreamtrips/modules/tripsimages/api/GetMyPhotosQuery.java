@@ -31,7 +31,7 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
     public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
         ArrayList<IFullScreenObject> result = new ArrayList<>();
         if (page == 1) result.addAll(getUploadTasks());
-        result.addAll(getService().getMyPhotos(currentUserId, perPage, page));
+        result.addAll(getService().getAccountPhotos(currentUserId, perPage, page));
         return result;
     }
 

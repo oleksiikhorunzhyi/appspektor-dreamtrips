@@ -8,9 +8,9 @@ public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
 
     protected UploadTask photoUploadTask;
-    private int bucketItemId;
+    private String bucketItemId;
 
-    public UploadBucketPhotoCommand(int bucketItemId, UploadTask photoUploadTask) {
+    public UploadBucketPhotoCommand(String bucketItemId, UploadTask photoUploadTask) {
         super(BucketPhoto.class);
         this.bucketItemId = bucketItemId;
         this.photoUploadTask = photoUploadTask;

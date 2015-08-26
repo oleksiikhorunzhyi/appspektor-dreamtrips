@@ -36,7 +36,6 @@ import com.worldventures.dreamtrips.modules.video.model.Category;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit.http.Body;
@@ -87,10 +86,13 @@ public interface DreamTripsApi {
     List<ActivityModel> getActivities();
 
     @GET("/api/photos")
-    ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Photo> getUsersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{id}/photos")
-    ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getAccountPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+
+    @GET("/api/users/{user_id}/photos")
+    ArrayList<Photo> getForeignUserPhotos(@Path("user_id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
     ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
@@ -120,8 +122,8 @@ public interface DreamTripsApi {
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
-    @POST("/api/bucket_list_items/{id}/photos")
-    BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
+    @POST("/api/bucket_list_items/{uid}/photos")
+    BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
 
     @GET("/api/trips/{id}")
     TripDetails getDetails(@Path("id") String tripId);
@@ -129,20 +131,26 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items")
     BucketItem createItem(@Body BucketBasePostItem bucketItem);
 
-    @PATCH("/api/bucket_list_items/{id}")
-    BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
+    @PATCH("/api/bucket_list_items/{uid}")
+    BucketItem completeItem(@Path("uid") String uid, @Body BucketStatusItem bucketPostItem);
 
-    @PATCH("/api/bucket_list_items/{id}")
-    BucketItem updateItem(@Path("id") String id, @Body BucketBasePostItem bucketPostItem);
+    @PATCH("/api/bucket_list_items/{uid}")
+    BucketItem updateItem(@Path("uid") String uid, @Body BucketBasePostItem bucketPostItem);
 
-    @DELETE("/api/bucket_list_items/{id}")
-    JsonObject deleteItem(@Path("id") int id);
+    @DELETE("/api/bucket_list_items/{uid}")
+    JsonObject deleteItem(@Path("uid") String uid);
 
     @GET("/api/bucket_list_items")
     ArrayList<BucketItem> getBucketListFull();
 
-    @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
-    JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
+    @GET("/api/users/{user_id}/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull(@Path("user_id") int userId);
+
+    @GET("/api/social/users/{user_id}/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull(@Path("user_id") String userId);
+
+    @DELETE("/api/bucket_list_items/{uid}/photos/{photo_id}")
+    JsonObject deleteBucketPhoto(@Path("uid") String uid, @Path("photo_id") String photoId);
 
     @GET("/api/bucket_list/locations")
     ArrayList<PopularBucketItem> getPopularLocations();
@@ -153,8 +161,8 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/dinings")
     ArrayList<PopularBucketItem> getPopularDining();
 
-    @PUT("/api/bucket_list_items/{id}/position")
-    JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
+    @PUT("/api/bucket_list_items/{uid}/position")
+    JsonObject changeOrder(@Path("uid") String uid, @Body BucketOrderModel item);
 
     @GET("/api/categories")
     ArrayList<CategoryItem> getCategories();

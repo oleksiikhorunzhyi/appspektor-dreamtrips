@@ -17,7 +17,6 @@ public class BucketItem extends BaseFeedObject implements IFeedObject, Serializa
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";
 
-    private int id;
     private String name;
     private String status = NEW;
     private Date targetDate;
@@ -34,10 +33,6 @@ public class BucketItem extends BaseFeedObject implements IFeedObject, Serializa
     private DiningItem dining;
 
     private transient boolean selected;
-
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

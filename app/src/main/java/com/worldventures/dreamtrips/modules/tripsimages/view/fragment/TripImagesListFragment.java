@@ -42,6 +42,7 @@ import butterknife.InjectView;
 public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
+    public static final String BUNDLE_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
 
     @Inject
     @ForActivity
@@ -129,7 +130,8 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return TripImagesListPresenter.create(type, false);
+        int foreignUserId = getArguments().getInt(BUNDLE_FOREIGN_USER_ID);
+        return TripImagesListPresenter.create(type, false, null, foreignUserId);
     }
 
     @Override
@@ -198,6 +200,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     public enum Type {
-        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, FIXED_LIST
+        MEMBER_IMAGES,
+        MY_IMAGES,
+        YOU_SHOULD_BE_HERE,
+        INSPIRE_ME,
+        VIDEO_360,
+        FIXED_LIST,
+        FOREIGN_IMAGES
     }
 }

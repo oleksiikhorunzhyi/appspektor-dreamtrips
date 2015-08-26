@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
 import icepick.Icicle;
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
@@ -31,7 +32,6 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     @Inject
     DreamTripsApi api;
 
-    @Inject
     BucketItemManager bucketItemManager;
 
     private BucketTabsPresenter.BucketType type;
@@ -45,9 +45,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public BucketListPresenter(BucketTabsPresenter.BucketType type) {
+    public BucketListPresenter(BucketTabsPresenter.BucketType type, ObjectGraph objectGraph) {
         super();
         this.type = type;
+        bucketItemManager = objectGraph.get(getBucketItemManagerClass());
+    }
+
+    @NonNull
+    protected Class<? extends BucketItemManager> getBucketItemManagerClass() {
+        return BucketItemManager.class;
     }
 
     @Override
@@ -144,11 +150,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void openDetails(BucketItem bucketItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putInt(BucketListModule.EXTRA_ITEM_ID, bucketItem.getId());
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItem.getUid());
 
-        view.showDetailsContainer();
         view.openDetails(bundle);
-
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
                 item.setSelected(bucketItem.equals(item)));

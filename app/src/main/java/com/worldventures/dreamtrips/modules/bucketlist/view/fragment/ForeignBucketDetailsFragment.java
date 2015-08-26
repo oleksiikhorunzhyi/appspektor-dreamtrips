@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 
 import butterknife.InjectView;
 
@@ -31,5 +32,10 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
         controllerWrapper.setVisibility(View.GONE);
         picturesTitle.setText(R.string.pictures);
         bucketPhotosView.hideCreateBtn();
+    }
+
+    @Override
+    protected BucketPhotosView.Type getBucketPhotosType() {
+        return BucketPhotosView.Type.FOREIGN;
     }
 }

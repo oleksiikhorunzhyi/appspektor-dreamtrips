@@ -68,7 +68,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
         if (bucketItem != null) {
             if (status && !bucketItem.getCoverPhoto().equals(photo)) {
                 view.showCoverProgress();
-                bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getId(),
+                bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getFsId(),
                         item ->
                                 view.hideCoverProgress(),
                         spiceException -> {

@@ -174,8 +174,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void itemUpdated(BaseItemClass changedItem) {
         Queryable.from(items).forEachR(item -> {
             int position = items.indexOf(item);
-            if (changedItem.equals(item)) items.set(position, changedItem);
-            notifyItemChanged(position);
+            if (changedItem.equals(item)) {
+                items.set(position, changedItem);
+                notifyItemChanged(position);
+            }
         });
     }
 

@@ -1,7 +1,15 @@
 package com.worldventures.dreamtrips.modules.profile.event.profilecell;
 
-/**
- * Created by user on 14.08.15.
- */
 public class OnBucketListClickedEvent {
+
+
+    int userId;
+
+    public OnBucketListClickedEvent(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
 }

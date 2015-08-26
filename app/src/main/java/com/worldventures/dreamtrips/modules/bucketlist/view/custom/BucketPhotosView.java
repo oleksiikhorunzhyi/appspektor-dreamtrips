@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstI
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForeign;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddBucketPhotoModel;
@@ -50,6 +51,8 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
             if (type == Type.EDIT) {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
+            } else if (type == Type.FOREIGN) {
+                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForeign.class);
             } else {
                 imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForDetails.class);
             }
@@ -161,7 +164,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     public enum Type {
-        DETAILS, EDIT, DEFAULT
+        DETAILS, EDIT, FOREIGN
     }
 
 }

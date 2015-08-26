@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.core.api.request.Command;
 public class DeleteBucketPhotoCommand extends Command<JsonObject> {
 
     private String photoId;
-    private int bucketId;
+    private String bucketId;
 
-    public DeleteBucketPhotoCommand(String photoId, int bucketId) {
+    public DeleteBucketPhotoCommand(String photoId, String bucketId) {
         super(JsonObject.class);
         this.bucketId = bucketId;
         this.photoId = photoId;

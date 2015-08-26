@@ -26,7 +26,7 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
         }
     };
 
-    protected int id;
+    private String uid;
     @SerializedName("origin_url")
     private String originUrl;
     private String url;
@@ -39,11 +39,7 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
     private BucketPhoto(Parcel in) {
         this.originUrl = in.readString();
         this.url = in.readString();
-        this.id = in.readInt();
-    }
-
-    public int getId() {
-        return id;
+        this.uid = in.readString();
     }
 
     public void setOriginUrl(String originUrl) {
@@ -60,7 +56,7 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
 
     @Override
     public String getFsId() {
-        return String.valueOf(id);
+        return uid;
     }
 
     @Override
@@ -124,7 +120,7 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.originUrl);
         dest.writeString(this.url);
-        dest.writeInt(this.id);
+        dest.writeString(this.uid);
     }
 
     @Override
@@ -134,12 +130,12 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
 
         BucketPhoto that = (BucketPhoto) o;
 
-        return id == that.id;
+        return !(uid != null ? !uid.equals(that.uid) : that.uid != null);
 
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return uid != null ? uid.hashCode() : 0;
     }
 }

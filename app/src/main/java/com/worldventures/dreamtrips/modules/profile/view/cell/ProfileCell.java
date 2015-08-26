@@ -144,12 +144,6 @@ public class ProfileCell extends AbstractCell<User> {
             userBalance.setVisibility(View.GONE);
             addFriend.setVisibility(View.VISIBLE);
 
-            buckets.setClickable(false);
-            tripImages.setClickable(false);
-
-            buckets.setText(R.string.coming_soon);
-            tripImages.setText(R.string.coming_soon);
-
             itemView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
@@ -339,12 +333,12 @@ public class ProfileCell extends AbstractCell<User> {
 
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {
-        getEventBus().post(new OnBucketListClickedEvent());
+        getEventBus().post(new OnBucketListClickedEvent(getModelObject().getId()));
     }
 
     @OnClick(R.id.trip_images)
     protected void onTripImageClicked() {
-        getEventBus().post(new OnTripImageClickedEvent());
+        getEventBus().post(new OnTripImageClickedEvent(getModelObject().getId()));
 
     }
 

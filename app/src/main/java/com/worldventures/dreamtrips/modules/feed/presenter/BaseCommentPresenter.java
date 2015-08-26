@@ -24,6 +24,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     IFeedObject feedEntity;
 
     private int page = 1;
+    private int commentsCount = 0;
 
     @Icicle
     String comment;
@@ -93,11 +94,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private void onCommentsLoaded(ArrayList<Comment> comments) {
         if (comments.size() > 0) {
             page++;
+            commentsCount += comments.size();
             view.setLoading(false);
             view.addComments(comments);
 
-            if (comments.size() == feedEntity.getCommentsCount()) view.hideViewMore();
-            
+            if (commentsCount == feedEntity.getCommentsCount()) view.hideViewMore();
+
         } else {
             view.hideViewMore();
         }

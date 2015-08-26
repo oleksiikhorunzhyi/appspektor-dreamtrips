@@ -53,7 +53,10 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         this.comment = comment;
     }
 
+    boolean posting = false;
+
     public void post() {
+        posting = true;
         doRequest(new CreateCommentCommand(feedEntity.getUid(), comment), this::onCommentPosted);
     }
 
@@ -85,6 +88,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     private void onCommentPosted(Comment comment) {
+        posting = false;
         view.addComment(comment);
         feedEntity.getComments().add(0, comment);
         feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
@@ -108,6 +112,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
+        posting = false;
         view.setLoading(false);
     }
 

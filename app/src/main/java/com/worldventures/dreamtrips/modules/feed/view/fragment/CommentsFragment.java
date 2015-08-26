@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -107,8 +110,9 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 super.onTextChanged(s, start, before, count);
-                getPresenter().setComment(s.toString());
-                post.setEnabled(s.length() > 0);
+                String text = s.toString().trim();
+                getPresenter().setComment(text);
+                post.setEnabled(text.length() > 0);
             }
         });
     }

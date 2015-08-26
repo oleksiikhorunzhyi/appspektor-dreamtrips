@@ -11,4 +11,8 @@ public class FeedPostCommentCell extends FeedPostEventCell {
     public FeedPostCommentCell(View view) {
         super(view);
     }
+
+    @Override
+    protected void itemClicked() {
+    }
 }

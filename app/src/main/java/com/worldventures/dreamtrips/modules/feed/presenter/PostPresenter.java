@@ -73,7 +73,14 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void cancel() {
         cancelUpload();
         deletePost();
-        fragmentCompass.removePost();
+    }
+
+    public void cancelClicked() {
+        if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
+            view.cancel();
+        } else {
+            view.showCancelationDialog();
+        }
     }
 
     private void savePost() {
@@ -94,8 +101,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void post() {
-        if (post.getUploadTask() != null &&
-                post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED)) {
+        if (post.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(post.getUploadTask().getStatus())) {
             post.getUploadTask().setTitle(post.getText());
             doRequest(new AddTripPhotoCommand(post.getUploadTask()), photo -> processPost());
         } else if (!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
@@ -115,7 +121,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     private void processPost() {
         eventBus.post(new OnFeedReloadEvent());
-        cancel();
+        view.cancel();
     }
 
     public void postInputChanged(String input) {
@@ -274,5 +280,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         void enableImagePicker();
 
         void disableImagePicker();
+
+        void cancel();
+
+        void showCancelationDialog();
     }
 }

@@ -1,16 +1,19 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 
@@ -83,13 +86,23 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @Optional
     @OnClick({R.id.comments, R.id.comment_preview})
     void commentsClicked() {
-        getEventBus().post(new CommentsPressedEvent(getModelObject()));
+        openComments(getModelObject());
     }
 
     @Optional
     @OnClick(R.id.likes)
     void likeClicked() {
         getEventBus().post(new LikesPressedEvent(getModelObject()));
+    }
+
+    public void openComments(BaseEventModel baseFeedModel) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
+        //
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .args(bundle)
+                .move(Route.PHOTO_COMMENTS);
     }
 
     @Optional

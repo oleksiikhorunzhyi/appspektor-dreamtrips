@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -74,7 +75,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
             @Override
             public void onTextChanged(CharSequence constraint, int start, int before, int count) {
                 super.onTextChanged(constraint, start, before, count);
-                getPresenter().postInputChanged(constraint.toString());
+                getPresenter().postInputChanged(constraint.toString().trim());
             }
         });
     }
@@ -96,18 +97,12 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     @OnClick(R.id.close)
     void onClose() {
-        cancel();
+        getPresenter().cancelClicked();
     }
 
     @OnClick(R.id.space)
     void onSpaceClicked() {
-        if (ViewUtils.isTablet(getActivity())) cancel();
-    }
-
-    private void cancel() {
-        SoftInputUtil.hideSoftInputMethod(post);
-        getPresenter().cancel();
-        getActivity().onBackPressed();
+        if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
     }
 
     @OnClick(R.id.post_button)
@@ -210,4 +205,27 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void disableImagePicker() {
         image.setEnabled(false);
     }
+
+    @Override
+    public void showCancelationDialog() {
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getString(R.string.app_name))
+                .setContentText(getString(R.string.post_cancel_message))
+                .setConfirmText(getString(R.string.social_add_friend_yes))
+                .setCancelText(getString(R.string.social_add_friend_no))
+                .setConfirmClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                    cancel();
+                })
+                .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
+                .show();
+    }
+
+    @Override
+    public void cancel() {
+        SoftInputUtil.hideSoftInputMethod(post);
+        getPresenter().cancel();
+        fragmentCompass.removePost();
+    }
+
 }

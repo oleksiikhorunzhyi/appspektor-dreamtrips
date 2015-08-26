@@ -51,7 +51,7 @@ public class EditCommentViewHolder extends BaseViewHolder<EditCommentPresenter> 
         editComment.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                save.setEnabled(!TextUtils.isEmpty(s));
+                save.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
             }
         });
 
@@ -87,7 +87,7 @@ public class EditCommentViewHolder extends BaseViewHolder<EditCommentPresenter> 
 
     @Override
     public String getText() {
-        return editComment.getText().toString();
+        return editComment.getText().toString().trim();
     }
 
     @Override

@@ -32,8 +32,8 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPresenter<T extends IFullScreenObject>
-        extends Presenter<TripImagesListPresenter.View> implements TransferListener {
+public abstract class TripImagesListPresenter<VIEW extends TripImagesListPresenter.View>
+        extends Presenter<VIEW> implements TransferListener {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -63,7 +63,7 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(VIEW view) {
         super.takeView(view);
         view.clear();
         view.fillWithItems(photos);

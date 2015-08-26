@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:gravity="center"
+                android:orientation="vertical">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+            android:id="@+id/lv_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_tiniest"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <View
+        android:id="@+id/v_bg_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_semi_transparent"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_down"
+        fab:fab_addButtonColorNormal="@color/theme_main_darker"
+        fab:fab_colorNormal="@color/theme_main"
+        fab:fab_colorPressed="@color/theme_main_darker"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentBottom="true">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_facebook"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_facebook"
+            fab:fab_title="@string/choose_fb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_gallery"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_gallery"
+            fab:fab_title="@string/choose_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_photo"
+            fab:fab_addButtonColorNormal="@color/theme_main_darker"
+            fab:fab_colorNormal="@color/theme_main"
+            fab:fab_colorPressed="@color/theme_main_darker"
+            fab:fab_icon="@drawable/ic_fab_photo"
+            fab:fab_title="@string/choose_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>

@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhot
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountTripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -70,6 +71,8 @@ import dagger.Provides;
                 FullScreenPhotoWrapperFragment.class,
                 ForeignImagesPresenter.class,
                 GetForeignPhotosQuery.class,
+                AccountTripImagesListFragment.class
+
 
         },
         complete = false,

@@ -137,8 +137,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void openTripImages() {
         Bundle args = new Bundle();
         args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.MY_IMAGES);
-
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FOREIGN_TRIP_IMAGES);
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.ACCOUNT_IMAGES);
     }
 
     public void photoClicked() {

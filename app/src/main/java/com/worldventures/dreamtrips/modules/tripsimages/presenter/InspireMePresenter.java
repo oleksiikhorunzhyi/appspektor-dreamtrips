@@ -5,13 +5,12 @@ import android.util.Log;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
 import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class InspireMePresenter extends TripImagesListPresenter<Inspiration> {
+public class InspireMePresenter extends TripImagesListPresenter {
     protected double randomSeed;
 
     public InspireMePresenter() {

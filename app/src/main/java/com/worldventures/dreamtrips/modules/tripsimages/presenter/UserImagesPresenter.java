@@ -3,13 +3,12 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class UserImagesPresenter extends TripImagesListPresenter<Photo> {
+public class UserImagesPresenter extends TripImagesListPresenter {
 
     public UserImagesPresenter() {
         super(Type.MEMBER_IMAGES);

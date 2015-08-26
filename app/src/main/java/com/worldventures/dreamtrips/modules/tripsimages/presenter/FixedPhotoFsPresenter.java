@@ -2,13 +2,12 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 
-public class FixedPhotoFsPresenter extends TripImagesListPresenter<BucketPhoto> {
+public class FixedPhotoFsPresenter extends TripImagesListPresenter {
 
     private ArrayList<IFullScreenObject> photos;
 

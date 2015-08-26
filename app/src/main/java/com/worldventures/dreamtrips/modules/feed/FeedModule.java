@@ -64,7 +64,7 @@ public class FeedModule {
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideFeedComponent() {
         return new ComponentDescription(FEED, R.string.feed_title,
-                R.string.feed_title, R.drawable.ic_dreamtrips, FeedFragment.class);
+                R.string.feed_title, R.drawable.ic_feed, FeedFragment.class);
     }
 
 }

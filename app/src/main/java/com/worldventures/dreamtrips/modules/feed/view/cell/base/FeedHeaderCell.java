@@ -31,6 +31,9 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @Optional
     @InjectView(R.id.comment_preview)
     View commentPreview;
+    @Optional
+    @InjectView(R.id.comment_divider)
+    View commentDivider;
 
     @Inject
     ActivityRouter activityRouter;
@@ -54,9 +57,11 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
             Comment comment = Queryable.from(getModelObject().getItem().getComments())
                     .firstOrDefault();
             if (comment != null) {
+                commentDivider.setVisibility(View.VISIBLE);
                 commentPreview.setVisibility(View.VISIBLE);
                 commentCellHelper.set(itemView.getContext(), comment);
             } else {
+                commentDivider.setVisibility(View.GONE);
                 commentPreview.setVisibility(View.GONE);
             }
         }

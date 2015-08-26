@@ -25,8 +25,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
     private InviteTemplate template;
@@ -118,24 +116,14 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         }
     }
 
-    private void sentInvitesFailed(SpiceException spiceException) {
-        handleError(spiceException);
-    }
-
     private void createInviteSuccess(InviteTemplate template) {
-        Timber.i("createInviteSuccess");
         getFilledInvitationsTemplateSuccess(template);
 
         activityRouter.openDefaultShareIntent(getShareIntent());
         notifyServer();
     }
 
-    private void createInviteFailed(SpiceException spiceException) {
-        Timber.e(spiceException, "");
-    }
-
     private void sentInviteSuccess(JSONObject aVoid) {
-        Timber.i("sentInviteSuccess");
         eventBus.post(new InvitesSentEvent());
     }
 
@@ -168,11 +156,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         body.setContacts(getContactAddress());
         body.setTemplateId(template.getId());
         body.setType(template.getType());
-        dreamSpiceManager.execute(
+        doRequest(
                 new SendInvitationsQuery(body),
-                this::sentInviteSuccess,
-                this::sentInvitesFailed
-        );
+                this::sentInviteSuccess);
     }
 
     private List<String> getContactAddress() {
@@ -190,10 +176,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     public void shareRequest() {
-        dreamSpiceManager.execute(new CreateFilledInvitationsTemplateQuery(template.getId(),
+        doRequest(new CreateFilledInvitationsTemplateQuery(template.getId(),
                         view.getMessage(), uploadedPhotoUrl),
-                this::createInviteSuccess,
-                this::createInviteFailed);
+                this::createInviteSuccess);
     }
 
     public interface View extends Presenter.View {

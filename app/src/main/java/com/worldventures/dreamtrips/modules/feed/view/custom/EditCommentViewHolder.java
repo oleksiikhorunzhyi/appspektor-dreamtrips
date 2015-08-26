@@ -1,15 +1,18 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 
 import butterknife.ButterKnife;
@@ -24,6 +27,8 @@ public class EditCommentViewHolder extends BaseViewHolder<EditCommentPresenter> 
     TextView userName;
     @InjectView(R.id.comment_edit)
     EditText editComment;
+    @InjectView(R.id.save)
+    Button save;
 
     public EditCommentViewHolder() {
     }
@@ -42,6 +47,13 @@ public class EditCommentViewHolder extends BaseViewHolder<EditCommentPresenter> 
 
         presenter.takeView(this);
         presenter.onStart();
+
+        editComment.addTextChangedListener(new TextWatcherAdapter() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                save.setEnabled(!TextUtils.isEmpty(s));
+            }
+        });
 
         return view;
     }

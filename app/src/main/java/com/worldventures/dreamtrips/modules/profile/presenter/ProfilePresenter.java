@@ -68,11 +68,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         loadCircles();
         loadProfile();
         loadFeed();
-        checkPostShown();
-    }
-
-    private void checkPostShown() {
-        if (snappyRepository.hasPost()) makePost();
     }
 
     public abstract void openBucketList();

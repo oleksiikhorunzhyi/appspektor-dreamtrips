@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedRelo
 import java.util.Calendar;
 import java.util.List;
 
+import icepick.Icicle;
 import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
@@ -146,8 +147,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         BaseArrayListAdapter<BaseEventModel> getAdapter();
 
         void openComments(BaseEventModel baseFeedModel);
-
-        void openPost();
 
         void setEmptyViewVisibility(boolean visible);
     }

@@ -65,6 +65,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Icicle
     ArrayList<Object> items;
+    @Icicle
+    boolean postShown;
     private int screenHeight;
 
     @Override
@@ -119,6 +121,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
                 profileToolbarUserStatus.setVisibility(View.INVISIBLE);
             }
         });
+
+        if (postShown) openPost();
     }
 
     @Override
@@ -200,6 +204,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void openPost() {
+        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();

@@ -194,6 +194,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
 
     private void copyFileIfNeeded(UploadTask task) {
+        eventBus.removeStickyEvent(ImagePickedEvent.class);
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
     }
 
@@ -281,14 +282,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId));
     }
 
-    public void onEvent(ImagePickedEvent event) {
-        eventBus.removeStickyEvent(event);
-        imagePicked(event);
-    }
-
     public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId) {
-            eventBus.removeStickyEvent(event);
             Queryable.from(event.getImages()).forEachR(choseImage ->
                     imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
         }

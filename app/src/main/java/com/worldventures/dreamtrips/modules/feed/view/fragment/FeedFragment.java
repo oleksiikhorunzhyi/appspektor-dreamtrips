@@ -51,6 +51,8 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
 
     @Icicle
     ArrayList<BaseEventModel> items;
+    @Icicle
+    boolean postShown;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -88,6 +90,8 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
                 getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
+
+        if (postShown) openPost();
     }
 
     @OnClick(R.id.fab_post)
@@ -135,8 +139,8 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
                 .move(Route.PHOTO_COMMENTS);
     }
 
-    @Override
     public void openPost() {
+        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();

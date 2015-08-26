@@ -370,7 +370,7 @@
     <string name="social_unfriend_confiramation_accept">Yes</string>
     <string name="social_unfriend_confiramation_cancel">No</string>
     <string name="feed_title">Activity Feed</string>
-
+    <string name="post_cancel_message">Are you sure you want to discard changes?</string>
     <string name="pictures">Pictures</string>
 
 </resources>

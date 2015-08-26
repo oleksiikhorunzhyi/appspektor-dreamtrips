@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -145,11 +144,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         loading = false;
     }
 
-    public void onEvent(CommentsPressedEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.openComments(event.getModel());
-    }
-
     private void addReloadFeedView() {
         view.getAdapter().remove(HEADER_RELOAD_POSITION);
         view.getAdapter().addItem(HEADER_RELOAD_POSITION, this.reloadFeedModel);
@@ -256,8 +250,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void finishLoading();
 
         BaseArrayListAdapter getAdapter();
-
-        void openComments(BaseEventModel baseFeedModel);
 
         void openPost();
 

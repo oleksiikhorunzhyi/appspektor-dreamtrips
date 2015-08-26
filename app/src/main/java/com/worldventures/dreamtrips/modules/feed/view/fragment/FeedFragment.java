@@ -128,17 +128,6 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
         return adapter;
     }
 
-    @Override
-    public void openComments(BaseEventModel baseFeedModel) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
-        //
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .args(bundle)
-                .move(Route.PHOTO_COMMENTS);
-    }
-
     public void openPost() {
         postShown = true;
         showPostContainer();

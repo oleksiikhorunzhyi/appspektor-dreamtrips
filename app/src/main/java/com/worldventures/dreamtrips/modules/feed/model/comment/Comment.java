@@ -24,7 +24,6 @@ public class Comment implements Parcelable, Serializable {
     protected Comment(Parcel in) {
         uid = in.readString();
         parent_id = in.readLong();
-        parent_id = in.readLong();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
     }

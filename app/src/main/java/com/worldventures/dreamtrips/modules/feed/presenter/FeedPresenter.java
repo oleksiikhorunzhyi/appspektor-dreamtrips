@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.event.CommentsPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -20,7 +19,6 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedRelo
 import java.util.Calendar;
 import java.util.List;
 
-import icepick.Icicle;
 import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
@@ -39,13 +37,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void onEvent(FeedObjectChangedEvent event) {
         view.getAdapter().itemUpdated(event.getFeedObject());
-    }
-
-    public void onEvent(CommentsPressedEvent event) {
-        if (view.isVisibleOnScreen()) {
-            eventBus.cancelEventDelivery(event);
-            view.openComments(event.getModel());
-        }
     }
 
     public void onEvent(LikesPressedEvent event) {
@@ -145,8 +136,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         void finishLoading();
 
         BaseArrayListAdapter<BaseEventModel> getAdapter();
-
-        void openComments(BaseEventModel baseFeedModel);
 
         void setEmptyViewVisibility(boolean visible);
     }

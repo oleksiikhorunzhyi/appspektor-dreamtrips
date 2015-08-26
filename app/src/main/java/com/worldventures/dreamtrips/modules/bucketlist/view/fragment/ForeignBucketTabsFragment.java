@@ -23,14 +23,7 @@ public class ForeignBucketTabsFragment extends BucketTabsFragment<ForeignBucketT
 
     @NonNull
     @Override
-    protected Bundle createListFragmentArgs(int position) {
-        Bundle args = super.createListFragmentArgs(position);
-        args.putBoolean(BucketListFragment.BUNDLE_DRAG_ENABLED, false);
-        return args;
-    }
-
-    @Override
-    protected Route getDetailsRoute() {
-        return Route.DETAIL_FOREIGN_BUCKET;
+    protected Class<ForeignBucketListFragment> getBucketListFragmentClass() {
+        return ForeignBucketListFragment.class;
     }
 }

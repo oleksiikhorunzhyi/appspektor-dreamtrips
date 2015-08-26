@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
-import android.content.Context;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +38,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -62,7 +62,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListPresenter>
+public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
         implements BucketListPresenter.View {
 
     @Inject
@@ -70,7 +70,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     Provider<Injector> injector;
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
-    public static final String BUNDLE_DRAG_ENABLED = "BUNDLE_DRAG_ENABLED";
     public static final int MIN_SYMBOL_COUNT = 3;
 
     @InjectView(R.id.lv_items)
@@ -125,7 +124,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         recyclerView.setFadingEdgeLength(0);
         // setup empty view
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        boolean dragEnabled = getArguments().getBoolean(BUNDLE_DRAG_ENABLED);
 
         textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
         recyclerView.setEmptyView(emptyView);
@@ -138,9 +136,13 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
-        if (dragEnabled) dragDropManager.attachRecyclerView(recyclerView);
+        if (isDragEnabled()) dragDropManager.attachRecyclerView(recyclerView);
         // set state delegate
         stateDelegate.setRecyclerView(recyclerView);
+    }
+
+    protected boolean isDragEnabled() {
+        return true;
     }
 
     @Override
@@ -239,11 +241,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    public void openDetails(Bundle args) {
-    }
-
-
-    @Override
     public void openPopular(Bundle args) {
         NavigationBuilder.create()
                 .with(activityRouter)
@@ -306,9 +303,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    protected BucketListPresenter createPresenter(Bundle savedInstanceState) {
+    protected T createPresenter(Bundle savedInstanceState) {
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        return new BucketListPresenter(type);
+        return (T) new BucketListPresenter(type, getObjectGraph());
     }
 
     @Override
@@ -334,4 +331,28 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         }
     }
 
+    public void openDetails(Bundle args) {
+        Route detailsRoute = getDetailsRoute();
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .args(args)
+                    .attach(detailsRoute);
+            showDetailsContainer();
+        } else {
+            hideDetailContainer();
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .args(args)
+                    .move(detailsRoute);
+        }
+    }
+
+    public Route getDetailsRoute() {
+        return Route.DETAIL_BUCKET;
+    }
 }

@@ -29,6 +29,8 @@ import dagger.Provides;
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManager.class,
                 BucketItemManager.class,
+                ForeignBucketItemManager.class,
+
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,

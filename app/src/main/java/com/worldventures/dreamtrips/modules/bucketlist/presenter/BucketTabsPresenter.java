@@ -80,12 +80,12 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
 
-    public void onEvent(OpenBucketDetailsRequestEvent event) {
+/*    public void onEvent(OpenBucketDetailsRequestEvent event) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, event.getType());
         bundle.putString(BucketListModule.EXTRA_ITEM_ID, event.getBucketItemId());
         view.openDetails(bundle);
-    }
+    }*/
 
     public interface View extends Presenter.View {
         void setTypes(List<BucketType> type);
@@ -95,8 +95,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void resetRecentlyAddedBucketItem(BucketType type);
 
         void updateSelection();
-
-        void openDetails(Bundle args);
     }
 
 

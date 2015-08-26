@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPr
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTabPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListP
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedPhotoFsPresenter;
 
@@ -63,7 +65,9 @@ import dagger.Provides;
                 ForeignBucketItemDetailsPresenter.class,
                 ForeignBucketDetailsFragment.class,
                 ForeignBucketTabsFragment.class,
-                ForeignBucketTabPresenter.class
+                ForeignBucketTabPresenter.class,
+                ForeignBucketListFragment.class,
+                ForeignBucketListPresenter.class
         },
         complete = false,
         library = true

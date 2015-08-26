@@ -154,21 +154,19 @@ public class SnappyRepository {
     }
 
 
-    public List<List<BucketItem>> deleteAllForeignBucketList() {
-        return actWithResult(db -> {
-            List<List<BucketItem>> trips = new ArrayList<>();
+    public void deleteAllForeignBucketList() {
+        act(db -> {
             String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
             for (String key : keys) {
                 db.del(key);
             }
-            return trips;
-        }).or(Collections.emptyList());
+        });
     }
 
 
     @NonNull
     private String getBucketKey(String type, int userId) {
-        String key = userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST + ":" + type;
+        String key = (userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST) + ":" + type;
         if (userId != 0) {
             key += "_" + userId;
         }

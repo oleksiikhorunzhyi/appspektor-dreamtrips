@@ -30,7 +30,6 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTa
 
 
 @Layout(R.layout.fragment_bucket_tab)
-@MenuResource(R.menu.menu_mock)
 public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends BaseFragment<PRESENTER> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs)
@@ -52,7 +51,6 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
         Bundle args = new Bundle();
         Serializable type = adapter.getFragmentItem(position).data;
         args.putSerializable(BucketListFragment.BUNDLE_TYPE, type);
-        args.putBoolean(BucketListFragment.BUNDLE_DRAG_ENABLED, true);
         return args;
     }
 
@@ -93,32 +91,6 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     }
 
     @Override
-    public void openDetails(Bundle args) {
-        Route detailsRoute = getDetailsRoute();
-        if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
-                    .args(args)
-                    .move(detailsRoute);
-        } else {
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .args(args)
-                    .move(detailsRoute);
-        }
-    }
-
-
-    protected Route getDetailsRoute() {
-        return Route.DETAIL_BUCKET;
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
         notifyPosition();
@@ -137,12 +109,17 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     public void setTypes(List<BucketType> types) {
         if (adapter.getCount() == 0) {
             for (BucketType type : types) {
-                adapter.add(new DataFragmentItem<>(BucketListFragment.class, getString(type.getRes()), type));
+                adapter.add(new DataFragmentItem<>(getBucketListFragmentClass(), getString(type.getRes()), type));
             }
             adapter.notifyDataSetChanged();
         }
         //
         tabStrip.setupWithPagerBadged(pager);
+    }
+
+    @NonNull
+    protected Class<? extends BucketListFragment> getBucketListFragmentClass() {
+        return BucketListFragment.class;
     }
 
     @Override

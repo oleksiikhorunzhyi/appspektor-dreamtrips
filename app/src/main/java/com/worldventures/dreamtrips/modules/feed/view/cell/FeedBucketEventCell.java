@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
@@ -62,6 +63,8 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     ActivityRouter activityRouter;
     @Inject
     SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    BucketItemManager bucketItemManager;
 
 
     public FeedBucketEventCell(View view) {
@@ -115,14 +118,20 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
 
         itemView.setOnClickListener(v -> {
             Bundle args = new Bundle();
-            args.putSerializable(BucketListModule.EXTRA_ITEM, getModelObject().getItem());
-            args.putSerializable(BucketListModule.EXTRA_TYPE, getType(getModelObject().getItem().getType()));
+            BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
+            args.putSerializable(BucketListModule.EXTRA_TYPE, bucketType);
+            args.putString(BucketListModule.EXTRA_ITEM_ID, getModelObject().getItem().getUid());
 
             User user = getModelObject().getItem().getUser();
+            Route route;
 
-            Route route = appSessionHolder.get().get().getUser().equals(user)
-                    ? Route.DETAIL_BUCKET
-                    : Route.DETAIL_FOREIGN_BUCKET;
+            if (appSessionHolder.get().get().getUser().equals(user)) {
+                bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+                route = Route.DETAIL_BUCKET;
+            } else {
+                args.putSerializable(BucketListModule.EXTRA_ITEM, getModelObject().getItem());
+                route = Route.DETAIL_FOREIGN_BUCKET;
+            }
 
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

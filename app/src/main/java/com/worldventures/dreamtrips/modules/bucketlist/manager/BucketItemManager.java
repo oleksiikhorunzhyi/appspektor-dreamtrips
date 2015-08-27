@@ -99,6 +99,12 @@ public class BucketItemManager {
         }
     }
 
+    public void saveSingleBucketItem(BucketItem bucketItem, BucketTabsPresenter.BucketType type) {
+        List<BucketItem> items = new ArrayList<>();
+        items.add(bucketItem);
+        saveBucketItems(items, type);
+    }
+
     public void saveBucketItems(List<BucketItem> bucketItems, BucketTabsPresenter.BucketType type) {
         switch (type) {
             case LOCATION:

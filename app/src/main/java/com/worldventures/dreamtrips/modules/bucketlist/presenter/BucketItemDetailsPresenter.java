@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
@@ -24,6 +26,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         Bundle bundle = new Bundle();
         bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
         bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
+
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
@@ -52,7 +55,11 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         if (bucketItem != null && status != bucketItem.isDone()) {
             view.disableCheckbox();
             getBucketItemManager().updateItemStatus(String.valueOf(bucketItemId),
-                    status, item -> view.enableCheckbox(), this);
+                    status, item -> view.enableCheckbox(), spiceException -> {
+                        BucketItemDetailsPresenter.super.handleError(spiceException);
+                        view.setStatus(bucketItem.isDone());
+                        view.enableCheckbox();
+                    });
         }
     }
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -330,6 +331,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
+    public void setTitleSpanned(Spanned titleSpanned) {
+        tvTitle.setText(titleSpanned);
+    }
+
+    @Override
     public void setTitle(String title) {
         if (type == TripImagesListFragment.Type.INSPIRE_ME) {
             textViewInspireMeTitle.setText("- " + title);
@@ -361,18 +367,22 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void setCommentCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvCommentsCount.setText(getString(R.string.comments, count));
+            tvCommentsCount.setVisibility(View.VISIBLE);
+        } else {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvCommentsCount.setText(getString(R.string.comments,count));
     }
 
     @Override
     public void setLikeCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvLikesCount.setText(getString(R.string.likes, count));
+            tvLikesCount.setVisibility(View.VISIBLE);
+        } else {
             tvLikesCount.setVisibility(View.GONE);
         }
-        tvLikesCount.setText(getString(R.string.likes, count));
     }
 
     @Override

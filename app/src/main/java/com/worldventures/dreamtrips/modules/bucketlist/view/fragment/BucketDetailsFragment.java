@@ -43,6 +43,8 @@ import butterknife.Optional;
 @Layout(R.layout.layout_bucket_item_details)
 public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragment<T> implements BucketItemDetailsPresenter.View {
 
+    public static final String EXTRA_SLAVE = "slave";
+
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
 
@@ -77,6 +79,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
 
+    @InjectView(R.id.bucket_tags_container)
+    View bucketTags;
+    @InjectView(R.id.bucket_who_container)
+    View bucketWho;
+
     @InjectView(R.id.diningName)
     TextView diningName;
 
@@ -98,6 +105,9 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @InjectView(R.id.diningDivider)
     View diningDivider;
 
+    @InjectView(R.id.top_shadow)
+    View topShadow;
+
     @Inject
     @ForActivity
     Provider<Injector> injector;
@@ -108,11 +118,15 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         bucketPhotosView.init(injector, getBucketPhotosType());
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
 
-        if (toolbar != null) {
+        boolean slave = getArguments().getBoolean(EXTRA_SLAVE, false);
+        if (!slave) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
+        } else {
+            topShadow.setVisibility(View.GONE);
+            toolbar.setVisibility(View.GONE);
         }
         setForeignIntentAction();
     }
@@ -180,12 +194,22 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setPeople(String people) {
-        textViewFriends.setText(people);
+        if (!TextUtils.isEmpty(people)) {
+            bucketWho.setVisibility(View.VISIBLE);
+            textViewFriends.setText(people);
+        } else {
+            bucketWho.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void setTags(String tags) {
-        textViewTags.setText(tags);
+        if (!TextUtils.isEmpty(tags)) {
+            bucketTags.setVisibility(View.VISIBLE);
+            textViewTags.setText(tags);
+        } else {
+            bucketTags.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -64,7 +64,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                 bundle.getSerializable(BucketListModule.EXTRA_TYPE);
         bucketItemId = bundle.getString(BucketListModule.EXTRA_ITEM_ID);
         extraBucketItem = (BucketItem) bundle.getSerializable(BucketListModule.EXTRA_ITEM);
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.util.Date;
@@ -17,6 +18,8 @@ public interface IFeedObject {
 
     List<Comment> getComments();
 
+    void setComments(List<Comment> comments);
+
     void setLikesCount(int count);
 
     int getLikesCount();
@@ -24,4 +27,6 @@ public interface IFeedObject {
     boolean isLiked();
 
     void setLiked(boolean isLiked);
+
+    User getUser();
 }

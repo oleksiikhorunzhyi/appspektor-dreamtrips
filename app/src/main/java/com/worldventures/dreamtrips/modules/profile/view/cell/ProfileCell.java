@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -75,6 +78,8 @@ public class ProfileCell extends AbstractCell<User> {
     protected TextView updateInfo;
     @InjectView(R.id.add_friend)
     protected TextView addFriend;
+    @InjectView(R.id.company_name)
+    protected TextView companyName;
     @InjectView(R.id.user_status)
     protected TextView userStatus;
     @InjectView(R.id.bucket_list)
@@ -118,6 +123,8 @@ public class ProfileCell extends AbstractCell<User> {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
+    @Inject
+    FeatureManager featureManager;
 
     Context context;
 
@@ -130,14 +137,12 @@ public class ProfileCell extends AbstractCell<User> {
     protected void syncUIStateWithModel() {
         User user = getModelObject();
         if (isAccount()) {
-            controlPanel.setVisibility(View.VISIBLE);
             cover.setVisibility(View.VISIBLE);
             avatar.setVisibility(View.VISIBLE);
             addFriend.setVisibility(View.GONE);
             updateInfo.setVisibility(View.VISIBLE);
             userBalance.setVisibility(View.VISIBLE);
         } else {
-            controlPanel.setVisibility(View.GONE);
             cover.setVisibility(View.GONE);
             avatar.setVisibility(View.GONE);
             updateInfo.setVisibility(View.GONE);
@@ -153,6 +158,16 @@ public class ProfileCell extends AbstractCell<User> {
             info.show();
         }
 
+        if (isAccount() && featureManager.available(Feature.SOCIAL))
+            controlPanel.setVisibility(View.VISIBLE);
+        else
+            controlPanel.setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(user.getCompany())) {
+            companyName.setVisibility(View.VISIBLE);
+            companyName.setText(user.getCompany());
+        } else
+            companyName.setVisibility(View.GONE);
 
         setUserName(user.getFullName());
         setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),

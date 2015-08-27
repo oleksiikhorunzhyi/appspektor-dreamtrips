@@ -72,6 +72,17 @@
             android:textSize="22sp"/>
 
         <TextView
+            android:id="@+id/company_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
+
+        <TextView
             android:id="@+id/user_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

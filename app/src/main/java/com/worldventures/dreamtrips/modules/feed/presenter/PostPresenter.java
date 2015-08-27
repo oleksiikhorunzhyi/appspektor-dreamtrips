@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -107,9 +109,15 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void post() {
         if (post.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(post.getUploadTask().getStatus())) {
             post.getUploadTask().setTitle(post.getText());
-            doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPost);
+            doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPost, spiceException -> {
+                PostPresenter.super.handleError(spiceException);
+                view.onPostError();
+            });
         } else if (!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
-            doRequest(new NewPostCommand(post.getText()), this::processPost);
+            doRequest(new NewPostCommand(post.getText()), this::processPost, spiceException -> {
+                PostPresenter.super.handleError(spiceException);
+                view.onPostError();
+            });
         }
     }
 
@@ -289,5 +297,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         void cancel();
 
         void showCancelationDialog();
+
+        void onPostError();
     }
 }

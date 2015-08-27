@@ -45,7 +45,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void saveItem() {
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
-        bucketPostItem.setId(String.valueOf(bucketItemId));
+        bucketPostItem.setId(bucketItemId);
         bucketPostItem.setName(view.getTitle());
         bucketPostItem.setDescription(view.getDescription());
         bucketPostItem.setStatus(view.getStatus());

@@ -348,6 +348,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
             fragmentCompass.disableBackStack();
             fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
+
+            args.putBoolean(BucketDetailsFragment.EXTRA_SLAVE, true);
+
             NavigationBuilder.create()
                     .with(fragmentCompass)
                     .args(args)

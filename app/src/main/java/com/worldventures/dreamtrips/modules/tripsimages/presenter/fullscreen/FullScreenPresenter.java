@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.text.Spanned;
+
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -62,7 +64,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     }
 
     public final void setupActualViewState() {
-        view.setTitle(photo.getFSTitle());
+        if (photo instanceof Photo && photo.getUser() != null) {
+            view.setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
+        } else {
+            view.setTitle(photo.getFSTitle());
+        }
         view.setLiked(isLiked());
         view.setLikeVisibility(isLikeVisible());
         view.setLikeCountVisibility(isLikeCountVisible());
@@ -129,6 +135,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public interface View extends Presenter.View {
         void setTitle(String title);
+
+        void setTitleSpanned(Spanned titleSpanned);
 
         void showCheckbox(boolean status);
 

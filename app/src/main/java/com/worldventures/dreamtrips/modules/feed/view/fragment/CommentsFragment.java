@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -131,6 +132,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     @Override
     public void addComment(Comment comment) {
+        post.setEnabled(true);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(null);
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
@@ -171,6 +174,12 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     }
 
     @Override
+    public void onPostError() {
+        post.setEnabled(true);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+    }
+
+    @Override
     public void hideViewMore() {
         loadMore.setVisible(false);
         adapter.notifyItemChanged(1);
@@ -179,6 +188,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @OnClick(R.id.post)
     void onPost() {
         getPresenter().post();
+        post.setEnabled(false);
+        input.setInputType(InputType.TYPE_NULL);
     }
 
     @Override

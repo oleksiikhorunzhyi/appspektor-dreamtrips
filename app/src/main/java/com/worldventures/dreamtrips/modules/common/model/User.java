@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.io.Serializable;
@@ -23,6 +27,7 @@ public class User extends BaseEntity implements Parcelable {
 
     private String username;
     private String email;
+    private String company;
     private Avatar avatar;
     private String firstName;
     private String lastName;
@@ -132,6 +137,10 @@ public class User extends BaseEntity implements Parcelable {
         return lastName;
     }
 
+    public String getCompany() {
+        return company;
+    }
+
     public Date getBirthDate() {
         return birthDate;
     }
@@ -208,6 +217,13 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
+    public Spanned getUsernameWithCompany(Context context) {
+        String userWithCompany = !TextUtils.isEmpty(getCompany())
+                ? context.getString(R.string.user_name_with_company, getFullName(), getCompany())
+                : context.getString(R.string.user_name, getFullName());
+        return Html.fromHtml(userWithCompany);
+    }
+
     public Relationship getRelationship() {
         return relationship;
     }
@@ -219,7 +235,6 @@ public class User extends BaseEntity implements Parcelable {
     public void unfriend() {
         relationship = Relationship.NONE;
     }
-
 
 
     public static class Avatar implements Parcelable, Serializable {
@@ -321,6 +336,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeParcelable(this.avatar, 0);
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
+        dest.writeString(this.company);
         dest.writeString(this.location);
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
@@ -344,6 +360,7 @@ public class User extends BaseEntity implements Parcelable {
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
         this.firstName = in.readString();
         this.lastName = in.readString();
+        this.company = in.readString();
         this.location = in.readString();
         long tmpBirthDate = in.readLong();
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);

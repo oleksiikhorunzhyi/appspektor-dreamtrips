@@ -374,4 +374,7 @@
     <string name="pictures">Pictures</string>
     <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
 
+    <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
+    <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b> %s</string>
+
 </resources>

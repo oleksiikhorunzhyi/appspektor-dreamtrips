@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -327,6 +328,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         } else {
             civUserPhoto.setImageURI(Uri.parse(fsPhoto));
         }
+    }
+
+    @Override
+    public void setTitleSpanned(Spanned titleSpanned) {
+        tvTitle.setText(titleSpanned);
     }
 
     @Override

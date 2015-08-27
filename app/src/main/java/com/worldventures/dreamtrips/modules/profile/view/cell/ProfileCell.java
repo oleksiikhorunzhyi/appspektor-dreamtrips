@@ -24,6 +24,8 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -121,6 +123,8 @@ public class ProfileCell extends AbstractCell<User> {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
+    @Inject
+    FeatureManager featureManager;
 
     Context context;
 
@@ -154,7 +158,7 @@ public class ProfileCell extends AbstractCell<User> {
             info.show();
         }
 
-        if (isAccount() && user.isSocialEnabled())
+        if (isAccount() && featureManager.available(Feature.SOCIAL))
             controlPanel.setVisibility(View.VISIBLE);
         else
             controlPanel.setVisibility(View.GONE);

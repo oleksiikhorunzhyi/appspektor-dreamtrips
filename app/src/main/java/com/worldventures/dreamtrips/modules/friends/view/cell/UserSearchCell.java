@@ -29,7 +29,7 @@ public class UserSearchCell extends AbstractCell<User> {
 
     @Override
     protected void syncUIStateWithModel() {
-        name.setText(getModelObject().getUsernameWithCompany());
+        name.setText(getModelObject().getUsernameWithCompany(itemView.getContext()));
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
     }
 

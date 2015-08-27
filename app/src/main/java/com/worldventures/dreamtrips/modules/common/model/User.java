@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.io.Serializable;
@@ -213,9 +217,11 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
-    public String getUsernameWithCompany() {
-        String[] tokens = {getFullName(), getCompany()};
-        return TextUtils.join(",", tokens);
+    public Spanned getUsernameWithCompany(Context context) {
+        String userWithCompany = !TextUtils.isEmpty(getCompany())
+                ? context.getString(R.string.user_name_with_company, getUsername(), getCompany())
+                : context.getString(R.string.user_name, getUsername());
+        return Html.fromHtml(userWithCompany);
     }
 
     public Relationship getRelationship() {

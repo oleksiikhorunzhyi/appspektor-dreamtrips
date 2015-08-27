@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -135,7 +134,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
     @Override
     public String getFSTitle() {
         if (user != null) {
-            return user.getUsernameWithCompany();
+            return user.getUsername();
         }
         return "";
     }

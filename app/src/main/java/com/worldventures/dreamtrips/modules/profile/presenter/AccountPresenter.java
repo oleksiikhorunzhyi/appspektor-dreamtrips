@@ -214,6 +214,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == this.hashCode()) {
             eventBus.cancelEventDelivery(event);
+            eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);
         }
     }

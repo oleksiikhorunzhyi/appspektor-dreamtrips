@@ -140,10 +140,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
     }
 
     private void imagePicked(ChosenImage... chosenImages) {
-        eventBus.removeStickyEvent(ImagePickedEvent.class);
-        eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
-                pickImageDelegate.getRequesterId(),
-                chosenImages));
+        runOnUiThread(() -> {
+            eventBus.removeStickyEvent(ImagePickedEvent.class);
+            eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
+                    pickImageDelegate.getRequesterId(),
+                    chosenImages));
+        });
     }
 
 }

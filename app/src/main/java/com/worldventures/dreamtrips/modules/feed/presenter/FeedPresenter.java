@@ -7,12 +7,15 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -86,6 +89,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 });
     }
 
+    public void onEvent(ProfileClickedEvent event) {
+        if (view.isVisibleOnScreen()) openUser(event.getUser());
+    }
+
+    private void openUser(User user) {
+        activityRouter.openUserProfile(user);
+    }
+
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
             if (totalItemCount > previousTotal) {
@@ -116,7 +127,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public void onEvent(OnFeedReloadEvent event) {
-        new WeakHandler().postDelayed(this::reloadFeed, 100);
+        reloadFeed();
+    }
+
+    public void onEvent(FeedItemAddedEvent event) {
+        view.insertItem(event.getBaseEventModel());
     }
 
     private void itemsLoaded(List<ParentFeedModel> feedItems) {
@@ -139,5 +154,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         BaseArrayListAdapter<BaseEventModel> getAdapter();
 
         void setEmptyViewVisibility(boolean visible);
+
+        void insertItem(BaseEventModel baseEventModel);
     }
 }

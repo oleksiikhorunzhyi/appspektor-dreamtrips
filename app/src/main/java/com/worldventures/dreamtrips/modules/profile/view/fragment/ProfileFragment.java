@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
@@ -219,4 +220,10 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         if (container != null) container.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void insertItem(BaseEventModel baseEventModel) {
+        feedView.getAdapter().addItem(ProfilePresenter.HEADER_RELOAD_POSITION, baseEventModel);
+        feedView.getAdapter().notifyItemInserted(ProfilePresenter.HEADER_RELOAD_POSITION);
+        feedView.scrollToPosition(ProfilePresenter.HEADER_RELOAD_POSITION);
+    }
 }

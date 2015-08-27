@@ -5,10 +5,16 @@ import android.content.res.Resources;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -102,6 +108,10 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         public Class<? extends BaseEventModel> getClazz() {
             return clazz;
         }
+
+        public static Type forClass(Class clazz) {
+            return Queryable.from(Type.values()).firstOrDefault(type -> type.getClazz().equals(clazz));
+        }
     }
 
     public enum Action {
@@ -129,5 +139,33 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
     @Override
     public int hashCode() {
         return item != null ? item.hashCode() : 0;
+    }
+
+    public static BaseEventModel create(IFeedObject item, User owner) {
+        Type type;
+        BaseEventModel baseEventModel;
+        if (item instanceof TextualPost) {
+            baseEventModel = new FeedPostEventModel();
+            type = Type.POST;
+        } else if (item instanceof Photo) {
+            baseEventModel = new FeedPhotoEventModel();
+            type = Type.PHOTO;
+        } else if (item instanceof BucketItem) {
+            baseEventModel = new FeedBucketEventModel();
+            type = Type.BUCKET_LIST_ITEM;
+        } else if (item instanceof TripModel) {
+            baseEventModel = new FeedTripEventModel();
+            type = Type.TRIP;
+        } else {
+            baseEventModel = new FeedUndefinedEventModel();
+            type = Type.UNDEFINED;
+        }
+
+        baseEventModel.action = Action.ADD;
+        baseEventModel.type = type;
+        baseEventModel.item = item;
+        baseEventModel.createdAt = Calendar.getInstance().getTime();
+        baseEventModel.links = Links.forUser(owner);
+        return baseEventModel;
     }
 }

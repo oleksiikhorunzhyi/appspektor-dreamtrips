@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
@@ -57,8 +58,9 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
         feedItemHeaderHelper.set(getModelObject(), itemView.getContext());
 
         if (commentCellHelper != null) {
-            Comment comment = Queryable.from(getModelObject().getItem().getComments())
-                    .firstOrDefault();
+            Comment comment = getModelObject().getItem().getComments() == null ? null :
+                    Queryable.from(getModelObject().getItem().getComments())
+                            .firstOrDefault();
             if (comment != null) {
                 commentDivider.setVisibility(View.VISIBLE);
                 commentPreview.setVisibility(View.VISIBLE);
@@ -109,18 +111,14 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @OnClick(R.id.feed_header_avatar)
     void eventOwnerClicked() {
         User user = getModelObject().getLinks().getUsers().get(0);
-        openUser(user);
+        getEventBus().post(new ProfileClickedEvent(user));
     }
 
     @Optional
     @OnClick(R.id.user_photo)
     void commentOwnerClicked() {
         User user = commentCellHelper.getComment().getOwner();
-        openUser(user);
-    }
-
-    private void openUser(User user) {
-        activityRouter.openUserProfile(user);
+        getEventBus().post(new ProfileClickedEvent(user));
     }
 
 }

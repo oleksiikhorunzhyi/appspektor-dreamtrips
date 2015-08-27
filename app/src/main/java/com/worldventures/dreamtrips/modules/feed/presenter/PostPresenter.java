@@ -13,8 +13,10 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 
 import javax.inject.Inject;
@@ -103,9 +105,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void post() {
         if (post.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(post.getUploadTask().getStatus())) {
             post.getUploadTask().setTitle(post.getText());
-            doRequest(new AddTripPhotoCommand(post.getUploadTask()), photo -> processPost());
+            doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPost);
         } else if (!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
-            doRequest(new NewPostCommand(post.getText()), post -> processPost());
+            doRequest(new NewPostCommand(post.getText()), this::processPost);
         }
     }
 
@@ -119,8 +121,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         }
     }
 
-    private void processPost() {
-        eventBus.post(new OnFeedReloadEvent());
+    private void processPost(IFeedObject iFeedObject) {
+        eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
         view.cancel();
     }
 

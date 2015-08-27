@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +150,13 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     private void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void insertItem(BaseEventModel baseEventModel) {
+        feedView.getAdapter().addItem(0, baseEventModel);
+        feedView.getAdapter().notifyItemInserted(0);
+        feedView.scrollToPosition(0);
     }
 
 }

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -244,7 +245,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(OnFeedReloadEvent event) {
-        new WeakHandler().postDelayed(this::loadFeed, 100);
+        loadFeed();
+    }
+
+    public void onEvent(FeedItemAddedEvent event) {
+        view.insertItem(event.getBaseEventModel());
     }
 
     public interface View extends Presenter.View {
@@ -263,5 +268,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void notifyUserChanged();
 
         void setUser(User user);
+
+        void insertItem(BaseEventModel baseEventModel);
     }
 }

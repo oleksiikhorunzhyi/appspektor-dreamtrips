@@ -39,7 +39,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment<T extends TripImagesListPresenter> extends BaseFragment<T> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     public static final String BUNDLE_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
@@ -128,10 +128,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
+    protected T createPresenter(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
         int foreignUserId = getArguments().getInt(BUNDLE_FOREIGN_USER_ID);
-        return TripImagesListPresenter.create(type, false, null, foreignUserId);
+        return (T) TripImagesListPresenter.create(type, false, null, foreignUserId);
     }
 
     @Override

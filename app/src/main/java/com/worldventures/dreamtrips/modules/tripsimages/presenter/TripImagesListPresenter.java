@@ -32,7 +32,7 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPresenter<T extends IFullScreenObject>
+public abstract class TripImagesListPresenter
         extends Presenter<TripImagesListPresenter.View> implements TransferListener {
 
     public static final int PER_PAGE = 15;
@@ -272,13 +272,13 @@ public abstract class TripImagesListPresenter<T extends IFullScreenObject>
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new MyImagesPresenter();
+        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
         switch (type) {
             case MEMBER_IMAGES:
                 presenter = new UserImagesPresenter();
                 break;
             case MY_IMAGES:
-                presenter = new MyImagesPresenter();
+                presenter = new AccountImagesPresenter();
                 break;
             case YOU_SHOULD_BE_HERE:
                 presenter = new YSBHPresenter();

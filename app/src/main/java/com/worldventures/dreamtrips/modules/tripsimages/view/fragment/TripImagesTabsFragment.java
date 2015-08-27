@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -19,34 +17,21 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_trip_images_tabs)
 @MenuResource(R.menu.menu_mock)
-public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter>
-        implements TripImagesTabsPresenter.View,
-        FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, ViewPager.OnPageChangeListener {
+public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter> implements TripImagesTabsPresenter.View, ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.tabs)
     protected BadgedTabLayout tabs;
     @InjectView(R.id.pager)
     protected ViewPager pager;
-    @InjectView(R.id.v_bg_holder)
-    protected View vBgHolder;
-    @InjectView(R.id.multiple_actions_down)
-    protected FloatingActionsMenu multipleActionsDown;
-    @InjectView(R.id.fab_facebook)
-    protected FloatingActionButton fabFacebook;
-    @InjectView(R.id.fab_gallery)
-    protected FloatingActionButton fabGallery;
-    @InjectView(R.id.fab_photo)
-    protected FloatingActionButton fabPhoto;
+
 
     private BaseStatePagerAdapter adapter;
 
@@ -66,8 +51,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 }
             };
 
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.my_images)));
+            this.adapter.add(new FragmentItem(UsersImagesListFragment.class, getString(R.string.member_images)));
+            this.adapter.add(new FragmentItem(AccountImagesListFragment.class, getString(R.string.my_images)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
             this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
@@ -75,10 +60,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
         }
 
         this.pager.setAdapter(adapter);
-        this.pager.addOnPageChangeListener(this);
 
         tabs.setupWithPagerBadged(pager);
-        this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
     }
 
     @Override
@@ -86,10 +69,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
         pager.setCurrentItem(selection, true);
     }
 
-    @Override
-    public void setFabVisibility(boolean facebookGallery) {
-        fabFacebook.setVisibility(facebookGallery ? View.VISIBLE : View.INVISIBLE);
-    }
 
     @Override
     protected TripImagesTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -97,62 +76,19 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     }
 
     @Override
-    public void onMenuExpanded() {
-        this.vBgHolder.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onMenuCollapsed() {
-        this.vBgHolder.setVisibility(View.GONE);
-    }
-
-    @OnClick(R.id.fab_facebook)
-    public void actionFacebook() {
-        openPicker(PickImageDelegate.REQUEST_FACEBOOK);
-    }
-
-    @OnClick(R.id.fab_gallery)
-    public void actionGallery() {
-        openPicker(PickImageDelegate.REQUEST_PICK_PICTURE);
-    }
-
-    @OnClick(R.id.fab_photo)
-    public void actionPhoto() {
-        openPicker(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-    }
-
-    private void openPicker(int requestType) {
-        getPresenter().pickImage(requestType);
-        this.multipleActionsDown.collapse();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
-            pager.setCurrentItem(1, false);
-        }
-    }
-
-    @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        //nothing to do here
+
     }
 
     @Override
     public void onPageSelected(int position) {
         getPresenter().trackState(position);
-
-        if (position == Type.YOU_SHOULD_BE_HERE.ordinal() || position == Type.INSPIRE_ME.ordinal()
-                || position == Type.VIDEO_360.ordinal()) {
-            multipleActionsDown.setVisibility(View.GONE);
-        } else {
-            multipleActionsDown.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        //nothing to do here
+
     }
+
+
 }

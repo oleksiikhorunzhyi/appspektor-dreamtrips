@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragm
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -65,6 +66,7 @@ public enum Route {
     OTA(OtaFragment.class),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     FOREIGN_TRIP_IMAGES(TripImagesListFragment.class, R.string.trip_images),
+    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),

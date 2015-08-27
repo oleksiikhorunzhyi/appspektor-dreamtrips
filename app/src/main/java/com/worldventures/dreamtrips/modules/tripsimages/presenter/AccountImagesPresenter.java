@@ -9,10 +9,14 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenObject> {
+public class AccountImagesPresenter extends UserImagesPresenter {
 
-    public MyImagesPresenter() {
-        super(Type.MY_IMAGES);
+    public AccountImagesPresenter() {
+        this(Type.MY_IMAGES);
+    }
+
+    public AccountImagesPresenter(Type type) {
+        super(type);
     }
 
     @Override
@@ -35,4 +39,5 @@ public class MyImagesPresenter extends TripImagesListPresenter<IFullScreenObject
             }
         };
     }
+
 }

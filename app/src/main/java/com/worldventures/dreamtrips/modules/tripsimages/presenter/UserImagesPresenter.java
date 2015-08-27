@@ -1,8 +1,14 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import android.net.Uri;
+import android.support.v4.app.Fragment;
+
 import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 
@@ -11,7 +17,11 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class UserImagesPresenter extends TripImagesListPresenter {
 
     public UserImagesPresenter() {
-        super(Type.MEMBER_IMAGES);
+        this(Type.MEMBER_IMAGES);
+    }
+
+    public UserImagesPresenter(Type type) {
+        super(type);
     }
 
     @Override
@@ -27,6 +37,36 @@ public class UserImagesPresenter extends TripImagesListPresenter {
                 return new GetUserPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
             }
         };
+    }
+
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == this.hashCode()) {
+            eventBus.removeStickyEvent(event);
+            imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
+        }
+    }
+
+    public void imageSelected(Uri uri, int requestType) {
+        if (activityRouter != null) {
+            String type = "";
+            switch (requestType) {
+                case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                    type = "camera";
+                    break;
+                case PickImageDelegate.REQUEST_PICK_PICTURE:
+                    type = "album";
+                    break;
+                case PickImageDelegate.REQUEST_FACEBOOK:
+                    type = "facebook";
+                    break;
+            }
+
+            activityRouter.openCreatePhoto((Fragment) view, uri, type);
+        }
     }
 
 }

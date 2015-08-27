@@ -32,8 +32,8 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPresenter<VIEW extends TripImagesListPresenter.View>
-        extends Presenter<VIEW> implements TransferListener {
+public abstract class TripImagesListPresenter
+        extends Presenter<TripImagesListPresenter.View> implements TransferListener {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -63,7 +63,7 @@ public abstract class TripImagesListPresenter<VIEW extends TripImagesListPresent
     }
 
     @Override
-    public void takeView(VIEW view) {
+    public void takeView(View view) {
         super.takeView(view);
         view.clear();
         view.fillWithItems(photos);
@@ -272,13 +272,13 @@ public abstract class TripImagesListPresenter<VIEW extends TripImagesListPresent
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new MyImagesPresenter();
+        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
         switch (type) {
             case MEMBER_IMAGES:
                 presenter = new UserImagesPresenter();
                 break;
             case MY_IMAGES:
-                presenter = new MyImagesPresenter();
+                presenter = new AccountImagesPresenter();
                 break;
             case YOU_SHOULD_BE_HERE:
                 presenter = new YSBHPresenter();

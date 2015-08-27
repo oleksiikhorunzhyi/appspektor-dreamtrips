@@ -51,8 +51,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 }
             };
 
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.member_images)));
-            this.adapter.add(new FragmentItem(AccountTripImagesListFragment.class, getString(R.string.my_images)));
+            this.adapter.add(new FragmentItem(UsersImagesListFragment.class, getString(R.string.member_images)));
+            this.adapter.add(new FragmentItem(AccountImagesListFragment.class, getString(R.string.my_images)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
             this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
@@ -74,16 +74,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     protected TripImagesTabsPresenter createPresenter(Bundle savedInstanceState) {
         return new TripImagesTabsPresenter(getArguments());
     }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO) {
-            pager.setCurrentItem(1, false);
-        }
-    }
-
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

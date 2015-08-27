@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -43,6 +44,10 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
         } else if (position == TripImagesListFragment.Type.INSPIRE_ME.ordinal()) {
             TrackingHelper.inspr(getAccountUserId());
         }
+    }
+
+    public void onEventMainThread(ImagePickedEvent event) {
+        view.setSelection(1);
     }
 
     public interface View extends Presenter.View {

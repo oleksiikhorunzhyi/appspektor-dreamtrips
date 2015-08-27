@@ -41,8 +41,6 @@ import retrofit.mime.TypedFile;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
-    public static final int REQUESTER_ID = -3;
-
     @Inject
     RootComponentsProvider rootComponentsProvider;
 
@@ -210,11 +208,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
+        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (event.getRequesterID() == this.hashCode()) {
             eventBus.cancelEventDelivery(event);
             imageSelected(event.getImages()[0]);
         }

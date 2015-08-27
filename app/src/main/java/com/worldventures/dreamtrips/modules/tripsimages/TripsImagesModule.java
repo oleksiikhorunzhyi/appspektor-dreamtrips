@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetForeignPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPre
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ForeignImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
@@ -25,7 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhot
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountTripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -33,6 +32,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreen
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.UsersImagesListFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,7 +44,7 @@ import dagger.Provides;
                 TripImagesTabsPresenter.class,
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
-                MyImagesPresenter.class,
+                AccountImagesPresenter.class,
                 UserImagesPresenter.class,
                 YSBHPresenter.class,
                 FullScreenParentPresenter.class,
@@ -71,7 +71,8 @@ import dagger.Provides;
                 FullScreenPhotoWrapperFragment.class,
                 ForeignImagesPresenter.class,
                 GetForeignPhotosQuery.class,
-                AccountTripImagesListFragment.class
+                AccountImagesListFragment.class,
+                UsersImagesListFragment.class
 
 
         },

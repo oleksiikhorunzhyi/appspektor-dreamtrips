@@ -6,15 +6,14 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.MyImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
-public class AccountTripImagesListFragment extends TripImagesListFragment<MyImagesPresenter> implements MyImagesPresenter.View, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
-
+public class UsersImagesListFragment<P extends UserImagesPresenter> extends TripImagesListFragment<P> implements FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
 
     @InjectView(R.id.v_bg_holder)
     protected View vBgHolder;
@@ -33,11 +32,6 @@ public class AccountTripImagesListFragment extends TripImagesListFragment<MyImag
         super.afterCreateView(rootView);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
 
-    }
-
-    @Override
-    public void setFabVisibility(boolean facebookGallery) {
-        fabFacebook.setVisibility(facebookGallery ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

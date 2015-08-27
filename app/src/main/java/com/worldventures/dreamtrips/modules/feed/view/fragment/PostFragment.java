@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -108,7 +109,15 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @OnClick(R.id.post_button)
     void onPost() {
         SoftInputUtil.hideSoftInputMethod(post);
+        postButton.setEnabled(false);
+        post.setInputType(InputType.TYPE_NULL);
         getPresenter().post();
+    }
+
+    @Override
+    public void onPostError() {
+        postButton.setEnabled(true);
+        post.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     @OnClick(R.id.image)

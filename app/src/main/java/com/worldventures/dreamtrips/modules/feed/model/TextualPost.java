@@ -18,4 +18,5 @@ public class TextualPost extends BaseFeedObject {
         return description;
     }
 
+
 }

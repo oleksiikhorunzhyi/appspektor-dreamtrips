@@ -63,6 +63,11 @@ public class BaseFeedObject implements IFeedObject, Serializable {
     }
 
     @Override
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

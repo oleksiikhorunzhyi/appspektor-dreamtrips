@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -161,6 +162,7 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
             type = Type.UNDEFINED;
         }
 
+        item.setComments(new ArrayList<>());
         baseEventModel.action = Action.ADD;
         baseEventModel.type = type;
         baseEventModel.item = item;

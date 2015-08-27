@@ -23,7 +23,8 @@ public class AmazonModule {
                 BuildConfig.AWS_ACCOUNT_ID,
                 BuildConfig.COGNITO_POOL_ID,
                 BuildConfig.COGNITO_ROLE_UNAUTH,
-                null, Regions.US_EAST_1
+                BuildConfig.COGNITO_ROLE_AUTH,
+                Regions.US_EAST_1
         );
     }
 

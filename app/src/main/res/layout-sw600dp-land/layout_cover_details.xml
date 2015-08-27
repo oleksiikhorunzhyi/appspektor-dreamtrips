@@ -20,6 +20,21 @@
         android:layout_gravity="bottom"
         android:background="@drawable/bucket_item_shadow"/>
 
+
+    <FrameLayout
+        android:id="@+id/top_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="top"
+        android:background="@drawable/trip_item_shadow"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_actionbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

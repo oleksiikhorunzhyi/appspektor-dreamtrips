@@ -3,8 +3,8 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:background="@color/gray_lighter"
-             android:paddingLeft="@dimen/feed_spacing"
-             android:paddingRight="@dimen/feed_spacing"
+             android:layout_marginLeft="@dimen/feed_spacing"
+             android:layout_marginRight="@dimen/feed_spacing"
     >
 
     <android.support.v7.widget.CardView

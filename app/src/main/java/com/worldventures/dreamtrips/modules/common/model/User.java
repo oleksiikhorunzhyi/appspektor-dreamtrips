@@ -219,8 +219,8 @@ public class User extends BaseEntity implements Parcelable {
 
     public Spanned getUsernameWithCompany(Context context) {
         String userWithCompany = !TextUtils.isEmpty(getCompany())
-                ? context.getString(R.string.user_name_with_company, getUsername(), getCompany())
-                : context.getString(R.string.user_name, getUsername());
+                ? context.getString(R.string.user_name_with_company, getFullName(), getCompany())
+                : context.getString(R.string.user_name, getFullName());
         return Html.fromHtml(userWithCompany);
     }
 

@@ -64,7 +64,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     }
 
     public final void setupActualViewState() {
-        if (photo instanceof Photo) {
+        if (photo instanceof Photo && photo.getUser() != null) {
             view.setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
         } else {
             view.setTitle(photo.getFSTitle());

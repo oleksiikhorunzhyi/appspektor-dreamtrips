@@ -25,6 +25,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
         super.onInjected();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
+        if (!bucketItem.getUser().equals(getAccount())) bucketItem = null;
     }
 
     @Override

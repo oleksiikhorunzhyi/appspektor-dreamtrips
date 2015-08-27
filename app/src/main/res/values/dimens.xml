@@ -77,4 +77,6 @@
     <dimen name="post_spacing_horizontal">16dp</dimen>
     <dimen name="post_spacing_vertical">16dp</dimen>
 
+    <dimen name="template_height">260dp</dimen>
+
 </resources>

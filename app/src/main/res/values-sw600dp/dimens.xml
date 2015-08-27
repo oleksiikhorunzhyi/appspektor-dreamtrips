@@ -21,4 +21,7 @@
     ///////Post sizes
     <dimen name="post_spacing_horizontal">64dp</dimen>
     <dimen name="post_spacing_vertical">64dp</dimen>
+
+    <dimen name="template_height">320dp</dimen>
+
 </resources>

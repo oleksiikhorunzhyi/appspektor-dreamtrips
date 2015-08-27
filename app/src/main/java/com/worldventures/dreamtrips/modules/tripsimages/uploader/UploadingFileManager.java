@@ -57,7 +57,7 @@ public class UploadingFileManager {
         Uri uri = Uri.parse(filePath);
         ValidationUtils.checkNotNull(uri);
 
-        if (uri.getScheme().startsWith("http")) {
+        if (uri.getScheme() != null && uri.getScheme().startsWith("http")) {
             InputStream in = null;
             FileOutputStream out = null;
 

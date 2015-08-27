@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.util.Date;
@@ -26,4 +27,6 @@ public interface IFeedObject {
     boolean isLiked();
 
     void setLiked(boolean isLiked);
+
+    User getUser();
 }

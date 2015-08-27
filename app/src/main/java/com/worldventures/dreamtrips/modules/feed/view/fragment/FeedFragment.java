@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
@@ -140,6 +141,10 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
+    }
+
+    public void onEvent(PostClosedEvent event) {
+        postShown = false;
     }
 
     @Override

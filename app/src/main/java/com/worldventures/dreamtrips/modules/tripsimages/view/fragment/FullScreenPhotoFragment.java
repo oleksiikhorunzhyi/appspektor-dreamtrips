@@ -361,18 +361,22 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void setCommentCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvCommentsCount.setText(getString(R.string.comments, count));
+            tvCommentsCount.setVisibility(View.VISIBLE);
+        } else {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvCommentsCount.setText(getString(R.string.comments,count));
     }
 
     @Override
     public void setLikeCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvLikesCount.setText(getString(R.string.likes, count));
+            tvLikesCount.setVisibility(View.VISIBLE);
+        } else {
             tvLikesCount.setVisibility(View.GONE);
         }
-        tvLikesCount.setText(getString(R.string.likes, count));
     }
 
     @Override

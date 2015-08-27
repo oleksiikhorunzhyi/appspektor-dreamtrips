@@ -37,7 +37,7 @@ public class FriendCell extends AbstractCell<User> {
     protected void syncUIStateWithModel() {
         User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        tvName.setText(user.getFullName());
+        tvName.setText(user.getUsernameWithCompany());
         tvGroup.setText(user.getCircles());
         String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
         if (getModelObject().getMutualFriends() == 0) {

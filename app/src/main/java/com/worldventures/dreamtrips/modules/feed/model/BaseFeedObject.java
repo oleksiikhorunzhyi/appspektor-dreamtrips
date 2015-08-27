@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import java.io.Serializable;
@@ -16,6 +17,8 @@ public class BaseFeedObject implements IFeedObject, Serializable {
     protected int commentsCount;
     protected boolean liked;
     protected int likesCount;
+    protected User user;
+
 
     @Override
     public String place() {
@@ -65,6 +68,11 @@ public class BaseFeedObject implements IFeedObject, Serializable {
     @Override
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
     }
 
     @Override

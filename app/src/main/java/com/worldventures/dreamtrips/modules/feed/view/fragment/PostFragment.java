@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -234,6 +235,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     public void cancel() {
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
+        eventBus.post(new PostClosedEvent());
         fragmentCompass.removePost();
     }
 

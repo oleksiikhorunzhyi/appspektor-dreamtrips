@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
@@ -246,7 +248,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
             eventBus.removeStickyEvent(event);
-            imageSelected(event.getImages()[0].getFilePathOriginal());
+            String fileThumbnail = event.getImages()[0].getFileThumbnail();
+            imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
         }
     }
 

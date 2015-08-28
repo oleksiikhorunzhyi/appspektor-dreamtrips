@@ -300,14 +300,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         if (event.getRequesterID() == bucketItemId.hashCode()) {
             eventBus.removeStickyEvent(event);
 
-            Queryable.from(event.getImages()).forEachR(choseImage -> {
-                String fileThumbnail = choseImage.getFileThumbnail();
-                if (ValidationUtils.isUrl(fileThumbnail)) {
-                    imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
-                } else {
-                    imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
-                }
-            });
+            if (event.getRequestType() == PickImageDelegate.REQUEST_MULTI_SELECT) {
+                Queryable.from(event.getImages()).forEachR(choseImage ->
+                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+            } else {
+                Queryable.from(event.getImages()).forEachR(choseImage -> {
+                    String fileThumbnail = choseImage.getFileThumbnail();
+                    if (ValidationUtils.isUrl(fileThumbnail)) {
+                        imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
+                    } else {
+                        imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
+                    }
+                });
+            }
         }
     }
 

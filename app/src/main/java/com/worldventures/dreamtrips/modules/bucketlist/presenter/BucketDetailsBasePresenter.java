@@ -89,7 +89,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
         if (event != null) {
-            imagePicked(event);
+            new WeakHandler().postDelayed(() -> imagePicked(event), 200);
         }
 
     }

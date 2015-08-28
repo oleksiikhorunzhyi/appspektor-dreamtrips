@@ -81,6 +81,7 @@ public class BucketListModule {
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
+        public static final String EXTRA_LOCK = "EXTRA_LOCK";
     public static final String BUCKETLIST = Route.BUCKET_LIST.name();
 
     @Provides(type = Provides.Type.SET)

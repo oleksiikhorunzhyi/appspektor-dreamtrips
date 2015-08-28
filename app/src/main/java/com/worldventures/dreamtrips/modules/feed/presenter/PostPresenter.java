@@ -172,7 +172,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     @Override
     public void onStateChanged(int id, TransferState state) {
-        if (view != null) {
+        if (view != null && post.getUploadTask() != null) {
             if (state.equals(TransferState.COMPLETED)) {
                 post.getUploadTask().setStatus(UploadTask.Status.COMPLETED);
                 post.getUploadTask().setOriginUrl

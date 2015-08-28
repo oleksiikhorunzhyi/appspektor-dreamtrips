@@ -34,6 +34,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
+            bundle.putBoolean(BucketListModule.EXTRA_LOCK, true);
             NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.BUCKET_EDIT);
         }
     }
@@ -46,7 +47,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         getBucketItemManager().deleteBucketItem(bucketItem, type,
                 jsonObject -> {
                     if (!view.isTabletLandscape()) view.done();
-                    else eventBus.post(new BucketItemUpdatedEvent(bucketItem));
+                    eventBus.post(new BucketItemUpdatedEvent(bucketItem));
                 },
                 this);
     }
@@ -91,15 +92,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     @Override
     protected void syncUI() {
         super.syncUI();
-        if (!TextUtils.isEmpty(bucketItem.getType())) {
-            String s = bucketItem.getCategoryName();
-            view.setCategory(s);
+
+        if (bucketItem != null) {
+            if (!TextUtils.isEmpty(bucketItem.getType())) {
+                String s = bucketItem.getCategoryName();
+                view.setCategory(s);
+            }
+            view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
+            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
+            view.setCover(medium, original);
+            view.setupDiningView(bucketItem.getDining());
         }
-        view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-        String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-        String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-        view.setCover(medium, original);
-        view.setupDiningView(bucketItem.getDining());
     }
 
     public interface View extends BucketDetailsBasePresenter.View {

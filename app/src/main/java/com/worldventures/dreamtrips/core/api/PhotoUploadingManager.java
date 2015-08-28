@@ -68,7 +68,7 @@ public class PhotoUploadingManager {
     }
 
     public String getResultUrl(UploadTask uploadTask) {
-        return "https://" + uploadTask.getBucketName()
+        return uploadTask == null ? null : "https://" + uploadTask.getBucketName()
                 + ".s3.amazonaws.com/" + uploadTask.getKey();
     }
 

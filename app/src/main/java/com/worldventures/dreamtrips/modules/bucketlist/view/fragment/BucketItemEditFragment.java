@@ -20,11 +20,13 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
@@ -133,11 +135,20 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         super.afterCreateView(rootView);
         bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
 
+        boolean lock = getArguments().getBoolean(BucketListModule.EXTRA_LOCK);
+
+        if (lock) OrientationUtil.lockOrientation(getActivity());
+
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        OrientationUtil.unlockOrientation(getActivity());
+    }
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {

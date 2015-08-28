@@ -376,5 +376,7 @@
 
     <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
     <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
+    <string name="configuration_acitve_button">Try again</string>
+    <string name="configuration_failed">Configuration loading failed</string>
 
 </resources>

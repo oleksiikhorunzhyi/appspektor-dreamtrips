@@ -227,7 +227,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     /**
-     * Get pre-filled template by id, and try to resend
+     * Get configurationStarted-filled template by id, and try to resend
      */
     private void doResend(History history, String username) {
         view.startLoading();

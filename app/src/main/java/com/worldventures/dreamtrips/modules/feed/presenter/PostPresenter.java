@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -20,10 +21,13 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 
 import javax.inject.Inject;
+
+import io.techery.scalablecropp.library.Crop;
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
@@ -257,7 +261,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
             view.disableImagePicker();
             eventBus.removeStickyEvent(event);
             String fileThumbnail = event.getImages()[0].getFileThumbnail();
-            imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
+            if (ValidationUtils.isUrl(fileThumbnail)) {
+                imageSelected(Uri.parse(fileThumbnail).toString());
+            } else {
+                imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
+            }
+
         }
     }
 

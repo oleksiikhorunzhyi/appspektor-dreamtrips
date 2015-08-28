@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -112,9 +113,13 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @ForActivity
     Provider<Injector> injector;
 
+
+    @InjectView(R.id.contentView)
+    ViewGroup contentView;
+
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+    public void afterCreateView(View view) {
+        super.afterCreateView(view);
         bucketPhotosView.init(injector, getBucketPhotosType());
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
 
@@ -123,7 +128,17 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-            toolbar.getBackground().setAlpha(0);
+
+            int space = getResources().getDimensionPixelSize(R.dimen.bucket_details_spacing);
+            int spaceTop = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+            lp.rightMargin = space;
+            lp.leftMargin = space;
+            if (isTabletLandscape()) {
+                lp.topMargin = spaceTop;
+            }
+            contentView.setLayoutParams(lp);
+
         } else {
             topShadow.setVisibility(View.GONE);
             toolbar.setVisibility(View.GONE);

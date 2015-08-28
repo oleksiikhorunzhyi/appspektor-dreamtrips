@@ -5,6 +5,7 @@
 
     <dimen name="feed_item_height">300dp</dimen>
     <dimen name="feed_spacing">100dp</dimen>
+    <dimen name="bucket_details_spacing">100dp</dimen>
 
     <dimen name="map_trip_info_size">550dp</dimen>
     <dimen name="map_trip_image_size">300dp</dimen>

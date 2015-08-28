@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscre
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
@@ -33,7 +33,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,9 +90,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         syncUI();
 
         ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
-        if (event != null) {
-            new WeakHandler().postDelayed(() -> imagePicked(event), 200);
-        }
+        if (event != null) onEvent(event);
 
     }
 
@@ -107,19 +107,21 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     protected void syncUI() {
-        view.setTitle(bucketItem.getName());
-        view.setDescription(bucketItem.getDescription());
-        view.setStatus(bucketItem.isDone());
-        view.setPeople(bucketItem.getFriends());
-        view.setTags(bucketItem.getBucketTags());
-        view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
+        if (bucketItem != null) {
+            view.setTitle(bucketItem.getName());
+            view.setDescription(bucketItem.getDescription());
+            view.setStatus(bucketItem.isDone());
+            view.setPeople(bucketItem.getFriends());
+            view.setTags(bucketItem.getBucketTags());
+            view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
 
-        List<BucketPhoto> photos = bucketItem.getPhotos();
-        if (photos != null) {
-            view.getBucketPhotosView().setImages(photos);
+            List<BucketPhoto> photos = bucketItem.getPhotos();
+            if (photos != null) {
+                view.getBucketPhotosView().setImages(photos);
+            }
+
+            view.getBucketPhotosView().addImages(tasks);
         }
-
-        view.getBucketPhotosView().addImages(tasks);
     }
 
 
@@ -163,6 +165,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, photos.indexOf(selectedPhoto));
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, photos);
+
+            args.putBoolean(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN, getBucketItemManager() instanceof ForeignBucketItemManager);
+
             view.openFullscreen(args);
         }
     }
@@ -287,14 +292,22 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId.hashCode()));
     }
 
+    public void onEvent(ImagePickedEvent event) {
+        imagePicked(event);
+    }
+
     public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId.hashCode()) {
-            new WeakHandler().postDelayed(() -> {
-                eventBus.removeStickyEvent(event);
-                Queryable.from(event.getImages()).forEachR(choseImage ->
-                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+            eventBus.removeStickyEvent(event);
 
-            }, 200);
+            Queryable.from(event.getImages()).forEachR(choseImage -> {
+                String fileThumbnail = choseImage.getFileThumbnail();
+                if (ValidationUtils.isUrl(fileThumbnail)) {
+                    imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
+                } else {
+                    imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
+                }
+            });
         }
     }
 

@@ -32,6 +32,7 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     public static final String EXTRA_POSITION = "EXTRA_POSITION";
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_FIXED_LIST = "EXTRA_FIXED_LIST";
+    public static final String EXTRA_FOREIGN = "EXTRA_FOREIGN";
     public static final String EXTRA_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
 
 
@@ -100,6 +101,7 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
                 Bundle args = new Bundle();
                 args.putSerializable(FullScreenPhotoFragment.EXTRA_TYPE, getArguments().getSerializable(EXTRA_TYPE));
                 args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, getPresenter().getPhoto(position));
+                args.putBoolean(EXTRA_FOREIGN, getArguments().getBoolean(EXTRA_FOREIGN));
                 fragment.setArguments(args);
             }
 

@@ -16,6 +16,8 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class UserImagesPresenter extends TripImagesListPresenter {
 
+    public static final int REQUESTER_ID = -10;
+
     public UserImagesPresenter() {
         this(Type.MEMBER_IMAGES);
     }
@@ -40,11 +42,12 @@ public class UserImagesPresenter extends TripImagesListPresenter {
     }
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == this.hashCode()) {
+        if (event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
             imageSelected(Uri.parse(event.getImages()[0].getFilePathOriginal()), event.getRequestType());
         }

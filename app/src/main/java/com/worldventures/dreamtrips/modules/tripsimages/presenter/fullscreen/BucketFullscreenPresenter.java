@@ -11,8 +11,10 @@ import javax.inject.Inject;
 
 public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> {
 
+    boolean foreign;
 
-    public BucketFullscreenPresenter() {
+    public BucketFullscreenPresenter(boolean foreign) {
+        this.foreign = foreign;
     }
 
     @Inject
@@ -23,9 +25,10 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
     @Override
     public void onInjected() {
         super.onInjected();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
-        if (bucketItem != null && !bucketItem.getUser().equals(getAccount())) bucketItem = null;
+        if (!foreign) {
+            bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+            bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
+        }
     }
 
     @Override

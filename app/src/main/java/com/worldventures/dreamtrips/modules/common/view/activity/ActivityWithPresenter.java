@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -141,10 +142,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
 
     private void imagePicked(ChosenImage... chosenImages) {
         runOnUiThread(() -> {
-            eventBus.removeStickyEvent(ImagePickedEvent.class);
-            eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
-                    pickImageDelegate.getRequesterId(),
-                    chosenImages));
+            new WeakHandler().postDelayed(() -> {
+                eventBus.removeStickyEvent(ImagePickedEvent.class);
+                eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
+                        pickImageDelegate.getRequesterId(),
+                        chosenImages));
+            }, 400);
         });
     }
 

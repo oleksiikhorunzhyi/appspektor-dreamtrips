@@ -24,11 +24,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     protected Type type;
     protected T photo;
 
-    public static FullScreenPresenter create(IFullScreenObject photo) {
+    public static FullScreenPresenter create(IFullScreenObject photo, boolean foreign) {
         if (photo instanceof Photo) {
             return new InteractiveFullscreenPresenter();
         } else if (photo instanceof BucketPhoto) {
-            return new BucketFullscreenPresenter();
+            return new BucketFullscreenPresenter(foreign);
         }
         return new SimpleFullscreenPresenter();
     }

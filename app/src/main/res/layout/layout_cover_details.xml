@@ -27,11 +27,7 @@
         android:layout_gravity="top"
         android:background="@drawable/trip_item_shadow"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_actionbar"
-        style="@style/ToolBarStyle"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,6 +2,8 @@
 <resources>
 
     <dimen name="feed_spacing">200dp</dimen>
+    <dimen name="bucket_details_spacing">200dp</dimen>
+
 
     ///////Post sizes
     <dimen name="post_spacing_horizontal">128dp</dimen>

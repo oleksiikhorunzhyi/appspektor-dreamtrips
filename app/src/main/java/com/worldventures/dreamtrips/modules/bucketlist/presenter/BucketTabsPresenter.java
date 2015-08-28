@@ -34,6 +34,12 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     BucketType currentType;
 
     @Override
+    public void onInjected() {
+        super.onInjected();
+        getBucketItemManager().setUserId(getAccount().getId());
+    }
+
+    @Override
     public void takeView(View view) {
         super.takeView(view);
         setTabs();

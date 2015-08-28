@@ -3,11 +3,14 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 
 import java.io.Serializable;
 
-public class BaseEntity implements Serializable, Parcelable{
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class BaseEntity implements Serializable, Parcelable {
 
     @TaggedFieldSerializer.Tag(0)
     protected int id;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -69,9 +70,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void onResume() {
         super.onResume();
+
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         restoreBucketItem();
-        syncUI();
+
+        tasks = db.getUploadTasksForId(bucketItemId);
+        Collections.reverse(tasks);
 
         if (tasks != null)
             Queryable.from(tasks).forEachR(task -> {
@@ -81,10 +85,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                 onStateChanged(transferObserver.getId(), transferObserver.getState());
             });
 
+        syncUI();
+
         ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
         if (event != null) {
             imagePicked(event);
         }
+
     }
 
     private void restoreBucketItem() {
@@ -111,9 +118,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         if (photos != null) {
             view.getBucketPhotosView().setImages(photos);
         }
-
-        tasks = db.getUploadTasksForId(bucketItemId);
-        Collections.reverse(tasks);
 
         view.getBucketPhotosView().addImages(tasks);
     }
@@ -192,7 +196,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
 
     private void copyFileIfNeeded(UploadTask task) {
-        eventBus.removeStickyEvent(ImagePickedEvent.class);
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
     }
 
@@ -286,9 +289,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void imagePicked(ImagePickedEvent event) {
         if (event.getRequesterID() == bucketItemId.hashCode()) {
-            eventBus.removeStickyEvent(event);
-            Queryable.from(event.getImages()).forEachR(choseImage ->
-                    imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+            new WeakHandler().postDelayed(() -> {
+                eventBus.removeStickyEvent(event);
+                Queryable.from(event.getImages()).forEachR(choseImage ->
+                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+
+            }, 200);
         }
     }
 

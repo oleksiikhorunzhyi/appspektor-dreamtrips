@@ -11,16 +11,9 @@ import java.util.List;
 
 public class ForeignBucketItemManager extends BucketItemManager {
 
-    int userId;
-
     public ForeignBucketItemManager(Injector injector) {
         super(injector);
     }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
 
     @NonNull
     protected GetBucketItemsQuery getBucketListRequest() {

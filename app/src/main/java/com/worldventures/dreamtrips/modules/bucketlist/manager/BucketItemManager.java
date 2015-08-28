@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -44,6 +45,9 @@ public class BucketItemManager {
     public BucketItemManager(Injector injector) {
         injector.inject(this);
     }
+
+    int userId;
+
 
     @Inject
     SnappyRepository snapper;
@@ -61,6 +65,9 @@ public class BucketItemManager {
 
     DreamSpiceManager dreamSpiceManager;
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public void setDreamSpiceManager(DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
@@ -72,9 +79,16 @@ public class BucketItemManager {
         }
 
         dreamSpiceManager.execute(getBucketListRequest(), items -> {
+            Queryable.from(items).forEachR(item -> item.setUser(getOwner()));
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
+    }
+
+    protected User getOwner() {
+        User user = new User();
+        user.setId(userId);
+        return user;
     }
 
     @NonNull

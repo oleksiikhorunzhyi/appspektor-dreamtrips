@@ -30,19 +30,21 @@
         android:clickable="true"
         android:visibility="gone"/>
 
+
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
+        android:layout_alignBottom="@+id/pager"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         fab:fab_addButtonColorNormal="@color/theme_main_darker"
         fab:fab_colorNormal="@color/theme_main"
         fab:fab_colorPressed="@color/theme_main_darker"
-        fab:fab_labelStyle="@style/menu_labels_style">
+        fab:fab_expandDirection="left"
+        android:layout_alignParentBottom="true">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_facebook"
@@ -51,8 +53,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_facebook"
-            fab:fab_title="@string/choose_fb"/>
+            fab:fab_icon="@drawable/ic_fab_facebook"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_gallery"
@@ -61,8 +62,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_gallery"
-            fab:fab_title="@string/choose_gallery"/>
+            fab:fab_icon="@drawable/ic_fab_gallery"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -71,8 +71,7 @@
             fab:fab_addButtonColorNormal="@color/theme_main_darker"
             fab:fab_colorNormal="@color/theme_main"
             fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_photo"
-            fab:fab_title="@string/choose_camera"/>
+            fab:fab_icon="@drawable/ic_fab_photo"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

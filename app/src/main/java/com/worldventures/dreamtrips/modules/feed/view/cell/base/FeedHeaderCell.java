@@ -86,7 +86,7 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     }
 
     @Optional
-    @OnClick({R.id.comments, R.id.comment_preview})
+    @OnClick({R.id.comments, R.id.comment_preview, R.id.comments_count})
     void commentsClicked() {
         openComments(getModelObject());
     }

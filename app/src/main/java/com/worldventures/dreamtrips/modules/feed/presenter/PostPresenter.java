@@ -249,12 +249,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     ////////////////////////////////////////
 
     public void pickImage(int requestType) {
-        view.disableImagePicker();
         eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
+            view.disableImagePicker();
             eventBus.removeStickyEvent(event);
             String fileThumbnail = event.getImages()[0].getFileThumbnail();
             imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());

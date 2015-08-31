@@ -98,7 +98,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     private void setupLayoutManager() {
         boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
         boolean tablet = ViewUtils.isTablet(getActivity());
-        int spanCount = landscape && tablet ? 3 : landscape ? 2 : 1;
+        int spanCount = landscape && tablet ? 3 : landscape || tablet ? 2 : 1;
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override

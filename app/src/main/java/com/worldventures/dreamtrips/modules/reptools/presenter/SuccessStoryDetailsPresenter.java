@@ -49,10 +49,6 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
         activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
     }
 
-    public void fullscreenEvent(SuccessStory story) {
-        activityRouter.openSuccessStoryDetails(story);
-    }
-
     public interface View extends WebViewFragmentPresenter.View {
         void showShareDialog();
 

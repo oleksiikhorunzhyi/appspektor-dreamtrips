@@ -8,11 +8,12 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,6 +23,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         implements SuccessStoryDetailsPresenter.View {
 
     public static final String EXTRA_STORY = "STORY";
+    public static final String EXTRA_SLAVE = "SLAVE";
 
     private SuccessStory story;
 
@@ -31,6 +33,8 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
     protected ImageView ivLike;
     @InjectView(R.id.iv_full_screen)
     protected ImageView ivFullscreen;
+
+    private boolean slave = false;
 
     @OnClick(R.id.iv_like)
     public void onLike() {
@@ -44,15 +48,19 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @OnClick(R.id.iv_full_screen)
     public void onFullScreen() {
-        if (getActivity() instanceof SuccessStoryDetailsActivity) {
+        if (!slave) {
             getActivity().finish();
         } else {
-            getPresenter().fullscreenEvent(story);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
+            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
         }
     }
 
     @Override
     public void afterCreateView(View rootView) {
+        slave = getArguments().getBoolean(EXTRA_SLAVE);
+
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);
         }
@@ -69,9 +77,11 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
     @Override
     public void onResume() {
         super.onResume();
-        if (getActivity() instanceof SuccessStoryDetailsActivity) {
+        if (!slave) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
+
+            ivFullscreen.setVisibility(isTabletLandscape() ? View.VISIBLE : View.INVISIBLE);
         } else {
             ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);
         }

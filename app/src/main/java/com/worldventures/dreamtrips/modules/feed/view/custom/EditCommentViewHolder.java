@@ -61,7 +61,13 @@ public class EditCommentViewHolder extends BaseViewHolder<EditCommentPresenter> 
     @OnClick(R.id.save)
     public void onSave() {
         SoftInputUtil.hideSoftInputMethod(editComment);
+        save.setEnabled(false);
         presenter.onSave();
+    }
+
+    @Override
+    public void enableSaveButton() {
+        save.setEnabled(true);
     }
 
     @OnClick(R.id.cancel)

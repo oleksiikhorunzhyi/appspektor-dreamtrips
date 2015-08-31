@@ -53,6 +53,8 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @InjectView(R.id.image)
     ImageView image;
 
+    SweetAlertDialog dialog;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -218,17 +220,20 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     @Override
     public void showCancelationDialog() {
-        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getString(R.string.app_name))
-                .setContentText(getString(R.string.post_cancel_message))
-                .setConfirmText(getString(R.string.social_add_friend_yes))
-                .setCancelText(getString(R.string.social_add_friend_no))
-                .setConfirmClickListener(sweetAlertDialog -> {
-                    sweetAlertDialog.dismissWithAnimation();
-                    cancel();
-                })
-                .setCancelClickListener(SweetAlertDialog::dismissWithAnimation)
-                .show();
+        if (dialog == null) {
+            dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(getString(R.string.app_name))
+                    .setContentText(getString(R.string.post_cancel_message))
+                    .setConfirmText(getString(R.string.social_add_friend_yes))
+                    .setCancelText(getString(R.string.social_add_friend_no))
+                    .setConfirmClickListener(sweetAlertDialog -> {
+                        sweetAlertDialog.dismissWithAnimation();
+                        dialog = null;
+                        cancel();
+                    })
+                    .setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
+            dialog.show();
+        }
     }
 
     @Override

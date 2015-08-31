@@ -86,11 +86,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void cancelClicked() {
-        if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
-            view.cancel();
-        } else {
-            view.showCancelationDialog();
-        }
+        if (view != null)
+            if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
+                view.cancel();
+            } else {
+                view.showCancelationDialog();
+            }
     }
 
     private void savePost() {

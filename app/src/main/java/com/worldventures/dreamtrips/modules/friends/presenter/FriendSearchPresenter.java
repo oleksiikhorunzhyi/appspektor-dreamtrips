@@ -73,13 +73,14 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     public void takeView(View view) {
         super.takeView(view);
         circles = snappyRepository.getCircles();
-        adapterController.setSpiceManager(dreamSpiceManager);
-        adapterController.setAdapter(view.getAdapter());
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        adapterController.setSpiceManager(dreamSpiceManager);
+        adapterController.setAdapter(view.getAdapter());
+
         QueryStickyEvent event = eventBus.getStickyEvent(QueryStickyEvent.class);
         if (event != null) {
             query = event.getQuery();

@@ -142,7 +142,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @Override
     public void addComment(Comment comment) {
         post.setEnabled(true);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setFocusable(true);
+        input.setFocusableInTouchMode(true);
         input.setText(null);
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
@@ -185,7 +186,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @Override
     public void onPostError() {
         post.setEnabled(true);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setFocusable(true);
+        input.setFocusableInTouchMode(true);
     }
 
     @Override
@@ -198,7 +200,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     void onPost() {
         getPresenter().post();
         post.setEnabled(false);
-        input.setInputType(InputType.TYPE_NULL);
+        input.setFocusable(false);
     }
 
     @Override

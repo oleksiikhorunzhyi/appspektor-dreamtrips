@@ -139,6 +139,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     private void processPost(IFeedObject iFeedObject) {
         eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
         view.cancel();
+        view = null;
     }
 
     public void postInputChanged(String input) {

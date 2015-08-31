@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,20 +73,21 @@ public class FriendSearchPresenter extends Presenter<FriendSearchPresenter.View>
     public void takeView(View view) {
         super.takeView(view);
         circles = snappyRepository.getCircles();
+        adapterController.setSpiceManager(dreamSpiceManager);
+        adapterController.setAdapter(view.getAdapter());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (view.getAdapter().getCount() == 0) {
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
-        }
         QueryStickyEvent event = eventBus.getStickyEvent(QueryStickyEvent.class);
         if (event != null) {
             query = event.getQuery();
             eventBus.removeStickyEvent(event);
+        }
+
+        if (view.getAdapter().getCount() == 0) {
+            adapterController.reload();
         }
     }
 

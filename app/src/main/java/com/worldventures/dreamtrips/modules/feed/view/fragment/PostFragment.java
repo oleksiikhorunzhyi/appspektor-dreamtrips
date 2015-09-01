@@ -148,6 +148,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void enableButton() {
         postButton.setTextColor(getResources().getColor(R.color.bucket_detailed_text_color));
+        postButton.setClickable(true);
     }
 
     @Override
@@ -197,6 +198,7 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     @Override
     public void disableButton() {
         postButton.setTextColor(getResources().getColor(R.color.gray));
+        postButton.setClickable(false);
     }
 
     @Override

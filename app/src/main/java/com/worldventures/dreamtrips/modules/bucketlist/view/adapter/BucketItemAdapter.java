@@ -16,6 +16,6 @@ public class BucketItemAdapter extends DraggableArrayListAdapter<BucketItem> {
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(getItem(position).getUid());
+        return getItem(position).getUid().hashCode();
     }
 }

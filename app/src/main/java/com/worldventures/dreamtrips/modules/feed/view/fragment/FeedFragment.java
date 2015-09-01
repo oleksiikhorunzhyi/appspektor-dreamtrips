@@ -9,6 +9,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
@@ -33,6 +34,7 @@ import butterknife.OnClick;
 import icepick.Icicle;
 
 @Layout(R.layout.fragment_feed)
+@MenuResource(R.menu.menu_mock)
 public class FeedFragment extends BaseFragment<FeedPresenter>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 

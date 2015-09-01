@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/add_friend"
-        android:icon="@drawable/add_item"
+        android:icon="@drawable/ic_menu_add_item"
         android:title="@string/action_quick_input"
         app:showAsAction="ifRoom"/>
 

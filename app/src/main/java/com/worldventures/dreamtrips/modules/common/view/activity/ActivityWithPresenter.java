@@ -1,19 +1,27 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import icepick.Icepick;
 
 public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseActivity implements Presenter.View {
+
     private PM presenter;
+    private PickImageDelegate pickImageDelegate;
 
     public PM getPresentationModel() {
         return presenter;
@@ -35,12 +43,15 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
         if (presenter != null) this.presenter.saveInstanceState(outState);
+        pickImageDelegate.saveInstanceState(outState);
     }
 
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
+        pickImageDelegate = new PickImageDelegate(this);
+        pickImageDelegate.restoreInstanceState(savedInstanceState);
         this.presenter.takeView(this);
     }
 
@@ -83,6 +94,13 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
         });
     }
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getPresentationModel().onCreate(savedInstanceState);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -101,6 +119,36 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
             getPresentationModel().dropView();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (pickImageDelegate != null) {
+            pickImageDelegate.setImageCallback(this::imagePicked);
+            pickImageDelegate.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    public void onEvent(ImagePickRequestEvent event) {
+        pickImage(event.getRequestType(), event.getRequesterID());
+    }
+
+    private void pickImage(int requestType, int requesterId) {
+        pickImageDelegate.setRequesterId(requesterId);
+        pickImageDelegate.setRequestType(requestType);
+        pickImageDelegate.show();
+    }
+
+    private void imagePicked(ChosenImage... chosenImages) {
+        runOnUiThread(() -> {
+            new WeakHandler().postDelayed(() -> {
+                eventBus.removeStickyEvent(ImagePickedEvent.class);
+                eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
+                        pickImageDelegate.getRequesterId(),
+                        chosenImages));
+            }, 400);
+        });
     }
 
 }

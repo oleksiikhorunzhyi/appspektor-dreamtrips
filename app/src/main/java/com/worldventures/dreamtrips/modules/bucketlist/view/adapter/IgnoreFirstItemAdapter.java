@@ -26,9 +26,4 @@ public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
             addItem(item);
         }
     }
-
-    @Override
-    public List getItems() {
-        return super.getItems().subList(1, getCount());
-    }
 }

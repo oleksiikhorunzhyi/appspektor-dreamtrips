@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.friends.events;
 
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class UnfriendEvent {
 
-    private Friend friend;
+    private User friend;
 
-    public UnfriendEvent(Friend friend) {
+    public UnfriendEvent(User friend) {
         this.friend = friend;
     }
 
-    public Friend getFriend() {
+    public User getFriend() {
         return friend;
     }
 }

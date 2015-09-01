@@ -5,13 +5,9 @@ import com.google.gson.annotations.SerializedName;
 public class BucketCoverModel extends BucketBasePostItem {
 
     @SerializedName("cover_photo_id")
-    private Integer coverId;
+    private String coverId;
 
-    public void setCoverId(Integer coverId) {
+    public void setCoverId(String coverId) {
         this.coverId = coverId;
-    }
-
-    public int getCoverId() {
-        return coverId;
     }
 }

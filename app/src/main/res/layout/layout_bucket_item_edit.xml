@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -24,7 +24,7 @@
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
             app:floatingLabel="normal"
-            app:primaryColor="@color/theme_main_darker" />
+            app:primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextDescription"
@@ -36,13 +36,13 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="normal"
             app:floatingLabelText="@string/bucket_hint_description"
-            app:primaryColor="@color/theme_main_darker" />
+            app:primaryColor="@color/theme_main_darker"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/category"
-            android:layout_marginBottom="4dp" />
+            android:layout_marginBottom="4dp"
+            android:text="@string/category"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
                 android:id="@+id/spinnerCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
         </LinearLayout>
 
@@ -62,8 +62,8 @@
             android:id="@+id/editTextTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:editable="false"
+            android:focusable="false"
             android:hint="@string/bucket_hint_time_text"
             android:imeOptions="actionNext"
             android:singleLine="true"
@@ -71,7 +71,7 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="highlight"
             app:floatingLabelText="@string/bucket_hint_time"
-            app:primaryColor="@color/theme_main_darker" />
+            app:primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextPeople"
@@ -84,7 +84,7 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="normal"
             app:floatingLabelText="@string/bucket_hint_people"
-            app:primaryColor="@color/theme_main_darker" />
+            app:primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTags"
@@ -97,13 +97,13 @@
             android:textColorHint="@android:color/black"
             app:floatingLabel="highlight"
             app:floatingLabelText="@string/bucket_hint_tags"
-            app:primaryColor="@color/theme_main_darker" />
+            app:primaryColor="@color/theme_main_darker"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="@string/add_pictures" />
+            android:text="@string/add_pictures"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,9 +113,9 @@
 
             <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
                 android:id="@+id/lv_items"
-                android:overScrollMode="never"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:overScrollMode="never"/>
         </LinearLayout>
 
         <LinearLayout
@@ -127,7 +127,7 @@
                 android:id="@+id/checkBoxDone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/bucket_item_edit_completed" />
+                android:text="@string/bucket_item_edit_completed"/>
 
         </LinearLayout>
     </LinearLayout>

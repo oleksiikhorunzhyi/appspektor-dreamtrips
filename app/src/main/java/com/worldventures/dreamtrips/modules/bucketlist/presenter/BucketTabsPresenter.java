@@ -1,14 +1,10 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketRequestSelectedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketTabChangedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -28,27 +24,32 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
+    /**
+     * Use getter getBucketItemManager() because we have
+     * {@link com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager}
+     */
     @Inject
     BucketItemManager bucketItemManager;
 
     BucketType currentType;
 
     @Override
+    public void onInjected() {
+        super.onInjected();
+        getBucketItemManager().setUserId(getAccount().getId());
+    }
+
+    @Override
     public void takeView(View view) {
         super.takeView(view);
         setTabs();
         loadCategories();
-    }
-
-    @Override
-    public void saveInstanceState(Bundle outState) {
-        super.saveInstanceState(outState);
+        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
+        getBucketItemManager().loadBucketItems(this);
     }
 
     @Override
     public void onResume() {
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        bucketItemManager.loadBucketItems(this);
         setRecentBucketItemsCounts();
     }
 
@@ -66,17 +67,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         currentType = type;
         db.saveRecentlyAddedBucketItems(type.name(), 0);
         view.resetRecentlyAddedBucketItem(type);
-        TrackingHelper.bucketPopular(type.name);
-        eventBus.post(new BucketTabChangedEvent(type));
-        notifyAboutCurrentType();
-    }
-
-    public void onEvent(BucketRequestSelectedEvent event) {
-        notifyAboutCurrentType();
-    }
-
-    private void notifyAboutCurrentType() {
-        eventBus.post(new BucketTabChangedEvent(currentType));
     }
 
     private void setRecentBucketItemsCounts() {
@@ -87,6 +77,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         view.setRecentBucketItemsCount(recentBucketItems);
     }
 
+
     public interface View extends Presenter.View {
         void setTypes(List<BucketType> type);
 
@@ -95,6 +86,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void resetRecentlyAddedBucketItem(BucketType type);
 
         void updateSelection();
+    }
+
+
+    protected <T extends BucketItemManager> T getBucketItemManager() {
+        return (T) bucketItemManager;
     }
 
     public enum BucketType {

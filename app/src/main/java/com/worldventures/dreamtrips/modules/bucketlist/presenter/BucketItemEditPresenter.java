@@ -45,7 +45,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void saveItem() {
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
-        bucketPostItem.setId(String.valueOf(bucketItemId));
+        bucketPostItem.setId(bucketItemId);
         bucketPostItem.setName(view.getTitle());
         bucketPostItem.setDescription(view.getDescription());
         bucketPostItem.setStatus(view.getStatus());
@@ -53,7 +53,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setPeople(getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
-        bucketItemManager.updateBucketItem(bucketPostItem, item -> {
+        getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
                 savingItem = false;
                 view.done();

@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
-import android.content.Context;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,15 +8,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
+import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_friend)
-public class FriendCell extends AbstractCell<Friend> {
+public class FriendCell extends AbstractCell<User> {
 
     @InjectView(R.id.avatar)
     SimpleDraweeView userPhoto;
@@ -29,15 +27,17 @@ public class FriendCell extends AbstractCell<Friend> {
     @InjectView(R.id.tvMutual)
     TextView tvMutual;
 
+    FriendActionDialogDelegate dialog;
+
     public FriendCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        Friend user = getModelObject();
+        User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        tvName.setText(user.getFullName());
+        tvName.setText(user.getUsernameWithCompany(itemView.getContext()));
         tvGroup.setText(user.getCircles());
         String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
         if (getModelObject().getMutualFriends() == 0) {
@@ -45,6 +45,14 @@ public class FriendCell extends AbstractCell<Friend> {
         } else {
             tvMutual.setVisibility(View.VISIBLE);
             tvMutual.setText(mutual);
+        }
+    }
+
+    @Override
+    public void afterInject() {
+        super.afterInject();
+        if (dialog == null) {
+            dialog = new FriendActionDialogDelegate(itemView.getContext(), getEventBus());
         }
     }
 
@@ -60,17 +68,7 @@ public class FriendCell extends AbstractCell<Friend> {
 
     @OnClick(R.id.actions)
     public void onAction(View v) {
-        Context c = v.getContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setTitle(getModelObject().getFullName());
-        builder.setIcon(userPhoto.getDrawable());
-        builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
-                dialogInterface.dismiss());
-        builder.setItems(new String[]{c.getString(R.string.social_remove_friend_title)},
-                (dialogInterface, i) -> {
-                    getEventBus().post(new UnfriendEvent(getModelObject()));
-                });
-        builder.show();
+        dialog.showFriendDialog(getModelObject(), userPhoto.getDrawable());
     }
 
 

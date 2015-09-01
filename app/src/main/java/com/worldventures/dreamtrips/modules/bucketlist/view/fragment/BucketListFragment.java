@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -36,11 +35,17 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -51,12 +56,13 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment extends BaseFragment<BucketListPresenter>
+public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
         implements BucketListPresenter.View {
 
     @Inject
@@ -70,15 +76,14 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
+    @Optional
     @InjectView(R.id.textViewEmptyAdd)
     protected TextView textViewEmptyAdd;
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
-    @InjectView(R.id.buttonNew)
-    AppCompatButton buttonNew;
-    @InjectView(R.id.buttonPopular)
-    AppCompatButton buttonPopular;
     //
+    @Optional
+    @InjectView(R.id.detail_container)
     protected View detailsContainer;
 
     private DraggableArrayListAdapter<BucketItem> adapter;
@@ -104,8 +109,6 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        detailsContainer = getActivity().findViewById(R.id.container_details_fullscreen);
-
         // setup layout manager and item decoration
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new RefactoredDefaultItemAnimator());
@@ -118,20 +121,35 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         recyclerView.setFadingEdgeLength(0);
         // setup empty view
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
+
+        if (textViewEmptyAdd != null)
+            textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
         recyclerView.setEmptyView(emptyView);
         // setup drag&drop with adapter
         dragDropManager = new RecyclerViewDragDropManager();
         dragDropManager.setInitiateOnLongPress(true); // not working :(
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
-        adapter = new DraggableArrayListAdapter<>(getActivity(), injector);
-        adapter.registerCell(BucketItem.class, BucketItemCell.class);
+        adapter = new BucketItemAdapter(getActivity(), injector);
+
+        if (isSwipeEnabled())
+            adapter.registerCell(BucketItem.class, BucketItemCell.class);
+        else
+            adapter.registerCell(BucketItem.class, BucketItemStaticCell.class);
+
         adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
         wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
-        dragDropManager.attachRecyclerView(recyclerView);
+        if (isDragEnabled()) dragDropManager.attachRecyclerView(recyclerView);
         // set state delegate
         stateDelegate.setRecyclerView(recyclerView);
+    }
+
+    protected boolean isDragEnabled() {
+        return true;
+    }
+
+    protected boolean isSwipeEnabled() {
+        return true;
     }
 
     @Override
@@ -157,7 +175,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menuItemAdd = menu.findItem(R.id.action_quick);
-        setupQuickTypeInput(menuItemAdd);
+
+        if (menuItemAdd != null)
+            setupQuickTypeInput(menuItemAdd);
     }
 
     private void setupQuickTypeInput(MenuItem item) {
@@ -172,7 +192,7 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         quickInputEditText.setInputType(types);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
-            String s = v.getText().toString();
+            String s = v.getText().toString().trim();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
                 v.setText(null);
                 getPresenter().addToBucketList(s);
@@ -202,14 +222,20 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         });
     }
 
+    public void onEvent(BucketItemClickedEvent event) {
+        getPresenter().itemClicked(event.getBucketItem());
+    }
+
+    @Optional
     @OnClick(R.id.buttonNew)
     void onAdd() {
         menuItemAdd.expandActionView();
     }
 
+    @Optional
     @OnClick(R.id.buttonPopular)
     void onPopular() {
-        getPresenter().addPopular();
+        getPresenter().popularClicked();
     }
 
     @Override
@@ -219,10 +245,18 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
                 actionFilter();
                 break;
             case R.id.action_popular:
-                getPresenter().addPopular();
+                getPresenter().popularClicked();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void openPopular(Bundle args) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .args(args)
+                .move(Route.POPULAR_TAB_BUCKER);
     }
 
     private void actionFilter() {
@@ -253,12 +287,14 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
 
     @Override
     public void showDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.VISIBLE), 200l);
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
-    public void hideDetailsContainer() {
-        handler.postDelayed(() -> detailsContainer.setVisibility(View.GONE), 200l);
+    public void hideDetailContainer() {
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.GONE));
     }
 
     @Override
@@ -278,9 +314,9 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
     }
 
     @Override
-    protected BucketListPresenter createPresenter(Bundle savedInstanceState) {
+    protected T createPresenter(Bundle savedInstanceState) {
         BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        return new BucketListPresenter(type);
+        return (T) new BucketListPresenter(type, getObjectGraph());
     }
 
     @Override
@@ -306,4 +342,31 @@ public class BucketListFragment extends BaseFragment<BucketListPresenter>
         }
     }
 
+    public void openDetails(Bundle args) {
+        Route detailsRoute = getDetailsRoute();
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+
+            args.putBoolean(BucketDetailsFragment.EXTRA_SLAVE, true);
+
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .args(args)
+                    .attach(detailsRoute);
+            showDetailsContainer();
+        } else {
+            hideDetailContainer();
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .args(args)
+                    .move(detailsRoute);
+        }
+    }
+
+    public Route getDetailsRoute() {
+        return Route.DETAIL_BUCKET;
+    }
 }

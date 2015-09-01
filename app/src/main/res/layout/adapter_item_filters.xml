@@ -17,7 +17,7 @@
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="@string/filter_duration_header"
-            android:textColor="@color/myNavigationColor" />
+            android:textColor="@color/black" />
 
         <com.appyvet.rangebar.RangeBar
             android:id="@+id/rangeBarDay"
@@ -40,7 +40,7 @@
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
             android:text="0"
-            android:textColor="@color/myNavigationColor"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <TextView
@@ -50,7 +50,7 @@
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="9+"
-            android:textColor="@color/myNavigationColor"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
     </FrameLayout>
@@ -71,7 +71,7 @@
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="@string/filter_price_header"
-            android:textColor="@color/myNavigationColor" />
+            android:textColor="@color/black" />
 
         <com.appyvet.rangebar.RangeBar
             android:id="@+id/rangeBarPrice"
@@ -93,7 +93,7 @@
             android:paddingLeft="15dp"
             android:paddingTop="15dp"
             android:text="100"
-            android:textColor="@color/myNavigationColor"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <TextView
@@ -103,7 +103,7 @@
             android:paddingRight="15dp"
             android:paddingTop="15dp"
             android:text="500+"
-            android:textColor="@color/myNavigationColor"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
 

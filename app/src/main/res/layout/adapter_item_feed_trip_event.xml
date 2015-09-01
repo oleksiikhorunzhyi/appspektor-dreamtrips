@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:paddingLeft="@dimen/feed_spacing"
-             android:paddingRight="@dimen/feed_spacing"
-             android:background="@color/profile_feed_background"
+             android:layout_marginLeft="@dimen/feed_spacing"
+             android:layout_marginRight="@dimen/feed_spacing"
+             android:background="@color/gray_lighter"
     >
 
     <android.support.v7.widget.CardView
@@ -22,6 +22,7 @@
 
             <include layout="@layout/adapter_item_feed_trip_child"/>
 
+            <include layout="@layout/adapter_item_feed_footer"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>

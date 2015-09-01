@@ -6,6 +6,8 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPla
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -57,7 +60,9 @@ import dagger.Provides;
                 DownloadVideoListener.class,
                 PresentationVideosPresenter.class,
                 ComponentActivity.class,
-                ComponentPresenter.class
+                ComponentPresenter.class,
+                CopyFileCommand.class
+
         },
         complete = false,
         library = true
@@ -72,6 +77,8 @@ public class CommonModule {
     @Provides
     ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
         List<String> activeComponents = new ArrayList<>();
+
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
 
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 

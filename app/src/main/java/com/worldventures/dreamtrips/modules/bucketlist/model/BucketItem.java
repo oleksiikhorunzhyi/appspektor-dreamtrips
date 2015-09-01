@@ -1,69 +1,35 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import android.content.Context;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.google.gson.annotations.SerializedName;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@DefaultSerializer(TaggedFieldSerializer.class)
-public class BucketItem extends BaseEntity implements IFeedObject {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class BucketItem extends BaseFeedObject implements IFeedObject, Serializable {
 
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";
 
-    @TaggedFieldSerializer.Tag(1)
     private String name;
-
-    @TaggedFieldSerializer.Tag(2)
     private String status = NEW;
-
-    @TaggedFieldSerializer.Tag(3)
-    @SerializedName("target_date")
     private Date targetDate;
-
-    @TaggedFieldSerializer.Tag(4)
-    @SerializedName("completion_date")
     private Date completionDate;
-
-    @TaggedFieldSerializer.Tag(5)
     private String type;
-
-    @TaggedFieldSerializer.Tag(6)
     private String description;
-
-    @TaggedFieldSerializer.Tag(7)
     private List<BucketTag> tags;
-
-    @TaggedFieldSerializer.Tag(8)
-    @SerializedName("category")
-    private CategoryItem categoryItem;
-
-    @TaggedFieldSerializer.Tag(9)
+    private CategoryItem category;
     private List<String> friends;
-
-    @TaggedFieldSerializer.Tag(11)
     private List<BucketPhoto> photos = Collections.emptyList();
-
-    @TaggedFieldSerializer.Tag(12)
-    @SerializedName("cover_photo")
     private BucketPhoto coverPhoto;
-
-    @TaggedFieldSerializer.Tag(13)
     private BucketLocation location;
-
-    @TaggedFieldSerializer.Tag(14)
     private String link;
-
-    @TaggedFieldSerializer.Tag(15)
     private DiningItem dining;
 
     private transient boolean selected;
@@ -129,7 +95,7 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     }
 
     public CategoryItem getCategory() {
-        return categoryItem;
+        return category;
     }
 
     public DiningItem getDining() {
@@ -137,8 +103,8 @@ public class BucketItem extends BaseEntity implements IFeedObject {
     }
 
     public String getCategoryName() {
-        if (categoryItem != null) {
-            return categoryItem.getName();
+        if (category != null) {
+            return category.getName();
         } else {
             return "";
         }
@@ -176,30 +142,10 @@ public class BucketItem extends BaseEntity implements IFeedObject {
 
     public String getBucketTags() {
         if (tags != null) {
-            return Queryable.from(tags).joinStrings(", ", (element) -> element.getName());
+            return Queryable.from(tags).joinStrings(", ", BucketTag::getName);
         } else {
             return "";
         }
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        BucketItem that = (BucketItem) o;
-        return that.id == id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public String place() {
-        return BucketItemInfoUtil.getPlace(this);
-    }
 }

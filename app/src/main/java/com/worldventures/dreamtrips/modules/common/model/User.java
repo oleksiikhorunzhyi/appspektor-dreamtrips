@@ -1,41 +1,33 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
 
-    public static final String RBS_SUBSCTIPTION = "RBS";
-    public static final String DTM_SUBSCTIPTION = "DTM";
-    public static final String DTS_SUBSCTIPTION = "DTS";
-    public static final String DTG_SUBSCTIPTION = "DTG";
-    public static final String DTP_SUBSCRIPTION = "DTP";
-
-    public static final String RELATION_NONE = "none";
-    public static final String RELATION_FRIEND = "friend";
-    public static final String RELATION_INCOMING_REQUEST = "incoming_request";
-    public static final String RELATION_OUTGOING_REQUEST = "outgoing_request";
-    public static final String RELATION_REJECT = "rejected";
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
+    public static final String RBS_SUBSCTIPTION = "RBS"; //rep
+    public static final String DTM_SUBSCTIPTION = "DTM"; //member
+    public static final String DTS_SUBSCTIPTION = "DTS"; //standard
+    public static final String DTG_SUBSCTIPTION = "DTG"; //gold
+    public static final String DTP_SUBSCRIPTION = "DTP"; //platinum
 
     private String username;
     private String email;
+    private String company;
     private Avatar avatar;
     private String firstName;
     private String lastName;
@@ -48,7 +40,7 @@ public class User extends BaseEntity implements Parcelable {
     private int tripImagesCount;
     private int bucketListItemsCount;
 
-    private String relationship;
+    private Relationship relationship;
 
     @SerializedName("background_photo_url")
     private String backgroundPhotoUrl;
@@ -65,23 +57,45 @@ public class User extends BaseEntity implements Parcelable {
     //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
     private boolean socialEnabled;
 
+
+    @SerializedName("circle_ids")
+    HashSet<String> circleIds;
+
+    @SerializedName("mutual_friends")
+    int mutualFriends;
+
+    private transient String circles;
+    private transient boolean avatarUploadInProgress;
+    private transient boolean coverUploadInProgress;
+
     public User() {
     }
 
-    private User(Parcel in) {
-        this.username = in.readString();
-        this.email = in.readString();
-        this.firstName = in.readString();
-        this.lastName = in.readString();
-        long tmpBirthDate = in.readLong();
-        this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
-        this.location = in.readString();
-        this.avatar = in.readParcelable(Avatar.class.getClassLoader());
-        this.backgroundPhotoUrl = in.readString();
-        this.id = in.readInt();
-        this.enrollDate = (Date) in.readSerializable();
-        this.relationship = in.readString();
-        this.socialEnabled = in.readInt() != 0;
+    public int getMutualFriends() {
+        return mutualFriends;
+    }
+
+    public void setCircles(List<Circle> circles) {
+        List<String> userCircles = new ArrayList<>();
+
+        for (String s : circleIds) {
+            for (Circle circle : circles) {
+                if (circle.getId() != null && circle.getId().equals(s)) {
+                    userCircles.add(circle.getName());
+                    break;
+                }
+            }
+        }
+
+        this.circles = TextUtils.join(", ", userCircles);
+    }
+
+    public String getCircles() {
+        return circles;
+    }
+
+    public HashSet<String> getCircleIds() {
+        return circleIds;
     }
 
     public String getBackgroundPhotoUrl() {
@@ -121,6 +135,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getCompany() {
+        return company;
     }
 
     public Date getBirthDate() {
@@ -199,55 +217,27 @@ public class User extends BaseEntity implements Parcelable {
         return false;
     }
 
-    public String getRelationship() {
+    public Spanned getUsernameWithCompany(Context context) {
+        String userWithCompany = !TextUtils.isEmpty(getCompany())
+                ? context.getString(R.string.user_name_with_company, getFullName(), getCompany())
+                : context.getString(R.string.user_name, getFullName());
+        return Html.fromHtml(userWithCompany);
+    }
+
+    public Relationship getRelationship() {
         return relationship;
     }
 
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
+    }
+
     public void unfriend() {
-        relationship = RELATION_NONE;
+        relationship = Relationship.NONE;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.username);
-        dest.writeString(this.email);
-        dest.writeString(this.firstName);
-        dest.writeString(this.lastName);
-        dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
-        dest.writeString(this.location);
-        dest.writeParcelable(this.avatar, flags);
-        dest.writeString(this.backgroundPhotoUrl);
-        dest.writeInt(this.id);
-        dest.writeSerializable(enrollDate);
-        dest.writeString(this.relationship);
-        dest.writeInt(socialEnabled ? 1 : 0);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        User user = (User) o;
-
-        return !(firstName != null ? !firstName.equals(user.firstName) : user.firstName != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        return result;
-    }
-
-    public static class Avatar implements Parcelable, IFeedObject {
+    public static class Avatar implements Parcelable, Serializable {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
             public Avatar createFromParcel(Parcel source) {
                 return new Avatar(source);
@@ -294,7 +284,6 @@ public class User extends BaseEntity implements Parcelable {
             this.thumb = thumb;
         }
 
-
         @Override
         public int describeContents() {
             return 0;
@@ -307,9 +296,97 @@ public class User extends BaseEntity implements Parcelable {
             dest.writeString(this.thumb);
         }
 
-        @Override
-        public String place() {
-            return "";
-        }
     }
+
+
+    public void setAvatarUploadInProgress(boolean avatarUploadInProgress) {
+        this.avatarUploadInProgress = avatarUploadInProgress;
+    }
+
+    public void setCoverUploadInProgress(boolean coverUploadInProgress) {
+        this.coverUploadInProgress = coverUploadInProgress;
+    }
+
+    public boolean isAvatarUploadInProgress() {
+        return avatarUploadInProgress;
+    }
+
+    public boolean isCoverUploadInProgress() {
+        return coverUploadInProgress;
+    }
+
+    public enum Relationship {
+        @SerializedName("none")NONE,
+        @SerializedName("friend")FRIEND,
+        @SerializedName("incoming_request")INCOMING_REQUEST,
+        @SerializedName("outgoing_request")OUTGOING_REQUEST,
+        @SerializedName("rejected")REJECT
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.username);
+        dest.writeString(this.email);
+        dest.writeParcelable(this.avatar, 0);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.company);
+        dest.writeString(this.location);
+        dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
+        dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
+        dest.writeDouble(this.dreamTripsPoints);
+        dest.writeDouble(this.roviaBucks);
+        dest.writeInt(this.tripImagesCount);
+        dest.writeInt(this.bucketListItemsCount);
+        dest.writeInt(this.relationship == null ? -1 : this.relationship.ordinal());
+        dest.writeString(this.backgroundPhotoUrl);
+        dest.writeStringList(this.subscriptions);
+        dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.circleIds);
+        dest.writeInt(this.mutualFriends);
+        dest.writeString(this.circles);
+    }
+
+    protected User(Parcel in) {
+        super(in);
+        this.username = in.readString();
+        this.email = in.readString();
+        this.avatar = in.readParcelable(Avatar.class.getClassLoader());
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.company = in.readString();
+        this.location = in.readString();
+        long tmpBirthDate = in.readLong();
+        this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
+        long tmpEnrollDate = in.readLong();
+        this.enrollDate = tmpEnrollDate == -1 ? null : new Date(tmpEnrollDate);
+        this.dreamTripsPoints = in.readDouble();
+        this.roviaBucks = in.readDouble();
+        this.tripImagesCount = in.readInt();
+        this.bucketListItemsCount = in.readInt();
+        int tmpRelationship = in.readInt();
+        this.relationship = tmpRelationship == -1 ? null : Relationship.values()[tmpRelationship];
+        this.backgroundPhotoUrl = in.readString();
+        this.subscriptions = in.createStringArrayList();
+        this.socialEnabled = in.readByte() != 0;
+        this.circleIds = (HashSet<String>) in.readSerializable();
+        this.mutualFriends = in.readInt();
+        this.circles = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

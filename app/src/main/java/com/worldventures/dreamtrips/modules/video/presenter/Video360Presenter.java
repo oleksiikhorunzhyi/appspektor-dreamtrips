@@ -10,13 +10,16 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,7 +43,6 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
         TrackingHelper.video360(getAccountUserId());
     }
 
@@ -49,6 +51,14 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         super.onResume();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
+        }
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.unregister(videoCachingDelegate);
         }
     }
 
@@ -70,9 +80,9 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         if (featuredVideos != null) {
             if (view != null && view.getAllAdapter() != null) {
                 view.getAllAdapter().clear();
-                view.getAllAdapter().addItem(context.getString(R.string.featured_header));
+                view.getAllAdapter().addItem(new VideoHeader(context.getString(R.string.featured_header)));
                 view.getAllAdapter().addItems(featuredVideos);
-                view.getAllAdapter().addItem(context.getString(R.string.recent_header));
+                view.getAllAdapter().addItem(new VideoHeader(context.getString(R.string.recent_header)));
                 view.getAllAdapter().addItems(recentVideos);
             }
         } else {
@@ -89,20 +99,20 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        eventBus.unregister(videoCachingDelegate);
-    }
-
     private void loadVideos() {
         MemberVideosRequest memberVideosRequest = new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
         doRequest(memberVideosRequest, this::onSuccess);
     }
 
-    private void onSuccess(List<Video> videos) {
-        recentVideos = Queryable.from(videos).filter(Video::isRecent).toList();
-        featuredVideos = Queryable.from(videos).filter(Video::isFeatured).toList();
+    private void onSuccess(List<Category> categories) {
+        recentVideos = new ArrayList<>();
+        featuredVideos = new ArrayList<>();
+
+        Queryable.from(categories).forEachR(cat -> {
+            recentVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isRecent).toList());
+            featuredVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isFeatured).toList());
+        });
+
         attachCacheToVideos(recentVideos);
         attachCacheToVideos(featuredVideos);
         attachListeners(recentVideos);
@@ -120,7 +130,7 @@ public class Video360Presenter extends Presenter<Video360Presenter.View> {
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    mediaSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
+                    videoDownloadSpiceManager.addListenerIfPending(InputStream.class, cachedVideo.getUuid(),
                             listener
                     );
                 }

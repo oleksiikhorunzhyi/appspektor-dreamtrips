@@ -273,12 +273,12 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * Used to reverse item traversal and layout order.
      * This behaves similar to the layout change for RTL views. When set to true, first item is
      * rendered at the end of the UI, second item is render before it etc.
-     * <p/>
+     * <p>
      * For horizontal layouts, it depends on the layout direction.
      * When set to true, If {@link android.support.v7.widget.RecyclerView} is LTR, than it will
      * render from RTL, if {@link android.support.v7.widget.RecyclerView}} is RTL, it will render
      * from LTR.
-     * <p/>
+     * <p>
      * If you are looking for the exact same behavior of
      * {@link android.widget.AbsListView#setStackFromBottom(boolean)}, use
      * {@link #setStackFromEnd(boolean)}
@@ -834,9 +834,9 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
         }
         final int scrolled = absDy > consumed ? layoutDirection * consumed : dy;
         mOrientationHelper.offsetChildren(-scrolled);
-        if (DEBUG) {
-            Log.d(TAG, "scroll req: " + dy + " scrolled: " + scrolled);
-        }
+        // if (DEBUG) {
+        //     Log.d(TAG, "scroll req: " + dy + " scrolled: " + scrolled);
+        // }
         return scrolled;
     }
 
@@ -1130,13 +1130,13 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
 
     /**
      * Returns the adapter position of the first visible view.
-     * <p/>
+     * <p>
      * Note that, this value is not affected by layout orientation or item order traversal.
      * ({@link #setReverseLayout(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
-     * <p/>
+     * <p>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
-     * <p/>
+     * <p>
      * LinearLayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
@@ -1151,7 +1151,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
 
     /**
      * Returns the adapter position of the first fully visible view.
-     * <p/>
+     * <p>
      * Note that bounds check is only performed in the current orientation. That means, if
      * LinearLayoutManager is horizontal, it will only check the view's left and right edges.
      *
@@ -1166,13 +1166,13 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
 
     /**
      * Returns the adapter position of the last visible view.
-     * <p/>
+     * <p>
      * Note that, this value is not affected by layout orientation or item order traversal.
      * ({@link #setReverseLayout(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
-     * <p/>
+     * <p>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
-     * <p/>
+     * <p>
      * LinearLayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
@@ -1187,7 +1187,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
 
     /**
      * Returns the adapter position of the last fully visible view.
-     * <p/>
+     * <p>
      * Note that bounds check is only performed in the current orientation. That means, if
      * LinearLayoutManager is horizontal, it will only check the view's left and right edges.
      *
@@ -1276,14 +1276,13 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * Used for debugging.
      * Validates that child views are laid out in correct order. This is important because rest of
      * the algorithm relies on this constraint.
-     * <p/>
+     * <p>
      * In default layout, child 0 should be closest to screen position 0 and last child should be
      * closest to position WIDTH or HEIGHT.
      * In reverse layout, last child should be closes to screen position 0 and first child should
      * be closest to position WIDTH  or HEIGHT
      */
     private void validateChildOrder() {
-        Log.d(TAG, "validating child count " + getChildCount());
         if (getChildCount() < 1) {
             return;
         }
@@ -1418,7 +1417,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
 
         /**
          * Returns next item from limited list.
-         * <p/>
+         * <p>
          * Upon finding a valid VH, sets current item position to VH.itemPosition + mItemDirection
          *
          * @return View if an item in the current position or direction exists if not null.

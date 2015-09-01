@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
+import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -19,9 +20,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.view.dialog.PickImageDialog;
-
-import org.apache.commons.io.FileUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,13 +55,12 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     }
 
     private void clearTempDirectory() {
-        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDialog.FOLDERNAME));
-        if (!directory.exists()) {
-            try {
-                FileUtils.deleteDirectory(directory);
-            } catch (IOException e) {
-                Timber.e(e, "Problem with remove temp image directory");
-            }
+        snappyRepository.removeAllUploadTasks();
+        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+        try {
+            FileUtils.cleanDirectory(context, directory);
+        } catch (IOException e) {
+            Timber.e(e, "Problem with remove temp image directory");
         }
     }
 

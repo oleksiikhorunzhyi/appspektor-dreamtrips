@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.text.Spanned;
+
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -22,11 +24,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     protected Type type;
     protected T photo;
 
-    public static FullScreenPresenter create(IFullScreenObject photo) {
+    public static FullScreenPresenter create(IFullScreenObject photo, boolean foreign) {
         if (photo instanceof Photo) {
             return new InteractiveFullscreenPresenter();
         } else if (photo instanceof BucketPhoto) {
-            return new BucketFullscreenPresenter();
+            return new BucketFullscreenPresenter(foreign);
         }
         return new SimpleFullscreenPresenter();
     }
@@ -62,12 +64,17 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     }
 
     public final void setupActualViewState() {
-        view.setTitle(photo.getFSTitle());
+        if (photo instanceof Photo && photo.getUser() != null) {
+            view.setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
+        } else {
+            view.setTitle(photo.getFSTitle());
+        }
         view.setLiked(isLiked());
         view.setLikeVisibility(isLikeVisible());
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
         view.setFlagVisibility(isFlagVisible());
+        view.setCommentVisibility(isCommentVisible());
         view.loadImage(photo.getFSImage());
         view.setDescription(photo.getFsDescription());
         view.setCommentCount(photo.getFsCommentCount());
@@ -75,7 +82,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
-
+        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() ||
+                isDeleteVisible() || isFlagVisible() || isCommentVisible());
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
         }
@@ -88,9 +96,14 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected abstract boolean isLikeVisible();
 
+    protected boolean isCommentVisible() {
+        return false;
+    }
+
     protected boolean isLiked() {
         return false;
     }
+
 
     private boolean isLikeCountVisible() {
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
@@ -119,8 +132,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onCheckboxPressed(boolean status) {
     }
 
+
     public interface View extends Presenter.View {
         void setTitle(String title);
+
+        void setTitleSpanned(Spanned titleSpanned);
 
         void showCheckbox(boolean status);
 
@@ -163,5 +179,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void showCoverProgress();
 
         void hideCoverProgress();
+
+        void setContentDividerVisibility(boolean b);
+
+        void setCommentVisibility(boolean commentVisible);
     }
 }

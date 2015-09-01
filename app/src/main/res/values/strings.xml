@@ -167,10 +167,10 @@
     <string name="training_videos">Training Videos</string>
     <string name="error_while_sync">Something went wrong</string>
     <string name="can_not_like_photo">Can\'t like photo</string>
-    <string name="likes">" Likes"</string>
-    <string name="comments">" Comments"</string>
+    <string name="likes">%d Likes</string>
+    <string name="comments">%d Comments</string>
     <string name="wrong_image">Wrong image</string>
-    <string name="could_not_load">"Could not load "</string>
+    <string name="could_not_load">Could not load </string>
     <string name="someday">Someday</string>
     <string name="who">Who: </string>
     <string name="tags">Tags: </string>
@@ -219,7 +219,7 @@
     <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
     <string name="fail">Failure</string>
     <string name="cancel_cached_video_title">Video</string>
-    <string name="cancel_cached_video_text">Are you sure want to cancel file download?</string>
+    <string name="cancel_cached_video_text">Are you sure you want to cancel file download?</string>
     <string name="cancel_photo_positiove">Yes</string>
     <string name="cancel_photo_negative">No</string>
     <string name="presentations">Videos</string>
@@ -278,7 +278,7 @@
     <string name="profile_golden">Gold member</string>
     <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
-    <string name="bucket_delete_dialog">Are you sure want to delete this bucket list item?</string>
+    <string name="bucket_delete_dialog">Are you sure you want to delete this bucket list item?</string>
 
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
@@ -314,15 +314,67 @@
     <string name="bucket_current_cover">Current cover</string>
     <string name="bucket_item_edit_completed">Mark as done!</string>
     <string name="reload_feed">Reload feed</string>
-    <string name="feed_header" formatted="false">%s %s %s</string>
-    <string name="added">added</string>
-    <string name="booked">booked</string>
-    <string name="shared">shared</string>
-    <string name="updated">updated</string>
-    <string name="liked">liked</string>
+    <string name="feed_header" formatted="false">&lt;b>%s&lt;/b> %s &lt;b>%s&lt;/b></string>
+    <string name="added">added a</string>
+    <string name="booked">booked a</string>
+    <string name="shared">shared a</string>
+    <string name="updated">updated a</string>
+    <string name="liked">liked a</string>
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
     <string name="feed_bucket">Bucket Item</string>
     <string name="coming_soon">Coming soon</string>
     <string name="loading">Loading…</string>
+    <string name="filter_video_title_language">Choose language</string>
+    <string name="filter_video_title_country">Choose country</string>
+    <string name="comments_title">Comments</string>
+    <string name="comment_add_hint">Add a comment</string>
+    <string name="comment_post_btn_title">Post</string>
+    <string name="comment_view_more">View more comments</string>
+    <string name="comment_edit">Edit comment</string>
+    <string name="save">Save</string>
+    <string name="comment_delete">Delete comment</string>
+    <string name="comment_delete_caption">Are you sure you want to delete this comment?</string>
+    <string name="comment_delete_confirm">Yes, delete it!</string>
+    <string name="post_visibility_public">Public</string>
+    <string name="post_hint">What are you up to?</string>
+    <string name="photo_hint">Say something about photo…</string>
+    <string name="post">Post</string>
+
+    /////////Date time relative strings
+    <string name="just_now">Just now</string>
+    <string name="days_ago">%d days ago</string>
+    <string name="hours_ago">%d hours ago</string>
+    <string name="minutes_ago">%d minutes ago</string>
+    <string name="months_ago">%d months ago</string>
+    <string name="weeks_ago">%d weeks ago</string>
+    <string name="seconds_ago">%d seconds ago</string>
+    <string name="minute_ago">A minute ago</string>
+    <string name="hour_ago">An hour ago</string>
+    <string name="last_month">Last month</string>
+    <string name="last_week">Last week</string>
+    <string name="last_year">Last year</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="year_ago">1 year ago</string>
+    <string name="month_ago">1 month ago</string>
+    <string name="week_ago">1 week ago</string>
+    <string name="day_ago">1 day ago</string>
+
+
+    <string name="social_remove_and_block_friend_title">Unfriend and block</string>
+    <string name="social_friend_preference_title">Edit friend preferences</string>
+    <string name="friend_pref_create_new_list">Create new list</string>
+    <string name="friend_pref_lists_title">Lists</string>
+    <string name="friend_pref_lists_header">Friend Preferences</string>
+    <string name="social_unfriend_confirmation_title">Are you sure you want to delete user from friends?</string>
+    <string name="social_unfriend_confiramation_accept">Yes</string>
+    <string name="social_unfriend_confiramation_cancel">No</string>
+    <string name="feed_title">Activity Feed</string>
+    <string name="post_cancel_message">Are you sure you want to discard changes?</string>
+    <string name="pictures">Pictures</string>
+    <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
+
+    <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
+    <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
+
 </resources>

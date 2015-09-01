@@ -1,20 +1,23 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoUploadTask;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -37,11 +40,13 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
+    public static final String FOREIGN_BUCKET_LIST = "foreign_bucket_list";
     public static final String TRIP_KEY = "trip_rezopia_v2";
-    public static final String IMAGE_UPLOAD_TASK_KEY = "image_upload_task_key";
-    public static final String BUCKET_PHOTO_UPLOAD_TASK_KEY = "bucket_photo_upload_task_key";
+    public static final String POST = "post";
+    public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
+    public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
@@ -140,11 +145,40 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveBucketList(List<BucketItem> items, String type) {
-        putList(BUCKET_LIST + ":" + type, items);
+        saveBucketList(items, type, 0);
+    }
+
+    public void saveBucketList(List<BucketItem> items, String type, int userId) {
+        String key = getBucketKey(type, userId);
+        putList(key, items);
+    }
+
+
+    public void deleteAllForeignBucketList() {
+        act(db -> {
+            String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
+            for (String key : keys) {
+                db.del(key);
+            }
+        });
+    }
+
+
+    @NonNull
+    private String getBucketKey(String type, int userId) {
+        String key = (userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST) + ":" + type;
+        if (userId != 0) {
+            key += "_" + userId;
+        }
+        return key;
     }
 
     public List<BucketItem> readBucketList(String type) {
-        List<BucketItem> list = readList(BUCKET_LIST + ":" + type, BucketItem.class);
+        return readBucketList(type, 0);
+    }
+
+    public List<BucketItem> readBucketList(String type, int userId) {
+        List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) return 0;
             else if (lhs.isDone() && !rhs.isDone()) return 1;
@@ -160,6 +194,29 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // POST
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void savePost(CachedPostEntity post) {
+        act(db -> db.put(POST, post));
+    }
+
+    public boolean hasPost() {
+        return actWithResult(db -> {
+            String[] keys = db.findKeys(POST);
+            return keys != null && keys.length > 0;
+        }).or(false);
+    }
+
+    public CachedPostEntity getPost() {
+        return actWithResult(db -> db.get(POST, CachedPostEntity.class)).orNull();
+    }
+
+    public void removePost() {
+        act(db -> db.del(POST));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -219,55 +276,50 @@ public class SnappyRepository {
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveUploadImageTask(ImageUploadTask ut) {
-        act(db -> db.put(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId(), ut));
+    public void saveUploadTask(UploadTask uploadTask) {
+        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
     }
 
-    public void removeImageUploadTask(ImageUploadTask ut) {
-        act(db -> db.del(IMAGE_UPLOAD_TASK_KEY + ut.getTaskId()));
+    public UploadTask getUploadTask(String filePath) {
+        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + filePath, UploadTask.class)).orNull();
     }
 
-    public List<ImageUploadTask> getAllImageUploadTask() {
+    public void removeUploadTask(UploadTask uploadTask) {
+        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getFilePath()));
+    }
+
+    public void removeAllUploadTasks() {
+        act(db -> Queryable.from(db.findKeys(UPLOAD_TASK_KEY)).forEachR(key -> {
+            try {
+                db.del(key);
+            } catch (SnappydbException e) {
+                Timber.e(e, "Error while deleting");
+            }
+        }));
+    }
+
+    public List<UploadTask> getUploadTasksForId(String linkedId) {
+        List<UploadTask> items = getAllUploadTask();
+        return Queryable.from(items)
+                .filter(item -> linkedId.equals(item.getLinkedItemId()))
+                .toList();
+    }
+
+    public List<UploadTask> getAllUploadTask() {
         return actWithResult(db -> {
-            List<ImageUploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(IMAGE_UPLOAD_TASK_KEY);
+            List<UploadTask> tasks = new ArrayList<>();
+            String[] keys = db.findKeys(UPLOAD_TASK_KEY);
             for (String key : keys) {
-                tasks.add(db.get(key, ImageUploadTask.class));
+                tasks.add(db.get(key, UploadTask.class));
             }
             return tasks;
         }).or(Collections.emptyList());
     }
 
-    public List<BucketPhotoUploadTask> getBucketPhotoTasksBy(int bucketId) {
-        return actWithResult(db -> {
-            List<BucketPhotoUploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY);
-            for (String key : keys) {
-                BucketPhotoUploadTask task = db.get(key, BucketPhotoUploadTask.class);
-                if (task.getBucketId() == bucketId) {
-                    tasks.add(task);
-                }
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Photo Tasks
+    // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
-
-    public void saveBucketPhotoTask(BucketPhotoUploadTask task) {
-        act(db -> db.put(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId(), task));
-    }
-
-    public void removeBucketPhotoTask(BucketPhotoUploadTask task) {
-        act(db -> db.del(BUCKET_PHOTO_UPLOAD_TASK_KEY + task.getTaskId()));
-    }
-
-    public Boolean containsBucketPhotoUploadTask() {
-        return actWithResult(db -> db.findKeys(BUCKET_PHOTO_UPLOAD_TASK_KEY).length > 0)
-                .or(false);
-    }
 
     public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type, items);
@@ -298,11 +350,20 @@ public class SnappyRepository {
     }
 
     public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
-        act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
+        act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
     }
 
     public VideoLocale getLastSelectedVideoLocale() {
-        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLocale.class))
+        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LOCALE, VideoLocale.class))
+                .orNull();
+    }
+
+    public void saveLastSelectedVideoLanguage(VideoLanguage videoLocale) {
+        act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
+    }
+
+    public VideoLanguage getLastSelectedVideoLanguage() {
+        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLanguage.class))
                 .orNull();
     }
 

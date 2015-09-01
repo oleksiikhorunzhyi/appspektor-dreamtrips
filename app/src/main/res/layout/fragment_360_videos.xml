@@ -24,6 +24,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/featured_header"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+
             <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
                 android:id="@+id/recyclerViewFeatured"
                 android:layout_width="match_parent"

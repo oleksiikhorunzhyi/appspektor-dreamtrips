@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhoto
 @Layout(R.layout.activity_fb)
 public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPickPhotoPresenter> implements FacebookPickPhotoPresenter.View {
     public static final String RESULT_PHOTO = "RESULT_PHOTO";
-    public static final int REQUEST_CODE_PICK_FB_PHOTO = 123;
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = (session, state, exception) -> {
         // nothing to do here
@@ -27,7 +26,6 @@ public class FacebookPickPhotoActivity extends ActivityWithPresenter<FacebookPic
         super.onCreate(savedInstanceState);
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
-        getPresentationModel().create();
     }
 
     @Override

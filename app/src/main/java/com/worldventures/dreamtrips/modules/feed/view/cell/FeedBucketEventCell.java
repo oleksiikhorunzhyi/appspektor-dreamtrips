@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -10,12 +11,23 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -42,6 +54,19 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @InjectView(R.id.textViewTags)
     TextView textViewTags;
 
+    @InjectView(R.id.bucket_tags_container)
+    View bucketTags;
+    @InjectView(R.id.bucket_who_container)
+    View bucketWho;
+
+    @Inject
+    ActivityRouter activityRouter;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    BucketItemManager bucketItemManager;
+
+
     public FeedBucketEventCell(View view) {
         super(view);
     }
@@ -58,7 +83,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        BucketItem bucketItem = getModelObject().getEntities()[0];
+        BucketItem bucketItem = getModelObject().getItem();
         String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);
         String big = BucketItemInfoUtil.getHighResUrl(itemView.getContext(), bucketItem);
         loadImage(small, big);
@@ -77,8 +102,43 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
         }
 
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
-        textViewFriends.setText(bucketItem.getFriends());
-        textViewTags.setText(bucketItem.getBucketTags());
+
+        if (!TextUtils.isEmpty(bucketItem.getFriends())) {
+            bucketWho.setVisibility(View.VISIBLE);
+            textViewFriends.setText(bucketItem.getFriends());
+        } else
+            bucketWho.setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(bucketItem.getBucketTags())) {
+            bucketTags.setVisibility(View.VISIBLE);
+            textViewTags.setText(bucketItem.getBucketTags());
+        } else
+            bucketTags.setVisibility(View.GONE);
+
+
+        itemView.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
+            args.putSerializable(BucketListModule.EXTRA_TYPE, bucketType);
+            args.putString(BucketListModule.EXTRA_ITEM_ID, getModelObject().getItem().getUid());
+
+            User user = getModelObject().getItem().getUser();
+            Route route;
+
+            if (appSessionHolder.get().get().getUser().equals(user)) {
+                bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+                route = Route.DETAIL_BUCKET;
+            } else {
+                args.putSerializable(BucketListModule.EXTRA_ITEM, getModelObject().getItem());
+                route = Route.DETAIL_FOREIGN_BUCKET;
+            }
+
+            NavigationBuilder.create()
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .args(args)
+                    .with(activityRouter)
+                    .attach(route);
+        });
     }
 
 

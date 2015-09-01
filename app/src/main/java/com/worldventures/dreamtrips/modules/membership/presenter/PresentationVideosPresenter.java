@@ -1,22 +1,20 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.SpiceRequest;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.io.InputStream;
@@ -37,58 +35,23 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @Inject
     protected VideoCachingDelegate videoCachingDelegate;
 
-    protected DreamSpiceAdapterController<Video> adapterController = new DreamSpiceAdapterController<Video>() {
-        @Override
-        public SpiceRequest<ArrayList<Video>> getReloadRequest() {
-            return getMemberVideosRequest();
-        }
-
-        @Override
-        protected void onRefresh(ArrayList<Video> videos) {
-            super.onRefresh(attachCacheToVideos(videos));
-        }
-
-        @Override
-        public void onStart(LoadType loadType) {
-            view.startLoading();
-        }
-
-        @Override
-        public void onFinish(LoadType type, List<Video> items, SpiceException spiceException) {
-            if (adapterController != null) {
-                view.finishLoading();
-                view.setHeader();
-                attachListeners(items);
-                if (spiceException != null) {
-                    handleError(spiceException);
-                }
-            }
-        }
-    };
+    protected List<Object> currentItems;
 
     protected MemberVideosRequest getMemberVideosRequest() {
         return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
     }
 
     @Override
-    public void onInjected() {
-        adapterController.setSpiceManager(dreamSpiceManager);
-    }
-
-    @Override
     public void takeView(T view) {
         super.takeView(view);
         videoCachingDelegate.setView(this.view);
-        videoCachingDelegate.setSpiceManager(mediaSpiceManager);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (view.getAdapter().getCount() == 0) {
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
-        }
+        view.startLoading();
+        loadVideos();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
         }
@@ -96,19 +59,11 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
     @Override
     public void onPause() {
-        eventBus.unregister(videoCachingDelegate);
+        super.onPause();
+        if (eventBus.isRegistered(videoCachingDelegate)) {
+            eventBus.unregister(videoCachingDelegate);
+        }
     }
-
-    @Override
-    public void dropView() {
-        adapterController.setAdapter(null);
-        super.dropView();
-    }
-
-    public DreamSpiceAdapterController<Video> getAdapterController() {
-        return adapterController;
-    }
-
 
     public void onDeleteAction(CachedEntity videoEntity) {
         videoCachingDelegate.onDeleteAction(videoEntity);
@@ -121,20 +76,43 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
     }
 
-
-    private ArrayList<Video> attachCacheToVideos(ArrayList<Video> videos) {
-        if (videos != null) {
-            for (Video object : videos) {
-                CachedEntity e = db.getDownloadVideoEntity(object.getUid());
-                object.setCacheEntity(e);
-            }
-        }
-        return videos;
+    public void reload() {
+        loadVideos();
     }
 
-    private void attachListeners(List<Video> items) {
-        if (items != null) {
-            for (Video item : items) {
+    private void loadVideos() {
+        doRequest(getMemberVideosRequest(), categories -> {
+            view.finishLoading();
+            attachCacheToVideos(categories);
+            addCategories(categories);
+            attachListeners(categories);
+        }, spiceException -> view.finishLoading());
+    }
+
+    private void attachCacheToVideos(List<Category> categories) {
+        Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
+            CachedEntity e = db.getDownloadVideoEntity(video.getUid());
+            video.setCacheEntity(e);
+        }));
+
+    }
+
+    protected void addCategories(List<Category> categories) {
+        currentItems = new ArrayList<>();
+        Queryable.from(categories).forEachR(category -> addCategoryHeader(category.getCategory(),
+                category.getVideos(), categories.indexOf(category)));
+        view.getAdapter().clear();
+        view.getAdapter().addItems(currentItems);
+    }
+
+    protected void addCategoryHeader(String category, List<Video> videos, int categoryIndex) {
+        currentItems.add(new VideoHeader(category));
+        currentItems.addAll(videos);
+    }
+
+    private void attachListeners(List<Category> categories) {
+        Queryable.from(categories).forEachR((cat) -> {
+            Queryable.from(cat.getVideos()).forEachR(items -> Queryable.from(items).forEachR(item -> {
                 CachedEntity cachedVideo = item.getCacheEntity();
                 boolean failed = cachedVideo.isFailed();
                 boolean inProgress = cachedVideo.getProgress() > 0;
@@ -142,14 +120,14 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 if (!failed && inProgress && !cached) {
                     DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
                     injector.inject(listener);
-                    mediaSpiceManager.addListenerIfPending(
+                    videoDownloadSpiceManager.addListenerIfPending(
                             InputStream.class,
                             cachedVideo.getUuid(),
                             listener
                     );
                 }
-            }
-        }
+            }));
+        });
     }
 
     public void onEvent(TrackVideoStatusEvent event) {
@@ -168,8 +146,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
         void finishLoading();
 
-        void setHeader();
-
-        BaseArrayListAdapter<Video> getAdapter();
+        BaseArrayListAdapter<Object> getAdapter();
     }
 }

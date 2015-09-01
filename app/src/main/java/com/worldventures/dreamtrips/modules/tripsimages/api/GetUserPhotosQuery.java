@@ -19,7 +19,7 @@ public class GetUserPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     @Override
     public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
-        ArrayList<Photo> photos = getService().getUserPhotos(perPage, page);
+        ArrayList<Photo> photos = getService().getUsersPhotos(perPage, page);
         ArrayList<IFullScreenObject> result = new ArrayList<>();
         result.addAll(photos);
         return result;

@@ -346,7 +346,7 @@ public class TrackingHelper {
         trackMemberAction(category, null, data);
     }
 
-    public static void bucketItemView(String type, int id) {
+    public static void bucketItemView(String type, String id) {
         Map<String, Object> data = new HashMap<>();
         data.put(ID, id);
         data.put("bl_type", type);

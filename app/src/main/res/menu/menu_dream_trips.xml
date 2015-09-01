@@ -5,19 +5,19 @@
     <item
         android:id="@+id/action_search"
         android:title="@string/action_filter"
-        android:icon="@drawable/ic_search_white_18dp"
+        android:icon="@drawable/ic_menu_search_white"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
 
     <item
         android:id="@+id/action_filter"
         android:title="@string/action_filter"
-        android:icon="@drawable/ic_filters"
+        android:icon="@drawable/ic_menu_trip_filters"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_map"
         android:title="@string/action_map"
-        android:icon="@drawable/ic_map"
+        android:icon="@drawable/ic_menu_trip_map"
         app:showAsAction="ifRoom" />
 
 </menu>

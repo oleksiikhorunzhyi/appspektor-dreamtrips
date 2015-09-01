@@ -102,14 +102,7 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
         lastSelectedPosition = position;
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.setSupportFragmentManager(view.getSupportFragmentManager());
-            fragmentCompass.replace(Route.SUCCESS_STORES_DETAILS, bundle);
-            eventBus.post(new SuccessStoryItemSelectedEvent(position));
-        } else {
-            activityRouter.openSuccessStoryDetails(successStory);
-        }
+        view.openStory(bundle);
     }
 
     private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
@@ -139,6 +132,8 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
         void startLoading();
 
         void onStoryClicked();
+
+        void openStory(Bundle bundle);
 
         FragmentManager getSupportFragmentManager();
     }

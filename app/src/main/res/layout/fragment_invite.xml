@@ -35,7 +35,7 @@
                         android:id="@+id/tv_search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_ss_search" />
+                        android:src="@drawable/ic_success_story_search" />
 
                 </FrameLayout>
 
@@ -65,7 +65,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="16dp"
                         android:nestedScrollingEnabled="false"
-                        android:src="@drawable/ic_ss_filters_normal"
+                        android:src="@drawable/ic_success_story_filters_normal"
                         tools:listitem="@android:layout/simple_spinner_item" />
 
                     <ImageView

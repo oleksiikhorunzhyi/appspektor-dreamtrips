@@ -21,25 +21,13 @@
         android:background="@drawable/bucket_item_shadow"/>
 
     <FrameLayout
+        android:id="@+id/top_shadow"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="top"
         android:background="@drawable/trip_item_shadow"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_actionbar"
-        style="@style/ToolBarStyle"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent"/>
 
-    <ImageView
-        android:id="@+id/imageViewPhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_photo_camera"
-        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="Surf in Australia"
             android:textColor="@android:color/white"
             android:textSize="26sp"/>
 
@@ -67,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:drawableLeft="@drawable/ic_category"
+                android:drawableLeft="@drawable/ic_bucket_category"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:textColor="@color/bucket_detailed_text_color"
@@ -78,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:drawableLeft="@drawable/ic_calendar"
+                android:drawableLeft="@drawable/ic_bucket_calendar"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:text="@string/someday"

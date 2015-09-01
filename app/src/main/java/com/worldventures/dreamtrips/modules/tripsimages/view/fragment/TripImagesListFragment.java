@@ -16,12 +16,15 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
@@ -36,9 +39,10 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment<T extends TripImagesListPresenter> extends BaseFragment<T> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
+    public static final String BUNDLE_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
 
     @Inject
     @ForActivity
@@ -80,7 +84,7 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-        this.arrayListAdapter.registerCell(ImageUploadTask.class, PhotoUploadCell.class);
+        this.arrayListAdapter.registerCell(UploadTask.class, PhotoUploadCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
 
         this.refreshLayout.setOnRefreshListener(this);
@@ -124,9 +128,10 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     @Override
-    protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
+    protected T createPresenter(Bundle savedInstanceState) {
         Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        return TripImagesListPresenter.create(type, false);
+        int foreignUserId = getArguments().getInt(BUNDLE_FOREIGN_USER_ID);
+        return (T) TripImagesListPresenter.create(type, false, null, foreignUserId);
     }
 
     @Override
@@ -147,6 +152,13 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     @Override
     public IRoboSpiceAdapter getAdapter() {
         return arrayListAdapter;
+    }
+
+    @Override
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create().with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override
@@ -188,6 +200,12 @@ public class TripImagesListFragment extends BaseFragment<TripImagesListPresenter
     }
 
     public enum Type {
-        MEMBER_IMAGES, MY_IMAGES, YOU_SHOULD_BE_HERE, INSPIRE_ME, VIDEO_360, BUCKET_PHOTOS
+        MEMBER_IMAGES,
+        MY_IMAGES,
+        YOU_SHOULD_BE_HERE,
+        INSPIRE_ME,
+        VIDEO_360,
+        FIXED_LIST,
+        FOREIGN_IMAGES
     }
 }

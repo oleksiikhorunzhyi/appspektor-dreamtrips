@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:nestedScrollingEnabled="false"
             android:padding="16dp"
-            android:src="@drawable/ic_ss_filters_normal"/>
+            android:src="@drawable/ic_success_story_filters_normal"/>
 
         <com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView
             android:id="@+id/search"
@@ -34,7 +34,7 @@
             android:layout_toLeftOf="@+id/iv_filter"
             android:layout_toStartOf="@+id/iv_filter"
             android:background="@android:color/white"
-            android:src="@drawable/ic_ss_search"/>
+            android:src="@drawable/ic_success_story_search"/>
     </RelativeLayout>
 
 

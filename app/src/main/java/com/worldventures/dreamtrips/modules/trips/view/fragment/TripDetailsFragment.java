@@ -17,7 +17,11 @@ import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -230,6 +234,13 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     public void hideBookIt() {
         layoutBookIt.setEnabled(false);
         textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
+    }
+
+    @Override
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create().with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

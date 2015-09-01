@@ -2,28 +2,39 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.Route;
 
-public class ComponentPresenter extends Presenter<Presenter.View> {
+public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
 
-    public static final String COMPONENT = "component";
-    public static final String COMPONENT_EXTRA = "component_extra";
+    public static final String ROUTE = "route";
 
-    private ComponentDescription componentDescription;
-    private Bundle componentExtras;
+    public static final String COMPONENT_EXTRA = "component_extras";
+    public static final String COMPONENT_TOOLBAR_CONFIG = "component_toolbar";
+
+    private Bundle args;
+    private Route route;
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        fragmentCompass.replace(componentDescription, componentExtras);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            fragmentCompass.replace(route, args);
+        }
     }
 
     public int getTitle() {
-        return componentDescription.getToolbarTitle();
+        if (route != null) {
+            return route.getTitleRes();
+        } else {
+            return 0;
+        }
     }
 
     public ComponentPresenter(Bundle args) {
-        componentDescription = args.getParcelable(COMPONENT);
-        componentExtras = args.getBundle(COMPONENT_EXTRA);
+        route = (Route) args.getSerializable(ROUTE);
+        this.args = args;
+    }
+
+    public interface View extends Presenter.View {
     }
 }

@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -11,35 +9,35 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-import com.worldventures.dreamtrips.modules.profile.view.custom.ProfileView;
+import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icicle;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Icicle
-    String filePath;
-    @Icicle
-    int callbackType;
 
     @Inject
     @ForActivity
@@ -57,69 +55,105 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
-
     @InjectView(R.id.feedview)
     FeedView feedView;
 
-    protected ProfileView profileView;
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
+
+    private IgnoreFirstItemAdapter adapter;
+
+    @Icicle
+    ArrayList<Object> items;
+    @Icicle
+    boolean postShown;
+    private int screenHeight;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (adapter != null) {
+            List<Object> items = adapter.getItems();
+            this.items = new ArrayList<>(items);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         weakHandler = new WeakHandler();
+        screenHeight = ViewUtils.getScreenHeight(getActivity());
     }
+
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
         layoutConfiguration();
-        profileView = new ProfileView(getActivity());
-
-        profileView.setOnBucketListClicked(() -> getPresenter().openBucketList());
-        profileView.setOnTripImageClicked(() -> getPresenter().openTripImages());
-        profileView.setOnFriendsClicked(() -> getPresenter().openFriends());
-
-        profileView.setOnFeedReload(() -> getPresenter().loadFeed());
-        feedView.setup(injectorProvider, savedInstanceState);
-        feedView.setHeader(profileView);
+        adapter = new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
+        feedView.setup(savedInstanceState, adapter);
+        if (items != null) {
+            adapter.addItems(items);
+        }
+        adapter.notifyDataSetChanged();
 
         feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int itemCount = feedView.getLayoutManager().getItemCount();
                 int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
-                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+
+                if (itemCount > 0)
+                    getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
-        feedView.setOnParallaxScroll((percentage, offset, parallax) -> {
-            setToolbarAlpha(percentage);
-            if (percentage > 0.42f) {
+
+        feedView.setOffsetYListener(yOffset -> {
+            float percent = calculateOffset();
+            setToolbarAlpha(percent);
+            if (percent >= 0.6) {
                 profileToolbarTitle.setVisibility(View.VISIBLE);
                 profileToolbarUserStatus.setVisibility(View.VISIBLE);
-                profileView.getUserName().setVisibility(View.INVISIBLE);
-                profileView.getUserStatus().setVisibility(View.INVISIBLE);
             } else {
                 profileToolbarTitle.setVisibility(View.INVISIBLE);
                 profileToolbarUserStatus.setVisibility(View.INVISIBLE);
-                profileView.getUserName().setVisibility(View.VISIBLE);
-                profileView.getUserStatus().setVisibility(View.VISIBLE);
             }
         });
+
+        if (postShown) openPost();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (profileToolbar != null) setToolbarAlpha(feedView.getParallaxPrecentage());
+        if (profileToolbar != null) {
+            float percent = calculateOffset();
+            setToolbarAlpha(percent);
+        }
+    }
+
+    @Override
+    public void setUser(User user) {
+        if (adapter.getItems().contains(user)) {
+            adapter.itemUpdated(user);
+        } else {
+            adapter.addItem(0, user);
+            adapter.notifyItemInserted(0);
+        }
+
+        ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
+        profileToolbarTitle.setText(user.getFullName());
+    }
+
+    private float calculateOffset() {
+        return Math.min(feedView.getScrollOffset() / (float) screenHeight, 1);
     }
 
     private void setToolbarAlpha(float percentage) {
         Drawable c = profileToolbar.getBackground();
-        int round = Math.round(percentage * 255);
+        int round = Math.round(Math.min(1, percentage * 2) * 255);
         c.setAlpha(round);
         profileToolbar.setBackgroundDrawable(c);
     }
@@ -128,111 +162,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         swipeContainer.setOnRefreshListener(this);
     }
 
-    @Override
-    public void setAvatarImage(Uri uri) {
-        if (getActivity() != null)
-            getActivity().runOnUiThread(() -> {
-                if (uri != null) {
-                    SimpleDraweeView draweeView = profileView.getUserPhoto();
-                    setImage(uri, draweeView);
-                }
-            });
-    }
-
-    @Override
-    public void setCoverImage(Uri uri) {
-        if (getActivity() != null)
-            getActivity().runOnUiThread(() -> {
-                if (uri != null) {
-                    SimpleDraweeView draweeView = profileView.getUserCover();
-                    setImage(uri, draweeView);
-                }
-            });
-    }
-
-    private void setImage(Uri uri, SimpleDraweeView draweeView) {
-        PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
-        if (draweeView.getTag() != null) {
-            builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
-        }
-        builder.setImageRequest(ImageRequest.fromUri(uri));
-        DraweeController dc = builder.build();
-        draweeView.setController(dc);
-        draweeView.setTag(uri);
-    }
-
-    @Override
-    public void setDateOfBirth(String format) {
-        profileView.getDateOfBirth().setText(format);
-    }
-
-    @Override
-    public void setFrom(String location) {
-        profileView.getEtFrom().setText(location);
-    }
-
-    @Override
-    public void setUserName(String username) {
-        profileView.getUserName().setText(username);
-        profileToolbarTitle.setText(username);
-    }
-
-    @Override
-    public void setUserId(String username) {
-        profileView.getEtUserId().setText(username);
-    }
-
-    @Override
-    public void setEnrollDate(String date) {
-        profileView.getEtEnroll().setText(date);
-    }
-
-    @Override
-    public void setTripImagesCount(int count) {
-        profileView.getTripImages().setText(String.format(getString(R.string.profile_trip_images), count));
-    }
-
-    @Override
-    public void setTripsCount(int count) {
-        profileView.getTrips().setText(String.format(getString(R.string.profile_dream_trips), count));
-    }
-
-    @Override
-    public void setBucketItemsCount(int count) {
-        profileView.getBuckets().setText(String.format(getString(R.string.profile_bucket_list), count));
-    }
-
-    @Override
-    public void setSocial(Boolean isEnabled) {
-        profileView.getAddFriend().setEnabled(isEnabled);
-        profileView.getFriendRequest().setEnabled(isEnabled);
-        profileView.getFriendRequest().setEnabled(isEnabled);
-    }
-
-    @Override
-    public void setMember() {
-        setUserStatus(R.color.white, R.string.empty, 0);
-    }
-
-    @Override
-    public void setGold() {
-        setUserStatus(R.color.golden_user, R.string.profile_golden, R.drawable.gold_member);
-    }
-
-    @Override
-    public void setPlatinum() {
-        setUserStatus(R.color.platinum_user, R.string.profile_platinum, R.drawable.platinum_member);
-    }
-
-    private void setUserStatus(int color, int title, int drawable) {
-        profileView.getUserStatus().setTextColor(getResources().getColor(color));
-        profileView.getUserStatus().setText(title);
-        profileView.getUserStatus().setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
-
-        profileToolbarUserStatus.setTextColor(getResources().getColor(color));
-        profileToolbarUserStatus.setText(title);
-        profileToolbarUserStatus.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
-    }
 
     @Override
     public void onRefresh() {
@@ -242,7 +171,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void startLoading() {
         weakHandler.postDelayed(() -> {
-            profileView.getProfileFeedReload().setVisibility(View.GONE);
             if (swipeContainer != null) swipeContainer.setRefreshing(true);
         }, 100);
     }
@@ -257,20 +185,50 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     @Override
-    public void onFeedError() {
-        weakHandler.postDelayed(() -> {
-            profileView.getProfileFeedReload().setVisibility(View.VISIBLE);
-        }, 100);
-
+    public void openFriends() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .move(Route.FRIENDS);
     }
 
     @Override
-    public void setFriendButtonText(@StringRes int res) {
-        profileView.getFriends().setText(res);
+    public void openPost() {
+        postShown = true;
+        showPostContainer();
+
+        fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        //
+        NavigationBuilder.create()
+                .with(fragmentCompass)
+                .attach(Route.POST_CREATE);
+    }
+
+    public void onEvent(PostClosedEvent event) {
+        postShown = false;
     }
 
     @Override
-    public IRoboSpiceAdapter<BaseFeedModel> getAdapter() {
+    public BaseArrayListAdapter getAdapter() {
         return feedView.getAdapter();
+    }
+
+
+    @Override
+    public void notifyUserChanged() {
+        feedView.getAdapter().notifyItemChanged(0);
+    }
+
+    private void showPostContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void insertItem(BaseEventModel baseEventModel) {
+        feedView.getAdapter().addItem(ProfilePresenter.HEADER_RELOAD_POSITION, baseEventModel);
+        feedView.getAdapter().notifyItemInserted(ProfilePresenter.HEADER_RELOAD_POSITION);
+        feedView.scrollToPosition(ProfilePresenter.HEADER_RELOAD_POSITION);
     }
 }

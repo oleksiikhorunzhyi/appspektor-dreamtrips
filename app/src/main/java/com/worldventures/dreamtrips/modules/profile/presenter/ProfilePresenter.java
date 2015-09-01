@@ -1,33 +1,47 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.text.format.DateFormat;
 
+import com.badoo.mobile.util.WeakHandler;
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.R;
+import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.profile.ReloadFeedModel;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsClickedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T> {
+public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
-    protected User user;
+    public static final int HEADER_USER_POSITION = 0;
+    public static final int HEADER_RELOAD_POSITION = 1;
+
+    public static final int HEADER_COUNT = 2;
+
+    protected U user;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -35,61 +49,26 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     @Inject
     SnappyRepository snappyRepository;
 
-    protected DreamSpiceAdapterController<BaseFeedModel> adapterController = new DreamSpiceAdapterController<BaseFeedModel>() {
-        @Override
-        public SpiceRequest<ArrayList<BaseFeedModel>> getReloadRequest() {
-            return getRefreshRequest();
-        }
-
-        @Override
-        public SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int currentCount) {
-            return ProfilePresenter.this.getNextPageRequest(currentCount / GetFeedQuery.LIMIT);
-        }
-
-        @Override
-        public void onStart(LoadType loadType) {
-            view.startLoading();
-        }
-
-        @Override
-        public void onFinish(LoadType type, List<BaseFeedModel> items, SpiceException spiceException) {
-            if (adapterController != null) {
-                view.finishLoading();
-                if (spiceException != null) {
-                    view.onFeedError();
-                }
-                if (type.equals(LoadType.RELOAD)) {
-                    resetLazyLoadFields();
-                }
-            }
-        }
-    };
-
     List<Circle> circles;
+    private ReloadFeedModel reloadFeedModel = new ReloadFeedModel();
+
 
     public ProfilePresenter() {
     }
 
-    public ProfilePresenter(User user) {
+    public ProfilePresenter(U user) {
         this.user = user;
     }
 
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        attachUserToView(user);
+        addReloadFeedView();
         circles = snappyRepository.getCircles();
-        setUserProfileInfo();
         loadCircles();
         loadProfile();
-        view.setFriendButtonText(featureManager.available(Feature.SOCIAL) ? R.string.profile_friends : R.string.coming_soon);
-    }
-
-    @Override
-    public void onResume() {
-        if (view.getAdapter().getCount() <= 1/*Header*/) {
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-        }
+        loadFeed();
     }
 
     public abstract void openBucketList();
@@ -98,34 +77,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
     public void onRefresh() {
         loadProfile();
-    }
-
-    protected void setUserProfileInfo() {
-        view.setUserName(user.getFullName());
-        view.setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
-                DateFormat.getMediumDateFormat(context)));
-        view.setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(),
-                DateFormat.getMediumDateFormat(context)));
-        view.setUserId(user.getUsername());
-        view.setFrom(user.getLocation());
-
-        if (user.isGold())
-            view.setGold();
-        else if (user.isPlatinum())
-            view.setPlatinum();
-        else
-            view.setMember();
-
-        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
-    }
-
-    protected void onProfileLoaded(User user) {
-        this.user = user;
-        //
-        setUserProfileInfo();
-        view.finishLoading();
         loadFeed();
+    }
+
+    protected void onProfileLoaded(U user) {
+        attachUserToView(user);
+        view.finishLoading();
+    }
+
+    private void attachUserToView(U user) {
+        this.user = user;
+        view.setUser(this.user);
     }
 
     @Override
@@ -135,6 +97,19 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
     }
 
     public void loadFeed() {
+        view.startLoading();
+        if (featureManager.available(Feature.SOCIAL)) {
+            resetLazyLoadFields();
+            doRequest(getRefreshRequest(), this::refreshFeedItems, spiceException -> {
+                reloadFeedModel.setVisible(true);
+                view.getAdapter().notifyItemChanged(HEADER_RELOAD_POSITION);
+                view.finishLoading();
+            });
+        }
+    }
+
+    public void makePost() {
+        view.openPost();
     }
 
     protected abstract void loadProfile();
@@ -149,7 +124,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
                     openFriends();
                 });
             } else {
-                activityRouter.openFriends();
+                view.openFriends();
             }
         }
     }
@@ -171,21 +146,111 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
         loading = false;
     }
 
+    private void addReloadFeedView() {
+        view.getAdapter().remove(HEADER_RELOAD_POSITION);
+        view.getAdapter().addItem(HEADER_RELOAD_POSITION, this.reloadFeedModel);
+    }
+
     public void scrolled(int totalItemCount, int lastVisible) {
-        if (totalItemCount > previousTotal) {
-            loading = false;
-            previousTotal = totalItemCount;
-        }
-        if (!loading
-                && lastVisible == totalItemCount - 1
-                && (totalItemCount - 1) % GetFeedQuery.LIMIT == 0) {
-            loading = true;
+        if (featureManager.available(Feature.SOCIAL) && view.getAdapter().getItemCount() > HEADER_COUNT) {
+            if (totalItemCount > 0 && totalItemCount > previousTotal) {
+                loading = false;
+                previousTotal = totalItemCount;
+            }
+            if (!loading
+                    && lastVisible == totalItemCount - 1) {
+                loading = true;
+                doRequest(getNextPageRequest(), this::addFeedItems);
+            }
         }
     }
 
-    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest();
 
-    protected abstract SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int count);
+    public void onEvent(FeedObjectChangedEvent event) {
+        view.getAdapter().itemUpdated(event.getFeedObject());
+    }
+
+
+    public void refreshFeedItems(List<ParentFeedModel> feedItems) {
+        reloadFeedModel.setVisible(false);
+        view.finishLoading();
+        view.getAdapter().clear();
+        view.getAdapter().addItems(HEADER_RELOAD_POSITION, Queryable.from(feedItems)
+                .filter(ParentFeedModel::isSingle).map(element -> element.getItems().get(0)).toList());
+    }
+
+    public void addFeedItems(List<ParentFeedModel> feedItems) {
+        view.finishLoading();
+        view.getAdapter().addItems(Queryable.from(feedItems)
+                .filter(ParentFeedModel::isSingle).map(element -> element.getItems().get(0)).toList());
+    }
+
+    public void onEvent(LikesPressedEvent event) {
+        BaseEventModel model = event.getModel();
+        DreamTripsRequest command = model.getItem().isLiked() ?
+                new UnlikeEntityCommand(model.getItem().getUid()) :
+                new LikeEntityCommand(model.getItem().getUid());
+        doRequest(command, element -> itemLiked(model));
+    }
+
+    //TODO Refactor this after apperean release
+    public void onEvent(EntityLikedEvent event) {
+        BaseEventModel model = (BaseEventModel) Queryable.from(view.getAdapter().getItems())
+                .firstOrDefault(element -> element instanceof BaseEventModel &&
+                        (((BaseEventModel) element).getItem().getUid().equals(event.getId())));
+
+        if (model != null) {
+            itemLiked(model);
+        }
+    }
+
+    private void itemLiked(BaseEventModel model) {
+        model.getItem().setLiked(!model.getItem().isLiked());
+        int likesCount = model.getItem().getLikesCount();
+
+        if (model.getItem().isLiked()) likesCount++;
+        else likesCount--;
+
+        model.getItem().setLikesCount(likesCount);
+
+        itemChanged(model);
+    }
+
+    private void itemChanged(BaseEventModel baseFeedModel) {
+        view.getAdapter().itemUpdated(baseFeedModel);
+    }
+
+    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest();
+
+    protected abstract SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest();
+
+    public void onEvent(OnBucketListClickedEvent event) {
+        if (event.getUserId() == user.getId()) {
+            openBucketList();
+        }
+    }
+
+    public void onEvent(OnTripImageClickedEvent event) {
+        if (event.getUserId() == user.getId()) {
+            openTripImages();
+        }
+    }
+
+    public void onEvent(OnFriendsClickedEvent event) {
+        openFriends();
+    }
+
+    public void onEvent(OnCreatePostClickEvent event) {
+        makePost();
+    }
+
+    public void onEvent(OnFeedReloadEvent event) {
+        loadFeed();
+    }
+
+    public void onEvent(FeedItemAddedEvent event) {
+        view.insertItem(event.getBaseEventModel());
+    }
 
     public interface View extends Presenter.View {
         Bundle getArguments();
@@ -194,38 +259,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
         void finishLoading();
 
-        void setAvatarImage(Uri uri);
+        BaseArrayListAdapter getAdapter();
 
-        void setCoverImage(Uri uri);
+        void openPost();
 
-        void setDateOfBirth(String format);
+        void openFriends();
 
-        void setFrom(String location);
+        void notifyUserChanged();
 
-        void setUserName(String username);
+        void setUser(User user);
 
-        void setUserId(String username);
-
-        void setEnrollDate(String date);
-
-        void setTripImagesCount(int count);
-
-        void setTripsCount(int count);
-
-        void setSocial(Boolean isEnabled);
-
-        void setBucketItemsCount(int count);
-
-        void setGold();
-
-        void setPlatinum();
-
-        void setMember();
-
-        IRoboSpiceAdapter<BaseFeedModel> getAdapter();
-
-        void onFeedError();
-
-        void setFriendButtonText(@StringRes int res);
+        void insertItem(BaseEventModel baseEventModel);
     }
 }

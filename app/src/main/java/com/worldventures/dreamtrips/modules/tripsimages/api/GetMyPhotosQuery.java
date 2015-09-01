@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,20 +31,15 @@ public class GetMyPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
     public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
         ArrayList<IFullScreenObject> result = new ArrayList<>();
         if (page == 1) result.addAll(getUploadTasks());
-        result.addAll(loadFromApi());
+        result.addAll(getService().getAccountPhotos(currentUserId, perPage, page));
         return result;
     }
 
-    private Collection<? extends IFullScreenObject> loadFromApi() {
-        ArrayList<Photo> myPhotos = getService().getMyPhotos(currentUserId, perPage, page);
-        ArrayList<IFullScreenObject> result = new ArrayList<>();
-        result.addAll(myPhotos);
-        return result;
-    }
-
-    private List<ImageUploadTask> getUploadTasks() {
-        List<ImageUploadTask> list = db.getAllImageUploadTask();
-        Collections.reverse(list);
-        return list;
+    private List<UploadTask> getUploadTasks() {
+        return Queryable.from(db.getAllUploadTask())
+                .filter(item -> item.getModule() != null &&
+                        item.getModule().equals(UploadTask.Module.IMAGES))
+                .sortReverse()
+                .toList();
     }
 }

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -40,7 +41,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
-    public void registerCell(Class<? extends BaseItemClass> itemClass, Class<? extends AbstractCell> cellClass) {
+    public void registerCell(Class<?> itemClass, Class<? extends AbstractCell> cellClass) {
         this.itemCellMapping.put(itemClass, cellClass);
         int type = this.viewTypes.indexOf(itemClass);
         if (type == -1) {
@@ -128,7 +129,8 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void remove(int location) {
-        this.items.remove(location);
+        if (items.size() > location)
+            items.remove(location);
     }
 
     public void remove(BaseItemClass item) {
@@ -167,6 +169,16 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void setItems(List<BaseItemClass> baseItemClasses) {
         this.items = baseItemClasses;
         this.notifyDataSetChanged();
+    }
+
+    public void itemUpdated(BaseItemClass changedItem) {
+        Queryable.from(items).forEachR(item -> {
+            int position = items.indexOf(item);
+            if (changedItem.equals(item)) {
+                items.set(position, changedItem);
+                notifyItemChanged(position);
+            }
+        });
     }
 
     public List<BaseItemClass> getItems() {

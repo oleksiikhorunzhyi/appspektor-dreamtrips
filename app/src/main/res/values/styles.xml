@@ -41,12 +41,12 @@
 
     <style name="commonListItemStyle"></style>
 
-    <style name="myCustomMenuTextApearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textColor">@color/selector_action_button_popular</item>
-    </style>
-
-    <style name="LightCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textColorSecondary">@color/white</item>
+    <style name="BottomSheetDialog">
+        <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="DreamTabLayout" parent="Widget.Design.TabLayout">

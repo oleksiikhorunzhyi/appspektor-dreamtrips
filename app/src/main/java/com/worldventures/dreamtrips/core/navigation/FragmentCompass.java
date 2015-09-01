@@ -73,6 +73,10 @@ public class FragmentCompass {
         remove(Route.BUCKET_EDIT.getClazzName());
     }
 
+    public void removePost() {
+        remove(Route.POST_CREATE.getClazzName());
+    }
+
     public void remove(String name) {
         if (validateState()) {
             FragmentManager fragmentManager = supportFragmentManager;

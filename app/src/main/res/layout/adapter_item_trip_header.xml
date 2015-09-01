@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/tripDetailPanelPadding">
+            android:padding="@dimen/spacing_medium">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@color/tripNameColor"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
@@ -85,8 +85,8 @@
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_stripe"
-                    android:padding="@dimen/tripDetailPanelPadding"
+                    android:background="@drawable/ic_stripe_right"
+                    android:padding="@dimen/spacing_medium"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -99,8 +99,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:gravity="end"
-                android:padding="@dimen/tripDetailPanelPadding"
-                android:textColor="@color/tripNameColor" />
+                android:padding="@dimen/spacing_medium"
+                android:textColor="@color/black" />
 
 
         </LinearLayout>
@@ -109,10 +109,10 @@
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tripDescription"
+            android:background="@color/gray_lighter"
             android:fontFamily="sans-serif-light"
-            android:padding="@dimen/tripDetailPanelPadding"
-            android:textColor="@color/tripNameColor" />
+            android:padding="@dimen/spacing_medium"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 

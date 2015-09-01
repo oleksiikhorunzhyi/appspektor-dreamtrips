@@ -4,16 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
@@ -21,29 +18,17 @@ import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
-import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
-import com.worldventures.dreamtrips.modules.friends.view.activity.FriendsActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWrapperActivity;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
@@ -74,13 +59,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         finish();
     }
 
-    public void openFullScreenPhoto(int position, TripImagesListFragment.Type type) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(FullScreenPhotoActivity.EXTRA_POSITION, position);
-        bundle.putSerializable(FullScreenPhotoActivity.EXTRA_TYPE, type);
-        startActivity(FullScreenPhotoActivity.class, bundle);
-    }
-
     public void open360Activity(String url) {
         Bundle bundle = new Bundle();
         bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
@@ -95,13 +73,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         }
     }
 
-    public void openFullScreenTrip(List<Object> photoList, int position) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_PHOTOS_LIST, new ArrayList<>(photoList));
-        bundle.putSerializable(FullScreenTripImageActivity.EXTRA_POSITION, position);
-        startActivity(FullScreenTripImageActivity.class, bundle);
-    }
-
     public void openBookItActivity(String tripId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
@@ -112,37 +83,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putSerializable(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
         startActivity(PreviewTemplateActivity.class, bundle);
-    }
-
-    public void openBucketListPopularActivity(BucketTabsPresenter.BucketType type) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.POPULAR_TAB_BUCKER);
-        startActivity(BucketActivity.class, bundle);
-    }
-
-    public void openBucketItemEditActivity(Bundle bundle) {
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.BUCKET_EDIT);
-        startActivity(BucketActivity.class, bundle);
-    }
-
-    public void openBucketItemDetails(BucketTabsPresenter.BucketType type, int bucketId) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketId);
-
-        bundle.putSerializable(BucketActivity.EXTRA_STATE, Route.DETAIL_BUCKET);
-        startActivity(BucketActivity.class, bundle);
-    }
-
-    public void openTripDetails(TripModel trip) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
-        startActivity(DetailTripActivity.class, bundle);
-    }
-
-    public void openFacebookPhoto(Fragment fm) {
-        startForResult(fm, FacebookPickPhotoActivity.class, FacebookPickPhotoActivity.REQUEST_CODE_PICK_FB_PHOTO);
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {
@@ -167,10 +107,10 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
     }
 
-    public void openSuccessStoryDetails(SuccessStory successStory) {
+    public void openFriendPrefs(User friend) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
-        startActivity(SuccessStoryDetailsActivity.class, bundle);
+        bundle.putParcelable(FriendPrefsWrapperActivity.BUNDLE_FRIEND, friend);
+        startActivity(FriendPrefsWrapperActivity.class, bundle);
     }
 
     public void openEditInviteActivity(InviteTemplate inviteTemplate) {
@@ -183,28 +123,16 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(InviteTemplateSelectorActivity.class);
     }
 
-    public void openComponentActivity(ComponentDescription component) {
-        openComponentActivity(component, null);
+    public void openComponentActivity(@NonNull Route route, @NonNull Bundle args) {
+        args.putSerializable(ComponentPresenter.ROUTE, route);
+        startActivityWithArgs(ComponentActivity.class, args);
     }
 
-
-    public void openComponentActivity(ComponentDescription component, Bundle args) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ComponentPresenter.COMPONENT, component);
-        bundle.putBundle(ComponentPresenter.COMPONENT_EXTRA, args);
-        startActivity(ComponentActivity.class, bundle);
+    public void openFriendsSearch() {
+        startActivity(FriendSearchActivity.class);
     }
 
-    public void openFriends() {
-        if (featureManager.available(Feature.SOCIAL)) {
-            startActivity(FriendsActivity.class);
-        }
+    public FeatureManager getFeatureManager() {
+        return featureManager;
     }
-
-    public void openFriendsSearch(String query) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FriendSearchPresenter.EXTRA_QUERY, query);
-        startActivity(FriendSearchActivity.class, bundle);
-    }
-
 }

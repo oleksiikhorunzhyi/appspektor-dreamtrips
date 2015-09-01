@@ -20,6 +20,14 @@
         android:layout_gravity="bottom"
         android:background="@drawable/bucket_item_shadow"/>
 
+
+    <FrameLayout
+        android:id="@+id/top_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="top"
+        android:background="@drawable/trip_item_shadow"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:drawableLeft="@drawable/ic_category"
+                android:drawableLeft="@drawable/ic_bucket_category"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:textColor="@color/bucket_detailed_text_color"
@@ -69,20 +77,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:drawableLeft="@drawable/ic_calendar"
+                android:drawableLeft="@drawable/ic_bucket_calendar"
                 android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:text="@string/someday"
                 android:textColor="@color/bucket_detailed_text_color"/>
 
-            <ImageView
-                android:id="@+id/imageViewPhoto"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:scaleType="fitEnd"
-                android:src="@drawable/ic_photo_camera"
-                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 

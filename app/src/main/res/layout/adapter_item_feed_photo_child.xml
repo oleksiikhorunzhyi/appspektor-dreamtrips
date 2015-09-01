@@ -17,14 +17,6 @@
         fresco:placeholderImageScaleType="centerCrop"
         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/black_gradient"/>
-
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -32,7 +24,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="@dimen/spacing_normal"
+        android:background="@drawable/black_gradient"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:padding="@dimen/spacing_normal"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/white"
         tools:text="Trip to the Golden Bridge Gate"/>

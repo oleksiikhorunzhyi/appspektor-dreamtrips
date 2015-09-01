@@ -34,9 +34,4 @@ public class TemplatePhotoCell extends AbstractCell<TemplatePhoto> {
     public void prepareForReuse() {
     }
 
-    @OnClick(R.id.imageViewPhoto)
-    public void onClick() {
-        getEventBus().post(new BucketAddPhotoClickEvent());
-    }
-
 }

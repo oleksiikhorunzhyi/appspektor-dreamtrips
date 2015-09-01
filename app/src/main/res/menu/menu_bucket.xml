@@ -4,20 +4,20 @@
 
     <item
         android:id="@+id/action_quick"
-        android:icon="@drawable/add_item"
+        android:icon="@drawable/ic_menu_add_item"
         android:title="@string/action_quick_input"
         app:actionLayout="@layout/add_new_item_layout"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/action_popular"
-        android:icon="@drawable/popular"
+        android:icon="@drawable/ic_menu_popular"
         android:title="@string/action_popular_string"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/filters"
+        android:icon="@drawable/ic_menu_filters"
         android:title="@string/action_filter"
         app:showAsAction="always"/>
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageVi
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -81,6 +83,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected CheckBox checkBox;
     @InjectView(R.id.progress_flag)
     protected ProgressBar progressFlag;
+    @InjectView(R.id.iv_comment)
+    protected ImageView ivComment;
+    @InjectView(R.id.content_divider)
+    protected ImageView contentDivider;
 
     private TripImagesListFragment.Type type;
 
@@ -88,7 +94,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        if (type == TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type == TripImagesListFragment.Type.FIXED_LIST) {
             ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
@@ -108,6 +114,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         if (ivImage != null && ivImage.getController() != null)
             ivImage.getController().onDetach();
         super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -142,7 +149,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
         type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
 
-        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo);
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo,
+                getArguments().getBoolean(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN));
         if (photo != null) {
             fullScreenPresenter.setPhoto(photo);
             fullScreenPresenter.setType(type);
@@ -206,7 +214,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick({R.id.bottom_container, R.id.title_container})
     public void actionSeeLess() {
-        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type != TripImagesListFragment.Type.FIXED_LIST) {
             llMoreInfo.setVisibility(View.GONE);
             tvDescription.setSingleLine(true);
             tvDescription.setVisibility(View.VISIBLE);
@@ -243,6 +251,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void actionFlag() {
         getPresenter().onFlagAction();
     }
+
+    @OnClick(R.id.iv_comment)
+    public void actionComment() {
+    }
+
 
     @Override
     public void setFlags(List<Flag> flags) {
@@ -283,14 +296,14 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        String desc = ((EditText) dialog.getCustomView()
-                                .findViewById(R.id.tv_description))
-                                .getText().toString();
+                        EditText et = ButterKnife.findById(dialog, R.id.tv_description);
+                        String desc = et.getText().toString();
                         showFlagConfirmDialog(reason, desc);
                     }
                 }).build();
         dialog.show();
         View positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
+        positiveButton.setEnabled(false);
         EditText etDesc = (EditText) dialog.getCustomView().findViewById(R.id.tv_description);
         etDesc.addTextChangedListener(new TextWatcherAdapter() {
             @Override
@@ -316,6 +329,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         } else {
             civUserPhoto.setImageURI(Uri.parse(fsPhoto));
         }
+    }
+
+    @Override
+    public void setTitleSpanned(Spanned titleSpanned) {
+        tvTitle.setText(titleSpanned);
     }
 
     @Override
@@ -350,26 +368,40 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void setCommentCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvCommentsCount.setText(getString(R.string.comments, count));
+            tvCommentsCount.setVisibility(View.VISIBLE);
+        } else {
             tvCommentsCount.setVisibility(View.GONE);
         }
-        tvCommentsCount.setText(count + getString(R.string.comments));
     }
 
     @Override
     public void setLikeCount(int count) {
-        if (count == -1) {
+        if (count > 0) {
+            tvLikesCount.setText(getString(R.string.likes, count));
+            tvLikesCount.setVisibility(View.VISIBLE);
+        } else {
             tvLikesCount.setVisibility(View.GONE);
         }
-        tvLikesCount.setText(count + getString(R.string.likes));
     }
 
     @Override
     public void setDescription(String desc) {
         tvDescription.setText(desc);
-        if (type != TripImagesListFragment.Type.BUCKET_PHOTOS) {
+        if (type != TripImagesListFragment.Type.FIXED_LIST) {
             actionSeeMore();
         }
+    }
+
+    @Override
+    public void setContentDividerVisibility(boolean show) {
+        contentDivider.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setCommentVisibility(boolean commentVisible) {
+        ivComment.setVisibility(commentVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

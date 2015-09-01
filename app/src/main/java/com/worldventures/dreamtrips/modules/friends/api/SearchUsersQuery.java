@@ -13,11 +13,6 @@ public class SearchUsersQuery extends Query<ArrayList<User>> {
     private int offset;
     private int limit;
 
-    public SearchUsersQuery(Class<ArrayList<User>> clazz, String query) {
-        super(clazz);
-        this.query = query;
-    }
-
     public SearchUsersQuery(String query, int offset, int limit) {
         super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
         this.query = query;

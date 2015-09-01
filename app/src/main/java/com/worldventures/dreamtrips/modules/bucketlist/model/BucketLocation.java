@@ -1,9 +1,14 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
-import com.amazonaws.com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
-public class BucketLocation extends BaseEntity{
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class BucketLocation implements Serializable {
 
     private String name;
     private String url;

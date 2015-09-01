@@ -4,23 +4,36 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
+import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
+import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
+import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
+public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     public UserPresenter(Bundle args) {
         super(args.getParcelable(ProfileModule.EXTRA_USER));
@@ -33,64 +46,41 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
-        return new GetUserFeedQuery(user.getId(), 0);
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
+        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
-        return new GetUserFeedQuery(user.getId(), page);
-    }
-
-    @Override
-    protected void setUserProfileInfo() {
-        super.setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-        view.setSocial(user.isSocialEnabled());
-        view.setIsFriend(false);
-        if (user.getRelationship() != null) {
-            switch (user.getRelationship()) {
-                case User.RELATION_FRIEND:
-                    view.setIsFriend(true);
-                    view.hideFriendRequest();
-                    break;
-                case User.RELATION_OUTGOING_REQUEST:
-                    view.setWaiting();
-                    view.hideFriendRequest();
-                    break;
-                case User.RELATION_INCOMING_REQUEST:
-                    view.setRespond();
-                    view.showFriendRequest(user.getFirstName());
-                    break;
-                default:
-                    view.hideFriendRequest();
-                    break;
-            }
-        }
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
+        Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
+        return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
     }
 
     public void addFriendClicked() {
         if (user.getRelationship() != null) {
-            if (user.getRelationship().equals(User.RELATION_NONE)
-                    || user.getRelationship().equals(User.RELATION_REJECT))
+            if (user.getRelationship().equals(User.Relationship.NONE)
+                    || user.getRelationship().equals(User.Relationship.REJECT))
                 view.showAddFriendDialog(circles, this::addAsFriend);
-            else if (user.getRelationship().equals(User.RELATION_FRIEND))
+            else if (user.getRelationship().equals(User.Relationship.FRIEND))
                 view.showFriendDialog(user);
         }
 
     }
 
-    public void unfriend() {
+    private void unfriend() {
         view.startLoading();
         doRequest(new UnfriendCommand(user.getId()), object -> {
             if (view != null) {
                 view.finishLoading();
                 user.unfriend();
-                setUserProfileInfo();
+                view.notifyUserChanged();
                 eventBus.postSticky(new RemoveUserEvent(user));
             }
         });
+    }
+
+    private void openFriendPrefs() {
+        activityRouter.openFriendPrefs(user);
     }
 
     public void acceptClicked() {
@@ -114,8 +104,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
             Circle circle = circles.get(position);
             doRequest(new AddUserRequestCommand(user.getId(), circle),
                     jsonObject -> {
+                        user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                         view.finishLoading();
-                        view.setWaiting();
+                        view.notifyUserChanged();
                     });
         }
     }
@@ -126,8 +117,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
                     view.finishLoading();
-                    view.setIsFriend(false);
-                    view.hideFriendRequest();
+                    user.setRelationship(User.Relationship.REJECT);
+                    view.notifyUserChanged();
                 });
     }
 
@@ -137,31 +128,66 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
                         ActOnRequestCommand.Action.CONFIRM.name(),
                         circle.getId()),
                 object -> {
-                    view.setIsFriend(true);
-                    view.hideFriendRequest();
+                    user.setRelationship(User.Relationship.FRIEND);
+                    view.notifyUserChanged();
                 });
+    }
+
+
+    public void onEvent(UnfriendEvent event) {
+        unfriend();
+    }
+
+    public void onEvent(OpenFriendPrefsEvent event) {
+        openFriendPrefs();
+    }
+
+
+    public void onEvent(FriendGroupRelationChangedEvent event) {
+        if (user.getId() == event.getFriend().getId()) {
+            switch (event.getState()) {
+                case REMOVED:
+                    user.getCircleIds().remove(event.getCircle().getId());
+                    break;
+                case ADDED:
+                    user.getCircleIds().add(event.getCircle().getId());
+                    break;
+            }
+            user.setCircles(snappyRepository.getCircles());
+            view.notifyUserChanged();
+        }
     }
 
 
     @Override
     public void openBucketList() {
+        Bundle args = new Bundle();
+        args.putSerializable(ForeignBucketTabsFragment.EXTRA_USER_ID, user.getId());
+        NavigationBuilder.create().args(args).with(activityRouter).move(Route.FOREIGN_BUCKET_LIST);
     }
 
     @Override
     public void openTripImages() {
+        Bundle args = new Bundle();
+        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.FOREIGN_IMAGES);
+        args.putSerializable(TripImagesListFragment.BUNDLE_FOREIGN_USER_ID, user.getId());
+
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FOREIGN_TRIP_IMAGES);
+    }
+
+    public void onEvent(OnAcceptRequestEvent e) {
+        acceptClicked();
+    }
+
+    public void onEvent(OnRejectRequestEvent e) {
+        rejectClicked();
+    }
+
+    public void onEvent(OnAddFriendEvent e) {
+        addFriendClicked();
     }
 
     public interface View extends ProfilePresenter.View {
-
-        void showFriendRequest(String name);
-
-        void hideFriendRequest();
-
-        void setIsFriend(boolean isFriend);
-
-        void setRespond();
-
-        void setWaiting();
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 

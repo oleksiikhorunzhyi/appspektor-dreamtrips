@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.core.api;
 
 import android.content.Context;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.SpiceService;
-import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -16,21 +14,16 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
-import com.worldventures.dreamtrips.core.utils.events.PhotoUploadFailedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.api.UploadTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -67,13 +60,10 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     protected Context context;
 
-    private Injector injector;
-
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
-        this.injector = injector;
         injector.inject(this);
-        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR);
+        Ln.getConfig().setLoggingLevel(Log.ERROR);
     }
 
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,
@@ -97,6 +87,7 @@ public class DreamSpiceManager extends SpiceManager {
             }
         });
     }
+
     private void processError(SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
         if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
             final UserSession userSession = appSessionHolder.get().get();
@@ -139,27 +130,6 @@ public class DreamSpiceManager extends SpiceManager {
         }, spiceError -> {
             onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
         });
-    }
-
-    public void uploadPhoto(ImageUploadTask task) {
-        try {
-            UploadTripPhotoCommand request = new UploadTripPhotoCommand(task, injector);
-            execute(request, new RequestListener<Photo>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
-                }
-
-                @Override
-                public void onRequestSuccess(Photo photo) {
-                    //nothing to do here
-                }
-            });
-        } catch (Exception e) {
-            Timber.e(e, "Can't upload photo");
-            new Handler().postDelayed(() -> eventBus.post(new PhotoUploadFailedEvent(task.getTaskId())), 300);
-
-        }
     }
 
     public static boolean isLoginError(Exception error) {
@@ -281,6 +251,11 @@ public class DreamSpiceManager extends SpiceManager {
             Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
         }
         return "";
+    }
+
+    @Override
+    public synchronized void start(Context context) {
+        super.start(context);
     }
 
     public interface OnLoginSuccess {

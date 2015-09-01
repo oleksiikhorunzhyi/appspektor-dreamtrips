@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
 
 import java.net.CookieManager;
@@ -62,6 +62,8 @@ public class ApiModule {
                 request.addHeader("Authorization", authToken);
             }
             request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
+            request.addHeader("Accept", "application/com.dreamtrips.api+json;version="
+                    + BuildConfig.API_VERSION);
         };
     }
 
@@ -73,12 +75,11 @@ public class ApiModule {
     @Provides
     Gson provideGson() {
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
-                .registerTypeAdapter(BaseFeedModel.class, new FeedModelDeserializer())
+                .registerTypeAdapter(BaseEventModel.class, new FeedModelDeserializer())
                 .create();
     }
 

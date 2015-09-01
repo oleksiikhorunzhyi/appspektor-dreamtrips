@@ -9,7 +9,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.io.Serializable;
@@ -18,13 +19,11 @@ import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel implements Filterable, Serializable, IFeedObject {
+public class TripModel extends BaseFeedObject implements Filterable, Serializable {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
 
-    @SerializedName("id")
-    private String likeId;
     @SerializedName("trip_id")
     private String tripId;
 
@@ -32,7 +31,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     private String description;
     private boolean featured;
     private boolean rewarded;
-    private boolean liked;
     private int duration;
     @SerializedName("price_available")
     private boolean priceAvailable;
@@ -52,11 +50,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     @SerializedName("recent")
     private boolean recentlyAdded;
     private boolean inBucketList;
-
-
-    public String getLikeId() {
-        return likeId;
-    }
 
     public String getTripId() {
         return tripId;
@@ -166,14 +159,6 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         this.dates = availabilityDates;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
     public RegionModel getRegion() {
         return region;
     }
@@ -201,7 +186,7 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
 
     public String getThumb(Resources resources) {
         String url = getImageUrl("THUMB");
-        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.trip_thumb_height);
+        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
         return url + String.format(PATTERN,
                 dimensionPixelSize, dimensionPixelSize);
     }
@@ -214,8 +199,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
         return images;
     }
 
-    public List<Object> getFilteredImages() {
-        List<Object> filteredImages = new ArrayList<>();
+    public List<TripImage> getFilteredImages() {
+        List<TripImage> filteredImages = new ArrayList<>();
         filteredImages.addAll(getFilteredImagesByTag("RETINA"));
 
         if (filteredImages.isEmpty()) {
@@ -283,37 +268,8 @@ public class TripModel implements Filterable, Serializable, IFeedObject {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        TripModel tripModel = (TripModel) o;
-
-        return !(tripId != null ? !tripId.equals(tripModel.tripId) : tripModel.tripId != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        if (tripId != null) {
-            return tripId.hashCode();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
     public String toString() {
         return tripId;
-    }
-
-    @Override
-    public String place() {
-        return null;
     }
 
 }

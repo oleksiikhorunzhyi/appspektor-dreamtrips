@@ -4,52 +4,57 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class Photo extends BaseFeedObject implements Serializable, IFullScreenObject, Parcelable {
 
     private String title;
     private Date shotAt;
     private Location location;
     private List<String> tags;
     private Image images;
-    private boolean liked;
-    private int likesCount;
     private String taskId;
-    private User user;
-    private String id;
 
     public Photo() {
     }
 
-    private Photo(Parcel in) {
-        this.title = in.readString();
-        long tmpShotAt = in.readLong();
-        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
-        this.location = in.readParcelable(Location.class.getClassLoader());
-        this.tags = new ArrayList<>();
-        in.readList(this.tags, ArrayList.class.getClassLoader());
-        this.images = in.readParcelable(Image.class.getClassLoader());
-        this.liked = in.readByte() != 0;
-        this.likesCount = in.readInt();
-        this.taskId = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.id = in.readString();
+    protected Photo(Parcel in) {
+        uid = in.readString();
+        commentsCount = in.readInt();
+        likesCount = in.readInt();
+        liked = in.readInt() == 1;
+        title = in.readString();
+        location = in.readParcelable(Location.class.getClassLoader());
+        tags = in.createStringArrayList();
+        images = in.readParcelable(Image.class.getClassLoader());
+        taskId = in.readString();
+        user = in.readParcelable(User.class.getClassLoader());
     }
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 
     public String getFsId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        return uid;
     }
 
     public Date getShotAt() {
@@ -100,22 +105,6 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
         this.images = images;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    public int getLikesCount() {
-        return likesCount;
-    }
-
-    public void setLikesCount(int likesCount) {
-        this.likesCount = likesCount;
-    }
-
     @Override
     public String toString() {
         return "Photo{" +
@@ -124,8 +113,6 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
                 ", location=" + location +
                 ", tags=" + tags +
                 ", images=" + images +
-                ", liked=" + liked +
-                ", likesCount=" + likesCount +
                 ", taskId='" + taskId + '\'' +
                 ", user=" + user +
                 '}';
@@ -147,7 +134,7 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
     @Override
     public String getFSTitle() {
         if (user != null) {
-            return user.getFullName();
+            return user.getUsername();
         }
         return "";
     }
@@ -169,7 +156,7 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
 
     @Override
     public int getFsLikeCount() {
-        return likesCount;
+        return getLikesCount();
     }
 
     @Override
@@ -199,59 +186,17 @@ public class Photo implements Parcelable, IFullScreenObject, IFeedObject {
         return 0;
     }
 
-
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
-        dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
-        dest.writeParcelable(this.location, 0);
-        dest.writeList(this.tags);
-        dest.writeParcelable(this.images, 0);
-        dest.writeByte(liked ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.likesCount);
-        dest.writeString(this.taskId);
-        dest.writeParcelable(this.user, 0);
-        dest.writeString(this.id);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(uid);
+        parcel.writeInt(commentsCount);
+        parcel.writeInt(likesCount);
+        parcel.writeInt(liked ? 1 : 0);
+        parcel.writeString(title);
+        parcel.writeParcelable(location, i);
+        parcel.writeStringList(tags);
+        parcel.writeParcelable(images, i);
+        parcel.writeString(taskId);
+        parcel.writeParcelable(user, i);
     }
-
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        public Photo createFromParcel(Parcel source) {
-            return new Photo(source);
-        }
-
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Photo photo = (Photo) o;
-
-        if (id != null ? !id.equals(photo.id) : photo.id != null) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public String place() {
-        return getFsLocation();
-    }
-
 }

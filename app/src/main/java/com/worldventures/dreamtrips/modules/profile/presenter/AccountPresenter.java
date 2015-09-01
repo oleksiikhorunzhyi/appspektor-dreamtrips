@@ -1,35 +1,37 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
+import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
+import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -37,16 +39,17 @@ import icepick.Icicle;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 
-public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
+public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
 
-    private DecimalFormat df = new DecimalFormat("#0.00");
     private String coverTempFilePath;
 
     @Icicle
     boolean shouldReload;
+    @Icicle
+    int callbackType;
 
     public AccountPresenter() {
         super();
@@ -76,27 +79,37 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     private void onAvatarUploadSuccess(User obj) {
         TrackingHelper.profileUploadFinish(getAccountUserId());
         UserSession userSession = appSessionHolder.get().get();
-        User user = userSession.getUser();
-        user.setAvatar(obj.getAvatar());
+        User currentUser = userSession.getUser();
+        currentUser.setAvatar(obj.getAvatar());
 
         appSessionHolder.put(userSession);
-        view.setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
-        view.avatarProgressVisible(false);
+        this.user.setAvatar(currentUser.getAvatar());
+        this.user.setAvatarUploadInProgress(false);
+        view.notifyUserChanged();
         eventBus.post(new UpdateUserInfoEvent());
     }
 
     private void onCoverUploadSuccess(User obj) {
         UserSession userSession = appSessionHolder.get().get();
-        User user = userSession.getUser();
-        user.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
-        this.user = user;
+        User currentUser = userSession.getUser();
+        currentUser.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
+
         appSessionHolder.put(userSession);
-        view.setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
-        view.coverProgressVisible(false);
+        this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
+        this.user.setCoverUploadInProgress(false);
+        view.notifyUserChanged();
         if (coverTempFilePath != null) {
             new File(coverTempFilePath).delete();
         }
         eventBus.post(new UpdateUserInfoEvent());
+    }
+
+    @Override
+    protected void onProfileLoaded(User user) {
+        super.onProfileLoaded(user);
+        UserSession userSession = appSessionHolder.get().get();
+        userSession.setUser(user);
+        appSessionHolder.put(userSession);
     }
 
     public void logout() {
@@ -107,32 +120,22 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     }
 
     @Override
-    public void handleError(SpiceException error) {
-        view.avatarProgressVisible(false);
-        super.handleError(error);
-    }
-
-    @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        view.setSocial(featureManager.available(Feature.SOCIAL));
     }
 
     @Override
     public void openBucketList() {
         shouldReload = true;
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(BucketListModule.BUCKETLIST));
+        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
     }
 
     @Override
     public void openTripImages() {
-        shouldReload = true;
         Bundle args = new Bundle();
-        args.putInt(TripImagesTabsPresenter.SELECTION_EXTRA, TripImagesListFragment.Type.MY_IMAGES.ordinal());
-        activityRouter.openComponentActivity(rootComponentsProvider
-                .getComponentByKey(TripsImagesModule.TRIP_IMAGES), args);
+        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.MY_IMAGES);
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.ACCOUNT_IMAGES);
     }
 
     public void photoClicked() {
@@ -143,42 +146,16 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
         view.openCoverPicker();
     }
 
-    @Override
-    protected void setUserProfileInfo() {
-        super.setUserProfileInfo();
-        view.setTripImagesCount(user.getTripImagesCount());
-        view.setBucketItemsCount(user.getBucketListItemsCount());
-        view.setRoviaBucks(df.format(user.getRoviaBucks()));
-        view.setDreamTripPoints(df.format(user.getDreamTripsPoints()));
-    }
-
-    public void onAvatarChosen(Fragment fragment, ChosenImage image, String error) {
-        if (image != null) {
-            view.avatarProgressVisible(true);
-            String fileThumbnail = image.getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
-            } else {
-                uploadAvatar(fileThumbnail);
-            }
-        }
-    }
-
     private void uploadAvatar(String fileThumbnail) {
         final File file = new File(fileThumbnail);
         final TypedFile typedFile = new TypedFile("image/*", file);
         TrackingHelper.profileUploadStart(getAccountUserId());
-        doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess);
-    }
-
-    public void onCoverChosen(Fragment fragment, ChosenImage image, String error) {
-        if (image != null) {
-            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
-                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
-            } else {
-                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
-            }
-        }
+        this.user.setAvatarUploadInProgress(true);
+        view.notifyUserChanged();
+        doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess, spiceException -> {
+            user.setAvatarUploadInProgress(false);
+            view.notifyUserChanged();
+        });
     }
 
     //Called from onActivityResult
@@ -187,9 +164,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
             this.coverTempFilePath = path;
             final File file = new File(path);
             final TypedFile typedFile = new TypedFile("image/*", file);
-            view.coverProgressVisible(true);
+            user.setCoverUploadInProgress(true);
+            view.notifyUserChanged();
             TrackingHelper.profileUploadStart(getAccountUserId());
-            doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess);
+            doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess, spiceException -> {
+                user.setCoverUploadInProgress(false);
+                view.notifyUserChanged();
+            });
 
         } else {
             view.informUser(errorMsg);
@@ -206,28 +187,84 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> {
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getNextPageRequest(int page) {
-        return new GetFeedQuery(page);
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
+        if (view.getAdapter().getItemCount() > 0) {
+            Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getItemCount() - 1);
+            return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
+        } else return null;
     }
 
     @Override
-    protected SpiceRequest<ArrayList<BaseFeedModel>> getRefreshRequest() {
-        return new GetFeedQuery(0);
+    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
+        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
+    }
+
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    public void setCallbackType(int callbackType) {
+        this.callbackType = callbackType;
+    }
+
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        if (event.getRequesterID() == this.hashCode()) {
+            eventBus.cancelEventDelivery(event);
+            eventBus.removeStickyEvent(ImagePickedEvent.class);
+            imageSelected(event.getImages()[0]);
+        }
+    }
+
+    private void imageSelected(ChosenImage chosenImage) {
+        if (view != null) {
+            switch (callbackType) {
+                case AccountFragment.AVATAR_CALLBACK:
+                    onAvatarChosen(chosenImage);
+                    break;
+                case AccountFragment.COVER_CALLBACK:
+                    onCoverChosen(chosenImage);
+                    break;
+            }
+        }
+    }
+
+    public void onAvatarChosen(ChosenImage image) {
+        if (image != null) {
+            String fileThumbnail = image.getFileThumbnail();
+            if (ValidationUtils.isUrl(fileThumbnail)) {
+                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
+            } else {
+                uploadAvatar(fileThumbnail);
+            }
+        }
+    }
+
+    public void onCoverChosen(ChosenImage image) {
+        if (image != null) {
+            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
+                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
+            } else {
+                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+            }
+        }
+    }
+
+    public void onEvent(OnPhotoClickEvent e) {
+        photoClicked();
+    }
+
+    public void onEvent(OnCoverClickEvent e) {
+        coverClicked();
     }
 
     public interface View extends ProfilePresenter.View {
-        void avatarProgressVisible(boolean visible);
-
-        void coverProgressVisible(boolean visible);
-
         void openAvatarPicker();
 
         void openCoverPicker();
-
-        void setRoviaBucks(String count);
-
-        void setDreamTripPoints(String count);
-
     }
 
 }

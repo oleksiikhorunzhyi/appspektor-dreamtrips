@@ -2,17 +2,20 @@ package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import android.os.Parcel;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import java.io.Serializable;
 
-public class BucketPhoto extends BaseEntity implements Serializable, IFullScreenObject, android.os.Parcelable {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class BucketPhoto implements Serializable, IFullScreenObject, android.os.Parcelable {
 
     public static final long serialVersionUID = 14534647;
+
     public static final Creator<BucketPhoto> CREATOR = new Creator<BucketPhoto>() {
         public BucketPhoto createFromParcel(Parcel source) {
             return new BucketPhoto(source);
@@ -22,10 +25,11 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
             return new BucketPhoto[size];
         }
     };
+
+    private String uid;
     @SerializedName("origin_url")
     private String originUrl;
     private String url;
-    private int taskId;
 
     private boolean isCover;
 
@@ -35,8 +39,7 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     private BucketPhoto(Parcel in) {
         this.originUrl = in.readString();
         this.url = in.readString();
-        this.taskId = in.readInt();
-        this.id = in.readInt();
+        this.uid = in.readString();
     }
 
     public void setOriginUrl(String originUrl) {
@@ -53,7 +56,7 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
 
     @Override
     public String getFsId() {
-        return String.format("%d", super.getId());
+        return uid;
     }
 
     @Override
@@ -117,7 +120,22 @@ public class BucketPhoto extends BaseEntity implements Serializable, IFullScreen
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.originUrl);
         dest.writeString(this.url);
-        dest.writeInt(this.taskId);
-        dest.writeInt(this.id);
+        dest.writeString(this.uid);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BucketPhoto that = (BucketPhoto) o;
+
+        return !(uid != null ? !uid.equals(that.uid) : that.uid != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return uid != null ? uid.hashCode() : 0;
     }
 }

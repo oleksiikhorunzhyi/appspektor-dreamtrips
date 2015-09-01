@@ -76,10 +76,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:drawableLeft="@drawable/feed_location_small"
-                        android:drawableStart="@drawable/feed_location_small"
+                        android:drawableLeft="@drawable/ic_feed_location_small"
+                        android:drawableStart="@drawable/ic_feed_location_small"
                         android:gravity="end"
-                        android:textColor="@color/feed_text_color"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
 
                     <TextView
@@ -87,9 +87,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:drawableLeft="@drawable/feed_calendar_small"
-                        android:drawableStart="@drawable/feed_calendar_small"
-                        android:textColor="@color/feed_text_color"
+                        android:drawableLeft="@drawable/ic_feed_calendar_small"
+                        android:drawableStart="@drawable/ic_feed_calendar_small"
+                        android:textColor="@color/gray"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
@@ -138,7 +138,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:adjustViewBounds="false"
-            android:background="#ff9e9e9e"/>
+            android:background="#ff9e9e9e"
+            android:id="@+id/content_divider"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -179,7 +180,7 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:button="@drawable/checko_box_dark"
+                android:button="@drawable/check_box_dark"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:visibility="gone"/>
@@ -216,7 +217,8 @@
                     android:layout_centerInParent="true"
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_comments"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_share"
@@ -235,7 +237,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:src="@drawable/ic_fs_image"/>
+                        android:src="@drawable/ic_fs_flag"/>
 
                     <ProgressBar
                         android:id="@+id/progress_flag"

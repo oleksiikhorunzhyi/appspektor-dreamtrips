@@ -40,10 +40,4 @@ public class ActivityModule {
         return new FragmentCompass(baseActivity, R.id.container_main);
     }
 
-    @Provides
-    @Named("details")
-    public FragmentCompass provideFragmentCompassDetails() {
-        return new FragmentCompass(baseActivity, R.id.detail_container);
-    }
-
 }

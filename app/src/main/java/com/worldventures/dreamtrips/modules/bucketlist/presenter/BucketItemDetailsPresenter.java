@@ -3,15 +3,18 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.bucketlist.view.activity.BucketActivity;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
@@ -21,8 +24,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onEdit() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketActivity.EXTRA_TYPE, type);
-        bundle.putInt(BucketActivity.EXTRA_ITEM, bucketItemId);
+        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
+        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
+
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
@@ -30,7 +34,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.add(Route.BUCKET_EDIT, bundle);
         } else {
-            activityRouter.openBucketItemEditActivity(bundle);
+            bundle.putBoolean(BucketListModule.EXTRA_LOCK, true);
+            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.BUCKET_EDIT);
         }
     }
 
@@ -39,10 +44,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     public void deleteBucketItem(BucketItem bucketItem) {
-        bucketItemManager.deleteBucketItem(bucketItem, type,
+        getBucketItemManager().deleteBucketItem(bucketItem, type,
                 jsonObject -> {
                     if (!view.isTabletLandscape()) view.done();
-                    else eventBus.post(new BucketItemUpdatedEvent(bucketItem));
+                    eventBus.post(new BucketItemUpdatedEvent(bucketItem));
                 },
                 this);
     }
@@ -50,8 +55,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onStatusUpdated(boolean status) {
         if (bucketItem != null && status != bucketItem.isDone()) {
             view.disableCheckbox();
-            bucketItemManager.updateItemStatus(String.valueOf(bucketItemId),
-                    status, item -> view.enableCheckbox(), this);
+            getBucketItemManager().updateItemStatus(String.valueOf(bucketItemId),
+                    status, item -> view.enableCheckbox(), spiceException -> {
+                        BucketItemDetailsPresenter.super.handleError(spiceException);
+                        view.setStatus(bucketItem.isDone());
+                        view.enableCheckbox();
+                    });
         }
     }
 
@@ -83,15 +92,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     @Override
     protected void syncUI() {
         super.syncUI();
-        if (!TextUtils.isEmpty(bucketItem.getType())) {
-            String s = bucketItem.getCategoryName();
-            view.setCategory(s);
+
+        if (bucketItem != null) {
+            if (!TextUtils.isEmpty(bucketItem.getType())) {
+                String s = bucketItem.getCategoryName();
+                view.setCategory(s);
+            }
+            view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
+            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
+            view.setCover(medium, original);
+            view.setupDiningView(bucketItem.getDining());
         }
-        view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-        String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-        String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-        view.setCover(medium, original);
-        view.setupDiningView(bucketItem.getDining());
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -101,8 +113,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setCover(String medium, String original);
 
-        void showEditContainer();
-
         void disableCheckbox();
 
         void enableCheckbox();
@@ -110,6 +120,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void setupDiningView(DiningItem diningItem);
 
         void showDeletionDialog(BucketItem bucketItem);
+
+        void showEditContainer();
     }
 
 }

@@ -26,14 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_more_ss" />
+            android:src="@drawable/ic_success_story_more" />
     </LinearLayout>
-<!--
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="14dp"
-        android:background="#ff929292" />-->
 
 
 </LinearLayout>

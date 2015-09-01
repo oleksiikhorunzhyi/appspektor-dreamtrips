@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/rootView"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/aditional_cover"
+        android:src="@drawable/ic_cover_place_holder"
+        android:scaleType="centerCrop"/>
+
     <ScrollView
+        android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
@@ -66,7 +75,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="32dp"
                     android:layout_marginTop="4dp"
-                    android:background="@color/selected_gray"/>
+                    android:background="@color/gray_lighter"/>
 
                 <com.worldventures.dreamtrips.modules.bucketlist.view.custom.TagViewGroup
                     android:layout_width="match_parent"
@@ -113,6 +122,7 @@
                 android:textSize="18sp"/>
 
             <TextView
+                android:id="@+id/pictures_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -153,6 +163,7 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/controllerWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -166,18 +177,18 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn"
+            android:background="@drawable/background_button"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/delete"/>
+            android:src="@drawable/ic_bucket_item_delete"/>
 
         <ImageView
             android:id="@+id/bucketItemShare"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn"
+            android:background="@drawable/background_button"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
@@ -188,12 +199,17 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="1dp"
-            android:background="@drawable/background_ss_btn_right_corner"
+            android:background="@drawable/background_button_right_corner"
             android:focusableInTouchMode="false"
             android:padding="6dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_edit"/>
+            android:src="@drawable/ic_bucket_edit"/>
     </LinearLayout>
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_actionbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"/>
 
 </RelativeLayout>

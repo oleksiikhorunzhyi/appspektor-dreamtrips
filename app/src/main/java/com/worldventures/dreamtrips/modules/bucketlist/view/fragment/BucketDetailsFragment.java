@@ -7,11 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,25 +20,31 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresenter> implements BucketItemDetailsPresenter.View {
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragment<T> implements BucketItemDetailsPresenter.View {
+
+    public static final String EXTRA_SLAVE = "slave";
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
@@ -74,6 +80,11 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.bucket_photos)
     protected BucketPhotosView bucketPhotosView;
 
+    @InjectView(R.id.bucket_tags_container)
+    View bucketTags;
+    @InjectView(R.id.bucket_who_container)
+    View bucketWho;
+
     @InjectView(R.id.diningName)
     TextView diningName;
 
@@ -95,28 +106,53 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     @InjectView(R.id.diningDivider)
     View diningDivider;
 
+    @InjectView(R.id.top_shadow)
+    View topShadow;
+
     @Inject
     @ForActivity
     Provider<Injector> injector;
 
-    WeakHandler handler = new WeakHandler();
+
+    @InjectView(R.id.contentView)
+    ViewGroup contentView;
 
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+    public void afterCreateView(View view) {
+        super.afterCreateView(view);
+        bucketPhotosView.init(injector, getBucketPhotosType());
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
-        if (toolbar != null) {
+
+        boolean slave = getArguments().getBoolean(EXTRA_SLAVE, false);
+        if (!slave) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-            toolbar.getBackground().setAlpha(0);
+
+            int space = getResources().getDimensionPixelSize(R.dimen.bucket_details_spacing);
+            int spaceTop = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+            lp.rightMargin = space;
+            lp.leftMargin = space;
+            if (isTabletLandscape()) {
+                lp.topMargin = spaceTop;
+            }
+            contentView.setLayoutParams(lp);
+
+        } else {
+            topShadow.setVisibility(View.GONE);
+            toolbar.setVisibility(View.GONE);
         }
         setForeignIntentAction();
     }
 
+    protected BucketPhotosView.Type getBucketPhotosType() {
+        return BucketPhotosView.Type.DETAILS;
+    }
+
     @Override
-    protected BucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemDetailsPresenter(getArguments());
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new BucketItemDetailsPresenter(getArguments());
     }
 
     @Override
@@ -173,12 +209,22 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
 
     @Override
     public void setPeople(String people) {
-        textViewFriends.setText(people);
+        if (!TextUtils.isEmpty(people)) {
+            bucketWho.setVisibility(View.VISIBLE);
+            textViewFriends.setText(people);
+        } else {
+            bucketWho.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void setTags(String tags) {
-        textViewTags.setText(tags);
+        if (!TextUtils.isEmpty(tags)) {
+            bucketTags.setVisibility(View.VISIBLE);
+            textViewTags.setText(tags);
+        } else {
+            bucketTags.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -261,20 +307,6 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        eventBus.postSticky(new ActivityResult(requestCode, resultCode, data));
-    }
-
-    public void onEvent(ActivityResult event) {
-        eventBus.removeStickyEvent(event);
-        handler.post(() -> {
-            if (bucketPhotosView != null)
-                bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data);
-        });
-    }
-
-    @Override
     public void done() {
         getActivity().onBackPressed();
     }
@@ -285,18 +317,12 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
     }
 
     @Override
-    public void showEditContainer() {
-        getActivity().findViewById(R.id.container_details_floating).setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void updatePhotos() {
-        bucketPhotosView.init(this, injector, BucketPhotosView.Type.DETAILS);
-        bucketPhotosView.multiSelectAvailable(true);
-        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
-        bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
-        bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .args(args)
+                .move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override
@@ -314,15 +340,33 @@ public class BucketDetailsFragment extends BaseFragment<BucketItemDetailsPresent
                 .show();
     }
 
-    public static class ActivityResult {
-        public final int requestCode;
-        public final int resultCode;
-        public final Intent data;
+    @Override
+    public void showAddPhotoDialog() {
+        int items = R.array.dialog_add_bucket_photo_multiselect;
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(getActivity().getString(R.string.select_photo))
+                .items(items)
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
+                            break;
+                        case 1:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
+                            break;
+                        case 2:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
+                            break;
+                    }
+                });
 
-        public ActivityResult(int requestCode, int resultCode, Intent data) {
-            this.requestCode = requestCode;
-            this.resultCode = resultCode;
-            this.data = data;
-        }
+        builder.show();
     }
+
+    @Override
+    public void showEditContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
 }

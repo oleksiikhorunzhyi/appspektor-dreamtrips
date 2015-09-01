@@ -9,12 +9,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
+import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.friends.model.Friend;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -28,7 +31,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import org.json.JSONObject;
 
@@ -83,10 +86,13 @@ public interface DreamTripsApi {
     List<ActivityModel> getActivities();
 
     @GET("/api/photos")
-    ArrayList<Photo> getUserPhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<Photo> getUsersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{id}/photos")
-    ArrayList<Photo> getMyPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getAccountPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+
+    @GET("/api/users/{user_id}/photos")
+    ArrayList<Photo> getForeignUserPhotos(@Path("user_id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
     ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
@@ -104,29 +110,20 @@ public interface DreamTripsApi {
     @DELETE("/api/photos/{id}")
     JsonObject deletePhoto(@Path("id") String photoId);
 
-    @POST("/api/photos/{id}/like")
-    JsonObject likePhoto(@Path("id") String photoId);
-
-    @DELETE("/api/photos/{id}/like")
-    JsonObject unlikePhoto(@Path("id") String photoId);
-
     @POST("/api/success_stories/{id}/like")
     JsonObject likeSS(@Path("id") int photoId);
 
     @DELETE("/api/success_stories/{id}/like")
     JsonObject unlikeSS(@Path("id") int photoId);
 
-    @POST("/api/trips/{id}/like")
-    JsonObject likeTrip(@Path("id") String photoId);
-
-    @DELETE("/api/trips/{id}/like")
-    JsonObject unlikeTrio(@Path("id") String photoId);
-
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
 
-    @POST("/api/bucket_list_items/{id}/photos")
-    BucketPhoto uploadBucketPhoto(@Path("id") int bucketId, @Body BucketPhoto bucketPhoto);
+    @POST("/api/photos")
+    Photo uploadTripPhoto(@Body UploadTask uploadTask);
+
+    @POST("/api/bucket_list_items/{uid}/photos")
+    BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
 
     @GET("/api/trips/{id}")
     TripDetails getDetails(@Path("id") String tripId);
@@ -134,20 +131,26 @@ public interface DreamTripsApi {
     @POST("/api/bucket_list_items")
     BucketItem createItem(@Body BucketBasePostItem bucketItem);
 
-    @PATCH("/api/bucket_list_items/{id}")
-    BucketItem completeItem(@Path("id") int id, @Body BucketStatusItem bucketPostItem);
+    @PATCH("/api/bucket_list_items/{uid}")
+    BucketItem completeItem(@Path("uid") String uid, @Body BucketStatusItem bucketPostItem);
 
-    @PATCH("/api/bucket_list_items/{id}")
-    BucketItem updateItem(@Path("id") String id, @Body BucketBasePostItem bucketPostItem);
+    @PATCH("/api/bucket_list_items/{uid}")
+    BucketItem updateItem(@Path("uid") String uid, @Body BucketBasePostItem bucketPostItem);
 
-    @DELETE("/api/bucket_list_items/{id}")
-    JsonObject deleteItem(@Path("id") int id);
+    @DELETE("/api/bucket_list_items/{uid}")
+    JsonObject deleteItem(@Path("uid") String uid);
 
     @GET("/api/bucket_list_items")
     ArrayList<BucketItem> getBucketListFull();
 
-    @DELETE("/api/bucket_list_items/{id}/photos/{photo_id}")
-    JsonObject deleteBucketPhoto(@Path("id") int id, @Path("photo_id") String photoId);
+    @GET("/api/users/{user_id}/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull(@Path("user_id") int userId);
+
+    @GET("/api/social/users/{user_id}/bucket_list_items")
+    ArrayList<BucketItem> getBucketListFull(@Path("user_id") String userId);
+
+    @DELETE("/api/bucket_list_items/{uid}/photos/{photo_id}")
+    JsonObject deleteBucketPhoto(@Path("uid") String uid, @Path("photo_id") String photoId);
 
     @GET("/api/bucket_list/locations")
     ArrayList<PopularBucketItem> getPopularLocations();
@@ -158,8 +161,8 @@ public interface DreamTripsApi {
     @GET("/api/bucket_list/dinings")
     ArrayList<PopularBucketItem> getPopularDining();
 
-    @PUT("/api/bucket_list_items/{id}/position")
-    JsonObject changeOrder(@Path("id") int id, @Body BucketOrderModel item);
+    @PUT("/api/bucket_list_items/{uid}/position")
+    JsonObject changeOrder(@Path("uid") String uid, @Body BucketOrderModel item);
 
     @GET("/api/categories")
     ArrayList<CategoryItem> getCategories();
@@ -208,10 +211,10 @@ public interface DreamTripsApi {
     ArrayList<AvailableLocale> getLocales();
 
     @GET("/api/member_videos/")
-    ArrayList<Video> getVideos(@Query("type") String type);
+    ArrayList<Category> getVideos(@Query("type") String type);
 
     @GET("/api/member_videos/")
-    ArrayList<Video> getVideos(@Query("type") String type, @Query("country") String country);
+    ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
 
 
     @GET("/api/member_videos/locales")
@@ -224,12 +227,12 @@ public interface DreamTripsApi {
     ArrayList<Circle> getCircles();
 
     @GET("/api/social/friends")
-    ArrayList<Friend> getFriends(@Query("circle_id") String circle_id,
-                                 @Query("query") String query,
-                                 @Query("offset") int offset);
+    ArrayList<User> getFriends(@Query("circle_id") String circle_id,
+                               @Query("query") String query,
+                               @Query("offset") int offset);
 
     @GET("/api/social/friends")
-    ArrayList<Friend> getAllFriends(@Query("query") String query, @Query("offset") int offset);
+    ArrayList<User> getAllFriends(@Query("query") String query, @Query("offset") int offset);
 
     @GET("/api/social/users")
     ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
@@ -250,12 +253,51 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/request_responses")
     JSONObject deleteRequest(@Query("user_id") int userId);
 
-    @DELETE("/api/social/friends")
-    JSONObject unfriend(@Query("user_id") int userId);
+    @DELETE("/api/social/friends/{user_id}")
+    JSONObject unfriend(@Path("user_id") int userId);
 
-    @GET("/api/social/users/{user_id}/feed")
-    ArrayList<BaseFeedModel> getUserFeed(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("page") int page);
+    @GET("/api/social/users/{user_id}/timeline")
+    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
+
+    @GET("/api/social/timeline")
+    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<BaseFeedModel> getUserFeed(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
+
+    @GET("/api/{object_id}/comments")
+    ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/comments")
+    Comment replyComment(@Field("reply_comment_id") String commentId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/posts")
+    TextualPost post(@Field("description") String description);
+
+    @DELETE("/api/social/comments/{id}")
+    JSONObject deleteComment(@Path("id") String commentId);
+
+    @FormUrlEncoded
+    @PUT("/api/social/comments/{id}")
+    Comment editComment(@Path("id") String commentId, @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/social/circles/{circle_id}/users")
+    Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+
+    @FormUrlEncoded
+    @BODY_DELETE("/api/social/circles/{circle_id}/users")
+    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+
+    @POST("/api/{uid}/likes")
+    Void likeEntity(@Path("uid") String uid);
+
+    @DELETE("/api/{uid}/likes")
+    Void dislikeEntity(@Path("uid") String uid);
 }

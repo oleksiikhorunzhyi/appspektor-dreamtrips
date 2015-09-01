@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,22 +13,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import com.badoo.mobile.util.WeakHandler;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.List;
 
@@ -69,7 +73,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Inject
     @ForActivity
     Provider<Injector> injector;
-    WeakHandler handler = new WeakHandler();
+
     private boolean categorySelected = false;
 
     @Override
@@ -129,11 +133,22 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
+
+        boolean lock = getArguments().getBoolean(BucketListModule.EXTRA_LOCK);
+
+        if (lock) OrientationUtil.lockOrientation(getActivity());
+
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        OrientationUtil.unlockOrientation(getActivity());
+    }
 
     @Override
     public void setCategoryItems(List<CategoryItem> items) {
@@ -240,32 +255,38 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void updatePhotos() {
-        bucketPhotosView.init(this, injector, BucketPhotosView.Type.EDIT);
-        bucketPhotosView.multiSelectAvailable(true);
-        bucketPhotosView.setMakePhotoImageCallback(getPresenter().getPhotoChooseCallback());
-        bucketPhotosView.setFbImageCallback(getPresenter().getFbCallback());
-        bucketPhotosView.setChooseImageCallback(getPresenter().getGalleryChooseCallback());
-        bucketPhotosView.setMultiSelectPickCallback(getPresenter().getMultiSelectPickCallback());
-    }
-
-    @Override
     public IBucketPhotoView getBucketPhotosView() {
         return bucketPhotosView;
     }
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        eventBus.postSticky(new BucketDetailsFragment.ActivityResult(requestCode, resultCode, data));
-
+    public void openFullscreen(Bundle args) {
+        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
+    @Override
+    public void showAddPhotoDialog() {
+        int items = R.array.dialog_add_bucket_photo_multiselect;
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(getActivity().getString(R.string.select_photo))
+                .items(items)
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
+                            break;
+                        case 1:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
+                            break;
+                        case 2:
+                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
+                            break;
+                        default:
+                            break;
+                    }
+                });
 
-    public void onEvent(BucketDetailsFragment.ActivityResult event) {
-        eventBus.removeStickyEvent(event);
-        handler.post(() -> bucketPhotosView.onActivityResult(event.requestCode, event.resultCode, event.data));
+        builder.show();
     }
 
 

@@ -1,7 +1,6 @@
 # These options are the minimal options for a functioning application
 # using Proguard and the AWS SDK 2.1.5 for Android
 
--keep class org.apache.commons.logging.**               { *; }
 -keep class com.amazonaws.org.apache.commons.**         { *; }
 -keep class com.amazonaws.services.sqs.QueueUrlHandler  { *; }
 -keep class com.amazonaws.javax.xml.transform.sax.*     { public *; }
@@ -31,5 +30,12 @@
 -dontwarn com.amazonaws.services.s3.**
 -dontwarn com.amazonaws.services.sqs.**
 -dontwarn com.amazonaws.util.json.JacksonFactory*
+-dontwarn com.fasterxml.jackson.core.JsonFactory*
+-dontwarn com.fasterxml.jackson.core.JsonGenerator*
+-dontwarn com.fasterxml.jackson.core.JsonToken*
+-dontwarn com.fasterxml.jackson.core.JsonParser*
+-dontwarn com.fasterxml.jackson.core.JsonFactory*
+-dontwarn com.fasterxml.jackson.core.JsonFactory*
+-dontwarn org.apache.commons.logging.LogFactory*
 
 -dontnote com.amazonaws.services.sqs.QueueUrlHandler

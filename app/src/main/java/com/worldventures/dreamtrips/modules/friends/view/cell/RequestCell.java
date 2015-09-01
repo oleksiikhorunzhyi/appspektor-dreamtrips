@@ -44,24 +44,24 @@ public class RequestCell extends AbstractCell<User> {
 
     @Override
     protected void syncUIStateWithModel() {
-        name.setText(getModelObject().getFullName());
+        name.setText(getModelObject().getUsernameWithCompany(itemView.getContext()));
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
 
         switch (getModelObject().getRelationship()) {
-            case User.RELATION_INCOMING_REQUEST:
+            case INCOMING_REQUEST:
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.GONE);
                 reject.setVisibility(View.VISIBLE);
                 accept.setVisibility(View.VISIBLE);
                 break;
-            case User.RELATION_OUTGOING_REQUEST:
+            case OUTGOING_REQUEST:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
                 break;
-            case User.RELATION_REJECT:
+            case REJECT:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);

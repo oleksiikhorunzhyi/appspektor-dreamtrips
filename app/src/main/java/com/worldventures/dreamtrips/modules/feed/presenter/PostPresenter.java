@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -26,8 +23,6 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 
 import javax.inject.Inject;
-
-import io.techery.scalablecropp.library.Crop;
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
@@ -245,8 +240,10 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     private void cancelUpload() {
-        if (post.getUploadTask() != null)
+        if (post.getUploadTask() != null) {
             photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
+            post.setUploadTask(null);
+        }
     }
 
 

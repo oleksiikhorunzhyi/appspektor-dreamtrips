@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -49,7 +48,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         DreamTripsRequest command = model.getItem().isLiked() ?
                 new UnlikeEntityCommand(model.getItem().getUid()) :
                 new LikeEntityCommand(model.getItem().getUid());
-        doRequest(command, element -> itemLiked(model));
+        doRequest(command, element -> itemLiked(model.getItem().getUid()));
     }
 
     //TODO Refactor this after apperean release
@@ -58,20 +57,23 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 .firstOrDefault(element -> element.getItem().getUid().equals(event.getId()));
 
         if (model != null) {
-            itemLiked(model);
+            itemLiked(event.getId());
         }
     }
 
-    private void itemLiked(BaseEventModel model) {
-        model.getItem().setLiked(!model.getItem().isLiked());
-        int likesCount = model.getItem().getLikesCount();
+    private void itemLiked(String uid) {
+        Queryable.from(view.getAdapter().getItems()).forEachR(model -> {
+            if (model.getItem().getUid().equals(uid)) {
+                model.getItem().setLiked(!model.getItem().isLiked());
+                int likesCount = model.getItem().getLikesCount();
 
-        if (model.getItem().isLiked()) likesCount++;
-        else likesCount--;
+                if (model.getItem().isLiked()) likesCount++;
+                else likesCount--;
 
-        model.getItem().setLikesCount(likesCount);
-
-        itemChanged(model);
+                model.getItem().setLikesCount(likesCount);
+                itemChanged(model);
+            }
+        });
     }
 
     private void itemChanged(BaseEventModel baseFeedModel) {

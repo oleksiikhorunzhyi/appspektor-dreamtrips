@@ -131,15 +131,17 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseEventModel<?> that = (BaseEventModel<?>) o;
+        BaseEventModel<?> model = (BaseEventModel<?>) o;
 
-        return !(item != null ? !item.equals(that.item) : that.item != null);
-
+        return action == model.action &&
+                !(item != null ? !item.equals(model.item) : model.item != null);
     }
 
     @Override
     public int hashCode() {
-        return item != null ? item.hashCode() : 0;
+        int result = action != null ? action.hashCode() : 0;
+        result = 31 * result + (item != null ? item.hashCode() : 0);
+        return result;
     }
 
     public static BaseEventModel create(IFeedObject item, User owner) {

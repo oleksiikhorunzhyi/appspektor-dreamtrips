@@ -228,17 +228,21 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onStateChanged(int id, TransferState state) {
-        if (view != null)
-            if (state.equals(TransferState.COMPLETED)) {
-                UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                        .getBucketPhotoUploadTask(String.valueOf(id));
-                bucketPhotoUploadTask.setOriginUrl(photoUploadingSpiceManager
-                        .getResultUrl(bucketPhotoUploadTask));
-                bucketPhotoUploadTask.setStatus(UploadTask.Status.COMPLETED);
-                addPhotoToBucketItem(bucketPhotoUploadTask);
-            } else if (state.equals(TransferState.FAILED)) {
-                photoUploadError(String.valueOf(id));
+        if (view != null) {
+            UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
+                    .getBucketPhotoUploadTask(String.valueOf(id));
+            if (bucketPhotoUploadTask != null) {
+                if (state.equals(TransferState.COMPLETED)) {
+                    bucketPhotoUploadTask.setOriginUrl(photoUploadingSpiceManager
+                            .getResultUrl(bucketPhotoUploadTask));
+                    bucketPhotoUploadTask.setStatus(UploadTask.Status.COMPLETED);
+                    addPhotoToBucketItem(bucketPhotoUploadTask);
+                } else if (state.equals(TransferState.FAILED)) {
+                    photoUploadError(bucketPhotoUploadTask);
+                }
+
             }
+        }
     }
 
     @Override
@@ -247,13 +251,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onError(int id, Exception ex) {
-        photoUploadError(String.valueOf(id));
+        UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
+                .getBucketPhotoUploadTask(String.valueOf(id));
+        if (bucketPhotoUploadTask != null)
+            photoUploadError(bucketPhotoUploadTask);
     }
 
     private void addPhotoToBucketItem(UploadTask task) {
         doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
                 photo -> photoAdded(task, photo),
-                spiceException -> photoUploadError(task.getAmazonTaskId()));
+                spiceException -> onError(Integer.valueOf(task.getAmazonTaskId()), spiceException));
     }
 
     private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
@@ -263,12 +270,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
-    private void photoUploadError(String taskId) {
-        UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(taskId);
-        bucketPhotoUploadTask.setStatus(UploadTask.Status.FAILED);
-        db.saveUploadTask(bucketPhotoUploadTask);
-        view.getBucketPhotosView().itemChanged(bucketPhotoUploadTask);
+    private void photoUploadError(UploadTask uploadTask) {
+        uploadTask.setStatus(UploadTask.Status.FAILED);
+        db.saveUploadTask(uploadTask);
+        view.getBucketPhotosView().itemChanged(uploadTask);
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
@@ -300,14 +305,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         if (event.getRequesterID() == bucketItemId.hashCode()) {
             eventBus.removeStickyEvent(event);
 
-            Queryable.from(event.getImages()).forEachR(choseImage -> {
-                String fileThumbnail = choseImage.getFileThumbnail();
-                if (ValidationUtils.isUrl(fileThumbnail)) {
-                    imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
-                } else {
-                    imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
-                }
-            });
+            if (event.getRequestType() == PickImageDelegate.REQUEST_MULTI_SELECT) {
+                Queryable.from(event.getImages()).forEachR(choseImage ->
+                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+            } else {
+                Queryable.from(event.getImages()).forEachR(choseImage -> {
+                    String fileThumbnail = choseImage.getFileThumbnail();
+                    if (ValidationUtils.isUrl(fileThumbnail)) {
+                        imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
+                    } else {
+                        imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
+                    }
+                });
+            }
         }
     }
 

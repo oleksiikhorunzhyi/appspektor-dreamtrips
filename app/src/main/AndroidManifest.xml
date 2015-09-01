@@ -109,16 +109,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".modules.tripsimages.view.activity.FullScreenPhotoActivity"
-            android:label="@string/title_activity_full_screen_photo"/>
-        <activity
             android:name=".modules.tripsimages.view.activity.FullScreenTripImageActivity"
             android:label="@string/title_activity_full_screen_photo"/>
         <activity android:name=".modules.trips.view.activity.DetailTripActivity"/>
-        <activity
-            android:name=".modules.reptools.view.activity.SuccessStoryDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/empty"/>
         <activity
             android:name=".modules.profile.view.activity.FriendPrefsWrapperActivity"
             android:configChanges="orientation|screenSize"

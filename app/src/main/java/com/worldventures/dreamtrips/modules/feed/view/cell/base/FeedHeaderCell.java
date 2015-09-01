@@ -86,9 +86,15 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     }
 
     @Optional
-    @OnClick({R.id.comments, R.id.comment_preview, R.id.comments_count})
-    void commentsClicked() {
+    @OnClick({R.id.comment_preview, R.id.comments_count})
+    void commentsCountClicked() {
         openComments(getModelObject());
+    }
+
+    @Optional
+    @OnClick(R.id.comments)
+    void commentsClicked() {
+        openComments(getModelObject(), true);
     }
 
     @Optional
@@ -97,9 +103,14 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
         getEventBus().post(new LikesPressedEvent(getModelObject()));
     }
 
-    public void openComments(BaseEventModel baseFeedModel) {
+    protected void openComments(BaseEventModel baseFeedModel) {
+        openComments(baseFeedModel, false);
+    }
+
+    protected void openComments(BaseEventModel baseFeedModel, boolean openKeyboard) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
+        bundle.putBoolean(CommentsFragment.EXTRA_OPEN_COMMENT_KEYBOARD, openKeyboard);
         //
         NavigationBuilder.create()
                 .with(activityRouter)

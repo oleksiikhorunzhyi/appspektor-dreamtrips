@@ -86,11 +86,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void cancelClicked() {
-        if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
-            view.cancel();
-        } else {
-            view.showCancelationDialog();
-        }
+        if (view != null)
+            if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
+                view.cancel();
+            } else {
+                view.showCancelationDialog();
+            }
     }
 
     private void savePost() {
@@ -138,6 +139,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     private void processPost(IFeedObject iFeedObject) {
         eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
         view.cancel();
+        view = null;
     }
 
     public void postInputChanged(String input) {

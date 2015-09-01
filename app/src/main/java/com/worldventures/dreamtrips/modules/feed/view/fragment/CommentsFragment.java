@@ -5,12 +5,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -50,6 +47,8 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_comments)
 public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
     public static final String EXTRA_FEED_ITEM = "item";
+    public static final String EXTRA_OPEN_COMMENT_KEYBOARD = "EXTRA_OPEN_COMMENT_KEYBOARD";
+    public static final int HEADER_COUNT = 2;
 
     @InjectView(R.id.commentsList)
     RecyclerView commentsList;
@@ -116,12 +115,22 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
                 post.setEnabled(text.length() > 0);
             }
         });
+
+        if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
+            SoftInputUtil.showSoftInputMethod(input);
+        }
     }
 
     @Override
     public void addComments(List<Comment> commentList) {
-        adapter.addItems(2, commentList);
+        boolean scrollToBottom = adapter.getItems().size() <= HEADER_COUNT
+                && getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false);
+        adapter.addItems(HEADER_COUNT, commentList);
         stateDelegate.restoreStateIfNeeded();
+
+        if (scrollToBottom) {
+            commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
+        }
     }
 
     @Override
@@ -133,7 +142,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @Override
     public void addComment(Comment comment) {
         post.setEnabled(true);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setFocusable(true);
+        input.setFocusableInTouchMode(true);
         input.setText(null);
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
@@ -176,7 +186,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     @Override
     public void onPostError() {
         post.setEnabled(true);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setFocusable(true);
+        input.setFocusableInTouchMode(true);
     }
 
     @Override
@@ -189,7 +200,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     void onPost() {
         getPresenter().post();
         post.setEnabled(false);
-        input.setInputType(InputType.TYPE_NULL);
+        input.setFocusable(false);
     }
 
     @Override

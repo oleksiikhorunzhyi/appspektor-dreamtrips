@@ -27,8 +27,6 @@ import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemp
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWrapperActivity;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.view.activity.SuccessStoryDetailsActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
@@ -107,12 +105,6 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openDefaultShareIntent(Intent intent) {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
-    }
-
-    public void openSuccessStoryDetails(SuccessStory successStory) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoryDetailsActivity.BUNDLE_STORY, successStory);
-        startActivity(SuccessStoryDetailsActivity.class, bundle);
     }
 
     public void openFriendPrefs(User friend) {

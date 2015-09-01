@@ -29,11 +29,16 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
     }
 
     public void onSave() {
-        comment.setMessage(view.getText());
-        doRequest(new EditCommentCommand(comment), result -> {
-            eventBus.post(new CommentChangedEvent(result));
-            view.close();
-        });
+        if (comment != null && view != null) {
+            comment.setMessage(view.getText());
+            doRequest(new EditCommentCommand(comment), result -> {
+                eventBus.post(new CommentChangedEvent(result));
+                view.close();
+            }, error -> {
+                super.handleError(error);
+                view.enableSaveButton();
+            });
+        }
     }
 
     public interface View extends Presenter.View {
@@ -44,6 +49,8 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
         void setImageURI(Uri uri);
 
         void close();
+
+        void enableSaveButton();
 
         String getText();
     }

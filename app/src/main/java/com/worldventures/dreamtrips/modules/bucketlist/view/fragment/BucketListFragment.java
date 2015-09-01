@@ -192,7 +192,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         quickInputEditText.setInputType(types);
         quickInputEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         quickInputEditText.setOnEditorActionListener((v, actionId, event) -> {
-            String s = v.getText().toString();
+            String s = v.getText().toString().trim();
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(s)) {
                 v.setText(null);
                 getPresenter().addToBucketList(s);

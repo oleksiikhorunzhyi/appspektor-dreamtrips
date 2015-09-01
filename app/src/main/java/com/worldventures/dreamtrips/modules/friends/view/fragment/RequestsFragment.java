@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -14,6 +15,7 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
@@ -34,6 +36,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_requests)
+@MenuResource(R.menu.menu_friend)
 public class RequestsFragment extends BaseFragment<RequestsPresenter>
         implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
@@ -63,6 +66,16 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         stateDelegate.saveStateIfNeeded(outState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_friend:
+                activityRouter.openFriendsSearch();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

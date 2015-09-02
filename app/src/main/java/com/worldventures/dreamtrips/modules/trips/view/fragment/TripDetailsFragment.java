@@ -21,15 +21,13 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
@@ -42,7 +40,7 @@ import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
-public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
+public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresenter, TripDetailsBundle>
         implements TripDetailsPresenter.View {
 
     @InjectView(R.id.textViewName)
@@ -136,7 +134,7 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
             toolbarLanscape.getBackground().setAlpha(255);
         }
 
-        getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
+        getPresenter().setTrip(getArgs().tripModel());
 
         BaseStatePagerAdapter adapter =
                 new BaseStatePagerAdapter(getChildFragmentManager()) {

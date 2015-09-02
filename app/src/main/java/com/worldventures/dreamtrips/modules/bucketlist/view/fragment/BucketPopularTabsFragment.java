@@ -6,12 +6,12 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_popular_bucket_tab)
-public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPresenter> implements BucketPopularTabsPresenter.View {
+public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopularTabsPresenter, BucketBundle> implements BucketPopularTabsPresenter.View {
 
     @InjectView(R.id.tabs)
     protected BadgedTabLayout tabs;
@@ -37,8 +37,7 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments()
-                .getSerializable(BucketListModule.EXTRA_TYPE);
+        BucketTabsPresenter.BucketType type = getArgs().getType();
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter<FragmentItem>(getChildFragmentManager()) {
@@ -48,9 +47,9 @@ public class BucketPopularTabsFragment extends BaseFragment<BucketPopularTabsPre
                 }
             };
 
-            this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_locations)));
-            this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_activities)));
-            this.adapter.add(new FragmentItem(BucketListPopuralFragment.class, getString(R.string.bucket_restaurants)));
+            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_locations)));
+            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_activities)));
+            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_restaurants)));
         }
 
         pager.setAdapter(adapter);

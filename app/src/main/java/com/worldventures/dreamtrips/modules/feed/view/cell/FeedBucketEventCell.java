@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -18,12 +17,13 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
@@ -65,6 +65,8 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     SessionHolder<UserSession> appSessionHolder;
     @Inject
     BucketItemManager bucketItemManager;
+    @Inject
+    ForeignBucketItemManager foreignBucketItemManager;
 
 
     public FeedBucketEventCell(View view) {
@@ -81,8 +83,16 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     }
 
     @Override
+    public void afterInject() {
+        super.afterInject();
+
+    }
+
+    @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
+        foreignBucketItemManager.setUserId(getModelObject().getItem().getUser().getId());
+
         BucketItem bucketItem = getModelObject().getItem();
         String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);
         String big = BucketItemInfoUtil.getHighResUrl(itemView.getContext(), bucketItem);
@@ -117,10 +127,12 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
 
 
         itemView.setOnClickListener(v -> {
-            Bundle args = new Bundle();
+
             BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
-            args.putSerializable(BucketListModule.EXTRA_TYPE, bucketType);
-            args.putString(BucketListModule.EXTRA_ITEM_ID, getModelObject().getItem().getUid());
+
+            BucketBundle bundle = new BucketBundle();
+            bundle.setType(bucketType);
+            bundle.setBucketItemId(getModelObject().getItem().getUid());
 
             User user = getModelObject().getItem().getUser();
             Route route;
@@ -129,13 +141,13 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
                 bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
                 route = Route.DETAIL_BUCKET;
             } else {
-                args.putSerializable(BucketListModule.EXTRA_ITEM, getModelObject().getItem());
+                foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
                 route = Route.DETAIL_FOREIGN_BUCKET;
             }
 
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .args(args)
+                    .data(bundle)
                     .with(activityRouter)
                     .attach(route);
         });

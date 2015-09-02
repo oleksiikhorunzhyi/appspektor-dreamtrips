@@ -26,13 +26,13 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.List;
@@ -46,7 +46,7 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
+public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
@@ -127,7 +127,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemEditPresenter(getArguments());
+        return new BucketItemEditPresenter(getArgs());
     }
 
     @Override
@@ -135,9 +135,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
         super.afterCreateView(rootView);
         bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
 
-        boolean lock = getArguments().getBoolean(BucketListModule.EXTRA_LOCK);
-
-        if (lock) OrientationUtil.lockOrientation(getActivity());
+        if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
 
         if (imageViewDone != null) {
             setHasOptionsMenu(false);

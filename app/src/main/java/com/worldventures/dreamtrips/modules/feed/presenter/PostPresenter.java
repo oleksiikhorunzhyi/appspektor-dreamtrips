@@ -132,6 +132,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     private void processPost(IFeedObject iFeedObject) {
+        if (post.getUploadTask() != null)
+            snapper.removeUploadTask(post.getUploadTask());
+
         eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
         view.cancel();
         view = null;
@@ -211,18 +214,24 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     private void photoInProgress() {
-        view.showProgress();
-        enablePostButton();
+        if (view != null) {
+            view.showProgress();
+            enablePostButton();
+        }
     }
 
     private void photoCompleted() {
-        view.hideProgress();
-        enablePostButton();
+        if (view != null) {
+            view.hideProgress();
+            enablePostButton();
+        }
     }
 
     private void photoFailed() {
-        view.imageError();
-        enablePostButton();
+        if (view != null) {
+            view.imageError();
+            enablePostButton();
+        }
     }
 
     public void onProgressClicked() {
@@ -242,6 +251,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     private void cancelUpload() {
         if (post.getUploadTask() != null) {
             photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
+            snapper.removeUploadTask(post.getUploadTask());
             post.setUploadTask(null);
         }
     }

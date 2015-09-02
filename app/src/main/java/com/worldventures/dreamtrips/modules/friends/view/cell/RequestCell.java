@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -35,6 +36,8 @@ public class RequestCell extends AbstractCell<User> {
     SimpleDraweeView avatar;
     @InjectView(R.id.name)
     TextView name;
+    @InjectView(R.id.company)
+    TextView companyName;
     @InjectView(R.id.buttonContainer)
     ViewGroup container;
 
@@ -44,7 +47,15 @@ public class RequestCell extends AbstractCell<User> {
 
     @Override
     protected void syncUIStateWithModel() {
-        name.setText(getModelObject().getUsernameWithCompany(itemView.getContext()));
+        name.setText(getModelObject().getFullName());
+
+        if (!TextUtils.isEmpty(getModelObject().getCompany())) {
+            companyName.setText(getModelObject().getCompany());
+            companyName.setVisibility(View.VISIBLE);
+        } else {
+            companyName.setVisibility(View.GONE);
+        }
+
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
 

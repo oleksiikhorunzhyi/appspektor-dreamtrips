@@ -12,7 +12,7 @@
         android:id="@+id/avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
         fresco:roundAsCircle="true"/>
 
@@ -30,6 +30,15 @@
             android:textColor="@android:color/black"
             android:textSize="18sp"
             tools:text="Jon Snow"/>
+
+        <TextView
+            android:id="@+id/company"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:text="Adobe"/>
 
         <TextView
             android:id="@+id/tvGroup"

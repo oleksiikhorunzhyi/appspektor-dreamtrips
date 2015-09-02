@@ -314,7 +314,7 @@
     <string name="bucket_current_cover">Current cover</string>
     <string name="bucket_item_edit_completed">Mark as done!</string>
     <string name="reload_feed">Reload feed</string>
-    <string name="feed_header" formatted="false">&lt;b>%s&lt;/b> %s &lt;b>%s&lt;/b></string>
+    <string name="feed_header" formatted="false">&lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
     <string name="added">added a</string>
     <string name="booked">booked a</string>
     <string name="shared">shared a</string>

@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/abc_text_size_subhead_material"
-            tools:text="John Doe booked a DreamTrip"/>
+            tools:text="John Doe, Adobe booked a DreamTrip"/>
 
         <TextView
             android:id="@+id/feed_header_location"

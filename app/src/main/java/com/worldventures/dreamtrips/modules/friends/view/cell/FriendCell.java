@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,6 +27,8 @@ public class FriendCell extends AbstractCell<User> {
     TextView tvGroup;
     @InjectView(R.id.tvMutual)
     TextView tvMutual;
+    @InjectView(R.id.company)
+    TextView companyName;
 
     FriendActionDialogDelegate dialog;
 
@@ -37,7 +40,14 @@ public class FriendCell extends AbstractCell<User> {
     protected void syncUIStateWithModel() {
         User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        tvName.setText(user.getUsernameWithCompany(itemView.getContext()));
+        tvName.setText(user.getFullName());
+        if (!TextUtils.isEmpty(getModelObject().getCompany())) {
+            companyName.setText(getModelObject().getCompany());
+            companyName.setVisibility(View.VISIBLE);
+        } else {
+            companyName.setVisibility(View.GONE);
+        }
+
         tvGroup.setText(user.getCircles());
         String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
         if (getModelObject().getMutualFriends() == 0) {

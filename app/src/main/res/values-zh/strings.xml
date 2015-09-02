@@ -314,7 +314,7 @@
     <string name="bucket_current_cover">當前封面</string>
     <string name="bucket_item_edit_completed">標記為已完成！</string>
     <string name="reload_feed">重新載入來源</string>
-    <string name="feed_header" formatted="false">&lt;b>%s&lt;/b> %s &lt;b>%s&lt;/b></string>
+    <string name="feed_header" formatted="false">&lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
     <string name="added">已添加</string>
     <string name="booked">已預訂</string>
     <string name="shared">分享的</string>

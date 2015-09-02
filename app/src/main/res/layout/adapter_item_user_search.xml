@@ -33,6 +33,14 @@
             android:textSize="16sp"
             tools:text="Jon Snow"/>
 
+        <TextView
+            android:id="@+id/company"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:text="Adobe"/>
 
         <TextView
             android:id="@+id/info"

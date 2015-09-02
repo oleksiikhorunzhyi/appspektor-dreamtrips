@@ -9,10 +9,10 @@
     android:layout_margin="@dimen/spacing_small"
     android:gravity="center_vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        >
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/avatar"
@@ -28,68 +28,79 @@
             fresco:roundAsCircle="true"/>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/user_info_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_weight="1"
+            android:layout_toEndOf="@id/avatar"
+            android:layout_toRightOf="@id/avatar"
             android:orientation="vertical"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="Jon Snow"/>
 
-                <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    tools:text="Jon Snow"/>
-
-                <TextView
-                    android:id="@+id/tvGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    tools:text="Close friends"/>
-
-                <TextView
-                    android:id="@+id/tvMutual"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    tools:text="10 mutual friends"/>
-
-            </LinearLayout>
-
-            <com.dd.ShadowLayout
+            <TextView
+                android:id="@+id/company"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_tiny"
-                app:sl_cornerRadius="2dp"
-                app:sl_shadowColor="@color/black_semi_transparent">
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="Adobe"/>
 
-                <TextView
-                    android:id="@+id/actions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_white"
-                    android:padding="@dimen/spacing_small"
-                    android:text="@string/social_user_wrapper_cell_actions"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"/>
+            <TextView
+                android:id="@+id/tvGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="15sp"
+                tools:text="Close friends"/>
 
-            </com.dd.ShadowLayout>
+            <TextView
+                android:id="@+id/tvMutual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="15sp"
+                tools:text="10 mutual friends"/>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <com.dd.ShadowLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_info_container"
+            android:layout_toEndOf="@id/avatar"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            app:sl_cornerRadius="2dp"
+            app:sl_shadowColor="@color/black_semi_transparent">
+
+            <TextView
+                android:id="@+id/actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_white"
+                android:padding="@dimen/spacing_small"
+                android:text="@string/social_user_wrapper_cell_actions"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"/>
+
+        </com.dd.ShadowLayout>
+
+
+    </RelativeLayout>
 
 
 </android.support.v7.widget.CardView>

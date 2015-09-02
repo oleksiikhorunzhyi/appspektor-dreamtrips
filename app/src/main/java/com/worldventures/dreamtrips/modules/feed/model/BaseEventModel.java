@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -44,9 +45,11 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
     public String infoText(Resources resources) {
         String action = getActionCaption(resources);
         String type = getTypeCaption(resources);
+        User user = links.getUsers().get(0);
+        String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
 
         return resources.getString(R.string.feed_header, links.getUsers().get(0)
-                .getFullName(), action, type);
+                .getFullName(), companyName, action, type);
     }
 
     public Links getLinks() {

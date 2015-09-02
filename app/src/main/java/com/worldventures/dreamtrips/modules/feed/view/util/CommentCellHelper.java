@@ -30,7 +30,7 @@ public class CommentCellHelper {
         this.comment = comment;
         User owner = comment.getOwner();
         userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
-        userName.setText(owner.getFullName());
+        userName.setText(owner.getUsernameWithCompany(context));
         text.setText(comment.getMessage());
         CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(context.getResources(),
                 comment.getCreatedAt().getTime());

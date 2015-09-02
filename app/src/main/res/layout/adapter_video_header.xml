@@ -38,7 +38,6 @@
             android:background="@color/gray"
             android:padding="1dp"
             app:actualImageScaleType="fitXY"
-            app:ms_floatingLabelText="@string/training_video_hint"
             app:placeholderImage="@drawable/ic_flag_placeholder"
             app:placeholderImageScaleType="fitXY"
             />

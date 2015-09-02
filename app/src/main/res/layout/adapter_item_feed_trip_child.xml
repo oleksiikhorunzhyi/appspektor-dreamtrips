@@ -92,38 +92,26 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <com.andexert.library.RippleView
+                <CheckedTextView
+                    android:id="@+id/imageViewAddToBucket"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    ripple:rv_centered="true">
+                    android:checkMark="@drawable/ic_trip_add_to_bucket"
+                    android:clickable="true"
+                    android:tag="bucket"
+                    tools:checked="true"/>
 
-                    <CheckedTextView
-                        android:id="@+id/imageViewAddToBucket"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkMark="@drawable/ic_trip_add_to_bucket"
-                        android:clickable="true"
-                        android:tag="bucket"
-                        tools:checked="true"/>
-                </com.andexert.library.RippleView>
-
-                <com.andexert.library.RippleView
+                <CheckedTextView
+                    android:id="@+id/imageViewLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/spacing_small"
-                    ripple:rv_centered="true">
-
-                    <CheckedTextView
-                        android:id="@+id/imageViewLike"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkMark="@drawable/ic_trip_like"
-                        android:clickable="true"
-                        android:tag="like"
-                        tools:checked="true"/>
-                </com.andexert.library.RippleView>
+                    android:checkMark="@drawable/ic_trip_like"
+                    android:clickable="true"
+                    android:tag="like"
+                    tools:checked="true"/>
 
             </LinearLayout>
 
@@ -153,60 +141,53 @@
 
         </FrameLayout>
 
-        <com.andexert.library.RippleView
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:id="@+id/layoutInfo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageLayout"
-            ripple:rv_centered="true"
-            ripple:rv_color="#D3D3D3">
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/spacing_medium">
 
             <LinearLayout
-                android:id="@+id/layoutInfo"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_medium">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textViewName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:singleLine="true"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"/>
-
-
-                    <TextView
-                        android:id="@+id/textViewPlace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_location"
-                        android:drawablePadding="5dp"
-                        android:drawableStart="@drawable/ic_location"
-                        android:singleLine="true"
-                        android:textColor="@color/tripPlaceColor"/>
-                </LinearLayout>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textViewPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/textViewName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/tripPlaceColor"
-                    android:textSize="22sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </com.andexert.library.RippleView>
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
 
+
+                <TextView
+                    android:id="@+id/textViewPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_location"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_location"
+                    android:singleLine="true"
+                    android:textColor="@color/tripPlaceColor"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textViewPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_vertical"
+                android:textColor="@color/tripPlaceColor"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
     </RelativeLayout>
 

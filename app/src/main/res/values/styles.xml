@@ -39,8 +39,6 @@
         <item name="android:scrollbars">vertical</item>
     </style>
 
-    <style name="commonListItemStyle"></style>
-
     <style name="BottomSheetDialog">
         <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
         <item name="android:windowExitAnimation">@anim/slide_out_down</item>

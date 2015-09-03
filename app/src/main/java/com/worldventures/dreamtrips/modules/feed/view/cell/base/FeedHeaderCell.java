@@ -115,7 +115,7 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
         NavigationBuilder.create()
                 .with(activityRouter)
                 .args(bundle)
-                .move(Route.PHOTO_COMMENTS);
+                .move(Route.COMMENTS);
     }
 
     @Optional

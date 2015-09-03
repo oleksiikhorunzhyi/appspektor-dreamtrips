@@ -82,7 +82,7 @@ public enum Route {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
-    PHOTO_COMMENTS(CommentsFragment.class, R.string.comments_title),
+    COMMENTS(CommentsFragment.class, R.string.comments_title),
     POST_CREATE(PostFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),

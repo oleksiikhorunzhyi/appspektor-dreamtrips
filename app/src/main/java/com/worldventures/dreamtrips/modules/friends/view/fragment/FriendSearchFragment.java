@@ -1,15 +1,15 @@
-package com.worldventures.dreamtrips.modules.friends.view.activity;
+package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 
@@ -24,11 +24,10 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
@@ -40,9 +39,10 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 
+
 @Layout(R.layout.activity_search_friends)
 @MenuResource(R.menu.menu_search)
-public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPresenter>
+public class FriendSearchFragment extends BaseFragment<FriendSearchPresenter>
         implements FriendSearchPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.empty)
@@ -51,8 +51,6 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
 
     DelaySearchView searchView;
 
@@ -78,21 +76,15 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
     }
 
     @Override
-    protected void afterCreateView(Bundle savedInstanceState) {
-        super.afterCreateView(savedInstanceState);
-        setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_main));
-        ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        ab.setDisplayHomeAsUpEnabled(true);
-
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        adapter = new LoaderRecycleAdapter<>(this, injectorProvider);
+        adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(User.class, UserSearchCell.class);
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        layoutManager = new LinearLayoutManager(this);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -101,15 +93,14 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int itemCount = layoutManager.getItemCount();
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                getPresentationModel().scrolled(itemCount, lastVisibleItemPosition);
+                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
-
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconified(false);
@@ -125,7 +116,7 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                finish();
+                getActivity().onBackPressed();
                 return false;
             }
         });
@@ -138,25 +129,24 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresentationModel().setQuery(newText);
+                getPresenter().setQuery(newText);
                 return false;
             }
         });
 
 
-        searchView.setQuery(getPresentationModel().getQuery(), true);
+        searchView.setQuery(getPresenter().getQuery(), true);
 
-        return true;
     }
 
     @Override
-    protected FriendSearchPresenter createPresentationModel(Bundle savedInstanceState) {
+    protected FriendSearchPresenter createPresenter(Bundle savedInstanceState) {
         return new FriendSearchPresenter();
     }
 
     @Override
     public void onRefresh() {
-        getPresentationModel().reload();
+        getPresenter().reload();
     }
 
     @Override
@@ -166,9 +156,9 @@ public class FriendSearchActivity extends ActivityWithPresenter<FriendSearchPres
 
     @Override
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(getString(R.string.profile_add_friend))
-                .adapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, circles),
+                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
                         (materialDialog, view, i, charSequence) -> {
                             selectedAction.apply(i);
                             materialDialog.dismiss();

@@ -25,6 +25,8 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
@@ -33,6 +35,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.List;
 
@@ -93,6 +96,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
         switch (item.getItemId()) {
             case R.id.add_friend:
                 getPresenter().globalSearch();
+                NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -196,6 +200,11 @@ public class FriendListFragment extends BaseFragment<FriendListPresenter> implem
     @Override
     public BaseArrayListAdapter<User> getAdapter() {
         return adapter;
+    }
+
+    @Override
+    public void openFriendPrefs(UserBundle userBundle) {
+        NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
     }
 
     @Override

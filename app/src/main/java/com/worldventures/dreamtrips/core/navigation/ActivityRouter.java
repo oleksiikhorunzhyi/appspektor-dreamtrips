@@ -18,14 +18,12 @@ import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.modules.profile.view.activity.FriendPrefsWrapperActivity;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -107,12 +105,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
     }
 
-    public void openFriendPrefs(User friend) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(FriendPrefsWrapperActivity.BUNDLE_FRIEND, friend);
-        startActivity(FriendPrefsWrapperActivity.class, bundle);
-    }
-
     public void openEditInviteActivity(InviteTemplate inviteTemplate) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EditTemplateActivity.BUNDLE_TEMPLATE, inviteTemplate);
@@ -126,10 +118,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     public void openComponentActivity(@NonNull Route route, @NonNull Bundle args) {
         args.putSerializable(ComponentPresenter.ROUTE, route);
         startActivityWithArgs(ComponentActivity.class, args);
-    }
-
-    public void openFriendsSearch() {
-        startActivity(FriendSearchActivity.class);
     }
 
     public FeatureManager getFeatureManager() {

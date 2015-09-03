@@ -20,6 +20,8 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -72,7 +74,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
-                activityRouter.openFriendsSearch();
+                NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -43,7 +43,8 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle> implements BucketItemDetailsPresenter.View {
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle>
+        implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;

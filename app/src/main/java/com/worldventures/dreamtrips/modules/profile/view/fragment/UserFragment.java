@@ -10,8 +10,11 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
@@ -54,4 +57,10 @@ public class UserFragment extends ProfileFragment<UserPresenter>
             new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, userPhoto.getDrawable());
         }
     }
+
+    @Override
+    public void openFriendPrefs(UserBundle userBundle) {
+        NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
+    }
+
 }

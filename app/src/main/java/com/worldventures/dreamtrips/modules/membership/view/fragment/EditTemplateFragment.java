@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,9 +13,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 
@@ -27,9 +26,8 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_edit_template)
 @MenuResource(R.menu.menu_edit_template)
-public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> implements EditTemplatePresenter.View {
-    public static final String TEMPLATE = "TEMPLATE";
-
+public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle>
+        implements EditTemplatePresenter.View {
     public static final String EXTRA_MESSAGE = "message";
 
     @Inject
@@ -72,8 +70,7 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
 
     @Override
     protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        InviteTemplate template = getArguments().getParcelable(TEMPLATE);
-        return new EditTemplatePresenter(template);
+        return new EditTemplatePresenter(getArgs());
     }
 
     @Override

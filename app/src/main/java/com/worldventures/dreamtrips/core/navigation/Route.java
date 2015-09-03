@@ -51,7 +51,7 @@ public enum Route {
     PICK_FB_ALBUM(FacebookAlbumFragment.class),
     PICK_FB_PHOTO(FacebookPhotoFragment.class),
     MAP_INFO(TripMapInfoFragment.class),
-    BOOK_IT(StaticInfoFragment.BookItFragment.class),
+    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.book_it),
     SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
 

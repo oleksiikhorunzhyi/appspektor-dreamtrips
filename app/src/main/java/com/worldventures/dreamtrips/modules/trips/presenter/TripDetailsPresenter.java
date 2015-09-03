@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -44,7 +44,16 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
     public void actionBookIt() {
         TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getAccountUserId());
-        activityRouter.openBookItActivity(trip.getTripId());
+        UserSession userSession = appSessionHolder.get().get();
+
+        AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
+        AppConfig.URLS.Config config = urls.getProduction();
+
+        String url = config.getBookingPageURL()
+                .replace(AppConfig.TRIP_ID, trip.getTripId())
+                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+        view.openBookIt(url);
     }
 
     @Override
@@ -74,7 +83,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
             args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, new ArrayList<>(filteredImages));
-view.openFullscreen(args);
+            view.openFullscreen(args);
         }
     }
 
@@ -82,6 +91,9 @@ view.openFullscreen(args);
         void setContent(List<ContentItem> contentItems);
 
         void hideBookIt();
+
         void openFullscreen(Bundle args);
+
+        void openBookIt(String url);
     }
 }

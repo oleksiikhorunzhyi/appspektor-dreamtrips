@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTempl
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
@@ -67,12 +66,6 @@ public class ActivityRouter extends ActivityBoundRouter {
             bundle.putParcelable(ProfileModule.EXTRA_USER, user);
             startActivity(ProfileActivity.class, bundle);
         }
-    }
-
-    public void openBookItActivity(String tripId) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
-        startActivity(BookItActivity.class, bundle);
     }
 
     public void openPreviewActivity(String url) {

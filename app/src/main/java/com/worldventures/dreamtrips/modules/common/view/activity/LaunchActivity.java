@@ -1,14 +1,24 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 
+import butterknife.InjectView;
+
 @Layout(R.layout.activity_launch)
-public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresenter> {
+public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresenter> implements LaunchActivityPresenter.View {
+
+    @InjectView(R.id.pb)
+    ProgressBar pb;
+
+    private Snackbar snackbar;
 
     @Override
     protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -32,5 +42,25 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
                     .show();
         });
 
+    }
+
+    @Override
+    public void configurationFailed() {
+        pb.setVisibility(View.GONE);
+        snackbar = Snackbar.make(findViewById(R.id.rootView),
+                R.string.configuration_failed,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.configuration_acitve_button, v -> {
+                    getPresentationModel().startPreloadChain();
+                });
+        snackbar.show();
+    }
+
+    @Override
+    public void configurationStarted() {
+        pb.setVisibility(View.VISIBLE);
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
     }
 }

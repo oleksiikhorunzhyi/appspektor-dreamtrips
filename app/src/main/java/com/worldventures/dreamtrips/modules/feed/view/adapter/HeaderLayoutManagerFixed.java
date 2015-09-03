@@ -316,11 +316,11 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * <p>Returns the amount of extra space that should be rendered by LinearLayoutManager.
      * By default, {@link android.support.v7.widget.LinearLayoutManager} lays out 1 extra page of
      * items while smooth scrolling and 0 otherwise. You can override this method to implement your
-     * custom layout pre-cache logic.</p>
+     * custom layout configurationStarted-cache logic.</p>
      * <p>Laying out invisible elements will eventually come with performance cost. On the other
      * hand, in places like smooth scrolling to an unknown location, this extra content helps
      * LayoutManager to calculate a much smoother scrolling; which improves user experience.</p>
-     * <p>You can also use this if you are trying to pre-render your upcoming views.</p>
+     * <p>You can also use this if you are trying to configurationStarted-render your upcoming views.</p>
      *
      * @return The extra space that should be laid out (in pixels).
      */
@@ -373,7 +373,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
         // 4) scroll to fulfill requirements like stack from bottom.
         // create render state
         if (DEBUG) {
-            Log.d(TAG, "is pre layout:" + state.isPreLayout());
+            Log.d(TAG, "is configurationStarted layout:" + state.isPreLayout());
         }
         if (mPendingSavedState != null) {
             setOrientation(mPendingSavedState.mOrientation);
@@ -1137,7 +1137,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * <p>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
      * <p>
-     * LinearLayoutManager may pre-cache some views that are not necessarily visible. Those views
+     * LinearLayoutManager may configurationStarted-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
      * @return The adapter position of the first visible item or {@link RecyclerView#NO_POSITION} if
@@ -1173,7 +1173,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
      * <p>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
      * <p>
-     * LinearLayoutManager may pre-cache some views that are not necessarily visible. Those views
+     * LinearLayoutManager may configurationStarted-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
      * @return The adapter position of the last visible view or {@link RecyclerView#NO_POSITION} if
@@ -1381,7 +1381,7 @@ public class HeaderLayoutManagerFixed extends RecyclerView.LayoutManager {
         int mScrollingOffset;
 
         /**
-         * Used if you want to pre-layout items that are not yet visible.
+         * Used if you want to configurationStarted-layout items that are not yet visible.
          * The difference with {@link #mAvailable} is that, when recycling, distance rendered for
          * {@link #mExtra} is not considered to avoid recycling visible children.
          */
